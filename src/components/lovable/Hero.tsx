@@ -11,12 +11,12 @@ interface PremiumHeroProps {
     primaryCTA?: {
         label: string;
         onClick: () => void;
-    };
+    } | React.ReactNode;
     secondaryCTA?: {
         label: string;
         onClick: () => void;
-    };
-    gradient?: 'primary' | 'secondary' | 'accent';
+    } | React.ReactNode;
+    gradient?: string;
     backgroundImage?: string;
     children?: React.ReactNode;
 }
@@ -30,18 +30,23 @@ export function PremiumHero({
     backgroundImage,
     children
 }: PremiumHeroProps) {
-    const gradients = {
+    const gradients: Record<string, string> = {
         primary: colors.gradients.primary,
         secondary: colors.gradients.secondary,
         accent: colors.gradients.accent,
     };
 
+    const isPreset = gradient in gradients;
+
     return (
         <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden">
             {/* Gradient Background */}
             <div
-                className="absolute inset-0 -z-10"
-                style={{ background: gradients[gradient] }}
+                className={cn(
+                    "absolute inset-0 -z-10",
+                    !isPreset && `bg-gradient-to-r ${gradient}`
+                )}
+                style={isPreset ? { background: gradients[gradient] } : undefined}
             />
 
             {/* Optional Background Image */}
@@ -99,23 +104,27 @@ export function PremiumHero({
                         transition={{ delay: 0.4 }}
                     >
                         {primaryCTA && (
-                            <Button
-                                size="lg"
-                                onClick={primaryCTA.onClick}
-                                className="bg-white text-gray-900 hover:bg-gray-100 text-lg px-8"
-                            >
-                                {primaryCTA.label}
-                            </Button>
+                            React.isValidElement(primaryCTA) ? primaryCTA : (
+                                <Button
+                                    size="lg"
+                                    onClick={(primaryCTA as any).onClick}
+                                    className="bg-white text-gray-900 hover:bg-gray-100 text-lg px-8"
+                                >
+                                    {(primaryCTA as any).label}
+                                </Button>
+                            )
                         )}
                         {secondaryCTA && (
-                            <Button
-                                size="lg"
-                                variant="outline"
-                                onClick={secondaryCTA.onClick}
-                                className="border-white text-white hover:bg-white/10 text-lg px-8"
-                            >
-                                {secondaryCTA.label}
-                            </Button>
+                            React.isValidElement(secondaryCTA) ? secondaryCTA : (
+                                <Button
+                                    size="lg"
+                                    variant="outline"
+                                    onClick={(secondaryCTA as any).onClick}
+                                    className="border-white text-white hover:bg-white/10 text-lg px-8"
+                                >
+                                    {(secondaryCTA as any).label}
+                                </Button>
+                            )
                         )}
                     </motion.div>
                 )}

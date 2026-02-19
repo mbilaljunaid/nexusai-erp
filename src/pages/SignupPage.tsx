@@ -1,10 +1,13 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Link } from "wouter";
-import { ArrowRight, Mail, Lock, User, Eye, EyeOff, CheckCircle } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Link } from "wouter";
+import { motion } from "framer-motion";
+import { ArrowRight, Mail, Lock, User, Eye, EyeOff, CheckCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Header, Footer } from "@/components/Navigation";
+import { GlassmorphismCard } from "@/components/lovable";
+import { colors } from "@/lib/design-tokens";
+import { animations } from "@/lib/animations";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
@@ -12,13 +15,12 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    document.title = "Sign Up | NexusAIFirst";
+    document.title = "Sign Up | NexusAI";
   }, []);
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -61,161 +63,197 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background overflow-hidden relative">
+      {/* Animated Background */}
+      <div
+        className="absolute inset-0 -z-10"
+        style={{
+          background: `radial-gradient(circle at 60% 40%, ${colors.primary[900]} 0%, ${colors.background} 100%)`,
+          opacity: 0.5
+        }}
+      />
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+        <motion.div
+          className="absolute bottom-[-20%] left-[10%] w-[600px] h-[600px] rounded-full bg-blue-500/10 blur-[120px]"
+          animate={{ x: [0, 50, 0], y: [0, -50, 0] }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
+
       <Header />
 
       <main className="flex-1 flex items-center justify-center px-4 py-20">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-12">
-            <Badge className="mb-4 bg-blue-600/20 text-blue-300 border-blue-500/50">SIGN UP</Badge>
-            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              Create Account
-            </h1>
-            <p className="text-slate-300">Join NexusAIFirst and transform your business</p>
-          </div>
+        <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-          <Card className="bg-slate-800/50 border-slate-700 p-8" data-testid="card-signup">
-            {success ? (
-              <div className="text-center py-8">
-                <div className="mb-4 text-green-400 text-4xl">✓</div>
-                <h2 className="text-2xl font-bold text-white mb-2">Account Created!</h2>
-                <p className="text-slate-300 mb-6">Redirecting to login...</p>
+          {/* Left Side: Features/Benefits */}
+          <motion.div
+            className="hidden lg:block space-y-8"
+            {...animations.slideInRight}
+          >
+            <div>
+              <h1 className="text-5xl font-bold mb-6 leading-tight">
+                Join the <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+                  Open Source Revolution
+                </span>
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-lg">
+                Get full access to the source code, community support, and enterprise features.
+                Free forever for developers.
+              </p>
+            </div>
+
+            <div className="grid gap-4">
+              {[
+                { title: "Unlimited Users", desc: "No per-seat pricing" },
+                { title: "85+ Modules", desc: "Finance, HR, CRM included" },
+                { title: "Self-Hosted", desc: "Your data, your control" },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                  <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+                    <CheckCircle className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Right Side: Signup Form */}
+          <motion.div
+            className="w-full max-w-md mx-auto lg:order-first"
+            {...animations.fadeInUp}
+          >
+            <GlassmorphismCard className="p-8 backdrop-blur-xl border-white/10">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold mb-2">Create Account</h2>
+                <p className="text-muted-foreground">Start your journey with NexusAI</p>
               </div>
-            ) : (
-              <form onSubmit={handleSignup} className="space-y-5">
-                {error && (
-                  <div className="p-4 bg-red-600/20 border border-red-600/50 rounded text-red-300 text-sm" data-testid="alert-error">
-                    {error}
-                  </div>
-                )}
 
-                {/* Name Field */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Full Name</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-3 w-5 h-5 text-slate-500" />
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="John Doe"
-                      className="w-full pl-10 pr-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-                      required
-                      data-testid="input-name"
-                    />
-                  </div>
+              {success ? (
+                <div className="text-center py-12">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="w-16 h-16 bg-blue-500/20 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4"
+                  >
+                    <CheckCircle className="w-8 h-8" />
+                  </motion.div>
+                  <h3 className="text-xl font-bold mb-2">Account Created!</h3>
+                  <p className="text-muted-foreground">Redirecting to login...</p>
                 </div>
-
-                {/* Email Field */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Email Address</label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-3 w-5 h-5 text-slate-500" />
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="your@company.com"
-                      className="w-full pl-10 pr-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-                      required
-                      data-testid="input-email"
-                    />
-                  </div>
-                </div>
-
-                {/* Password Field */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Password</label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-3 w-5 h-5 text-slate-500" />
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full pl-10 pr-10 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-                      required
-                      data-testid="input-password"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-3 text-slate-500 hover:text-slate-300"
-                      data-testid="button-toggle-password"
+              ) : (
+                <form onSubmit={handleSignup} className="space-y-5">
+                  {error && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-sm text-center"
                     >
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
+                      {error}
+                    </motion.div>
+                  )}
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1.5 ml-1">Full Name</label>
+                    <div className="relative group">
+                      <User className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
+                      <Input
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="John Doe"
+                        className="pl-10 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
+                        required
+                      />
+                    </div>
                   </div>
-                  <p className="text-xs text-slate-400 mt-1">At least 8 characters</p>
-                </div>
 
-                {/* Confirm Password Field */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Confirm Password</label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-3 w-5 h-5 text-slate-500" />
-                    <input
-                      type={showConfirmPassword ? "text" : "password"}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full pl-10 pr-10 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-                      required
-                      data-testid="input-confirm-password"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-3 text-slate-500 hover:text-slate-300"
-                      data-testid="button-toggle-confirm-password"
-                    >
-                      {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
+                  <div>
+                    <label className="block text-sm font-medium mb-1.5 ml-1">Email</label>
+                    <div className="relative group">
+                      <Mail className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
+                      <Input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="your@company.com"
+                        className="pl-10 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
+                        required
+                      />
+                    </div>
                   </div>
-                </div>
 
-                {/* Terms Checkbox */}
-                <label className="flex items-start gap-2 cursor-pointer">
-                  <input type="checkbox" className="rounded mt-1" required />
-                  <span className="text-sm text-slate-300">
-                    I agree to the{" "}
-                    <a href="#" className="text-blue-400 hover:text-blue-300">
-                      Terms of Service
-                    </a>{" "}
-                    and{" "}
-                    <a href="#" className="text-blue-400 hover:text-blue-300">
-                      Privacy Policy
-                    </a>
-                  </span>
-                </label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1.5 ml-1">Password</label>
+                      <div className="relative group">
+                        <Lock className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="••••••••"
+                          className="pl-10 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1.5 ml-1">Confirm</label>
+                      <div className="relative group">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          placeholder="••••••••"
+                          className="pl-4 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-3 text-muted-foreground hover:text-white transition-colors"
+                        >
+                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
 
-                {/* Sign Up Button */}
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-blue-600 hover:bg-blue-700"
-                  data-testid="button-signup"
-                >
-                  {loading ? "Creating Account..." : "Create Account"} <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
+                  <div className="flex items-start gap-2 pt-2">
+                    <input type="checkbox" className="mt-1 rounded bg-white/10 border-white/20" required />
+                    <span className="text-sm text-muted-foreground">
+                      I agree to the <a href="#" className="text-blue-400 hover:text-blue-300">Terms</a> and <a href="#" className="text-blue-400 hover:text-blue-300">Privacy Policy</a>
+                    </span>
+                  </div>
 
-                {/* Login Link */}
-                <p className="text-center text-slate-400 text-sm">
+                  <Button
+                    type="submit"
+                    className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-base font-semibold shadow-lg shadow-blue-900/20"
+                    disabled={loading}
+                    size="lg"
+                  >
+                    {loading ? "Creating..." : "Create Account"}
+                    {!loading && <ArrowRight className="ml-2 w-4 h-4" />}
+                  </Button>
+                </form>
+              )}
+
+              <div className="mt-8 pt-6 border-t border-white/10 text-center">
+                <p className="text-sm text-muted-foreground">
                   Already have an account?{" "}
                   <Link to="/login">
-                    <a className="text-blue-400 hover:text-blue-300 font-medium">Sign in</a>
+                    <span className="text-blue-400 hover:text-blue-300 font-medium cursor-pointer">
+                      Sign in
+                    </span>
                   </Link>
                 </p>
-              </form>
-            )}
-          </Card>
-
-          {/* Back to Home */}
-          <div className="text-center mt-8">
-            <Link to="/">
-              <a className="text-slate-400 hover:text-slate-300 text-sm">← Back to home</a>
-            </Link>
-          </div>
+              </div>
+            </GlassmorphismCard>
+          </motion.div>
         </div>
       </main>
 

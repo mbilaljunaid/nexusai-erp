@@ -26,7 +26,8 @@ import {
   GradientCard,
   CTASection,
   FeatureGrid,
-  StatsCounter
+  StatsCounter,
+  Testimonial
 } from "@/components/lovable";
 import { colors } from "@/lib/design-tokens";
 import { animations } from "@/lib/animations";
@@ -40,17 +41,74 @@ export default function LandingPage() {
 
   const industries = [
     { name: "Healthcare", slug: "healthcare" },
-    { name: "Manufacturing", slug: "manufacturing" },
     { name: "Retail", slug: "retail" },
-    { name: "SaaS", slug: "saas" },
+    { name: "Telecom", slug: "telecom" },
+    { name: "Hospitality", slug: "hospitality" },
     { name: "Banking", slug: "banking" },
-    { name: "Energy", slug: "energy" },
-    { name: "Government", slug: "government" },
-    { name: "Education", slug: "education" },
     { name: "Automotive", slug: "automotive" },
     { name: "Insurance", slug: "insurance" },
+    { name: "Government", slug: "government" },
+    { name: "Education", slug: "education" },
+    { name: "Energy & Utilities", slug: "energy" },
+    { name: "Media & Entertainment", slug: "media" },
+    { name: "Manufacturing", slug: "manufacturing" },
     { name: "Real Estate", slug: "real-estate" },
-    { name: "Telecom", slug: "telecom" },
+    { name: "Construction", slug: "construction" },
+    { name: "Logistics", slug: "logistics" },
+    { name: "SaaS", slug: "saas" },
+    { name: "E-commerce", slug: "ecommerce" },
+    { name: "Financial Services", slug: "financial-services" },
+  ];
+
+  const testimonials = [
+    {
+      quote: "NexusAI has completely transformed how we manage our multi-national supply chain. The open source nature allowed us to customize it perfectly to our needs.",
+      author: "Sarah Chen",
+      role: "CTO",
+      company: "Global Logistics Corp",
+      avatar: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80"
+    },
+    {
+      quote: "Finally, an ERP that doesn't cost a fortune and actually looks good. The user experience is lightyears ahead of SAP or Oracle.",
+      author: "Marcus Johnson",
+      role: "Operations Director",
+      company: "TechFlow Manufacturing",
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80"
+    },
+    {
+      quote: "We scaled from 50 to 500 employees using NexusAI. The HR and Payroll modules are incredibly robust and compliant.",
+      author: "Elena Rodriguez",
+      role: "VP of HR",
+      company: "Innovate Health",
+      avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80"
+    }
+  ];
+
+  const moduleCategories = [
+    {
+      title: "Finance & Accounting",
+      description: "GL, AP, AR, Cash Management, Tax, and Fixed Assets.",
+      icon: <TrendingUp className="w-8 h-8 text-green-500" />,
+      color: "bg-green-500/10"
+    },
+    {
+      title: "HR & Payroll",
+      description: "Core HR, Recruitment, Performance, and Global Payroll.",
+      icon: <Users className="w-8 h-8 text-purple-500" />,
+      color: "bg-purple-500/10"
+    },
+    {
+      title: "CRM & Sales",
+      description: "Lead Management, Opportunity Pipeline, and CPQ.",
+      icon: <Globe className="w-8 h-8 text-blue-500" />,
+      color: "bg-blue-500/10"
+    },
+    {
+      title: "Supply Chain",
+      description: "Inventory, Procurement, Manufacturing, and Logistics.",
+      icon: <Package className="w-8 h-8 text-orange-500" />,
+      color: "bg-orange-500/10"
+    }
   ];
 
   const coreFeatures = [
@@ -172,6 +230,69 @@ export default function LandingPage() {
             </motion.div>
 
             <FeatureGrid features={coreFeatures} columns={3} />
+          </div>
+        </section>
+
+        {/* Modules Overview */}
+        <section className="py-20 px-4 bg-muted/50">
+          <div className="max-w-7xl mx-auto">
+             <motion.div className="text-center mb-16" {...animations.fadeInUp}>
+              <Badge className="mb-4">Comprehensive Modules</Badge>
+              <h2 className="text-4xl font-bold mb-4">
+                Core Business Suites
+              </h2>
+              <p className="text-xl text-muted-foreground">
+                Integrated modules for every department
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {moduleCategories.map((cat, idx) => (
+                <motion.div
+                  key={idx}
+                  {...animations.fadeInUp}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <GlassmorphismCard className="h-full hover:border-primary/50 transition-colors">
+                    <div className={`w-14 h-14 rounded-xl ${cat.color} flex items-center justify-center mb-6`}>
+                      {cat.icon}
+                    </div>
+                    <h3 className="text-xl font-bold mb-3">{cat.title}</h3>
+                    <p className="text-muted-foreground">{cat.description}</p>
+                  </GlassmorphismCard>
+                </motion.div>
+              ))}
+            </div>
+            
+            <div className="text-center mt-12">
+               <Link to="/features">
+                  <Button size="lg" variant="outline">View All 85+ Modules</Button>
+               </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Social Proof */}
+        <section className="py-20 px-4">
+          <div className="max-w-7xl mx-auto">
+            <motion.div className="text-center mb-16" {...animations.fadeInUp}>
+              <Badge className="mb-4">Success Stories</Badge>
+              <h2 className="text-4xl font-bold mb-4">
+                Trusted by Industry Leaders
+              </h2>
+            </motion.div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {testimonials.map((t, i) => (
+                <motion.div 
+                  key={i}
+                  {...animations.fadeInUp}
+                  transition={{ delay: i * 0.2 }}
+                >
+                  <Testimonial {...t} />
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
 

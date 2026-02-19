@@ -1,11 +1,14 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Link, useLocation } from "wouter";
-import { ArrowRight, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Link, useLocation } from "wouter";
+import { motion } from "framer-motion";
+import { ArrowRight, Mail, Lock, Eye, EyeOff, CheckCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Header, Footer } from "@/components/Navigation";
+import { GlassmorphismCard } from "@/components/lovable"; // Premium card
 import { useRBAC } from "@/components/RBACContext";
+import { colors } from "@/lib/design-tokens";
+import { animations } from "@/lib/animations";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -18,7 +21,7 @@ export default function LoginPage() {
   const { login, isAuthenticated, isLoading } = useRBAC();
 
   useEffect(() => {
-    document.title = "Login | NexusAIFirst";
+    document.title = "Login | NexusAI - Premium ERP";
   }, []);
 
   useEffect(() => {
@@ -61,9 +64,7 @@ export default function LoginPage() {
   const handleQuickAdminLogin = async () => {
     setLoading(true);
     setError("");
-
     try {
-      // Direct client-side demo login — no backend required
       await login("demo-admin-user", "admin");
       setSuccess(true);
       setTimeout(() => {
@@ -76,141 +77,193 @@ export default function LoginPage() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="public-page min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1 flex items-center justify-center px-4 py-20">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Checking authentication...</p>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
+  if (isLoading) return null; // Or a loading spinner
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background overflow-hidden relative">
+      {/* Animated Background */}
+      <div
+        className="absolute inset-0 -z-10"
+        style={{
+          background: `radial-gradient(circle at 50% 50%, ${colors.primary[900]} 0%, ${colors.background} 100%)`,
+          opacity: 0.5
+        }}
+      />
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+        <motion.div
+          className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-primary/20 blur-[100px]"
+          animate={{ x: [0, -50, 0], y: [0, 50, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] rounded-full bg-purple-500/10 blur-[120px]"
+          animate={{ x: [0, 50, 0], y: [0, -50, 0] }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
+
       <Header />
 
       <main className="flex-1 flex items-center justify-center px-4 py-20">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-12">
-            <Badge className="public-badge mb-4">LOGIN</Badge>
-            <h1 className="public-hero-title text-4xl font-bold mb-2">Welcome Back</h1>
-            <p className="public-hero-subtitle">Sign in to access your NexusAIFirst dashboard</p>
-          </div>
+        <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-          <Card className="public-card p-8" data-testid="card-login">
-            {success ? (
-              <div className="text-center py-8">
-                <div className="mb-4 text-green-400 text-4xl">
-                  <svg className="w-16 h-16 mx-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          {/* Left Side: Branding / Testimonial */}
+          <motion.div
+            className="hidden lg:block space-y-8"
+            {...animations.slideInLeft}
+          >
+            <div>
+              <h1 className="text-5xl font-bold mb-6 leading-tight">
+                Welcome to the <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">
+                  Future of ERP
+                </span>
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-lg">
+                Experience the power of open-source enterprise management.
+                Secure, scalable, and built for modern teams.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+              <div className="flex gap-1 mb-4">
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <svg key={s} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
-                </div>
-                <h2 className="text-2xl font-bold mb-2">Login Successful!</h2>
-                <p className="text-muted-foreground mb-6">Redirecting to dashboard...</p>
+                ))}
               </div>
-            ) : (
-              <form onSubmit={handleLogin} className="space-y-6">
-                {error && (
-                  <div className="p-4 bg-destructive/20 border border-destructive/50 rounded text-destructive text-sm" data-testid="alert-error">
-                    {error}
-                  </div>
-                )}
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">Email Address</label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-3 w-5 h-5 text-muted-foreground" />
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="your@company.com"
-                      className="w-full pl-10 pr-4 py-2 bg-input border border-input rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
-                      required
-                      data-testid="input-email"
-                    />
-                  </div>
+              <p className="text-lg italic mb-4">"NexusAI has completely transformed our workflow. The interface is stunning and intuitive."</p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center font-bold text-white">
+                  SC
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium mb-2">Password</label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-3 w-5 h-5 text-muted-foreground" />
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Enter your password"
-                      className="w-full pl-10 pr-10 py-2 bg-input border border-input rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
-                      required
-                      data-testid="input-password"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-3 text-muted-foreground"
-                      data-testid="button-toggle-password"
+                  <div className="font-semibold">Sarah Chen</div>
+                  <div className="text-sm text-muted-foreground">CTO, Global Logistics</div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Right Side: Login Form */}
+          <motion.div
+            className="w-full max-w-md mx-auto"
+            {...animations.fadeInUp}
+            transition={{ delay: 0.2 }}
+          >
+            <GlassmorphismCard className="p-8 backdrop-blur-xl border-white/10">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold mb-2">Sign In</h2>
+                <p className="text-muted-foreground">Access your dashboard</p>
+              </div>
+
+              {success ? (
+                <div className="text-center py-12">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4"
+                  >
+                    <CheckCircle className="w-8 h-8" />
+                  </motion.div>
+                  <h3 className="text-xl font-bold mb-2">Welcome Back!</h3>
+                  <p className="text-muted-foreground">Redirecting...</p>
+                </div>
+              ) : (
+                <form onSubmit={handleLogin} className="space-y-6">
+                  {error && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-sm text-center"
                     >
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
+                      {error}
+                    </motion.div>
+                  )}
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1.5 ml-1">Email</label>
+                      <div className="relative group">
+                        <Mail className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                        <Input
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="name@company.com"
+                          className="pl-10 h-11 bg-white/5 border-white/10 focus:border-primary/50 transition-all"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-1.5 ml-1">Password</label>
+                      <div className="relative group">
+                        <Lock className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="••••••••"
+                          className="pl-10 h-11 bg-white/5 border-white/10 focus:border-primary/50 transition-all"
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-3 text-muted-foreground hover:text-white transition-colors"
+                        >
+                          {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex items-center justify-between text-sm">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" className="rounded" />
-                    <span>Remember me</span>
-                  </label>
-                  <Link to="/forgot-password" className="text-primary hover:opacity-80">
-                    Forgot password?
-                  </Link>
-                </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <label className="flex items-center gap-2 cursor-pointer text-muted-foreground hover:text-white transition-colors">
+                      <input type="checkbox" className="rounded bg-white/10 border-white/20" />
+                      <span>Remember me</span>
+                    </label>
+                    <Link to="/forgot-password">
+                      <span className="text-primary hover:text-primary/80 cursor-pointer">Forgot password?</span>
+                    </Link>
+                  </div>
 
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full"
-                  data-testid="button-login"
-                >
-                  {loading ? "Signing in..." : "Sign In"} <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
+                  <Button
+                    type="submit"
+                    className="w-full h-11 text-base font-semibold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all"
+                    disabled={loading}
+                    size="lg"
+                  >
+                    {loading ? "Signing in..." : "Sign In"}
+                    {!loading && <ArrowRight className="ml-2 w-4 h-4" />}
+                  </Button>
+                </form>
+              )}
 
+              <div className="mt-8 pt-6 border-t border-white/10 text-center space-y-4">
                 <Button
                   type="button"
                   onClick={handleQuickAdminLogin}
-                  disabled={loading}
                   variant="outline"
-                  className="w-full"
-                  data-testid="button-quick-admin-login"
+                  className="w-full border-white/10 hover:bg-white/5"
                 >
-                  Quick Login as Admin
+                  Quick Admin Demo
                 </Button>
 
-                <div className="p-4 bg-muted/50 rounded-lg text-sm text-muted-foreground text-center">
-                  <p className="text-xs">Use the "Quick Login as Admin" button for demo access, or create an account first.</p>
-                </div>
-
-                <p className="text-center text-muted-foreground text-sm">
+                <p className="text-sm text-muted-foreground">
                   Don't have an account?{" "}
-                  <Link to="/signup" className="text-primary hover:opacity-80 font-medium">
-                    Sign up
+                  <Link to="/signup">
+                    <span className="text-primary hover:text-primary/80 font-medium cursor-pointer">
+                      Create free account
+                    </span>
                   </Link>
                 </p>
-              </form>
-            )}
-          </Card>
-
-          <div className="text-center mt-8">
-            <Link to="/" className="text-muted-foreground hover:text-foreground text-sm">
-              ← Back to home
-            </Link>
-          </div>
+              </div>
+            </GlassmorphismCard>
+          </motion.div>
         </div>
       </main>
 

@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, Compass, BookOpen, Code2, Zap, Users, ShoppingBag, Briefcase, Heart, Video, FileCode2, FileText, FolderOpen } from "lucide-react";
+import { Menu, X, ChevronDown, Compass, BookOpen, Code2, Zap, Users, ShoppingBag, Briefcase, Heart, Video, FileCode2, FileText, FolderOpen, CreditCard, PieChart, Factory, Package, HardHat, Building2, Receipt, Truck, Wrench, Clock, Activity, Calendar, DollarSign, GitMerge, FileSignature, TrendingUp, BookMarked, FolderKanban, ClipboardList, Sigma, Coins, Anchor, Store, UserCheck, LineChart, LockKeyhole as Lock, GraduationCap, Calculator, Database } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -8,6 +8,7 @@ export function Header() {
   const [location] = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [docsOpen, setDocsOpen] = useState(false);
+  const [modulesOpen, setModulesOpen] = useState(false);
   const [marketplaceOpen, setMarketplaceOpen] = useState(false);
 
   const isActive = (path: string) => location === path;
@@ -50,6 +51,216 @@ export function Header() {
                 </span>
               </Link>
             ))}
+
+
+
+            {/* Modules Dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => setModulesOpen(true)}
+              onMouseLeave={() => setModulesOpen(false)}
+            >
+              <button
+                className="text-sm font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1 py-2"
+                onClick={() => setModulesOpen(!modulesOpen)}
+                data-testid="button-modules-menu"
+              >
+                Modules
+                <ChevronDown className={`w-4 h-4 transition-transform ${modulesOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {modulesOpen && (
+                <div className="absolute left-0 top-full pt-1 w-[600px] -ml-20">
+                  <div className="bg-slate-800 rounded-lg shadow-xl border border-slate-700 p-4 grid grid-cols-2 gap-4">
+
+                    {/* Finance & Ops */}
+                    <div>
+                      <p className="px-2 py-1 text-[10px] text-slate-500 uppercase tracking-wider mb-1">Finance & Operations</p>
+                      <Link to="/modules/general-ledger" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <BookOpen className="w-3.5 h-3.5 text-blue-400" /> General Ledger
+                        </div>
+                      </Link>
+                      <Link to="/modules/accounts-payable" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <CreditCard className="w-3.5 h-3.5 text-emerald-400" /> Accounts Payable
+                        </div>
+                      </Link>
+                      <Link to="/modules/accounts-receivable" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <PieChart className="w-3.5 h-3.5 text-purple-400" /> Accounts Receivable
+                        </div>
+                      </Link>
+                      <Link to="/modules/billing" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Receipt className="w-3.5 h-3.5 text-green-400" /> Billing & Revenue
+                        </div>
+                      </Link>
+                      <Link to="/modules/financial-close" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Activity className="w-3.5 h-3.5 text-indigo-400" /> Financial Close
+                        </div>
+                      </Link>
+                      <Link to="/modules/expense-management" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <DollarSign className="w-3.5 h-3.5 text-green-400" /> Expense Management
+                        </div>
+                      </Link>
+                      <Link to="/modules/intercompany-accounting" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <GitMerge className="w-3.5 h-3.5 text-violet-400" /> Intercompany Accounting
+                        </div>
+                      </Link>
+                      <Link to="/modules/lease-management" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <FileSignature className="w-3.5 h-3.5 text-teal-400" /> Lease Management
+                        </div>
+                      </Link>
+                      <Link to="/modules/revenue-management" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <TrendingUp className="w-3.5 h-3.5 text-orange-400" /> Revenue Management
+                        </div>
+                      </Link>
+                      <Link to="/modules/subledger-accounting" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <BookMarked className="w-3.5 h-3.5 text-indigo-400" /> Subledger Accounting
+                        </div>
+                      </Link>
+                      <Link to="/modules/project-accounting" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <FolderKanban className="w-3.5 h-3.5 text-sky-400" /> Project Accounting
+                        </div>
+                      </Link>
+                      <Link to="/modules/project-costing" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <ClipboardList className="w-3.5 h-3.5 text-cyan-400" /> Project Portfolio Mgmt
+                        </div>
+                      </Link>
+                      <Link to="/modules/planning-budgeting" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Sigma className="w-3.5 h-3.5 text-fuchsia-400" /> Planning & Budgeting
+                        </div>
+                      </Link>
+                      <Link to="/modules/manufacturing-costing" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Coins className="w-3.5 h-3.5 text-amber-400" /> Manufacturing Costing
+                        </div>
+                      </Link>
+                    </div>
+
+                    {/* SCM & Manufacturing */}
+                    <div>
+                      <p className="px-2 py-1 text-[10px] text-slate-500 uppercase tracking-wider mb-1">SCM & Manufacturing</p>
+                      <Link to="/modules/manufacturing" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Factory className="w-3.5 h-3.5 text-orange-400" /> Manufacturing
+                        </div>
+                      </Link>
+                      <Link to="/modules/inventory" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Package className="w-3.5 h-3.5 text-yellow-400" /> Inventory & WMS
+                        </div>
+                      </Link>
+                      <Link to="/modules/procurement" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <ShoppingBag className="w-3.5 h-3.5 text-cyan-400" /> Procurement
+                        </div>
+                      </Link>
+                      <Link to="/modules/transportation-logistics" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Truck className="w-3.5 h-3.5 text-blue-400" /> Transportation
+                        </div>
+                      </Link>
+                      <Link to="/modules/maintenance" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Wrench className="w-3.5 h-3.5 text-slate-400" /> Maintenance
+                        </div>
+                      </Link>
+                      <Link to="/modules/landed-cost" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Anchor className="w-3.5 h-3.5 text-blue-400" /> Landed Cost
+                        </div>
+                      </Link>
+                      <Link to="/modules/supplier-portal" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Store className="w-3.5 h-3.5 text-emerald-400" /> Supplier Portal
+                        </div>
+                      </Link>
+                    </div>
+
+                    {/* HR & CRM */}
+                    <div>
+                      <p className="px-2 py-1 text-[10px] text-slate-500 uppercase tracking-wider mb-1">HR & CRM</p>
+                      <Link to="/modules/core-hr" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Users className="w-3.5 h-3.5 text-pink-400" /> Core HR & Payroll
+                        </div>
+                      </Link>
+                      <Link to="/modules/crm" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Heart className="w-3.5 h-3.5 text-red-400" /> CRM & Sales
+                        </div>
+                      </Link>
+                      <Link to="/modules/time-labor" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Clock className="w-3.5 h-3.5 text-sky-400" /> Time & Labor
+                        </div>
+                      </Link>
+                      <Link to="/modules/employee-self-service" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <UserCheck className="w-3.5 h-3.5 text-pink-400" /> Employee Self-Service
+                        </div>
+                      </Link>
+                      <Link to="/modules/hr-analytics" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <LineChart className="w-3.5 h-3.5 text-blue-400" /> HR Analytics
+                        </div>
+                      </Link>
+                      <Link to="/modules/hr-compliance" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Lock className="w-3.5 h-3.5 text-red-400" /> HR Compliance
+                        </div>
+                      </Link>
+                      <Link to="/modules/learning-management" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <GraduationCap className="w-3.5 h-3.5 text-violet-400" /> Learning Management
+                        </div>
+                      </Link>
+                    </div>
+
+                    {/* Industries */}
+                    <div>
+                      <p className="px-2 py-1 text-[10px] text-slate-500 uppercase tracking-wider mb-1">Specialized</p>
+                      <Link to="/modules/construction" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <HardHat className="w-3.5 h-3.5 text-amber-400" /> Construction
+                        </div>
+                      </Link>
+                      <Link to="/modules/real-estate" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Building2 className="w-3.5 h-3.5 text-emerald-400" /> Real Estate
+                        </div>
+                      </Link>
+                      <Link to="/modules/project-management" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Briefcase className="w-3.5 h-3.5 text-teal-400" /> Project Mgmt
+                        </div>
+                      </Link>
+                      <Link to="/modules/cost-management" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Calculator className="w-3.5 h-3.5 text-zinc-400" /> Cost Management
+                        </div>
+                      </Link>
+                      <Link to="/modules/master-data-management" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Database className="w-3.5 h-3.5 text-sky-400" /> Master Data Mgmt
+                        </div>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Marketplace Dropdown */}
             <div
@@ -287,6 +498,28 @@ export function Header() {
                 </button>
               </Link>
             ))}
+
+
+            {/* Mobile Modules Map (Simplified) */}
+            <div className="border-t border-slate-700 pt-2 mt-2 space-y-2">
+              <p className="px-4 text-xs text-slate-500 uppercase">Modules</p>
+              <Link to="/modules/general-ledger">
+                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                  Finance
+                </button>
+              </Link>
+              <Link to="/modules/manufacturing">
+                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                  Manufacturing
+                </button>
+              </Link>
+              <Link to="/modules/core-hr">
+                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                  HR & Payroll
+                </button>
+              </Link>
+            </div>
+
             {/* Mobile Contribution Link - Highlighted */}
             <Link to="/contribution">
               <button

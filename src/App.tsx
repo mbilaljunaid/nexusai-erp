@@ -40,6 +40,7 @@ import MarketingRoutes from "@/routes/MarketingRoutes";
 import AnalyticsRoutes from "@/routes/AnalyticsRoutes";
 import ComplianceRoutes from "@/routes/ComplianceRoutes";
 import MdmRoutes from "@/routes/MdmRoutes";
+import ModuleRoutes from "@/routes/ModuleRoutes";
 
 import ErpRoutes from "@/routes/ErpRoutes";
 import ProcessRoutes from "@/routes/ProcessRoutes";
@@ -140,6 +141,7 @@ function Router() {
 
         {/* Marketing */}
         <Route path="/marketing*" component={MarketingRoutes} />
+        <Route path="/modules*" component={ModuleRoutes} />
 
         {/* Order Management */}
         <Route path="/order-management*" component={OrderRoutes} />

@@ -1,67 +1,44 @@
 import React, { useState } from 'react';
-import { Search, Plus, Building2, Settings, Trash2, CheckCircle, XCircle } from 'lucide-react';
+import { Search, Plus, Building2, Settings, Trash2, CheckCircle, XCircle, Loader2, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+    Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AdminLayout from '@/components/admin/AdminLayout';
-
-interface Tenant {
-    id: string;
-    name: string;
-    slug: string;
-    industry: string;
-    plan: string;
-    status: 'active' | 'inactive' | 'trial';
-    users: number;
-    createdAt: string;
-    modules: string[];
-}
+import { useTenants, useCreateTenant, useDeleteTenant, useUpdateTenantStatus } from '@/hooks/admin/useAdminData';
 
 export default function TenantManagement() {
     const [searchTerm, setSearchTerm] = useState('');
+    const [createOpen, setCreateOpen] = useState(false);
+    const [newTenant, setNewTenant] = useState({ name: '', slug: '', status: 'active' });
 
-    // Mock data - replace with API call
-    const tenants: Tenant[] = [
-        {
-            id: '1',
-            name: 'Acme Corporation',
-            slug: 'acme-corp',
-            industry: 'Manufacturing',
-            plan: 'Enterprise',
-            status: 'active',
-            users: 250,
-            createdAt: '2024-01-15',
-            modules: ['Finance', 'HR', 'SCM', 'Manufacturing']
-        },
-        {
-            id: '2',
-            name: 'TechStart Inc',
-            slug: 'techstart',
-            industry: 'SaaS',
-            plan: 'Professional',
-            status: 'active',
-            users: 45,
-            createdAt: '2024-02-01',
-            modules: ['Finance', 'HR', 'CRM']
-        },
-        {
-            id: '3',
-            name: 'Global Trade Ltd',
-            slug: 'global-trade',
-            industry: 'Wholesale',
-            plan: 'Enterprise',
-            status: 'trial',
-            users: 120,
-            createdAt: '2024-02-10',
-            modules: ['Finance', 'SCM', 'CRM']
-        },
-    ];
+    const { data: tenants = [], isLoading, isError } = useTenants();
+    const createTenant = useCreateTenant();
+    const deleteTenant = useDeleteTenant();
+    const updateStatus = useUpdateTenantStatus();
 
-    const filteredTenants = tenants.filter(tenant =>
-        tenant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        tenant.slug.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredTenants = (tenants as any[]).filter((t: any) =>
+        t.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        t.slug?.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const handleCreate = async () => {
+        await createTenant.mutateAsync(newTenant);
+        setCreateOpen(false);
+        setNewTenant({ name: '', slug: '', status: 'active' });
+    };
+
+    const handleDelete = (id: string, name: string) => {
+        if (window.confirm(`Delete tenant "${name}"? This cannot be undone.`)) {
+            deleteTenant.mutate(id);
+        }
+    };
 
     return (
         <AdminLayout>
@@ -72,13 +49,20 @@ export default function TenantManagement() {
                         <h1 className="text-3xl font-bold">Tenant Management</h1>
                         <p className="text-muted-foreground">Manage all tenant organizations and their configurations</p>
                     </div>
-                    <Button>
+                    <Button onClick={() => setCreateOpen(true)}>
                         <Plus className="w-4 h-4 mr-2" />
                         Create Tenant
                     </Button>
                 </div>
 
-                {/* Search & Filters */}
+                {isError && (
+                    <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 rounded-lg p-3">
+                        <AlertCircle className="w-4 h-4" />
+                        Failed to load tenants. Please refresh the page.
+                    </div>
+                )}
+
+                {/* Search */}
                 <Card>
                     <CardContent className="pt-6">
                         <div className="flex items-center gap-4">
@@ -98,96 +82,160 @@ export default function TenantManagement() {
                 {/* Tenants Table */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>All Tenants ({filteredTenants.length})</CardTitle>
+                        <CardTitle>
+                            {isLoading ? 'Loading...' : `All Tenants (${filteredTenants.length})`}
+                        </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
-                                <thead>
-                                    <tr className="border-b">
-                                        <th className="text-left py-3 px-4 font-medium">Tenant</th>
-                                        <th className="text-left py-3 px-4 font-medium">Industry</th>
-                                        <th className="text-left py-3 px-4 font-medium">Plan</th>
-                                        <th className="text-left py-3 px-4 font-medium">Status</th>
-                                        <th className="text-left py-3 px-4 font-medium">Users</th>
-                                        <th className="text-left py-3 px-4 font-medium">Modules</th>
-                                        <th className="text-left py-3 px-4 font-medium">Created</th>
-                                        <th className="text-right py-3 px-4 font-medium">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredTenants.map((tenant) => (
-                                        <tr key={tenant.id} className="border-b hover:bg-gray-50">
-                                            <td className="py-3 px-4">
-                                                <div className="flex items-center gap-3">
-                                                    <Building2 className="w-5 h-5 text-muted-foreground" />
-                                                    <div>
-                                                        <div className="font-medium">{tenant.name}</div>
-                                                        <div className="text-sm text-muted-foreground">{tenant.slug}</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-4">{tenant.industry}</td>
-                                            <td className="py-3 px-4">
-                                                <Badge variant={tenant.plan === 'Enterprise' ? 'default' : 'secondary'}>
-                                                    {tenant.plan}
-                                                </Badge>
-                                            </td>
-                                            <td className="py-3 px-4">
-                                                <div className="flex items-center gap-2">
-                                                    {tenant.status === 'active' ? (
-                                                        <>
-                                                            <CheckCircle className="w-4 h-4 text-green-600" />
-                                                            <span className="text-sm text-green-600">Active</span>
-                                                        </>
-                                                    ) : tenant.status === 'trial' ? (
-                                                        <>
-                                                            <Badge variant="outline">Trial</Badge>
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <XCircle className="w-4 h-4 text-red-600" />
-                                                            <span className="text-sm text-red-600">Inactive</span>
-                                                        </>
-                                                    )}
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-4">{tenant.users}</td>
-                                            <td className="py-3 px-4">
-                                                <div className="flex flex-wrap gap-1">
-                                                    {tenant.modules.slice(0, 2).map((module) => (
-                                                        <Badge key={module} variant="outline" className="text-xs">
-                                                            {module}
-                                                        </Badge>
-                                                    ))}
-                                                    {tenant.modules.length > 2 && (
-                                                        <Badge variant="outline" className="text-xs">
-                                                            +{tenant.modules.length - 2}
-                                                        </Badge>
-                                                    )}
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-4 text-sm text-muted-foreground">
-                                                {new Date(tenant.createdAt).toLocaleDateString()}
-                                            </td>
-                                            <td className="py-3 px-4">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <Button variant="ghost" size="sm">
-                                                        <Settings className="w-4 h-4" />
-                                                    </Button>
-                                                    <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </Button>
-                                                </div>
-                                            </td>
+                        {isLoading ? (
+                            <div className="space-y-3">
+                                {[...Array(5)].map((_, i) => (
+                                    <Skeleton key={i} className="h-12 w-full" />
+                                ))}
+                            </div>
+                        ) : filteredTenants.length === 0 ? (
+                            <div className="text-center py-12 text-muted-foreground">
+                                <Building2 className="w-8 h-8 mx-auto mb-3 opacity-50" />
+                                <p className="text-sm">No tenants found</p>
+                                <Button variant="outline" size="sm" className="mt-3" onClick={() => setCreateOpen(true)}>
+                                    Create your first tenant
+                                </Button>
+                            </div>
+                        ) : (
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead>
+                                        <tr className="border-b">
+                                            <th className="text-left py-3 px-4 font-medium">Tenant</th>
+                                            <th className="text-left py-3 px-4 font-medium">Plan</th>
+                                            <th className="text-left py-3 px-4 font-medium">Status</th>
+                                            <th className="text-left py-3 px-4 font-medium">Created</th>
+                                            <th className="text-right py-3 px-4 font-medium">Actions</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody>
+                                        {filteredTenants.map((tenant: any) => (
+                                            <tr key={tenant.id} className="border-b hover:bg-gray-50">
+                                                <td className="py-3 px-4">
+                                                    <div className="flex items-center gap-3">
+                                                        <Building2 className="w-5 h-5 text-muted-foreground" />
+                                                        <div>
+                                                            <div className="font-medium">{tenant.name}</div>
+                                                            <div className="text-sm text-muted-foreground">{tenant.slug}</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="py-3 px-4">
+                                                    <Badge variant={tenant.plan === 'enterprise' ? 'default' : 'secondary'}>
+                                                        {tenant.plan ?? 'Starter'}
+                                                    </Badge>
+                                                </td>
+                                                <td className="py-3 px-4">
+                                                    <div className="flex items-center gap-2">
+                                                        {tenant.status === 'active' ? (
+                                                            <>
+                                                                <CheckCircle className="w-4 h-4 text-green-600" />
+                                                                <span className="text-sm text-green-600">Active</span>
+                                                            </>
+                                                        ) : tenant.status === 'trial' ? (
+                                                            <Badge variant="outline">Trial</Badge>
+                                                        ) : (
+                                                            <>
+                                                                <XCircle className="w-4 h-4 text-red-600" />
+                                                                <span className="text-sm text-red-600">Inactive</span>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                                <td className="py-3 px-4 text-sm text-muted-foreground">
+                                                    {tenant.createdAt ? new Date(tenant.createdAt).toLocaleDateString() : '—'}
+                                                </td>
+                                                <td className="py-3 px-4">
+                                                    <div className="flex items-center justify-end gap-2">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                updateStatus.mutate({
+                                                                    id: tenant.id,
+                                                                    status: tenant.status === 'active' ? 'inactive' : 'active',
+                                                                })
+                                                            }
+                                                        >
+                                                            <Settings className="w-4 h-4" />
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="text-red-600 hover:text-red-700"
+                                                            onClick={() => handleDelete(tenant.id, tenant.name)}
+                                                            disabled={deleteTenant.isPending}
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </Button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Create Tenant Dialog */}
+            <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Create New Tenant</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-2">
+                        <div className="space-y-2">
+                            <Label htmlFor="tenant-name">Organization Name</Label>
+                            <Input
+                                id="tenant-name"
+                                placeholder="Acme Corporation"
+                                value={newTenant.name}
+                                onChange={(e) => setNewTenant(p => ({ ...p, name: e.target.value }))}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="tenant-slug">Slug</Label>
+                            <Input
+                                id="tenant-slug"
+                                placeholder="acme-corp"
+                                value={newTenant.slug}
+                                onChange={(e) => setNewTenant(p => ({ ...p, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') }))}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="tenant-status">Initial Status</Label>
+                            <Select value={newTenant.status} onValueChange={(v) => setNewTenant(p => ({ ...p, status: v }))}>
+                                <SelectTrigger id="tenant-status">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="active">Active</SelectItem>
+                                    <SelectItem value="trial">Trial</SelectItem>
+                                    <SelectItem value="inactive">Inactive</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setCreateOpen(false)}>Cancel</Button>
+                        <Button
+                            onClick={handleCreate}
+                            disabled={!newTenant.name || !newTenant.slug || createTenant.isPending}
+                        >
+                            {createTenant.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                            Create Tenant
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </AdminLayout>
     );
 }

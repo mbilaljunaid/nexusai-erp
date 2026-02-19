@@ -11,6 +11,10 @@ import { TenantsController } from './tenants/tenants.controller';
 import { TenantsService } from './tenants/tenants.service';
 import { ModulesController } from './modules/modules.controller';
 import { ModulesService } from './modules/modules.service';
+import { MetricsController } from './metrics/metrics.controller';
+import { MetricsService } from './metrics/metrics.service';
+import { AuditLogsController } from './audit-logs/audit-logs.controller';
+import { AuditLogsService } from './audit-logs/audit-logs.service';
 import { CacheModule } from '../../cache/cache.module';
 import { DatabaseModule } from '../../database/database.module';
 
@@ -23,6 +27,8 @@ import { DatabaseModule } from '../../database/database.module';
         SystemConfigController,
         TenantsController,
         ModulesController,
+        MetricsController,
+        AuditLogsController,
     ],
     providers: [
         DemoEnvironmentsService,
@@ -31,6 +37,8 @@ import { DatabaseModule } from '../../database/database.module';
         SystemConfigService,
         TenantsService,
         ModulesService,
+        MetricsService,
+        AuditLogsService,
     ],
     exports: [
         DemoEnvironmentsService,
@@ -39,6 +47,8 @@ import { DatabaseModule } from '../../database/database.module';
         SystemConfigService,
         TenantsService,
         ModulesService,
+        MetricsService,
+        AuditLogsService,
     ],
 })
 export class AdminModule { }

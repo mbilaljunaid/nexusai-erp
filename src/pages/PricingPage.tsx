@@ -7,13 +7,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "wouter";
 import { useEffect, useState } from "react";
 import { Header, Footer } from "@/components/Navigation";
-import { 
-  Heart, 
-  Coffee, 
-  Star, 
-  CheckCircle, 
-  Gift, 
-  Building2, 
+import {
+  Heart,
+  Coffee,
+  Star,
+  CheckCircle,
+  Gift,
+  Building2,
   Github,
   Scale,
   Shield,
@@ -54,8 +54,8 @@ export default function PricingPage() {
   ];
 
   const toggleService = (serviceId: string) => {
-    setSelectedServices(prev => 
-      prev.includes(serviceId) 
+    setSelectedServices(prev =>
+      prev.includes(serviceId)
         ? prev.filter(id => id !== serviceId)
         : [...prev, serviceId]
     );
@@ -105,7 +105,7 @@ export default function PricingPage() {
       });
       return;
     }
-    
+
     setSponsoringAmount(amount);
     toast({
       title: "Thank you for your support!",
@@ -130,24 +130,24 @@ export default function PricingPage() {
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       const selectedServiceLabels = selectedServices
         .map(id => serviceOptions.find(s => s.id === id)?.label)
         .filter(Boolean);
-      
+
       const response = await apiRequest("POST", "/api/contact", {
         ...contactForm,
         subject: "Services Request",
         services: selectedServiceLabels
       });
       const data = await response.json();
-      
+
       toast({
         title: "Request Submitted",
         description: data.message || "We'll get back to you within 24-48 hours.",
       });
-      
+
       setContactForm({ name: "", email: "", company: "", message: "" });
       setSelectedServices([]);
     } catch (error: any) {
@@ -157,7 +157,7 @@ export default function PricingPage() {
         variant: "destructive"
       });
     }
-    
+
     setIsSubmitting(false);
   };
 
@@ -194,7 +194,7 @@ export default function PricingPage() {
           <Badge className="mb-4 bg-green-600 text-white" data-testid="badge-free">100% FREE FOREVER</Badge>
           <h1 className="text-5xl font-bold mb-6" data-testid="text-page-title">Open Source. Free Forever.</h1>
           <p className="text-xl text-muted-foreground mb-8">
-            NexusAIFirst ERP is and will always remain free and open source. 
+            NexusAIFirst ERP is and will always remain free and open source.
             Licensed under AGPL-3.0, you get the complete enterprise platform at no cost.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
@@ -217,7 +217,7 @@ export default function PricingPage() {
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4">Everything Included. Zero Cost.</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Unlike proprietary ERP systems that charge per user or per module, 
+                Unlike proprietary ERP systems that charge per user or per module,
                 NexusAIFirst gives you the complete platform for free.
               </p>
             </div>
@@ -247,6 +247,77 @@ export default function PricingPage() {
                 </Button>
               </Link>
             </Card>
+          </div>
+        </section>
+
+        {/* Business Model Explanation */}
+        <section className="px-4 py-16">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">How We Sustain Development</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                We believe in a sustainable open source model. The code is free contribution to the world,
+                funded by optional professional services and community sponsors.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              <Card className="p-8 border-green-200 bg-green-50/50 dark:bg-green-900/10 dark:border-green-900">
+                <div className="w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900 flex items-center justify-center mb-6">
+                  <Github className="w-6 h-6 text-green-600 dark:text-green-400" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4">Community Edition</h3>
+                <p className="text-muted-foreground mb-6">
+                  Perfect for tech-savvy teams, developers, and those who want full control.
+                </p>
+                <div className="space-y-3 mb-8">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span>100% Free Source Code</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span>Community Support</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span>Self-Hosted</span>
+                  </div>
+                </div>
+                <Link to="/docs/implementation">
+                  <Button className="w-full border-green-200 hover:bg-green-50 text-green-700" variant="outline">
+                    Read Documentation
+                  </Button>
+                </Link>
+              </Card>
+
+              <Card className="p-8 border-blue-200 bg-blue-50/50 dark:bg-blue-900/10 dark:border-blue-900">
+                <div className="w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center mb-6">
+                  <Building2 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4">Enterprise Services</h3>
+                <p className="text-muted-foreground mb-6">
+                  For organizations requiring SLAs, managed hosting, or custom implementation.
+                </p>
+                <div className="space-y-3 mb-8">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-blue-500" />
+                    <span>Priority Support (SLA)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-blue-500" />
+                    <span>Managed Cloud Hosting</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-blue-500" />
+                    <span>Custom Development</span>
+                  </div>
+                </div>
+                <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}>
+                  Contact Sales
+                </Button>
+              </Card>
+            </div>
           </div>
         </section>
 
@@ -286,8 +357,8 @@ export default function PricingPage() {
               </div>
               <div className="mt-6 p-4 bg-muted/50 rounded-lg">
                 <p className="text-sm text-muted-foreground">
-                  <strong>Need help with hosting, implementation, or post-deployment support?</strong> 
-                  {" "}Contact us for professional services. The software remains free; 
+                  <strong>Need help with hosting, implementation, or post-deployment support?</strong>
+                  {" "}Contact us for professional services. The software remains free;
                   you only pay for the services you need.
                 </p>
               </div>
@@ -302,7 +373,7 @@ export default function PricingPage() {
               <Building2 className="w-12 h-12 mx-auto mb-4 text-purple-500" />
               <h2 className="text-3xl font-bold mb-4">Implementation Services</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                While the software is free, companies may contact us for professional 
+                While the software is free, companies may contact us for professional
                 implementation services, hosting setup, and ongoing support.
               </p>
             </div>
@@ -321,27 +392,27 @@ export default function PricingPage() {
             </div>
 
             {/* Contact Form */}
-            <Card className="p-8 max-w-2xl mx-auto">
-              <h3 className="text-xl font-bold mb-6 text-center">Request Services</h3>
+            <Card className="p-8 max-w-2xl mx-auto" id="contact-form">
+              <h3 className="text-xl font-bold mb-6 text-center">Request Professional Services</h3>
               <form onSubmit={handleContactSubmit} className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium mb-1 block">Your Name</label>
-                    <Input 
-                      placeholder="John Doe" 
+                    <Input
+                      placeholder="John Doe"
                       value={contactForm.name}
-                      onChange={(e) => setContactForm({...contactForm, name: e.target.value})}
+                      onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
                       required
                       data-testid="input-contact-name"
                     />
                   </div>
                   <div>
                     <label className="text-sm font-medium mb-1 block">Email</label>
-                    <Input 
-                      type="email" 
+                    <Input
+                      type="email"
                       placeholder="john@company.com"
                       value={contactForm.email}
-                      onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
+                      onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
                       required
                       data-testid="input-contact-email"
                     />
@@ -349,10 +420,10 @@ export default function PricingPage() {
                 </div>
                 <div>
                   <label className="text-sm font-medium mb-1 block">Company Name</label>
-                  <Input 
+                  <Input
                     placeholder="Acme Inc."
                     value={contactForm.company}
-                    onChange={(e) => setContactForm({...contactForm, company: e.target.value})}
+                    onChange={(e) => setContactForm({ ...contactForm, company: e.target.value })}
                     data-testid="input-contact-company"
                   />
                 </div>
@@ -363,13 +434,13 @@ export default function PricingPage() {
                       const IconComponent = service.icon;
                       const isChecked = selectedServices.includes(service.id);
                       return (
-                        <label 
+                        <label
                           key={service.id}
                           htmlFor={service.id}
                           className="flex items-center space-x-3 p-3 rounded-lg border hover-elevate cursor-pointer"
                           data-testid={`checkbox-service-${service.id}`}
                         >
-                          <Checkbox 
+                          <Checkbox
                             id={service.id}
                             checked={isChecked}
                             onCheckedChange={() => toggleService(service.id)}
@@ -385,18 +456,18 @@ export default function PricingPage() {
                 </div>
                 <div>
                   <label className="text-sm font-medium mb-1 block">How can we help?</label>
-                  <Textarea 
+                  <Textarea
                     placeholder="Tell us about your needs, timeline, and any specific requirements..."
                     value={contactForm.message}
-                    onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
+                    onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
                     required
                     className="min-h-[120px]"
                     data-testid="input-contact-message"
                   />
                 </div>
-                <Button 
-                  type="submit" 
-                  className="w-full" 
+                <Button
+                  type="submit"
+                  className="w-full"
                   disabled={isSubmitting}
                   data-testid="button-submit-contact"
                 >
@@ -413,7 +484,7 @@ export default function PricingPage() {
             <Heart className="w-16 h-16 mx-auto mb-6" />
             <h2 className="text-4xl font-bold mb-4">Support NexusAIFirst Development</h2>
             <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-              If you find NexusAIFirst valuable, consider sponsoring the project development. 
+              If you find NexusAIFirst valuable, consider sponsoring the project development.
               Your support helps us maintain and improve the platform for everyone.
             </p>
 
@@ -424,8 +495,8 @@ export default function PricingPage() {
                 <h3 className="text-xl font-bold mb-2">Buy Me 3 Coffees</h3>
                 <div className="text-3xl font-bold mb-4">$10</div>
                 <p className="text-sm text-white/70 mb-4">One-time contribution</p>
-                <Button 
-                  onClick={() => handleSponsor(10)} 
+                <Button
+                  onClick={() => handleSponsor(10)}
                   className="w-full bg-white text-orange-600 hover:bg-slate-100"
                   disabled={checkoutMutation.isPending}
                   data-testid="button-sponsor-10"
@@ -442,8 +513,8 @@ export default function PricingPage() {
                 <h3 className="text-xl font-bold mb-2">Feature Supporter</h3>
                 <div className="text-3xl font-bold mb-4">$25</div>
                 <p className="text-sm text-white/70 mb-4">One-time contribution</p>
-                <Button 
-                  onClick={() => handleSponsor(25)} 
+                <Button
+                  onClick={() => handleSponsor(25)}
                   className="w-full bg-white text-orange-600 hover:bg-slate-100"
                   disabled={checkoutMutation.isPending}
                   data-testid="button-sponsor-25"
@@ -460,8 +531,8 @@ export default function PricingPage() {
                 <h3 className="text-xl font-bold mb-2">Project Champion</h3>
                 <div className="text-3xl font-bold mb-4">$50</div>
                 <p className="text-sm text-white/70 mb-4">One-time contribution</p>
-                <Button 
-                  onClick={() => handleSponsor(50)} 
+                <Button
+                  onClick={() => handleSponsor(50)}
                   className="w-full bg-white text-orange-600 hover:bg-slate-100"
                   disabled={checkoutMutation.isPending}
                   data-testid="button-sponsor-50"
@@ -479,7 +550,7 @@ export default function PricingPage() {
               <div className="flex gap-3">
                 <div className="relative flex-1">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/60">$</span>
-                  <Input 
+                  <Input
                     type="number"
                     min="1"
                     placeholder="Enter amount"
@@ -489,7 +560,7 @@ export default function PricingPage() {
                     data-testid="input-custom-amount"
                   />
                 </div>
-                <Button 
+                <Button
                   onClick={handleCustomSponsor}
                   className="bg-white text-orange-600 hover:bg-slate-100"
                   disabled={checkoutMutation.isPending}
@@ -516,7 +587,7 @@ export default function PricingPage() {
               <Card className="p-6">
                 <h4 className="font-bold mb-2">Is NexusAIFirst really free?</h4>
                 <p className="text-muted-foreground text-sm">
-                  Yes! NexusAIFirst is 100% free and open source under the AGPL-3.0 license. 
+                  Yes! NexusAIFirst is 100% free and open source under the AGPL-3.0 license.
                   You can use it for any purpose without paying licensing fees.
                 </p>
               </Card>
@@ -529,14 +600,14 @@ export default function PricingPage() {
               <Card className="p-6">
                 <h4 className="font-bold mb-2">What do implementation services include?</h4>
                 <p className="text-muted-foreground text-sm">
-                  Implementation services include hosting setup, data migration, custom configuration, 
+                  Implementation services include hosting setup, data migration, custom configuration,
                   user training, and ongoing technical support. Contact us for a custom quote.
                 </p>
               </Card>
               <Card className="p-6">
                 <h4 className="font-bold mb-2">Where does sponsorship money go?</h4>
                 <p className="text-muted-foreground text-sm">
-                  Sponsorship funds help cover development costs, hosting for demos, 
+                  Sponsorship funds help cover development costs, hosting for demos,
                   documentation improvements, and community support efforts.
                 </p>
               </Card>

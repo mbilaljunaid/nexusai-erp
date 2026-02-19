@@ -1,10 +1,13 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Link } from "wouter";
-import { ArrowRight, Mail, Lock, Eye, EyeOff, CheckCircle } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Link } from "wouter";
+import { motion } from "framer-motion";
+import { ArrowRight, Mail, Lock, Eye, EyeOff, CheckCircle, KeyRound } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Header, Footer } from "@/components/Navigation";
+import { GlassmorphismCard } from "@/components/lovable";
+import { colors } from "@/lib/design-tokens";
+import { animations } from "@/lib/animations";
 
 export default function ForgotPasswordPage() {
   const [step, setStep] = useState<"email" | "reset" | "success">("email");
@@ -13,12 +16,11 @@ export default function ForgotPasswordPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    document.title = "Forgot Password | NexusAIFirst";
+    document.title = "Reset Password | NexusAI";
   }, []);
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
@@ -73,7 +75,7 @@ export default function ForgotPasswordPage() {
         setStep("success");
         setTimeout(() => {
           window.location.href = "/login";
-        }, 2000);
+        }, 3000);
       } else {
         const data = await res.json();
         setError(data.message || "Failed to reset password");
@@ -86,56 +88,78 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background overflow-hidden relative">
+      {/* Animated Background */}
+      <div
+        className="absolute inset-0 -z-10"
+        style={{
+          background: `radial-gradient(circle at 30% 70%, ${colors.primary[950]} 0%, ${colors.background} 100%)`,
+          opacity: 0.6
+        }}
+      />
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+        <motion.div
+          className="absolute top-[20%] right-[30%] w-[400px] h-[400px] rounded-full bg-indigo-500/10 blur-[100px]"
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </div>
+
       <Header />
 
       <main className="flex-1 flex items-center justify-center px-4 py-20">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-12">
-            <Badge className="mb-4 bg-blue-600/20 text-blue-300 border-blue-500/50">RESET PASSWORD</Badge>
-            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              Forgot Password?
-            </h1>
-            <p className="text-slate-300">
-              {step === "email" && "Enter your email to receive a reset link"}
-              {step === "reset" && "Enter the code and your new password"}
-              {step === "success" && "Password reset successful"}
-            </p>
-          </div>
+        <motion.div
+          className="w-full max-w-md mx-auto"
+          {...animations.fadeInUp}
+        >
+          <GlassmorphismCard className="p-8 backdrop-blur-xl border-white/10">
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4 border border-white/10">
+                <KeyRound className="w-8 h-8 text-indigo-400" />
+              </div>
+              <h2 className="text-2xl font-bold mb-2">Password Reset</h2>
+              <p className="text-muted-foreground">
+                {step === "email" && "Enter your email to receive a code"}
+                {step === "reset" && "Secure your account with a new password"}
+                {step === "success" && "You're all set!"}
+              </p>
+            </div>
 
-          <Card className="bg-slate-800/50 border-slate-700 p-8" data-testid="card-forgot-password">
             {step === "email" && (
               <form onSubmit={handleEmailSubmit} className="space-y-6">
                 {error && (
-                  <div className="p-4 bg-red-600/20 border border-red-600/50 rounded text-red-300 text-sm" data-testid="alert-error">
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-sm text-center"
+                  >
                     {error}
-                  </div>
+                  </motion.div>
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Email Address</label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-3 w-5 h-5 text-slate-500" />
-                    <input
+                  <label className="block text-sm font-medium mb-1.5 ml-1">Email Address</label>
+                  <div className="relative group">
+                    <Mail className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-indigo-500 transition-colors" />
+                    <Input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="your@company.com"
-                      className="w-full pl-10 pr-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                      placeholder="name@company.com"
+                      className="pl-10 h-11 bg-white/5 border-white/10 focus:border-indigo-500/50 transition-all"
                       required
-                      data-testid="input-email"
                     />
                   </div>
-                  <p className="text-xs text-slate-400 mt-2">We'll send a reset code to this email</p>
                 </div>
 
                 <Button
                   type="submit"
+                  className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-base font-semibold shadow-lg shadow-indigo-900/20"
                   disabled={loading}
-                  className="w-full bg-blue-600 hover:bg-blue-700"
-                  data-testid="button-send-reset"
+                  size="lg"
                 >
-                  {loading ? "Sending..." : "Send Reset Code"} <ArrowRight className="ml-2 w-4 h-4" />
+                  {loading ? "Sending..." : "Send Reset Code"}
+                  {!loading && <ArrowRight className="ml-2 w-4 h-4" />}
                 </Button>
               </form>
             )}
@@ -143,100 +167,99 @@ export default function ForgotPasswordPage() {
             {step === "reset" && (
               <form onSubmit={handleResetSubmit} className="space-y-5">
                 {error && (
-                  <div className="p-4 bg-red-600/20 border border-red-600/50 rounded text-red-300 text-sm" data-testid="alert-error">
+                  <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-sm text-center">
                     {error}
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Reset Code</label>
-                  <input
+                  <label className="block text-sm font-medium mb-1.5 ml-1">Reset Code</label>
+                  <Input
                     type="text"
                     value={resetCode}
                     onChange={(e) => setResetCode(e.target.value)}
                     placeholder="Enter 6-digit code"
-                    className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                    className="h-11 bg-white/5 border-white/10 focus:border-indigo-500/50 transition-all text-center tracking-widest text-lg"
                     required
-                    data-testid="input-reset-code"
                   />
-                  <p className="text-xs text-slate-400 mt-1">Check your email for the code</p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">New Password</label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-3 w-5 h-5 text-slate-500" />
-                    <input
+                  <label className="block text-sm font-medium mb-1.5 ml-1">New Password</label>
+                  <div className="relative group">
+                    <Lock className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-indigo-500 transition-colors" />
+                    <Input
                       type={showPassword ? "text" : "password"}
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full pl-10 pr-10 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                      placeholder="New password"
+                      className="pl-10 h-11 bg-white/5 border-white/10 focus:border-indigo-500/50 transition-all"
                       required
-                      data-testid="input-new-password"
                     />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-3 text-slate-500 hover:text-slate-300"
-                      data-testid="button-toggle-password"
-                    >
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Confirm Password</label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-3 w-5 h-5 text-slate-500" />
-                    <input
-                      type={showConfirmPassword ? "text" : "password"}
+                  <label className="block text-sm font-medium mb-1.5 ml-1">Confirm Password</label>
+                  <div className="relative group">
+                    <Input
+                      type={showPassword ? "text" : "password"}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full pl-10 pr-10 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                      placeholder="Confirm new password"
+                      className="pl-4 h-11 bg-white/5 border-white/10 focus:border-indigo-500/50 transition-all"
                       required
-                      data-testid="input-confirm-password"
                     />
                     <button
                       type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-3 text-slate-500 hover:text-slate-300"
-                      data-testid="button-toggle-confirm-password"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-3 text-muted-foreground hover:text-white transition-colors"
                     >
-                      {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>
 
                 <Button
                   type="submit"
+                  className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-base font-semibold shadow-lg shadow-indigo-900/20"
                   disabled={loading}
-                  className="w-full bg-blue-600 hover:bg-blue-700"
-                  data-testid="button-reset-password"
+                  size="lg"
                 >
-                  {loading ? "Resetting..." : "Reset Password"} <ArrowRight className="ml-2 w-4 h-4" />
+                  {loading ? "Resetting..." : "Set New Password"}
+                  {!loading && <ArrowRight className="ml-2 w-4 h-4" />}
                 </Button>
               </form>
             )}
 
             {step === "success" && (
               <div className="text-center py-8">
-                <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-4" />
-                <h2 className="text-2xl font-bold text-white mb-2">Password Reset!</h2>
-                <p className="text-slate-300 mb-6">Your password has been reset successfully. Redirecting to login...</p>
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4"
+                >
+                  <CheckCircle className="w-8 h-8" />
+                </motion.div>
+                <h3 className="text-xl font-bold mb-2">Password Reset!</h3>
+                <p className="text-muted-foreground mb-6">Your account is secure. Redirecting to login...</p>
+                <Link to="/login">
+                  <Button variant="outline" className="w-full border-white/10 hover:bg-white/5">
+                    Proceed to Login
+                  </Button>
+                </Link>
               </div>
             )}
-          </Card>
 
-          {/* Back to Login */}
-          <div className="text-center mt-8">
-            <Link to="/login">
-              <a className="text-slate-400 hover:text-slate-300 text-sm">← Back to login</a>
-            </Link>
-          </div>
-        </div>
+            <div className="mt-8 pt-6 border-t border-white/10 text-center">
+              <Link to="/login">
+                <span className="text-sm text-muted-foreground hover:text-white cursor-pointer flex items-center justify-center gap-2">
+                  <ArrowRight className="w-4 h-4 rotate-180" /> Back to Login
+                </span>
+              </Link>
+            </div>
+          </GlassmorphismCard>
+        </motion.div>
       </main>
 
       <Footer />

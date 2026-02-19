@@ -128,4 +128,51 @@ export const adminApi = {
             method: 'POST',
         }),
     },
+
+    // Tenants
+    tenants: {
+        getAll: (filters?: { status?: string; search?: string }) => {
+            const params = filters ? `?${new URLSearchParams(filters as any).toString()}` : '';
+            return fetchJSON(`${API_BASE_URL}/admin/tenants${params}`);
+        },
+        getById: (id: string) => fetchJSON(`${API_BASE_URL}/admin/tenants/${id}`),
+        create: (data: any) => fetchJSON(`${API_BASE_URL}/admin/tenants`, {
+            method: 'POST',
+            body: JSON.stringify(data),
+        }),
+        update: (id: string, data: any) => fetchJSON(`${API_BASE_URL}/admin/tenants/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+        }),
+        updateStatus: (id: string, status: string) =>
+            fetchJSON(`${API_BASE_URL}/admin/tenants/${id}/status`, {
+                method: 'PATCH',
+                body: JSON.stringify({ status }),
+            }),
+        delete: (id: string) => fetchJSON(`${API_BASE_URL}/admin/tenants/${id}`, {
+            method: 'DELETE',
+        }),
+    },
+
+    // Dashboard Metrics
+    metrics: {
+        getAll: () => fetchJSON(`${API_BASE_URL}/admin/metrics`),
+    },
+
+    // Audit Logs
+    auditLogs: {
+        getAll: (filters?: {
+            page?: number;
+            limit?: number;
+            actor?: string;
+            action?: string;
+            type?: string;
+            from?: string;
+            to?: string;
+        }) => {
+            const params = filters ? `?${new URLSearchParams(filters as any).toString()}` : '';
+            return fetchJSON(`${API_BASE_URL}/admin/audit-logs${params}`);
+        },
+    },
 };
+

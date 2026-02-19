@@ -52,6 +52,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { Partner } from "@/types/erp-types";
 import { useToast } from "@/hooks/use-toast";
+import { useTenants, useAdminMetrics } from "@/hooks/admin/useAdminData";
 
 function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToast>["toast"] }) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -393,6 +394,8 @@ export default function PlatformAdmin() {
   const { toast } = useToast();
   const [activeNav, setActiveNav] = useState("overview");
   const [selectedTenant, setSelectedTenant] = useState<string | null>(null);
+  const { data: liveTenants = [] } = useTenants();
+  const { data: liveMetrics } = useAdminMetrics();
   const [showApiKeys, setShowApiKeys] = useState<Record<string, boolean>>({});
   const [isSavingPayments, setIsSavingPayments] = useState(false);
   const [paymentSettings, setPaymentSettings] = useState({
@@ -454,50 +457,15 @@ export default function PlatformAdmin() {
     { id: "ai-config", label: "AI Configuration", icon: Brain, color: "text-violet-500" },
   ];
 
-  // todo: remove mock functionality
-  const tenants: Tenant[] = [
-    {
-      id: "tenant-1",
-      name: "Acme Corp",
-      company: "Acme Corporation",
-      status: "active",
-      users: 245,
-      storage: 450,
-      plan: "enterprise",
-      createdAt: "2024-01-15",
-      aiCreditsUsed: 12500,
-    },
-    {
-      id: "tenant-2",
-      name: "TechStart Inc",
-      company: "TechStart Industries",
-      status: "active",
-      users: 78,
-      storage: 120,
-      plan: "professional",
-      createdAt: "2024-03-20",
-      aiCreditsUsed: 2300,
-    },
-    {
-      id: "tenant-3",
-      name: "Global Solutions",
-      company: "Global Solutions Ltd",
-      status: "trial",
-      users: 15,
-      storage: 25,
-      plan: "starter",
-      createdAt: "2024-11-20",
-      aiCreditsUsed: 450,
-    },
-  ];
-
+  // Live data from API
+  const tenants = liveTenants as Tenant[];
   const systemStats = {
-    totalTenants: 247,
-    activeUsers: 5234,
-    totalStorage: 12480,
+    totalTenants: liveMetrics?.totalTenants ?? 0,
+    activeUsers: liveMetrics?.activeTenants ?? 0,
+    totalStorage: 0,
     systemUptime: 99.98,
-    aiRequestsToday: 45230,
-    avgResponseTime: 142,
+    aiRequestsToday: 0,
+    avgResponseTime: 0,
   };
 
   const statusConfig = {
@@ -707,11 +675,14 @@ export default function PlatformAdmin() {
                       </tr>
                     </thead>
                     <tbody>
-                      {[
-                        { name: "John Smith", email: "john@acme.com", tenant: "Acme Corp", role: "Super Admin", lastLogin: "2 hours ago" },
-                        { name: "Sarah Connor", email: "sarah@techstart.com", tenant: "TechStart Inc", role: "Admin", lastLogin: "1 day ago" },
-                        { name: "Mike Johnson", email: "mike@global.com", tenant: "Global Solutions", role: "Admin", lastLogin: "3 days ago" },
-                      ].map((user, i) => (
+                      {tenants.slice(0, 10).map((t: any, i) => ({
+                        name: `Admin (${t.name})`,
+                        email: `admin@${t.slug ?? 'unknown'}.com`,
+                        tenant: t.name ?? '—',
+                        role: 'Admin',
+                        lastLogin: '—',
+                      })).map((user, i) => (
+
                         <tr key={i} className="border-b hover:bg-muted/50">
                           <td className="px-4 py-3">
                             <div>

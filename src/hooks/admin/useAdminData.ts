@@ -295,3 +295,102 @@ export const useUpdateSystemConfig = () => {
         },
     });
 };
+
+// ==================== TENANTS ====================
+
+export const useTenants = (filters?: { status?: string; search?: string }) => {
+    return useQuery({
+        queryKey: ['admin', 'tenants', filters],
+        queryFn: async () => {
+            const { data } = await adminApi.tenants.getAll(filters);
+            return (data as any)?.data ?? data ?? [];
+        },
+    });
+};
+
+export const useCreateTenant = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (data: { name: string; slug: string; status?: string }) =>
+            adminApi.tenants.create(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin', 'tenants'] });
+            queryClient.invalidateQueries({ queryKey: ['admin', 'metrics'] });
+            toast.success('Tenant created successfully');
+        },
+        onError: () => toast.error('Failed to create tenant'),
+    });
+};
+
+export const useUpdateTenant = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ id, ...data }: { id: string; name?: string; slug?: string }) =>
+            adminApi.tenants.update(id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin', 'tenants'] });
+            toast.success('Tenant updated');
+        },
+        onError: () => toast.error('Failed to update tenant'),
+    });
+};
+
+export const useUpdateTenantStatus = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ id, status }: { id: string; status: string }) =>
+            adminApi.tenants.updateStatus(id, status),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin', 'tenants'] });
+            toast.success('Tenant status updated');
+        },
+        onError: () => toast.error('Failed to update tenant status'),
+    });
+};
+
+export const useDeleteTenant = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (id: string) => adminApi.tenants.delete(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin', 'tenants'] });
+            queryClient.invalidateQueries({ queryKey: ['admin', 'metrics'] });
+            toast.success('Tenant deleted');
+        },
+        onError: () => toast.error('Failed to delete tenant'),
+    });
+};
+
+// ==================== METRICS ====================
+
+export const useAdminMetrics = () => {
+    return useQuery({
+        queryKey: ['admin', 'metrics'],
+        queryFn: async () => {
+            const { data } = await adminApi.metrics.getAll();
+            return (data as any)?.data ?? data;
+        },
+        staleTime: 5 * 60 * 1000, // 5 minutes
+    });
+};
+
+// ==================== AUDIT LOGS ====================
+
+export const useAuditLogs = (filters?: {
+    page?: number;
+    limit?: number;
+    actor?: string;
+    action?: string;
+    type?: string;
+    from?: string;
+    to?: string;
+}) => {
+    return useQuery({
+        queryKey: ['admin', 'audit-logs', filters],
+        queryFn: async () => {
+            const { data } = await adminApi.auditLogs.getAll(filters);
+            return (data as any) ?? { data: [], meta: { total: 0, page: 1, limit: 25, totalPages: 1 } };
+        },
+    });
+};
+

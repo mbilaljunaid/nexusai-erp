@@ -4,6 +4,7 @@ import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
 // Healthcare
 const PatientManagement = lazyWithRetry(() => import("@/pages/industries/healthcare/PatientManagement"));
+const IndustryLandingPage = lazyWithRetry(() => import("@/pages/industries/IndustryLandingPage"));
 const AppointmentScheduling = lazyWithRetry(() => import("@/pages/industries/healthcare/AppointmentScheduling"));
 const ClinicalDocumentation = lazyWithRetry(() => import("@/pages/industries/healthcare/ClinicalDocumentation"));
 const LaboratoryManagement = lazyWithRetry(() => import("@/pages/industries/healthcare/LaboratoryManagement"));
@@ -190,6 +191,10 @@ export default function IndustryRoutes() {
             <Route path="/industry/energy/grid" component={GridOperations} />
             <Route path="/industry/energy/trading" component={EnergyTrading} />
             <Route path="/industry/energy/analytics" component={EnergyAnalytics} />
+            <Route path="/industry/energy/analytics" component={EnergyAnalytics} />
+
+            {/* Dynamic Industry Landing Page - Catch all /industry/:slug but specific routes above take precedence */}
+            <Route path="/industry/:slug" component={IndustryLandingPage} />
         </Switch>
     );
 }

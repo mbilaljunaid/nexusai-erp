@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Delete, Body, Param, Query, HttpCode, HttpStatus } from '@nestjs/common';
 import { TenantsService } from './tenants.service';
 
 @Controller('api/admin/tenants')
@@ -23,6 +23,12 @@ export class TenantsController {
     @Put(':id')
     async update(@Param('id') id: string, @Body() data: any) {
         return this.tenantsService.update(id, data);
+    }
+
+    @Patch(':id/status')
+    @HttpCode(HttpStatus.OK)
+    async updateStatus(@Param('id') id: string, @Body('status') status: string) {
+        return this.tenantsService.update(id, { status: status as any });
     }
 
     @Delete(':id')

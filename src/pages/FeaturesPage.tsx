@@ -11,12 +11,12 @@ import {
   Building, Database, Lock, GitBranch, Sparkles, FileText, Calendar,
   ClipboardList, Target, PieChart, Search, ChevronDown, ChevronUp,
   CheckCircle, Globe, Zap, Settings, LineChart, Box, Layers,
-  Heart, Wrench, Store, Landmark, Building2, Hotel, Container, FileCheck, 
+  Heart, Wrench, Store, Landmark, Building2, Hotel, Container, FileCheck,
   Radio, Lightbulb, Film, Car, Shirt, Pill, BarChart2, Briefcase as BriefcaseIcon,
   Plane, FlaskConical, CreditCard, HardHat, PartyPopper, Ship, TrendingUp as TrendingUpIcon,
   UtensilsCrossed, TestTube, Telescope, Megaphone, Stethoscope, GlobeIcon,
   Home, Construction, ShieldCheck, Package as PackageIcon, Anchor, BookOpen,
-  Bus, Palmtree, Warehouse
+  Bus, Palmtree, Warehouse, Cloud
 } from "lucide-react";
 
 interface Feature {
@@ -341,49 +341,24 @@ const modules: Module[] = [
 ];
 
 const industryModules = [
-  { name: "Automotive", icon: Car, count: 12, href: "/industries/automotive", id: "automotive" },
-  { name: "Banking & Finance", icon: Landmark, count: 16, href: "/industries/banking", id: "banking" },
   { name: "Healthcare", icon: Heart, count: 15, href: "/industries/healthcare", id: "healthcare" },
-  { name: "Education", icon: GraduationCap, count: 11, href: "/industries/education", id: "education" },
-  { name: "Retail & E-Commerce", icon: Store, count: 14, href: "/industries/retail", id: "retail" },
-  { name: "Manufacturing", icon: Factory, count: 18, href: "/industries/manufacturing", id: "manufacturing" },
-  { name: "Logistics", icon: Container, count: 10, href: "/industries/logistics", id: "logistics" },
+  { name: "Retail", icon: Store, count: 14, href: "/industries/retail", id: "retail" },
   { name: "Telecom", icon: Radio, count: 11, href: "/industries/telecom", id: "telecom" },
-  { name: "Insurance", icon: FileCheck, count: 12, href: "/industries/insurance", id: "insurance" },
-  { name: "Fashion & Apparel", icon: Shirt, count: 9, href: "/industries/fashion", id: "fashion" },
-  { name: "Government", icon: Building2, count: 12, href: "/industries/government", id: "government" },
   { name: "Hospitality", icon: Hotel, count: 13, href: "/industries/hospitality", id: "hospitality" },
-  { name: "Pharmaceuticals", icon: Pill, count: 14, href: "/industries/pharma", id: "pharma" },
-  { name: "CPG", icon: BarChart2, count: 11, href: "/industries/cpg", id: "cpg" },
+  { name: "Banking", icon: Landmark, count: 16, href: "/industries/banking", id: "banking" },
+  { name: "Automotive", icon: Car, count: 12, href: "/industries/automotive", id: "automotive" },
+  { name: "Insurance", icon: ShieldCheck, count: 12, href: "/industries/insurance", id: "insurance" },
+  { name: "Government", icon: Building2, count: 12, href: "/industries/government", id: "government" },
+  { name: "Education", icon: GraduationCap, count: 11, href: "/industries/education", id: "education" },
   { name: "Energy & Utilities", icon: Lightbulb, count: 9, href: "/industries/energy", id: "energy" },
-  { name: "Audit & Compliance", icon: FileCheck, count: 8, href: "/industries/audit", id: "audit" },
-  { name: "Business Services", icon: BriefcaseIcon, count: 10, href: "/industries/business-services", id: "business-services" },
-  { name: "Carrier & Shipping", icon: Plane, count: 9, href: "/industries/carrier", id: "carrier" },
-  { name: "Clinical", icon: FlaskConical, count: 11, href: "/industries/clinical", id: "clinical" },
-  { name: "Credit & Lending", icon: CreditCard, count: 10, href: "/industries/credit", id: "credit" },
-  { name: "Equipment Mfg", icon: HardHat, count: 12, href: "/industries/equipment", id: "equipment" },
-  { name: "Events", icon: PartyPopper, count: 8, href: "/industries/events", id: "events" },
-  { name: "Export & Import", icon: Ship, count: 10, href: "/industries/export-import", id: "export-import" },
-  { name: "Finance & Investment", icon: TrendingUpIcon, count: 13, href: "/industries/finance-investment", id: "finance-investment" },
-  { name: "Food & Beverage", icon: UtensilsCrossed, count: 11, href: "/industries/food-beverage", id: "food-beverage" },
-  { name: "Freight & Logistics", icon: Truck, count: 12, href: "/industries/freight", id: "freight" },
-  { name: "Laboratory", icon: TestTube, count: 10, href: "/industries/laboratory", id: "laboratory" },
-  { name: "Lab Technology", icon: Telescope, count: 9, href: "/industries/lab-tech", id: "lab-tech" },
-  { name: "Marketing & Advertising", icon: Megaphone, count: 10, href: "/industries/marketing", id: "marketing" },
   { name: "Media & Entertainment", icon: Film, count: 10, href: "/industries/media", id: "media" },
-  { name: "Pharmacy", icon: Stethoscope, count: 11, href: "/industries/pharmacy", id: "pharmacy" },
-  { name: "Portal & Digital Services", icon: Globe, count: 9, href: "/industries/portal", id: "portal" },
-  { name: "Property & Real Estate", icon: Home, count: 10, href: "/industries/property", id: "property" },
-  { name: "Real Estate & Construction", icon: Construction, count: 13, href: "/industries/real-estate-construction", id: "real-estate-construction" },
-  { name: "Security & Defense", icon: ShieldCheck, count: 11, href: "/industries/security", id: "security" },
-  { name: "Shipment Management", icon: PackageIcon, count: 9, href: "/industries/shipment", id: "shipment" },
-  { name: "Shipping & Maritime", icon: Anchor, count: 10, href: "/industries/shipping", id: "shipping" },
-  { name: "Training & Development", icon: BookOpen, count: 8, href: "/industries/training", id: "training" },
-  { name: "Transportation", icon: Bus, count: 11, href: "/industries/transportation", id: "transportation" },
-  { name: "Travel & Tourism", icon: Palmtree, count: 10, href: "/industries/travel", id: "travel" },
-  { name: "Vehicle & Automotive", icon: Car, count: 12, href: "/industries/vehicle", id: "vehicle" },
-  { name: "Warehouse & Storage", icon: Warehouse, count: 9, href: "/industries/warehouse", id: "warehouse" },
-  { name: "Wholesale & Distribution", icon: Container, count: 11, href: "/industries/wholesale", id: "wholesale" },
+  { name: "Manufacturing", icon: Factory, count: 18, href: "/industries/manufacturing", id: "manufacturing" },
+  { name: "Real Estate", icon: Home, count: 10, href: "/industries/real-estate", id: "real-estate" },
+  { name: "Construction", icon: Construction, count: 13, href: "/industries/construction", id: "construction" },
+  { name: "Logistics", icon: Truck, count: 12, href: "/industries/logistics", id: "logistics" },
+  { name: "SaaS", icon: Cloud, count: 8, href: "/industries/saas", id: "saas" },
+  { name: "E-Commerce", icon: ShoppingCart, count: 14, href: "/industries/ecommerce", id: "ecommerce" },
+  { name: "Financial Services", icon: TrendingUpIcon, count: 13, href: "/industries/financial-services", id: "financial-services" },
 ];
 
 const processFlows = [
@@ -402,8 +377,8 @@ export default function FeaturesPage() {
   const [expandedModules, setExpandedModules] = useState<string[]>(["crm", "finance"]);
 
   const toggleModule = (moduleId: string) => {
-    setExpandedModules(prev => 
-      prev.includes(moduleId) 
+    setExpandedModules(prev =>
+      prev.includes(moduleId)
         ? prev.filter(id => id !== moduleId)
         : [...prev, moduleId]
     );
@@ -415,8 +390,8 @@ export default function FeaturesPage() {
     return (
       module.name.toLowerCase().includes(query) ||
       module.description.toLowerCase().includes(query) ||
-      module.features.some(f => 
-        f.name.toLowerCase().includes(query) || 
+      module.features.some(f =>
+        f.name.toLowerCase().includes(query) ||
         f.description.toLowerCase().includes(query)
       )
     );
@@ -427,7 +402,7 @@ export default function FeaturesPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <main className="pt-20">
         {/* Hero Section */}
         <section className="py-16 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
@@ -439,7 +414,7 @@ export default function FeaturesPage() {
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
               Explore {totalFeatures}+ features across {modules.length} modules designed to transform your enterprise operations.
             </p>
-            
+
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-8">
               <Card>
@@ -515,7 +490,7 @@ export default function FeaturesPage() {
           <div className="max-w-7xl mx-auto px-4 space-y-8">
             {filteredModules.map(module => (
               <Card key={module.id} id={module.id} className="overflow-hidden">
-                <CardHeader 
+                <CardHeader
                   className={`cursor-pointer hover:bg-muted/50 transition-colors`}
                   onClick={() => toggleModule(module.id)}
                 >
@@ -541,37 +516,37 @@ export default function FeaturesPage() {
                     </Button>
                   </div>
                 </CardHeader>
-                
+
                 {expandedModules.includes(module.id) && (
                   <CardContent className="pt-0">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {module.features
-                        .filter(f => !searchQuery || 
+                        .filter(f => !searchQuery ||
                           f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           f.description.toLowerCase().includes(searchQuery.toLowerCase())
                         )
                         .map((feature, index) => (
-                        <Link 
-                          key={feature.name} 
-                          href={feature.href || "#"}
-                          className="block"
-                          data-testid={`link-feature-${module.id}-${index}`}
-                        >
-                          <div className="p-4 rounded-lg border hover:border-primary hover:bg-primary/5 transition-all group">
-                            <div className="flex items-start gap-3">
-                              <CheckCircle className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-                              <div>
-                                <div className="font-medium group-hover:text-primary transition-colors">
-                                  {feature.name}
-                                </div>
-                                <div className="text-sm text-muted-foreground mt-1">
-                                  {feature.description}
+                          <Link
+                            key={feature.name}
+                            href={feature.href || "#"}
+                            className="block"
+                            data-testid={`link-feature-${module.id}-${index}`}
+                          >
+                            <div className="p-4 rounded-lg border hover:border-primary hover:bg-primary/5 transition-all group">
+                              <div className="flex items-start gap-3">
+                                <CheckCircle className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                                <div>
+                                  <div className="font-medium group-hover:text-primary transition-colors">
+                                    {feature.name}
+                                  </div>
+                                  <div className="text-sm text-muted-foreground mt-1">
+                                    {feature.description}
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        </Link>
-                      ))}
+                          </Link>
+                        ))}
                     </div>
                   </CardContent>
                 )}
