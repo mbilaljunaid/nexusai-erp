@@ -277,4 +277,151 @@ router.post("/netting/batches/:id/settle", async (req, res) => {
     }
 });
 
+// ─── P1-D: Bank Statement Import ─────────────────────────────────────────────
+// @ts-ignore dynamic import for P1-D services
+import("./bank-statement-import.service").then(({ bankStatementImportService }) => {
+    router.post("/bank-statements/import", async (req, res) => {
+        try {
+            const tenantId = (req as any).user?.tenantId || "default-tenant";
+            const importedBy = (req as any).user?.id || "system";
+            res.json(await bankStatementImportService.importStatement({ ...req.body, tenantId, importedBy }));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+    router.get("/bank-statements", async (req, res) => {
+        try {
+            const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
+            res.json(await bankStatementImportService.getImports(tenantId, req.query.bankAccountId as string));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+    router.get("/bank-statements/:id/transactions", async (req, res) => {
+        try {
+            res.json(await bankStatementImportService.getTransactions(req.params.id, req.query.matchStatus as string));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+});
+
+// @ts-ignore
+import("./hedge-effectiveness.service").then(({ hedgeEffectivenessService }) => {
+    router.post("/hedge-relationships", async (req, res) => {
+        try {
+            const tenantId = (req as any).user?.tenantId || "default-tenant";
+            res.status(201).json(await hedgeEffectivenessService.createHedgeRelationship({ ...req.body, tenantId }));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+    router.get("/hedge-relationships", async (req, res) => {
+        try {
+            const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
+            res.json(await hedgeEffectivenessService.listHedges(tenantId, req.query.status as string));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+    router.post("/hedge-relationships/:id/test", async (req, res) => {
+        try {
+            res.json(await hedgeEffectivenessService.runEffectivenessTest({ hedgeRelId: req.params.id, ...req.body }));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+});
+
+// @ts-ignore
+import("./debt-covenant.service").then(({ debtCovenantService }) => {
+    router.post("/debt/facilities", async (req, res) => {
+        try {
+            const tenantId = (req as any).user?.tenantId || "default-tenant";
+            res.status(201).json(await debtCovenantService.createFacility({ ...req.body, tenantId }));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+    router.get("/debt/facilities", async (req, res) => {
+        try {
+            const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
+            res.json(await debtCovenantService.getFacilities(tenantId));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+    router.post("/debt/facilities/:id/covenants", async (req, res) => {
+        try {
+            res.status(201).json(await debtCovenantService.addCovenant({ facilityId: req.params.id, ...req.body }));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+    router.post("/debt/covenants/:id/test", async (req, res) => {
+        try {
+            const userId = (req as any).user?.id || "system";
+            res.json(await debtCovenantService.runCovenantTest(req.params.id, req.body.testDate ?? new Date().toISOString().slice(0, 10), userId, req.body.actualValue, req.body.notes));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+    router.get("/debt/covenants/due", async (req, res) => {
+        try {
+            const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
+            res.json(await debtCovenantService.getDue(tenantId, parseInt(req.query.daysAhead as string ?? '30')));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+});
+
+// @ts-ignore
+import("./sanctions-screening.service").then(({ sanctionsScreeningService }) => {
+    router.post("/sanctions/screen", async (req, res) => {
+        try {
+            const tenantId = (req as any).user?.tenantId || "default-tenant";
+            res.json(await sanctionsScreeningService.screenEntity({ ...req.body, tenantId }));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+    router.post("/sanctions/batch-screen", async (req, res) => {
+        try {
+            const tenantId = (req as any).user?.tenantId || "default-tenant";
+            res.json(await sanctionsScreeningService.screenBatch(tenantId, req.body.entityType, req.body.listSources));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+    router.get("/sanctions/history", async (req, res) => {
+        try {
+            const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
+            res.json(await sanctionsScreeningService.getScreeningHistory(tenantId, req.query.status as string));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+    router.post("/sanctions/:id/review", async (req, res) => {
+        try {
+            const userId = (req as any).user?.id || "system";
+            res.json(await sanctionsScreeningService.markReviewed(req.params.id, req.body.outcome, userId, req.body.notes));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+    router.get("/sanctions/stats", async (req, res) => {
+        try {
+            const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
+            res.json(await sanctionsScreeningService.getDashboardStats(tenantId));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+});
+
+// @ts-ignore
+import("./reconciliation-signoff.service").then(({ reconciliationSignoffService }) => {
+    router.post("/recon/signoffs", async (req, res) => {
+        try {
+            const tenantId = (req as any).user?.tenantId || "default-tenant";
+            const preparerId = (req as any).user?.id || "system";
+            res.status(201).json(await reconciliationSignoffService.createOrUpdateDraft({ ...req.body, tenantId, preparerId }));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+    router.get("/recon/signoffs", async (req, res) => {
+        try {
+            const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
+            res.json(await reconciliationSignoffService.listSignoffs(tenantId, req.query.status as string, req.query.bankAccountId as string));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+    router.post("/recon/signoffs/:id/review", async (req, res) => {
+        try {
+            const userId = (req as any).user?.id || "system";
+            res.json(await reconciliationSignoffService.reviewSignoff(req.params.id, userId));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+    router.post("/recon/signoffs/:id/approve", async (req, res) => {
+        try {
+            const userId = (req as any).user?.id || "system";
+            res.json(await reconciliationSignoffService.approveSignoff(req.params.id, userId));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+    router.get("/recon/summary", async (req, res) => {
+        try {
+            const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
+            res.json(await reconciliationSignoffService.getSummary(tenantId));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+});
+
 export default router;
+

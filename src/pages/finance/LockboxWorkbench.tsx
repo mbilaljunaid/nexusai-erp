@@ -1,0 +1,273 @@
+import React, { useState, useRef } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Upload, CheckCircle2, AlertCircle, Search, Link2 } from 'lucide-react';
+
+interface LockboxBatch {
+    id: string;
+    batch_date: string;
+    total_amount: number;
+    item_count: number;
+    currency_code: string;
+    status: string;
+    imported_at: string;
+}
+
+interface LockboxItem {
+    id: string;
+    check_number: string;
+    remittance_ref: string;
+    payer_name: string;
+    amount: number;
+    item_date: string;
+    matched_invoice_id: string;
+    match_method: string;
+    match_status: string;
+    unapplied_amount: number;
+}
+
+interface LockboxSummary {
+    total_batches: number;
+    total_processed: number;
+    matched_items: number;
+    unmatched_items: number;
+    total_unapplied: number;
+}
+
+const BATCH_STATUS_CFG: Record<string, { bg: string; color: string }> = {
+    Matched: { bg: '#d1fae5', color: '#059669' },
+    Partial: { bg: '#fef3c7', color: '#d97706' },
+    Pending: { bg: '#eff6ff', color: '#1d4ed8' },
+    Exception: { bg: '#fee2e2', color: '#dc2626' },
+};
+
+const fmt = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n ?? 0);
+
+export default function LockboxWorkbench() {
+    const [selectedBatch, setSelectedBatch] = useState<LockboxBatch | null>(null);
+    const [matchFilter, setMatchFilter] = useState('');
+    const [csvContent, setCsvContent] = useState('');
+    const [batchDate, setBatchDate] = useState(new Date().toISOString().slice(0, 10));
+    const fileRef = useRef<HTMLInputElement>(null);
+    const qc = useQueryClient();
+
+    const { data: batches = [] } = useQuery<LockboxBatch[]>({
+        queryKey: ['lockbox-batches'],
+        queryFn: () => fetch('/api/finance/lockbox/batches').then(r => r.json()),
+    });
+
+    const { data: summary } = useQuery<LockboxSummary>({
+        queryKey: ['lockbox-summary'],
+        queryFn: () => fetch('/api/finance/lockbox/summary').then(r => r.json()),
+    });
+
+    const { data: items = [] } = useQuery<LockboxItem[]>({
+        queryKey: ['lockbox-items', selectedBatch?.id, matchFilter],
+        queryFn: () => selectedBatch
+            ? fetch(`/api/finance/lockbox/batches/${selectedBatch.id}/items${matchFilter ? `?matchStatus=${matchFilter}` : ''}`).then(r => r.json())
+            : Promise.resolve([]),
+        enabled: !!selectedBatch,
+    });
+
+    const importMutation = useMutation({
+        mutationFn: (data: any) => fetch('/api/finance/lockbox/batches', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).then(r => r.json()),
+        onSuccess: () => { qc.invalidateQueries({ queryKey: ['lockbox-batches', 'lockbox-summary'] }); setCsvContent(''); },
+    });
+
+    const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const f = e.target.files?.[0];
+        if (!f) return;
+        const reader = new FileReader();
+        reader.onload = ev => setCsvContent(ev.target?.result as string);
+        reader.readAsText(f);
+    };
+
+    const parseCSV = (csv: string) => {
+        const lines = csv.split('\n').filter(Boolean);
+        return lines.slice(1).map(line => {
+            const parts = line.split(',').map(p => p.trim().replace(/"/g, ''));
+            return { checkNumber: parts[0], remittanceRef: parts[1], payerName: parts[2], payerAccount: parts[3], amount: parseFloat(parts[4]) || 0, itemDate: parts[5] || batchDate };
+        });
+    };
+
+    const matched = items.filter(i => i.match_status === 'Matched').length;
+    const unmatched = items.filter(i => i.match_status === 'Unmatched').length;
+
+    return (
+        <div className="lbw-container">
+            <div className="lbw-header">
+                <div>
+                    <h1 className="lbw-title">Lockbox Workbench</h1>
+                    <p className="lbw-sub">Bank lockbox remittances — auto-matched to open invoices</p>
+                </div>
+            </div>
+
+            {/* KPIs */}
+            <div className="lbw-kpis">
+                <div className="kpi-card blue"><div className="kpi-val">{summary?.total_batches ?? 0}</div><div className="kpi-lbl">Total Batches</div></div>
+                <div className="kpi-card green"><div className="kpi-val">{fmt(summary?.total_processed)}</div><div className="kpi-lbl">Total Processed</div></div>
+                <div className="kpi-card purple"><div className="kpi-val">{summary?.matched_items ?? 0}</div><div className="kpi-lbl">Matched Items</div></div>
+                <div className="kpi-card orange"><div className="kpi-val">{summary?.unmatched_items ?? 0}</div><div className="kpi-lbl">Unmatched</div></div>
+                <div className="kpi-card red"><div className="kpi-val">{fmt(summary?.total_unapplied)}</div><div className="kpi-lbl">Unapplied</div></div>
+            </div>
+
+            <div className="lbw-layout">
+                {/* Left: Import + Batch List */}
+                <div className="lbw-left">
+                    <div className="import-box">
+                        <div className="ib-title">Import Lockbox File</div>
+                        <input ref={fileRef} type="file" accept=".csv,.txt" onChange={handleFile} hidden />
+                        <div className="drop-zone" onClick={() => fileRef.current?.click()}>
+                            <Upload size={24} style={{ color: '#9ca3af' }} />
+                            <div className="dz-text">Upload CSV or paste below</div>
+                            <div className="dz-sub">check#, remit_ref, payer, account, amount, date</div>
+                        </div>
+                        <textarea className="csv-paste" value={csvContent} onChange={e => setCsvContent(e.target.value)} placeholder="check001,INV-5042,ACME Corp,12345,15000,2026-01-15" rows={4} aria-label="CSV lockbox content" />
+                        <div className="date-row">
+                            <label className="dl">Batch Date</label>
+                            <input className="di" type="date" value={batchDate} onChange={e => setBatchDate(e.target.value)} aria-label="Batch date" />
+                        </div>
+                        <button className="import-btn" disabled={!csvContent || importMutation.isPending}
+                            onClick={() => importMutation.mutate({ batchDate, items: parseCSV(csvContent) })} aria-label="Import lockbox batch">
+                            {importMutation.isPending ? 'Processing & Matching…' : 'Import & Auto-Match'}
+                        </button>
+                        {importMutation.isSuccess && (
+                            <div className="success-row">
+                                <CheckCircle2 size={14} />
+                                {importMutation.data?.summary?.matched} matched / {importMutation.data?.summary?.unmatched} unmatched
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="batch-list">
+                        <div className="bl-title">Batch History</div>
+                        {batches.map(b => {
+                            const cfg = BATCH_STATUS_CFG[b.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
+                            return (
+                                <div key={b.id} className={`batch-card ${selectedBatch?.id === b.id ? 'selected' : ''}`} onClick={() => setSelectedBatch(b)}>
+                                    <div className="bc-top">
+                                        <span className="bc-date mono">{b.batch_date}</span>
+                                        <span className="bc-status" style={{ background: cfg.bg, color: cfg.color }}>{b.status}</span>
+                                    </div>
+                                    <div className="bc-meta">{b.item_count} items · {fmt(b.total_amount)}</div>
+                                </div>
+                            );
+                        })}
+                        {batches.length === 0 && <div className="empty">No lockbox batches</div>}
+                    </div>
+                </div>
+
+                {/* Right: Item Detail */}
+                <div className="lbw-right">
+                    {selectedBatch ? (
+                        <>
+                            <div className="item-header">
+                                <div className="ih-title">Batch: {selectedBatch.batch_date} — {selectedBatch.item_count} items</div>
+                                <div className="ih-stats">
+                                    <span className="green"><CheckCircle2 size={12} /> {matched} matched</span>
+                                    <span className="orange"><AlertCircle size={12} /> {unmatched} unmatched</span>
+                                </div>
+                            </div>
+                            <div className="filter-row">
+                                {['', 'Matched', 'Unmatched', 'Partial', 'Overpayment'].map(s => (
+                                    <button key={s} className={`filter-pill ${matchFilter === s ? 'active' : ''}`} onClick={() => setMatchFilter(s)}>{s || 'All'}</button>
+                                ))}
+                            </div>
+                            <table className="item-table">
+                                <thead><tr><th>Check #</th><th>Remit Ref</th><th>Payer</th><th>Amount</th><th>Method</th><th>Status</th><th>Unapplied</th></tr></thead>
+                                <tbody>
+                                    {items.map(item => {
+                                        const isMatched = item.match_status === 'Matched';
+                                        return (
+                                            <tr key={item.id} className="item-row">
+                                                <td className="mono">{item.check_number ?? '—'}</td>
+                                                <td className="mono">{item.remittance_ref ?? '—'}</td>
+                                                <td>{item.payer_name ?? '—'}</td>
+                                                <td className="mono">{fmt(item.amount)}</td>
+                                                <td>{item.match_method ? <span className="method-tag">{item.match_method}</span> : <span className="grey">—</span>}</td>
+                                                <td>
+                                                    {isMatched
+                                                        ? <span className="status-green"><CheckCircle2 size={11} /> Matched</span>
+                                                        : <span className="status-orange"><AlertCircle size={11} /> {item.match_status}</span>}
+                                                </td>
+                                                <td className={`mono ${item.unapplied_amount > 0 ? 'red' : 'grey'}`}>
+                                                    {item.unapplied_amount > 0 ? fmt(item.unapplied_amount) : '—'}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                    {items.length === 0 && <tr><td colSpan={7} className="empty">No items</td></tr>}
+                                </tbody>
+                            </table>
+                        </>
+                    ) : (
+                        <div className="no-select">
+                            <Link2 size={40} style={{ color: '#d1d5db', marginBottom: 12 }} />
+                            <div>Select a batch to view items</div>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <style>{`
+                .lbw-container { padding: 24px; max-width: 1400px; margin: 0 auto; font-family: 'Inter', sans-serif; }
+                .lbw-header { margin-bottom: 20px; }
+                .lbw-title { font-size: 22px; font-weight: 700; color: #111827; margin: 0; }
+                .lbw-sub { font-size: 13px; color: #6b7280; margin: 4px 0 0; }
+                .lbw-kpis { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+                .kpi-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px 16px; min-width: 130px; }
+                .kpi-card.blue { border-left: 4px solid #1d4ed8; }
+                .kpi-card.green { border-left: 4px solid #059669; }
+                .kpi-card.purple { border-left: 4px solid #7c3aed; }
+                .kpi-card.orange { border-left: 4px solid #d97706; }
+                .kpi-card.red { border-left: 4px solid #dc2626; }
+                .kpi-val { font-size: 20px; font-weight: 800; color: #111827; font-family: monospace; }
+                .kpi-lbl { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+                .lbw-layout { display: grid; grid-template-columns: 320px 1fr; gap: 20px; }
+                .lbw-left { display: flex; flex-direction: column; gap: 16px; }
+                .import-box { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; }
+                .ib-title { font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 10px; }
+                .drop-zone { border: 2px dashed #e5e7eb; border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; margin-bottom: 8px; }
+                .drop-zone:hover { border-color: #1d4ed8; background: #eff6ff; }
+                .dz-text { font-size: 12px; font-weight: 600; color: #374151; margin-top: 4px; }
+                .dz-sub { font-size: 10px; color: #9ca3af; font-family: monospace; }
+                .csv-paste { width: 100%; box-sizing: border-box; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px; font-size: 11px; font-family: monospace; resize: vertical; margin-bottom: 8px; }
+                .date-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+                .dl { font-size: 11px; font-weight: 600; color: #374151; white-space: nowrap; }
+                .di { flex: 1; padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; }
+                .import-btn { width: 100%; padding: 9px; background: linear-gradient(135deg, #1d4ed8, #7c3aed); color: #fff; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
+                .import-btn:disabled { background: #9ca3af; }
+                .success-row { display: flex; align-items: center; gap: 6px; color: #059669; font-size: 11px; margin-top: 8px; }
+                .batch-list { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; }
+                .bl-title { font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 10px; }
+                .batch-card { padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px; cursor: pointer; margin-bottom: 6px; }
+                .batch-card.selected { border-color: #1d4ed8; background: #eff6ff; }
+                .batch-card:hover { background: #f9fafb; }
+                .bc-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
+                .bc-date { font-size: 12px; font-weight: 600; }
+                .bc-status { padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+                .bc-meta { font-size: 11px; color: #6b7280; }
+                .empty { text-align: center; color: #9ca3af; font-size: 13px; padding: 16px; }
+                .lbw-right { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; }
+                .item-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid #e5e7eb; }
+                .ih-title { font-size: 14px; font-weight: 700; color: #111827; }
+                .ih-stats { display: flex; gap: 14px; font-size: 12px; }
+                .filter-row { display: flex; gap: 4px; padding: 8px 14px; border-bottom: 1px solid #f3f4f6; }
+                .filter-pill { padding: 3px 10px; border: 1px solid #e5e7eb; border-radius: 9999px; font-size: 11px; cursor: pointer; background: #fff; color: #6b7280; }
+                .filter-pill.active { background: #1d4ed8; color: #fff; border-color: #1d4ed8; }
+                .item-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+                .item-table th { padding: 8px 14px; text-align: left; font-weight: 600; color: #374151; background: #f9fafb; border-bottom: 2px solid #e5e7eb; }
+                .item-row:hover { background: #f9fafb; }
+                .item-table td { padding: 8px 14px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+                .mono { font-family: monospace; }
+                .method-tag { background: #f3e8ff; color: #7c3aed; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+                .status-green { display: flex; align-items: center; gap: 4px; color: #059669; }
+                .status-orange { display: flex; align-items: center; gap: 4px; color: #d97706; }
+                .no-select { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; color: #9ca3af; font-size: 14px; }
+                .green { color: #059669; display: flex; align-items: center; gap: 4px; }
+                .orange { color: #d97706; display: flex; align-items: center; gap: 4px; }
+                .red { color: #dc2626; }
+                .grey { color: #9ca3af; }
+            `}</style>
+        </div>
+    );
+}

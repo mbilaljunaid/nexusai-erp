@@ -11,7 +11,9 @@ import { crmRouter } from "./modules/crm/routes";
 import { registerFeedbackRoutes } from "./modules/feedback/routes";
 
 import { registerFinanceRoutes } from "./modules/finance/routes";
+import { registerComplianceRoutes } from "./modules/compliance/routes";
 import { hrRouter } from "./modules/hr/routes";
+import { registerHRComplianceRoutes } from "./modules/hr/compliance-routes";
 import { registerProjectRoutes } from "./modules/project/routes";
 import { scmRoutes } from "./modules/scm/routes";
 import { scmController } from "./modules/scm/scm.controller"; // Import Controller
@@ -95,6 +97,8 @@ export async function registerRoutes(
 
   registerNotificationRoutes(app);
   registerFinanceRoutes(app);
+  registerComplianceRoutes(app);
+  registerHRComplianceRoutes(app);
   // Core Finance & ERP Routes
   // app.use("/api/finance", financeRouter); // Refactored to modules/finance/gl.routes.ts
 

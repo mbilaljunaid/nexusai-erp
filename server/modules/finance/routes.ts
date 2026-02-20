@@ -676,8 +676,7 @@ export function registerFinanceRoutes(app: Express) {
     app.post("/api/gl/consolidation/run", async (req, res) => {
         try {
             const { ledgerSetId, periodId } = req.body;
-            // Mock userId for now, or get from session
-            const userId = "user-123";
+            const userId = (req.user as any)?.id || "system";
             const result = await consolidationService.runConsolidation(ledgerSetId, periodId, userId);
             res.json(result);
         } catch (error: any) {
@@ -687,10 +686,305 @@ export function registerFinanceRoutes(app: Express) {
 
     app.get("/api/gl/consolidation/history", async (req, res) => {
         try {
-            const history = await consolidationService.getConsolidationHistory();
+            const history = await consolidationService.getConsolidationHistory(req.query.ledgerSetId as string);
             res.json(history);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
         }
     });
+
+    app.get("/api/gl/consolidation/discrepancies", async (req, res) => {
+        try {
+            const { periodName } = req.query;
+            if (!periodName) return res.status(400).json({ error: "periodName required" });
+            const result = await consolidationService.getICBalanceDiscrepancies(periodName as string);
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    // ================= P1-B: TAX PROVISIONS (FC-OG-02) =================
+    app.post("/api/finance/tax-provisions/compute", async (req, res) => {
+        try {
+            const { taxProvisionService } = await import("./tax-provision.service");
+            const userId = (req.user as any)?.id || "system";
+            const result = await taxProvisionService.computeProvision({
+                ...req.body,
+                computedBy: userId,
+            });
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.get("/api/finance/tax-provisions", async (req, res) => {
+        try {
+            const { taxProvisionService } = await import("./tax-provision.service");
+            const tenantId = (req.user as any)?.tenantId || (req.query.tenantId as string);
+            const year = req.query.year ? parseInt(req.query.year as string) : undefined;
+            const result = await taxProvisionService.listProvisions(tenantId, year);
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.patch("/api/finance/tax-provisions/:id/status", async (req, res) => {
+        try {
+            const { taxProvisionService } = await import("./tax-provision.service");
+            const result = await taxProvisionService.updateStatus(req.params.id, req.body.status);
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    // ================= P1-B: ACCOUNT CERTIFICATIONS (FC-OG-01) =================
+    app.post("/api/finance/account-certs", async (req, res) => {
+        try {
+            const { accountCertificationService } = await import("./account-cert.service");
+            const result = await accountCertificationService.createCertification(req.body);
+            res.status(201).json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.get("/api/finance/account-certs", async (req, res) => {
+        try {
+            const { accountCertificationService } = await import("./account-cert.service");
+            const tenantId = (req.user as any)?.tenantId || (req.query.tenantId as string);
+            const period = req.query.period as string;
+            if (!period) return res.status(400).json({ error: "period required" });
+            const result = await accountCertificationService.getCertificationsByPeriod(tenantId, period);
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.get("/api/finance/account-certs/summary", async (req, res) => {
+        try {
+            const { accountCertificationService } = await import("./account-cert.service");
+            const tenantId = (req.user as any)?.tenantId || (req.query.tenantId as string);
+            const period = req.query.period as string;
+            if (!period) return res.status(400).json({ error: "period required" });
+            const result = await accountCertificationService.getSummary(tenantId, period);
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.post("/api/finance/account-certs/:id/certify", async (req, res) => {
+        try {
+            const { accountCertificationService } = await import("./account-cert.service");
+            const userId = (req.user as any)?.id || "system";
+            const result = await accountCertificationService.certify(req.params.id, userId);
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.post("/api/finance/account-certs/:id/reject", async (req, res) => {
+        try {
+            const { accountCertificationService } = await import("./account-cert.service");
+            const userId = (req.user as any)?.id || "system";
+            const result = await accountCertificationService.reject(req.params.id, userId, req.body.reason);
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.post("/api/finance/account-certs/:id/escalate", async (req, res) => {
+        try {
+            const { accountCertificationService } = await import("./account-cert.service");
+            const result = await accountCertificationService.escalate(req.params.id, req.body.reason);
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    // ================= P1-B: FSG REPORTS (GL-OG-01) =================
+    app.post("/api/finance/fsg-reports", async (req, res) => {
+        try {
+            const { fsgReportingService } = await import("./fsg-reporting.service");
+            const userId = (req.user as any)?.id || "system";
+            const tenantId = (req.user as any)?.tenantId || req.body.tenantId;
+            const result = await fsgReportingService.saveReportDefinition(tenantId, { ...req.body, createdBy: userId });
+            res.status(201).json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.get("/api/finance/fsg-reports", async (req, res) => {
+        try {
+            const { fsgReportingService } = await import("./fsg-reporting.service");
+            const tenantId = (req.user as any)?.tenantId || (req.query.tenantId as string);
+            const result = await fsgReportingService.listReports(tenantId);
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.post("/api/finance/fsg-reports/run", async (req, res) => {
+        try {
+            const { fsgReportingService } = await import("./fsg-reporting.service");
+            const userId = (req.user as any)?.id || "system";
+            const result = await fsgReportingService.runReport({ ...req.body, generatedBy: userId });
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.get("/api/finance/fsg-reports/output/:outputId", async (req, res) => {
+        try {
+            const { fsgReportingService } = await import("./fsg-reporting.service");
+            const result = await fsgReportingService.getOutput(req.params.outputId);
+            if (!result) return res.status(404).json({ error: "Output not found" });
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    // ─── P1-E: Payment Terms ──────────────────────────────────────────────────
+    app.get("/api/finance/payment-terms", async (req, res) => {
+        try {
+            const { paymentTermsService } = await import("./payment-terms.service");
+            const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
+            res.json(await paymentTermsService.listTerms(tenantId));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+
+    app.post("/api/finance/payment-terms", async (req, res) => {
+        try {
+            const { paymentTermsService } = await import("./payment-terms.service");
+            const tenantId = (req as any).user?.tenantId || "default-tenant";
+            res.status(201).json(await paymentTermsService.createTerm({ ...req.body, tenantId }));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+
+    app.post("/api/finance/payment-terms/schedule", async (req, res) => {
+        try {
+            const { paymentTermsService } = await import("./payment-terms.service");
+            const tenantId = (req as any).user?.tenantId || "default-tenant";
+            res.json(await paymentTermsService.generateSchedule({ ...req.body, tenantId }));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+
+    app.get("/api/finance/payment-terms/overdue", async (req, res) => {
+        try {
+            const { paymentTermsService } = await import("./payment-terms.service");
+            const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
+            res.json(await paymentTermsService.getOverdue(tenantId));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+
+    // ─── P1-E: Lockbox ────────────────────────────────────────────────────────
+    app.post("/api/finance/lockbox/batches", async (req, res) => {
+        try {
+            const { lockboxService } = await import("./lockbox.service");
+            const tenantId = (req as any).user?.tenantId || "default-tenant";
+            const importedBy = (req as any).user?.id || "system";
+            res.status(201).json(await lockboxService.importBatch({ ...req.body, tenantId, importedBy }));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+
+    app.get("/api/finance/lockbox/batches", async (req, res) => {
+        try {
+            const { lockboxService } = await import("./lockbox.service");
+            const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
+            res.json(await lockboxService.getBatches(tenantId, req.query.status as string));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+
+    app.get("/api/finance/lockbox/batches/:id/items", async (req, res) => {
+        try {
+            const { lockboxService } = await import("./lockbox.service");
+            res.json(await lockboxService.getItems(req.params.id, req.query.matchStatus as string));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+
+    app.get("/api/finance/lockbox/summary", async (req, res) => {
+        try {
+            const { lockboxService } = await import("./lockbox.service");
+            const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
+            res.json(await lockboxService.getSummary(tenantId));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+
+    // ─── P1-E: AutoInvoice ────────────────────────────────────────────────────
+    app.post("/api/finance/autoinvoice/validate", async (req, res) => {
+        try {
+            const { autoInvoiceService } = await import("./autoinvoice.service");
+            const tenantId = (req as any).user?.tenantId || "default-tenant";
+            const runBy = (req as any).user?.id || "system";
+            res.json(await autoInvoiceService.runValidation({ ...req.body, tenantId, runBy }));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+
+    app.post("/api/finance/autoinvoice/import/:runId", async (req, res) => {
+        try {
+            const { autoInvoiceService } = await import("./autoinvoice.service");
+            const tenantId = (req as any).user?.tenantId || "default-tenant";
+            res.json(await autoInvoiceService.importInvoices(req.params.runId, tenantId, req.body.lines ?? []));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+
+    app.get("/api/finance/autoinvoice/runs", async (req, res) => {
+        try {
+            const { autoInvoiceService } = await import("./autoinvoice.service");
+            const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
+            res.json(await autoInvoiceService.listRuns(tenantId, req.query.status as string));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+
+    app.get("/api/finance/autoinvoice/rules", async (req, res) => {
+        try {
+            const { autoInvoiceService } = await import("./autoinvoice.service");
+            res.json(autoInvoiceService.getRules());
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+
+    // ─── P1-E: FX Revaluation ─────────────────────────────────────────────────
+    app.post("/api/finance/fx-revaluation/run", async (req, res) => {
+        try {
+            const { fxRevaluationService } = await import("./fx-revaluation.service");
+            const tenantId = (req as any).user?.tenantId || "default-tenant";
+            const runBy = (req as any).user?.id || "system";
+            res.json(await fxRevaluationService.runRevaluation({ ...req.body, tenantId, runBy }));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+
+    app.get("/api/finance/fx-revaluation/runs", async (req, res) => {
+        try {
+            const { fxRevaluationService } = await import("./fx-revaluation.service");
+            const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
+            res.json(await fxRevaluationService.listRuns(tenantId, req.query.periodName as string));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+
+    app.get("/api/finance/fx-revaluation/runs/:id/lines", async (req, res) => {
+        try {
+            const { fxRevaluationService } = await import("./fx-revaluation.service");
+            res.json(await fxRevaluationService.getRunLines(req.params.id));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
+
+    app.post("/api/finance/fx-revaluation/runs/:id/reverse", async (req, res) => {
+        try {
+            const { fxRevaluationService } = await import("./fx-revaluation.service");
+            res.json(await fxRevaluationService.reverseRevaluation(req.params.id));
+        } catch (e: any) { res.status(500).json({ error: e.message }); }
+    });
 }
+
