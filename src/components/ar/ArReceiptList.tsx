@@ -1,21 +1,47 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Receipt, Calendar, CreditCard, Banknote, Landmark, CheckCircle2, MoreVertical, Plus } from "lucide-react";
+import { Receipt, Calendar, CreditCard, Banknote, Landmark, CheckCircle2, Plus, RotateCcw } from "lucide-react";
 import { api } from "@/lib/api";
 import { format } from "date-fns";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArReceiptApplicationDialog } from "./ArReceiptApplicationDialog";
 import type { ArReceipt } from "@/types/erp-types";
+import { useToast } from "@/hooks/use-toast";
+
 
 export function ArReceiptList() {
+    const { toast } = useToast();
+    const queryClient = useQueryClient();
     const [selectedReceipt, setSelectedReceipt] = useState<ArReceipt | null>(null);
     const [applicationDialogOpen, setApplicationDialogOpen] = useState(false);
 
     const { data: receipts, isLoading } = useQuery({
         queryKey: ["/api/ar/receipts"],
         queryFn: api.ar.receipts.list
+    });
+
+    const unapplyMutation = useMutation({
+        mutationFn: async (receiptId: string) => {
+            const res = await fetch(`/api/erp/ar/receipts/${receiptId}/unapply`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ reason: "Manual unapplication" })
+            });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({ message: "Unapply failed" }));
+                throw new Error(err.message || "Unapply failed");
+            }
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["/api/ar/receipts"] });
+            toast({ title: "Receipt Unapplied", description: "The receipt application has been reversed and GL journals posted." });
+        },
+        onError: (err: any) => {
+            toast({ title: "Unapply Failed", description: err.message, variant: "destructive" });
+        }
     });
 
     const getPaymentIcon = (method: string) => {
@@ -94,6 +120,21 @@ export function ArReceiptList() {
                                             }}
                                         >
                                             <Plus className="h-3 w-3 mr-1" /> Apply
+                                        </Button>
+                                    </div>
+                                )}
+
+                                {receipt.status === 'Applied' && (
+                                    <div className="p-2 bg-red-50 rounded border border-red-100 flex justify-between items-center text-xs">
+                                        <span className="text-red-700 font-medium">Reverse application?</span>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-6 text-[10px] px-2 bg-white hover:bg-red-100 text-red-600"
+                                            disabled={unapplyMutation.isPending}
+                                            onClick={() => unapplyMutation.mutate(receipt.id)}
+                                        >
+                                            <RotateCcw className="h-3 w-3 mr-1" /> Unapply
                                         </Button>
                                     </div>
                                 )}

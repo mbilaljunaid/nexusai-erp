@@ -44,14 +44,14 @@ export default function ArDunningWorkbench() {
     // Mutations
     const runDunningMutation = useMutation({
         mutationFn: async () => {
-            const res = await fetch("/api/ar/dunning/run", { method: "POST" });
+            const res = await fetch("/api/erp/ar/dunning/batch", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
             if (!res.ok) throw new Error("Failed to trigger dunning run");
             return res.json();
         },
-        onSuccess: () => {
+        onSuccess: (data: any) => {
             queryClient.invalidateQueries({ queryKey: ["/api/ar/collections/tasks"] });
             queryClient.invalidateQueries({ queryKey: ["/api/ar/dunning/runs"] });
-            toast({ title: "Success", description: "Dunning run completed successfully" });
+            toast({ title: "Dunning Run Started", description: `Run ${data.runId} started asynchronously. Status: ${data.status}` });
         },
         onError: (err: any) => {
             toast({ title: "Error", description: err.message, variant: "destructive" });

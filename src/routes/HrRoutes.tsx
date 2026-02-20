@@ -64,6 +64,7 @@ import ShiftConfiguration from "../pages/wfm/ShiftConfiguration";
 import AccrualTesting from "../pages/wfm/AccrualTesting";
 import AIWorkforceInsights from "../pages/wfm/AIWorkforceInsights";
 import HolidayCalendar from "../pages/wfm/HolidayCalendar";
+import TimeRuleBuilder from "../pages/hr/TimeRuleBuilder";
 
 // HR Analytics
 import HRAnalyticsDashboard from "@/pages/HRAnalyticsDashboard";
@@ -138,6 +139,7 @@ export default function HrRoutes() {
                 {/* Admin & Configuration */}
                 <Route path="/hr/wfm/admin/shifts" component={ShiftConfiguration} />
                 <Route path="/hr/wfm/admin/holidays" component={HolidayCalendar} />
+                <Route path="/hr/wfm/admin/time-rules" component={TimeRuleBuilder} />
 
                 {/* Analytics & Reporting */}
                 <Route path="/hr/analytics" component={HRAnalyticsDashboard} />
