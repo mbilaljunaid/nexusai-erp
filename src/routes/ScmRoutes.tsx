@@ -44,6 +44,7 @@ import CostComponents from "@/pages/lcm/CostComponents";
 import LcmWorkbench from "@/pages/lcm/LcmWorkbench";
 import TradeOperationDetails from "@/pages/lcm/TradeOperationDetails";
 import CostDashboard from "@/pages/cost-management/CostDashboard";
+import CostAdjustmentApprovalWorkbench from "@/pages/cost-management/CostAdjustmentApprovalWorkbench";
 import SlaDashboard from "@/pages/sla/SlaDashboard";
 import MappingSetWorkbench from "@/pages/sla/MappingSetWorkbench";
 import MappingSetEditor from "@/pages/sla/MappingSetEditor";
@@ -115,6 +116,7 @@ export default function ScmRoutes() {
 
             {/* Cost Management & SLA */}
             <Route path="/scm/costing/dashboard" component={CostDashboard} />
+            <Route path="/scm/costing/approvals" component={CostAdjustmentApprovalWorkbench} />
             <Route path="/scm/lcm/operations" component={LcmWorkbench} />
             <Route path="/scm/lcm/components" component={CostComponents} />
             <Route path="/scm/lcm/trade-operation/:id" component={TradeOperationDetails} />
