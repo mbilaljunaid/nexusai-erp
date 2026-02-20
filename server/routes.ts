@@ -15,6 +15,8 @@ import { registerComplianceRoutes } from "./modules/compliance/routes";
 import { hrRouter } from "./modules/hr/routes";
 import { registerHRComplianceRoutes } from "./modules/hr/compliance-routes";
 import { registerProjectRoutes } from "./modules/project/routes";
+import { registerRecruitingRoutes } from "./modules/recruiting/routes";
+import { registerHRAnalyticsRoutes } from "./modules/hr-analytics/routes";
 import { scmRoutes } from "./modules/scm/routes";
 import { scmController } from "./modules/scm/scm.controller"; // Import Controller
 import { manufacturingRouter } from "./modules/manufacturing/routes";
@@ -87,6 +89,7 @@ import expensePolicyRouter from "./routes/expense-policies";
 import { registerLogisticsRoutes } from "./modules/logistics/routes";
 import { registerWMSRoutes } from "./modules/wms/routes";
 import { registerSupplierRoutes } from "./modules/supplier/routes";
+
 
 export async function registerRoutes(
   httpServer: Server,
@@ -170,6 +173,8 @@ export async function registerRoutes(
   registerLogisticsRoutes(app); // P1-G: TMS — Load Tender, Carrier Tracking, Mode Optimizer
   registerWMSRoutes(app);       // P1-H: WMS — Directed Putaway, Yard Mgmt, Carrier Manifest
   registerSupplierRoutes(app);  // P1-I: Supplier Portal — Obligations, Certifications, Qualifications
+  registerRecruitingRoutes(app); // P1-K: Recruiting — EEO, E-Signature, Background Checks
+  registerHRAnalyticsRoutes(app); // P1-L: HR Analytics — Pay Equity, Attrition, FCPA, Reg Calendar
 
 
   // Enterprise Billing
