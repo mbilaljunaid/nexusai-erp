@@ -119,7 +119,8 @@ export const insertHzDupSetPartySchema = createInsertSchema(hzDupSetParties).ext
     score: z.number().or(z.string().transform(v => Number(v))),
 });
 
-export const insertHzMatchRuleSchema = createInsertSchema(hzMatchRules).extend({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const insertHzMatchRuleSchema: z.ZodObject<any> = createInsertSchema(hzMatchRules).extend({
     ruleName: z.string().min(1),
     matchScoreThreshold: z.number().min(0).max(100),
 });

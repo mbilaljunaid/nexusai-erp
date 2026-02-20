@@ -116,7 +116,8 @@ export const adminLogs = pgTable("admin_logs", {
     createdAtIdx: index("admin_logs_created_at_idx").on(table.createdAt),
 }));
 
-export const insertAdminLogSchema = createInsertSchema(adminLogs).extend({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const insertAdminLogSchema: z.ZodObject<any> = createInsertSchema(adminLogs).extend({
     action: z.string().min(1, "Action is required"),
     actorEmail: z.string().email().optional(),
     actorId: z.string().optional(),

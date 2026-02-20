@@ -19,6 +19,7 @@ import { RfqService } from './rfq.service';
 import { SupplierPortalService } from './supplier-portal.service';
 import { TaxEngineService } from '../erp/tax-engine.service';
 import { MdmAnomalyDetectionService } from './mdm-anomaly-detection.service';
+import { MdmExternalEnrichmentService } from './mdm-external-enrichment.service';
 // Entities removed
 
 import { InventoryModule } from '../inventory/inventory.module';
@@ -44,7 +45,8 @@ import { EPMModule } from '../epm/epm.module';
     RfqService,
     SupplierPortalService,
     MdmAnomalyDetectionService,
+    MdmExternalEnrichmentService,
   ],
-  exports: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ProcurementApprovalService, SourcingService, TaxEngineService, MdmAnomalyDetectionService],
+  exports: [PurchaseOrderService, SupplierService, ReceiptService, RequisitionService, ApService, ProcurementApprovalService, SourcingService, TaxEngineService, MdmAnomalyDetectionService, MdmExternalEnrichmentService],
 })
 export class ProcurementModule { }

@@ -27,6 +27,8 @@ import { RevenueEngineService } from './revenue-engine.service';
 import { RevenueEngineController } from './revenue-engine.controller';
 import { RevenueEngineExtensionService } from './revenue-engine-extension.service';
 import { IntercompanyDisputeService } from './intercompany-dispute.service';
+import { TaxContentService } from './tax-content.service';
+import { RevenueContractCostService } from './revenue-contract-cost.service';
 
 @Module({
   imports: [AuditModule],
@@ -45,6 +47,8 @@ import { IntercompanyDisputeService } from './intercompany-dispute.service';
     RevenueEngineService,
     RevenueEngineExtensionService,
     IntercompanyDisputeService,
+    TaxContentService,
+    RevenueContractCostService,
   ],
   controllers: [
     ARTaxController,
@@ -56,6 +60,6 @@ import { IntercompanyDisputeService } from './intercompany-dispute.service';
     InvoiceApprovalController,
     RevenueEngineController,
   ],
-  exports: [TaxEngineService, TaxOverrideService, IntercompanyTaxService, TaxReportingService, ArService, InvoiceGlService, InvoiceApprovalService, RevenueEngineService, RevenueEngineExtensionService, IntercompanyDisputeService],
+  exports: [TaxEngineService, TaxOverrideService, IntercompanyTaxService, TaxReportingService, ArService, InvoiceGlService, InvoiceApprovalService, RevenueEngineService, RevenueEngineExtensionService, IntercompanyDisputeService, TaxContentService, RevenueContractCostService],
 })
 export class ERPModule { }

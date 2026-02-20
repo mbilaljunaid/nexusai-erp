@@ -81,6 +81,20 @@ export class AffiliatesService {
         return { data: updatedAffiliate };
     }
 
+    async updateStatus(id: string, status: string): Promise<{ data: Affiliate }> {
+        const [updatedAffiliate] = await this.db
+            .update(affiliates)
+            .set({ status: status as any, updatedAt: new Date() })
+            .where(eq(affiliates.id, id))
+            .returning();
+
+        if (!updatedAffiliate) {
+            throw new NotFoundException(`Affiliate ${id} not found`);
+        }
+
+        return { data: updatedAffiliate };
+    }
+
     async delete(id: string): Promise<{ data: { success: boolean } }> {
         const [deletedAffiliate] = await this.db
             .delete(affiliates)
@@ -104,12 +118,12 @@ export class AffiliatesService {
         return { data: referrals };
     }
 
-    async createReferral(data: Partial<InsertAffiliateReferral>): Promise<{ data: AffiliateReferral }> {
+    async createReferral(affiliateId: string, tenantId: string): Promise<{ data: AffiliateReferral }> {
         const [newReferral] = await this.db
             .insert(affiliateReferrals)
             .values({
-                affiliateId: data.affiliateId || '',
-                tenantId: data.tenantId || '',
+                affiliateId,
+                tenantId,
                 status: 'pending',
             })
             .returning();
@@ -117,12 +131,13 @@ export class AffiliatesService {
         return { data: newReferral };
     }
 
-    async convertReferral(referralId: string, commissionAmount: string): Promise<{ data: AffiliateReferral }> {
+    async convertReferral(referralId: string, commissionAmount: number): Promise<{ data: AffiliateReferral }> {
+        const commissionStr = String(commissionAmount);
         const [updatedReferral] = await this.db
             .update(affiliateReferrals)
             .set({
                 status: 'converted',
-                commissionAmount,
+                commissionAmount: commissionStr,
                 convertedAt: new Date(),
             })
             .where(eq(affiliateReferrals.id, referralId))
@@ -144,7 +159,7 @@ export class AffiliatesService {
                 .update(affiliates)
                 .set({
                     totalReferrals: (affiliate.totalReferrals || 0) + 1,
-                    totalEarnings: String(parseFloat(affiliate.totalEarnings || '0') + parseFloat(commissionAmount)),
+                    totalEarnings: String(parseFloat(affiliate.totalEarnings || '0') + commissionAmount),
                     updatedAt: new Date(),
                 })
                 .where(eq(affiliates.id, updatedReferral.affiliateId));

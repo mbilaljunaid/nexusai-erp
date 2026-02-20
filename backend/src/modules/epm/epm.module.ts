@@ -21,6 +21,8 @@ import { EpmSecurityService } from './epm-security.service';
 import { EsgPlanningService } from './esg-planning.service';
 import { TreasuryPlanningService } from './treasury-planning.service';
 import { ProjectIntegrationService } from './project-integration.service';
+import { EPMMnaSimulationService } from './epm-mna-simulation.service';
+import { EPMEsgCarbonService } from './epm-esg-carbon.service';
 import { FinanceModule } from '../finance/finance.module';
 // import { ProcurementModule } from '../procurement/procurement.module';
 
@@ -53,7 +55,9 @@ import { FinanceModule } from '../finance/finance.module';
     PredictiveForecastingService,
     EpmSecurityService,
     EsgPlanningService,
-    TreasuryPlanningService
+    TreasuryPlanningService,
+    EPMMnaSimulationService,
+    EPMEsgCarbonService,
   ],
   exports: [
     EPMService,
@@ -73,7 +77,9 @@ import { FinanceModule } from '../finance/finance.module';
     PredictiveForecastingService,
     EpmSecurityService,
     EsgPlanningService,
-    TreasuryPlanningService
+    TreasuryPlanningService,
+    EPMMnaSimulationService,
+    EPMEsgCarbonService,
   ],
 })
 export class EPMModule { }

@@ -8,12 +8,13 @@ export class SystemConfigController {
     // Config endpoints
     @Get('config')
     async getConfig(@Query('category') category?: string) {
-        return this.configService.getConfig(category);
+        // getAllConfig when no category provided; getConfig by key when specific key given
+        return this.configService.getAllConfig();
     }
 
     @Get('config/:key')
     async getConfigValue(@Param('key') key: string) {
-        return this.configService.getConfigValue(key);
+        return this.configService.getConfig(key);
     }
 
     @Put('config/:key')
@@ -32,26 +33,34 @@ export class SystemConfigController {
     // Feature Flags endpoints
     @Get('flags')
     async getFlags() {
-        return this.configService.getFlags();
+        return this.configService.getAllFlags();
     }
 
     @Get('flags/:name/enabled')
     async checkFlag(@Param('name') name: string) {
-        return this.configService.checkFlag(name);
+        return this.configService.getFlag(name);
     }
 
     @Post('flags')
     async createFlag(@Body() data: { name: string; description?: string; enabled?: boolean }) {
-        return this.configService.createFlag(data);
+        return this.configService.createFlag(data as any);
     }
 
     @Post('flags/:name/enable')
     async enableFlag(@Param('name') name: string) {
-        return this.configService.enableFlag(name);
+        const { data: flag } = await this.configService.getFlag(name);
+        if (!flag.enabled) {
+            return this.configService.toggleFlag(name);
+        }
+        return { data: flag };
     }
 
     @Post('flags/:name/disable')
     async disableFlag(@Param('name') name: string) {
-        return this.configService.disableFlag(name);
+        const { data: flag } = await this.configService.getFlag(name);
+        if (flag.enabled) {
+            return this.configService.toggleFlag(name);
+        }
+        return { data: flag };
     }
 }
