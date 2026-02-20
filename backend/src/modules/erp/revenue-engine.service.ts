@@ -1,5 +1,5 @@
 /**
- * Revenue Engine Service — P1.1-P1.5 Remediations (ASC 606)
+ * Revenue Engine Service — P1.1-P1.5 Remediations + Gap R-3 (ASC 606)
  *
  * Implements the missing P1 revenue management capabilities:
  *  P1.1 — Variable consideration engine (expected value + most likely amount)
@@ -7,12 +7,14 @@
  *  P1.3 — GL reconciliation report (Subledger to GL)
  *  P1.4 — Revenue assurance anomaly detection
  *  P1.5 — Contract modification timeline
+ *  Gap R-2 — Linear-regression revenue forecast (generateForecast)
+ *  Gap R-3 — Series-of-Distinct-Goods POB type support
  */
 import { Injectable, Logger, NotFoundException, Inject } from '@nestjs/common';
 import { DRIZZLE_DB } from '../../database/drizzle.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import * as schema from '../../../../shared/schema/index';
-import { eq, and, lt, isNull, sql } from 'drizzle-orm';
+import { eq, and, lt, isNull, sql, sum, gte, lte, desc } from 'drizzle-orm';
 
 @Injectable()
 export class RevenueEngineService {
@@ -336,14 +338,83 @@ export class RevenueEngineService {
         };
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // ── Gap R-2: Linear-Regression Revenue Forecast ───────────────────────────
+    /**
+     * Generates a linear-regression revenue forecast from historical recognition data.
+     * Projects `monthsToProject` months forward. Optionally scoped to a single contract.
+     */
+    async generateForecast(monthsToProject: number = 6, contractId?: string): Promise<any> {
+        const endDate = new Date();
+        const startDate = new Date(endDate);
+        startDate.setMonth(startDate.getMonth() - 12);
+
+        const conditions: any[] = [
+            eq(schema.revenueRecognitions.accountType, 'Revenue'),
+            gte(schema.revenueRecognitions.scheduleDate as any, startDate),
+            lte(schema.revenueRecognitions.scheduleDate as any, endDate),
+        ];
+        if (contractId) {
+            conditions.push(eq(schema.revenueRecognitions.contractId, contractId));
+        }
+
+        const history: any[] = await (this.db as any)
+            .select({
+                period: schema.revenueRecognitions.periodName,
+                amount: sql<number>`sum(${schema.revenueRecognitions.amount})`,
+                scheduleDate: schema.revenueRecognitions.scheduleDate,
+            })
+            .from(schema.revenueRecognitions)
+            .where(and(...conditions))
+            .groupBy(schema.revenueRecognitions.periodName, schema.revenueRecognitions.scheduleDate)
+            .orderBy(schema.revenueRecognitions.scheduleDate)
+            .catch(() => []);
+
+        const dataPoints = history.map((h: any, index: number) => ({
+            x: index,
+            y: parseFloat(h.amount as any || 0),
+            period: h.period,
+        }));
+
+        const n = dataPoints.length;
+        if (n < 2) {
+            return { history: dataPoints, forecast: [], model: null, message: 'Need at least 2 historical periods for regression' };
+        }
+
+        let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+        for (const p of dataPoints) {
+            sumX += p.x; sumY += p.y; sumXY += p.x * p.y; sumXX += p.x * p.x;
+        }
+        const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+        const intercept = (sumY - slope * sumX) / n;
+
+        const forecast: any[] = [];
+        for (let i = 1; i <= monthsToProject; i++) {
+            const nextIndex = n - 1 + i;
+            const projectedAmount = Math.max(0, slope * nextIndex + intercept);
+            const nextDate = new Date();
+            nextDate.setMonth(nextDate.getMonth() + i);
+            forecast.push({
+                period: nextDate.toLocaleString('default', { month: 'short' }) + '-' + nextDate.getFullYear().toString().slice(2),
+                amount: parseFloat(projectedAmount.toFixed(2)),
+                type: 'Forecast',
+            });
+        }
+
+        this.logger.log(`Revenue forecast: ${n} historical periods, projecting ${monthsToProject} months. slope=${slope.toFixed(2)}`);
+        return { history: dataPoints, forecast, model: { slope: parseFloat(slope.toFixed(4)), intercept: parseFloat(intercept.toFixed(4)) } };
+    }
+
+    // ── Gap R-3 + Helpers ─────────────────────────────────────────────────────
     private _isDistinctPob(pob: any): boolean {
         // ASC 606 distinctness: capable of being distinct + distinct within contract context
-        // Heuristic: goods/subscriptions are distinct; services without standalone value are not
-        return ['Goods', 'Subscription', 'License'].includes(pob.itemType || '');
+        // 'Series' is distinct per ASC 606-10-25-14B (series of distinct goods/services)
+        return ['Goods', 'Subscription', 'License', 'Series'].includes(pob.itemType || '');
     }
 
     private _getDistinctnessReason(pob: any): string {
+        if (pob.itemType === 'Series') {
+            return 'Series of Distinct Goods/Services — each increment is distinct and pattern of transfer is same (ASC 606-10-25-14B)';
+        }
         if (this._isDistinctPob(pob)) {
             return `${pob.itemType} is capable of being distinct and has standalone value`;
         }
