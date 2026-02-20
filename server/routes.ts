@@ -84,6 +84,9 @@ import wfmRouter from "./routes/wfm";
 import { nexusAiRouter } from "./routes/nexus-ai";
 import expenseRouter from "./routes/expenses";
 import expensePolicyRouter from "./routes/expense-policies";
+import { registerLogisticsRoutes } from "./modules/logistics/routes";
+import { registerWMSRoutes } from "./modules/wms/routes";
+import { registerSupplierRoutes } from "./modules/supplier/routes";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -164,6 +167,9 @@ export async function registerRoutes(
   app.use("/api", shipmentTrackingRouter); // Mounts /api/shipment-tracking
   app.use("/api/lease", leaseDirectRouter); // Lease Management
   app.use("/api/contracts", contractRoutes); // CLM Management
+  registerLogisticsRoutes(app); // P1-G: TMS — Load Tender, Carrier Tracking, Mode Optimizer
+  registerWMSRoutes(app);       // P1-H: WMS — Directed Putaway, Yard Mgmt, Carrier Manifest
+  registerSupplierRoutes(app);  // P1-I: Supplier Portal — Obligations, Certifications, Qualifications
 
 
   // Enterprise Billing
