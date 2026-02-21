@@ -10,6 +10,11 @@ import { auditMiddleware } from "./middleware/audit";
 import { rlsMiddleware } from "./middleware/rls";
 import { initCronJobs } from "./cron/sweeper";
 import { JobRunnerService } from "./services/JobRunnerService";
+import { startAPPaymentWorker } from "./queue/ap-payment.queue";
+import { startARLockboxWorker } from "./queue/ar-lockbox.queue";
+import { startGLPostingWorker } from "./queue/gl-posting.queue";
+import { startAccountingCloseQueue } from "./queue/accounting-close.queue";
+import { startFxRateFeedCron } from "./cron/fx-rate-feed";
 
 const app = express();
 const httpServer = createServer(app);
@@ -92,6 +97,15 @@ app.use(rlsMiddleware);
 // Initialize Cron Jobs (Autonomous Background Tasks)
 // initCronJobs();
 // JobRunnerService.start();
+
+// Cross-Cutting P1: BullMQ Workers (no-op if REDIS_URL is not set)
+startAPPaymentWorker();
+startARLockboxWorker();
+startGLPostingWorker();
+startAccountingCloseQueue();
+
+// Cross-Cutting P1: FX Rate Feed — fetch daily rates at 06:00 UTC
+startFxRateFeedCron();
 
 console.log("DEBUG: NODE_ENV =", process.env.NODE_ENV);
 

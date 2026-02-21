@@ -94,6 +94,8 @@ import expensePolicyRouter from "./routes/expense-policies";
 import { registerLogisticsRoutes } from "./modules/logistics/routes";
 import { registerWMSRoutes } from "./modules/wms/routes";
 import { registerSupplierRoutes } from "./modules/supplier/routes";
+import featureFlagRoutes from "./modules/admin/feature-flag.routes";
+import pdfRoutes from "./routes/pdf.routes";
 
 
 export async function registerRoutes(
@@ -211,6 +213,10 @@ export async function registerRoutes(
 
 
 
+
+  // Cross-Cutting P1: Feature Flags + PDF Generation
+  app.use("/api/feature-flags", featureFlagRoutes);
+  app.use("/api/pdf", pdfRoutes);
 
   // NexusAI Provider Management
   app.use("/api/nexus-ai", nexusAiRouter);
