@@ -17,6 +17,11 @@ import { registerHRComplianceRoutes } from "./modules/hr/compliance-routes";
 import { registerProjectRoutes } from "./modules/project/routes";
 import { registerRecruitingRoutes } from "./modules/recruiting/routes";
 import { registerHRAnalyticsRoutes } from "./modules/hr-analytics/routes";
+import { registerMfgInventoryRoutes } from "./modules/manufacturing/mfg-inventory.routes";
+import { registerIntercompanyNettingRoutes } from "./modules/intercompany/ic-netting.routes";
+import { registerEPMRoutes } from "./modules/epm/epm.routes";
+import { registerEAMRoutes } from "./modules/eam/eam.routes";
+import { registerRemainingRoutes } from "./modules/remaining/remaining.routes";
 import { scmRoutes } from "./modules/scm/routes";
 import { scmController } from "./modules/scm/scm.controller"; // Import Controller
 import { manufacturingRouter } from "./modules/manufacturing/routes";
@@ -175,6 +180,11 @@ export async function registerRoutes(
   registerSupplierRoutes(app);  // P1-I: Supplier Portal — Obligations, Certifications, Qualifications
   registerRecruitingRoutes(app); // P1-K: Recruiting — EEO, E-Signature, Background Checks
   registerHRAnalyticsRoutes(app); // P1-L: HR Analytics — Pay Equity, Attrition, FCPA, Reg Calendar
+  registerMfgInventoryRoutes(app); // P1-M: Manufacturing & Inventory — ECO, OSP, Capacity, WIP, Lots, QH, PI, Consignment
+  registerIntercompanyNettingRoutes(app); // P1-N: IC Netting, Transfer Pricing, Disputes
+  registerEPMRoutes(app); // P1-O: EPM — ESG Planning, Budgetary Control, Narrative Reporting
+  registerEAMRoutes(app); // P1-O: EAM — Permit-to-Work, CBM, Meter PM
+  registerRemainingRoutes(app); // P1-Q: EVM, Drawing Register, CPQ, Renewals, Travel/Mileage, LCM, Lease Ext, Stage-Gate PPM, GL Recon, MDM, Talent Ext
 
 
   // Enterprise Billing
