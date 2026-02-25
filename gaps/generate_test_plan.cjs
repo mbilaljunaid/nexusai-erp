@@ -39,78 +39,93 @@ if (currentModule) {
 }
 
 // Write the comprehensive testing plan
-let md = `# Comprehensive E2E Testing Plan: NexusAI ERP
+let md = `# Comprehensive 6-Stage Testing Plan: NexusAI ERP
 
 ## 1. Executive Summary
-This document outlines the granular, exhaustive testing strategy for the NexusAI ERP system. The objective is to ensure that **every feature, functionality, button, component, report, field, data persistence layer, form, and page** works perfectly across all 41 modules.
+This document outlines the granular, exhaustive testing strategy for the NexusAI ERP system. The objective is to ensure that **every feature, functionality, button, component, report, field, data persistence layer, form, and page** works perfectly across all 41 modules. The testing lifecycle follows a strict 6-stage approach for every module.
 
-## 2. Universal Testing Standards (Applies to ALL Modules)
-Before proceeding to module-specific tests, the following End-to-End (E2E) criteria MUST be verified on every single page and form:
+## 2. Universal 6-Stage Testing Framework
 
-### 2.1 UI/UX & Component Level Testing
-- [ ] **Page Load:** Verify the page loads within acceptable performance budgets (< 1.5s).
-- [ ] **Component Rendering:** Ensure all React components (tables, modals, side-sheets, charts) render without console errors.
-- [ ] **Responsive Design:** Test UI across Desktop (1920x1080), Tablet, and Mobile viewports.
-- [ ] **Buttons & Links:** Click every button, icon, and link. Verify they route to the correct URL or trigger the correct state change.
-- [ ] **Empty States:** Verify empty state illustrations and "Create New" CTAs appear when no data exists.
-- [ ] **Loading States:** Verify skeleton loaders or spinners appear during API fetches.
+For every module listed below, the following 6 testing methodologies are rigorously applied:
 
-### 2.2 Form, Field & Validation Testing
-- [ ] **Mandatory Fields:** Submit forms empty to verify required field validation errors appear.
-- [ ] **Data Types:** Input invalid types (strings in number fields, negative numbers where illogical, invalid emails) and verify inline validation.
-- [ ] **Character Limits:** Test boundary values (e.g., > 255 chars in varchar fields).
-- [ ] **Dropdowns & Comboboxes:** Verify all options load correctly from the API. Test searching within comboboxes.
-- [ ] **Draft/Reset:** Verify 'Cancel' or 'Reset' clears the form state correctly without saving.
+### Stage 1: Unit Testing (Target Coverage: 85%+)
+- **Scope:** Automated tests verifying individual functions, utility methods, Redux slices, API route handlers, and isolated React components.
+- **Methodology:** Use Jest/Vitest for backend logic and React Testing Library for frontend components. All external dependencies and database calls must be mocked.
+- **Validation:** Ensure business logic, math calculations, and schema validations behave correctly under both expected and edge-case inputs.
 
-### 2.3 Data Persistence & API Integration Testing
-- [ ] **CRUD Operations:** Test Create, Read, Update, and Delete operations for every entity.
-- [ ] **Optimistic Updates:** Verify the UI updates immediately before the API responds, and rolls back if the API fails.
-- [ ] **Database Verification:** After submission, query the database to verify data is correctly persisted in all columns.
-- [ ] **Error Handling:** Simulate API failures (500, 400, 401) and verify the UI displays a user-friendly error toast, not a crash.
-- [ ] **Data Integrity:** Verify foreign keys and cascading deletes behave correctly at the database level.
+### Stage 2: Integration Testing
+- **Scope:** API testing and cross-module workflows (e.g., Procure-to-Pay, Order-to-Cash) to ensure data flows correctly between boundaries.
+- **Methodology:** Use a test database to verify actual database state changes. Test service-to-service communication.
+- **Validation:** Verify API endpoints (request validation, response formatting, status codes, transaction rollbacks).
 
-### 2.4 State Management & Global Context
-- [ ] **Redux/Zustand State:** Verify state updates reflect across different components on the same page.
-- [ ] **Cross-Tab Synchronization:** Verify JWT token expiration and state syncing across multiple browser tabs.
+### Stage 3: End-to-End (E2E) Testing
+- **Scope:** Automated UI/API tests mimicking real-user journeys across the entire application stack.
+- **Methodology:** Use Cypress or Playwright to automate browser interactions from the UI layer down to the database persistence layer.
+- **Validation (per feature):** 
+  - **UI/UX:** Page load (< 1.5s), responsive design, blank states, component rendering.
+  - **Data Entry:** Mandatory fields, invalid types, character limits, dropdown loading.
+  - **Persistence:** Optimistic UI updates, foreign key constraints, API error handling (400/500 toasts), and final database row verification.
 
-### 2.5 Role-Based Access Control (RBAC) Testing
-- [ ] **Admin Access:** Verify full CRUD capabilities.
-- [ ] **Read-Only User:** Verify edit/delete buttons are hidden or disabled.
-- [ ] **Unauthorized Route:** Attempt to visit a URL the user lacks permissions for; verify a 403 Forbidden page appears.
+### Stage 4: User Acceptance Testing (UAT)
+- **Scope:** Business stakeholders validating the system against real-world scenarios.
+- **Methodology:** Manual testing by subject matter experts (SMEs) following business process scripts.
+- **Validation:** Sign-off that the module correctly supports day-to-day operational workflows.
+
+### Stage 5: Performance & Load Testing
+- **Scope:** Simulating concurrent enterprise users to validate system responsiveness, database locks, and queue processing.
+- **Methodology:** Use k6 or JMeter to simulate 1000+ concurrent users performing read/write operations.
+- **Validation:** Ensure API latency remains < 1.5s under load, verify database connection pooling handles spikes, and confirm async background workers (BullMQ) process queues without deadlocking.
+
+### Stage 6: Security & Compliance Testing
+- **Scope:** Penetration testing, vulnerability scanning, and verifying Role-Based Access Control (RBAC) and compliance (GDPR, SOX).
+- **Methodology:** Automated SAST/DAST tools + manual role-switching verification.
+- **Validation:** Verify users cannot access unauthorized routes (403 Forbidden). Ensure PII masking (GDPR) and immutable field-level audit logging (SOX) function properly.
 
 ---
 
-## 3. Module-by-Module E2E Test Plans
+## 3. Module-by-Module Detailed Test Plans
 
-Below are the detailed feature-level testing checklists for all 41 modules. Each specific feature must be tested through the UI, validating the API payload, and confirming database persistence.
+The 6-stage framework must be applied to the specific features comprising each module:
 
 `;
 
 modules.forEach(mod => {
-    md += `### ${mod.name}\n`;
-    md += `#### Primary E2E Workflows & Feature Testing\n`;
+    md += `### ${mod.name}\n\n`;
 
-    // Deduplicate and clean features
     const uniqueFeatures = [...new Set(mod.features)].filter(f => f.length > 3);
+    const featureListStr = uniqueFeatures.map(f => `- ${f}`).join('\n');
 
-    uniqueFeatures.forEach(feature => {
-        md += `- [ ] **Test Feature:** ${feature}\n`;
-        md += `  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.\n`;
-        md += `  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.\n`;
-        md += `  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.\n`;
-        md += `  - *State:* Verify the table/list/dashboard updates immediately upon success.\n`;
-        md += `  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).\n`;
-    });
+    md += `#### 1. Unit Testing (Target Coverage: 85%+)\n`;
+    md += `- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:\n`;
+    md += `${featureListStr}\n`;
+    md += `- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.\n\n`;
 
-    md += `\n#### Reports & Analytics\n`;
-    md += `- [ ] Verify all dashboard metrics and charts related to ${mod.name} calculate accurately based on underlying data.\n`;
-    md += `- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.\n`;
+    md += `#### 2. Integration Testing\n`;
+    md += `- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.\n`;
+    md += `- [ ] **Cross-Module Workflows:** Ensure data flows correctly from ${mod.name} to related modules (e.g., GL, AP, AR) for the following functions:\n`;
+    md += `${featureListStr}\n\n`;
 
-    md += `\n#### Edge Cases & Negative Testing\n`;
-    md += `- [ ] Simulate network failure during critical submissions in ${mod.name}.\n`;
-    md += `- [ ] Attempt concurrent edits on the same record by two different users.\n`;
+    md += `#### 3. End-to-End (E2E) Testing\n`;
+    md += `- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:\n`;
+    md += `${featureListStr}\n`;
+    md += `- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.\n\n`;
+
+    md += `#### 4. User Acceptance Testing (UAT)\n`;
+    md += `- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:\n`;
+    md += `${featureListStr}\n\n`;
+
+    md += `#### 5. Performance & Load Testing\n`;
+    md += `- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:\n`;
+    md += `${featureListStr}\n`;
+    md += `- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.\n\n`;
+
+    md += `#### 6. Security & Compliance Testing\n`;
+    md += `- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.\n`;
+    md += `- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:\n`;
+    md += `${featureListStr}\n`;
+
     md += `---\n\n`;
 });
 
 fs.writeFileSync(outputFile, md);
-console.log('Successfully generated detailed comprehensive testing plan.');
+console.log('Successfully generated 6-stage comprehensive testing plan.');

@@ -1,3621 +1,4198 @@
-# Comprehensive E2E Testing Plan: NexusAI ERP
+# Comprehensive 6-Stage Testing Plan: NexusAI ERP
 
 ## 1. Executive Summary
-This document outlines the granular, exhaustive testing strategy for the NexusAI ERP system. The objective is to ensure that **every feature, functionality, button, component, report, field, data persistence layer, form, and page** works perfectly across all 41 modules.
+This document outlines the granular, exhaustive testing strategy for the NexusAI ERP system. The objective is to ensure that **every feature, functionality, button, component, report, field, data persistence layer, form, and page** works perfectly across all 41 modules. The testing lifecycle follows a strict 6-stage approach for every module.
 
-## 2. Universal Testing Standards (Applies to ALL Modules)
-Before proceeding to module-specific tests, the following End-to-End (E2E) criteria MUST be verified on every single page and form:
+## 2. Universal 6-Stage Testing Framework
 
-### 2.1 UI/UX & Component Level Testing
-- [ ] **Page Load:** Verify the page loads within acceptable performance budgets (< 1.5s).
-- [ ] **Component Rendering:** Ensure all React components (tables, modals, side-sheets, charts) render without console errors.
-- [ ] **Responsive Design:** Test UI across Desktop (1920x1080), Tablet, and Mobile viewports.
-- [ ] **Buttons & Links:** Click every button, icon, and link. Verify they route to the correct URL or trigger the correct state change.
-- [ ] **Empty States:** Verify empty state illustrations and "Create New" CTAs appear when no data exists.
-- [ ] **Loading States:** Verify skeleton loaders or spinners appear during API fetches.
+For every module listed below, the following 6 testing methodologies are rigorously applied:
 
-### 2.2 Form, Field & Validation Testing
-- [ ] **Mandatory Fields:** Submit forms empty to verify required field validation errors appear.
-- [ ] **Data Types:** Input invalid types (strings in number fields, negative numbers where illogical, invalid emails) and verify inline validation.
-- [ ] **Character Limits:** Test boundary values (e.g., > 255 chars in varchar fields).
-- [ ] **Dropdowns & Comboboxes:** Verify all options load correctly from the API. Test searching within comboboxes.
-- [ ] **Draft/Reset:** Verify 'Cancel' or 'Reset' clears the form state correctly without saving.
+### Stage 1: Unit Testing (Target Coverage: 85%+)
+- **Scope:** Automated tests verifying individual functions, utility methods, Redux slices, API route handlers, and isolated React components.
+- **Methodology:** Use Jest/Vitest for backend logic and React Testing Library for frontend components. All external dependencies and database calls must be mocked.
+- **Validation:** Ensure business logic, math calculations, and schema validations behave correctly under both expected and edge-case inputs.
 
-### 2.3 Data Persistence & API Integration Testing
-- [ ] **CRUD Operations:** Test Create, Read, Update, and Delete operations for every entity.
-- [ ] **Optimistic Updates:** Verify the UI updates immediately before the API responds, and rolls back if the API fails.
-- [ ] **Database Verification:** After submission, query the database to verify data is correctly persisted in all columns.
-- [ ] **Error Handling:** Simulate API failures (500, 400, 401) and verify the UI displays a user-friendly error toast, not a crash.
-- [ ] **Data Integrity:** Verify foreign keys and cascading deletes behave correctly at the database level.
+### Stage 2: Integration Testing
+- **Scope:** API testing and cross-module workflows (e.g., Procure-to-Pay, Order-to-Cash) to ensure data flows correctly between boundaries.
+- **Methodology:** Use a test database to verify actual database state changes. Test service-to-service communication.
+- **Validation:** Verify API endpoints (request validation, response formatting, status codes, transaction rollbacks).
 
-### 2.4 State Management & Global Context
-- [ ] **Redux/Zustand State:** Verify state updates reflect across different components on the same page.
-- [ ] **Cross-Tab Synchronization:** Verify JWT token expiration and state syncing across multiple browser tabs.
+### Stage 3: End-to-End (E2E) Testing
+- **Scope:** Automated UI/API tests mimicking real-user journeys across the entire application stack.
+- **Methodology:** Use Cypress or Playwright to automate browser interactions from the UI layer down to the database persistence layer.
+- **Validation (per feature):** 
+  - **UI/UX:** Page load (< 1.5s), responsive design, blank states, component rendering.
+  - **Data Entry:** Mandatory fields, invalid types, character limits, dropdown loading.
+  - **Persistence:** Optimistic UI updates, foreign key constraints, API error handling (400/500 toasts), and final database row verification.
 
-### 2.5 Role-Based Access Control (RBAC) Testing
-- [ ] **Admin Access:** Verify full CRUD capabilities.
-- [ ] **Read-Only User:** Verify edit/delete buttons are hidden or disabled.
-- [ ] **Unauthorized Route:** Attempt to visit a URL the user lacks permissions for; verify a 403 Forbidden page appears.
+### Stage 4: User Acceptance Testing (UAT)
+- **Scope:** Business stakeholders validating the system against real-world scenarios.
+- **Methodology:** Manual testing by subject matter experts (SMEs) following business process scripts.
+- **Validation:** Sign-off that the module correctly supports day-to-day operational workflows.
+
+### Stage 5: Performance & Load Testing
+- **Scope:** Simulating concurrent enterprise users to validate system responsiveness, database locks, and queue processing.
+- **Methodology:** Use k6 or JMeter to simulate 1000+ concurrent users performing read/write operations.
+- **Validation:** Ensure API latency remains < 1.5s under load, verify database connection pooling handles spikes, and confirm async background workers (BullMQ) process queues without deadlocking.
+
+### Stage 6: Security & Compliance Testing
+- **Scope:** Penetration testing, vulnerability scanning, and verifying Role-Based Access Control (RBAC) and compliance (GDPR, SOX).
+- **Methodology:** Automated SAST/DAST tools + manual role-switching verification.
+- **Validation:** Verify users cannot access unauthorized routes (403 Forbidden). Ensure PII masking (GDPR) and immutable field-level audit logging (SOX) function properly.
 
 ---
 
-## 3. Module-by-Module E2E Test Plans
+## 3. Module-by-Module Detailed Test Plans
 
-Below are the detailed feature-level testing checklists for all 41 modules. Each specific feature must be tested through the UI, validating the API payload, and confirming database persistence.
+The 6-stage framework must be applied to the specific features comprising each module:
 
 ### 1. Accounts Payable (AP)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Supplier Master (Hdr + Sites with IBAN/SWIFT)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Standard Invoice (Header/Lines/Distributions) + SLA
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Prepayments (Application/Unapplication, balance tracking)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** 2-Way/3-Way Matching + Multi-level Variance Holds
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Multi-tier Withholding Tax (WHT) Groups & priority-based rates
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** PPR Payment Batches with ISO20022 (pain.001) XML export
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Treasury Bank Account Connectivity
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Automated Intercompany Balancing (SLA/BSV level)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** 5-Bucket Aging Reports + Immutable Audit Trail
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Subledger Period Close (readiness checks)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Async Payment Worker (Background Processing)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI Multimodal Invoice Capture (Whisper/GPT-4o)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** RBAC (Manager/Clerk)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Invoice Approval Routing
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Payment Terms Master
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Early Payment Discounts
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Supplier Balance Inquiry
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Invoice Image Attachment
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Debit Memo / Supplier Credit Integration
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** 1099 / Tax Reporting
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 1. Accounts Payable (AP) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Supplier Master (Hdr + Sites with IBAN/SWIFT)
+- Standard Invoice (Header/Lines/Distributions) + SLA
+- Prepayments (Application/Unapplication, balance tracking)
+- 2-Way/3-Way Matching + Multi-level Variance Holds
+- Multi-tier Withholding Tax (WHT) Groups & priority-based rates
+- PPR Payment Batches with ISO20022 (pain.001) XML export
+- Treasury Bank Account Connectivity
+- Automated Intercompany Balancing (SLA/BSV level)
+- 5-Bucket Aging Reports + Immutable Audit Trail
+- Subledger Period Close (readiness checks)
+- Async Payment Worker (Background Processing)
+- AI Multimodal Invoice Capture (Whisper/GPT-4o)
+- RBAC (Manager/Clerk)
+- Invoice Approval Routing
+- Payment Terms Master
+- Early Payment Discounts
+- Supplier Balance Inquiry
+- Invoice Image Attachment
+- Debit Memo / Supplier Credit Integration
+- 1099 / Tax Reporting
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 1. Accounts Payable (AP).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 1. Accounts Payable (AP) to related modules (e.g., GL, AP, AR) for the following functions:
+- Supplier Master (Hdr + Sites with IBAN/SWIFT)
+- Standard Invoice (Header/Lines/Distributions) + SLA
+- Prepayments (Application/Unapplication, balance tracking)
+- 2-Way/3-Way Matching + Multi-level Variance Holds
+- Multi-tier Withholding Tax (WHT) Groups & priority-based rates
+- PPR Payment Batches with ISO20022 (pain.001) XML export
+- Treasury Bank Account Connectivity
+- Automated Intercompany Balancing (SLA/BSV level)
+- 5-Bucket Aging Reports + Immutable Audit Trail
+- Subledger Period Close (readiness checks)
+- Async Payment Worker (Background Processing)
+- AI Multimodal Invoice Capture (Whisper/GPT-4o)
+- RBAC (Manager/Clerk)
+- Invoice Approval Routing
+- Payment Terms Master
+- Early Payment Discounts
+- Supplier Balance Inquiry
+- Invoice Image Attachment
+- Debit Memo / Supplier Credit Integration
+- 1099 / Tax Reporting
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Supplier Master (Hdr + Sites with IBAN/SWIFT)
+- Standard Invoice (Header/Lines/Distributions) + SLA
+- Prepayments (Application/Unapplication, balance tracking)
+- 2-Way/3-Way Matching + Multi-level Variance Holds
+- Multi-tier Withholding Tax (WHT) Groups & priority-based rates
+- PPR Payment Batches with ISO20022 (pain.001) XML export
+- Treasury Bank Account Connectivity
+- Automated Intercompany Balancing (SLA/BSV level)
+- 5-Bucket Aging Reports + Immutable Audit Trail
+- Subledger Period Close (readiness checks)
+- Async Payment Worker (Background Processing)
+- AI Multimodal Invoice Capture (Whisper/GPT-4o)
+- RBAC (Manager/Clerk)
+- Invoice Approval Routing
+- Payment Terms Master
+- Early Payment Discounts
+- Supplier Balance Inquiry
+- Invoice Image Attachment
+- Debit Memo / Supplier Credit Integration
+- 1099 / Tax Reporting
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Supplier Master (Hdr + Sites with IBAN/SWIFT)
+- Standard Invoice (Header/Lines/Distributions) + SLA
+- Prepayments (Application/Unapplication, balance tracking)
+- 2-Way/3-Way Matching + Multi-level Variance Holds
+- Multi-tier Withholding Tax (WHT) Groups & priority-based rates
+- PPR Payment Batches with ISO20022 (pain.001) XML export
+- Treasury Bank Account Connectivity
+- Automated Intercompany Balancing (SLA/BSV level)
+- 5-Bucket Aging Reports + Immutable Audit Trail
+- Subledger Period Close (readiness checks)
+- Async Payment Worker (Background Processing)
+- AI Multimodal Invoice Capture (Whisper/GPT-4o)
+- RBAC (Manager/Clerk)
+- Invoice Approval Routing
+- Payment Terms Master
+- Early Payment Discounts
+- Supplier Balance Inquiry
+- Invoice Image Attachment
+- Debit Memo / Supplier Credit Integration
+- 1099 / Tax Reporting
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Supplier Master (Hdr + Sites with IBAN/SWIFT)
+- Standard Invoice (Header/Lines/Distributions) + SLA
+- Prepayments (Application/Unapplication, balance tracking)
+- 2-Way/3-Way Matching + Multi-level Variance Holds
+- Multi-tier Withholding Tax (WHT) Groups & priority-based rates
+- PPR Payment Batches with ISO20022 (pain.001) XML export
+- Treasury Bank Account Connectivity
+- Automated Intercompany Balancing (SLA/BSV level)
+- 5-Bucket Aging Reports + Immutable Audit Trail
+- Subledger Period Close (readiness checks)
+- Async Payment Worker (Background Processing)
+- AI Multimodal Invoice Capture (Whisper/GPT-4o)
+- RBAC (Manager/Clerk)
+- Invoice Approval Routing
+- Payment Terms Master
+- Early Payment Discounts
+- Supplier Balance Inquiry
+- Invoice Image Attachment
+- Debit Memo / Supplier Credit Integration
+- 1099 / Tax Reporting
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Supplier Master (Hdr + Sites with IBAN/SWIFT)
+- Standard Invoice (Header/Lines/Distributions) + SLA
+- Prepayments (Application/Unapplication, balance tracking)
+- 2-Way/3-Way Matching + Multi-level Variance Holds
+- Multi-tier Withholding Tax (WHT) Groups & priority-based rates
+- PPR Payment Batches with ISO20022 (pain.001) XML export
+- Treasury Bank Account Connectivity
+- Automated Intercompany Balancing (SLA/BSV level)
+- 5-Bucket Aging Reports + Immutable Audit Trail
+- Subledger Period Close (readiness checks)
+- Async Payment Worker (Background Processing)
+- AI Multimodal Invoice Capture (Whisper/GPT-4o)
+- RBAC (Manager/Clerk)
+- Invoice Approval Routing
+- Payment Terms Master
+- Early Payment Discounts
+- Supplier Balance Inquiry
+- Invoice Image Attachment
+- Debit Memo / Supplier Credit Integration
+- 1099 / Tax Reporting
 ---
 
 ### 2. Accounts Receivable (AR)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** TCA-Style Customer Hierarchy (Party → Account → Site)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Standard Invoices, Credit Memos, Debit Memos, Chargebacks
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Payment Terms & Application
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Receipt Application (Manual Apply)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Receipt Unapplication (`unapplyReceipt` + SLA Reversal)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** SLA Integration (Invoices, CMs, Receipts)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Revenue Schedules (`ar_revenue_schedules`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Async Dunning Worker (via `setImmediate`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Credit Scoring (on-demand)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Bulk Revenue Recognition API
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI Collections Email
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Adjustments (Write-off, Discount)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Disputes (`ar_disputes`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Collections Dashboard
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Lockbox / Auto-Apply
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Customer Statements
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Interest Invoices
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AR Aging (On-Screen Drill-Down)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AR-to-GL Reconciliation Report
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** FX Revaluation (AR Balances)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 2. Accounts Receivable (AR) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- TCA-Style Customer Hierarchy (Party → Account → Site)
+- Standard Invoices, Credit Memos, Debit Memos, Chargebacks
+- Payment Terms & Application
+- Receipt Application (Manual Apply)
+- Receipt Unapplication (`unapplyReceipt` + SLA Reversal)
+- SLA Integration (Invoices, CMs, Receipts)
+- Revenue Schedules (`ar_revenue_schedules`)
+- Async Dunning Worker (via `setImmediate`)
+- Credit Scoring (on-demand)
+- Bulk Revenue Recognition API
+- AI Collections Email
+- Adjustments (Write-off, Discount)
+- Disputes (`ar_disputes`)
+- Collections Dashboard
+- Lockbox / Auto-Apply
+- Customer Statements
+- Interest Invoices
+- AR Aging (On-Screen Drill-Down)
+- AR-to-GL Reconciliation Report
+- FX Revaluation (AR Balances)
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 2. Accounts Receivable (AR).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 2. Accounts Receivable (AR) to related modules (e.g., GL, AP, AR) for the following functions:
+- TCA-Style Customer Hierarchy (Party → Account → Site)
+- Standard Invoices, Credit Memos, Debit Memos, Chargebacks
+- Payment Terms & Application
+- Receipt Application (Manual Apply)
+- Receipt Unapplication (`unapplyReceipt` + SLA Reversal)
+- SLA Integration (Invoices, CMs, Receipts)
+- Revenue Schedules (`ar_revenue_schedules`)
+- Async Dunning Worker (via `setImmediate`)
+- Credit Scoring (on-demand)
+- Bulk Revenue Recognition API
+- AI Collections Email
+- Adjustments (Write-off, Discount)
+- Disputes (`ar_disputes`)
+- Collections Dashboard
+- Lockbox / Auto-Apply
+- Customer Statements
+- Interest Invoices
+- AR Aging (On-Screen Drill-Down)
+- AR-to-GL Reconciliation Report
+- FX Revaluation (AR Balances)
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- TCA-Style Customer Hierarchy (Party → Account → Site)
+- Standard Invoices, Credit Memos, Debit Memos, Chargebacks
+- Payment Terms & Application
+- Receipt Application (Manual Apply)
+- Receipt Unapplication (`unapplyReceipt` + SLA Reversal)
+- SLA Integration (Invoices, CMs, Receipts)
+- Revenue Schedules (`ar_revenue_schedules`)
+- Async Dunning Worker (via `setImmediate`)
+- Credit Scoring (on-demand)
+- Bulk Revenue Recognition API
+- AI Collections Email
+- Adjustments (Write-off, Discount)
+- Disputes (`ar_disputes`)
+- Collections Dashboard
+- Lockbox / Auto-Apply
+- Customer Statements
+- Interest Invoices
+- AR Aging (On-Screen Drill-Down)
+- AR-to-GL Reconciliation Report
+- FX Revaluation (AR Balances)
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- TCA-Style Customer Hierarchy (Party → Account → Site)
+- Standard Invoices, Credit Memos, Debit Memos, Chargebacks
+- Payment Terms & Application
+- Receipt Application (Manual Apply)
+- Receipt Unapplication (`unapplyReceipt` + SLA Reversal)
+- SLA Integration (Invoices, CMs, Receipts)
+- Revenue Schedules (`ar_revenue_schedules`)
+- Async Dunning Worker (via `setImmediate`)
+- Credit Scoring (on-demand)
+- Bulk Revenue Recognition API
+- AI Collections Email
+- Adjustments (Write-off, Discount)
+- Disputes (`ar_disputes`)
+- Collections Dashboard
+- Lockbox / Auto-Apply
+- Customer Statements
+- Interest Invoices
+- AR Aging (On-Screen Drill-Down)
+- AR-to-GL Reconciliation Report
+- FX Revaluation (AR Balances)
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- TCA-Style Customer Hierarchy (Party → Account → Site)
+- Standard Invoices, Credit Memos, Debit Memos, Chargebacks
+- Payment Terms & Application
+- Receipt Application (Manual Apply)
+- Receipt Unapplication (`unapplyReceipt` + SLA Reversal)
+- SLA Integration (Invoices, CMs, Receipts)
+- Revenue Schedules (`ar_revenue_schedules`)
+- Async Dunning Worker (via `setImmediate`)
+- Credit Scoring (on-demand)
+- Bulk Revenue Recognition API
+- AI Collections Email
+- Adjustments (Write-off, Discount)
+- Disputes (`ar_disputes`)
+- Collections Dashboard
+- Lockbox / Auto-Apply
+- Customer Statements
+- Interest Invoices
+- AR Aging (On-Screen Drill-Down)
+- AR-to-GL Reconciliation Report
+- FX Revaluation (AR Balances)
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- TCA-Style Customer Hierarchy (Party → Account → Site)
+- Standard Invoices, Credit Memos, Debit Memos, Chargebacks
+- Payment Terms & Application
+- Receipt Application (Manual Apply)
+- Receipt Unapplication (`unapplyReceipt` + SLA Reversal)
+- SLA Integration (Invoices, CMs, Receipts)
+- Revenue Schedules (`ar_revenue_schedules`)
+- Async Dunning Worker (via `setImmediate`)
+- Credit Scoring (on-demand)
+- Bulk Revenue Recognition API
+- AI Collections Email
+- Adjustments (Write-off, Discount)
+- Disputes (`ar_disputes`)
+- Collections Dashboard
+- Lockbox / Auto-Apply
+- Customer Statements
+- Interest Invoices
+- AR Aging (On-Screen Drill-Down)
+- AR-to-GL Reconciliation Report
+- FX Revaluation (AR Balances)
 ---
 
 ### 3. Billing & Revenue Innovation
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Auto-Invoice Engine (Batch SQL + App Batching)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Subscription Billing (Recurring Engine)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Billing Rules / Profiles Manager
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Tax Calculation (`TaxService` — stub)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** SLA / GL Integration (`BillingAccountingService`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Tiered Invoice Approval (VP > $10k)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Revenue Recognition (Auto-Schedules, ASC 606)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Credit Check (`CreditCheckService`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Credit Memos (`CreditMemoService`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Multi-Currency Exchange Rate Service
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI Anomaly Detection (`BillingAnomalyDashboard`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Server-Side Pagination (StandardTable)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Billing Transaction Source Registry
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Consolidated Invoicing
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Invoice Formatting / Template Engine
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Dunning / Collections Integration
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Bill-and-Hold / Deferred Revenue UI
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 3. Billing & Revenue Innovation calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Auto-Invoice Engine (Batch SQL + App Batching)
+- Subscription Billing (Recurring Engine)
+- Billing Rules / Profiles Manager
+- Tax Calculation (`TaxService` — stub)
+- SLA / GL Integration (`BillingAccountingService`)
+- Tiered Invoice Approval (VP > $10k)
+- Revenue Recognition (Auto-Schedules, ASC 606)
+- Credit Check (`CreditCheckService`)
+- Credit Memos (`CreditMemoService`)
+- Multi-Currency Exchange Rate Service
+- AI Anomaly Detection (`BillingAnomalyDashboard`)
+- Server-Side Pagination (StandardTable)
+- Billing Transaction Source Registry
+- Consolidated Invoicing
+- Invoice Formatting / Template Engine
+- Dunning / Collections Integration
+- Bill-and-Hold / Deferred Revenue UI
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 3. Billing & Revenue Innovation.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 3. Billing & Revenue Innovation to related modules (e.g., GL, AP, AR) for the following functions:
+- Auto-Invoice Engine (Batch SQL + App Batching)
+- Subscription Billing (Recurring Engine)
+- Billing Rules / Profiles Manager
+- Tax Calculation (`TaxService` — stub)
+- SLA / GL Integration (`BillingAccountingService`)
+- Tiered Invoice Approval (VP > $10k)
+- Revenue Recognition (Auto-Schedules, ASC 606)
+- Credit Check (`CreditCheckService`)
+- Credit Memos (`CreditMemoService`)
+- Multi-Currency Exchange Rate Service
+- AI Anomaly Detection (`BillingAnomalyDashboard`)
+- Server-Side Pagination (StandardTable)
+- Billing Transaction Source Registry
+- Consolidated Invoicing
+- Invoice Formatting / Template Engine
+- Dunning / Collections Integration
+- Bill-and-Hold / Deferred Revenue UI
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Auto-Invoice Engine (Batch SQL + App Batching)
+- Subscription Billing (Recurring Engine)
+- Billing Rules / Profiles Manager
+- Tax Calculation (`TaxService` — stub)
+- SLA / GL Integration (`BillingAccountingService`)
+- Tiered Invoice Approval (VP > $10k)
+- Revenue Recognition (Auto-Schedules, ASC 606)
+- Credit Check (`CreditCheckService`)
+- Credit Memos (`CreditMemoService`)
+- Multi-Currency Exchange Rate Service
+- AI Anomaly Detection (`BillingAnomalyDashboard`)
+- Server-Side Pagination (StandardTable)
+- Billing Transaction Source Registry
+- Consolidated Invoicing
+- Invoice Formatting / Template Engine
+- Dunning / Collections Integration
+- Bill-and-Hold / Deferred Revenue UI
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Auto-Invoice Engine (Batch SQL + App Batching)
+- Subscription Billing (Recurring Engine)
+- Billing Rules / Profiles Manager
+- Tax Calculation (`TaxService` — stub)
+- SLA / GL Integration (`BillingAccountingService`)
+- Tiered Invoice Approval (VP > $10k)
+- Revenue Recognition (Auto-Schedules, ASC 606)
+- Credit Check (`CreditCheckService`)
+- Credit Memos (`CreditMemoService`)
+- Multi-Currency Exchange Rate Service
+- AI Anomaly Detection (`BillingAnomalyDashboard`)
+- Server-Side Pagination (StandardTable)
+- Billing Transaction Source Registry
+- Consolidated Invoicing
+- Invoice Formatting / Template Engine
+- Dunning / Collections Integration
+- Bill-and-Hold / Deferred Revenue UI
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Auto-Invoice Engine (Batch SQL + App Batching)
+- Subscription Billing (Recurring Engine)
+- Billing Rules / Profiles Manager
+- Tax Calculation (`TaxService` — stub)
+- SLA / GL Integration (`BillingAccountingService`)
+- Tiered Invoice Approval (VP > $10k)
+- Revenue Recognition (Auto-Schedules, ASC 606)
+- Credit Check (`CreditCheckService`)
+- Credit Memos (`CreditMemoService`)
+- Multi-Currency Exchange Rate Service
+- AI Anomaly Detection (`BillingAnomalyDashboard`)
+- Server-Side Pagination (StandardTable)
+- Billing Transaction Source Registry
+- Consolidated Invoicing
+- Invoice Formatting / Template Engine
+- Dunning / Collections Integration
+- Bill-and-Hold / Deferred Revenue UI
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Auto-Invoice Engine (Batch SQL + App Batching)
+- Subscription Billing (Recurring Engine)
+- Billing Rules / Profiles Manager
+- Tax Calculation (`TaxService` — stub)
+- SLA / GL Integration (`BillingAccountingService`)
+- Tiered Invoice Approval (VP > $10k)
+- Revenue Recognition (Auto-Schedules, ASC 606)
+- Credit Check (`CreditCheckService`)
+- Credit Memos (`CreditMemoService`)
+- Multi-Currency Exchange Rate Service
+- AI Anomaly Detection (`BillingAnomalyDashboard`)
+- Server-Side Pagination (StandardTable)
+- Billing Transaction Source Registry
+- Consolidated Invoicing
+- Invoice Formatting / Template Engine
+- Dunning / Collections Integration
+- Bill-and-Hold / Deferred Revenue UI
 ---
 
 ### 4. Cash Management (CM)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Bank Account Management (Maker-Checker + Audit)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Statement Processing: Camt.053, MT940, BAI2, Camt.052
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Smart Reconciliation Engine (Amount/Date Tolerance, Regex)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Multi-Scenario Cash Forecasting
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** FX Revaluation via `glDailyRates` + SLA Posting
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** ZBA / Cash Pooling (Autonomous Cron Sweep Engine)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Auditor-Grade PDF Reconciliation Report
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI Liquidity Insights Sidebar
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Immutable Audit Logging (`cash-audit.service.ts`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Bank Hierarchy Registry (Bank → Branch)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Manual Cash Transaction Entry
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Bank Account Transfer
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Reconciliation Exception Write-Off
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Cross-Entity Cash Position Consolidation
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 4. Cash Management (CM) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Bank Account Management (Maker-Checker + Audit)
+- Statement Processing: Camt.053, MT940, BAI2, Camt.052
+- Smart Reconciliation Engine (Amount/Date Tolerance, Regex)
+- Multi-Scenario Cash Forecasting
+- FX Revaluation via `glDailyRates` + SLA Posting
+- ZBA / Cash Pooling (Autonomous Cron Sweep Engine)
+- Auditor-Grade PDF Reconciliation Report
+- AI Liquidity Insights Sidebar
+- Immutable Audit Logging (`cash-audit.service.ts`)
+- Bank Hierarchy Registry (Bank → Branch)
+- Manual Cash Transaction Entry
+- Bank Account Transfer
+- Reconciliation Exception Write-Off
+- Cross-Entity Cash Position Consolidation
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 4. Cash Management (CM).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 4. Cash Management (CM) to related modules (e.g., GL, AP, AR) for the following functions:
+- Bank Account Management (Maker-Checker + Audit)
+- Statement Processing: Camt.053, MT940, BAI2, Camt.052
+- Smart Reconciliation Engine (Amount/Date Tolerance, Regex)
+- Multi-Scenario Cash Forecasting
+- FX Revaluation via `glDailyRates` + SLA Posting
+- ZBA / Cash Pooling (Autonomous Cron Sweep Engine)
+- Auditor-Grade PDF Reconciliation Report
+- AI Liquidity Insights Sidebar
+- Immutable Audit Logging (`cash-audit.service.ts`)
+- Bank Hierarchy Registry (Bank → Branch)
+- Manual Cash Transaction Entry
+- Bank Account Transfer
+- Reconciliation Exception Write-Off
+- Cross-Entity Cash Position Consolidation
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Bank Account Management (Maker-Checker + Audit)
+- Statement Processing: Camt.053, MT940, BAI2, Camt.052
+- Smart Reconciliation Engine (Amount/Date Tolerance, Regex)
+- Multi-Scenario Cash Forecasting
+- FX Revaluation via `glDailyRates` + SLA Posting
+- ZBA / Cash Pooling (Autonomous Cron Sweep Engine)
+- Auditor-Grade PDF Reconciliation Report
+- AI Liquidity Insights Sidebar
+- Immutable Audit Logging (`cash-audit.service.ts`)
+- Bank Hierarchy Registry (Bank → Branch)
+- Manual Cash Transaction Entry
+- Bank Account Transfer
+- Reconciliation Exception Write-Off
+- Cross-Entity Cash Position Consolidation
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Bank Account Management (Maker-Checker + Audit)
+- Statement Processing: Camt.053, MT940, BAI2, Camt.052
+- Smart Reconciliation Engine (Amount/Date Tolerance, Regex)
+- Multi-Scenario Cash Forecasting
+- FX Revaluation via `glDailyRates` + SLA Posting
+- ZBA / Cash Pooling (Autonomous Cron Sweep Engine)
+- Auditor-Grade PDF Reconciliation Report
+- AI Liquidity Insights Sidebar
+- Immutable Audit Logging (`cash-audit.service.ts`)
+- Bank Hierarchy Registry (Bank → Branch)
+- Manual Cash Transaction Entry
+- Bank Account Transfer
+- Reconciliation Exception Write-Off
+- Cross-Entity Cash Position Consolidation
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Bank Account Management (Maker-Checker + Audit)
+- Statement Processing: Camt.053, MT940, BAI2, Camt.052
+- Smart Reconciliation Engine (Amount/Date Tolerance, Regex)
+- Multi-Scenario Cash Forecasting
+- FX Revaluation via `glDailyRates` + SLA Posting
+- ZBA / Cash Pooling (Autonomous Cron Sweep Engine)
+- Auditor-Grade PDF Reconciliation Report
+- AI Liquidity Insights Sidebar
+- Immutable Audit Logging (`cash-audit.service.ts`)
+- Bank Hierarchy Registry (Bank → Branch)
+- Manual Cash Transaction Entry
+- Bank Account Transfer
+- Reconciliation Exception Write-Off
+- Cross-Entity Cash Position Consolidation
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Bank Account Management (Maker-Checker + Audit)
+- Statement Processing: Camt.053, MT940, BAI2, Camt.052
+- Smart Reconciliation Engine (Amount/Date Tolerance, Regex)
+- Multi-Scenario Cash Forecasting
+- FX Revaluation via `glDailyRates` + SLA Posting
+- ZBA / Cash Pooling (Autonomous Cron Sweep Engine)
+- Auditor-Grade PDF Reconciliation Report
+- AI Liquidity Insights Sidebar
+- Immutable Audit Logging (`cash-audit.service.ts`)
+- Bank Hierarchy Registry (Bank → Branch)
+- Manual Cash Transaction Entry
+- Bank Account Transfer
+- Reconciliation Exception Write-Off
+- Cross-Entity Cash Position Consolidation
 ---
 
 ### 5. Construction Management
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Project Controls (WBS, Budget, EAC)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Contract Management (Prime/Sub, SOV)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Change Control (Variations/PCO/CO)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Progress Billing (AIA G702/G703 + Retentions)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** 3-Stage Certification Workflow
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** SLA Accounting (WIP/AP/Retainage journals)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Field Operations (Daily Logs, RFIs, Submittals)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Claims & Disputes Register
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Resource Management + IoT Telemetry
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Construction Setup (Retention Rules, Variation Types)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** CSI Global Cost Code Library
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Site Compliance Gate (Insurance/Bond expiry block)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Server-Side Pagination for bulk SOV
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI Risk Score + Schedule Delay
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Earned Value Management (EVM)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Drawing & Document Management
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Schedule (Gantt) Integration
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 5. Construction Management calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Project Controls (WBS, Budget, EAC)
+- Contract Management (Prime/Sub, SOV)
+- Change Control (Variations/PCO/CO)
+- Progress Billing (AIA G702/G703 + Retentions)
+- 3-Stage Certification Workflow
+- SLA Accounting (WIP/AP/Retainage journals)
+- Field Operations (Daily Logs, RFIs, Submittals)
+- Claims & Disputes Register
+- Resource Management + IoT Telemetry
+- Construction Setup (Retention Rules, Variation Types)
+- CSI Global Cost Code Library
+- Site Compliance Gate (Insurance/Bond expiry block)
+- Server-Side Pagination for bulk SOV
+- AI Risk Score + Schedule Delay
+- Earned Value Management (EVM)
+- Drawing & Document Management
+- Schedule (Gantt) Integration
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 5. Construction Management.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 5. Construction Management to related modules (e.g., GL, AP, AR) for the following functions:
+- Project Controls (WBS, Budget, EAC)
+- Contract Management (Prime/Sub, SOV)
+- Change Control (Variations/PCO/CO)
+- Progress Billing (AIA G702/G703 + Retentions)
+- 3-Stage Certification Workflow
+- SLA Accounting (WIP/AP/Retainage journals)
+- Field Operations (Daily Logs, RFIs, Submittals)
+- Claims & Disputes Register
+- Resource Management + IoT Telemetry
+- Construction Setup (Retention Rules, Variation Types)
+- CSI Global Cost Code Library
+- Site Compliance Gate (Insurance/Bond expiry block)
+- Server-Side Pagination for bulk SOV
+- AI Risk Score + Schedule Delay
+- Earned Value Management (EVM)
+- Drawing & Document Management
+- Schedule (Gantt) Integration
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Project Controls (WBS, Budget, EAC)
+- Contract Management (Prime/Sub, SOV)
+- Change Control (Variations/PCO/CO)
+- Progress Billing (AIA G702/G703 + Retentions)
+- 3-Stage Certification Workflow
+- SLA Accounting (WIP/AP/Retainage journals)
+- Field Operations (Daily Logs, RFIs, Submittals)
+- Claims & Disputes Register
+- Resource Management + IoT Telemetry
+- Construction Setup (Retention Rules, Variation Types)
+- CSI Global Cost Code Library
+- Site Compliance Gate (Insurance/Bond expiry block)
+- Server-Side Pagination for bulk SOV
+- AI Risk Score + Schedule Delay
+- Earned Value Management (EVM)
+- Drawing & Document Management
+- Schedule (Gantt) Integration
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Project Controls (WBS, Budget, EAC)
+- Contract Management (Prime/Sub, SOV)
+- Change Control (Variations/PCO/CO)
+- Progress Billing (AIA G702/G703 + Retentions)
+- 3-Stage Certification Workflow
+- SLA Accounting (WIP/AP/Retainage journals)
+- Field Operations (Daily Logs, RFIs, Submittals)
+- Claims & Disputes Register
+- Resource Management + IoT Telemetry
+- Construction Setup (Retention Rules, Variation Types)
+- CSI Global Cost Code Library
+- Site Compliance Gate (Insurance/Bond expiry block)
+- Server-Side Pagination for bulk SOV
+- AI Risk Score + Schedule Delay
+- Earned Value Management (EVM)
+- Drawing & Document Management
+- Schedule (Gantt) Integration
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Project Controls (WBS, Budget, EAC)
+- Contract Management (Prime/Sub, SOV)
+- Change Control (Variations/PCO/CO)
+- Progress Billing (AIA G702/G703 + Retentions)
+- 3-Stage Certification Workflow
+- SLA Accounting (WIP/AP/Retainage journals)
+- Field Operations (Daily Logs, RFIs, Submittals)
+- Claims & Disputes Register
+- Resource Management + IoT Telemetry
+- Construction Setup (Retention Rules, Variation Types)
+- CSI Global Cost Code Library
+- Site Compliance Gate (Insurance/Bond expiry block)
+- Server-Side Pagination for bulk SOV
+- AI Risk Score + Schedule Delay
+- Earned Value Management (EVM)
+- Drawing & Document Management
+- Schedule (Gantt) Integration
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Project Controls (WBS, Budget, EAC)
+- Contract Management (Prime/Sub, SOV)
+- Change Control (Variations/PCO/CO)
+- Progress Billing (AIA G702/G703 + Retentions)
+- 3-Stage Certification Workflow
+- SLA Accounting (WIP/AP/Retainage journals)
+- Field Operations (Daily Logs, RFIs, Submittals)
+- Claims & Disputes Register
+- Resource Management + IoT Telemetry
+- Construction Setup (Retention Rules, Variation Types)
+- CSI Global Cost Code Library
+- Site Compliance Gate (Insurance/Bond expiry block)
+- Server-Side Pagination for bulk SOV
+- AI Risk Score + Schedule Delay
+- Earned Value Management (EVM)
+- Drawing & Document Management
+- Schedule (Gantt) Integration
 ---
 
 ### 6. Core HR (Global Human Resources)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Enterprise Structure (Legal Entity, Legal Employer, PSU)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Workforce Structure (Jobs, Positions, Grades)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Person Model (Person ID, Global Name, NID)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** 3-Tier Employment Model (Person → Work Relationship → Assignment)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Hire / Transfer / Terminate Workflows
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Effective Dating ("As Of Date")
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Manager Hierarchy (Line, Matrix, Dept)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Checklists / Journeys (Onboarding, Offboarding)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Document Records (Visas, Contracts)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Area of Responsibility (AOR) RBAC
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Analytics Dashboard (Headcount, Attrition, Diversity)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Field-Level Immutable Audit Log
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** HDL Lite Bulk Data (CSV Import)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Server-Side Pagination
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Payroll Integration (Element Entries)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Absence Management
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Compensation Workbench
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 6. Core HR (Global Human Resources) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Enterprise Structure (Legal Entity, Legal Employer, PSU)
+- Workforce Structure (Jobs, Positions, Grades)
+- Person Model (Person ID, Global Name, NID)
+- 3-Tier Employment Model (Person → Work Relationship → Assignment)
+- Hire / Transfer / Terminate Workflows
+- Effective Dating ("As Of Date")
+- Manager Hierarchy (Line, Matrix, Dept)
+- Checklists / Journeys (Onboarding, Offboarding)
+- Document Records (Visas, Contracts)
+- Area of Responsibility (AOR) RBAC
+- Analytics Dashboard (Headcount, Attrition, Diversity)
+- Field-Level Immutable Audit Log
+- HDL Lite Bulk Data (CSV Import)
+- Server-Side Pagination
+- Payroll Integration (Element Entries)
+- Absence Management
+- Compensation Workbench
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 6. Core HR (Global Human Resources).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 6. Core HR (Global Human Resources) to related modules (e.g., GL, AP, AR) for the following functions:
+- Enterprise Structure (Legal Entity, Legal Employer, PSU)
+- Workforce Structure (Jobs, Positions, Grades)
+- Person Model (Person ID, Global Name, NID)
+- 3-Tier Employment Model (Person → Work Relationship → Assignment)
+- Hire / Transfer / Terminate Workflows
+- Effective Dating ("As Of Date")
+- Manager Hierarchy (Line, Matrix, Dept)
+- Checklists / Journeys (Onboarding, Offboarding)
+- Document Records (Visas, Contracts)
+- Area of Responsibility (AOR) RBAC
+- Analytics Dashboard (Headcount, Attrition, Diversity)
+- Field-Level Immutable Audit Log
+- HDL Lite Bulk Data (CSV Import)
+- Server-Side Pagination
+- Payroll Integration (Element Entries)
+- Absence Management
+- Compensation Workbench
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Enterprise Structure (Legal Entity, Legal Employer, PSU)
+- Workforce Structure (Jobs, Positions, Grades)
+- Person Model (Person ID, Global Name, NID)
+- 3-Tier Employment Model (Person → Work Relationship → Assignment)
+- Hire / Transfer / Terminate Workflows
+- Effective Dating ("As Of Date")
+- Manager Hierarchy (Line, Matrix, Dept)
+- Checklists / Journeys (Onboarding, Offboarding)
+- Document Records (Visas, Contracts)
+- Area of Responsibility (AOR) RBAC
+- Analytics Dashboard (Headcount, Attrition, Diversity)
+- Field-Level Immutable Audit Log
+- HDL Lite Bulk Data (CSV Import)
+- Server-Side Pagination
+- Payroll Integration (Element Entries)
+- Absence Management
+- Compensation Workbench
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Enterprise Structure (Legal Entity, Legal Employer, PSU)
+- Workforce Structure (Jobs, Positions, Grades)
+- Person Model (Person ID, Global Name, NID)
+- 3-Tier Employment Model (Person → Work Relationship → Assignment)
+- Hire / Transfer / Terminate Workflows
+- Effective Dating ("As Of Date")
+- Manager Hierarchy (Line, Matrix, Dept)
+- Checklists / Journeys (Onboarding, Offboarding)
+- Document Records (Visas, Contracts)
+- Area of Responsibility (AOR) RBAC
+- Analytics Dashboard (Headcount, Attrition, Diversity)
+- Field-Level Immutable Audit Log
+- HDL Lite Bulk Data (CSV Import)
+- Server-Side Pagination
+- Payroll Integration (Element Entries)
+- Absence Management
+- Compensation Workbench
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Enterprise Structure (Legal Entity, Legal Employer, PSU)
+- Workforce Structure (Jobs, Positions, Grades)
+- Person Model (Person ID, Global Name, NID)
+- 3-Tier Employment Model (Person → Work Relationship → Assignment)
+- Hire / Transfer / Terminate Workflows
+- Effective Dating ("As Of Date")
+- Manager Hierarchy (Line, Matrix, Dept)
+- Checklists / Journeys (Onboarding, Offboarding)
+- Document Records (Visas, Contracts)
+- Area of Responsibility (AOR) RBAC
+- Analytics Dashboard (Headcount, Attrition, Diversity)
+- Field-Level Immutable Audit Log
+- HDL Lite Bulk Data (CSV Import)
+- Server-Side Pagination
+- Payroll Integration (Element Entries)
+- Absence Management
+- Compensation Workbench
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Enterprise Structure (Legal Entity, Legal Employer, PSU)
+- Workforce Structure (Jobs, Positions, Grades)
+- Person Model (Person ID, Global Name, NID)
+- 3-Tier Employment Model (Person → Work Relationship → Assignment)
+- Hire / Transfer / Terminate Workflows
+- Effective Dating ("As Of Date")
+- Manager Hierarchy (Line, Matrix, Dept)
+- Checklists / Journeys (Onboarding, Offboarding)
+- Document Records (Visas, Contracts)
+- Area of Responsibility (AOR) RBAC
+- Analytics Dashboard (Headcount, Attrition, Diversity)
+- Field-Level Immutable Audit Log
+- HDL Lite Bulk Data (CSV Import)
+- Server-Side Pagination
+- Payroll Integration (Element Entries)
+- Absence Management
+- Compensation Workbench
 ---
 
 ### 7. Cost Management
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Standard & Weighted Average Costing
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Receipt Accounting (Accruals, Match to PO)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Landed Cost Management (Estimated & Actual LCM)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Cost Planning (Scenarios, Rollups, Updates)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Period Close (Cost Period Open/Close, Reconcile)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** WIP Costing (Material, Resource, Overhead)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Subledger Accounting (Create Accounting, Transfer to GL)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Analytics (Gross Margin, WIP Valuation)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI Anomaly Engine (IPV/Efficiency Variance Detection)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Cost Dashboards, Scenario Manager, Distributions Viewer
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Multi-Level Approval Workflow for Adjustments
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Stress Test (1M+ transactions)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** FIFO / LIFO Costing
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Cost Group + Cost Organization Hierarchy
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** COGS Revenue Matching (ASC 606 Deferred)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 7. Cost Management calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Standard & Weighted Average Costing
+- Receipt Accounting (Accruals, Match to PO)
+- Landed Cost Management (Estimated & Actual LCM)
+- Cost Planning (Scenarios, Rollups, Updates)
+- Period Close (Cost Period Open/Close, Reconcile)
+- WIP Costing (Material, Resource, Overhead)
+- Subledger Accounting (Create Accounting, Transfer to GL)
+- Analytics (Gross Margin, WIP Valuation)
+- AI Anomaly Engine (IPV/Efficiency Variance Detection)
+- Cost Dashboards, Scenario Manager, Distributions Viewer
+- Multi-Level Approval Workflow for Adjustments
+- Stress Test (1M+ transactions)
+- FIFO / LIFO Costing
+- Cost Group + Cost Organization Hierarchy
+- COGS Revenue Matching (ASC 606 Deferred)
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 7. Cost Management.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 7. Cost Management to related modules (e.g., GL, AP, AR) for the following functions:
+- Standard & Weighted Average Costing
+- Receipt Accounting (Accruals, Match to PO)
+- Landed Cost Management (Estimated & Actual LCM)
+- Cost Planning (Scenarios, Rollups, Updates)
+- Period Close (Cost Period Open/Close, Reconcile)
+- WIP Costing (Material, Resource, Overhead)
+- Subledger Accounting (Create Accounting, Transfer to GL)
+- Analytics (Gross Margin, WIP Valuation)
+- AI Anomaly Engine (IPV/Efficiency Variance Detection)
+- Cost Dashboards, Scenario Manager, Distributions Viewer
+- Multi-Level Approval Workflow for Adjustments
+- Stress Test (1M+ transactions)
+- FIFO / LIFO Costing
+- Cost Group + Cost Organization Hierarchy
+- COGS Revenue Matching (ASC 606 Deferred)
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Standard & Weighted Average Costing
+- Receipt Accounting (Accruals, Match to PO)
+- Landed Cost Management (Estimated & Actual LCM)
+- Cost Planning (Scenarios, Rollups, Updates)
+- Period Close (Cost Period Open/Close, Reconcile)
+- WIP Costing (Material, Resource, Overhead)
+- Subledger Accounting (Create Accounting, Transfer to GL)
+- Analytics (Gross Margin, WIP Valuation)
+- AI Anomaly Engine (IPV/Efficiency Variance Detection)
+- Cost Dashboards, Scenario Manager, Distributions Viewer
+- Multi-Level Approval Workflow for Adjustments
+- Stress Test (1M+ transactions)
+- FIFO / LIFO Costing
+- Cost Group + Cost Organization Hierarchy
+- COGS Revenue Matching (ASC 606 Deferred)
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Standard & Weighted Average Costing
+- Receipt Accounting (Accruals, Match to PO)
+- Landed Cost Management (Estimated & Actual LCM)
+- Cost Planning (Scenarios, Rollups, Updates)
+- Period Close (Cost Period Open/Close, Reconcile)
+- WIP Costing (Material, Resource, Overhead)
+- Subledger Accounting (Create Accounting, Transfer to GL)
+- Analytics (Gross Margin, WIP Valuation)
+- AI Anomaly Engine (IPV/Efficiency Variance Detection)
+- Cost Dashboards, Scenario Manager, Distributions Viewer
+- Multi-Level Approval Workflow for Adjustments
+- Stress Test (1M+ transactions)
+- FIFO / LIFO Costing
+- Cost Group + Cost Organization Hierarchy
+- COGS Revenue Matching (ASC 606 Deferred)
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Standard & Weighted Average Costing
+- Receipt Accounting (Accruals, Match to PO)
+- Landed Cost Management (Estimated & Actual LCM)
+- Cost Planning (Scenarios, Rollups, Updates)
+- Period Close (Cost Period Open/Close, Reconcile)
+- WIP Costing (Material, Resource, Overhead)
+- Subledger Accounting (Create Accounting, Transfer to GL)
+- Analytics (Gross Margin, WIP Valuation)
+- AI Anomaly Engine (IPV/Efficiency Variance Detection)
+- Cost Dashboards, Scenario Manager, Distributions Viewer
+- Multi-Level Approval Workflow for Adjustments
+- Stress Test (1M+ transactions)
+- FIFO / LIFO Costing
+- Cost Group + Cost Organization Hierarchy
+- COGS Revenue Matching (ASC 606 Deferred)
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Standard & Weighted Average Costing
+- Receipt Accounting (Accruals, Match to PO)
+- Landed Cost Management (Estimated & Actual LCM)
+- Cost Planning (Scenarios, Rollups, Updates)
+- Period Close (Cost Period Open/Close, Reconcile)
+- WIP Costing (Material, Resource, Overhead)
+- Subledger Accounting (Create Accounting, Transfer to GL)
+- Analytics (Gross Margin, WIP Valuation)
+- AI Anomaly Engine (IPV/Efficiency Variance Detection)
+- Cost Dashboards, Scenario Manager, Distributions Viewer
+- Multi-Level Approval Workflow for Adjustments
+- Stress Test (1M+ transactions)
+- FIFO / LIFO Costing
+- Cost Group + Cost Organization Hierarchy
+- COGS Revenue Matching (ASC 606 Deferred)
 ---
 
 ### 8. CRM (Customer Relationship Management)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Lead Capture, Scoring, Conversion, Campaigns
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Opportunity Pipeline (Kanban + DnD, Forecasting)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Account 360 (Hierarchy, Interaction History, Installed Base)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Service Cloud (Case Mgmt, Field Service, Knowledge Base)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Sales Contracts (MSA/SOW, Expiration Alerts)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Partner Portal (Deal Registration, Pipeline View)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Territories, Quotas, Incentive Compensation
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Order-to-Fulfillment WMS (Wave → Pick → Ship)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Analytics (Win Rate, SLA, Pipeline KPIs)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Server-Side Pagination + RBAC
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Multi-Tenancy Isolation
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Configure-Price-Quote (CPQ)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Digital Sales / B2B Commerce
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Subscription Renewal Management
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 8. CRM (Customer Relationship Management) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Lead Capture, Scoring, Conversion, Campaigns
+- Opportunity Pipeline (Kanban + DnD, Forecasting)
+- Account 360 (Hierarchy, Interaction History, Installed Base)
+- Service Cloud (Case Mgmt, Field Service, Knowledge Base)
+- Sales Contracts (MSA/SOW, Expiration Alerts)
+- Partner Portal (Deal Registration, Pipeline View)
+- Territories, Quotas, Incentive Compensation
+- Order-to-Fulfillment WMS (Wave → Pick → Ship)
+- Analytics (Win Rate, SLA, Pipeline KPIs)
+- Server-Side Pagination + RBAC
+- Multi-Tenancy Isolation
+- Configure-Price-Quote (CPQ)
+- Digital Sales / B2B Commerce
+- Subscription Renewal Management
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 8. CRM (Customer Relationship Management).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 8. CRM (Customer Relationship Management) to related modules (e.g., GL, AP, AR) for the following functions:
+- Lead Capture, Scoring, Conversion, Campaigns
+- Opportunity Pipeline (Kanban + DnD, Forecasting)
+- Account 360 (Hierarchy, Interaction History, Installed Base)
+- Service Cloud (Case Mgmt, Field Service, Knowledge Base)
+- Sales Contracts (MSA/SOW, Expiration Alerts)
+- Partner Portal (Deal Registration, Pipeline View)
+- Territories, Quotas, Incentive Compensation
+- Order-to-Fulfillment WMS (Wave → Pick → Ship)
+- Analytics (Win Rate, SLA, Pipeline KPIs)
+- Server-Side Pagination + RBAC
+- Multi-Tenancy Isolation
+- Configure-Price-Quote (CPQ)
+- Digital Sales / B2B Commerce
+- Subscription Renewal Management
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Lead Capture, Scoring, Conversion, Campaigns
+- Opportunity Pipeline (Kanban + DnD, Forecasting)
+- Account 360 (Hierarchy, Interaction History, Installed Base)
+- Service Cloud (Case Mgmt, Field Service, Knowledge Base)
+- Sales Contracts (MSA/SOW, Expiration Alerts)
+- Partner Portal (Deal Registration, Pipeline View)
+- Territories, Quotas, Incentive Compensation
+- Order-to-Fulfillment WMS (Wave → Pick → Ship)
+- Analytics (Win Rate, SLA, Pipeline KPIs)
+- Server-Side Pagination + RBAC
+- Multi-Tenancy Isolation
+- Configure-Price-Quote (CPQ)
+- Digital Sales / B2B Commerce
+- Subscription Renewal Management
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Lead Capture, Scoring, Conversion, Campaigns
+- Opportunity Pipeline (Kanban + DnD, Forecasting)
+- Account 360 (Hierarchy, Interaction History, Installed Base)
+- Service Cloud (Case Mgmt, Field Service, Knowledge Base)
+- Sales Contracts (MSA/SOW, Expiration Alerts)
+- Partner Portal (Deal Registration, Pipeline View)
+- Territories, Quotas, Incentive Compensation
+- Order-to-Fulfillment WMS (Wave → Pick → Ship)
+- Analytics (Win Rate, SLA, Pipeline KPIs)
+- Server-Side Pagination + RBAC
+- Multi-Tenancy Isolation
+- Configure-Price-Quote (CPQ)
+- Digital Sales / B2B Commerce
+- Subscription Renewal Management
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Lead Capture, Scoring, Conversion, Campaigns
+- Opportunity Pipeline (Kanban + DnD, Forecasting)
+- Account 360 (Hierarchy, Interaction History, Installed Base)
+- Service Cloud (Case Mgmt, Field Service, Knowledge Base)
+- Sales Contracts (MSA/SOW, Expiration Alerts)
+- Partner Portal (Deal Registration, Pipeline View)
+- Territories, Quotas, Incentive Compensation
+- Order-to-Fulfillment WMS (Wave → Pick → Ship)
+- Analytics (Win Rate, SLA, Pipeline KPIs)
+- Server-Side Pagination + RBAC
+- Multi-Tenancy Isolation
+- Configure-Price-Quote (CPQ)
+- Digital Sales / B2B Commerce
+- Subscription Renewal Management
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Lead Capture, Scoring, Conversion, Campaigns
+- Opportunity Pipeline (Kanban + DnD, Forecasting)
+- Account 360 (Hierarchy, Interaction History, Installed Base)
+- Service Cloud (Case Mgmt, Field Service, Knowledge Base)
+- Sales Contracts (MSA/SOW, Expiration Alerts)
+- Partner Portal (Deal Registration, Pipeline View)
+- Territories, Quotas, Incentive Compensation
+- Order-to-Fulfillment WMS (Wave → Pick → Ship)
+- Analytics (Win Rate, SLA, Pipeline KPIs)
+- Server-Side Pagination + RBAC
+- Multi-Tenancy Isolation
+- Configure-Price-Quote (CPQ)
+- Digital Sales / B2B Commerce
+- Subscription Renewal Management
 ---
 
 ### 9. EPM — Planning, Budgeting & Forecasting
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Strategic & Long-Range Planning (LRP, M&A Simulation)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Financial Planning (P&L, Balance Sheet, Cash Flow)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Budget Control (Variance Analysis, ZBB, Encumbrance)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Rolling Forecast (12/18/24 month, Dynamic Seeding)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Driver-Based & Scenario Planning (Goal-Seeking, Sensitivity)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Workforce Planning (Headcount, Benefits, Compensation)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** CapEx Planning (Asset Lifecycle, Depreciation)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** S&OP / Manufacturing Integration (Demand/Supply Sync)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Revenue/Margin Planning (Price-Volume-Mix)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Treasury Planning (Cash Flow Forecasting)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Intercompany Eliminations
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** ESG Planning (Carbon, Diversity)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI/Predictive Forecasting (Python ML Bridge)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Governance (Workflow, Locking, Row-Level Security)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** GL Real-Time Sync
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Essbase-Style Hypercube / Block Storage
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Narrative Reporting (Management Reports)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Financial Consolidation (FCCS-equivalent)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 9. EPM — Planning, Budgeting & Forecasting calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Strategic & Long-Range Planning (LRP, M&A Simulation)
+- Financial Planning (P&L, Balance Sheet, Cash Flow)
+- Budget Control (Variance Analysis, ZBB, Encumbrance)
+- Rolling Forecast (12/18/24 month, Dynamic Seeding)
+- Driver-Based & Scenario Planning (Goal-Seeking, Sensitivity)
+- Workforce Planning (Headcount, Benefits, Compensation)
+- CapEx Planning (Asset Lifecycle, Depreciation)
+- S&OP / Manufacturing Integration (Demand/Supply Sync)
+- Revenue/Margin Planning (Price-Volume-Mix)
+- Treasury Planning (Cash Flow Forecasting)
+- Intercompany Eliminations
+- ESG Planning (Carbon, Diversity)
+- AI/Predictive Forecasting (Python ML Bridge)
+- Governance (Workflow, Locking, Row-Level Security)
+- GL Real-Time Sync
+- Essbase-Style Hypercube / Block Storage
+- Narrative Reporting (Management Reports)
+- Financial Consolidation (FCCS-equivalent)
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 9. EPM — Planning, Budgeting & Forecasting.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 9. EPM — Planning, Budgeting & Forecasting to related modules (e.g., GL, AP, AR) for the following functions:
+- Strategic & Long-Range Planning (LRP, M&A Simulation)
+- Financial Planning (P&L, Balance Sheet, Cash Flow)
+- Budget Control (Variance Analysis, ZBB, Encumbrance)
+- Rolling Forecast (12/18/24 month, Dynamic Seeding)
+- Driver-Based & Scenario Planning (Goal-Seeking, Sensitivity)
+- Workforce Planning (Headcount, Benefits, Compensation)
+- CapEx Planning (Asset Lifecycle, Depreciation)
+- S&OP / Manufacturing Integration (Demand/Supply Sync)
+- Revenue/Margin Planning (Price-Volume-Mix)
+- Treasury Planning (Cash Flow Forecasting)
+- Intercompany Eliminations
+- ESG Planning (Carbon, Diversity)
+- AI/Predictive Forecasting (Python ML Bridge)
+- Governance (Workflow, Locking, Row-Level Security)
+- GL Real-Time Sync
+- Essbase-Style Hypercube / Block Storage
+- Narrative Reporting (Management Reports)
+- Financial Consolidation (FCCS-equivalent)
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Strategic & Long-Range Planning (LRP, M&A Simulation)
+- Financial Planning (P&L, Balance Sheet, Cash Flow)
+- Budget Control (Variance Analysis, ZBB, Encumbrance)
+- Rolling Forecast (12/18/24 month, Dynamic Seeding)
+- Driver-Based & Scenario Planning (Goal-Seeking, Sensitivity)
+- Workforce Planning (Headcount, Benefits, Compensation)
+- CapEx Planning (Asset Lifecycle, Depreciation)
+- S&OP / Manufacturing Integration (Demand/Supply Sync)
+- Revenue/Margin Planning (Price-Volume-Mix)
+- Treasury Planning (Cash Flow Forecasting)
+- Intercompany Eliminations
+- ESG Planning (Carbon, Diversity)
+- AI/Predictive Forecasting (Python ML Bridge)
+- Governance (Workflow, Locking, Row-Level Security)
+- GL Real-Time Sync
+- Essbase-Style Hypercube / Block Storage
+- Narrative Reporting (Management Reports)
+- Financial Consolidation (FCCS-equivalent)
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Strategic & Long-Range Planning (LRP, M&A Simulation)
+- Financial Planning (P&L, Balance Sheet, Cash Flow)
+- Budget Control (Variance Analysis, ZBB, Encumbrance)
+- Rolling Forecast (12/18/24 month, Dynamic Seeding)
+- Driver-Based & Scenario Planning (Goal-Seeking, Sensitivity)
+- Workforce Planning (Headcount, Benefits, Compensation)
+- CapEx Planning (Asset Lifecycle, Depreciation)
+- S&OP / Manufacturing Integration (Demand/Supply Sync)
+- Revenue/Margin Planning (Price-Volume-Mix)
+- Treasury Planning (Cash Flow Forecasting)
+- Intercompany Eliminations
+- ESG Planning (Carbon, Diversity)
+- AI/Predictive Forecasting (Python ML Bridge)
+- Governance (Workflow, Locking, Row-Level Security)
+- GL Real-Time Sync
+- Essbase-Style Hypercube / Block Storage
+- Narrative Reporting (Management Reports)
+- Financial Consolidation (FCCS-equivalent)
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Strategic & Long-Range Planning (LRP, M&A Simulation)
+- Financial Planning (P&L, Balance Sheet, Cash Flow)
+- Budget Control (Variance Analysis, ZBB, Encumbrance)
+- Rolling Forecast (12/18/24 month, Dynamic Seeding)
+- Driver-Based & Scenario Planning (Goal-Seeking, Sensitivity)
+- Workforce Planning (Headcount, Benefits, Compensation)
+- CapEx Planning (Asset Lifecycle, Depreciation)
+- S&OP / Manufacturing Integration (Demand/Supply Sync)
+- Revenue/Margin Planning (Price-Volume-Mix)
+- Treasury Planning (Cash Flow Forecasting)
+- Intercompany Eliminations
+- ESG Planning (Carbon, Diversity)
+- AI/Predictive Forecasting (Python ML Bridge)
+- Governance (Workflow, Locking, Row-Level Security)
+- GL Real-Time Sync
+- Essbase-Style Hypercube / Block Storage
+- Narrative Reporting (Management Reports)
+- Financial Consolidation (FCCS-equivalent)
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Strategic & Long-Range Planning (LRP, M&A Simulation)
+- Financial Planning (P&L, Balance Sheet, Cash Flow)
+- Budget Control (Variance Analysis, ZBB, Encumbrance)
+- Rolling Forecast (12/18/24 month, Dynamic Seeding)
+- Driver-Based & Scenario Planning (Goal-Seeking, Sensitivity)
+- Workforce Planning (Headcount, Benefits, Compensation)
+- CapEx Planning (Asset Lifecycle, Depreciation)
+- S&OP / Manufacturing Integration (Demand/Supply Sync)
+- Revenue/Margin Planning (Price-Volume-Mix)
+- Treasury Planning (Cash Flow Forecasting)
+- Intercompany Eliminations
+- ESG Planning (Carbon, Diversity)
+- AI/Predictive Forecasting (Python ML Bridge)
+- Governance (Workflow, Locking, Row-Level Security)
+- GL Real-Time Sync
+- Essbase-Style Hypercube / Block Storage
+- Narrative Reporting (Management Reports)
+- Financial Consolidation (FCCS-equivalent)
 ---
 
 ### 10. ESS / MSS (Employee & Manager Self-Service)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Personal Information (Effective-dated changes, PII validation)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Payroll / Deductions (Voluntary deductions, Retro-pay, PDF Payslips)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Statutory Forms (US W-4, UK P45, AE localized compliance)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** MSS Delegation / Proxy (Secure date-based authority)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** MSS Team Productivity (Real-time analytics, Quick Actions)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Parallel Approval Routing + Auto-Escalation + Nudges
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** RBAC & Privacy (AOR, Persona-based isolation)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Proactive AI Guide / HUD
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Server-Side Pagination (StandardTable)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Benefits Open Enrollment
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** My Career & Learning Self-Service
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** HR Help Desk (Service Request)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Total Compensation Statement
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 10. ESS / MSS (Employee & Manager Self-Service) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Personal Information (Effective-dated changes, PII validation)
+- Payroll / Deductions (Voluntary deductions, Retro-pay, PDF Payslips)
+- Statutory Forms (US W-4, UK P45, AE localized compliance)
+- MSS Delegation / Proxy (Secure date-based authority)
+- MSS Team Productivity (Real-time analytics, Quick Actions)
+- Parallel Approval Routing + Auto-Escalation + Nudges
+- RBAC & Privacy (AOR, Persona-based isolation)
+- Proactive AI Guide / HUD
+- Server-Side Pagination (StandardTable)
+- Benefits Open Enrollment
+- My Career & Learning Self-Service
+- HR Help Desk (Service Request)
+- Total Compensation Statement
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 10. ESS / MSS (Employee & Manager Self-Service).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 10. ESS / MSS (Employee & Manager Self-Service) to related modules (e.g., GL, AP, AR) for the following functions:
+- Personal Information (Effective-dated changes, PII validation)
+- Payroll / Deductions (Voluntary deductions, Retro-pay, PDF Payslips)
+- Statutory Forms (US W-4, UK P45, AE localized compliance)
+- MSS Delegation / Proxy (Secure date-based authority)
+- MSS Team Productivity (Real-time analytics, Quick Actions)
+- Parallel Approval Routing + Auto-Escalation + Nudges
+- RBAC & Privacy (AOR, Persona-based isolation)
+- Proactive AI Guide / HUD
+- Server-Side Pagination (StandardTable)
+- Benefits Open Enrollment
+- My Career & Learning Self-Service
+- HR Help Desk (Service Request)
+- Total Compensation Statement
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Personal Information (Effective-dated changes, PII validation)
+- Payroll / Deductions (Voluntary deductions, Retro-pay, PDF Payslips)
+- Statutory Forms (US W-4, UK P45, AE localized compliance)
+- MSS Delegation / Proxy (Secure date-based authority)
+- MSS Team Productivity (Real-time analytics, Quick Actions)
+- Parallel Approval Routing + Auto-Escalation + Nudges
+- RBAC & Privacy (AOR, Persona-based isolation)
+- Proactive AI Guide / HUD
+- Server-Side Pagination (StandardTable)
+- Benefits Open Enrollment
+- My Career & Learning Self-Service
+- HR Help Desk (Service Request)
+- Total Compensation Statement
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Personal Information (Effective-dated changes, PII validation)
+- Payroll / Deductions (Voluntary deductions, Retro-pay, PDF Payslips)
+- Statutory Forms (US W-4, UK P45, AE localized compliance)
+- MSS Delegation / Proxy (Secure date-based authority)
+- MSS Team Productivity (Real-time analytics, Quick Actions)
+- Parallel Approval Routing + Auto-Escalation + Nudges
+- RBAC & Privacy (AOR, Persona-based isolation)
+- Proactive AI Guide / HUD
+- Server-Side Pagination (StandardTable)
+- Benefits Open Enrollment
+- My Career & Learning Self-Service
+- HR Help Desk (Service Request)
+- Total Compensation Statement
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Personal Information (Effective-dated changes, PII validation)
+- Payroll / Deductions (Voluntary deductions, Retro-pay, PDF Payslips)
+- Statutory Forms (US W-4, UK P45, AE localized compliance)
+- MSS Delegation / Proxy (Secure date-based authority)
+- MSS Team Productivity (Real-time analytics, Quick Actions)
+- Parallel Approval Routing + Auto-Escalation + Nudges
+- RBAC & Privacy (AOR, Persona-based isolation)
+- Proactive AI Guide / HUD
+- Server-Side Pagination (StandardTable)
+- Benefits Open Enrollment
+- My Career & Learning Self-Service
+- HR Help Desk (Service Request)
+- Total Compensation Statement
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Personal Information (Effective-dated changes, PII validation)
+- Payroll / Deductions (Voluntary deductions, Retro-pay, PDF Payslips)
+- Statutory Forms (US W-4, UK P45, AE localized compliance)
+- MSS Delegation / Proxy (Secure date-based authority)
+- MSS Team Productivity (Real-time analytics, Quick Actions)
+- Parallel Approval Routing + Auto-Escalation + Nudges
+- RBAC & Privacy (AOR, Persona-based isolation)
+- Proactive AI Guide / HUD
+- Server-Side Pagination (StandardTable)
+- Benefits Open Enrollment
+- My Career & Learning Self-Service
+- HR Help Desk (Service Request)
+- Total Compensation Statement
 ---
 
 ### 11. Expense Management
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Smart Capture (OCR — High-fidelity extraction)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Corporate Card Feed Reconciliation (Automated sync & matching)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI Policy Engine (Weekend anomaly, split detection, fraud scoring)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Global VAT/GST Engine (Multi-jurisdiction tax reclaim)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** SLA / GL Posting (Direct subledger lifecycle)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Compliance Score (Weighted risk assessment 0-100)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Multi-Tier Approval Workflow
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** RBAC + PII Data Protection + Audit Overrides
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** High-Volume Partitioned Storage + Async Card Sync
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Travel Request & Pre-Authorization
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Mileage / Distance Calculation Engine
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 11. Expense Management calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Smart Capture (OCR — High-fidelity extraction)
+- Corporate Card Feed Reconciliation (Automated sync & matching)
+- AI Policy Engine (Weekend anomaly, split detection, fraud scoring)
+- Global VAT/GST Engine (Multi-jurisdiction tax reclaim)
+- SLA / GL Posting (Direct subledger lifecycle)
+- Compliance Score (Weighted risk assessment 0-100)
+- Multi-Tier Approval Workflow
+- RBAC + PII Data Protection + Audit Overrides
+- High-Volume Partitioned Storage + Async Card Sync
+- Travel Request & Pre-Authorization
+- Mileage / Distance Calculation Engine
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 11. Expense Management.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 11. Expense Management to related modules (e.g., GL, AP, AR) for the following functions:
+- Smart Capture (OCR — High-fidelity extraction)
+- Corporate Card Feed Reconciliation (Automated sync & matching)
+- AI Policy Engine (Weekend anomaly, split detection, fraud scoring)
+- Global VAT/GST Engine (Multi-jurisdiction tax reclaim)
+- SLA / GL Posting (Direct subledger lifecycle)
+- Compliance Score (Weighted risk assessment 0-100)
+- Multi-Tier Approval Workflow
+- RBAC + PII Data Protection + Audit Overrides
+- High-Volume Partitioned Storage + Async Card Sync
+- Travel Request & Pre-Authorization
+- Mileage / Distance Calculation Engine
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Smart Capture (OCR — High-fidelity extraction)
+- Corporate Card Feed Reconciliation (Automated sync & matching)
+- AI Policy Engine (Weekend anomaly, split detection, fraud scoring)
+- Global VAT/GST Engine (Multi-jurisdiction tax reclaim)
+- SLA / GL Posting (Direct subledger lifecycle)
+- Compliance Score (Weighted risk assessment 0-100)
+- Multi-Tier Approval Workflow
+- RBAC + PII Data Protection + Audit Overrides
+- High-Volume Partitioned Storage + Async Card Sync
+- Travel Request & Pre-Authorization
+- Mileage / Distance Calculation Engine
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Smart Capture (OCR — High-fidelity extraction)
+- Corporate Card Feed Reconciliation (Automated sync & matching)
+- AI Policy Engine (Weekend anomaly, split detection, fraud scoring)
+- Global VAT/GST Engine (Multi-jurisdiction tax reclaim)
+- SLA / GL Posting (Direct subledger lifecycle)
+- Compliance Score (Weighted risk assessment 0-100)
+- Multi-Tier Approval Workflow
+- RBAC + PII Data Protection + Audit Overrides
+- High-Volume Partitioned Storage + Async Card Sync
+- Travel Request & Pre-Authorization
+- Mileage / Distance Calculation Engine
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Smart Capture (OCR — High-fidelity extraction)
+- Corporate Card Feed Reconciliation (Automated sync & matching)
+- AI Policy Engine (Weekend anomaly, split detection, fraud scoring)
+- Global VAT/GST Engine (Multi-jurisdiction tax reclaim)
+- SLA / GL Posting (Direct subledger lifecycle)
+- Compliance Score (Weighted risk assessment 0-100)
+- Multi-Tier Approval Workflow
+- RBAC + PII Data Protection + Audit Overrides
+- High-Volume Partitioned Storage + Async Card Sync
+- Travel Request & Pre-Authorization
+- Mileage / Distance Calculation Engine
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Smart Capture (OCR — High-fidelity extraction)
+- Corporate Card Feed Reconciliation (Automated sync & matching)
+- AI Policy Engine (Weekend anomaly, split detection, fraud scoring)
+- Global VAT/GST Engine (Multi-jurisdiction tax reclaim)
+- SLA / GL Posting (Direct subledger lifecycle)
+- Compliance Score (Weighted risk assessment 0-100)
+- Multi-Tier Approval Workflow
+- RBAC + PII Data Protection + Audit Overrides
+- High-Volume Partitioned Storage + Async Card Sync
+- Travel Request & Pre-Authorization
+- Mileage / Distance Calculation Engine
 ---
 
 ### 12. Fixed Assets (FA)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Asset Lifecycle (Add, Retire, Transfer, Reinstate) + Approvals
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Depreciation Engine (STL, DB, Units of Production) — Async
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Multi-Book (Corporate/Tax) with Independent Lifecycle
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Lease Accounting (IFRS 16 / ASC 842, PV Calc, Liability)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Physical Inventory (Barcode scanning + Reconciliation)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Reporting (Roll Forward, Movement Analysis)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** SLA Integration (All events → Subledger Accounting)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 12. Fixed Assets (FA) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Asset Lifecycle (Add, Retire, Transfer, Reinstate) + Approvals
+- Depreciation Engine (STL, DB, Units of Production) — Async
+- Multi-Book (Corporate/Tax) with Independent Lifecycle
+- Lease Accounting (IFRS 16 / ASC 842, PV Calc, Liability)
+- Physical Inventory (Barcode scanning + Reconciliation)
+- Reporting (Roll Forward, Movement Analysis)
+- SLA Integration (All events → Subledger Accounting)
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 12. Fixed Assets (FA).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 12. Fixed Assets (FA) to related modules (e.g., GL, AP, AR) for the following functions:
+- Asset Lifecycle (Add, Retire, Transfer, Reinstate) + Approvals
+- Depreciation Engine (STL, DB, Units of Production) — Async
+- Multi-Book (Corporate/Tax) with Independent Lifecycle
+- Lease Accounting (IFRS 16 / ASC 842, PV Calc, Liability)
+- Physical Inventory (Barcode scanning + Reconciliation)
+- Reporting (Roll Forward, Movement Analysis)
+- SLA Integration (All events → Subledger Accounting)
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Asset Lifecycle (Add, Retire, Transfer, Reinstate) + Approvals
+- Depreciation Engine (STL, DB, Units of Production) — Async
+- Multi-Book (Corporate/Tax) with Independent Lifecycle
+- Lease Accounting (IFRS 16 / ASC 842, PV Calc, Liability)
+- Physical Inventory (Barcode scanning + Reconciliation)
+- Reporting (Roll Forward, Movement Analysis)
+- SLA Integration (All events → Subledger Accounting)
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Asset Lifecycle (Add, Retire, Transfer, Reinstate) + Approvals
+- Depreciation Engine (STL, DB, Units of Production) — Async
+- Multi-Book (Corporate/Tax) with Independent Lifecycle
+- Lease Accounting (IFRS 16 / ASC 842, PV Calc, Liability)
+- Physical Inventory (Barcode scanning + Reconciliation)
+- Reporting (Roll Forward, Movement Analysis)
+- SLA Integration (All events → Subledger Accounting)
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Asset Lifecycle (Add, Retire, Transfer, Reinstate) + Approvals
+- Depreciation Engine (STL, DB, Units of Production) — Async
+- Multi-Book (Corporate/Tax) with Independent Lifecycle
+- Lease Accounting (IFRS 16 / ASC 842, PV Calc, Liability)
+- Physical Inventory (Barcode scanning + Reconciliation)
+- Reporting (Roll Forward, Movement Analysis)
+- SLA Integration (All events → Subledger Accounting)
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Asset Lifecycle (Add, Retire, Transfer, Reinstate) + Approvals
+- Depreciation Engine (STL, DB, Units of Production) — Async
+- Multi-Book (Corporate/Tax) with Independent Lifecycle
+- Lease Accounting (IFRS 16 / ASC 842, PV Calc, Liability)
+- Physical Inventory (Barcode scanning + Reconciliation)
+- Reporting (Roll Forward, Movement Analysis)
+- SLA Integration (All events → Subledger Accounting)
 ---
 
 ### 13. Financial Close & Consolidation
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Close Orchestration (Close Calendar, Task Dependencies, Dependency Graphs)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Journal Processing (Batch, Approval, Excel Import)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Consolidation Structure (Ledger Sets, Elimination Rules)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Consolidation Logic (Translation, Intercompany Matching — Real Math)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** FX Revaluation Engine
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Auto-Reconciliation Rules
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Smart Close (AI Anomaly & Delay Prediction)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Intercompany Invoice Matching (FCCS AR/AP Match)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Account Reconciliation Certification Portal
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Tax Provision (ASC 740 / IAS 12)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Disclosure Management / iXBRL Reporting
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 13. Financial Close & Consolidation calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Close Orchestration (Close Calendar, Task Dependencies, Dependency Graphs)
+- Journal Processing (Batch, Approval, Excel Import)
+- Consolidation Structure (Ledger Sets, Elimination Rules)
+- Consolidation Logic (Translation, Intercompany Matching — Real Math)
+- FX Revaluation Engine
+- Auto-Reconciliation Rules
+- Smart Close (AI Anomaly & Delay Prediction)
+- Intercompany Invoice Matching (FCCS AR/AP Match)
+- Account Reconciliation Certification Portal
+- Tax Provision (ASC 740 / IAS 12)
+- Disclosure Management / iXBRL Reporting
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 13. Financial Close & Consolidation.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 13. Financial Close & Consolidation to related modules (e.g., GL, AP, AR) for the following functions:
+- Close Orchestration (Close Calendar, Task Dependencies, Dependency Graphs)
+- Journal Processing (Batch, Approval, Excel Import)
+- Consolidation Structure (Ledger Sets, Elimination Rules)
+- Consolidation Logic (Translation, Intercompany Matching — Real Math)
+- FX Revaluation Engine
+- Auto-Reconciliation Rules
+- Smart Close (AI Anomaly & Delay Prediction)
+- Intercompany Invoice Matching (FCCS AR/AP Match)
+- Account Reconciliation Certification Portal
+- Tax Provision (ASC 740 / IAS 12)
+- Disclosure Management / iXBRL Reporting
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Close Orchestration (Close Calendar, Task Dependencies, Dependency Graphs)
+- Journal Processing (Batch, Approval, Excel Import)
+- Consolidation Structure (Ledger Sets, Elimination Rules)
+- Consolidation Logic (Translation, Intercompany Matching — Real Math)
+- FX Revaluation Engine
+- Auto-Reconciliation Rules
+- Smart Close (AI Anomaly & Delay Prediction)
+- Intercompany Invoice Matching (FCCS AR/AP Match)
+- Account Reconciliation Certification Portal
+- Tax Provision (ASC 740 / IAS 12)
+- Disclosure Management / iXBRL Reporting
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Close Orchestration (Close Calendar, Task Dependencies, Dependency Graphs)
+- Journal Processing (Batch, Approval, Excel Import)
+- Consolidation Structure (Ledger Sets, Elimination Rules)
+- Consolidation Logic (Translation, Intercompany Matching — Real Math)
+- FX Revaluation Engine
+- Auto-Reconciliation Rules
+- Smart Close (AI Anomaly & Delay Prediction)
+- Intercompany Invoice Matching (FCCS AR/AP Match)
+- Account Reconciliation Certification Portal
+- Tax Provision (ASC 740 / IAS 12)
+- Disclosure Management / iXBRL Reporting
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Close Orchestration (Close Calendar, Task Dependencies, Dependency Graphs)
+- Journal Processing (Batch, Approval, Excel Import)
+- Consolidation Structure (Ledger Sets, Elimination Rules)
+- Consolidation Logic (Translation, Intercompany Matching — Real Math)
+- FX Revaluation Engine
+- Auto-Reconciliation Rules
+- Smart Close (AI Anomaly & Delay Prediction)
+- Intercompany Invoice Matching (FCCS AR/AP Match)
+- Account Reconciliation Certification Portal
+- Tax Provision (ASC 740 / IAS 12)
+- Disclosure Management / iXBRL Reporting
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Close Orchestration (Close Calendar, Task Dependencies, Dependency Graphs)
+- Journal Processing (Batch, Approval, Excel Import)
+- Consolidation Structure (Ledger Sets, Elimination Rules)
+- Consolidation Logic (Translation, Intercompany Matching — Real Math)
+- FX Revaluation Engine
+- Auto-Reconciliation Rules
+- Smart Close (AI Anomaly & Delay Prediction)
+- Intercompany Invoice Matching (FCCS AR/AP Match)
+- Account Reconciliation Certification Portal
+- Tax Provision (ASC 740 / IAS 12)
+- Disclosure Management / iXBRL Reporting
 ---
 
 ### 14. General Ledger (GL)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Chart of Accounts (COA, Segments, Values, Hierarchies, Ledgers)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Journal Entry (Manual, Import, Reversal, Allocations)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Multi-Currency (Translation Rules, Intercompany)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** RBAC Roles (Manager, User, Viewer)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Configuration Hub (Sources, Categories, Calendars, SLA Rules)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Data Access Sets (DAS) + Audit Trails
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Dynamic Account Rules + Auto-Post Engines
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** NLP Journal Entry + Variance Analysis (AI Leader)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Budget Versions UI + Budget Manager
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Async Posting Worker (Enterprise Volume)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** FSG Financial Reporting Studio
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** External Tax Engine Integration
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 14. General Ledger (GL) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Chart of Accounts (COA, Segments, Values, Hierarchies, Ledgers)
+- Journal Entry (Manual, Import, Reversal, Allocations)
+- Multi-Currency (Translation Rules, Intercompany)
+- RBAC Roles (Manager, User, Viewer)
+- Configuration Hub (Sources, Categories, Calendars, SLA Rules)
+- Data Access Sets (DAS) + Audit Trails
+- Dynamic Account Rules + Auto-Post Engines
+- NLP Journal Entry + Variance Analysis (AI Leader)
+- Budget Versions UI + Budget Manager
+- Async Posting Worker (Enterprise Volume)
+- FSG Financial Reporting Studio
+- External Tax Engine Integration
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 14. General Ledger (GL).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 14. General Ledger (GL) to related modules (e.g., GL, AP, AR) for the following functions:
+- Chart of Accounts (COA, Segments, Values, Hierarchies, Ledgers)
+- Journal Entry (Manual, Import, Reversal, Allocations)
+- Multi-Currency (Translation Rules, Intercompany)
+- RBAC Roles (Manager, User, Viewer)
+- Configuration Hub (Sources, Categories, Calendars, SLA Rules)
+- Data Access Sets (DAS) + Audit Trails
+- Dynamic Account Rules + Auto-Post Engines
+- NLP Journal Entry + Variance Analysis (AI Leader)
+- Budget Versions UI + Budget Manager
+- Async Posting Worker (Enterprise Volume)
+- FSG Financial Reporting Studio
+- External Tax Engine Integration
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Chart of Accounts (COA, Segments, Values, Hierarchies, Ledgers)
+- Journal Entry (Manual, Import, Reversal, Allocations)
+- Multi-Currency (Translation Rules, Intercompany)
+- RBAC Roles (Manager, User, Viewer)
+- Configuration Hub (Sources, Categories, Calendars, SLA Rules)
+- Data Access Sets (DAS) + Audit Trails
+- Dynamic Account Rules + Auto-Post Engines
+- NLP Journal Entry + Variance Analysis (AI Leader)
+- Budget Versions UI + Budget Manager
+- Async Posting Worker (Enterprise Volume)
+- FSG Financial Reporting Studio
+- External Tax Engine Integration
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Chart of Accounts (COA, Segments, Values, Hierarchies, Ledgers)
+- Journal Entry (Manual, Import, Reversal, Allocations)
+- Multi-Currency (Translation Rules, Intercompany)
+- RBAC Roles (Manager, User, Viewer)
+- Configuration Hub (Sources, Categories, Calendars, SLA Rules)
+- Data Access Sets (DAS) + Audit Trails
+- Dynamic Account Rules + Auto-Post Engines
+- NLP Journal Entry + Variance Analysis (AI Leader)
+- Budget Versions UI + Budget Manager
+- Async Posting Worker (Enterprise Volume)
+- FSG Financial Reporting Studio
+- External Tax Engine Integration
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Chart of Accounts (COA, Segments, Values, Hierarchies, Ledgers)
+- Journal Entry (Manual, Import, Reversal, Allocations)
+- Multi-Currency (Translation Rules, Intercompany)
+- RBAC Roles (Manager, User, Viewer)
+- Configuration Hub (Sources, Categories, Calendars, SLA Rules)
+- Data Access Sets (DAS) + Audit Trails
+- Dynamic Account Rules + Auto-Post Engines
+- NLP Journal Entry + Variance Analysis (AI Leader)
+- Budget Versions UI + Budget Manager
+- Async Posting Worker (Enterprise Volume)
+- FSG Financial Reporting Studio
+- External Tax Engine Integration
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Chart of Accounts (COA, Segments, Values, Hierarchies, Ledgers)
+- Journal Entry (Manual, Import, Reversal, Allocations)
+- Multi-Currency (Translation Rules, Intercompany)
+- RBAC Roles (Manager, User, Viewer)
+- Configuration Hub (Sources, Categories, Calendars, SLA Rules)
+- Data Access Sets (DAS) + Audit Trails
+- Dynamic Account Rules + Auto-Post Engines
+- NLP Journal Entry + Variance Analysis (AI Leader)
+- Budget Versions UI + Budget Manager
+- Async Posting Worker (Enterprise Volume)
+- FSG Financial Reporting Studio
+- External Tax Engine Integration
 ---
 
 ### 15. HR Analytics & Reporting
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** KPI Repository (`hr_kpi_definitions`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Data Warehouse / Snapshots (`hr_analytics_snapshots`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Workforce Trends Dashboard (Headcount, Attrition — Drill-Down)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Predictive Attrition Forecasting (Linear Regression)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Compliance Reports (Terminations, New Hires — CSV Export)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Manager Insights / Skill Gap Analysis
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Deep RLS (`rlsMiddleware` + Field Masking)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI Assistant Interface
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Scheduled Job Runner (`JobRunnerService`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Server-Side Pagination for Drill-Down
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Column Selector (Report Builder)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Granular `HR_ANALYST` Role
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Global/Contextual Filtering (Dept, Entity)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Workforce Benchmarking (External Market Data)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** OFCCP / EEO / Statutory HR Compliance Filings
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 15. HR Analytics & Reporting calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- KPI Repository (`hr_kpi_definitions`)
+- Data Warehouse / Snapshots (`hr_analytics_snapshots`)
+- Workforce Trends Dashboard (Headcount, Attrition — Drill-Down)
+- Predictive Attrition Forecasting (Linear Regression)
+- Compliance Reports (Terminations, New Hires — CSV Export)
+- Manager Insights / Skill Gap Analysis
+- Deep RLS (`rlsMiddleware` + Field Masking)
+- AI Assistant Interface
+- Scheduled Job Runner (`JobRunnerService`)
+- Server-Side Pagination for Drill-Down
+- Column Selector (Report Builder)
+- Granular `HR_ANALYST` Role
+- Global/Contextual Filtering (Dept, Entity)
+- Workforce Benchmarking (External Market Data)
+- OFCCP / EEO / Statutory HR Compliance Filings
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 15. HR Analytics & Reporting.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 15. HR Analytics & Reporting to related modules (e.g., GL, AP, AR) for the following functions:
+- KPI Repository (`hr_kpi_definitions`)
+- Data Warehouse / Snapshots (`hr_analytics_snapshots`)
+- Workforce Trends Dashboard (Headcount, Attrition — Drill-Down)
+- Predictive Attrition Forecasting (Linear Regression)
+- Compliance Reports (Terminations, New Hires — CSV Export)
+- Manager Insights / Skill Gap Analysis
+- Deep RLS (`rlsMiddleware` + Field Masking)
+- AI Assistant Interface
+- Scheduled Job Runner (`JobRunnerService`)
+- Server-Side Pagination for Drill-Down
+- Column Selector (Report Builder)
+- Granular `HR_ANALYST` Role
+- Global/Contextual Filtering (Dept, Entity)
+- Workforce Benchmarking (External Market Data)
+- OFCCP / EEO / Statutory HR Compliance Filings
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- KPI Repository (`hr_kpi_definitions`)
+- Data Warehouse / Snapshots (`hr_analytics_snapshots`)
+- Workforce Trends Dashboard (Headcount, Attrition — Drill-Down)
+- Predictive Attrition Forecasting (Linear Regression)
+- Compliance Reports (Terminations, New Hires — CSV Export)
+- Manager Insights / Skill Gap Analysis
+- Deep RLS (`rlsMiddleware` + Field Masking)
+- AI Assistant Interface
+- Scheduled Job Runner (`JobRunnerService`)
+- Server-Side Pagination for Drill-Down
+- Column Selector (Report Builder)
+- Granular `HR_ANALYST` Role
+- Global/Contextual Filtering (Dept, Entity)
+- Workforce Benchmarking (External Market Data)
+- OFCCP / EEO / Statutory HR Compliance Filings
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- KPI Repository (`hr_kpi_definitions`)
+- Data Warehouse / Snapshots (`hr_analytics_snapshots`)
+- Workforce Trends Dashboard (Headcount, Attrition — Drill-Down)
+- Predictive Attrition Forecasting (Linear Regression)
+- Compliance Reports (Terminations, New Hires — CSV Export)
+- Manager Insights / Skill Gap Analysis
+- Deep RLS (`rlsMiddleware` + Field Masking)
+- AI Assistant Interface
+- Scheduled Job Runner (`JobRunnerService`)
+- Server-Side Pagination for Drill-Down
+- Column Selector (Report Builder)
+- Granular `HR_ANALYST` Role
+- Global/Contextual Filtering (Dept, Entity)
+- Workforce Benchmarking (External Market Data)
+- OFCCP / EEO / Statutory HR Compliance Filings
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- KPI Repository (`hr_kpi_definitions`)
+- Data Warehouse / Snapshots (`hr_analytics_snapshots`)
+- Workforce Trends Dashboard (Headcount, Attrition — Drill-Down)
+- Predictive Attrition Forecasting (Linear Regression)
+- Compliance Reports (Terminations, New Hires — CSV Export)
+- Manager Insights / Skill Gap Analysis
+- Deep RLS (`rlsMiddleware` + Field Masking)
+- AI Assistant Interface
+- Scheduled Job Runner (`JobRunnerService`)
+- Server-Side Pagination for Drill-Down
+- Column Selector (Report Builder)
+- Granular `HR_ANALYST` Role
+- Global/Contextual Filtering (Dept, Entity)
+- Workforce Benchmarking (External Market Data)
+- OFCCP / EEO / Statutory HR Compliance Filings
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- KPI Repository (`hr_kpi_definitions`)
+- Data Warehouse / Snapshots (`hr_analytics_snapshots`)
+- Workforce Trends Dashboard (Headcount, Attrition — Drill-Down)
+- Predictive Attrition Forecasting (Linear Regression)
+- Compliance Reports (Terminations, New Hires — CSV Export)
+- Manager Insights / Skill Gap Analysis
+- Deep RLS (`rlsMiddleware` + Field Masking)
+- AI Assistant Interface
+- Scheduled Job Runner (`JobRunnerService`)
+- Server-Side Pagination for Drill-Down
+- Column Selector (Report Builder)
+- Granular `HR_ANALYST` Role
+- Global/Contextual Filtering (Dept, Entity)
+- Workforce Benchmarking (External Market Data)
+- OFCCP / EEO / Statutory HR Compliance Filings
 ---
 
 ### 16. HR Compliance & Governance
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Audit & Traceability (Before/After Field-Level Snapshots)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Legislative Engine (Dynamic rules — US/UK/EU templates, MODULO)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Compliance Velocity Reporting & Risk Heatmaps
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Server-Side Pagination (>50k violations)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Weighted Risk Scoring (`hr_risk_weights`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Multi-Step Remediation Approval (Manager → HR, Escalation)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** GDPR Data Privacy (AOR-based PII Masking, `@MaskPII`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Right to Erasure (`AnonymizationService`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Consent Management + ESS `MyConsents` UI
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Segregation of Duties (SoD) Conflict Detection + Matrix UI
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** FCPA / UK Bribery Act Compliance Training Tracking
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Works Council & Union Obligation Management
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Regulatory Filing Calendar (OSHA, EEO, VETS)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 16. HR Compliance & Governance calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Audit & Traceability (Before/After Field-Level Snapshots)
+- Legislative Engine (Dynamic rules — US/UK/EU templates, MODULO)
+- Compliance Velocity Reporting & Risk Heatmaps
+- Server-Side Pagination (>50k violations)
+- Weighted Risk Scoring (`hr_risk_weights`)
+- Multi-Step Remediation Approval (Manager → HR, Escalation)
+- GDPR Data Privacy (AOR-based PII Masking, `@MaskPII`)
+- Right to Erasure (`AnonymizationService`)
+- Consent Management + ESS `MyConsents` UI
+- Segregation of Duties (SoD) Conflict Detection + Matrix UI
+- FCPA / UK Bribery Act Compliance Training Tracking
+- Works Council & Union Obligation Management
+- Regulatory Filing Calendar (OSHA, EEO, VETS)
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 16. HR Compliance & Governance.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 16. HR Compliance & Governance to related modules (e.g., GL, AP, AR) for the following functions:
+- Audit & Traceability (Before/After Field-Level Snapshots)
+- Legislative Engine (Dynamic rules — US/UK/EU templates, MODULO)
+- Compliance Velocity Reporting & Risk Heatmaps
+- Server-Side Pagination (>50k violations)
+- Weighted Risk Scoring (`hr_risk_weights`)
+- Multi-Step Remediation Approval (Manager → HR, Escalation)
+- GDPR Data Privacy (AOR-based PII Masking, `@MaskPII`)
+- Right to Erasure (`AnonymizationService`)
+- Consent Management + ESS `MyConsents` UI
+- Segregation of Duties (SoD) Conflict Detection + Matrix UI
+- FCPA / UK Bribery Act Compliance Training Tracking
+- Works Council & Union Obligation Management
+- Regulatory Filing Calendar (OSHA, EEO, VETS)
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Audit & Traceability (Before/After Field-Level Snapshots)
+- Legislative Engine (Dynamic rules — US/UK/EU templates, MODULO)
+- Compliance Velocity Reporting & Risk Heatmaps
+- Server-Side Pagination (>50k violations)
+- Weighted Risk Scoring (`hr_risk_weights`)
+- Multi-Step Remediation Approval (Manager → HR, Escalation)
+- GDPR Data Privacy (AOR-based PII Masking, `@MaskPII`)
+- Right to Erasure (`AnonymizationService`)
+- Consent Management + ESS `MyConsents` UI
+- Segregation of Duties (SoD) Conflict Detection + Matrix UI
+- FCPA / UK Bribery Act Compliance Training Tracking
+- Works Council & Union Obligation Management
+- Regulatory Filing Calendar (OSHA, EEO, VETS)
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Audit & Traceability (Before/After Field-Level Snapshots)
+- Legislative Engine (Dynamic rules — US/UK/EU templates, MODULO)
+- Compliance Velocity Reporting & Risk Heatmaps
+- Server-Side Pagination (>50k violations)
+- Weighted Risk Scoring (`hr_risk_weights`)
+- Multi-Step Remediation Approval (Manager → HR, Escalation)
+- GDPR Data Privacy (AOR-based PII Masking, `@MaskPII`)
+- Right to Erasure (`AnonymizationService`)
+- Consent Management + ESS `MyConsents` UI
+- Segregation of Duties (SoD) Conflict Detection + Matrix UI
+- FCPA / UK Bribery Act Compliance Training Tracking
+- Works Council & Union Obligation Management
+- Regulatory Filing Calendar (OSHA, EEO, VETS)
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Audit & Traceability (Before/After Field-Level Snapshots)
+- Legislative Engine (Dynamic rules — US/UK/EU templates, MODULO)
+- Compliance Velocity Reporting & Risk Heatmaps
+- Server-Side Pagination (>50k violations)
+- Weighted Risk Scoring (`hr_risk_weights`)
+- Multi-Step Remediation Approval (Manager → HR, Escalation)
+- GDPR Data Privacy (AOR-based PII Masking, `@MaskPII`)
+- Right to Erasure (`AnonymizationService`)
+- Consent Management + ESS `MyConsents` UI
+- Segregation of Duties (SoD) Conflict Detection + Matrix UI
+- FCPA / UK Bribery Act Compliance Training Tracking
+- Works Council & Union Obligation Management
+- Regulatory Filing Calendar (OSHA, EEO, VETS)
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Audit & Traceability (Before/After Field-Level Snapshots)
+- Legislative Engine (Dynamic rules — US/UK/EU templates, MODULO)
+- Compliance Velocity Reporting & Risk Heatmaps
+- Server-Side Pagination (>50k violations)
+- Weighted Risk Scoring (`hr_risk_weights`)
+- Multi-Step Remediation Approval (Manager → HR, Escalation)
+- GDPR Data Privacy (AOR-based PII Masking, `@MaskPII`)
+- Right to Erasure (`AnonymizationService`)
+- Consent Management + ESS `MyConsents` UI
+- Segregation of Duties (SoD) Conflict Detection + Matrix UI
+- FCPA / UK Bribery Act Compliance Training Tracking
+- Works Council & Union Obligation Management
+- Regulatory Filing Calendar (OSHA, EEO, VETS)
 ---
 
 ### 17. Intercompany Accounting (AGIS)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Intercompany Subledger (`ic_batches`, `ic_transactions`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Intercompany Invoicing (AR/AP mirror flow)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Approve / Reject / Resubmit Workflow
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Transfer Pricing Rules (Percentage Markup)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** GL Balancing + Cross-Ledger Journals
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Cross-Ledger Settlement (Provider/Receiver Split-Journal)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Netting / Settlement (`NettingService` — Cashless)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Data Access Sets (Row-Level Security)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Mass Allocations (`AllocationService` + UI)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI Anomaly Detection (High Value, Duplicate, Unauthorized)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Server-Side Pagination
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Dispute Management
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 17. Intercompany Accounting (AGIS) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Intercompany Subledger (`ic_batches`, `ic_transactions`)
+- Intercompany Invoicing (AR/AP mirror flow)
+- Approve / Reject / Resubmit Workflow
+- Transfer Pricing Rules (Percentage Markup)
+- GL Balancing + Cross-Ledger Journals
+- Cross-Ledger Settlement (Provider/Receiver Split-Journal)
+- Netting / Settlement (`NettingService` — Cashless)
+- Data Access Sets (Row-Level Security)
+- Mass Allocations (`AllocationService` + UI)
+- AI Anomaly Detection (High Value, Duplicate, Unauthorized)
+- Server-Side Pagination
+- Dispute Management
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 17. Intercompany Accounting (AGIS).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 17. Intercompany Accounting (AGIS) to related modules (e.g., GL, AP, AR) for the following functions:
+- Intercompany Subledger (`ic_batches`, `ic_transactions`)
+- Intercompany Invoicing (AR/AP mirror flow)
+- Approve / Reject / Resubmit Workflow
+- Transfer Pricing Rules (Percentage Markup)
+- GL Balancing + Cross-Ledger Journals
+- Cross-Ledger Settlement (Provider/Receiver Split-Journal)
+- Netting / Settlement (`NettingService` — Cashless)
+- Data Access Sets (Row-Level Security)
+- Mass Allocations (`AllocationService` + UI)
+- AI Anomaly Detection (High Value, Duplicate, Unauthorized)
+- Server-Side Pagination
+- Dispute Management
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Intercompany Subledger (`ic_batches`, `ic_transactions`)
+- Intercompany Invoicing (AR/AP mirror flow)
+- Approve / Reject / Resubmit Workflow
+- Transfer Pricing Rules (Percentage Markup)
+- GL Balancing + Cross-Ledger Journals
+- Cross-Ledger Settlement (Provider/Receiver Split-Journal)
+- Netting / Settlement (`NettingService` — Cashless)
+- Data Access Sets (Row-Level Security)
+- Mass Allocations (`AllocationService` + UI)
+- AI Anomaly Detection (High Value, Duplicate, Unauthorized)
+- Server-Side Pagination
+- Dispute Management
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Intercompany Subledger (`ic_batches`, `ic_transactions`)
+- Intercompany Invoicing (AR/AP mirror flow)
+- Approve / Reject / Resubmit Workflow
+- Transfer Pricing Rules (Percentage Markup)
+- GL Balancing + Cross-Ledger Journals
+- Cross-Ledger Settlement (Provider/Receiver Split-Journal)
+- Netting / Settlement (`NettingService` — Cashless)
+- Data Access Sets (Row-Level Security)
+- Mass Allocations (`AllocationService` + UI)
+- AI Anomaly Detection (High Value, Duplicate, Unauthorized)
+- Server-Side Pagination
+- Dispute Management
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Intercompany Subledger (`ic_batches`, `ic_transactions`)
+- Intercompany Invoicing (AR/AP mirror flow)
+- Approve / Reject / Resubmit Workflow
+- Transfer Pricing Rules (Percentage Markup)
+- GL Balancing + Cross-Ledger Journals
+- Cross-Ledger Settlement (Provider/Receiver Split-Journal)
+- Netting / Settlement (`NettingService` — Cashless)
+- Data Access Sets (Row-Level Security)
+- Mass Allocations (`AllocationService` + UI)
+- AI Anomaly Detection (High Value, Duplicate, Unauthorized)
+- Server-Side Pagination
+- Dispute Management
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Intercompany Subledger (`ic_batches`, `ic_transactions`)
+- Intercompany Invoicing (AR/AP mirror flow)
+- Approve / Reject / Resubmit Workflow
+- Transfer Pricing Rules (Percentage Markup)
+- GL Balancing + Cross-Ledger Journals
+- Cross-Ledger Settlement (Provider/Receiver Split-Journal)
+- Netting / Settlement (`NettingService` — Cashless)
+- Data Access Sets (Row-Level Security)
+- Mass Allocations (`AllocationService` + UI)
+- AI Anomaly Detection (High Value, Duplicate, Unauthorized)
+- Server-Side Pagination
+- Dispute Management
 ---
 
 ### 18. Inventory Management
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Multi-Org Structure (Subinventories, Locators)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Material Transactions (Receipts, Issues, Transfers)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Lot & Serial Control
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Cost Layers (FIFO/Average)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Min-Max Replenishment
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Cycle Counting (Snapshot & Adjustment)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Reservations (Hard/Soft Allocation) & ATP
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Consignment Inventory Management
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Quality Inspection & Hold Management
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Catch-Weight / Dual Unit of Measure
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Physical Inventory (Full Freeze)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Item Revision Control
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 18. Inventory Management calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Multi-Org Structure (Subinventories, Locators)
+- Material Transactions (Receipts, Issues, Transfers)
+- Lot & Serial Control
+- Cost Layers (FIFO/Average)
+- Min-Max Replenishment
+- Cycle Counting (Snapshot & Adjustment)
+- Reservations (Hard/Soft Allocation) & ATP
+- Consignment Inventory Management
+- Quality Inspection & Hold Management
+- Catch-Weight / Dual Unit of Measure
+- Physical Inventory (Full Freeze)
+- Item Revision Control
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 18. Inventory Management.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 18. Inventory Management to related modules (e.g., GL, AP, AR) for the following functions:
+- Multi-Org Structure (Subinventories, Locators)
+- Material Transactions (Receipts, Issues, Transfers)
+- Lot & Serial Control
+- Cost Layers (FIFO/Average)
+- Min-Max Replenishment
+- Cycle Counting (Snapshot & Adjustment)
+- Reservations (Hard/Soft Allocation) & ATP
+- Consignment Inventory Management
+- Quality Inspection & Hold Management
+- Catch-Weight / Dual Unit of Measure
+- Physical Inventory (Full Freeze)
+- Item Revision Control
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Multi-Org Structure (Subinventories, Locators)
+- Material Transactions (Receipts, Issues, Transfers)
+- Lot & Serial Control
+- Cost Layers (FIFO/Average)
+- Min-Max Replenishment
+- Cycle Counting (Snapshot & Adjustment)
+- Reservations (Hard/Soft Allocation) & ATP
+- Consignment Inventory Management
+- Quality Inspection & Hold Management
+- Catch-Weight / Dual Unit of Measure
+- Physical Inventory (Full Freeze)
+- Item Revision Control
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Multi-Org Structure (Subinventories, Locators)
+- Material Transactions (Receipts, Issues, Transfers)
+- Lot & Serial Control
+- Cost Layers (FIFO/Average)
+- Min-Max Replenishment
+- Cycle Counting (Snapshot & Adjustment)
+- Reservations (Hard/Soft Allocation) & ATP
+- Consignment Inventory Management
+- Quality Inspection & Hold Management
+- Catch-Weight / Dual Unit of Measure
+- Physical Inventory (Full Freeze)
+- Item Revision Control
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Multi-Org Structure (Subinventories, Locators)
+- Material Transactions (Receipts, Issues, Transfers)
+- Lot & Serial Control
+- Cost Layers (FIFO/Average)
+- Min-Max Replenishment
+- Cycle Counting (Snapshot & Adjustment)
+- Reservations (Hard/Soft Allocation) & ATP
+- Consignment Inventory Management
+- Quality Inspection & Hold Management
+- Catch-Weight / Dual Unit of Measure
+- Physical Inventory (Full Freeze)
+- Item Revision Control
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Multi-Org Structure (Subinventories, Locators)
+- Material Transactions (Receipts, Issues, Transfers)
+- Lot & Serial Control
+- Cost Layers (FIFO/Average)
+- Min-Max Replenishment
+- Cycle Counting (Snapshot & Adjustment)
+- Reservations (Hard/Soft Allocation) & ATP
+- Consignment Inventory Management
+- Quality Inspection & Hold Management
+- Catch-Weight / Dual Unit of Measure
+- Physical Inventory (Full Freeze)
+- Item Revision Control
 ---
 
 ### 19. Landed Cost Management (LCM)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Trade Operations (Shipment lifecycle)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Charge Management (Estimated & Actual)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Cost Allocation (Qty/Value/Weight/Volume)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Inventory Absorption (Dr Inventory / Cr Absorption)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AP Integration (Actuals from AP Invoices + Variance)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI Predictive Cost Modeling
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Premium Workbench (SideSheets, Variance Analysis)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Server-Side Pagination
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Variance Accounting (Estimated vs Actual + Accrual Reversal)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Approval / Period Close Gates
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Granular Audit Trail for Allocation Changes
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Duty Drawback Management
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** C-TPAT / AEO Supply Chain Security Compliance
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 19. Landed Cost Management (LCM) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Trade Operations (Shipment lifecycle)
+- Charge Management (Estimated & Actual)
+- Cost Allocation (Qty/Value/Weight/Volume)
+- Inventory Absorption (Dr Inventory / Cr Absorption)
+- AP Integration (Actuals from AP Invoices + Variance)
+- AI Predictive Cost Modeling
+- Premium Workbench (SideSheets, Variance Analysis)
+- Server-Side Pagination
+- Variance Accounting (Estimated vs Actual + Accrual Reversal)
+- Approval / Period Close Gates
+- Granular Audit Trail for Allocation Changes
+- Duty Drawback Management
+- C-TPAT / AEO Supply Chain Security Compliance
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 19. Landed Cost Management (LCM).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 19. Landed Cost Management (LCM) to related modules (e.g., GL, AP, AR) for the following functions:
+- Trade Operations (Shipment lifecycle)
+- Charge Management (Estimated & Actual)
+- Cost Allocation (Qty/Value/Weight/Volume)
+- Inventory Absorption (Dr Inventory / Cr Absorption)
+- AP Integration (Actuals from AP Invoices + Variance)
+- AI Predictive Cost Modeling
+- Premium Workbench (SideSheets, Variance Analysis)
+- Server-Side Pagination
+- Variance Accounting (Estimated vs Actual + Accrual Reversal)
+- Approval / Period Close Gates
+- Granular Audit Trail for Allocation Changes
+- Duty Drawback Management
+- C-TPAT / AEO Supply Chain Security Compliance
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Trade Operations (Shipment lifecycle)
+- Charge Management (Estimated & Actual)
+- Cost Allocation (Qty/Value/Weight/Volume)
+- Inventory Absorption (Dr Inventory / Cr Absorption)
+- AP Integration (Actuals from AP Invoices + Variance)
+- AI Predictive Cost Modeling
+- Premium Workbench (SideSheets, Variance Analysis)
+- Server-Side Pagination
+- Variance Accounting (Estimated vs Actual + Accrual Reversal)
+- Approval / Period Close Gates
+- Granular Audit Trail for Allocation Changes
+- Duty Drawback Management
+- C-TPAT / AEO Supply Chain Security Compliance
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Trade Operations (Shipment lifecycle)
+- Charge Management (Estimated & Actual)
+- Cost Allocation (Qty/Value/Weight/Volume)
+- Inventory Absorption (Dr Inventory / Cr Absorption)
+- AP Integration (Actuals from AP Invoices + Variance)
+- AI Predictive Cost Modeling
+- Premium Workbench (SideSheets, Variance Analysis)
+- Server-Side Pagination
+- Variance Accounting (Estimated vs Actual + Accrual Reversal)
+- Approval / Period Close Gates
+- Granular Audit Trail for Allocation Changes
+- Duty Drawback Management
+- C-TPAT / AEO Supply Chain Security Compliance
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Trade Operations (Shipment lifecycle)
+- Charge Management (Estimated & Actual)
+- Cost Allocation (Qty/Value/Weight/Volume)
+- Inventory Absorption (Dr Inventory / Cr Absorption)
+- AP Integration (Actuals from AP Invoices + Variance)
+- AI Predictive Cost Modeling
+- Premium Workbench (SideSheets, Variance Analysis)
+- Server-Side Pagination
+- Variance Accounting (Estimated vs Actual + Accrual Reversal)
+- Approval / Period Close Gates
+- Granular Audit Trail for Allocation Changes
+- Duty Drawback Management
+- C-TPAT / AEO Supply Chain Security Compliance
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Trade Operations (Shipment lifecycle)
+- Charge Management (Estimated & Actual)
+- Cost Allocation (Qty/Value/Weight/Volume)
+- Inventory Absorption (Dr Inventory / Cr Absorption)
+- AP Integration (Actuals from AP Invoices + Variance)
+- AI Predictive Cost Modeling
+- Premium Workbench (SideSheets, Variance Analysis)
+- Server-Side Pagination
+- Variance Accounting (Estimated vs Actual + Accrual Reversal)
+- Approval / Period Close Gates
+- Granular Audit Trail for Allocation Changes
+- Duty Drawback Management
+- C-TPAT / AEO Supply Chain Security Compliance
 ---
 
 ### 20. Lease & Contract Management
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Paginated Lease Portfolio (>1M records)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** IFRS 16 / ASC 842 Amortization & Liability Schedules
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** GL Integration (Auto-Journal Entry on Recognition)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** FA Integration (Auto-Capitalize ROU Assets)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** RBAC Approval Lifecycle (DRAFT → ACTIVE)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Contract Repository (MSAs/SOWs — Central)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI Extraction Wizard
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** IFRS 16 Note 16 Maturity Analysis Report
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Lease Amendments History
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Sublease Accounting (Intermediate Lessor)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Embedded Lease Identification
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Lease vs Buy Analysis
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 20. Lease & Contract Management calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Paginated Lease Portfolio (>1M records)
+- IFRS 16 / ASC 842 Amortization & Liability Schedules
+- GL Integration (Auto-Journal Entry on Recognition)
+- FA Integration (Auto-Capitalize ROU Assets)
+- RBAC Approval Lifecycle (DRAFT → ACTIVE)
+- Contract Repository (MSAs/SOWs — Central)
+- AI Extraction Wizard
+- IFRS 16 Note 16 Maturity Analysis Report
+- Lease Amendments History
+- Sublease Accounting (Intermediate Lessor)
+- Embedded Lease Identification
+- Lease vs Buy Analysis
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 20. Lease & Contract Management.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 20. Lease & Contract Management to related modules (e.g., GL, AP, AR) for the following functions:
+- Paginated Lease Portfolio (>1M records)
+- IFRS 16 / ASC 842 Amortization & Liability Schedules
+- GL Integration (Auto-Journal Entry on Recognition)
+- FA Integration (Auto-Capitalize ROU Assets)
+- RBAC Approval Lifecycle (DRAFT → ACTIVE)
+- Contract Repository (MSAs/SOWs — Central)
+- AI Extraction Wizard
+- IFRS 16 Note 16 Maturity Analysis Report
+- Lease Amendments History
+- Sublease Accounting (Intermediate Lessor)
+- Embedded Lease Identification
+- Lease vs Buy Analysis
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Paginated Lease Portfolio (>1M records)
+- IFRS 16 / ASC 842 Amortization & Liability Schedules
+- GL Integration (Auto-Journal Entry on Recognition)
+- FA Integration (Auto-Capitalize ROU Assets)
+- RBAC Approval Lifecycle (DRAFT → ACTIVE)
+- Contract Repository (MSAs/SOWs — Central)
+- AI Extraction Wizard
+- IFRS 16 Note 16 Maturity Analysis Report
+- Lease Amendments History
+- Sublease Accounting (Intermediate Lessor)
+- Embedded Lease Identification
+- Lease vs Buy Analysis
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Paginated Lease Portfolio (>1M records)
+- IFRS 16 / ASC 842 Amortization & Liability Schedules
+- GL Integration (Auto-Journal Entry on Recognition)
+- FA Integration (Auto-Capitalize ROU Assets)
+- RBAC Approval Lifecycle (DRAFT → ACTIVE)
+- Contract Repository (MSAs/SOWs — Central)
+- AI Extraction Wizard
+- IFRS 16 Note 16 Maturity Analysis Report
+- Lease Amendments History
+- Sublease Accounting (Intermediate Lessor)
+- Embedded Lease Identification
+- Lease vs Buy Analysis
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Paginated Lease Portfolio (>1M records)
+- IFRS 16 / ASC 842 Amortization & Liability Schedules
+- GL Integration (Auto-Journal Entry on Recognition)
+- FA Integration (Auto-Capitalize ROU Assets)
+- RBAC Approval Lifecycle (DRAFT → ACTIVE)
+- Contract Repository (MSAs/SOWs — Central)
+- AI Extraction Wizard
+- IFRS 16 Note 16 Maturity Analysis Report
+- Lease Amendments History
+- Sublease Accounting (Intermediate Lessor)
+- Embedded Lease Identification
+- Lease vs Buy Analysis
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Paginated Lease Portfolio (>1M records)
+- IFRS 16 / ASC 842 Amortization & Liability Schedules
+- GL Integration (Auto-Journal Entry on Recognition)
+- FA Integration (Auto-Capitalize ROU Assets)
+- RBAC Approval Lifecycle (DRAFT → ACTIVE)
+- Contract Repository (MSAs/SOWs — Central)
+- AI Extraction Wizard
+- IFRS 16 Note 16 Maturity Analysis Report
+- Lease Amendments History
+- Sublease Accounting (Intermediate Lessor)
+- Embedded Lease Identification
+- Lease vs Buy Analysis
 ---
 
 ### 21. Learning Management System (LMS)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Hierarchical Course Catalog (Communities → Subject → Course → Offering → Activity)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Secure Content Delivery (SCORM/Video + Progress Tracking)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Enrollment (Approval Workflows, Waitlists, Paid Flow)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Certification & Recertification (`RecertificationService`, Auto-Renew)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Learning Paths / Curricula + Bundling
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Native Quiz/Assessment Engine
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Instructor Dashboard (Scheduling, Resources)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Manager Self-Service (Team Assignments, Compliance Dashboard)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI Recommendations + Skill Extraction
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Field-Level Audit Logging (`hrm_learning_audit_logs`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Server-Side Pagination
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** External Vendor / Training Provider Records
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 21. Learning Management System (LMS) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Hierarchical Course Catalog (Communities → Subject → Course → Offering → Activity)
+- Secure Content Delivery (SCORM/Video + Progress Tracking)
+- Enrollment (Approval Workflows, Waitlists, Paid Flow)
+- Certification & Recertification (`RecertificationService`, Auto-Renew)
+- Learning Paths / Curricula + Bundling
+- Native Quiz/Assessment Engine
+- Instructor Dashboard (Scheduling, Resources)
+- Manager Self-Service (Team Assignments, Compliance Dashboard)
+- AI Recommendations + Skill Extraction
+- Field-Level Audit Logging (`hrm_learning_audit_logs`)
+- Server-Side Pagination
+- External Vendor / Training Provider Records
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 21. Learning Management System (LMS).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 21. Learning Management System (LMS) to related modules (e.g., GL, AP, AR) for the following functions:
+- Hierarchical Course Catalog (Communities → Subject → Course → Offering → Activity)
+- Secure Content Delivery (SCORM/Video + Progress Tracking)
+- Enrollment (Approval Workflows, Waitlists, Paid Flow)
+- Certification & Recertification (`RecertificationService`, Auto-Renew)
+- Learning Paths / Curricula + Bundling
+- Native Quiz/Assessment Engine
+- Instructor Dashboard (Scheduling, Resources)
+- Manager Self-Service (Team Assignments, Compliance Dashboard)
+- AI Recommendations + Skill Extraction
+- Field-Level Audit Logging (`hrm_learning_audit_logs`)
+- Server-Side Pagination
+- External Vendor / Training Provider Records
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Hierarchical Course Catalog (Communities → Subject → Course → Offering → Activity)
+- Secure Content Delivery (SCORM/Video + Progress Tracking)
+- Enrollment (Approval Workflows, Waitlists, Paid Flow)
+- Certification & Recertification (`RecertificationService`, Auto-Renew)
+- Learning Paths / Curricula + Bundling
+- Native Quiz/Assessment Engine
+- Instructor Dashboard (Scheduling, Resources)
+- Manager Self-Service (Team Assignments, Compliance Dashboard)
+- AI Recommendations + Skill Extraction
+- Field-Level Audit Logging (`hrm_learning_audit_logs`)
+- Server-Side Pagination
+- External Vendor / Training Provider Records
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Hierarchical Course Catalog (Communities → Subject → Course → Offering → Activity)
+- Secure Content Delivery (SCORM/Video + Progress Tracking)
+- Enrollment (Approval Workflows, Waitlists, Paid Flow)
+- Certification & Recertification (`RecertificationService`, Auto-Renew)
+- Learning Paths / Curricula + Bundling
+- Native Quiz/Assessment Engine
+- Instructor Dashboard (Scheduling, Resources)
+- Manager Self-Service (Team Assignments, Compliance Dashboard)
+- AI Recommendations + Skill Extraction
+- Field-Level Audit Logging (`hrm_learning_audit_logs`)
+- Server-Side Pagination
+- External Vendor / Training Provider Records
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Hierarchical Course Catalog (Communities → Subject → Course → Offering → Activity)
+- Secure Content Delivery (SCORM/Video + Progress Tracking)
+- Enrollment (Approval Workflows, Waitlists, Paid Flow)
+- Certification & Recertification (`RecertificationService`, Auto-Renew)
+- Learning Paths / Curricula + Bundling
+- Native Quiz/Assessment Engine
+- Instructor Dashboard (Scheduling, Resources)
+- Manager Self-Service (Team Assignments, Compliance Dashboard)
+- AI Recommendations + Skill Extraction
+- Field-Level Audit Logging (`hrm_learning_audit_logs`)
+- Server-Side Pagination
+- External Vendor / Training Provider Records
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Hierarchical Course Catalog (Communities → Subject → Course → Offering → Activity)
+- Secure Content Delivery (SCORM/Video + Progress Tracking)
+- Enrollment (Approval Workflows, Waitlists, Paid Flow)
+- Certification & Recertification (`RecertificationService`, Auto-Renew)
+- Learning Paths / Curricula + Bundling
+- Native Quiz/Assessment Engine
+- Instructor Dashboard (Scheduling, Resources)
+- Manager Self-Service (Team Assignments, Compliance Dashboard)
+- AI Recommendations + Skill Extraction
+- Field-Level Audit Logging (`hrm_learning_audit_logs`)
+- Server-Side Pagination
+- External Vendor / Training Provider Records
 ---
 
 ### 22. Maintenance & Asset Management (EAM)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Supervisor Workbench (Overview, Dispatch, Planning, Financials)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Technician Mobile UI (Parts, Time, Offline Sync)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Inspection Forms (Dynamic JSON Templates)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Material Issue / Parts Management
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Visual Scheduling / Planning Board
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** PM Definitions (Floating/Fixed Intervals)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Asset Hierarchy Tree (Drag-and-Drop)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Bill of Materials (BOM) Editor
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** IoT Telemetry / Real-Time Charts (Asset 360)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Failure Analysis / Failure Code Config
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Work Order Costing (Real-Time Rollup)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** CIP Capitalization → Projects
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Inventory Integration (Direct Stock Decrement)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Auto-Requisition (Inventory Reorder Service)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Server-Side Pagination (Work Orders)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Row-Level Security (OrgId Filtering)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 22. Maintenance & Asset Management (EAM) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Supervisor Workbench (Overview, Dispatch, Planning, Financials)
+- Technician Mobile UI (Parts, Time, Offline Sync)
+- Inspection Forms (Dynamic JSON Templates)
+- Material Issue / Parts Management
+- Visual Scheduling / Planning Board
+- PM Definitions (Floating/Fixed Intervals)
+- Asset Hierarchy Tree (Drag-and-Drop)
+- Bill of Materials (BOM) Editor
+- IoT Telemetry / Real-Time Charts (Asset 360)
+- Failure Analysis / Failure Code Config
+- Work Order Costing (Real-Time Rollup)
+- CIP Capitalization → Projects
+- Inventory Integration (Direct Stock Decrement)
+- Auto-Requisition (Inventory Reorder Service)
+- Server-Side Pagination (Work Orders)
+- Row-Level Security (OrgId Filtering)
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 22. Maintenance & Asset Management (EAM).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 22. Maintenance & Asset Management (EAM) to related modules (e.g., GL, AP, AR) for the following functions:
+- Supervisor Workbench (Overview, Dispatch, Planning, Financials)
+- Technician Mobile UI (Parts, Time, Offline Sync)
+- Inspection Forms (Dynamic JSON Templates)
+- Material Issue / Parts Management
+- Visual Scheduling / Planning Board
+- PM Definitions (Floating/Fixed Intervals)
+- Asset Hierarchy Tree (Drag-and-Drop)
+- Bill of Materials (BOM) Editor
+- IoT Telemetry / Real-Time Charts (Asset 360)
+- Failure Analysis / Failure Code Config
+- Work Order Costing (Real-Time Rollup)
+- CIP Capitalization → Projects
+- Inventory Integration (Direct Stock Decrement)
+- Auto-Requisition (Inventory Reorder Service)
+- Server-Side Pagination (Work Orders)
+- Row-Level Security (OrgId Filtering)
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Supervisor Workbench (Overview, Dispatch, Planning, Financials)
+- Technician Mobile UI (Parts, Time, Offline Sync)
+- Inspection Forms (Dynamic JSON Templates)
+- Material Issue / Parts Management
+- Visual Scheduling / Planning Board
+- PM Definitions (Floating/Fixed Intervals)
+- Asset Hierarchy Tree (Drag-and-Drop)
+- Bill of Materials (BOM) Editor
+- IoT Telemetry / Real-Time Charts (Asset 360)
+- Failure Analysis / Failure Code Config
+- Work Order Costing (Real-Time Rollup)
+- CIP Capitalization → Projects
+- Inventory Integration (Direct Stock Decrement)
+- Auto-Requisition (Inventory Reorder Service)
+- Server-Side Pagination (Work Orders)
+- Row-Level Security (OrgId Filtering)
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Supervisor Workbench (Overview, Dispatch, Planning, Financials)
+- Technician Mobile UI (Parts, Time, Offline Sync)
+- Inspection Forms (Dynamic JSON Templates)
+- Material Issue / Parts Management
+- Visual Scheduling / Planning Board
+- PM Definitions (Floating/Fixed Intervals)
+- Asset Hierarchy Tree (Drag-and-Drop)
+- Bill of Materials (BOM) Editor
+- IoT Telemetry / Real-Time Charts (Asset 360)
+- Failure Analysis / Failure Code Config
+- Work Order Costing (Real-Time Rollup)
+- CIP Capitalization → Projects
+- Inventory Integration (Direct Stock Decrement)
+- Auto-Requisition (Inventory Reorder Service)
+- Server-Side Pagination (Work Orders)
+- Row-Level Security (OrgId Filtering)
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Supervisor Workbench (Overview, Dispatch, Planning, Financials)
+- Technician Mobile UI (Parts, Time, Offline Sync)
+- Inspection Forms (Dynamic JSON Templates)
+- Material Issue / Parts Management
+- Visual Scheduling / Planning Board
+- PM Definitions (Floating/Fixed Intervals)
+- Asset Hierarchy Tree (Drag-and-Drop)
+- Bill of Materials (BOM) Editor
+- IoT Telemetry / Real-Time Charts (Asset 360)
+- Failure Analysis / Failure Code Config
+- Work Order Costing (Real-Time Rollup)
+- CIP Capitalization → Projects
+- Inventory Integration (Direct Stock Decrement)
+- Auto-Requisition (Inventory Reorder Service)
+- Server-Side Pagination (Work Orders)
+- Row-Level Security (OrgId Filtering)
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Supervisor Workbench (Overview, Dispatch, Planning, Financials)
+- Technician Mobile UI (Parts, Time, Offline Sync)
+- Inspection Forms (Dynamic JSON Templates)
+- Material Issue / Parts Management
+- Visual Scheduling / Planning Board
+- PM Definitions (Floating/Fixed Intervals)
+- Asset Hierarchy Tree (Drag-and-Drop)
+- Bill of Materials (BOM) Editor
+- IoT Telemetry / Real-Time Charts (Asset 360)
+- Failure Analysis / Failure Code Config
+- Work Order Costing (Real-Time Rollup)
+- CIP Capitalization → Projects
+- Inventory Integration (Direct Stock Decrement)
+- Auto-Requisition (Inventory Reorder Service)
+- Server-Side Pagination (Work Orders)
+- Row-Level Security (OrgId Filtering)
 ---
 
 ### 23. Manufacturing
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Discrete BOMs (StandardTable UI)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Process Formulas (Designer — Ingredients/Yield)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Process Recipes (Formula + Routing Link)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Batch Production Workbench (Release & Execute)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Lot Genealogy (Interactive Tree)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** LIMS Quality Results (pH, Density, Purity)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** MRP Planning (Server-Side Pagination)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Costing Workbench (Linked to Sidebar)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Variance Analysis (Date-Range Filtering + Pagination)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Standard Op Library
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** All Manufacturing Pages accessible via Sidebar
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Configure-to-Order (CTO) / Assemble-to-Order (ATO)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** MES / Shop Floor Integration
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 23. Manufacturing calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Discrete BOMs (StandardTable UI)
+- Process Formulas (Designer — Ingredients/Yield)
+- Process Recipes (Formula + Routing Link)
+- Batch Production Workbench (Release & Execute)
+- Lot Genealogy (Interactive Tree)
+- LIMS Quality Results (pH, Density, Purity)
+- MRP Planning (Server-Side Pagination)
+- Costing Workbench (Linked to Sidebar)
+- Variance Analysis (Date-Range Filtering + Pagination)
+- Standard Op Library
+- All Manufacturing Pages accessible via Sidebar
+- Configure-to-Order (CTO) / Assemble-to-Order (ATO)
+- MES / Shop Floor Integration
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 23. Manufacturing.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 23. Manufacturing to related modules (e.g., GL, AP, AR) for the following functions:
+- Discrete BOMs (StandardTable UI)
+- Process Formulas (Designer — Ingredients/Yield)
+- Process Recipes (Formula + Routing Link)
+- Batch Production Workbench (Release & Execute)
+- Lot Genealogy (Interactive Tree)
+- LIMS Quality Results (pH, Density, Purity)
+- MRP Planning (Server-Side Pagination)
+- Costing Workbench (Linked to Sidebar)
+- Variance Analysis (Date-Range Filtering + Pagination)
+- Standard Op Library
+- All Manufacturing Pages accessible via Sidebar
+- Configure-to-Order (CTO) / Assemble-to-Order (ATO)
+- MES / Shop Floor Integration
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Discrete BOMs (StandardTable UI)
+- Process Formulas (Designer — Ingredients/Yield)
+- Process Recipes (Formula + Routing Link)
+- Batch Production Workbench (Release & Execute)
+- Lot Genealogy (Interactive Tree)
+- LIMS Quality Results (pH, Density, Purity)
+- MRP Planning (Server-Side Pagination)
+- Costing Workbench (Linked to Sidebar)
+- Variance Analysis (Date-Range Filtering + Pagination)
+- Standard Op Library
+- All Manufacturing Pages accessible via Sidebar
+- Configure-to-Order (CTO) / Assemble-to-Order (ATO)
+- MES / Shop Floor Integration
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Discrete BOMs (StandardTable UI)
+- Process Formulas (Designer — Ingredients/Yield)
+- Process Recipes (Formula + Routing Link)
+- Batch Production Workbench (Release & Execute)
+- Lot Genealogy (Interactive Tree)
+- LIMS Quality Results (pH, Density, Purity)
+- MRP Planning (Server-Side Pagination)
+- Costing Workbench (Linked to Sidebar)
+- Variance Analysis (Date-Range Filtering + Pagination)
+- Standard Op Library
+- All Manufacturing Pages accessible via Sidebar
+- Configure-to-Order (CTO) / Assemble-to-Order (ATO)
+- MES / Shop Floor Integration
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Discrete BOMs (StandardTable UI)
+- Process Formulas (Designer — Ingredients/Yield)
+- Process Recipes (Formula + Routing Link)
+- Batch Production Workbench (Release & Execute)
+- Lot Genealogy (Interactive Tree)
+- LIMS Quality Results (pH, Density, Purity)
+- MRP Planning (Server-Side Pagination)
+- Costing Workbench (Linked to Sidebar)
+- Variance Analysis (Date-Range Filtering + Pagination)
+- Standard Op Library
+- All Manufacturing Pages accessible via Sidebar
+- Configure-to-Order (CTO) / Assemble-to-Order (ATO)
+- MES / Shop Floor Integration
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Discrete BOMs (StandardTable UI)
+- Process Formulas (Designer — Ingredients/Yield)
+- Process Recipes (Formula + Routing Link)
+- Batch Production Workbench (Release & Execute)
+- Lot Genealogy (Interactive Tree)
+- LIMS Quality Results (pH, Density, Purity)
+- MRP Planning (Server-Side Pagination)
+- Costing Workbench (Linked to Sidebar)
+- Variance Analysis (Date-Range Filtering + Pagination)
+- Standard Op Library
+- All Manufacturing Pages accessible via Sidebar
+- Configure-to-Order (CTO) / Assemble-to-Order (ATO)
+- MES / Shop Floor Integration
 ---
 
 ### 24. Manufacturing Costing (WIP)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Cost Elements (`mfg_cost_elements`, Overhead Rules, Standard Costs)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** WIP Balances & Variance Journals
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Standard Costing (Rollup/Update)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Costing Workbench + WIP Dashboard
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Variance Analysis (Date Range Filtering + Pagination)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Actual Overhead Absorption (Machine / Labor Hours)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Outside Processing Cost Tracking
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Cost Update Approval Workflow
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Inventory Revaluation on Standard Cost Update
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 24. Manufacturing Costing (WIP) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Cost Elements (`mfg_cost_elements`, Overhead Rules, Standard Costs)
+- WIP Balances & Variance Journals
+- Standard Costing (Rollup/Update)
+- Costing Workbench + WIP Dashboard
+- Variance Analysis (Date Range Filtering + Pagination)
+- Actual Overhead Absorption (Machine / Labor Hours)
+- Outside Processing Cost Tracking
+- Cost Update Approval Workflow
+- Inventory Revaluation on Standard Cost Update
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 24. Manufacturing Costing (WIP).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 24. Manufacturing Costing (WIP) to related modules (e.g., GL, AP, AR) for the following functions:
+- Cost Elements (`mfg_cost_elements`, Overhead Rules, Standard Costs)
+- WIP Balances & Variance Journals
+- Standard Costing (Rollup/Update)
+- Costing Workbench + WIP Dashboard
+- Variance Analysis (Date Range Filtering + Pagination)
+- Actual Overhead Absorption (Machine / Labor Hours)
+- Outside Processing Cost Tracking
+- Cost Update Approval Workflow
+- Inventory Revaluation on Standard Cost Update
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Cost Elements (`mfg_cost_elements`, Overhead Rules, Standard Costs)
+- WIP Balances & Variance Journals
+- Standard Costing (Rollup/Update)
+- Costing Workbench + WIP Dashboard
+- Variance Analysis (Date Range Filtering + Pagination)
+- Actual Overhead Absorption (Machine / Labor Hours)
+- Outside Processing Cost Tracking
+- Cost Update Approval Workflow
+- Inventory Revaluation on Standard Cost Update
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Cost Elements (`mfg_cost_elements`, Overhead Rules, Standard Costs)
+- WIP Balances & Variance Journals
+- Standard Costing (Rollup/Update)
+- Costing Workbench + WIP Dashboard
+- Variance Analysis (Date Range Filtering + Pagination)
+- Actual Overhead Absorption (Machine / Labor Hours)
+- Outside Processing Cost Tracking
+- Cost Update Approval Workflow
+- Inventory Revaluation on Standard Cost Update
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Cost Elements (`mfg_cost_elements`, Overhead Rules, Standard Costs)
+- WIP Balances & Variance Journals
+- Standard Costing (Rollup/Update)
+- Costing Workbench + WIP Dashboard
+- Variance Analysis (Date Range Filtering + Pagination)
+- Actual Overhead Absorption (Machine / Labor Hours)
+- Outside Processing Cost Tracking
+- Cost Update Approval Workflow
+- Inventory Revaluation on Standard Cost Update
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Cost Elements (`mfg_cost_elements`, Overhead Rules, Standard Costs)
+- WIP Balances & Variance Journals
+- Standard Costing (Rollup/Update)
+- Costing Workbench + WIP Dashboard
+- Variance Analysis (Date Range Filtering + Pagination)
+- Actual Overhead Absorption (Machine / Labor Hours)
+- Outside Processing Cost Tracking
+- Cost Update Approval Workflow
+- Inventory Revaluation on Standard Cost Update
 ---
 
 ### 25. Master Data Management (MDM)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** TCA Pattern (Parties, Locations, Relationships)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Product Hub / Item Master (PIM — `egp_system_items`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Configurable Match/Survivorship Rules
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Change Request Workflows
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Data Quality Dashboard & Deduplication Console
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Bulk Import (CSV)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Cross-Module PIM Integration (OM/Procurement)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Global Address Validation (Real-Time)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI Anomaly Detection for Master Data
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Party Hierarchy Credit / Risk Aggregation
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Item Lifecycle Costing at Category Level
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Bulk Export / Data Portability
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 25. Master Data Management (MDM) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- TCA Pattern (Parties, Locations, Relationships)
+- Product Hub / Item Master (PIM — `egp_system_items`)
+- Configurable Match/Survivorship Rules
+- Change Request Workflows
+- Data Quality Dashboard & Deduplication Console
+- Bulk Import (CSV)
+- Cross-Module PIM Integration (OM/Procurement)
+- Global Address Validation (Real-Time)
+- AI Anomaly Detection for Master Data
+- Party Hierarchy Credit / Risk Aggregation
+- Item Lifecycle Costing at Category Level
+- Bulk Export / Data Portability
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 25. Master Data Management (MDM).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 25. Master Data Management (MDM) to related modules (e.g., GL, AP, AR) for the following functions:
+- TCA Pattern (Parties, Locations, Relationships)
+- Product Hub / Item Master (PIM — `egp_system_items`)
+- Configurable Match/Survivorship Rules
+- Change Request Workflows
+- Data Quality Dashboard & Deduplication Console
+- Bulk Import (CSV)
+- Cross-Module PIM Integration (OM/Procurement)
+- Global Address Validation (Real-Time)
+- AI Anomaly Detection for Master Data
+- Party Hierarchy Credit / Risk Aggregation
+- Item Lifecycle Costing at Category Level
+- Bulk Export / Data Portability
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- TCA Pattern (Parties, Locations, Relationships)
+- Product Hub / Item Master (PIM — `egp_system_items`)
+- Configurable Match/Survivorship Rules
+- Change Request Workflows
+- Data Quality Dashboard & Deduplication Console
+- Bulk Import (CSV)
+- Cross-Module PIM Integration (OM/Procurement)
+- Global Address Validation (Real-Time)
+- AI Anomaly Detection for Master Data
+- Party Hierarchy Credit / Risk Aggregation
+- Item Lifecycle Costing at Category Level
+- Bulk Export / Data Portability
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- TCA Pattern (Parties, Locations, Relationships)
+- Product Hub / Item Master (PIM — `egp_system_items`)
+- Configurable Match/Survivorship Rules
+- Change Request Workflows
+- Data Quality Dashboard & Deduplication Console
+- Bulk Import (CSV)
+- Cross-Module PIM Integration (OM/Procurement)
+- Global Address Validation (Real-Time)
+- AI Anomaly Detection for Master Data
+- Party Hierarchy Credit / Risk Aggregation
+- Item Lifecycle Costing at Category Level
+- Bulk Export / Data Portability
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- TCA Pattern (Parties, Locations, Relationships)
+- Product Hub / Item Master (PIM — `egp_system_items`)
+- Configurable Match/Survivorship Rules
+- Change Request Workflows
+- Data Quality Dashboard & Deduplication Console
+- Bulk Import (CSV)
+- Cross-Module PIM Integration (OM/Procurement)
+- Global Address Validation (Real-Time)
+- AI Anomaly Detection for Master Data
+- Party Hierarchy Credit / Risk Aggregation
+- Item Lifecycle Costing at Category Level
+- Bulk Export / Data Portability
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- TCA Pattern (Parties, Locations, Relationships)
+- Product Hub / Item Master (PIM — `egp_system_items`)
+- Configurable Match/Survivorship Rules
+- Change Request Workflows
+- Data Quality Dashboard & Deduplication Console
+- Bulk Import (CSV)
+- Cross-Module PIM Integration (OM/Procurement)
+- Global Address Validation (Real-Time)
+- AI Anomaly Detection for Master Data
+- Party Hierarchy Credit / Risk Aggregation
+- Item Lifecycle Costing at Category Level
+- Bulk Export / Data Portability
 ---
 
 ### 26. Planning, Budgeting & Forecasting (EPM)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Project Finance Planning (POC, Revenue Rec)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** EPBCS Sandboxing / Sandbox Environment
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 26. Planning, Budgeting & Forecasting (EPM) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Project Finance Planning (POC, Revenue Rec)
+- EPBCS Sandboxing / Sandbox Environment
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 26. Planning, Budgeting & Forecasting (EPM).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 26. Planning, Budgeting & Forecasting (EPM) to related modules (e.g., GL, AP, AR) for the following functions:
+- Project Finance Planning (POC, Revenue Rec)
+- EPBCS Sandboxing / Sandbox Environment
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Project Finance Planning (POC, Revenue Rec)
+- EPBCS Sandboxing / Sandbox Environment
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Project Finance Planning (POC, Revenue Rec)
+- EPBCS Sandboxing / Sandbox Environment
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Project Finance Planning (POC, Revenue Rec)
+- EPBCS Sandboxing / Sandbox Environment
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Project Finance Planning (POC, Revenue Rec)
+- EPBCS Sandboxing / Sandbox Environment
 ---
 
 ### 27. Project Portfolio Management (PPM)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Project Foundation (Templates, WBS, Financial Plan Types)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Cost Collection (AP, Inventory, Labor — `collectFromAp`, etc.)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Burdening (Overhead Allocation Schedules)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Budgeting (Budget vs Actual, EAC)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Capitalization (CIP → Fixed Assets)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Inter-Project Cross-Charge / Borrow-Lend
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Earned Value Management (CPI/SPI Live)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Agentic AI Operations / Adjustments
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Governance (Status Transitions, Workflow Rules)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** SLA Accounting + GL Distributions
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Project Billing (Billing Rules Manager)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Rate Schedules (Bill/Revenue Rates)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** [MISSING / INACCESSIBLE] PPM Workbench UI
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Portfolio-Level Resource Management
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 27. Project Portfolio Management (PPM) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Project Foundation (Templates, WBS, Financial Plan Types)
+- Cost Collection (AP, Inventory, Labor — `collectFromAp`, etc.)
+- Burdening (Overhead Allocation Schedules)
+- Budgeting (Budget vs Actual, EAC)
+- Capitalization (CIP → Fixed Assets)
+- Inter-Project Cross-Charge / Borrow-Lend
+- Earned Value Management (CPI/SPI Live)
+- Agentic AI Operations / Adjustments
+- Governance (Status Transitions, Workflow Rules)
+- SLA Accounting + GL Distributions
+- Project Billing (Billing Rules Manager)
+- Rate Schedules (Bill/Revenue Rates)
+- [MISSING / INACCESSIBLE] PPM Workbench UI
+- Portfolio-Level Resource Management
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 27. Project Portfolio Management (PPM).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 27. Project Portfolio Management (PPM) to related modules (e.g., GL, AP, AR) for the following functions:
+- Project Foundation (Templates, WBS, Financial Plan Types)
+- Cost Collection (AP, Inventory, Labor — `collectFromAp`, etc.)
+- Burdening (Overhead Allocation Schedules)
+- Budgeting (Budget vs Actual, EAC)
+- Capitalization (CIP → Fixed Assets)
+- Inter-Project Cross-Charge / Borrow-Lend
+- Earned Value Management (CPI/SPI Live)
+- Agentic AI Operations / Adjustments
+- Governance (Status Transitions, Workflow Rules)
+- SLA Accounting + GL Distributions
+- Project Billing (Billing Rules Manager)
+- Rate Schedules (Bill/Revenue Rates)
+- [MISSING / INACCESSIBLE] PPM Workbench UI
+- Portfolio-Level Resource Management
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Project Foundation (Templates, WBS, Financial Plan Types)
+- Cost Collection (AP, Inventory, Labor — `collectFromAp`, etc.)
+- Burdening (Overhead Allocation Schedules)
+- Budgeting (Budget vs Actual, EAC)
+- Capitalization (CIP → Fixed Assets)
+- Inter-Project Cross-Charge / Borrow-Lend
+- Earned Value Management (CPI/SPI Live)
+- Agentic AI Operations / Adjustments
+- Governance (Status Transitions, Workflow Rules)
+- SLA Accounting + GL Distributions
+- Project Billing (Billing Rules Manager)
+- Rate Schedules (Bill/Revenue Rates)
+- [MISSING / INACCESSIBLE] PPM Workbench UI
+- Portfolio-Level Resource Management
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Project Foundation (Templates, WBS, Financial Plan Types)
+- Cost Collection (AP, Inventory, Labor — `collectFromAp`, etc.)
+- Burdening (Overhead Allocation Schedules)
+- Budgeting (Budget vs Actual, EAC)
+- Capitalization (CIP → Fixed Assets)
+- Inter-Project Cross-Charge / Borrow-Lend
+- Earned Value Management (CPI/SPI Live)
+- Agentic AI Operations / Adjustments
+- Governance (Status Transitions, Workflow Rules)
+- SLA Accounting + GL Distributions
+- Project Billing (Billing Rules Manager)
+- Rate Schedules (Bill/Revenue Rates)
+- [MISSING / INACCESSIBLE] PPM Workbench UI
+- Portfolio-Level Resource Management
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Project Foundation (Templates, WBS, Financial Plan Types)
+- Cost Collection (AP, Inventory, Labor — `collectFromAp`, etc.)
+- Burdening (Overhead Allocation Schedules)
+- Budgeting (Budget vs Actual, EAC)
+- Capitalization (CIP → Fixed Assets)
+- Inter-Project Cross-Charge / Borrow-Lend
+- Earned Value Management (CPI/SPI Live)
+- Agentic AI Operations / Adjustments
+- Governance (Status Transitions, Workflow Rules)
+- SLA Accounting + GL Distributions
+- Project Billing (Billing Rules Manager)
+- Rate Schedules (Bill/Revenue Rates)
+- [MISSING / INACCESSIBLE] PPM Workbench UI
+- Portfolio-Level Resource Management
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Project Foundation (Templates, WBS, Financial Plan Types)
+- Cost Collection (AP, Inventory, Labor — `collectFromAp`, etc.)
+- Burdening (Overhead Allocation Schedules)
+- Budgeting (Budget vs Actual, EAC)
+- Capitalization (CIP → Fixed Assets)
+- Inter-Project Cross-Charge / Borrow-Lend
+- Earned Value Management (CPI/SPI Live)
+- Agentic AI Operations / Adjustments
+- Governance (Status Transitions, Workflow Rules)
+- SLA Accounting + GL Distributions
+- Project Billing (Billing Rules Manager)
+- Rate Schedules (Bill/Revenue Rates)
+- [MISSING / INACCESSIBLE] PPM Workbench UI
+- Portfolio-Level Resource Management
 ---
 
 ### 28. Procurement & SCM
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Supplier Master
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Self-Service Requisitioning (+ Funds Check against Budgets)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Approval Rules Engine (AME-style + Encumbrance Reservation)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Purchase Orders
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Sourcing / RFQ / Quote Management
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Receiving + Receipt Accounting
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Returns / Debit Memos / Corrections
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Inventory Management (Core Transactions)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Accounts Payable Integration (Invoice/Pay/Tax)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Budgetary Control (Encumbrance Accounting)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** GL Integration (SLA / Auto-Post Journals)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Procurement Analytics (Spend by Supplier, PO Status)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI Procurement Agent (Supplier Risk, Reorder, Payment Opt)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Procurement Contract Lifecycle Management
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Supplier Qualification Management (SQM)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 28. Procurement & SCM calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Supplier Master
+- Self-Service Requisitioning (+ Funds Check against Budgets)
+- Approval Rules Engine (AME-style + Encumbrance Reservation)
+- Purchase Orders
+- Sourcing / RFQ / Quote Management
+- Receiving + Receipt Accounting
+- Returns / Debit Memos / Corrections
+- Inventory Management (Core Transactions)
+- Accounts Payable Integration (Invoice/Pay/Tax)
+- Budgetary Control (Encumbrance Accounting)
+- GL Integration (SLA / Auto-Post Journals)
+- Procurement Analytics (Spend by Supplier, PO Status)
+- AI Procurement Agent (Supplier Risk, Reorder, Payment Opt)
+- Procurement Contract Lifecycle Management
+- Supplier Qualification Management (SQM)
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 28. Procurement & SCM.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 28. Procurement & SCM to related modules (e.g., GL, AP, AR) for the following functions:
+- Supplier Master
+- Self-Service Requisitioning (+ Funds Check against Budgets)
+- Approval Rules Engine (AME-style + Encumbrance Reservation)
+- Purchase Orders
+- Sourcing / RFQ / Quote Management
+- Receiving + Receipt Accounting
+- Returns / Debit Memos / Corrections
+- Inventory Management (Core Transactions)
+- Accounts Payable Integration (Invoice/Pay/Tax)
+- Budgetary Control (Encumbrance Accounting)
+- GL Integration (SLA / Auto-Post Journals)
+- Procurement Analytics (Spend by Supplier, PO Status)
+- AI Procurement Agent (Supplier Risk, Reorder, Payment Opt)
+- Procurement Contract Lifecycle Management
+- Supplier Qualification Management (SQM)
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Supplier Master
+- Self-Service Requisitioning (+ Funds Check against Budgets)
+- Approval Rules Engine (AME-style + Encumbrance Reservation)
+- Purchase Orders
+- Sourcing / RFQ / Quote Management
+- Receiving + Receipt Accounting
+- Returns / Debit Memos / Corrections
+- Inventory Management (Core Transactions)
+- Accounts Payable Integration (Invoice/Pay/Tax)
+- Budgetary Control (Encumbrance Accounting)
+- GL Integration (SLA / Auto-Post Journals)
+- Procurement Analytics (Spend by Supplier, PO Status)
+- AI Procurement Agent (Supplier Risk, Reorder, Payment Opt)
+- Procurement Contract Lifecycle Management
+- Supplier Qualification Management (SQM)
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Supplier Master
+- Self-Service Requisitioning (+ Funds Check against Budgets)
+- Approval Rules Engine (AME-style + Encumbrance Reservation)
+- Purchase Orders
+- Sourcing / RFQ / Quote Management
+- Receiving + Receipt Accounting
+- Returns / Debit Memos / Corrections
+- Inventory Management (Core Transactions)
+- Accounts Payable Integration (Invoice/Pay/Tax)
+- Budgetary Control (Encumbrance Accounting)
+- GL Integration (SLA / Auto-Post Journals)
+- Procurement Analytics (Spend by Supplier, PO Status)
+- AI Procurement Agent (Supplier Risk, Reorder, Payment Opt)
+- Procurement Contract Lifecycle Management
+- Supplier Qualification Management (SQM)
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Supplier Master
+- Self-Service Requisitioning (+ Funds Check against Budgets)
+- Approval Rules Engine (AME-style + Encumbrance Reservation)
+- Purchase Orders
+- Sourcing / RFQ / Quote Management
+- Receiving + Receipt Accounting
+- Returns / Debit Memos / Corrections
+- Inventory Management (Core Transactions)
+- Accounts Payable Integration (Invoice/Pay/Tax)
+- Budgetary Control (Encumbrance Accounting)
+- GL Integration (SLA / Auto-Post Journals)
+- Procurement Analytics (Spend by Supplier, PO Status)
+- AI Procurement Agent (Supplier Risk, Reorder, Payment Opt)
+- Procurement Contract Lifecycle Management
+- Supplier Qualification Management (SQM)
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Supplier Master
+- Self-Service Requisitioning (+ Funds Check against Budgets)
+- Approval Rules Engine (AME-style + Encumbrance Reservation)
+- Purchase Orders
+- Sourcing / RFQ / Quote Management
+- Receiving + Receipt Accounting
+- Returns / Debit Memos / Corrections
+- Inventory Management (Core Transactions)
+- Accounts Payable Integration (Invoice/Pay/Tax)
+- Budgetary Control (Encumbrance Accounting)
+- GL Integration (SLA / Auto-Post Journals)
+- Procurement Analytics (Spend by Supplier, PO Status)
+- AI Procurement Agent (Supplier Risk, Reorder, Payment Opt)
+- Procurement Contract Lifecycle Management
+- Supplier Qualification Management (SQM)
 ---
 
 ### 29. Revenue Management (RMCS)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** ASC 606 5-Step Framework (Contract Identification, Dynamic Grouping)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Contract Combination Logic (Step 1)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** POB Identification (incl. Material Rights, Series of Distinct Goods)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Variable Consideration (Expected Value / Most Likely Amount)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Significant Financing Component (TVM > 1 year)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Standalone Selling Price (SSP) Manager
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Revenue Rule Manager
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Revenue Setup Console (Centralized)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Revenue Assurance Dashboard
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Contract Timeline (Modification History)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** GL Reconciliation (Subledger → GL Report)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Revenue Forecasting (Linear Regression, Waterfall Prediction)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Multi-Currency Revaluation
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Internal / External Auditor Read-Only Access
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Billing Integration (Deep Link to Invoice)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 29. Revenue Management (RMCS) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- ASC 606 5-Step Framework (Contract Identification, Dynamic Grouping)
+- Contract Combination Logic (Step 1)
+- POB Identification (incl. Material Rights, Series of Distinct Goods)
+- Variable Consideration (Expected Value / Most Likely Amount)
+- Significant Financing Component (TVM > 1 year)
+- Standalone Selling Price (SSP) Manager
+- Revenue Rule Manager
+- Revenue Setup Console (Centralized)
+- Revenue Assurance Dashboard
+- Contract Timeline (Modification History)
+- GL Reconciliation (Subledger → GL Report)
+- Revenue Forecasting (Linear Regression, Waterfall Prediction)
+- Multi-Currency Revaluation
+- Internal / External Auditor Read-Only Access
+- Billing Integration (Deep Link to Invoice)
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 29. Revenue Management (RMCS).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 29. Revenue Management (RMCS) to related modules (e.g., GL, AP, AR) for the following functions:
+- ASC 606 5-Step Framework (Contract Identification, Dynamic Grouping)
+- Contract Combination Logic (Step 1)
+- POB Identification (incl. Material Rights, Series of Distinct Goods)
+- Variable Consideration (Expected Value / Most Likely Amount)
+- Significant Financing Component (TVM > 1 year)
+- Standalone Selling Price (SSP) Manager
+- Revenue Rule Manager
+- Revenue Setup Console (Centralized)
+- Revenue Assurance Dashboard
+- Contract Timeline (Modification History)
+- GL Reconciliation (Subledger → GL Report)
+- Revenue Forecasting (Linear Regression, Waterfall Prediction)
+- Multi-Currency Revaluation
+- Internal / External Auditor Read-Only Access
+- Billing Integration (Deep Link to Invoice)
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- ASC 606 5-Step Framework (Contract Identification, Dynamic Grouping)
+- Contract Combination Logic (Step 1)
+- POB Identification (incl. Material Rights, Series of Distinct Goods)
+- Variable Consideration (Expected Value / Most Likely Amount)
+- Significant Financing Component (TVM > 1 year)
+- Standalone Selling Price (SSP) Manager
+- Revenue Rule Manager
+- Revenue Setup Console (Centralized)
+- Revenue Assurance Dashboard
+- Contract Timeline (Modification History)
+- GL Reconciliation (Subledger → GL Report)
+- Revenue Forecasting (Linear Regression, Waterfall Prediction)
+- Multi-Currency Revaluation
+- Internal / External Auditor Read-Only Access
+- Billing Integration (Deep Link to Invoice)
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- ASC 606 5-Step Framework (Contract Identification, Dynamic Grouping)
+- Contract Combination Logic (Step 1)
+- POB Identification (incl. Material Rights, Series of Distinct Goods)
+- Variable Consideration (Expected Value / Most Likely Amount)
+- Significant Financing Component (TVM > 1 year)
+- Standalone Selling Price (SSP) Manager
+- Revenue Rule Manager
+- Revenue Setup Console (Centralized)
+- Revenue Assurance Dashboard
+- Contract Timeline (Modification History)
+- GL Reconciliation (Subledger → GL Report)
+- Revenue Forecasting (Linear Regression, Waterfall Prediction)
+- Multi-Currency Revaluation
+- Internal / External Auditor Read-Only Access
+- Billing Integration (Deep Link to Invoice)
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- ASC 606 5-Step Framework (Contract Identification, Dynamic Grouping)
+- Contract Combination Logic (Step 1)
+- POB Identification (incl. Material Rights, Series of Distinct Goods)
+- Variable Consideration (Expected Value / Most Likely Amount)
+- Significant Financing Component (TVM > 1 year)
+- Standalone Selling Price (SSP) Manager
+- Revenue Rule Manager
+- Revenue Setup Console (Centralized)
+- Revenue Assurance Dashboard
+- Contract Timeline (Modification History)
+- GL Reconciliation (Subledger → GL Report)
+- Revenue Forecasting (Linear Regression, Waterfall Prediction)
+- Multi-Currency Revaluation
+- Internal / External Auditor Read-Only Access
+- Billing Integration (Deep Link to Invoice)
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- ASC 606 5-Step Framework (Contract Identification, Dynamic Grouping)
+- Contract Combination Logic (Step 1)
+- POB Identification (incl. Material Rights, Series of Distinct Goods)
+- Variable Consideration (Expected Value / Most Likely Amount)
+- Significant Financing Component (TVM > 1 year)
+- Standalone Selling Price (SSP) Manager
+- Revenue Rule Manager
+- Revenue Setup Console (Centralized)
+- Revenue Assurance Dashboard
+- Contract Timeline (Modification History)
+- GL Reconciliation (Subledger → GL Report)
+- Revenue Forecasting (Linear Regression, Waterfall Prediction)
+- Multi-Currency Revaluation
+- Internal / External Auditor Read-Only Access
+- Billing Integration (Deep Link to Invoice)
 ---
 
 ### 30. Subledger Accounting (SLA)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Accounting Event Model (Event Classes & Types — AP/AR/GL/INV/FA)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Journal Line Types (JLT — Condition, Amount Source, Description Rule)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AP/AR SLA Integration (View Accounting in UI)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** GL Transfer (SLA → GL End-to-End with UI Trigger)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Inventory Events (Ship, Receive, Adjustment)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Fixed Assets Events (Additions, Depreciation, Retirement)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Projects & Construction Events (CIP/Expense, WIP/Liability)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Period Close (Sweep, Validation, Reporting)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Multi-Ledger Support (Secondary Ledger + Currency Conversion)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Account Analysis + Reconciliation Dashboard
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Accounting Program Scheduling
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 30. Subledger Accounting (SLA) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Accounting Event Model (Event Classes & Types — AP/AR/GL/INV/FA)
+- Journal Line Types (JLT — Condition, Amount Source, Description Rule)
+- AP/AR SLA Integration (View Accounting in UI)
+- GL Transfer (SLA → GL End-to-End with UI Trigger)
+- Inventory Events (Ship, Receive, Adjustment)
+- Fixed Assets Events (Additions, Depreciation, Retirement)
+- Projects & Construction Events (CIP/Expense, WIP/Liability)
+- Period Close (Sweep, Validation, Reporting)
+- Multi-Ledger Support (Secondary Ledger + Currency Conversion)
+- Account Analysis + Reconciliation Dashboard
+- Accounting Program Scheduling
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 30. Subledger Accounting (SLA).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 30. Subledger Accounting (SLA) to related modules (e.g., GL, AP, AR) for the following functions:
+- Accounting Event Model (Event Classes & Types — AP/AR/GL/INV/FA)
+- Journal Line Types (JLT — Condition, Amount Source, Description Rule)
+- AP/AR SLA Integration (View Accounting in UI)
+- GL Transfer (SLA → GL End-to-End with UI Trigger)
+- Inventory Events (Ship, Receive, Adjustment)
+- Fixed Assets Events (Additions, Depreciation, Retirement)
+- Projects & Construction Events (CIP/Expense, WIP/Liability)
+- Period Close (Sweep, Validation, Reporting)
+- Multi-Ledger Support (Secondary Ledger + Currency Conversion)
+- Account Analysis + Reconciliation Dashboard
+- Accounting Program Scheduling
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Accounting Event Model (Event Classes & Types — AP/AR/GL/INV/FA)
+- Journal Line Types (JLT — Condition, Amount Source, Description Rule)
+- AP/AR SLA Integration (View Accounting in UI)
+- GL Transfer (SLA → GL End-to-End with UI Trigger)
+- Inventory Events (Ship, Receive, Adjustment)
+- Fixed Assets Events (Additions, Depreciation, Retirement)
+- Projects & Construction Events (CIP/Expense, WIP/Liability)
+- Period Close (Sweep, Validation, Reporting)
+- Multi-Ledger Support (Secondary Ledger + Currency Conversion)
+- Account Analysis + Reconciliation Dashboard
+- Accounting Program Scheduling
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Accounting Event Model (Event Classes & Types — AP/AR/GL/INV/FA)
+- Journal Line Types (JLT — Condition, Amount Source, Description Rule)
+- AP/AR SLA Integration (View Accounting in UI)
+- GL Transfer (SLA → GL End-to-End with UI Trigger)
+- Inventory Events (Ship, Receive, Adjustment)
+- Fixed Assets Events (Additions, Depreciation, Retirement)
+- Projects & Construction Events (CIP/Expense, WIP/Liability)
+- Period Close (Sweep, Validation, Reporting)
+- Multi-Ledger Support (Secondary Ledger + Currency Conversion)
+- Account Analysis + Reconciliation Dashboard
+- Accounting Program Scheduling
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Accounting Event Model (Event Classes & Types — AP/AR/GL/INV/FA)
+- Journal Line Types (JLT — Condition, Amount Source, Description Rule)
+- AP/AR SLA Integration (View Accounting in UI)
+- GL Transfer (SLA → GL End-to-End with UI Trigger)
+- Inventory Events (Ship, Receive, Adjustment)
+- Fixed Assets Events (Additions, Depreciation, Retirement)
+- Projects & Construction Events (CIP/Expense, WIP/Liability)
+- Period Close (Sweep, Validation, Reporting)
+- Multi-Ledger Support (Secondary Ledger + Currency Conversion)
+- Account Analysis + Reconciliation Dashboard
+- Accounting Program Scheduling
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Accounting Event Model (Event Classes & Types — AP/AR/GL/INV/FA)
+- Journal Line Types (JLT — Condition, Amount Source, Description Rule)
+- AP/AR SLA Integration (View Accounting in UI)
+- GL Transfer (SLA → GL End-to-End with UI Trigger)
+- Inventory Events (Ship, Receive, Adjustment)
+- Fixed Assets Events (Additions, Depreciation, Retirement)
+- Projects & Construction Events (CIP/Expense, WIP/Liability)
+- Period Close (Sweep, Validation, Reporting)
+- Multi-Ledger Support (Secondary Ledger + Currency Conversion)
+- Account Analysis + Reconciliation Dashboard
+- Accounting Program Scheduling
 ---
 
 ### 31. Supplier Portal & Procurement Contracts
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Supplier Self-Registration (Multi-step Onboarding)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Qualification & Onboarding (Document Management, Certifications)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** External Collaboration Portal (Login, Dashboard, Orders, ASNs)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** ASN (Advanced Shipment Notice — Full Flow)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Self-Service Invoicing (Flip PO to Invoice)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Contract Authoring & Repository (MSA/SOW, Clauses)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI Clause Compliance Analysis (GPT-4 — Amended vs Standard)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Contract Consumption Tracking (Spend Validation + Dashboard)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Supplier Scorecards & KPIs (OTD, Quality)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** RFQ & Sourcing Negotiation (Winner-to-Contract)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Supplier Portal Analytics for Buyers
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 31. Supplier Portal & Procurement Contracts calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Supplier Self-Registration (Multi-step Onboarding)
+- Qualification & Onboarding (Document Management, Certifications)
+- External Collaboration Portal (Login, Dashboard, Orders, ASNs)
+- ASN (Advanced Shipment Notice — Full Flow)
+- Self-Service Invoicing (Flip PO to Invoice)
+- Contract Authoring & Repository (MSA/SOW, Clauses)
+- AI Clause Compliance Analysis (GPT-4 — Amended vs Standard)
+- Contract Consumption Tracking (Spend Validation + Dashboard)
+- Supplier Scorecards & KPIs (OTD, Quality)
+- RFQ & Sourcing Negotiation (Winner-to-Contract)
+- Supplier Portal Analytics for Buyers
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 31. Supplier Portal & Procurement Contracts.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 31. Supplier Portal & Procurement Contracts to related modules (e.g., GL, AP, AR) for the following functions:
+- Supplier Self-Registration (Multi-step Onboarding)
+- Qualification & Onboarding (Document Management, Certifications)
+- External Collaboration Portal (Login, Dashboard, Orders, ASNs)
+- ASN (Advanced Shipment Notice — Full Flow)
+- Self-Service Invoicing (Flip PO to Invoice)
+- Contract Authoring & Repository (MSA/SOW, Clauses)
+- AI Clause Compliance Analysis (GPT-4 — Amended vs Standard)
+- Contract Consumption Tracking (Spend Validation + Dashboard)
+- Supplier Scorecards & KPIs (OTD, Quality)
+- RFQ & Sourcing Negotiation (Winner-to-Contract)
+- Supplier Portal Analytics for Buyers
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Supplier Self-Registration (Multi-step Onboarding)
+- Qualification & Onboarding (Document Management, Certifications)
+- External Collaboration Portal (Login, Dashboard, Orders, ASNs)
+- ASN (Advanced Shipment Notice — Full Flow)
+- Self-Service Invoicing (Flip PO to Invoice)
+- Contract Authoring & Repository (MSA/SOW, Clauses)
+- AI Clause Compliance Analysis (GPT-4 — Amended vs Standard)
+- Contract Consumption Tracking (Spend Validation + Dashboard)
+- Supplier Scorecards & KPIs (OTD, Quality)
+- RFQ & Sourcing Negotiation (Winner-to-Contract)
+- Supplier Portal Analytics for Buyers
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Supplier Self-Registration (Multi-step Onboarding)
+- Qualification & Onboarding (Document Management, Certifications)
+- External Collaboration Portal (Login, Dashboard, Orders, ASNs)
+- ASN (Advanced Shipment Notice — Full Flow)
+- Self-Service Invoicing (Flip PO to Invoice)
+- Contract Authoring & Repository (MSA/SOW, Clauses)
+- AI Clause Compliance Analysis (GPT-4 — Amended vs Standard)
+- Contract Consumption Tracking (Spend Validation + Dashboard)
+- Supplier Scorecards & KPIs (OTD, Quality)
+- RFQ & Sourcing Negotiation (Winner-to-Contract)
+- Supplier Portal Analytics for Buyers
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Supplier Self-Registration (Multi-step Onboarding)
+- Qualification & Onboarding (Document Management, Certifications)
+- External Collaboration Portal (Login, Dashboard, Orders, ASNs)
+- ASN (Advanced Shipment Notice — Full Flow)
+- Self-Service Invoicing (Flip PO to Invoice)
+- Contract Authoring & Repository (MSA/SOW, Clauses)
+- AI Clause Compliance Analysis (GPT-4 — Amended vs Standard)
+- Contract Consumption Tracking (Spend Validation + Dashboard)
+- Supplier Scorecards & KPIs (OTD, Quality)
+- RFQ & Sourcing Negotiation (Winner-to-Contract)
+- Supplier Portal Analytics for Buyers
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Supplier Self-Registration (Multi-step Onboarding)
+- Qualification & Onboarding (Document Management, Certifications)
+- External Collaboration Portal (Login, Dashboard, Orders, ASNs)
+- ASN (Advanced Shipment Notice — Full Flow)
+- Self-Service Invoicing (Flip PO to Invoice)
+- Contract Authoring & Repository (MSA/SOW, Clauses)
+- AI Clause Compliance Analysis (GPT-4 — Amended vs Standard)
+- Contract Consumption Tracking (Spend Validation + Dashboard)
+- Supplier Scorecards & KPIs (OTD, Quality)
+- RFQ & Sourcing Negotiation (Winner-to-Contract)
+- Supplier Portal Analytics for Buyers
 ---
 
 ### 32. Talent Management
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Recruitment (Requisitions, Candidates, Offers, Onboarding)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Performance Management (Goals & Reviews)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Succession Planning (Plans, Pools)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Learning (Catalog, Enrollment, Certifications)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Employee Profile (Competencies, Skills)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** New Hire / Candidate GDPR Data Purge
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Onboarding Workflow (Day 1 Checklist)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 32. Talent Management calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Recruitment (Requisitions, Candidates, Offers, Onboarding)
+- Performance Management (Goals & Reviews)
+- Succession Planning (Plans, Pools)
+- Learning (Catalog, Enrollment, Certifications)
+- Employee Profile (Competencies, Skills)
+- New Hire / Candidate GDPR Data Purge
+- Onboarding Workflow (Day 1 Checklist)
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 32. Talent Management.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 32. Talent Management to related modules (e.g., GL, AP, AR) for the following functions:
+- Recruitment (Requisitions, Candidates, Offers, Onboarding)
+- Performance Management (Goals & Reviews)
+- Succession Planning (Plans, Pools)
+- Learning (Catalog, Enrollment, Certifications)
+- Employee Profile (Competencies, Skills)
+- New Hire / Candidate GDPR Data Purge
+- Onboarding Workflow (Day 1 Checklist)
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Recruitment (Requisitions, Candidates, Offers, Onboarding)
+- Performance Management (Goals & Reviews)
+- Succession Planning (Plans, Pools)
+- Learning (Catalog, Enrollment, Certifications)
+- Employee Profile (Competencies, Skills)
+- New Hire / Candidate GDPR Data Purge
+- Onboarding Workflow (Day 1 Checklist)
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Recruitment (Requisitions, Candidates, Offers, Onboarding)
+- Performance Management (Goals & Reviews)
+- Succession Planning (Plans, Pools)
+- Learning (Catalog, Enrollment, Certifications)
+- Employee Profile (Competencies, Skills)
+- New Hire / Candidate GDPR Data Purge
+- Onboarding Workflow (Day 1 Checklist)
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Recruitment (Requisitions, Candidates, Offers, Onboarding)
+- Performance Management (Goals & Reviews)
+- Succession Planning (Plans, Pools)
+- Learning (Catalog, Enrollment, Certifications)
+- Employee Profile (Competencies, Skills)
+- New Hire / Candidate GDPR Data Purge
+- Onboarding Workflow (Day 1 Checklist)
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Recruitment (Requisitions, Candidates, Offers, Onboarding)
+- Performance Management (Goals & Reviews)
+- Succession Planning (Plans, Pools)
+- Learning (Catalog, Enrollment, Certifications)
+- Employee Profile (Competencies, Skills)
+- New Hire / Candidate GDPR Data Purge
+- Onboarding Workflow (Day 1 Checklist)
 ---
 
 ### 33. Tax Engine
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** VAT/GST/Sales Tax (Multi-Country)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Multi-Country Nexus (Place-of-Supply Destination-based)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Reverse Charge Mechanism (RCM — Cross-border B2B)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Period Close Automation
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Deep GL Reconciliation (Tax Engine vs GL Control Accounts)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Audit Trail & SoD
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Extensibility / Plugin-based Jurisdiction Registration
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Tax Return Generation (RCM + Net Payable Analysis)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Withholding Tax (WHT) Management
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** e-Invoicing Compliance (B2B Mandate)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 33. Tax Engine calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- VAT/GST/Sales Tax (Multi-Country)
+- Multi-Country Nexus (Place-of-Supply Destination-based)
+- Reverse Charge Mechanism (RCM — Cross-border B2B)
+- Period Close Automation
+- Deep GL Reconciliation (Tax Engine vs GL Control Accounts)
+- Audit Trail & SoD
+- Extensibility / Plugin-based Jurisdiction Registration
+- Tax Return Generation (RCM + Net Payable Analysis)
+- Withholding Tax (WHT) Management
+- e-Invoicing Compliance (B2B Mandate)
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 33. Tax Engine.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 33. Tax Engine to related modules (e.g., GL, AP, AR) for the following functions:
+- VAT/GST/Sales Tax (Multi-Country)
+- Multi-Country Nexus (Place-of-Supply Destination-based)
+- Reverse Charge Mechanism (RCM — Cross-border B2B)
+- Period Close Automation
+- Deep GL Reconciliation (Tax Engine vs GL Control Accounts)
+- Audit Trail & SoD
+- Extensibility / Plugin-based Jurisdiction Registration
+- Tax Return Generation (RCM + Net Payable Analysis)
+- Withholding Tax (WHT) Management
+- e-Invoicing Compliance (B2B Mandate)
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- VAT/GST/Sales Tax (Multi-Country)
+- Multi-Country Nexus (Place-of-Supply Destination-based)
+- Reverse Charge Mechanism (RCM — Cross-border B2B)
+- Period Close Automation
+- Deep GL Reconciliation (Tax Engine vs GL Control Accounts)
+- Audit Trail & SoD
+- Extensibility / Plugin-based Jurisdiction Registration
+- Tax Return Generation (RCM + Net Payable Analysis)
+- Withholding Tax (WHT) Management
+- e-Invoicing Compliance (B2B Mandate)
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- VAT/GST/Sales Tax (Multi-Country)
+- Multi-Country Nexus (Place-of-Supply Destination-based)
+- Reverse Charge Mechanism (RCM — Cross-border B2B)
+- Period Close Automation
+- Deep GL Reconciliation (Tax Engine vs GL Control Accounts)
+- Audit Trail & SoD
+- Extensibility / Plugin-based Jurisdiction Registration
+- Tax Return Generation (RCM + Net Payable Analysis)
+- Withholding Tax (WHT) Management
+- e-Invoicing Compliance (B2B Mandate)
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- VAT/GST/Sales Tax (Multi-Country)
+- Multi-Country Nexus (Place-of-Supply Destination-based)
+- Reverse Charge Mechanism (RCM — Cross-border B2B)
+- Period Close Automation
+- Deep GL Reconciliation (Tax Engine vs GL Control Accounts)
+- Audit Trail & SoD
+- Extensibility / Plugin-based Jurisdiction Registration
+- Tax Return Generation (RCM + Net Payable Analysis)
+- Withholding Tax (WHT) Management
+- e-Invoicing Compliance (B2B Mandate)
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- VAT/GST/Sales Tax (Multi-Country)
+- Multi-Country Nexus (Place-of-Supply Destination-based)
+- Reverse Charge Mechanism (RCM — Cross-border B2B)
+- Period Close Automation
+- Deep GL Reconciliation (Tax Engine vs GL Control Accounts)
+- Audit Trail & SoD
+- Extensibility / Plugin-based Jurisdiction Registration
+- Tax Return Generation (RCM + Net Payable Analysis)
+- Withholding Tax (WHT) Management
+- e-Invoicing Compliance (B2B Mandate)
 ---
 
 ### 34. Time & Labor (Workforce Management)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Shifts, Rostering, Timesheets
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Timekeeper Console
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Advanced Accruals Engine
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Global Holidays & Regional Policy Enforcement
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Payroll Engine Integration (Gross Pay Calc)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI Predictive Scheduling
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Fatigue Risk Detection
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Absence Management (Leave Requests)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Time Rule Engine Deep Configuration UI
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 34. Time & Labor (Workforce Management) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Shifts, Rostering, Timesheets
+- Timekeeper Console
+- Advanced Accruals Engine
+- Global Holidays & Regional Policy Enforcement
+- Payroll Engine Integration (Gross Pay Calc)
+- AI Predictive Scheduling
+- Fatigue Risk Detection
+- Absence Management (Leave Requests)
+- Time Rule Engine Deep Configuration UI
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 34. Time & Labor (Workforce Management).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 34. Time & Labor (Workforce Management) to related modules (e.g., GL, AP, AR) for the following functions:
+- Shifts, Rostering, Timesheets
+- Timekeeper Console
+- Advanced Accruals Engine
+- Global Holidays & Regional Policy Enforcement
+- Payroll Engine Integration (Gross Pay Calc)
+- AI Predictive Scheduling
+- Fatigue Risk Detection
+- Absence Management (Leave Requests)
+- Time Rule Engine Deep Configuration UI
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Shifts, Rostering, Timesheets
+- Timekeeper Console
+- Advanced Accruals Engine
+- Global Holidays & Regional Policy Enforcement
+- Payroll Engine Integration (Gross Pay Calc)
+- AI Predictive Scheduling
+- Fatigue Risk Detection
+- Absence Management (Leave Requests)
+- Time Rule Engine Deep Configuration UI
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Shifts, Rostering, Timesheets
+- Timekeeper Console
+- Advanced Accruals Engine
+- Global Holidays & Regional Policy Enforcement
+- Payroll Engine Integration (Gross Pay Calc)
+- AI Predictive Scheduling
+- Fatigue Risk Detection
+- Absence Management (Leave Requests)
+- Time Rule Engine Deep Configuration UI
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Shifts, Rostering, Timesheets
+- Timekeeper Console
+- Advanced Accruals Engine
+- Global Holidays & Regional Policy Enforcement
+- Payroll Engine Integration (Gross Pay Calc)
+- AI Predictive Scheduling
+- Fatigue Risk Detection
+- Absence Management (Leave Requests)
+- Time Rule Engine Deep Configuration UI
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Shifts, Rostering, Timesheets
+- Timekeeper Console
+- Advanced Accruals Engine
+- Global Holidays & Regional Policy Enforcement
+- Payroll Engine Integration (Gross Pay Calc)
+- AI Predictive Scheduling
+- Fatigue Risk Detection
+- Absence Management (Leave Requests)
+- Time Rule Engine Deep Configuration UI
 ---
 
 ### 35. Transportation & Logistics (TMS)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Order Management / Order Release (Reservation Integration)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Shipment Planning (Multi-leg / Stop Sequencing)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Bulk Optimization (Map Visualization + Cost Logic)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Shipment Execution (Real-time Milestones + Risk Scores)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Geospatial Visibility (Interactive Route Map)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Freight Settlement (Automated GL Posting Interface)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Master Data (Carriers, Rates, Locations)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Carrier Portal (External Self-Service)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Load Tender (Electronic Dispatch to Carrier)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 35. Transportation & Logistics (TMS) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Order Management / Order Release (Reservation Integration)
+- Shipment Planning (Multi-leg / Stop Sequencing)
+- Bulk Optimization (Map Visualization + Cost Logic)
+- Shipment Execution (Real-time Milestones + Risk Scores)
+- Geospatial Visibility (Interactive Route Map)
+- Freight Settlement (Automated GL Posting Interface)
+- Master Data (Carriers, Rates, Locations)
+- Carrier Portal (External Self-Service)
+- Load Tender (Electronic Dispatch to Carrier)
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 35. Transportation & Logistics (TMS).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 35. Transportation & Logistics (TMS) to related modules (e.g., GL, AP, AR) for the following functions:
+- Order Management / Order Release (Reservation Integration)
+- Shipment Planning (Multi-leg / Stop Sequencing)
+- Bulk Optimization (Map Visualization + Cost Logic)
+- Shipment Execution (Real-time Milestones + Risk Scores)
+- Geospatial Visibility (Interactive Route Map)
+- Freight Settlement (Automated GL Posting Interface)
+- Master Data (Carriers, Rates, Locations)
+- Carrier Portal (External Self-Service)
+- Load Tender (Electronic Dispatch to Carrier)
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Order Management / Order Release (Reservation Integration)
+- Shipment Planning (Multi-leg / Stop Sequencing)
+- Bulk Optimization (Map Visualization + Cost Logic)
+- Shipment Execution (Real-time Milestones + Risk Scores)
+- Geospatial Visibility (Interactive Route Map)
+- Freight Settlement (Automated GL Posting Interface)
+- Master Data (Carriers, Rates, Locations)
+- Carrier Portal (External Self-Service)
+- Load Tender (Electronic Dispatch to Carrier)
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Order Management / Order Release (Reservation Integration)
+- Shipment Planning (Multi-leg / Stop Sequencing)
+- Bulk Optimization (Map Visualization + Cost Logic)
+- Shipment Execution (Real-time Milestones + Risk Scores)
+- Geospatial Visibility (Interactive Route Map)
+- Freight Settlement (Automated GL Posting Interface)
+- Master Data (Carriers, Rates, Locations)
+- Carrier Portal (External Self-Service)
+- Load Tender (Electronic Dispatch to Carrier)
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Order Management / Order Release (Reservation Integration)
+- Shipment Planning (Multi-leg / Stop Sequencing)
+- Bulk Optimization (Map Visualization + Cost Logic)
+- Shipment Execution (Real-time Milestones + Risk Scores)
+- Geospatial Visibility (Interactive Route Map)
+- Freight Settlement (Automated GL Posting Interface)
+- Master Data (Carriers, Rates, Locations)
+- Carrier Portal (External Self-Service)
+- Load Tender (Electronic Dispatch to Carrier)
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Order Management / Order Release (Reservation Integration)
+- Shipment Planning (Multi-leg / Stop Sequencing)
+- Bulk Optimization (Map Visualization + Cost Logic)
+- Shipment Execution (Real-time Milestones + Risk Scores)
+- Geospatial Visibility (Interactive Route Map)
+- Freight Settlement (Automated GL Posting Interface)
+- Master Data (Carriers, Rates, Locations)
+- Carrier Portal (External Self-Service)
+- Load Tender (Electronic Dispatch to Carrier)
 ---
 
 ### 36. Treasury & Cash Management
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Debt & Investment (Amortized Cost, Fixed/Float, P&I Calc)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** FX Hedging (Forward Contracts, Swap Linkage, Mark-to-Market)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** SoD Controls (Front Office vs Back Office Segregation)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Multilateral Intercompany Netting (`NettingService`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Cash Forecasting + AI Anomaly Detection
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Payment Hub (ISO 20022, SWIFT gpi Tracking)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Bank Fee Analysis & Negotiation Intelligence
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Cash Concentration & Pooling Structures
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 36. Treasury & Cash Management calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Debt & Investment (Amortized Cost, Fixed/Float, P&I Calc)
+- FX Hedging (Forward Contracts, Swap Linkage, Mark-to-Market)
+- SoD Controls (Front Office vs Back Office Segregation)
+- Multilateral Intercompany Netting (`NettingService`)
+- Cash Forecasting + AI Anomaly Detection
+- Payment Hub (ISO 20022, SWIFT gpi Tracking)
+- Bank Fee Analysis & Negotiation Intelligence
+- Cash Concentration & Pooling Structures
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 36. Treasury & Cash Management.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 36. Treasury & Cash Management to related modules (e.g., GL, AP, AR) for the following functions:
+- Debt & Investment (Amortized Cost, Fixed/Float, P&I Calc)
+- FX Hedging (Forward Contracts, Swap Linkage, Mark-to-Market)
+- SoD Controls (Front Office vs Back Office Segregation)
+- Multilateral Intercompany Netting (`NettingService`)
+- Cash Forecasting + AI Anomaly Detection
+- Payment Hub (ISO 20022, SWIFT gpi Tracking)
+- Bank Fee Analysis & Negotiation Intelligence
+- Cash Concentration & Pooling Structures
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Debt & Investment (Amortized Cost, Fixed/Float, P&I Calc)
+- FX Hedging (Forward Contracts, Swap Linkage, Mark-to-Market)
+- SoD Controls (Front Office vs Back Office Segregation)
+- Multilateral Intercompany Netting (`NettingService`)
+- Cash Forecasting + AI Anomaly Detection
+- Payment Hub (ISO 20022, SWIFT gpi Tracking)
+- Bank Fee Analysis & Negotiation Intelligence
+- Cash Concentration & Pooling Structures
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Debt & Investment (Amortized Cost, Fixed/Float, P&I Calc)
+- FX Hedging (Forward Contracts, Swap Linkage, Mark-to-Market)
+- SoD Controls (Front Office vs Back Office Segregation)
+- Multilateral Intercompany Netting (`NettingService`)
+- Cash Forecasting + AI Anomaly Detection
+- Payment Hub (ISO 20022, SWIFT gpi Tracking)
+- Bank Fee Analysis & Negotiation Intelligence
+- Cash Concentration & Pooling Structures
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Debt & Investment (Amortized Cost, Fixed/Float, P&I Calc)
+- FX Hedging (Forward Contracts, Swap Linkage, Mark-to-Market)
+- SoD Controls (Front Office vs Back Office Segregation)
+- Multilateral Intercompany Netting (`NettingService`)
+- Cash Forecasting + AI Anomaly Detection
+- Payment Hub (ISO 20022, SWIFT gpi Tracking)
+- Bank Fee Analysis & Negotiation Intelligence
+- Cash Concentration & Pooling Structures
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Debt & Investment (Amortized Cost, Fixed/Float, P&I Calc)
+- FX Hedging (Forward Contracts, Swap Linkage, Mark-to-Market)
+- SoD Controls (Front Office vs Back Office Segregation)
+- Multilateral Intercompany Netting (`NettingService`)
+- Cash Forecasting + AI Anomaly Detection
+- Payment Hub (ISO 20022, SWIFT gpi Tracking)
+- Bank Fee Analysis & Negotiation Intelligence
+- Cash Concentration & Pooling Structures
 ---
 
 ### 37. Warehouse Management (WMS)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Multi-Org Structure (Subinventories, Locators)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Inbound Receiving (ASN, Inspection)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Wave Planning, Directed Picking
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Scan-to-Pack + Ship Confirm
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Slotting Analysis + Pick-Path Sorting
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Cycle Counting, Reservations
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Configuration Screens (Zones, Pick Rules, Wave Templates)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Scalability (Server-Side Pagination for Tasks/Slotting)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Yard Management (Dock / Trailer / Appointment)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** RF / Mobile Scanner Optimized UI
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Labor Planning & Productivity Tracking
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 37. Warehouse Management (WMS) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Multi-Org Structure (Subinventories, Locators)
+- Inbound Receiving (ASN, Inspection)
+- Wave Planning, Directed Picking
+- Scan-to-Pack + Ship Confirm
+- Slotting Analysis + Pick-Path Sorting
+- Cycle Counting, Reservations
+- Configuration Screens (Zones, Pick Rules, Wave Templates)
+- Scalability (Server-Side Pagination for Tasks/Slotting)
+- Yard Management (Dock / Trailer / Appointment)
+- RF / Mobile Scanner Optimized UI
+- Labor Planning & Productivity Tracking
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 37. Warehouse Management (WMS).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 37. Warehouse Management (WMS) to related modules (e.g., GL, AP, AR) for the following functions:
+- Multi-Org Structure (Subinventories, Locators)
+- Inbound Receiving (ASN, Inspection)
+- Wave Planning, Directed Picking
+- Scan-to-Pack + Ship Confirm
+- Slotting Analysis + Pick-Path Sorting
+- Cycle Counting, Reservations
+- Configuration Screens (Zones, Pick Rules, Wave Templates)
+- Scalability (Server-Side Pagination for Tasks/Slotting)
+- Yard Management (Dock / Trailer / Appointment)
+- RF / Mobile Scanner Optimized UI
+- Labor Planning & Productivity Tracking
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Multi-Org Structure (Subinventories, Locators)
+- Inbound Receiving (ASN, Inspection)
+- Wave Planning, Directed Picking
+- Scan-to-Pack + Ship Confirm
+- Slotting Analysis + Pick-Path Sorting
+- Cycle Counting, Reservations
+- Configuration Screens (Zones, Pick Rules, Wave Templates)
+- Scalability (Server-Side Pagination for Tasks/Slotting)
+- Yard Management (Dock / Trailer / Appointment)
+- RF / Mobile Scanner Optimized UI
+- Labor Planning & Productivity Tracking
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Multi-Org Structure (Subinventories, Locators)
+- Inbound Receiving (ASN, Inspection)
+- Wave Planning, Directed Picking
+- Scan-to-Pack + Ship Confirm
+- Slotting Analysis + Pick-Path Sorting
+- Cycle Counting, Reservations
+- Configuration Screens (Zones, Pick Rules, Wave Templates)
+- Scalability (Server-Side Pagination for Tasks/Slotting)
+- Yard Management (Dock / Trailer / Appointment)
+- RF / Mobile Scanner Optimized UI
+- Labor Planning & Productivity Tracking
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Multi-Org Structure (Subinventories, Locators)
+- Inbound Receiving (ASN, Inspection)
+- Wave Planning, Directed Picking
+- Scan-to-Pack + Ship Confirm
+- Slotting Analysis + Pick-Path Sorting
+- Cycle Counting, Reservations
+- Configuration Screens (Zones, Pick Rules, Wave Templates)
+- Scalability (Server-Side Pagination for Tasks/Slotting)
+- Yard Management (Dock / Trailer / Appointment)
+- RF / Mobile Scanner Optimized UI
+- Labor Planning & Productivity Tracking
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Multi-Org Structure (Subinventories, Locators)
+- Inbound Receiving (ASN, Inspection)
+- Wave Planning, Directed Picking
+- Scan-to-Pack + Ship Confirm
+- Slotting Analysis + Pick-Path Sorting
+- Cycle Counting, Reservations
+- Configuration Screens (Zones, Pick Rules, Wave Templates)
+- Scalability (Server-Side Pagination for Tasks/Slotting)
+- Yard Management (Dock / Trailer / Appointment)
+- RF / Mobile Scanner Optimized UI
+- Labor Planning & Productivity Tracking
 ---
 
 ### 38. Workforce Rewards (Compensation & Payroll)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Salary Basis / Pay Plans / Pay Elements
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Compensation Dashboard (Planning)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Payroll Workbench (Gross-to-Net → Run Results)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** 2025 Progressive Tax Engine (Multi-Jurisdiction)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** PII Security Masking
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Retro-Pay Detection (AI)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Payroll Anomaly Detection (AI)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Fatigue Risk (Labor AI)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** HCM Integration (Recruitment → Core HR → Comp → Payroll)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Payslip Generation (PDF)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** RBAC (Comp Manager, Payroll Admin, Employee ESS)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Benefits Administration (Open Enrollment)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 38. Workforce Rewards (Compensation & Payroll) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Salary Basis / Pay Plans / Pay Elements
+- Compensation Dashboard (Planning)
+- Payroll Workbench (Gross-to-Net → Run Results)
+- 2025 Progressive Tax Engine (Multi-Jurisdiction)
+- PII Security Masking
+- Retro-Pay Detection (AI)
+- Payroll Anomaly Detection (AI)
+- Fatigue Risk (Labor AI)
+- HCM Integration (Recruitment → Core HR → Comp → Payroll)
+- Payslip Generation (PDF)
+- RBAC (Comp Manager, Payroll Admin, Employee ESS)
+- Benefits Administration (Open Enrollment)
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 38. Workforce Rewards (Compensation & Payroll).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 38. Workforce Rewards (Compensation & Payroll) to related modules (e.g., GL, AP, AR) for the following functions:
+- Salary Basis / Pay Plans / Pay Elements
+- Compensation Dashboard (Planning)
+- Payroll Workbench (Gross-to-Net → Run Results)
+- 2025 Progressive Tax Engine (Multi-Jurisdiction)
+- PII Security Masking
+- Retro-Pay Detection (AI)
+- Payroll Anomaly Detection (AI)
+- Fatigue Risk (Labor AI)
+- HCM Integration (Recruitment → Core HR → Comp → Payroll)
+- Payslip Generation (PDF)
+- RBAC (Comp Manager, Payroll Admin, Employee ESS)
+- Benefits Administration (Open Enrollment)
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Salary Basis / Pay Plans / Pay Elements
+- Compensation Dashboard (Planning)
+- Payroll Workbench (Gross-to-Net → Run Results)
+- 2025 Progressive Tax Engine (Multi-Jurisdiction)
+- PII Security Masking
+- Retro-Pay Detection (AI)
+- Payroll Anomaly Detection (AI)
+- Fatigue Risk (Labor AI)
+- HCM Integration (Recruitment → Core HR → Comp → Payroll)
+- Payslip Generation (PDF)
+- RBAC (Comp Manager, Payroll Admin, Employee ESS)
+- Benefits Administration (Open Enrollment)
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Salary Basis / Pay Plans / Pay Elements
+- Compensation Dashboard (Planning)
+- Payroll Workbench (Gross-to-Net → Run Results)
+- 2025 Progressive Tax Engine (Multi-Jurisdiction)
+- PII Security Masking
+- Retro-Pay Detection (AI)
+- Payroll Anomaly Detection (AI)
+- Fatigue Risk (Labor AI)
+- HCM Integration (Recruitment → Core HR → Comp → Payroll)
+- Payslip Generation (PDF)
+- RBAC (Comp Manager, Payroll Admin, Employee ESS)
+- Benefits Administration (Open Enrollment)
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Salary Basis / Pay Plans / Pay Elements
+- Compensation Dashboard (Planning)
+- Payroll Workbench (Gross-to-Net → Run Results)
+- 2025 Progressive Tax Engine (Multi-Jurisdiction)
+- PII Security Masking
+- Retro-Pay Detection (AI)
+- Payroll Anomaly Detection (AI)
+- Fatigue Risk (Labor AI)
+- HCM Integration (Recruitment → Core HR → Comp → Payroll)
+- Payslip Generation (PDF)
+- RBAC (Comp Manager, Payroll Admin, Employee ESS)
+- Benefits Administration (Open Enrollment)
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Salary Basis / Pay Plans / Pay Elements
+- Compensation Dashboard (Planning)
+- Payroll Workbench (Gross-to-Net → Run Results)
+- 2025 Progressive Tax Engine (Multi-Jurisdiction)
+- PII Security Masking
+- Retro-Pay Detection (AI)
+- Payroll Anomaly Detection (AI)
+- Fatigue Risk (Labor AI)
+- HCM Integration (Recruitment → Core HR → Comp → Payroll)
+- Payslip Generation (PDF)
+- RBAC (Comp Manager, Payroll Admin, Employee ESS)
+- Benefits Administration (Open Enrollment)
 ---
 
 ### 39. Recruiting / Talent Acquisition
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Requisition Management (+ Approval Workflow)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Public Career Site (`/careers`)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AI Resume Parsing & Scoring (Deterministic)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Candidate Selection Process (CSP/Kanban Pipelines)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Interview Scheduling, Feedback, Ratings
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Offer Management (Create, Approve, Accept)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Payroll Sync (On Offer Acceptance)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Onboarding Task Generation & Progress Tracking
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Analytics (Hiring Funnel, Source ROI)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** GDPR-Ready PII Masking (Role-Based)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Staffing Agency / Vendor Management (VMS)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Job Board Direct API Posting (LinkedIn, Indeed, Glassdoor)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 39. Recruiting / Talent Acquisition calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Requisition Management (+ Approval Workflow)
+- Public Career Site (`/careers`)
+- AI Resume Parsing & Scoring (Deterministic)
+- Candidate Selection Process (CSP/Kanban Pipelines)
+- Interview Scheduling, Feedback, Ratings
+- Offer Management (Create, Approve, Accept)
+- Payroll Sync (On Offer Acceptance)
+- Onboarding Task Generation & Progress Tracking
+- Analytics (Hiring Funnel, Source ROI)
+- GDPR-Ready PII Masking (Role-Based)
+- Staffing Agency / Vendor Management (VMS)
+- Job Board Direct API Posting (LinkedIn, Indeed, Glassdoor)
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 39. Recruiting / Talent Acquisition.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 39. Recruiting / Talent Acquisition to related modules (e.g., GL, AP, AR) for the following functions:
+- Requisition Management (+ Approval Workflow)
+- Public Career Site (`/careers`)
+- AI Resume Parsing & Scoring (Deterministic)
+- Candidate Selection Process (CSP/Kanban Pipelines)
+- Interview Scheduling, Feedback, Ratings
+- Offer Management (Create, Approve, Accept)
+- Payroll Sync (On Offer Acceptance)
+- Onboarding Task Generation & Progress Tracking
+- Analytics (Hiring Funnel, Source ROI)
+- GDPR-Ready PII Masking (Role-Based)
+- Staffing Agency / Vendor Management (VMS)
+- Job Board Direct API Posting (LinkedIn, Indeed, Glassdoor)
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Requisition Management (+ Approval Workflow)
+- Public Career Site (`/careers`)
+- AI Resume Parsing & Scoring (Deterministic)
+- Candidate Selection Process (CSP/Kanban Pipelines)
+- Interview Scheduling, Feedback, Ratings
+- Offer Management (Create, Approve, Accept)
+- Payroll Sync (On Offer Acceptance)
+- Onboarding Task Generation & Progress Tracking
+- Analytics (Hiring Funnel, Source ROI)
+- GDPR-Ready PII Masking (Role-Based)
+- Staffing Agency / Vendor Management (VMS)
+- Job Board Direct API Posting (LinkedIn, Indeed, Glassdoor)
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Requisition Management (+ Approval Workflow)
+- Public Career Site (`/careers`)
+- AI Resume Parsing & Scoring (Deterministic)
+- Candidate Selection Process (CSP/Kanban Pipelines)
+- Interview Scheduling, Feedback, Ratings
+- Offer Management (Create, Approve, Accept)
+- Payroll Sync (On Offer Acceptance)
+- Onboarding Task Generation & Progress Tracking
+- Analytics (Hiring Funnel, Source ROI)
+- GDPR-Ready PII Masking (Role-Based)
+- Staffing Agency / Vendor Management (VMS)
+- Job Board Direct API Posting (LinkedIn, Indeed, Glassdoor)
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Requisition Management (+ Approval Workflow)
+- Public Career Site (`/careers`)
+- AI Resume Parsing & Scoring (Deterministic)
+- Candidate Selection Process (CSP/Kanban Pipelines)
+- Interview Scheduling, Feedback, Ratings
+- Offer Management (Create, Approve, Accept)
+- Payroll Sync (On Offer Acceptance)
+- Onboarding Task Generation & Progress Tracking
+- Analytics (Hiring Funnel, Source ROI)
+- GDPR-Ready PII Masking (Role-Based)
+- Staffing Agency / Vendor Management (VMS)
+- Job Board Direct API Posting (LinkedIn, Indeed, Glassdoor)
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Requisition Management (+ Approval Workflow)
+- Public Career Site (`/careers`)
+- AI Resume Parsing & Scoring (Deterministic)
+- Candidate Selection Process (CSP/Kanban Pipelines)
+- Interview Scheduling, Feedback, Ratings
+- Offer Management (Create, Approve, Accept)
+- Payroll Sync (On Offer Acceptance)
+- Onboarding Task Generation & Progress Tracking
+- Analytics (Hiring Funnel, Source ROI)
+- GDPR-Ready PII Masking (Role-Based)
+- Staffing Agency / Vendor Management (VMS)
+- Job Board Direct API Posting (LinkedIn, Indeed, Glassdoor)
 ---
 
 ### 40. Project Accounting
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Project Foundation (UI: ProjectList, Templates, Types, Rates)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Cost Collection (AP, Inventory, Labor Sources)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Burdening (Burden Manager)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** SLA Accounting / GL Distributions (SLA Event Monitor)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Capital Asset Workbench (CIP → FA)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Billing Rules Manager
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Master Data (Bill Rates, Expenditure Types, Project Templates)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Transaction Import (AP + Inventory + Labor)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Project Revenue Recognition (% Complete or Milestone)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Cross-Charge Billing (Lend/Borrow Between Orgs)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 40. Project Accounting calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Project Foundation (UI: ProjectList, Templates, Types, Rates)
+- Cost Collection (AP, Inventory, Labor Sources)
+- Burdening (Burden Manager)
+- SLA Accounting / GL Distributions (SLA Event Monitor)
+- Capital Asset Workbench (CIP → FA)
+- Billing Rules Manager
+- Master Data (Bill Rates, Expenditure Types, Project Templates)
+- Transaction Import (AP + Inventory + Labor)
+- Project Revenue Recognition (% Complete or Milestone)
+- Cross-Charge Billing (Lend/Borrow Between Orgs)
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 40. Project Accounting.
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 40. Project Accounting to related modules (e.g., GL, AP, AR) for the following functions:
+- Project Foundation (UI: ProjectList, Templates, Types, Rates)
+- Cost Collection (AP, Inventory, Labor Sources)
+- Burdening (Burden Manager)
+- SLA Accounting / GL Distributions (SLA Event Monitor)
+- Capital Asset Workbench (CIP → FA)
+- Billing Rules Manager
+- Master Data (Bill Rates, Expenditure Types, Project Templates)
+- Transaction Import (AP + Inventory + Labor)
+- Project Revenue Recognition (% Complete or Milestone)
+- Cross-Charge Billing (Lend/Borrow Between Orgs)
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Project Foundation (UI: ProjectList, Templates, Types, Rates)
+- Cost Collection (AP, Inventory, Labor Sources)
+- Burdening (Burden Manager)
+- SLA Accounting / GL Distributions (SLA Event Monitor)
+- Capital Asset Workbench (CIP → FA)
+- Billing Rules Manager
+- Master Data (Bill Rates, Expenditure Types, Project Templates)
+- Transaction Import (AP + Inventory + Labor)
+- Project Revenue Recognition (% Complete or Milestone)
+- Cross-Charge Billing (Lend/Borrow Between Orgs)
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Project Foundation (UI: ProjectList, Templates, Types, Rates)
+- Cost Collection (AP, Inventory, Labor Sources)
+- Burdening (Burden Manager)
+- SLA Accounting / GL Distributions (SLA Event Monitor)
+- Capital Asset Workbench (CIP → FA)
+- Billing Rules Manager
+- Master Data (Bill Rates, Expenditure Types, Project Templates)
+- Transaction Import (AP + Inventory + Labor)
+- Project Revenue Recognition (% Complete or Milestone)
+- Cross-Charge Billing (Lend/Borrow Between Orgs)
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Project Foundation (UI: ProjectList, Templates, Types, Rates)
+- Cost Collection (AP, Inventory, Labor Sources)
+- Burdening (Burden Manager)
+- SLA Accounting / GL Distributions (SLA Event Monitor)
+- Capital Asset Workbench (CIP → FA)
+- Billing Rules Manager
+- Master Data (Bill Rates, Expenditure Types, Project Templates)
+- Transaction Import (AP + Inventory + Labor)
+- Project Revenue Recognition (% Complete or Milestone)
+- Cross-Charge Billing (Lend/Borrow Between Orgs)
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Project Foundation (UI: ProjectList, Templates, Types, Rates)
+- Cost Collection (AP, Inventory, Labor Sources)
+- Burdening (Burden Manager)
+- SLA Accounting / GL Distributions (SLA Event Monitor)
+- Capital Asset Workbench (CIP → FA)
+- Billing Rules Manager
+- Master Data (Bill Rates, Expenditure Types, Project Templates)
+- Transaction Import (AP + Inventory + Labor)
+- Project Revenue Recognition (% Complete or Milestone)
+- Cross-Charge Billing (Lend/Borrow Between Orgs)
 ---
 
 ### 41. Projects Costing (Additional Detail)
-#### Primary E2E Workflows & Feature Testing
-- [ ] **Test Feature:** Full Financial WBS
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** AP/Inventory/Labor Cost Collection
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Overhead Allocation (Burdening)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Budget vs Actual
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** CIP → Fixed Assets Capitalization
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Interproject Cross-Charge
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Live Earned Value (SPI/CPI)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Template Engine
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Rate Schedules
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Resource Plan vs Actual (Capacity Forecasting)
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Project Risk Register
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** GRAND TOTAL
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
-- [ ] **Test Feature:** Flag
-  - *UI/UX:* Verify all components, buttons, and forms related to this feature render correctly.
-  - *Data Entry:* Input valid and invalid data into the forms associated with this feature. Verify validation.
-  - *Persistence:* Submit the form/action. Verify the API request payload and the resulting database state.
-  - *State:* Verify the table/list/dashboard updates immediately upon success.
-  - *Integration:* Verify downstream effects (e.g., GL journal posting, email triggers, status updates in other modules).
 
-#### Reports & Analytics
-- [ ] Verify all dashboard metrics and charts related to 41. Projects Costing (Additional Detail) calculate accurately based on underlying data.
-- [ ] Export reports (CSV/PDF) and verify data formatting and completeness.
+#### 1. Unit Testing (Target Coverage: 85%+)
+- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- Full Financial WBS
+- AP/Inventory/Labor Cost Collection
+- Overhead Allocation (Burdening)
+- Budget vs Actual
+- CIP → Fixed Assets Capitalization
+- Interproject Cross-Charge
+- Live Earned Value (SPI/CPI)
+- Template Engine
+- Rate Schedules
+- Resource Plan vs Actual (Capacity Forecasting)
+- Project Risk Register
+- GRAND TOTAL
+- Flag
+- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
-#### Edge Cases & Negative Testing
-- [ ] Simulate network failure during critical submissions in 41. Projects Costing (Additional Detail).
-- [ ] Attempt concurrent edits on the same record by two different users.
+#### 2. Integration Testing
+- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 41. Projects Costing (Additional Detail) to related modules (e.g., GL, AP, AR) for the following functions:
+- Full Financial WBS
+- AP/Inventory/Labor Cost Collection
+- Overhead Allocation (Burdening)
+- Budget vs Actual
+- CIP → Fixed Assets Capitalization
+- Interproject Cross-Charge
+- Live Earned Value (SPI/CPI)
+- Template Engine
+- Rate Schedules
+- Resource Plan vs Actual (Capacity Forecasting)
+- Project Risk Register
+- GRAND TOTAL
+- Flag
+
+#### 3. End-to-End (E2E) Testing
+- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- Full Financial WBS
+- AP/Inventory/Labor Cost Collection
+- Overhead Allocation (Burdening)
+- Budget vs Actual
+- CIP → Fixed Assets Capitalization
+- Interproject Cross-Charge
+- Live Earned Value (SPI/CPI)
+- Template Engine
+- Rate Schedules
+- Resource Plan vs Actual (Capacity Forecasting)
+- Project Risk Register
+- GRAND TOTAL
+- Flag
+- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+
+#### 4. User Acceptance Testing (UAT)
+- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- Full Financial WBS
+- AP/Inventory/Labor Cost Collection
+- Overhead Allocation (Burdening)
+- Budget vs Actual
+- CIP → Fixed Assets Capitalization
+- Interproject Cross-Charge
+- Live Earned Value (SPI/CPI)
+- Template Engine
+- Rate Schedules
+- Resource Plan vs Actual (Capacity Forecasting)
+- Project Risk Register
+- GRAND TOTAL
+- Flag
+
+#### 5. Performance & Load Testing
+- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- Full Financial WBS
+- AP/Inventory/Labor Cost Collection
+- Overhead Allocation (Burdening)
+- Budget vs Actual
+- CIP → Fixed Assets Capitalization
+- Interproject Cross-Charge
+- Live Earned Value (SPI/CPI)
+- Template Engine
+- Rate Schedules
+- Resource Plan vs Actual (Capacity Forecasting)
+- Project Risk Register
+- GRAND TOTAL
+- Flag
+- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+
+#### 6. Security & Compliance Testing
+- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- Full Financial WBS
+- AP/Inventory/Labor Cost Collection
+- Overhead Allocation (Burdening)
+- Budget vs Actual
+- CIP → Fixed Assets Capitalization
+- Interproject Cross-Charge
+- Live Earned Value (SPI/CPI)
+- Template Engine
+- Rate Schedules
+- Resource Plan vs Actual (Capacity Forecasting)
+- Project Risk Register
+- GRAND TOTAL
+- Flag
 ---
 
