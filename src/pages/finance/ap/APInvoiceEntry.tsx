@@ -135,6 +135,7 @@ export default function APInvoiceEntry() {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="STANDARD">Standard</SelectItem>
+                                    <SelectItem value="PREPAYMENT">Prepayment</SelectItem>
                                     <SelectItem value="CREDIT_MEMO">Credit Memo</SelectItem>
                                     <SelectItem value="DEBIT_MEMO">Debit Memo</SelectItem>
                                 </SelectContent>
@@ -214,6 +215,10 @@ export default function APInvoiceEntry() {
                                     <div className="flex-1 space-y-2">
                                         <Label>Amount</Label>
                                         <Input type="number" step="0.01" value={line.amount} onChange={e => handleLineChange(index, "amount", e.target.value)} placeholder="0.00" />
+                                    </div>
+                                    <div className="flex-1 space-y-2">
+                                        <Label>Match to PO</Label>
+                                        <Input value={line.poHeaderId || ""} onChange={e => handleLineChange(index, "poHeaderId", e.target.value)} placeholder="PO ID..." />
                                     </div>
                                     <Button variant="ghost" size="icon" onClick={() => removeLine(index)} disabled={lines.length === 1} className="text-red-500 hover:text-red-700 hover:bg-red-50">
                                         <Trash2 className="h-4 w-4" />

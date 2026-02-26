@@ -431,3 +431,17 @@ export const apPaymentTerms = pgTable("ap_payment_terms", {
 export const insertApPaymentTermSchema = createInsertSchema(apPaymentTerms);
 export type ApPaymentTerm = typeof apPaymentTerms.$inferSelect;
 export type InsertApPaymentTerm = typeof apPaymentTerms.$inferInsert;
+
+// ========== RELATIONS ==========
+import { relations } from "drizzle-orm";
+
+export const apSuppliersRelations = relations(apSuppliers, ({ many }) => ({
+    sites: many(apSupplierSites),
+}));
+
+export const apSupplierSitesRelations = relations(apSupplierSites, ({ one }) => ({
+    supplier: one(apSuppliers, {
+        fields: [apSupplierSites.supplierId],
+        references: [apSuppliers.id],
+    }),
+}));

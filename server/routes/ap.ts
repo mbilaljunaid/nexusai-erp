@@ -150,6 +150,22 @@ apRouter.post("/suppliers", async (req, res) => {
     const parse = insertApSupplierSchema.safeParse(req.body);
     if (!parse.success) return res.status(400).json(parse.error);
     const created = await storage.createApSupplier(parse.data as any);
+
+    // Optionally create a default payment site with banking details
+    const { siteName, address, iban, swiftCode } = req.body;
+    if (iban || swiftCode || siteName || address) {
+        const { apSupplierSites } = await import('../../shared/schema/ap');
+        await db.insert(apSupplierSites).values({
+            supplierId: (created as any).id,
+            siteName: siteName || "HEADQUARTERS",
+            address: address || null,
+            iban: iban || null,
+            swiftCode: swiftCode || null,
+            isPaySite: true,
+            isPurchasingSite: true
+        });
+    }
+
     res.status(201).json(created);
 });
 
@@ -221,7 +237,7 @@ apRouter.put("/invoices/:id", async (req, res) => {
 
 apRouter.post("/invoices/:id/validate", async (req, res) => {
     try {
-        const result = await apService.validateInvoice(parseInt(req.params.id));
+        const result = await apService.validateInvoice(req.params.id);
         res.json(result);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -230,7 +246,7 @@ apRouter.post("/invoices/:id/validate", async (req, res) => {
 
 apRouter.post("/invoices/:id/match", async (req, res) => {
     try {
-        const result = await apService.matchInvoiceToPO(parseInt(req.params.id), req.body);
+        const result = await apService.matchInvoiceToPO(req.params.id, req.body);
         res.json(result);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -239,7 +255,7 @@ apRouter.post("/invoices/:id/match", async (req, res) => {
 
 apRouter.get("/invoices/:id/holds", async (req, res) => {
     try {
-        const holds = await apService.getInvoiceHolds(parseInt(req.params.id));
+        const holds = await apService.getInvoiceHolds(req.params.id);
         res.json(holds);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -257,7 +273,7 @@ apRouter.post("/invoices/:id/attachment", uploadInvoiceAttachment, async (req, r
         // Update invoice record with drizzle
         const [updated] = await db.update(apInvoices)
             .set({ documentUrl: fileUrl })
-            .where(eq(apInvoices.id, parseInt(req.params.id)))
+            .where(eq(apInvoices.id, req.params.id as any))
             .returning();
 
         if (!updated) return res.status(404).json({ error: "Invoice not found" });
@@ -269,7 +285,7 @@ apRouter.post("/invoices/:id/attachment", uploadInvoiceAttachment, async (req, r
 });
 
 apRouter.post("/invoices/:id/accounting", async (req, res) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     try {
         const journal = await apService.generateAccounting(id);
         res.json(journal);
@@ -303,7 +319,7 @@ apRouter.get("/invoices/:id/accounting", async (req, res) => {
 
 apRouter.post("/holds/:id/release", async (req, res) => {
     try {
-        const hold = await apService.releaseHold(parseInt(req.params.id), req.body.releaseCode);
+        const hold = await apService.releaseHold(req.params.id as string), req.body.releaseCode);
         res.json(hold);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -452,7 +468,7 @@ apRouter.post("/periods/:id/close", async (req, res) => {
 
 apRouter.get("/invoices/:id/available-prepayments", async (req, res) => {
     try {
-        const invoiceId = parseInt(req.params.id);
+        const invoiceId = req.params.id;
         const invoice = await apService.getInvoice(req.params.id);
         if (!invoice) return res.status(404).send("Invoice not found");
 
@@ -465,7 +481,7 @@ apRouter.get("/invoices/:id/available-prepayments", async (req, res) => {
 
 apRouter.get("/invoices/:id/prepay-applications", async (req, res) => {
     try {
-        const results = await apService.getPrepayApplications(parseInt(req.params.id));
+        const results = await apService.getPrepayApplications(req.params.id);
         res.json(results);
     } catch (e: any) {
         res.status(500).json({ error: e.message });
@@ -475,7 +491,7 @@ apRouter.get("/invoices/:id/prepay-applications", async (req, res) => {
 apRouter.post("/invoices/:id/apply-prepayment", async (req, res) => {
     try {
         const { prepayId, amount } = req.body;
-        const result = await apService.applyPrepayment(parseInt(req.params.id), prepayId, amount, "system");
+        const result = await apService.applyPrepayment(req.params.id), prepayId, amount, "system");
         res.json(result);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -484,7 +500,7 @@ apRouter.post("/invoices/:id/apply-prepayment", async (req, res) => {
 
 apRouter.delete("/prepay-applications/:id", async (req, res) => {
     try {
-        const result = await apService.unapplyPrepayment(parseInt(req.params.id), "system");
+        const result = await apService.unapplyPrepayment(req.params.id), "system");
         res.json(result);
     } catch (e: any) {
         res.status(400).json({ error: e.message });

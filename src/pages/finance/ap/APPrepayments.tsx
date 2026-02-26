@@ -28,8 +28,8 @@ export default function APPrepayments() {
             const response = await fetch("/api/ap/invoices");
             const data = await response.json();
             return data.data?.filter((inv: any) =>
-                inv.invoiceType === "Prepayment" &&
-                parseFloat(inv.remainingAmount || 0) > 0
+                inv.invoiceType === "PREPAYMENT" &&
+                parseFloat(inv.remainingAmount || inv.invoiceAmount || 0) > 0
             ) || [];
         }
     });

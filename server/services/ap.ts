@@ -229,7 +229,7 @@ export class ApService {
     }
 
     // Validation Logic (Phase 2 Real Implementation)
-    async validateInvoice(invoiceId: number): Promise<{ status: string, holds: string[] }> {
+    async validateInvoice(invoiceId: string): Promise<{ status: string, holds: string[] }> {
         console.log(`Validating Invoice ${invoiceId}...`);
 
         // 1. Fetch Invoice, Lines, and Parameters
@@ -262,7 +262,55 @@ export class ApService {
             });
         }
 
-        // 3. Duplicate Invoice Check
+        // 3. PO Matching Variance Check (2-Way Match) & Receipt Matching (3-Way Match)
+        for (const line of lines) {
+            if (line.poHeaderId) {
+                // We'd typically check PO Lines, but since we grabbed poHeaderId to test:
+                const poData = await db.query.purchaseOrders.findFirst({
+                    where: (po, { eq }) => eq(po.id, line.poHeaderId as string)
+                });
+
+                if (poData) {
+                    const poTotal = Number(poData.totalAmount);
+                    // 2-Way Match: If invoice amount drastically exceeds the total referenced PO
+                    if (headerAmount > poTotal + tolerance) {
+                        holds.push("PO_MATCH_VARIANCE");
+                        await db.insert(apHolds).values({
+                            invoice_id: invoiceId,
+                            hold_lookup_code: "PO_MATCH_VARIANCE",
+                            hold_type: "MATCHING",
+                            hold_reason: `Invoice Total ($${headerAmount}) exceeds PO Total ($${poTotal}) by more than tolerance ($${tolerance})`,
+                            held_by: 1
+                        });
+                        break; // Only apply header-level PO hold once
+                    }
+
+                    // 3-Way Match Check (Receipts)
+                    try {
+                        const { rcvShipmentLines } = await import('../../shared/schema/scm');
+                        const receipts = await db.select().from(rcvShipmentLines).where(eq(rcvShipmentLines.poHeaderId, line.poHeaderId));
+                        const totalReceivedQty = receipts.reduce((sum, r) => sum + Number(r.quantityReceived || 0), 0);
+
+                        // If the invoice is being processed but there are ZERO verified receipts natively matching the PO Header, or quantity is vastly mismatched.
+                        if (totalReceivedQty === 0 && Number(line.amount) > 0) {
+                            holds.push("RECEIPT_MATCH_VARIANCE");
+                            await db.insert(apHolds).values({
+                                invoice_id: invoiceId,
+                                hold_lookup_code: "RECEIPT_MATCH_VARIANCE",
+                                hold_type: "MATCHING",
+                                hold_reason: `3-Way Match Failed: Invoice Line billed for $${line.amount} but ZERO SCM Receipts found for PO ${line.poHeaderId}`,
+                                held_by: 1
+                            });
+                            break;
+                        }
+                    } catch (e) {
+                        console.warn("Could not query SCM Receipts:", e);
+                    }
+                }
+            }
+        }
+
+        // 4. Duplicate Invoice Check
         const duplicates = await db.select().from(apInvoices).where(and(
             eq(apInvoices.supplierId, invoice.supplierId),
             eq(apInvoices.invoiceNumber, invoice.invoiceNumber),
@@ -382,7 +430,7 @@ export class ApService {
         return { status: validationStatus, holds };
     }
 
-    async generateAccounting(invoiceId: number) {
+    async generateAccounting(invoiceId: string) {
         const [invoice] = await db.select().from(apInvoices).where(eq(apInvoices.id, invoiceId)).limit(1);
         if (!invoice) throw new Error("Invoice not found");
         if (invoice.validationStatus !== "VALIDATED") throw new Error("Only validated invoices can be accounted");
@@ -405,7 +453,7 @@ export class ApService {
         });
     }
 
-    async matchInvoiceToPO(invoiceId: number, matchData: { lineNumber: number, poHeaderId: string, poLineId: string, poUnitPrice: number, poQuantity: number }) {
+    async matchInvoiceToPO(invoiceId: string, matchData: { lineNumber: number, poHeaderId: string, poLineId: string, poUnitPrice: number, poQuantity: number }) {
         console.log(`Matching Invoice ${invoiceId} Line ${matchData.lineNumber} to PO ${matchData.poHeaderId}`);
 
         const params = await this.getSystemParameters();
@@ -445,7 +493,7 @@ export class ApService {
         return { success: true, variance };
     }
 
-    async getInvoiceHolds(invoiceId: number) {
+    async getInvoiceHolds(invoiceId: string) {
         return await db.select().from(apHolds).where(eq(apHolds.invoice_id, invoiceId));
     }
 
@@ -698,7 +746,7 @@ export class ApService {
             ));
     }
 
-    async applyPrepayment(standardInvoiceId: number, prepayId: number, amount: number, userId: string) {
+    async applyPrepayment(standardInvoiceId: string, prepayId: string, amount: number, userId: string) {
         return await db.transaction(async (tx) => {
             // 1. Fetch Invoices
             const [standard] = await tx.select().from(apInvoices).where(eq(apInvoices.id, standardInvoiceId)).limit(1);
@@ -774,7 +822,7 @@ export class ApService {
         });
     }
 
-    async getPrepayApplications(invoiceId: number) {
+    async getPrepayApplications(invoiceId: string) {
         return await db.select({
             id: apPrepayApplications.id,
             prepaymentNumber: apInvoices.invoiceNumber,
@@ -788,7 +836,7 @@ export class ApService {
             .where(eq(apPrepayApplications.standardInvoiceId, invoiceId));
     }
 
-    async unapplyPrepayment(applicationId: number, userId: string) {
+    async unapplyPrepayment(applicationId: string, userId: string) {
         return await db.transaction(async (tx) => {
             const [app] = await tx.select().from(apPrepayApplications).where(eq(apPrepayApplications.id, applicationId)).limit(1);
             if (!app || app.status !== "APPLIED") throw new Error("Application not found or already unapplied");

@@ -108,7 +108,12 @@ export default function APSuppliers() {
         name: "",
         taxId: "",
         paymentTerms: "Net 30",
-        status: "Active"
+        status: "Active",
+        // Site fields
+        siteName: "HEADQUARTERS",
+        address: "",
+        iban: "",
+        swiftCode: ""
     });
 
     return (
@@ -182,6 +187,47 @@ export default function APSuppliers() {
                                     <SelectItem value="Due on Receipt">Due on Receipt</SelectItem>
                                 </SelectContent>
                             </Select>
+                        </div>
+                        <div className="pt-2 border-t">
+                            <p className="text-sm font-semibold text-muted-foreground mb-3">Payment Site (Banking Details)</p>
+                            <div className="space-y-3">
+                                <div className="space-y-2">
+                                    <Label htmlFor="siteName">Site Name</Label>
+                                    <Input
+                                        id="siteName"
+                                        value={formData.siteName}
+                                        onChange={(e) => setFormData({ ...formData, siteName: e.target.value })}
+                                        placeholder="HEADQUARTERS"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="address">Site Address</Label>
+                                    <Input
+                                        id="address"
+                                        value={formData.address}
+                                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                        placeholder="123 Business St, City, State"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="iban">IBAN</Label>
+                                    <Input
+                                        id="iban"
+                                        value={formData.iban}
+                                        onChange={(e) => setFormData({ ...formData, iban: e.target.value })}
+                                        placeholder="GB29NWBK60161331926819"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="swiftCode">SWIFT / BIC Code</Label>
+                                    <Input
+                                        id="swiftCode"
+                                        value={formData.swiftCode}
+                                        onChange={(e) => setFormData({ ...formData, swiftCode: e.target.value })}
+                                        placeholder="NWBKGB2L"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <DialogFooter>
