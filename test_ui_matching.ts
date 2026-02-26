@@ -82,34 +82,14 @@ async function runUITest() {
         await page.waitForSelector(`text="${invNum}"`, { timeout: 10000 });
 
         console.log("   - Initiating SLA Validation engine on the row...");
-        await page.evaluate((num) => {
-            const cells = Array.from(document.querySelectorAll('td'));
-            const cell = cells.find(c => c.textContent === num);
-            if (cell && cell.parentElement) {
-                const btn = cell.parentElement.querySelector('button[title="Validate Invoice"]') as HTMLButtonElement | null;
-                if (btn) btn.click();
-            }
-        }, invNum);
+        await page.locator('tr').filter({ hasText: invNum }).locator('button[title="Validate Invoice"]').click({ force: true });
 
         console.log("   - Waiting for native validation response toast...");
         await page.waitForSelector('text="Invoice validated successfully"', { timeout: 10000 });
         await page.waitForTimeout(2000); // Give the UI time to refresh the table and render the View Holds button
 
         console.log("   - Opening Variance Holds dialog...");
-        const clickedHold = await page.evaluate((num) => {
-            const cells = Array.from(document.querySelectorAll('td'));
-            const cell = cells.find(c => c.textContent === num);
-            if (cell && cell.parentElement) {
-                const btn = cell.parentElement.querySelector('button[title="View Holds"]') as HTMLButtonElement | null;
-                if (btn) {
-                    btn.click();
-                    return true;
-                }
-            }
-            return false;
-        }, invNum);
-
-        if (!clickedHold) throw new Error("Could not find the 'View Holds' button on the invoice row. This means validation did not flag a variance hold as expected!");
+        await page.locator('tr').filter({ hasText: invNum }).locator('button[title="View Holds"]').click({ force: true });
 
         console.log("   - Waiting for PO_MATCH_VARIANCE constraint tag in standard UI...");
         await page.waitForSelector('text="PO_MATCH_VARIANCE"', { timeout: 10000 });

@@ -319,7 +319,7 @@ apRouter.get("/invoices/:id/accounting", async (req, res) => {
 
 apRouter.post("/holds/:id/release", async (req, res) => {
     try {
-        const hold = await apService.releaseHold(req.params.id as string), req.body.releaseCode);
+        const hold = await apService.releaseHold(req.params.id as string, req.body.releaseCode);
         res.json(hold);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -360,7 +360,7 @@ apRouter.post("/payment-batches", async (req, res) => {
 
 apRouter.post("/payment-batches/:id/select", async (req, res) => {
     try {
-        const result = await apService.selectInvoicesForBatch(parseInt(req.params.id));
+        const result = await apService.selectInvoicesForBatch(req.params.id);
         res.json(result);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -369,7 +369,7 @@ apRouter.post("/payment-batches/:id/select", async (req, res) => {
 
 apRouter.post("/payment-batches/:id/confirm", async (req, res) => {
     try {
-        const result = await apService.confirmPaymentBatch(parseInt(req.params.id));
+        const result = await apService.confirmPaymentBatch(req.params.id);
         res.json(result);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -378,7 +378,7 @@ apRouter.post("/payment-batches/:id/confirm", async (req, res) => {
 
 apRouter.get("/payment-batches/:id/payments", async (req, res) => {
     try {
-        const payments = await apService.getBatchPayments(parseInt(req.params.id));
+        const payments = await apService.getBatchPayments(req.params.id);
         res.json(payments);
     } catch (e: any) {
         res.status(500).json({ error: e.message });
@@ -387,7 +387,7 @@ apRouter.get("/payment-batches/:id/payments", async (req, res) => {
 
 apRouter.get("/payment-batches/:id/iso20022", async (req, res) => {
     try {
-        const batchId = parseInt(req.params.id);
+        const batchId = req.params.id;
         const xml = await treasuryService.generateISO20022(batchId);
 
         res.setHeader("Content-Disposition", `attachment; filename=ISO20022_BCH_${batchId}.xml`);
@@ -491,7 +491,7 @@ apRouter.get("/invoices/:id/prepay-applications", async (req, res) => {
 apRouter.post("/invoices/:id/apply-prepayment", async (req, res) => {
     try {
         const { prepayId, amount } = req.body;
-        const result = await apService.applyPrepayment(req.params.id), prepayId, amount, "system");
+        const result = await apService.applyPrepayment(req.params.id, prepayId, amount, "system");
         res.json(result);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -500,7 +500,7 @@ apRouter.post("/invoices/:id/apply-prepayment", async (req, res) => {
 
 apRouter.delete("/prepay-applications/:id", async (req, res) => {
     try {
-        const result = await apService.unapplyPrepayment(req.params.id), "system");
+        const result = await apService.unapplyPrepayment(req.params.id, "system");
         res.json(result);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -640,6 +640,45 @@ apRouter.post("/invoices/bulk-status-update", async (req, res) => {
         res.json(results);
     } catch (e: any) {
         res.status(500).json({ error: e.message });
+    }
+});
+
+
+apRouter.get("/wht-groups", async (req, res) => {
+    try {
+        const groups = await db.select().from(apWhtGroups).orderBy(apWhtGroups.groupName);
+        res.json(groups);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+apRouter.post("/wht-groups", async (req, res) => {
+    try {
+        const parse = insertApWhtGroupSchema.parse(req.body);
+        const [group] = await db.insert(apWhtGroups).values(parse).returning();
+        res.json(group);
+    } catch (e: any) {
+        res.status(400).json({ error: e.errors || e.message });
+    }
+});
+
+apRouter.get("/wht-groups/:id/rates", async (req, res) => {
+    try {
+        const rates = await db.select().from(apWhtRates).where(eq(apWhtRates.groupId, req.params.id)).orderBy(apWhtRates.priority);
+        res.json(rates);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+apRouter.post("/wht-groups/:id/rates", async (req, res) => {
+    try {
+        const parse = insertApWhtRateSchema.parse({ ...req.body, groupId: req.params.id });
+        const [rate] = await db.insert(apWhtRates).values(parse).returning();
+        res.json(rate);
+    } catch (e: any) {
+        res.status(400).json({ error: e.errors || e.message });
     }
 });
 

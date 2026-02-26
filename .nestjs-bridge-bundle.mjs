@@ -170,7 +170,9 @@ __export(schema_exports, {
   apPeriodStatuses: () => apPeriodStatuses,
   apPrepayApplications: () => apPrepayApplications,
   apSupplierSites: () => apSupplierSites,
+  apSupplierSitesRelations: () => apSupplierSitesRelations,
   apSuppliers: () => apSuppliers,
+  apSuppliersRelations: () => apSuppliersRelations,
   apSystemParameters: () => apSystemParameters,
   apWhtGroups: () => apWhtGroups,
   apWhtRates: () => apWhtRates,
@@ -1696,6 +1698,7 @@ var insertDashboardWidgetSchema = createInsertSchema(dashboardWidgets).extend({
 import { pgTable as pgTable2, text as text2, varchar as varchar2, numeric as numeric2, timestamp as timestamp2, boolean as boolean2, integer as integer2, jsonb as jsonb2 } from "drizzle-orm/pg-core";
 import { sql as sql2 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema2 } from "drizzle-zod";
+import { relations } from "drizzle-orm";
 var apSuppliers = pgTable2("ap_suppliers", {
   id: varchar2("id").primaryKey().default(sql2`gen_random_uuid()`),
   supplierNumber: varchar2("supplier_number", { length: 50 }),
@@ -2046,6 +2049,15 @@ var apPaymentTerms = pgTable2("ap_payment_terms", {
   updatedAt: timestamp2("updated_at").defaultNow()
 });
 var insertApPaymentTermSchema = createInsertSchema2(apPaymentTerms);
+var apSuppliersRelations = relations(apSuppliers, ({ many }) => ({
+  sites: many(apSupplierSites)
+}));
+var apSupplierSitesRelations = relations(apSupplierSites, ({ one }) => ({
+  supplier: one(apSuppliers, {
+    fields: [apSupplierSites.supplierId],
+    references: [apSuppliers.id]
+  })
+}));
 
 // shared/schema/ar.ts
 import { pgTable as pgTable3, varchar as varchar3, text as text3, timestamp as timestamp3, numeric as numeric3, boolean as boolean3, integer as integer3 } from "drizzle-orm/pg-core";
@@ -5027,7 +5039,7 @@ var insertQualityResultSchema = createInsertSchema19(qualityResults);
 
 // shared/schema/scm.ts
 import { pgTable as pgTable20, varchar as varchar20, text as text12, timestamp as timestamp20, numeric as numeric13, integer as integer16, boolean as boolean18 } from "drizzle-orm/pg-core";
-import { sql as sql20, relations } from "drizzle-orm";
+import { sql as sql20, relations as relations2 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema20 } from "drizzle-zod";
 import { z as z8 } from "zod";
 var suppliers = pgTable20("scm_suppliers", {
@@ -5666,44 +5678,44 @@ var rcvShipmentLines = pgTable20("rcv_shipment_lines", {
 });
 var insertRcvShipmentHeaderSchema = createInsertSchema20(rcvShipmentHeaders);
 var insertRcvShipmentLineSchema = createInsertSchema20(rcvShipmentLines);
-var suppliersRelations = relations(suppliers, ({ one, many }) => ({
+var suppliersRelations = relations2(suppliers, ({ one, many }) => ({
   sites: many(supplierSites),
   purchaseOrders: many(purchaseOrders)
 }));
-var purchaseOrdersRelations = relations(purchaseOrders, ({ one, many }) => ({
+var purchaseOrdersRelations = relations2(purchaseOrders, ({ one, many }) => ({
   supplier: one(suppliers, {
     fields: [purchaseOrders.supplierId],
     references: [suppliers.id]
   }),
   lines: many(purchaseOrderLines)
 }));
-var purchaseOrderLinesRelations = relations(purchaseOrderLines, ({ one, many }) => ({
+var purchaseOrderLinesRelations = relations2(purchaseOrderLines, ({ one, many }) => ({
   header: one(purchaseOrders, {
     fields: [purchaseOrderLines.poHeaderId],
     references: [purchaseOrders.id]
   }),
   distributions: many(purchaseOrderDistributions)
 }));
-var purchaseOrderDistributionsRelations = relations(purchaseOrderDistributions, ({ one }) => ({
+var purchaseOrderDistributionsRelations = relations2(purchaseOrderDistributions, ({ one }) => ({
   line: one(purchaseOrderLines, {
     fields: [purchaseOrderDistributions.poLineId],
     references: [purchaseOrderLines.id]
   })
 }));
-var purchaseRequisitionsRelations = relations(purchaseRequisitions, ({ many }) => ({
+var purchaseRequisitionsRelations = relations2(purchaseRequisitions, ({ many }) => ({
   lines: many(purchaseRequisitionLines)
 }));
-var rfqHeadersRelations = relations(rfqHeaders, ({ one, many }) => ({
+var rfqHeadersRelations = relations2(rfqHeaders, ({ one, many }) => ({
   lines: many(rfqLines),
   quotes: many(supplierQuotes)
 }));
-var rfqLinesRelations = relations(rfqLines, ({ one }) => ({
+var rfqLinesRelations = relations2(rfqLines, ({ one }) => ({
   header: one(rfqHeaders, {
     fields: [rfqLines.headerId],
     references: [rfqHeaders.id]
   })
 }));
-var supplierQuotesRelations = relations(supplierQuotes, ({ one }) => ({
+var supplierQuotesRelations = relations2(supplierQuotes, ({ one }) => ({
   rfq: one(rfqHeaders, {
     fields: [supplierQuotes.rfqId],
     references: [rfqHeaders.id]
@@ -5713,16 +5725,16 @@ var supplierQuotesRelations = relations(supplierQuotes, ({ one }) => ({
     references: [suppliers.id]
   })
 }));
-var purchaseRequisitionLinesRelations = relations(purchaseRequisitionLines, ({ one }) => ({
+var purchaseRequisitionLinesRelations = relations2(purchaseRequisitionLines, ({ one }) => ({
   header: one(purchaseRequisitions, {
     fields: [purchaseRequisitionLines.requisitionId],
     references: [purchaseRequisitions.id]
   })
 }));
-var rcvShipmentHeadersRelations = relations(rcvShipmentHeaders, ({ one, many }) => ({
+var rcvShipmentHeadersRelations = relations2(rcvShipmentHeaders, ({ one, many }) => ({
   lines: many(rcvShipmentLines)
 }));
-var rcvShipmentLinesRelations = relations(rcvShipmentLines, ({ one }) => ({
+var rcvShipmentLinesRelations = relations2(rcvShipmentLines, ({ one }) => ({
   header: one(rcvShipmentHeaders, {
     fields: [rcvShipmentLines.shipmentHeaderId],
     references: [rcvShipmentHeaders.id]
@@ -5776,10 +5788,10 @@ var cycleCountEntries = pgTable20("inv_cycle_count_entries", {
 });
 var insertCycleCountHeaderSchema = createInsertSchema20(cycleCountHeaders);
 var insertCycleCountEntrySchema = createInsertSchema20(cycleCountEntries);
-var cycleCountHeadersRelations = relations(cycleCountHeaders, ({ many }) => ({
+var cycleCountHeadersRelations = relations2(cycleCountHeaders, ({ many }) => ({
   entries: many(cycleCountEntries)
 }));
-var cycleCountEntriesRelations = relations(cycleCountEntries, ({ one }) => ({
+var cycleCountEntriesRelations = relations2(cycleCountEntries, ({ one }) => ({
   header: one(cycleCountHeaders, {
     fields: [cycleCountEntries.headerId],
     references: [cycleCountHeaders.id]
@@ -7426,7 +7438,7 @@ var insertAdminLogSchema = createInsertSchema31(adminLogs).extend({
 
 // shared/schema/epm.ts
 import { pgTable as pgTable32, varchar as varchar32, text as text23, timestamp as timestamp32, numeric as numeric20, boolean as boolean26, jsonb as jsonb18, integer as integer23, date as date6 } from "drizzle-orm/pg-core";
-import { sql as sql32, relations as relations2 } from "drizzle-orm";
+import { sql as sql32, relations as relations3 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema32 } from "drizzle-zod";
 var budgets = pgTable32("budgets", {
   id: varchar32("id").primaryKey().default(sql32`gen_random_uuid()`),
@@ -7579,10 +7591,10 @@ var epmAudits = pgTable32("epm_audits", {
   changes: jsonb18("changes"),
   createdAt: timestamp32("created_at").default(sql32`now()`)
 });
-var planScenariosRelations = relations2(planScenarios, ({ many }) => ({
+var planScenariosRelations = relations3(planScenarios, ({ many }) => ({
   versions: many(planVersions)
 }));
-var planVersionsRelations = relations2(planVersions, ({ one, many }) => ({
+var planVersionsRelations = relations3(planVersions, ({ one, many }) => ({
   scenario: one(planScenarios, {
     fields: [planVersions.scenarioId],
     references: [planScenarios.id]
@@ -7594,13 +7606,13 @@ var planVersionsRelations = relations2(planVersions, ({ one, many }) => ({
   projects: many(planProjects),
   esgMetrics: many(planEsgMetrics)
 }));
-var planUnitsRelations = relations2(planUnits, ({ one }) => ({
+var planUnitsRelations = relations3(planUnits, ({ one }) => ({
   version: one(planVersions, {
     fields: [planUnits.versionId],
     references: [planVersions.id]
   })
 }));
-var planProjectsRelations = relations2(planProjects, ({ one }) => ({
+var planProjectsRelations = relations3(planProjects, ({ one }) => ({
   version: one(planVersions, {
     fields: [planProjects.versionId],
     references: [planVersions.id]
@@ -8625,7 +8637,7 @@ var insertFaInventoryScanSchema = createInsertSchema41(faInventoryScans);
 
 // shared/schema/sla.ts
 import { pgTable as pgTable42, text as text33, integer as integer32, boolean as boolean36, timestamp as timestamp42, varchar as varchar41, unique } from "drizzle-orm/pg-core";
-import { relations as relations4, sql as sql41 } from "drizzle-orm";
+import { relations as relations5, sql as sql41 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema42 } from "drizzle-zod";
 var slaEventClasses = pgTable42("sla_event_classes", {
   id: varchar41("id").primaryKey(),
@@ -8752,10 +8764,10 @@ var slaJournalLines = pgTable42("sla_journal_lines", {
   currencyCode: varchar41("currency_code").notNull(),
   description: text33("description")
 });
-var slaJournalHeaderRelations = relations4(slaJournalHeaders, ({ many }) => ({
+var slaJournalHeaderRelations = relations5(slaJournalHeaders, ({ many }) => ({
   lines: many(slaJournalLines)
 }));
-var slaJournalLineRelations = relations4(slaJournalLines, ({ one }) => ({
+var slaJournalLineRelations = relations5(slaJournalLines, ({ one }) => ({
   header: one(slaJournalHeaders, {
     fields: [slaJournalLines.headerId],
     references: [slaJournalHeaders.id]
@@ -8880,7 +8892,7 @@ var insertTaxExemptionSchema = createInsertSchema44(taxExemptions).extend({
 
 // shared/schema/netting.ts
 import { pgTable as pgTable45, serial as serial4, integer as integer35, timestamp as timestamp44, numeric as numeric26, varchar as varchar44 } from "drizzle-orm/pg-core";
-import { relations as relations5, sql as sql43 } from "drizzle-orm";
+import { relations as relations6, sql as sql43 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema45 } from "drizzle-zod";
 var nettingAgreements = pgTable45("netting_agreements", {
   id: varchar44("id").primaryKey().default(sql43`gen_random_uuid()`),
@@ -8901,7 +8913,7 @@ var nettingAgreements = pgTable45("netting_agreements", {
   createdAt: timestamp44("created_at").defaultNow(),
   updatedAt: timestamp44("updated_at").defaultNow()
 });
-var nettingAgreementsRelations = relations5(nettingAgreements, ({ one }) => ({
+var nettingAgreementsRelations = relations6(nettingAgreements, ({ one }) => ({
   customer: one(arCustomers, {
     fields: [nettingAgreements.customerId],
     references: [arCustomers.id]
@@ -8930,7 +8942,7 @@ var nettingSettlements = pgTable45("netting_settlements", {
   // Created Payment
   createdAt: timestamp44("created_at").defaultNow()
 });
-var nettingSettlementsRelations = relations5(nettingSettlements, ({ one }) => ({
+var nettingSettlementsRelations = relations6(nettingSettlements, ({ one }) => ({
   agreement: one(nettingAgreements, {
     fields: [nettingSettlements.agreementId],
     references: [nettingAgreements.id]
@@ -8962,7 +8974,7 @@ var icNettingBatches = pgTable45("ic_netting_batches", {
   createdAt: timestamp44("created_at").defaultNow(),
   createdBy: varchar44("created_by")
 });
-var icNettingBatchesRelations = relations5(icNettingBatches, ({ one }) => ({
+var icNettingBatchesRelations = relations6(icNettingBatches, ({ one }) => ({
   agreement: one(nettingAgreements, {
     fields: [icNettingBatches.agreementId],
     references: [nettingAgreements.id]
@@ -10648,7 +10660,7 @@ var insertBillingAnomalySchema = createInsertSchema55(billingAnomalies);
 
 // shared/schema/billing_subscription.ts
 import { pgTable as pgTable56, text as text45, timestamp as timestamp55, numeric as numeric32, jsonb as jsonb32 } from "drizzle-orm/pg-core";
-import { relations as relations6 } from "drizzle-orm";
+import { relations as relations7 } from "drizzle-orm";
 var subscriptionContracts = pgTable56("subscription_contracts", {
   id: text45("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   contractNumber: text45("contract_number").notNull().unique(),
@@ -10702,17 +10714,17 @@ var subscriptionActions = pgTable56("subscription_actions", {
   // e.g., { "quantity": { "old": 10, "new": 15 } }
   performedBy: text45("performed_by")
 });
-var subscriptionContractsRelations = relations6(subscriptionContracts, ({ many }) => ({
+var subscriptionContractsRelations = relations7(subscriptionContracts, ({ many }) => ({
   products: many(subscriptionProducts),
   actions: many(subscriptionActions)
 }));
-var subscriptionProductsRelations = relations6(subscriptionProducts, ({ one }) => ({
+var subscriptionProductsRelations = relations7(subscriptionProducts, ({ one }) => ({
   contract: one(subscriptionContracts, {
     fields: [subscriptionProducts.subscriptionId],
     references: [subscriptionContracts.id]
   })
 }));
-var subscriptionActionsRelations = relations6(subscriptionActions, ({ one }) => ({
+var subscriptionActionsRelations = relations7(subscriptionActions, ({ one }) => ({
   contract: one(subscriptionContracts, {
     fields: [subscriptionActions.subscriptionId],
     references: [subscriptionContracts.id]
@@ -10806,7 +10818,7 @@ var insertUsageThresholdSchema = createInsertSchema56(usageThresholds).extend({
 // shared/schema/order_management.ts
 import { pgTable as pgTable58, text as text47, integer as integer46, boolean as boolean50, timestamp as timestamp57, decimal as decimal5, numeric as numeric34, varchar as varchar56 } from "drizzle-orm/pg-core";
 import { createInsertSchema as createInsertSchema57 } from "drizzle-zod";
-import { relations as relations7, sql as sql54 } from "drizzle-orm";
+import { relations as relations8, sql as sql54 } from "drizzle-orm";
 var omOrderHeaders = pgTable58("om_order_headers", {
   id: text47("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   orderNumber: text47("order_number").notNull().unique(),
@@ -10909,17 +10921,17 @@ var omPriceListItems = pgTable58("om_price_list_items", {
   unitPrice: decimal5("unit_price", { precision: 16, scale: 2 }).notNull(),
   isActive: boolean50("is_active").default(true)
 });
-var omOrderRelations = relations7(omOrderHeaders, ({ many }) => ({
+var omOrderRelations = relations8(omOrderHeaders, ({ many }) => ({
   lines: many(omOrderLines),
   holds: many(omHolds)
 }));
-var omOrderLinesRelations = relations7(omOrderLines, ({ one }) => ({
+var omOrderLinesRelations = relations8(omOrderLines, ({ one }) => ({
   header: one(omOrderHeaders, {
     fields: [omOrderLines.headerId],
     references: [omOrderHeaders.id]
   })
 }));
-var omPriceListRelations = relations7(omPriceLists, ({ many }) => ({
+var omPriceListRelations = relations8(omPriceLists, ({ many }) => ({
   items: many(omPriceListItems)
 }));
 var insertOrderHeaderSchema = createInsertSchema57(omOrderHeaders);
@@ -10933,12 +10945,12 @@ var insertPriceListItemSchema = createInsertSchema57(omPriceListItems);
 
 // shared/schema/maintenance.ts
 import { pgTable as pgTable60, text as text49, varchar as varchar58, timestamp as timestamp59, numeric as numeric35, boolean as boolean52, integer as integer48 } from "drizzle-orm/pg-core";
-import { relations as relations9, sql as sql56 } from "drizzle-orm";
+import { relations as relations10, sql as sql56 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema58 } from "drizzle-zod";
 
 // shared/schema/maintenance_library.ts
 import { pgTable as pgTable59, text as text48, integer as integer47, timestamp as timestamp58, decimal as decimal6, varchar as varchar57 } from "drizzle-orm/pg-core";
-import { relations as relations8, sql as sql55 } from "drizzle-orm";
+import { relations as relations9, sql as sql55 } from "drizzle-orm";
 var maintWorkDefinitions = pgTable59("maint_work_definitions", {
   id: varchar57("id").primaryKey().default(sql55`gen_random_uuid()`),
   code: text48("code").notNull(),
@@ -10973,17 +10985,17 @@ var maintWorkDefinitionMaterials = pgTable59("maint_work_definition_materials", 
   // Link to Inventory Item (assumed varchar for global parity)
   quantity: decimal6("quantity", { precision: 10, scale: 2 }).notNull()
 });
-var maintWorkDefinitionsRelations = relations8(maintWorkDefinitions, ({ many }) => ({
+var maintWorkDefinitionsRelations = relations9(maintWorkDefinitions, ({ many }) => ({
   operations: many(maintWorkDefinitionOperations),
   materials: many(maintWorkDefinitionMaterials)
 }));
-var maintWorkDefinitionOperationsRelations = relations8(maintWorkDefinitionOperations, ({ one }) => ({
+var maintWorkDefinitionOperationsRelations = relations9(maintWorkDefinitionOperations, ({ one }) => ({
   definition: one(maintWorkDefinitions, {
     fields: [maintWorkDefinitionOperations.workDefinitionId],
     references: [maintWorkDefinitions.id]
   })
 }));
-var maintWorkDefinitionMaterialsRelations = relations8(maintWorkDefinitionMaterials, ({ one }) => ({
+var maintWorkDefinitionMaterialsRelations = relations9(maintWorkDefinitionMaterials, ({ one }) => ({
   definition: one(maintWorkDefinitions, {
     fields: [maintWorkDefinitionMaterials.workDefinitionId],
     references: [maintWorkDefinitions.id]
@@ -11074,14 +11086,14 @@ var maintWorkOrderOperations = pgTable60("maint_work_order_operations", {
   comments: text49("comments"),
   createdAt: timestamp59("created_at").default(sql56`now()`)
 });
-var maintWorkOrdersRelations = relations9(maintWorkOrders, ({ one, many }) => ({
+var maintWorkOrdersRelations = relations10(maintWorkOrders, ({ one, many }) => ({
   asset: one(faAssets, {
     fields: [maintWorkOrders.assetId],
     references: [faAssets.id]
   }),
   operations: many(maintWorkOrderOperations)
 }));
-var maintWorkOrderOperationsRelations = relations9(maintWorkOrderOperations, ({ one }) => ({
+var maintWorkOrderOperationsRelations = relations10(maintWorkOrderOperations, ({ one }) => ({
   workOrder: one(maintWorkOrders, {
     fields: [maintWorkOrderOperations.workOrderId],
     references: [maintWorkOrders.id]
@@ -11093,12 +11105,12 @@ var insertMaintAssetExtSchema = createInsertSchema58(maintAssetsExtension);
 
 // shared/schema/maintenance_pm.ts
 import { pgTable as pgTable62, text as text51, varchar as varchar60, timestamp as timestamp61, numeric as numeric36, boolean as boolean54, integer as integer50 } from "drizzle-orm/pg-core";
-import { relations as relations11, sql as sql58 } from "drizzle-orm";
+import { relations as relations12, sql as sql58 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema59 } from "drizzle-zod";
 
 // shared/schema/maintenance_meters.ts
 import { pgTable as pgTable61, text as text50, boolean as boolean53, timestamp as timestamp60, uuid as uuid5, decimal as decimal7, varchar as varchar59 } from "drizzle-orm/pg-core";
-import { relations as relations10, sql as sql57 } from "drizzle-orm";
+import { relations as relations11, sql as sql57 } from "drizzle-orm";
 var maintMeters = pgTable61("maint_asset_meters", {
   id: varchar59("id").primaryKey().default(sql57`gen_random_uuid()`),
   assetId: varchar59("asset_id").notNull(),
@@ -11131,14 +11143,14 @@ var maintMeterReadings = pgTable61("maint_asset_meter_readings", {
   // If captured during a WO
   createdById: text50("created_by_id")
 });
-var maintMetersRelations = relations10(maintMeters, ({ one, many }) => ({
+var maintMetersRelations = relations11(maintMeters, ({ one, many }) => ({
   asset: one(faAssets, {
     fields: [maintMeters.assetId],
     references: [faAssets.id]
   }),
   readings: many(maintMeterReadings)
 }));
-var maintMeterReadingsRelations = relations10(maintMeterReadings, ({ one }) => ({
+var maintMeterReadingsRelations = relations11(maintMeterReadings, ({ one }) => ({
   meter: one(maintMeters, {
     fields: [maintMeterReadings.meterId],
     references: [maintMeters.id]
@@ -11186,7 +11198,7 @@ var maintPMDefinitions = pgTable62("maint_pm_definitions", {
   createdAt: timestamp61("created_at").default(sql58`now()`),
   updatedAt: timestamp61("updated_at").default(sql58`now()`)
 });
-var maintPMDefinitionsRelations = relations11(maintPMDefinitions, ({ one }) => ({
+var maintPMDefinitionsRelations = relations12(maintPMDefinitions, ({ one }) => ({
   asset: one(faAssets, {
     fields: [maintPMDefinitions.assetId],
     references: [faAssets.id]
@@ -11204,7 +11216,7 @@ var insertMaintPMDefinitionSchema = createInsertSchema59(maintPMDefinitions);
 
 // shared/schema/maintenance_sr.ts
 import { pgTable as pgTable63, text as text52, varchar as varchar61, timestamp as timestamp62 } from "drizzle-orm/pg-core";
-import { relations as relations12, sql as sql59 } from "drizzle-orm";
+import { relations as relations13, sql as sql59 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema60 } from "drizzle-zod";
 var maintServiceRequests = pgTable63("maint_service_requests", {
   id: varchar61("id").primaryKey().default(sql59`gen_random_uuid()`),
@@ -11224,7 +11236,7 @@ var maintServiceRequests = pgTable63("maint_service_requests", {
   createdAt: timestamp62("created_at").default(sql59`now()`),
   updatedAt: timestamp62("updated_at").default(sql59`now()`)
 });
-var maintServiceRequestsRelations = relations12(maintServiceRequests, ({ one }) => ({
+var maintServiceRequestsRelations = relations13(maintServiceRequests, ({ one }) => ({
   asset: one(faAssets, {
     fields: [maintServiceRequests.assetId],
     references: [faAssets.id]
@@ -11242,7 +11254,7 @@ var insertMaintServiceRequestSchema = createInsertSchema60(maintServiceRequests)
 
 // shared/schema/maintenance_scm.ts
 import { pgTable as pgTable64, varchar as varchar62, integer as integer52, timestamp as timestamp63, numeric as numeric37 } from "drizzle-orm/pg-core";
-import { relations as relations13, sql as sql60 } from "drizzle-orm";
+import { relations as relations14, sql as sql60 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema61 } from "drizzle-zod";
 var maintWorkOrderMaterials = pgTable64("maint_work_order_materials", {
   id: varchar62("id").primaryKey().default(sql60`gen_random_uuid()`),
@@ -11262,7 +11274,7 @@ var maintWorkOrderMaterials = pgTable64("maint_work_order_materials", {
   // Link to scm_purchase_requisition_lines
   createdAt: timestamp63("created_at").default(sql60`now()`)
 });
-var maintWorkOrderMaterialsRelations = relations13(maintWorkOrderMaterials, ({ one }) => ({
+var maintWorkOrderMaterialsRelations = relations14(maintWorkOrderMaterials, ({ one }) => ({
   workOrder: one(maintWorkOrders, {
     fields: [maintWorkOrderMaterials.workOrderId],
     references: [maintWorkOrders.id]
@@ -11276,7 +11288,7 @@ var insertMaintWorkOrderMaterialSchema = createInsertSchema61(maintWorkOrderMate
 
 // shared/schema/maintenance_res.ts
 import { pgTable as pgTable65, varchar as varchar63, timestamp as timestamp64, numeric as numeric38 } from "drizzle-orm/pg-core";
-import { relations as relations14, sql as sql61 } from "drizzle-orm";
+import { relations as relations15, sql as sql61 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema62 } from "drizzle-zod";
 var maintWorkOrderResources = pgTable65("maint_work_order_resources", {
   id: varchar63("id").primaryKey().default(sql61`gen_random_uuid()`),
@@ -11294,7 +11306,7 @@ var maintWorkOrderResources = pgTable65("maint_work_order_resources", {
   // ASSIGNED, IN_PROGRESS, COMPLETED
   createdAt: timestamp64("created_at").default(sql61`now()`)
 });
-var maintWorkOrderResourcesRelations = relations14(maintWorkOrderResources, ({ one }) => ({
+var maintWorkOrderResourcesRelations = relations15(maintWorkOrderResources, ({ one }) => ({
   workOrder: one(maintWorkOrders, {
     fields: [maintWorkOrderResources.workOrderId],
     references: [maintWorkOrders.id]
@@ -11308,7 +11320,7 @@ var insertMaintWorkOrderResourceSchema = createInsertSchema62(maintWorkOrderReso
 
 // shared/schema/maintenance_costing.ts
 import { pgTable as pgTable66, text as text53, timestamp as timestamp65, varchar as varchar64, numeric as numeric39, pgEnum } from "drizzle-orm/pg-core";
-import { relations as relations15, sql as sql62 } from "drizzle-orm";
+import { relations as relations16, sql as sql62 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema63 } from "drizzle-zod";
 var maintCostTypeEnum = pgEnum("maint_cost_type", [
   "MATERIAL",
@@ -11338,7 +11350,7 @@ var maintWorkOrderCosts = pgTable66("maint_work_order_costs", {
   glStatus: varchar64("gl_status", { length: 20 }).default("PENDING"),
   createdAt: timestamp65("created_at").defaultNow()
 });
-var maintWorkOrderCostsRelations = relations15(maintWorkOrderCosts, ({ one }) => ({
+var maintWorkOrderCostsRelations = relations16(maintWorkOrderCosts, ({ one }) => ({
   workOrder: one(maintWorkOrders, {
     fields: [maintWorkOrderCosts.workOrderId],
     references: [maintWorkOrders.id]
@@ -11348,7 +11360,7 @@ var insertMaintWorkOrderCostSchema = createInsertSchema63(maintWorkOrderCosts);
 
 // shared/schema/maintenance_planning.ts
 import { pgTable as pgTable67, timestamp as timestamp66, varchar as varchar65, boolean as boolean57, numeric as numeric40, uuid as uuid7 } from "drizzle-orm/pg-core";
-import { relations as relations16 } from "drizzle-orm";
+import { relations as relations17 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema64 } from "drizzle-zod";
 var maintWorkCenters = pgTable67("maint_work_centers", {
   id: uuid7("id").defaultRandom().primaryKey(),
@@ -11363,14 +11375,14 @@ var maintWorkCenters = pgTable67("maint_work_centers", {
   createdAt: timestamp66("created_at").defaultNow(),
   updatedAt: timestamp66("updated_at").defaultNow()
 });
-var maintWorkCentersRelations = relations16(maintWorkCenters, ({ many }) => ({
+var maintWorkCentersRelations = relations17(maintWorkCenters, ({ many }) => ({
   operations: many(maintWorkOrderOperations)
 }));
 var insertMaintWorkCenterSchema = createInsertSchema64(maintWorkCenters);
 
 // shared/schema/maintenance_quality.ts
 import { pgTable as pgTable68, text as text55, timestamp as timestamp67, varchar as varchar66, boolean as boolean58, jsonb as jsonb39, pgEnum as pgEnum2 } from "drizzle-orm/pg-core";
-import { relations as relations17, sql as sql63 } from "drizzle-orm";
+import { relations as relations18, sql as sql63 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema65 } from "drizzle-zod";
 var maintPermitTypeEnum = pgEnum2("maint_permit_type", [
   "HOT_WORK",
@@ -11426,10 +11438,10 @@ var maintPermits = pgTable68("maint_permits", {
   precautions: text55("precautions"),
   createdAt: timestamp67("created_at").defaultNow()
 });
-var maintInspectionDefinitionsRelations = relations17(maintInspectionDefinitions, ({ many }) => ({
+var maintInspectionDefinitionsRelations = relations18(maintInspectionDefinitions, ({ many }) => ({
   inspections: many(maintInspections)
 }));
-var maintInspectionsRelations = relations17(maintInspections, ({ one }) => ({
+var maintInspectionsRelations = relations18(maintInspections, ({ one }) => ({
   definition: one(maintInspectionDefinitions, {
     fields: [maintInspections.definitionId],
     references: [maintInspectionDefinitions.id]
@@ -11439,7 +11451,7 @@ var maintInspectionsRelations = relations17(maintInspections, ({ one }) => ({
     references: [maintWorkOrders.id]
   })
 }));
-var maintPermitsRelations = relations17(maintPermits, ({ one }) => ({
+var maintPermitsRelations = relations18(maintPermits, ({ one }) => ({
   workOrder: one(maintWorkOrders, {
     fields: [maintPermits.workOrderId],
     references: [maintWorkOrders.id]
@@ -11451,7 +11463,7 @@ var insertMaintPermitSchema = createInsertSchema65(maintPermits);
 
 // shared/schema/maintenance_failure.ts
 import { pgTable as pgTable69, text as text56, varchar as varchar67, timestamp as timestamp68 } from "drizzle-orm/pg-core";
-import { relations as relations18, sql as sql64 } from "drizzle-orm";
+import { relations as relations19, sql as sql64 } from "drizzle-orm";
 var maintFailureCodes = pgTable69("maint_failure_codes", {
   id: varchar67("id").primaryKey().default(sql64`gen_random_uuid()`),
   code: varchar67("code", { length: 50 }).notNull().unique(),
@@ -11466,7 +11478,7 @@ var maintFailureCodes = pgTable69("maint_failure_codes", {
   active: varchar67("active", { length: 1 }).default("Y"),
   createdAt: timestamp68("created_at").defaultNow()
 });
-var maintFailureCodesRelations = relations18(maintFailureCodes, ({ one, many }) => ({
+var maintFailureCodesRelations = relations19(maintFailureCodes, ({ one, many }) => ({
   parent: one(maintFailureCodes, {
     fields: [maintFailureCodes.parentId],
     references: [maintFailureCodes.id],
@@ -11997,7 +12009,7 @@ var constructionResourceAllocations = pgTable75("construction_resource_allocatio
 // shared/schema/lcm.ts
 import { pgTable as pgTable76, text as text62, boolean as boolean62, timestamp as timestamp75, jsonb as jsonb42, numeric as numeric45, varchar as varchar73, uuid as uuid12 } from "drizzle-orm/pg-core";
 import { createInsertSchema as createInsertSchema70 } from "drizzle-zod";
-import { sql as sql69, relations as relations19 } from "drizzle-orm";
+import { sql as sql69, relations as relations20 } from "drizzle-orm";
 var lcmCostComponents = pgTable76("lcm_cost_components", {
   id: varchar73("id").primaryKey().default(sql69`gen_random_uuid()`),
   name: varchar73("name").notNull(),
@@ -12093,7 +12105,7 @@ var lcmAuditLogs = pgTable76("lcm_audit_logs", {
   // User ID or 'SYSTEM'
   createdAt: timestamp75("created_at").default(sql69`now()`)
 });
-var lcmAuditLogRelations = relations19(lcmAuditLogs, ({ one }) => ({
+var lcmAuditLogRelations = relations20(lcmAuditLogs, ({ one }) => ({
   // Generic relation might be hard due to dynamic entityTable, so we might skip direct relation link here 
   // or link loosely if needed. For now, independent log.
 }));
@@ -12537,7 +12549,7 @@ var insertContractDocumentSchema = createInsertSchema73(contractDocuments);
 
 // shared/schema/intercompany.ts
 import { pgTable as pgTable80, text as text66, serial as serial10, integer as integer65, boolean as boolean66, timestamp as timestamp79, uuid as uuid13, date as date19, numeric as numeric49, varchar as varchar77 } from "drizzle-orm/pg-core";
-import { relations as relations20 } from "drizzle-orm";
+import { relations as relations21 } from "drizzle-orm";
 var icOrgs = pgTable80("ic_orgs", {
   id: text66("id").primaryKey(),
   // e.g. "ICO-101"
@@ -12615,14 +12627,14 @@ var icLines = pgTable80("ic_lines", {
   description: text66("description"),
   createdAt: timestamp79("created_at").defaultNow()
 });
-var icBatchesRelations = relations20(icBatches, ({ many }) => ({
+var icBatchesRelations = relations21(icBatches, ({ many }) => ({
   headers: many(icHeaders)
 }));
-var icHeadersRelations = relations20(icHeaders, ({ one, many }) => ({
+var icHeadersRelations = relations21(icHeaders, ({ one, many }) => ({
   batch: one(icBatches, { fields: [icHeaders.batchId], references: [icBatches.id] }),
   lines: many(icLines)
 }));
-var icLinesRelations = relations20(icLines, ({ one }) => ({
+var icLinesRelations = relations21(icLines, ({ one }) => ({
   header: one(icHeaders, { fields: [icLines.headerId], references: [icHeaders.id] })
 }));
 var icTransferPricingRules = pgTable80("ic_transfer_pricing_rules", {
@@ -13485,7 +13497,7 @@ var hrmPayslipEntries = pgTable88("hrm_payslip_entries", {
 
 // shared/schema/time_ai.ts
 import { pgTable as pgTable89, text as text74, serial as serial11, integer as integer73, timestamp as timestamp88, numeric as numeric55, date as date26, jsonb as jsonb51 } from "drizzle-orm/pg-core";
-import { relations as relations21 } from "drizzle-orm";
+import { relations as relations22 } from "drizzle-orm";
 var hrmAiForecasts = pgTable89("hrm_ai_forecasts", {
   id: serial11("id").primaryKey(),
   tenantId: text74("tenant_id").notNull(),
@@ -13513,7 +13525,7 @@ var hrmAiAnomalies = pgTable89("hrm_ai_anomalies", {
   metadata: jsonb51("metadata")
   // Store related TimeEntryId or other context
 });
-var hrmAiAnomaliesRelations = relations21(hrmAiAnomalies, ({ one }) => ({
+var hrmAiAnomaliesRelations = relations22(hrmAiAnomalies, ({ one }) => ({
   // If we wanted to link to time entries strictly, we could, but often anomalies span multiple entries
 }));
 
@@ -13791,7 +13803,7 @@ import { pgTable as pgTable95, varchar as varchar91, text as text79, timestamp a
 import { sql as sql86 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema87 } from "drizzle-zod";
 import { z as z33 } from "zod";
-import { relations as relations22 } from "drizzle-orm";
+import { relations as relations23 } from "drizzle-orm";
 var hzDupBatch = pgTable95("hz_dup_batch", {
   id: varchar91("id").primaryKey().default(sql86`gen_random_uuid()`),
   batchName: varchar91("batch_name").notNull(),
@@ -13849,17 +13861,17 @@ var hzSurvivorshipRules = pgTable95("hz_survivorship_rules", {
   createdAt: timestamp94("created_at").default(sql86`now()`),
   updatedAt: timestamp94("updated_at").default(sql86`now()`)
 });
-var hzDupBatchRelations = relations22(hzDupBatch, ({ many }) => ({
+var hzDupBatchRelations = relations23(hzDupBatch, ({ many }) => ({
   sets: many(hzDupSets)
 }));
-var hzDupSetsRelations = relations22(hzDupSets, ({ one, many }) => ({
+var hzDupSetsRelations = relations23(hzDupSets, ({ one, many }) => ({
   batch: one(hzDupBatch, {
     fields: [hzDupSets.batchId],
     references: [hzDupBatch.id]
   }),
   parties: many(hzDupSetParties)
 }));
-var hzDupSetPartiesRelations = relations22(hzDupSetParties, ({ one }) => ({
+var hzDupSetPartiesRelations = relations23(hzDupSetParties, ({ one }) => ({
   set: one(hzDupSets, {
     fields: [hzDupSetParties.setId],
     references: [hzDupSets.id]
@@ -13888,7 +13900,7 @@ var insertHzSurvivorshipRuleSchema = createInsertSchema87(hzSurvivorshipRules).e
 
 // shared/schema/pim.ts
 import { pgTable as pgTable96, varchar as varchar92, text as text80, timestamp as timestamp95 } from "drizzle-orm/pg-core";
-import { sql as sql87, relations as relations23 } from "drizzle-orm";
+import { sql as sql87, relations as relations24 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema88 } from "drizzle-zod";
 import { z as z34 } from "zod";
 var egpSystemItems = pgTable96("egp_system_items", {
@@ -13923,10 +13935,10 @@ var egpItemCategories = pgTable96("egp_item_categories", {
   createdAt: timestamp95("created_at").default(sql87`now()`),
   updatedAt: timestamp95("updated_at").default(sql87`now()`)
 });
-var egpSystemItemsRelations = relations23(egpSystemItems, ({ many }) => ({
+var egpSystemItemsRelations = relations24(egpSystemItems, ({ many }) => ({
   categories: many(egpItemCategories)
 }));
-var egpItemCategoriesRelations = relations23(egpItemCategories, ({ one }) => ({
+var egpItemCategoriesRelations = relations24(egpItemCategories, ({ one }) => ({
   item: one(egpSystemItems, {
     fields: [egpItemCategories.itemId],
     references: [egpSystemItems.id]

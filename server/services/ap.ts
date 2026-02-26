@@ -571,7 +571,7 @@ export class ApService {
         return batch;
     }
 
-    async selectInvoicesForBatch(batchId: number, tx: any = db) {
+    async selectInvoicesForBatch(batchId: string, tx: any = db) {
         const [batch] = await tx.select().from(apPaymentBatches).where(eq(apPaymentBatches.id, batchId)).limit(1);
         if (!batch) throw new Error("Batch not found");
 
@@ -582,16 +582,17 @@ export class ApService {
         ];
 
         // Logic to EXCLUDE invoices with active holds
-        const invoicesWithHolds = tx.select({ id: apHolds.invoice_id })
+        const holds = await tx.select({ id: apHolds.invoice_id })
             .from(apHolds)
             .where(sql`${apHolds.release_lookup_code} IS NULL`);
 
-        const selectedInvoices = await tx.select()
+        const holdIds = new Set(holds.map((h: any) => h.id));
+
+        let selectedInvoices = await tx.select()
             .from(apInvoices)
-            .where(and(
-                ...selectionCriteria,
-                sql`${apInvoices.id} NOT IN (${invoicesWithHolds})`
-            ));
+            .where(and(...selectionCriteria));
+
+        selectedInvoices = selectedInvoices.filter((inv: any) => !holdIds.has(inv.id));
 
         // Update batch with projected totals
         const total = selectedInvoices.reduce((sum: number, inv: any) => sum + Number(inv.invoiceAmount), 0);
@@ -606,7 +607,7 @@ export class ApService {
         return selectedInvoices;
     }
 
-    async confirmPaymentBatch(batchId: number) {
+    async confirmPaymentBatch(batchId: string) {
         // LEVEL 15 PARITY: Async Processing for High Volume
         const [batch] = await db.select().from(apPaymentBatches).where(eq(apPaymentBatches.id, batchId)).limit(1);
         if (!batch) throw new Error("Batch not found"); // ALLOW re-confirm if previously errored or selected
@@ -622,7 +623,7 @@ export class ApService {
 
         return { success: true, message: "Payment batch submitted for processing. Check status shortly." };
     }
-    async getBatchPayments(batchId: number) {
+    async getBatchPayments(batchId: string) {
         return await db.select()
             .from(apPayments)
             .where(eq(apPayments.batchId, batchId))

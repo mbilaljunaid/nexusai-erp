@@ -15,6 +15,7 @@ import APInvoices from "@/pages/finance/ap/APInvoices";
 import APInvoiceEntry from "@/pages/finance/ap/APInvoiceEntry";
 import APDashboard from "@/pages/finance/ap/APDashboard";
 import APSuppliers from "@/pages/finance/ap/APSuppliers";
+import APWithholdingTax from "@/pages/finance/ap/APWithholdingTax";
 import APAICaptureUpload from "@/pages/finance/ap/APAICaptureUpload";
 import APReports from "@/pages/finance/ap/APReports";
 import APPrepayments from "@/pages/finance/ap/APPrepayments";
@@ -178,6 +179,7 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ap/invoices/new" component={APInvoiceEntry} />
                 <Route path="/finance/ap/invoices" component={APInvoices} />
                 <Route path="/finance/ap/payments" component={APPaymentBatches} />
+                <Route path="/finance/ap/withholding-tax" component={APWithholdingTax} />
                 <Route path="/finance/ap/ai-capture" component={APAICaptureUpload} />
                 <Route path="/finance/ap/reports" component={APReports} />
                 <Route path="/finance/ap/prepayments" component={APPrepayments} />

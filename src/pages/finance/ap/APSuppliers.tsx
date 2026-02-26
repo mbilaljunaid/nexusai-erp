@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 
 export default function APSuppliers() {
@@ -103,12 +104,19 @@ export default function APSuppliers() {
         }
     ];
 
+    const { data: whtGroups } = useQuery({
+        queryKey: ["/api/ap/wht-groups"],
+        queryFn: () => fetch("/api/ap/wht-groups").then(r => r.json())
+    });
+
     const [formData, setFormData] = useState({
         supplierNumber: "",
         name: "",
         taxId: "",
         paymentTerms: "Net 30",
         status: "Active",
+        allowWithholdingTax: false,
+        withholdingTaxGroupId: "",
         // Site fields
         siteName: "HEADQUARTERS",
         address: "",
@@ -188,6 +196,34 @@ export default function APSuppliers() {
                                 </SelectContent>
                             </Select>
                         </div>
+                        <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                            <div className="space-y-0.5">
+                                <Label>Enable Withholding Tax</Label>
+                                <p className="text-[0.8rem] text-muted-foreground">Calculate WHT automatically for this supplier.</p>
+                            </div>
+                            <Switch
+                                checked={formData.allowWithholdingTax}
+                                onCheckedChange={(checked) => setFormData({ ...formData, allowWithholdingTax: checked })}
+                            />
+                        </div>
+                        {formData.allowWithholdingTax && (
+                            <div className="space-y-2">
+                                <Label htmlFor="withholdingTaxGroupId">Withholding Tax Group</Label>
+                                <Select
+                                    value={formData.withholdingTaxGroupId || ""}
+                                    onValueChange={(v) => setFormData({ ...formData, withholdingTaxGroupId: v })}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select WHT Group" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {whtGroups?.map((group: any) => (
+                                            <SelectItem key={group.id} value={group.id}>{group.groupName}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        )}
                         <div className="pt-2 border-t">
                             <p className="text-sm font-semibold text-muted-foreground mb-3">Payment Site (Banking Details)</p>
                             <div className="space-y-3">

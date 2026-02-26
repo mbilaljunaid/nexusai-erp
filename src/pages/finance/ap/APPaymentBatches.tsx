@@ -29,7 +29,9 @@ export default function APPaymentBatches() {
 
     const { data: batches, isLoading } = useQuery({
         queryKey: ["/api/ap/payment-batches"],
-        queryFn: () => fetch("/api/ap/payment-batches").then(r => r.json())
+        queryFn: () => fetch("/api/ap/payment-batches").then(r => r.json()),
+        refetchInterval: 3000,
+        refetchIntervalInBackground: true
     });
 
     const createMutation = useMutation({
@@ -110,9 +112,10 @@ export default function APPaymentBatches() {
             header: "Status",
             accessorKey: "status",
             cell: (row) => {
+                const status = row.status?.toUpperCase();
                 const variant =
-                    row.status === "Confirmed" ? "default" :
-                        row.status === "Selected" ? "secondary" :
+                    status === "CONFIRMED" ? "default" :
+                        status === "SELECTED" ? "secondary" :
                             "outline";
                 return <Badge variant={variant}>{row.status}</Badge>;
             }
@@ -120,49 +123,52 @@ export default function APPaymentBatches() {
         {
             id: "actions",
             header: "Actions",
-            cell: (row) => (
-                <div className="flex gap-2">
-                    {row.status === "Draft" && (
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                selectInvoicesMutation.mutate(row.id);
-                            }}
-                        >
-                            <Play className="h-4 w-4 mr-1" />
-                            Select Invoices
-                        </Button>
-                    )}
-                    {row.status === "Selected" && (
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                confirmMutation.mutate(row.id);
-                            }}
-                        >
-                            <CheckCircle className="h-4 w-4 mr-1" />
-                            Confirm
-                        </Button>
-                    )}
-                    {row.status === "Confirmed" && (
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                downloadISO20022(row.id);
-                            }}
-                        >
-                            <Download className="h-4 w-4 mr-1" />
-                            ISO20022
-                        </Button>
-                    )}
-                </div>
-            )
+            cell: (row) => {
+                const status = row.status?.toUpperCase();
+                return (
+                    <div className="flex gap-2">
+                        {(status === "DRAFT" || status === "NEW") && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    selectInvoicesMutation.mutate(row.id);
+                                }}
+                            >
+                                <Play className="h-4 w-4 mr-1" />
+                                Select Invoices
+                            </Button>
+                        )}
+                        {status === "SELECTED" && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    confirmMutation.mutate(row.id);
+                                }}
+                            >
+                                <CheckCircle className="h-4 w-4 mr-1" />
+                                Confirm
+                            </Button>
+                        )}
+                        {status === "CONFIRMED" && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    downloadISO20022(row.id);
+                                }}
+                            >
+                                <Download className="h-4 w-4 mr-1" />
+                                ISO20022
+                            </Button>
+                        )}
+                    </div>
+                );
+            }
         }
     ];
 
@@ -190,7 +196,10 @@ export default function APPaymentBatches() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">
-                                {batches?.filter((b: any) => b.status === "Draft").length || 0}
+                                {batches?.filter((b: any) => {
+                                    const s = b.status?.toUpperCase();
+                                    return s === "DRAFT" || s === "NEW";
+                                }).length || 0}
                             </div>
                         </CardContent>
                     </Card>
@@ -200,7 +209,7 @@ export default function APPaymentBatches() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">
-                                {batches?.filter((b: any) => b.status === "Selected").length || 0}
+                                {batches?.filter((b: any) => b.status?.toUpperCase() === "SELECTED").length || 0}
                             </div>
                         </CardContent>
                     </Card>
@@ -210,7 +219,7 @@ export default function APPaymentBatches() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold text-green-600">
-                                {batches?.filter((b: any) => b.status === "Confirmed").length || 0}
+                                {batches?.filter((b: any) => b.status?.toUpperCase() === "CONFIRMED").length || 0}
                             </div>
                         </CardContent>
                     </Card>

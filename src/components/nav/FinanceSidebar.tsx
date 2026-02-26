@@ -36,6 +36,7 @@ export const financeMenu = [
             { title: "Prepayments", url: "/finance/ap/prepayments", icon: DollarSign },
             { title: "AI Invoice Capture", url: "/finance/ap/ai-capture", icon: TrendingUp },
             { title: "Reports", url: "/finance/ap/reports", icon: BarChart3 },
+            { title: "Withholding Tax", url: "/finance/ap/withholding-tax", icon: Settings },
             { title: "Configuration", url: "/finance/ap/config", icon: Settings },
         ],
     },
@@ -63,6 +64,7 @@ export const financeMenu = [
         items: [
             { title: "Asset Workbench", url: "/finance/fixed-assets", icon: Briefcase },
             { title: "Fixed Assets", url: "/finance/fixed-assets/inquiry", icon: FileText },
+            { title: "Treasury Bank Accounts", url: "/finance/treasury/bank-accounts", icon: Briefcase },
             { title: "Cash Dashboard", url: "/finance/cash", icon: BarChart3 },
             { title: "Bank Reconciliation", url: "/finance/cash/reconciliation", icon: CheckSquare },
             { title: "Cash Forecasting", url: "/finance/cash/forecasting", icon: TrendingUp },

@@ -7,8 +7,11 @@ import { eq } from "drizzle-orm";
 import { db } from "../../db";
 import { ConsolidationService } from "./consolidation.service";
 import { allocationsService } from "../intercompany/allocations.service";
+import { bankingRoutes } from "./banking.routes";
 
 export function registerFinanceRoutes(app: Express) {
+    app.use("/api/cash", bankingRoutes);
+
     // Invoices
     app.get("/api/invoices", async (req, res) => {
         try {

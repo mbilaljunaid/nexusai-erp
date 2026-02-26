@@ -51,10 +51,11 @@ export default function TreasuryBankAccounts() {
 
     const createMutation = useMutation({
         mutationFn: async (data: typeof newAccount) => {
+            const payload = { ...data, name: data.bankName };
             const res = await fetch("/api/cash/accounts", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
+                body: JSON.stringify(payload)
             });
             if (!res.ok) throw new Error("Failed to create bank account");
             return res.json();

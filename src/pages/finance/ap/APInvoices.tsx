@@ -73,9 +73,14 @@ export default function APInvoices() {
   });
 
   const uploadAttachmentMutation = useMutation({
-    mutationFn: ({ invoiceId, file }: { invoiceId: string, file: File }) =>
-      api.ap.invoices.uploadAttachment(invoiceId, file),
-    onSuccess: (res) => {
+    mutationFn: async ({ invoiceId, file }: { invoiceId: string, file: File }) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch(`/api/ap/invoices/${invoiceId}/attachment`, { method: "POST", body: formData });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    onSuccess: (res: { documentUrl: string }) => {
       queryClient.invalidateQueries({ queryKey: ["/api/ap/invoices"] });
       setSelectedInvoice((prev: any) => ({ ...prev, documentUrl: res.documentUrl }));
       setUploadFile(null);
@@ -157,7 +162,7 @@ export default function APInvoices() {
           >
             <FileText className="h-4 w-4" />
           </Button>
-          {row.validationStatus === "Pending" && (
+          {row.validationStatus !== "VALIDATED" && (
             <Button
               variant="ghost"
               size="sm"
@@ -295,17 +300,17 @@ export default function APInvoices() {
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
                           <Lock className="h-4 w-4 text-orange-500" />
-                          <span className="font-semibold">{hold.holdType}</span>
-                          <Badge variant={hold.status === "Active" ? "destructive" : "secondary"}>
-                            {hold.status}
+                          <span className="font-semibold">{hold.hold_lookup_code}</span>
+                          <Badge variant={!hold.release_lookup_code ? "destructive" : "secondary"}>
+                            {!hold.release_lookup_code ? "Active" : "Released"}
                           </Badge>
                         </div>
-                        <p className="text-sm text-muted-foreground">{hold.holdReason}</p>
+                        <p className="text-sm text-muted-foreground">{hold.hold_reason}</p>
                         <p className="text-xs text-muted-foreground">
-                          Created: {new Date(hold.createdAt).toLocaleString()}
+                          Created: {new Date(hold.hold_date).toLocaleString()}
                         </p>
                       </div>
-                      {hold.status === "Active" && (
+                      {!hold.release_lookup_code && (
                         <Button
                           size="sm"
                           variant="outline"
