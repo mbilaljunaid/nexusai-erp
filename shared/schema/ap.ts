@@ -325,6 +325,7 @@ export const apInvoicePayments = pgTable("ap_invoice_payments", {
     paymentId: varchar("payment_id").notNull(),
     invoiceId: varchar("invoice_id").notNull(),
     amount: numeric("amount", { precision: 18, scale: 2 }).notNull(), // Amount of THIS invoice paid by THIS payment
+    discountTaken: numeric("discount_taken", { precision: 18, scale: 2 }).default("0"), // Early payment discount amount
     accountingDate: timestamp("accounting_date"),
     createdAt: timestamp("created_at").defaultNow()
 });
@@ -413,3 +414,20 @@ export const apPrepayApplications = pgTable("ap_prepay_applications", {
 
 export const insertApPrepayApplicationSchema = createInsertSchema(apPrepayApplications);
 export type ApPrepayApplication = typeof apPrepayApplications.$inferSelect;
+
+// 12. Payment Terms
+export const apPaymentTerms = pgTable("ap_payment_terms", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    termName: varchar("term_name", { length: 100 }).unique().notNull(), // e.g. "Net 30", "2% 10 Net 30"
+    description: text("description"),
+    dueDays: integer("due_days").notNull(), // e.g. 30
+    discountDays: integer("discount_days"), // e.g. 10
+    discountPercent: numeric("discount_percent", { precision: 5, scale: 2 }), // e.g. 2.00
+    enabledFlag: boolean("enabled_flag").default(true),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const insertApPaymentTermSchema = createInsertSchema(apPaymentTerms);
+export type ApPaymentTerm = typeof apPaymentTerms.$inferSelect;
+export type InsertApPaymentTerm = typeof apPaymentTerms.$inferInsert;

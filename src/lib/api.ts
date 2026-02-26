@@ -170,6 +170,14 @@ export const api = {
       validate: (id: string) => apiRequest("POST", `${API_BASE}/api/ap/invoices/${id}/validate`, {}).then(r => r.json()),
       match: (id: string, data: any) => apiRequest("POST", `${API_BASE}/api/ap/invoices/${id}/match`, data).then(r => r.json()),
       getHolds: (id: string) => fetch(`${API_BASE}/api/ap/invoices/${id}/holds`, { credentials: "include" }).then(r => r.json()),
+      uploadAttachment: (id: string, file: File) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        return fetch(`${API_BASE}/api/ap/invoices/${id}/attachment`, {
+          method: "POST",
+          body: formData,
+        }).then(r => r.json());
+      },
     },
     holds: {
       release: (id: string, releaseCode: string) => apiRequest("POST", `${API_BASE}/api/ap/holds/${id}/release`, { releaseCode }).then(r => r.json()),
@@ -186,6 +194,17 @@ export const api = {
       create: (data: any) => apiRequest("POST", `${API_BASE}/api/ap/payment-batches`, data).then(r => r.json()),
       select: (id: string | number) => apiRequest("POST", `${API_BASE}/api/ap/payment-batches/${id}/select`, {}).then(r => r.json()),
       confirm: (id: string | number) => apiRequest("POST", `${API_BASE}/api/ap/payment-batches/${id}/confirm`, {}).then(r => r.json()),
+    },
+    // Period Close
+    periods: {
+      list: async () => {
+        const res = await apiRequest("GET", `${API_BASE}/api/ap/periods`);
+        return res.json();
+      },
+      close: async (id: string) => {
+        const res = await apiRequest("POST", `${API_BASE}/api/ap/periods/${id}/close`);
+        return res.json();
+      }
     },
   },
 

@@ -1,12 +1,12 @@
 import { createContext, useContext, ReactNode, useState, useEffect, useCallback } from "react";
 
-export type EnterpriseRole = 
-  | "implementation_partner" 
-  | "business_user" 
-  | "end_user" 
-  | "business_analyst" 
-  | "tenant_admin" 
-  | "platform_admin" 
+export type EnterpriseRole =
+  | "implementation_partner"
+  | "business_user"
+  | "end_user"
+  | "business_analyst"
+  | "tenant_admin"
+  | "platform_admin"
   | "super_admin";
 
 export const ENTERPRISE_ROLES: { value: EnterpriseRole; label: string }[] = [
@@ -60,11 +60,18 @@ export function RBACProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const checkBackendAuth = async () => {
+      // If we already have a mock session, skip the backend check
+      if (localStorage.getItem("authToken") === "true" && localStorage.getItem("userId") === "user1") {
+        setIsLoading(false);
+        setIsAuthenticated(true);
+        return;
+      }
+
       try {
         const response = await fetch("/api/auth/user", {
           credentials: "include",
         });
-        
+
         const contentType = response.headers.get("content-type") || "";
         if (!contentType.includes("application/json")) {
           // Backend not available — auto-authenticate with defaults for dev/preview
@@ -138,11 +145,16 @@ export function RBACProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const handleFocus = async () => {
+      // If we already have a mock session, skip the backend check
+      if (localStorage.getItem("authToken") === "true" && localStorage.getItem("userId") === "user1") {
+        return;
+      }
+
       try {
         const response = await fetch("/api/auth/user", {
           credentials: "include",
         });
-        
+
         const contentType = response.headers.get("content-type") || "";
         if (!contentType.includes("application/json")) {
           // Backend not available — skip revalidation
@@ -163,15 +175,19 @@ export function RBACProvider({ children }: { children: ReactNode }) {
           localStorage.setItem("userId", id);
           localStorage.setItem("authTimestamp", Date.now().toString());
         } else {
-          setIsAuthenticated(false);
-          setUserId("");
-          setUserRole("viewer");
-          setEnterpriseRoleState("end_user");
-          localStorage.removeItem("authToken");
-          localStorage.removeItem("userId");
-          localStorage.removeItem("userRole");
-          localStorage.removeItem("enterpriseRole");
-          localStorage.removeItem("authTimestamp");
+          // Check if we are using a local dev/demo session before wiping
+          const isDevSession = localStorage.getItem("authToken") === "true" && localStorage.getItem("userId") === "user1";
+          if (!isDevSession) {
+            setIsAuthenticated(false);
+            setUserId("");
+            setUserRole("viewer");
+            setEnterpriseRoleState("end_user");
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("userRole");
+            localStorage.removeItem("enterpriseRole");
+            localStorage.removeItem("authTimestamp");
+          }
         }
       } catch (error) {
         // Network error — preserve existing state
@@ -198,13 +214,13 @@ export function RBACProvider({ children }: { children: ReactNode }) {
     try {
       const response = await fetch("/api/auth/user", { credentials: "include" });
       const contentType = response.headers.get("content-type") || "";
-      
+
       if (response.ok && contentType.includes("application/json")) {
         const userData = await response.json();
         const backendId = userData.id || userData.email || id;
         const backendRole = userData.role as "admin" | "editor" | "viewer" | undefined;
         const finalRole = (backendRole && ["admin", "editor", "viewer"].includes(backendRole)) ? backendRole : role;
-        
+
         setUserId(backendId);
         setUserRole(finalRole);
         if (entRole) setEnterpriseRoleState(entRole);

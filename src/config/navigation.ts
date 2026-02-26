@@ -106,12 +106,12 @@ export const navigationConfig: SidebarNode[] = [
                 children: [
                     { id: "finance-overview", title: "Overview", type: "link", path: "/finance" },
                     // General Ledger
-                    { id: "gl-journals", title: "GL • Journals", type: "link", path: "/gl/journals" },
-                    { id: "gl-trial-balance", title: "GL • Trial Balance", type: "link", path: "/gl/trial-balance" },
-                    { id: "gl-period-close", title: "GL • Period Close", type: "link", path: "/gl/period-close" },
-                    { id: "gl-budgets", title: "GL • Budgets", type: "link", path: "/gl/budgets" },
-                    { id: "gl-consolidation", title: "GL • Consolidation", type: "link", path: "/gl/consolidation" },
-                    { id: "gl-close-center", title: "GL • Close Center", type: "link", path: "/gl/close-center" },
+                    { id: "gl-journals", title: "GL • Journals", type: "link", path: "/finance/gl/journals" },
+                    { id: "gl-trial-balance", title: "GL • Trial Balance", type: "link", path: "/finance/gl/trial-balance" },
+                    { id: "gl-period-close", title: "GL • Period Close", type: "link", path: "/finance/gl/period-close" },
+                    { id: "gl-budgets", title: "GL • Budgets", type: "link", path: "/finance/gl/budgets" },
+                    { id: "gl-consolidation", title: "GL • Consolidation", type: "link", path: "/finance/gl/consolidation" },
+                    { id: "gl-close-center", title: "GL • Close Center", type: "link", path: "/finance/gl/close-center" },
                     // Core Finance
                     { id: "finance-ap", title: "Accounts Payable", type: "link", path: "/finance/ap" },
                     { id: "finance-ar", title: "Accounts Receivable", type: "link", path: "/finance/accounts-receivable" },
@@ -125,10 +125,10 @@ export const navigationConfig: SidebarNode[] = [
                     { id: "billing-usage", title: "Billing • Usage Metering", type: "link", path: "/finance/billing/usage-metering" },
                     { id: "billing-credit-memos", title: "Billing • Credit Memos", type: "link", path: "/finance/billing/credit-memos" },
                     // Revenue Management
-                    { id: "rev-contracts", title: "Revenue • Contracts", type: "link", path: "/revenue/contracts" },
-                    { id: "rev-ssp", title: "Revenue • SSP Manager", type: "link", path: "/revenue/ssp" },
-                    { id: "rev-waterfall", title: "Revenue • Waterfall", type: "link", path: "/revenue/waterfall" },
-                    { id: "rev-deferred", title: "Revenue • Deferred", type: "link", path: "/revenue/deferred" },
+                    { id: "rev-contracts", title: "Revenue • Contracts", type: "link", path: "/finance/revenue/contracts" },
+                    { id: "rev-ssp", title: "Revenue • SSP Manager", type: "link", path: "/finance/revenue/ssp" },
+                    { id: "rev-waterfall", title: "Revenue • Waterfall", type: "link", path: "/finance/revenue/waterfall" },
+                    { id: "rev-deferred", title: "Revenue • Deferred", type: "link", path: "/finance/revenue/deferred" },
                 ],
             },
             { id: "epm", title: "EPM", type: "link", icon: TrendingUp, path: "/epm", allowedRoles: ["admin", "editor"] },

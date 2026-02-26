@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
     FileText, Upload, CreditCard, Users, AlertCircle,
-    CheckCircle, Clock, DollarSign, TrendingUp, Settings
+    CheckCircle, Clock, DollarSign, TrendingUp, Settings, Calendar
 } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -103,6 +103,13 @@ export default function APDashboard() {
             icon: TrendingUp,
             href: "/finance/ap/reports",
             color: "text-indigo-600"
+        },
+        {
+            title: "Period Close",
+            description: "Manage AP periods and readiness checks",
+            icon: Calendar,
+            href: "/finance/ap/period-close",
+            color: "text-teal-600"
         },
         {
             title: "Configuration",

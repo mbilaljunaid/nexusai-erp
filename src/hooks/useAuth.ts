@@ -6,6 +6,7 @@ interface AuthUser {
   firstName?: string;
   lastName?: string;
   profileImageUrl?: string;
+  role?: string;
 }
 
 interface AuthState {
@@ -30,7 +31,7 @@ export function useAuth() {
 
 export function useRequireAuth() {
   const auth = useAuth();
-  
+
   const login = () => {
     window.location.href = '/api/login';
   };

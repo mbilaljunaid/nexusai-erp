@@ -4,6 +4,7 @@ import { useEffect } from "react";
 // import { lazy } from "react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import JournalWizard from "@/pages/gl/JournalWizard";
+import { AlertCircle } from "lucide-react";
 
 // Static Imports for Finance & GL
 import TreasuryCommandCenter from "@/pages/TreasuryCommandCenter";
@@ -18,6 +19,8 @@ import APReports from "@/pages/finance/ap/APReports";
 import APPrepayments from "@/pages/finance/ap/APPrepayments";
 import APPaymentBatches from "@/pages/finance/ap/APPaymentBatches";
 import APSystemConfig from "@/pages/finance/ap/APSystemConfig";
+import PaymentTermsMaster from "@/pages/finance/ap/PaymentTermsMaster";
+import APPeriodClose from "@/pages/finance/ap/APPeriodClose";
 
 // Cash Management
 import CashManagementDashboard from "@/pages/finance/cash/CashManagementDashboard";
@@ -164,18 +167,20 @@ export default function FinanceRoutes() {
                 <Route path="/finance/cash/bank-reconciliation" component={BankReconciliationWorkbench} />
                 <Route path="/finance/cash/position" component={CashPositionDashboard} />
                 <Route path="/finance/treasury" component={TreasuryCommandCenter} />
-                <Route path="/cash/accounts/:id/reconcile" component={ReconciliationPage} />
+                <Route path="/finance/cash/accounts/:id/reconcile" component={ReconciliationPage} />
                 <Route path="/finance/fixed-assets" component={FixedAssetWorkbench} />
                 <Route path="/finance/fixed-assets/workbench" component={FixedAssetWorkbench} />
                 <Route path="/finance/fixed-assets/inquiry" component={FixedAssets} />
-                <Route path="/finance/ap" component={APDashboard} />
                 <Route path="/finance/ap/suppliers" component={APSuppliers} />
                 <Route path="/finance/ap/invoices" component={APInvoices} />
                 <Route path="/finance/ap/payments" component={APPaymentBatches} />
                 <Route path="/finance/ap/ai-capture" component={APAICaptureUpload} />
                 <Route path="/finance/ap/reports" component={APReports} />
                 <Route path="/finance/ap/prepayments" component={APPrepayments} />
+                <Route path="/finance/ap/payment-terms" component={PaymentTermsMaster} />
+                <Route path="/finance/ap/period-close" component={APPeriodClose} />
                 <Route path="/finance/ap/config" component={APSystemConfig} />
+                <Route path="/finance/ap" component={APDashboard} />
                 {/* Legacy redirect for backward compatibility */}
                 <Route path="/finance/accounts-payable" component={() => {
                     const [, setLocation] = useLocation();
@@ -201,56 +206,56 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ar/period-close" component={ArPeriodClose} />
                 <Route path="/finance/ar/dunning" component={ArDunningWorkbench} />
 
-                <Route path="/gl/journals/new" component={JournalEntry} />
-                <Route path="/gl/journals/wizard" component={JournalWizard} />
-                <Route path="/gl/journals/approvals" component={JournalApprovalHub} />
-                <Route path="/gl/config/posting-rules" component={PostingRulesManager} />
-                <Route path="/gl/config/validations" component={ValidationControls} />
-                <Route path="/gl/journals" component={JournalEntries} />
-                <Route path="/gl/reports/builder" component={FSGBuilder} />
-                <Route path="/gl/reports" component={FinancialReports} />
-                <Route path="/gl/reports/account-analysis" component={AccountAnalysisReport} />
-                <Route path="/gl/audit" component={AuditLogsPage} />
-                <Route path="/gl/period-close" component={CloseDashboard} />
-                <Route path="/gl/budgets" component={BudgetManager} />
-                <Route path="/gl/cvr" component={CVRManager} />
-                <Route path="/gl/data-access" component={DataAccessManager} />
-                <Route path="/gl/trial-balance" component={TrialBalance} />
-                <Route path="/gl/config/ledgers" component={LedgerSetup} />
-                <Route path="/gl/config/ledger-sets" component={LedgerSetSetup} />
-                <Route path="/gl/config/legal-entities" component={LegalEntitySetup} />
-                <Route path="/gl/value-sets" component={ValueSetManager} />
-                <Route path="/gl/coa-structures" component={CoaStructureSetup} />
-                <Route path="/gl/hierarchies" component={HierarchyManager} />
-                <Route path="/gl/config" component={ConfigurationHub} />
-                <Route path="/gl/config/calendars" component={CalendarSetup} />
-                <Route path="/gl/config/sla" component={AccountingHubWorkbench} />
-                <Route path="/gl/config/sla/adr" component={AdrBuilder} />
+                <Route path="/finance/gl/journals/new" component={JournalEntry} />
+                <Route path="/finance/gl/journals/wizard" component={JournalWizard} />
+                <Route path="/finance/gl/journals/approvals" component={JournalApprovalHub} />
+                <Route path="/finance/gl/config/posting-rules" component={PostingRulesManager} />
+                <Route path="/finance/gl/config/validations" component={ValidationControls} />
+                <Route path="/finance/gl/journals" component={JournalEntries} />
+                <Route path="/finance/gl/reports/builder" component={FSGBuilder} />
+                <Route path="/finance/gl/reports" component={FinancialReports} />
+                <Route path="/finance/gl/reports/account-analysis" component={AccountAnalysisReport} />
+                <Route path="/finance/gl/audit" component={AuditLogsPage} />
+                <Route path="/finance/gl/period-close" component={CloseDashboard} />
+                <Route path="/finance/gl/budgets" component={BudgetManager} />
+                <Route path="/finance/gl/cvr" component={CVRManager} />
+                <Route path="/finance/gl/data-access" component={DataAccessManager} />
+                <Route path="/finance/gl/trial-balance" component={TrialBalance} />
+                <Route path="/finance/gl/config/ledgers" component={LedgerSetup} />
+                <Route path="/finance/gl/config/ledger-sets" component={LedgerSetSetup} />
+                <Route path="/finance/gl/config/legal-entities" component={LegalEntitySetup} />
+                <Route path="/finance/gl/value-sets" component={ValueSetManager} />
+                <Route path="/finance/gl/coa-structures" component={CoaStructureSetup} />
+                <Route path="/finance/gl/hierarchies" component={HierarchyManager} />
+                <Route path="/finance/gl/config" component={ConfigurationHub} />
+                <Route path="/finance/gl/config/calendars" component={CalendarSetup} />
+                <Route path="/finance/gl/config/sla" component={AccountingHubWorkbench} />
+                <Route path="/finance/gl/config/sla/adr" component={AdrBuilder} />
                 <Route path="/finance/sla/dashboard" component={SlaDashboard} />
                 <Route path="/finance/sla/manual-entry" component={ManualJournalEntry} />
                 <Route path="/finance/sla/reconciliation" component={SlaReconciliation} />
-                <Route path="/gl/config/translation" component={TranslationRules} />
-                <Route path="/gl/config/sources" component={SourceCategorySetup} />
-                <Route path="/gl/config/controls" component={LedgerControlSetup} />
-                <Route path="/gl/intercompany" component={IntercompanyRules} />
-                <Route path="/gl/revaluation" component={Revaluation} />
-                <Route path="/gl/close-center" component={FinancialCloseCenter} />
-                <Route path="/gl/consolidation" component={ConsolidationWorkbench} />
-                <Route path="/gl/consolidation/ledger-sets" component={LedgerSetManager} />
-                <Route path="/gl/consolidation/variance" component={VarianceAnalysis} />
+                <Route path="/finance/gl/config/translation" component={TranslationRules} />
+                <Route path="/finance/gl/config/sources" component={SourceCategorySetup} />
+                <Route path="/finance/gl/config/controls" component={LedgerControlSetup} />
+                <Route path="/finance/gl/intercompany" component={IntercompanyRules} />
+                <Route path="/finance/gl/revaluation" component={Revaluation} />
+                <Route path="/finance/gl/close-center" component={FinancialCloseCenter} />
+                <Route path="/finance/gl/consolidation" component={ConsolidationWorkbench} />
+                <Route path="/finance/gl/consolidation/ledger-sets" component={LedgerSetManager} />
+                <Route path="/finance/gl/consolidation/variance" component={VarianceAnalysis} />
 
                 {/* EPM Module Routes */}
-                <Route path="/epm/budget-controls" component={BudgetControlRules} />
-                <Route path="/epm/budget-balances/:periodId" component={BudgetBalanceDrillDown} />
-                <Route path="/epm/variance-analysis" component={VarianceAnalysisWorkbench} />
-                <Route path="/epm/budget-reconciliation" component={BudgetReconciliation} />
-                <Route path="/epm/scenarios" component={ScenarioComparison} />
-                <Route path="/epm/workflow" component={BudgetWorkflow} />
-                <Route path="/epm/allocations" component={BudgetAllocationWorkbench} />
-                <Route path="/gl/consolidation/rules" component={EliminationRuleBuilder} />
-                <Route path="/gl/consolidation/results/:runId">{(params: { runId: string }) => <ConsolidationResultsViewer />}</Route>
-                <Route path="/gl/consolidation/journals" component={EliminationJournalReview} />
-                <Route path="/gl/consolidation/elimination-rules" component={EliminationRules} />
+                <Route path="/finance/epm/budget-controls" component={BudgetControlRules} />
+                <Route path="/finance/epm/budget-balances/:periodId" component={BudgetBalanceDrillDown} />
+                <Route path="/finance/epm/variance-analysis" component={VarianceAnalysisWorkbench} />
+                <Route path="/finance/epm/budget-reconciliation" component={BudgetReconciliation} />
+                <Route path="/finance/epm/scenarios" component={ScenarioComparison} />
+                <Route path="/finance/epm/workflow" component={BudgetWorkflow} />
+                <Route path="/finance/epm/allocations" component={BudgetAllocationWorkbench} />
+                <Route path="/finance/gl/consolidation/rules" component={EliminationRuleBuilder} />
+                <Route path="/finance/gl/consolidation/results/:runId">{(params: { runId: string }) => <ConsolidationResultsViewer />}</Route>
+                <Route path="/finance/gl/consolidation/journals" component={EliminationJournalReview} />
+                <Route path="/finance/gl/consolidation/elimination-rules" component={EliminationRules} />
 
                 {/* Intercompany Module */}
                 <Route path="/finance/intercompany/workbench" component={IntercompanyWorkbench} />
@@ -262,26 +267,26 @@ export default function FinanceRoutes() {
                 <Route path="/finance/tax" component={TaxManagement} />
                 <Route path="/finance/expense-management" component={ExpenseManagement} />
 
-                <Route path="/ap/settings">
+                <Route path="/finance/ap/settings">
                     <ProtectedRoute>
                         <ApSettings />
                     </ProtectedRoute>
                 </Route>
 
                 {/* Revenue Management */}
-                <Route path="/revenue/contracts" component={RevenueContractWorkbench} />
-                <Route path="/revenue/contracts/:id" component={RevenueContractDetail} />
-                <Route path="/revenue/periods" component={RevenuePeriodClose} />
-                <Route path="/revenue/ssp" component={RevenueSSPManager} />
-                <Route path="/revenue/rules" component={RevenueRuleManager} />
-                <Route path="/revenue/waterfall" component={RevenueWaterfall} />
-                <Route path="/revenue/deferred" component={DeferredRevenueMatrix} />
-                <Route path="/revenue/events" component={RevenueSourceEvents} />
-                <Route path="/revenue/audit" component={RevenueAuditConsole} />
-                <Route path="/revenue/setup" component={RevenueAccountingSetup} />
-                <Route path="/revenue/intelligence" component={RevenueIntelligence} />
-                <Route path="/revenue/forecasting" component={RevenueForecasting} />
-                <Route path="/revenue/optimization" component={RevenueOptimization} />
+                <Route path="/finance/revenue/contracts" component={RevenueContractWorkbench} />
+                <Route path="/finance/revenue/contracts/:id" component={RevenueContractDetail} />
+                <Route path="/finance/revenue/periods" component={RevenuePeriodClose} />
+                <Route path="/finance/revenue/ssp" component={RevenueSSPManager} />
+                <Route path="/finance/revenue/rules" component={RevenueRuleManager} />
+                <Route path="/finance/revenue/waterfall" component={RevenueWaterfall} />
+                <Route path="/finance/revenue/deferred" component={DeferredRevenueMatrix} />
+                <Route path="/finance/revenue/events" component={RevenueSourceEvents} />
+                <Route path="/finance/revenue/audit" component={RevenueAuditConsole} />
+                <Route path="/finance/revenue/setup" component={RevenueAccountingSetup} />
+                <Route path="/finance/revenue/intelligence" component={RevenueIntelligence} />
+                <Route path="/finance/revenue/forecasting" component={RevenueForecasting} />
+                <Route path="/finance/revenue/optimization" component={RevenueOptimization} />
 
                 {/* Lease & Contracts */}
                 <Route path="/finance/leases" component={LeasePortfolioWorkbench} />
@@ -292,24 +297,36 @@ export default function FinanceRoutes() {
                 <Route path="/finance/leases/:id" component={LeaseDetailPage} />
                 <Route path="/finance/leases/:id/schedules">{(params: { id: string }) => <LeaseSchedulesView leaseId={params.id} />}</Route>
                 <Route path="/finance/leases/:id/modify">{(params: { id: string }) => <LeaseModificationWizard leaseId={params.id} />}</Route>
+
                 <Route path="/finance/contracts" component={ContractList} />
                 <Route path="/finance/contracts/:id" component={ContractDetailView} />
+
+                {/* Fallback for Finance Routes */}
+                <Route>
+                    {(_params) => {
+                        const [loc] = useLocation();
+                        console.warn(`FINANCE ROUTE NOT FOUND. Global: ${window.location.pathname} | Wouter Nested: ${loc}`);
+                        return (
+                            <div className="flex flex-col items-center justify-center p-12 text-center h-full">
+                                <div className="p-4 bg-red-50 text-red-600 rounded-full mb-4">
+                                    <AlertCircle className="w-8 h-8" />
+                                </div>
+                                <h2 className="text-xl font-semibold text-gray-900 mb-2">404 - Page Not Found (Finance)</h2>
+                                <p className="text-gray-500 max-w-md">
+                                    The requested page could not be found within the Finance module.
+                                    <br /><br />
+                                    <strong>Debug Info:</strong>
+                                    <br />Global Path: {window.location.pathname}
+                                    <br />Wouter Nested Path: {loc}
+                                </p>
+                            </div>
+                        );
+                    }}
+                </Route>
 
                 {/* Module Overview & Catch-all */}
                 <Route path="/finance-module" component={Finance} />
                 <Route path="/finance/:page?" component={Finance} />
-
-                {/* Fallback for Finance Routes */}
-                <Route>
-                    <div className="p-8 text-center">
-                        <h2 className="text-xl font-bold text-red-600">404 - Page Not Found (Finance)</h2>
-                        <p className="mt-2 text-gray-600">The requested page could not be found within the Finance module.</p>
-                        <div className="mt-4 p-4 bg-gray-100 rounded text-left inline-block">
-                            <p><strong>Current Path:</strong> {window.location.pathname}</p>
-                            <p><strong>Router Base:</strong> FinanceRoutes</p>
-                        </div>
-                    </div>
-                </Route>
             </Switch>
         </ModuleLayout>
     );

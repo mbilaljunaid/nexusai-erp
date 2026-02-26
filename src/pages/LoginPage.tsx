@@ -85,7 +85,7 @@ export default function LoginPage() {
       <div
         className="absolute inset-0 -z-10"
         style={{
-          background: `radial-gradient(circle at 50% 50%, ${colors.primary[900]} 0%, ${colors.background} 100%)`,
+          background: `radial-gradient(circle at 50% 50%, ${colors.brand.purple}20 0%, transparent 100%)`,
           opacity: 0.5
         }}
       />

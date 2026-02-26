@@ -69,3 +69,44 @@ export const uploadDisputeFiles = (req: any, res: any, next: any) => {
         next();
     });
 };
+
+// --- AP Invoice Attachments ---
+const apInvoiceStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadDir = path.join(process.cwd(), 'uploads', 'ap_invoices');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname);
+        cb(null, `invoice-${uniqueSuffix}${ext}`);
+    }
+});
+
+export const apInvoiceUpload = multer({
+    storage: apInvoiceStorage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 10 * 1024 * 1024, // 10MB per file
+        files: 1, // Maximum 1 primary document for MVP
+    }
+});
+
+export const uploadInvoiceAttachment = (req: any, res: any, next: any) => {
+    const upload = apInvoiceUpload.single('file');
+
+    upload(req, res, (err: any) => {
+        if (err instanceof multer.MulterError) {
+            if (err.code === 'LIMIT_FILE_SIZE') {
+                return res.status(400).json({ message: 'File size exceeds 10MB limit' });
+            }
+            return res.status(400).json({ message: `Upload error: ${err.message}` });
+        } else if (err) {
+            return res.status(400).json({ message: err.message });
+        }
+        next();
+    });
+};

@@ -165,8 +165,8 @@ function Router() {
 
         {/* Core Modules */}
         <Route path="/crm*" component={CrmRoutes} />
-        <Route path="/finance*" component={FinanceRoutes} />
-        <Route path="/revenue*" component={FinanceRoutes} />
+        <Route path="/finance/*" component={FinanceRoutes} />
+
         <Route path="/scm*" component={ScmRoutes} />
         <Route path="/mdm*" component={MdmRoutes} />
 
@@ -224,8 +224,6 @@ function Router() {
         <Route path="/portal*" component={PortalRoutes} />
 
         {/* Legacy/Aliases */}
-        <Route path="/gl/:rest*" component={FinanceRoutes} />
-        <Route path="/ap*" component={FinanceRoutes} />
         <Route path="/inventory*" component={ScmRoutes} />
         <Route path="/warehouse" component={ScmRoutes} />
         <Route path="/suppliers" component={ScmRoutes} />

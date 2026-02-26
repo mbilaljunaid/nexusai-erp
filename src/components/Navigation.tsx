@@ -76,22 +76,22 @@ export function Header() {
                     {/* Finance & Ops */}
                     <div>
                       <p className="px-2 py-1 text-[10px] text-slate-500 uppercase tracking-wider mb-1">Finance & Operations</p>
-                      <Link to="/modules/general-ledger" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                      <Link to="/gl/journals" className="block rounded hover:bg-slate-700 p-2 transition-colors">
                         <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
                           <BookOpen className="w-3.5 h-3.5 text-blue-400" /> General Ledger
                         </div>
                       </Link>
-                      <Link to="/modules/accounts-payable" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                      <Link to="/finance/ap/suppliers" className="block rounded hover:bg-slate-700 p-2 transition-colors">
                         <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
                           <CreditCard className="w-3.5 h-3.5 text-emerald-400" /> Accounts Payable
                         </div>
                       </Link>
-                      <Link to="/modules/accounts-receivable" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                      <Link to="/finance/ar/invoices" className="block rounded hover:bg-slate-700 p-2 transition-colors">
                         <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
                           <PieChart className="w-3.5 h-3.5 text-purple-400" /> Accounts Receivable
                         </div>
                       </Link>
-                      <Link to="/modules/billing" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                      <Link to="/finance/billing" className="block rounded hover:bg-slate-700 p-2 transition-colors">
                         <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
                           <Receipt className="w-3.5 h-3.5 text-green-400" /> Billing & Revenue
                         </div>

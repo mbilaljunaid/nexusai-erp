@@ -51,6 +51,7 @@ import {
   apInvoices as apInvoicesTable,
   apPayments as apPaymentsTable,
   apApprovals as apApprovalsTable,
+  apPaymentTerms as apPaymentTermsTable,
   type GlSegmentValue,
   type InsertGlSegmentValue,
   type GlCodeCombination,
@@ -974,6 +975,22 @@ export const dbStorage = {
   },
 
   // ========== ACCOUNTS PAYABLE ==========
+  async listApPaymentTerms(): Promise<ApPaymentTerm[]> {
+    return await db.select().from(apPaymentTermsTable).orderBy(apPaymentTermsTable.termName);
+  },
+  async getApPaymentTerm(id: string): Promise<ApPaymentTerm | undefined> {
+    const result = await db.select().from(apPaymentTermsTable).where(eq(apPaymentTermsTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createApPaymentTerm(data: InsertApPaymentTerm): Promise<ApPaymentTerm> {
+    const result = await db.insert(apPaymentTermsTable).values(data).returning();
+    return result[0];
+  },
+  async updateApPaymentTerm(id: string, data: Partial<InsertApPaymentTerm>): Promise<ApPaymentTerm | undefined> {
+    const result = await db.update(apPaymentTermsTable).set(data).where(eq(apPaymentTermsTable.id, id)).returning();
+    return result[0];
+  },
+
   async listApSuppliers(): Promise<ApSupplier[]> {
     return await db.select().from(apSuppliersTable);
   },

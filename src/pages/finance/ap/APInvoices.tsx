@@ -5,13 +5,17 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { Badge } from "@/components/ui/badge";
-import { Plus, FileText, CheckCircle, Lock, Unlock, AlertCircle } from "lucide-react";
+import { Plus, FileText, CheckCircle, Lock, Unlock, AlertCircle, Paperclip, Upload, Eye } from "lucide-react";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function APInvoices() {
+  const { user } = useAuth();
   const [, setLocation] = useLocation();
   const [page, setPage] = useState(1);
   const pageSize = 20;
@@ -22,8 +26,10 @@ export default function APInvoices() {
 
   const [accountingModalOpen, setAccountingModalOpen] = useState(false);
   const [holdsDialogOpen, setHoldsDialogOpen] = useState(false);
+  const [attachmentDialogOpen, setAttachmentDialogOpen] = useState(false);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
   const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
 
   const { data, isLoading } = useQuery<{ data: any[], total: number }>({
     queryKey: ["/api/ap/invoices", page, pageSize, statusFilter, validationFilter],
@@ -49,6 +55,48 @@ export default function APInvoices() {
       toast({ title: "Validation failed", variant: "destructive" });
     }
   });
+
+  const approveMutation = useMutation({
+    mutationFn: (invoiceId: string) =>
+      fetch(`/api/ap/invoices/bulk-approve`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ invoiceIds: [invoiceId] })
+      }).then(r => r.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/ap/invoices"] });
+      toast({ title: "Invoice approved successfully" });
+    },
+    onError: () => {
+      toast({ title: "Approval failed", variant: "destructive" });
+    }
+  });
+
+  const uploadAttachmentMutation = useMutation({
+    mutationFn: ({ invoiceId, file }: { invoiceId: string, file: File }) =>
+      api.ap.invoices.uploadAttachment(invoiceId, file),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/ap/invoices"] });
+      setSelectedInvoice((prev: any) => ({ ...prev, documentUrl: res.documentUrl }));
+      setUploadFile(null);
+      toast({ title: "Attachment uploaded successfully" });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Upload failed", description: error.message, variant: "destructive" });
+    }
+  });
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setUploadFile(e.target.files[0]);
+    }
+  };
+
+  const submitUpload = () => {
+    if (selectedInvoice && uploadFile) {
+      uploadAttachmentMutation.mutate({ invoiceId: selectedInvoice.id, file: uploadFile });
+    }
+  };
 
   const releaseHoldMutation = useMutation({
     mutationFn: ({ holdId, releaseCode }: { holdId: number, releaseCode: string }) =>
@@ -122,6 +170,19 @@ export default function APInvoices() {
               <CheckCircle className="h-4 w-4 text-green-500" />
             </Button>
           )}
+          {row.approvalStatus === "REQUIRED" && (user?.role === "manager" || user?.role === "admin") && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                approveMutation.mutate(row.id);
+              }}
+              title="Approve Invoice"
+            >
+              <CheckCircle className="h-4 w-4 text-blue-500" />
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="sm"
@@ -133,6 +194,19 @@ export default function APInvoices() {
             title="View Holds"
           >
             <AlertCircle className="h-4 w-4 text-orange-500" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedInvoice(row);
+              setUploadFile(null);
+              setAttachmentDialogOpen(true);
+            }}
+            title="Manage Attachment"
+          >
+            <Paperclip className={`h-4 w-4 ${row.documentUrl ? 'text-blue-600' : 'text-gray-400'}`} />
           </Button>
         </div>
       )
@@ -257,6 +331,59 @@ export default function APInvoices() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setHoldsDialogOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Attachment Dialog */}
+      <Dialog open={attachmentDialogOpen} onOpenChange={setAttachmentDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Invoice Attachment</DialogTitle>
+            <DialogDescription>
+              Invoice: {selectedInvoice?.invoiceNumber}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            {selectedInvoice?.documentUrl ? (
+              <div className="flex flex-col items-center justify-center p-6 border rounded-md bg-slate-50">
+                <FileText className="h-12 w-12 text-blue-500 mb-2" />
+                <p className="text-sm font-medium mb-4">Document Attachment Available</p>
+                <Button variant="outline" onClick={() => window.open(selectedInvoice.documentUrl, '_blank')}>
+                  <Eye className="h-4 w-4 mr-2" /> View Document
+                </Button>
+              </div>
+            ) : (
+              <div className="text-center py-6 text-muted-foreground border-2 border-dashed rounded-md">
+                <Paperclip className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <p>No attachment uploaded yet.</p>
+              </div>
+            )}
+
+            <div className="space-y-2 mt-4">
+              <Label htmlFor="file-upload">Upload New Attachment</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="file-upload"
+                  type="file"
+                  accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+                  onChange={handleFileUpload}
+                  className="flex-1"
+                />
+                <Button
+                  onClick={submitUpload}
+                  disabled={!uploadFile || uploadAttachmentMutation.isPending}
+                >
+                  {uploadAttachmentMutation.isPending ? "Uploading..." : <><Upload className="h-4 w-4 mr-2" /> Upload</>}
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1 text-center">Supported formats: PDF, JPG, PNG, DOC/DOCX (Max 10MB)</p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAttachmentDialogOpen(false)}>
               Close
             </Button>
           </DialogFooter>

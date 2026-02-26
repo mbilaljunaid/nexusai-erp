@@ -106,11 +106,13 @@ import {
 
   // AP
   apSuppliers, apInvoices, apInvoiceLines, apInvoiceDistributions, apPayments, apApprovals,
+  apPaymentTerms,
   type ApSupplier, type InsertApSupplier,
   type ApInvoice, type InsertApInvoice, type ApInvoiceLine, type InsertApInvoiceLine,
   type ApInvoiceDistribution, type InsertApInvoiceDistribution,
   type ApPayment, type InsertApPayment,
   type ApApproval, type InsertApApproval,
+  type ApPaymentTerm, type InsertApPaymentTerm,
 
   // AR
   arCustomers, arInvoices, arReceipts,
@@ -591,6 +593,11 @@ export interface IStorage {
   getExchangeRate(currency: string, periodName: string): Promise<GlExchangeRate | undefined>;
 
   // AP Module
+  listApPaymentTerms(): Promise<ApPaymentTerm[]>;
+  getApPaymentTerm(id: string): Promise<ApPaymentTerm | undefined>;
+  createApPaymentTerm(data: InsertApPaymentTerm): Promise<ApPaymentTerm>;
+  updateApPaymentTerm(id: string, data: Partial<InsertApPaymentTerm>): Promise<ApPaymentTerm | undefined>;
+
   listApSuppliers(): Promise<ApSupplier[]>;
   getApSupplier(id: string): Promise<ApSupplier | undefined>;
   createApSupplier(supplier: InsertApSupplier): Promise<ApSupplier>;

@@ -9,7 +9,7 @@ import {
     apSystemParameters, apDistributionSets, apDistributionSetLines,
     apPaymentBatches, apInvoicePayments, glLedgers, glPeriods,
     apAuditLogs, apPeriodStatuses, apPrepayApplications,
-    apWhtGroups, apWhtRates,
+    apWhtGroups, apWhtRates, apPaymentTerms,
     type InsertApSystemParameters, type InsertApDistributionSet, type InsertApDistributionSetLine,
     type InsertApPaymentBatch
 } from "@shared/schema";
@@ -454,17 +454,53 @@ export class ApService {
 
     async applyPayment(invoiceId: string, paymentData: InsertApPayment): Promise<ApPayment | undefined> {
         return await db.transaction(async (tx) => {
+            const [invoice] = await tx.select().from(apInvoices).where(eq(apInvoices.id, parseInt(invoiceId))).limit(1);
+            if (!invoice) throw new Error("Invoice not found");
+
+            let discountAmount = 0;
+            if (invoice.paymentTerms) {
+                const [term] = await tx.select().from(apPaymentTerms).where(eq(apPaymentTerms.termName, invoice.paymentTerms)).limit(1);
+
+                // If the term has an early payment discount bracket
+                if (term && term.discountDays && term.discountPercent) {
+                    const invoiceDate = new Date(invoice.invoiceDate);
+                    const paymentDate = new Date(paymentData.paymentDate);
+
+                    // Difference in days
+                    const diffTime = paymentDate.getTime() - invoiceDate.getTime();
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    if (diffDays >= 0 && diffDays <= term.discountDays) {
+                        const invAmt = Number(invoice.invoiceAmount);
+                        const pct = Number(term.discountPercent) / 100;
+                        discountAmount = invAmt * pct;
+                        discountAmount = Math.round(discountAmount * 100) / 100; // Round to 2 decimals
+                    }
+                }
+            }
+
+            // Note: The paymentData.amount from the UI might already be the net amount the user intends to pay.
+            // If the user pays the net amount, the discount Amount + payment Amount should equal the invoice amount to clear it.
             const [payment] = await tx.insert(apPayments).values(paymentData).returning();
 
             await tx.insert(apInvoicePayments).values({
                 paymentId: payment.id,
                 invoiceId: parseInt(invoiceId),
                 amount: payment.amount,
+                discountTaken: discountAmount.toString(),
                 accountingDate: payment.paymentDate
             });
 
+            // Re-evaluate invoice status
+            const [paymentsForInvoice] = await tx.select({
+                totalPaid: sql<number>`COALESCE(SUM(CAST(${apInvoicePayments.amount} AS numeric) + CAST(${apInvoicePayments.discountTaken} AS numeric)), 0)`
+            }).from(apInvoicePayments).where(eq(apInvoicePayments.invoiceId, parseInt(invoiceId)));
+
+            const remaining = Number(invoice.invoiceAmount) - Number(paymentsForInvoice.totalPaid);
+            const newStatus = remaining <= 0.01 ? "PAID" : "PARTIAL";
+
             await tx.update(apInvoices)
-                .set({ paymentStatus: "PAID" })
+                .set({ paymentStatus: newStatus })
                 .where(eq(apInvoices.id, parseInt(invoiceId)));
 
             return payment;
@@ -876,6 +912,53 @@ export class ApService {
 
         await this.logAuditAction(userId, "CLEAR", "PAYMENT", String(paymentId), `Payment marked as CLEARED`);
         return { success: true };
+    }
+
+    // --- Approvals ---
+    async approveInvoice(invoiceId: string | number, userId: string) {
+        const id = typeof invoiceId === 'string' ? parseInt(invoiceId) : invoiceId;
+        const [invoice] = await db.update(apInvoices)
+            .set({
+                approvalStatus: "APPROVED",
+                invoiceStatus: "APPROVED",
+                updatedAt: new Date()
+            })
+            .where(eq(apInvoices.id, id))
+            .returning();
+
+        if (!invoice) throw new Error("Invoice not found");
+        await this.logAuditAction(userId, "APPROVE", "INVOICE", String(id), `Invoice ${invoice.invoiceNumber} approved`);
+        return invoice;
+    }
+
+    async rejectInvoice(invoiceId: string | number, reason: string, userId: string) {
+        const id = typeof invoiceId === 'string' ? parseInt(invoiceId) : invoiceId;
+        const [invoice] = await db.update(apInvoices)
+            .set({
+                approvalStatus: "REJECTED",
+                invoiceStatus: "REJECTED",
+                updatedAt: new Date()
+            })
+            .where(eq(apInvoices.id, id))
+            .returning();
+
+        if (!invoice) throw new Error("Invoice not found");
+        await this.logAuditAction(userId, "REJECT", "INVOICE", String(id), `Invoice ${invoice.invoiceNumber} rejected. Reason: ${reason}`);
+        return invoice;
+    }
+
+    async updateInvoiceStatus(invoiceId: string | number, status: string) {
+        const id = typeof invoiceId === 'string' ? parseInt(invoiceId) : invoiceId;
+        const [invoice] = await db.update(apInvoices)
+            .set({
+                invoiceStatus: status,
+                updatedAt: new Date()
+            })
+            .where(eq(apInvoices.id, id))
+            .returning();
+
+        if (!invoice) throw new Error("Invoice not found");
+        return invoice;
     }
 }
 

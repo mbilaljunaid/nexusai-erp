@@ -11,6 +11,7 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import multer from "multer";
+import { uploadInvoiceAttachment } from "../middleware/uploadMiddleware";
 import { aiService } from "../services/ai";
 import { treasuryService } from "../services/TreasuryService";
 
@@ -43,6 +44,45 @@ apRouter.post("/system-parameters", async (req, res) => {
     try {
         const result = await apService.updateSystemParameters(req.body);
         res.json(result);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+// --- Payment Terms ---
+apRouter.get("/payment-terms", async (_req, res) => {
+    try {
+        const terms = await storage.listApPaymentTerms();
+        res.json(terms);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+apRouter.get("/payment-terms/:id", async (req, res) => {
+    try {
+        const term = await storage.getApPaymentTerm(req.params.id);
+        if (!term) return res.status(404).json({ error: "Payment term not found" });
+        res.json(term);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+apRouter.post("/payment-terms", async (req, res) => {
+    try {
+        const term = await storage.createApPaymentTerm(req.body);
+        res.status(201).json(term);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+apRouter.put("/payment-terms/:id", async (req, res) => {
+    try {
+        const term = await storage.updateApPaymentTerm(req.params.id, req.body);
+        if (!term) return res.status(404).json({ error: "Payment term not found" });
+        res.json(term);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
     }
@@ -189,6 +229,28 @@ apRouter.get("/invoices/:id/holds", async (req, res) => {
         res.json(holds);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
+    }
+});
+
+apRouter.post("/invoices/:id/attachment", uploadInvoiceAttachment, async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: "No file uploaded" });
+        }
+
+        const fileUrl = `/uploads/ap_invoices/${req.file.filename}`;
+
+        // Update invoice record with drizzle
+        const [updated] = await db.update(apInvoices)
+            .set({ documentUrl: fileUrl })
+            .where(eq(apInvoices.id, parseInt(req.params.id)))
+            .returning();
+
+        if (!updated) return res.status(404).json({ error: "Invoice not found" });
+
+        res.json({ documentUrl: fileUrl, invoice: updated });
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
     }
 });
 

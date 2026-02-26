@@ -23,7 +23,7 @@ var __decorateParam = (index4, decorator) => (target, key) => decorator(target, 
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 
 // backend/src/app.module.ts
-import { Module as Module9 } from "@nestjs/common";
+import { Module as Module11 } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 
 // backend/src/modules/auth/auth.module.ts
@@ -141,6 +141,7 @@ __export(schema_exports, {
   SOD_MATRIX: () => SOD_MATRIX,
   abacRules: () => abacRules,
   accounts: () => accounts,
+  adminLogs: () => adminLogs,
   affiliateReferrals: () => affiliateReferrals,
   affiliates: () => affiliates,
   agentActions: () => agentActions,
@@ -529,6 +530,7 @@ __export(schema_exports, {
   insertAbacRuleSchema: () => insertAbacRuleSchema,
   insertAccountSchema: () => insertAccountSchema,
   insertAccrualPolicyRuleSchema: () => insertAccrualPolicyRuleSchema,
+  insertAdminLogSchema: () => insertAdminLogSchema,
   insertAffiliateReferralSchema: () => insertAffiliateReferralSchema,
   insertAffiliateSchema: () => insertAffiliateSchema,
   insertAgentActionSchema: () => insertAgentActionSchema,
@@ -7291,7 +7293,7 @@ var glReportInstances = pgTable30("gl_report_instances", {
 var insertGlReportInstanceSchema = createInsertSchema30(glReportInstances);
 
 // shared/schema/admin.ts
-import { pgTable as pgTable31, varchar as varchar31, text as text22, timestamp as timestamp31, numeric as numeric19, jsonb as jsonb17, boolean as boolean25, integer as integer22 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable31, varchar as varchar31, text as text22, timestamp as timestamp31, numeric as numeric19, jsonb as jsonb17, boolean as boolean25, integer as integer22, index as index3 } from "drizzle-orm/pg-core";
 import { sql as sql31 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema31 } from "drizzle-zod";
 import { z as z19 } from "zod";
@@ -7365,6 +7367,41 @@ var insertFeatureFlagSchema = createInsertSchema31(featureFlags).extend({
   name: z19.string().min(1, "Name is required"),
   description: z19.string().optional(),
   enabled: z19.boolean().optional()
+});
+var adminLogs = pgTable31("admin_logs", {
+  id: varchar31("id").primaryKey().default(sql31`gen_random_uuid()`),
+  actorId: varchar31("actor_id"),
+  actorEmail: varchar31("actor_email"),
+  actorType: varchar31("actor_type").default("user"),
+  // user, system, ai
+  action: varchar31("action").notNull(),
+  resourceType: varchar31("resource_type"),
+  resourceId: varchar31("resource_id"),
+  intent: text22("intent"),
+  details: text22("details"),
+  beforeState: jsonb17("before_state"),
+  afterState: jsonb17("after_state"),
+  justification: text22("justification"),
+  tenantId: varchar31("tenant_id"),
+  ipAddress: varchar31("ip_address"),
+  userAgent: text22("user_agent"),
+  createdAt: timestamp31("created_at").default(sql31`now()`)
+}, (table) => ({
+  actorEmailIdx: index3("admin_logs_actor_email_idx").on(table.actorEmail),
+  actionIdx: index3("admin_logs_action_idx").on(table.action),
+  resourceTypeIdx: index3("admin_logs_resource_type_idx").on(table.resourceType),
+  createdAtIdx: index3("admin_logs_created_at_idx").on(table.createdAt)
+}));
+var insertAdminLogSchema = createInsertSchema31(adminLogs).extend({
+  action: z19.string().min(1, "Action is required"),
+  actorEmail: z19.string().email().optional(),
+  actorId: z19.string().optional(),
+  actorType: z19.enum(["user", "system", "ai"]).optional(),
+  resourceType: z19.string().optional(),
+  resourceId: z19.string().optional(),
+  details: z19.string().optional(),
+  justification: z19.string().optional(),
+  tenantId: z19.string().optional()
 });
 
 // shared/schema/epm.ts
@@ -14042,17 +14079,70 @@ var aiAgentLogs = pgTable98("ai_agent_logs", {
 });
 var insertAiAgentLogSchema = createInsertSchema90(aiAgentLogs);
 
+// backend/src/config/database.config.ts
+var databaseConfig = {
+  host: process.env.DB_HOST || "localhost",
+  port: parseInt(process.env.DB_PORT || "5432", 10),
+  database: process.env.DB_NAME || "nexusai_erp",
+  user: process.env.DB_USER || "postgres",
+  password: process.env.DB_PASSWORD || "postgres",
+  // Connection Pool Settings
+  min: parseInt(process.env.DB_POOL_MIN || "2", 10),
+  // Minimum connections
+  max: parseInt(process.env.DB_POOL_MAX || "10", 10),
+  // Maximum connections
+  idleTimeoutMillis: parseInt(process.env.DB_POOL_IDLE_TIMEOUT || "30000", 10),
+  // 30 seconds
+  connectionTimeoutMillis: parseInt(process.env.DB_POOL_CONNECTION_TIMEOUT || "5000", 10),
+  // 5 seconds
+  // SSL Configuration (for production)
+  ssl: process.env.NODE_ENV === "production" ? {
+    rejectUnauthorized: false
+    // Set to true in production with proper certs
+  } : false
+};
+
 // backend/src/database/drizzle.provider.ts
 var DRIZZLE_DB = "DRIZZLE_DB";
 var DATABASE = "DATABASE";
+var DATABASE_POOL = "DATABASE_POOL";
+var poolInstance = null;
+var DatabasePoolProvider = {
+  provide: DATABASE_POOL,
+  useFactory: async () => {
+    if (poolInstance) {
+      return poolInstance;
+    }
+    console.log("\u{1F527} Initializing database connection pool...");
+    poolInstance = new Pool(databaseConfig);
+    poolInstance.on("connect", (client) => {
+      console.log("\u2705 New database client connected to pool");
+    });
+    poolInstance.on("error", (err, client) => {
+      console.error("\u274C Unexpected database pool error:", err);
+    });
+    poolInstance.on("remove", (client) => {
+      console.log("\u{1F50C} Database client removed from pool");
+    });
+    try {
+      const client = await poolInstance.connect();
+      await client.query("SELECT 1");
+      client.release();
+      console.log("\u2705 Database pool connection test successful");
+    } catch (error) {
+      console.error("\u274C Database pool connection test failed:", error);
+      throw error;
+    }
+    return poolInstance;
+  }
+};
 var DrizzleProvider = {
   provide: DRIZZLE_DB,
-  useFactory: async () => {
-    const pool = new Pool({
-      connectionString: process.env.DATABASE_URL
-    });
+  useFactory: async (pool) => {
+    console.log("\u{1F527} Initializing Drizzle ORM with connection pool...");
     return drizzle(pool, { schema: schema_exports });
-  }
+  },
+  inject: [DATABASE_POOL]
 };
 var DatabaseAliasProvider = {
   provide: DATABASE,
@@ -14404,29 +14494,239 @@ ProjectService = __decorateClass([
   __decorateParam(0, Inject3(DRIZZLE_DB))
 ], ProjectService);
 
+// backend/src/modules/projects/ppm.controller.ts
+import { Controller as Controller5, Get as Get5, Post as Post5, Param as Param5 } from "@nestjs/common";
+var PpmController = class {
+  constructor(ppmService) {
+    this.ppmService = ppmService;
+  }
+  checkProjectAlerts(id) {
+    return this.ppmService.checkProjectAlerts(id);
+  }
+  collectFromAP(id) {
+    return this.ppmService.collectFromAP(id);
+  }
+  generateDistributions(id) {
+    return this.ppmService.generateDistributions(id);
+  }
+  interfaceToFA(id) {
+    return this.ppmService.interfaceToFA(id);
+  }
+};
+__decorateClass([
+  Get5(":id/alerts"),
+  __decorateParam(0, Param5("id"))
+], PpmController.prototype, "checkProjectAlerts", 1);
+__decorateClass([
+  Post5(":id/collect-from-ap"),
+  __decorateParam(0, Param5("id"))
+], PpmController.prototype, "collectFromAP", 1);
+__decorateClass([
+  Post5(":id/distribute"),
+  __decorateParam(0, Param5("id"))
+], PpmController.prototype, "generateDistributions", 1);
+__decorateClass([
+  Post5(":id/interface-to-fa"),
+  __decorateParam(0, Param5("id"))
+], PpmController.prototype, "interfaceToFA", 1);
+PpmController = __decorateClass([
+  Controller5("ppm/projects")
+], PpmController);
+
+// backend/src/modules/projects/ppm.service.ts
+import { Injectable as Injectable5, Logger as Logger3, NotFoundException as NotFoundException2, Inject as Inject4 } from "@nestjs/common";
+import { eq as eq4, and as and2 } from "drizzle-orm";
+var PpmService = class {
+  constructor(db) {
+    this.db = db;
+    __publicField(this, "logger", new Logger3(PpmService.name));
+  }
+  // ── P0.13: CHECK PROJECT ALERTS ───────────────────────────────────────────
+  async checkProjectAlerts(projectId) {
+    const project = await this.db.query.projects2.findFirst({
+      where: eq4(projects2.id, projectId)
+    });
+    if (!project) throw new NotFoundException2(`Project ${projectId} not found`);
+    const alerts = [];
+    const tasks = await this.db.query.ppmTasks.findMany({
+      where: eq4(ppmTasks.projectId, projectId)
+    }).catch(() => []);
+    const today = /* @__PURE__ */ new Date();
+    const overdueTasks = tasks.filter((t) => {
+      const due = t.plannedFinishDate ? new Date(t.plannedFinishDate) : null;
+      return due && due < today && t.status !== "Completed";
+    });
+    if (overdueTasks.length > 0) {
+      alerts.push({
+        type: "SCHEDULE_DELAY",
+        severity: overdueTasks.length >= 3 ? "High" : "Medium",
+        message: `${overdueTasks.length} task(s) are overdue`,
+        impactedTasks: overdueTasks.map((t) => ({ id: t.id, name: t.taskName, plannedFinish: t.plannedFinishDate }))
+      });
+    }
+    const linkedInvoices = await this.db.query.apInvoiceLines.findMany({
+      where: eq4(apInvoiceLines.ppmProjectId, projectId)
+    }).catch(() => []);
+    const totalActualCost = linkedInvoices.reduce((sum, l) => sum + Number(l.amount || 0), 0);
+    const budgetedAmount = Number(project.budget || 0);
+    if (budgetedAmount > 0 && totalActualCost > budgetedAmount * 0.9) {
+      const overrunPct = ((totalActualCost - budgetedAmount) / budgetedAmount * 100).toFixed(1);
+      alerts.push({
+        type: "BUDGET_OVERRUN",
+        severity: totalActualCost > budgetedAmount ? "High" : "Medium",
+        message: `Project is at ${totalActualCost > budgetedAmount ? `${overrunPct}% over` : ">90% of"} budget`,
+        budgeted: budgetedAmount,
+        actual: totalActualCost,
+        overrunPercent: overrunPct
+      });
+    }
+    this.logger.log(`Project ${projectId}: ${alerts.length} alerts found`);
+    return { projectId, projectName: project.name, alerts };
+  }
+  // ── P0.13: COLLECT FROM AP ─────────────────────────────────────────────────
+  async collectFromAP(projectId) {
+    const project = await this.db.query.projects2.findFirst({
+      where: eq4(projects2.id, projectId)
+    });
+    if (!project) throw new NotFoundException2(`Project ${projectId} not found`);
+    const invoiceLines = await this.db.query.apInvoiceLines.findMany({
+      where: eq4(apInvoiceLines.ppmProjectId, projectId)
+    }).catch(() => []);
+    const totalCollected = invoiceLines.reduce((sum, l) => sum + Number(l.amount || 0), 0);
+    this.logger.log(`Collected ${invoiceLines.length} AP lines for project ${projectId}, total=${totalCollected}`);
+    return {
+      projectId,
+      projectName: project.name,
+      invoiceLinesCollected: invoiceLines.length,
+      totalCostCollected: totalCollected,
+      lines: invoiceLines.map((l) => ({
+        invoiceLineId: l.id,
+        description: l.description,
+        amount: Number(l.amount)
+      }))
+    };
+  }
+  // ── P0.14: GENERATE DISTRIBUTIONS ─────────────────────────────────────────
+  async generateDistributions(projectId) {
+    const project = await this.db.query.projects2.findFirst({
+      where: eq4(projects2.id, projectId)
+    });
+    if (!project) throw new NotFoundException2(`Project ${projectId} not found`);
+    const invoiceLines = await this.db.query.apInvoiceLines.findMany({
+      where: eq4(apInvoiceLines.ppmProjectId, projectId)
+    }).catch(() => []);
+    const totalAmount = invoiceLines.reduce((sum, l) => sum + Number(l.amount || 0), 0);
+    if (totalAmount === 0) {
+      return { projectId, message: "No costs to distribute", journalsCreated: 0 };
+    }
+    const [journal] = await this.db.insert(glJournals).values({
+      journalNumber: `PPM-DIST-${Date.now()}`,
+      ledgerId: "PRIMARY",
+      source: "Project Costs",
+      status: "Posted",
+      description: `Cost Distribution for Project ${project.name}`,
+      currencyCode: "USD",
+      createdBy: "system-ppm"
+    }).returning();
+    await this.db.insert(glJournalLines).values([
+      {
+        journalId: journal.id,
+        accountId: "1600-Project-WIP",
+        currencyCode: "USD",
+        enteredDebit: totalAmount.toString(),
+        enteredCredit: "0",
+        debit: totalAmount.toString(),
+        credit: "0",
+        description: `Project WIP: ${project.name}`
+      },
+      {
+        journalId: journal.id,
+        accountId: "2000-AP-Liability",
+        currencyCode: "USD",
+        enteredDebit: "0",
+        enteredCredit: totalAmount.toString(),
+        debit: "0",
+        credit: totalAmount.toString(),
+        description: `AP Offset: ${project.name}`
+      }
+    ]);
+    this.logger.log(`Distribution journal created for project ${projectId}: ${totalAmount}`);
+    return {
+      projectId,
+      projectName: project.name,
+      journalsCreated: 1,
+      totalDistributed: totalAmount,
+      period: this._getCurrentPeriod()
+    };
+  }
+  // ── P0.15: INTERFACE TO FA ─────────────────────────────────────────────────
+  async interfaceToFA(projectId) {
+    const project = await this.db.query.projects2.findFirst({
+      where: eq4(projects2.id, projectId)
+    });
+    if (!project) throw new NotFoundException2(`Project ${projectId} not found`);
+    const invoiceLines = await this.db.query.apInvoiceLines.findMany({
+      where: and2(
+        eq4(apInvoiceLines.ppmProjectId, projectId),
+        eq4(apInvoiceLines.lineType, "ITEM")
+      )
+    }).catch(() => []);
+    const totalToCapitalize = invoiceLines.reduce((sum, l) => sum + Number(l.amount || 0), 0);
+    if (totalToCapitalize === 0) {
+      return { projectId, message: "No capital expenditure lines found for FA interface", assetDraftsCreated: 0 };
+    }
+    await this.db.insert(faMassAdditions).values({
+      description: `Project Capitalization: ${project.name}`,
+      bookTypeCode: "CORP",
+      cost: totalToCapitalize.toString(),
+      dateEffective: /* @__PURE__ */ new Date(),
+      postingStatus: "POST",
+      unitOfMeasure: "EA",
+      units: 1
+    });
+    this.logger.log(`FA Interface: Mass Addition created for project ${projectId}, amount=${totalToCapitalize}`);
+    return {
+      projectId,
+      projectName: project.name,
+      assetDraftsCreated: 1,
+      totalCapitalized: totalToCapitalize,
+      message: "Mass Addition created. Review and post in Fixed Assets module."
+    };
+  }
+  _getCurrentPeriod() {
+    const now = /* @__PURE__ */ new Date();
+    const month = now.toLocaleString("default", { month: "short" });
+    return `${month}-${now.getFullYear().toString().slice(2)}`;
+  }
+};
+PpmService = __decorateClass([
+  Injectable5(),
+  __decorateParam(0, Inject4(DRIZZLE_DB))
+], PpmService);
+
 // backend/src/modules/projects/projects.module.ts
 var ProjectsModule = class {
 };
 ProjectsModule = __decorateClass([
   Module2({
     imports: [],
-    controllers: [TaskController, ProjectController],
-    providers: [TaskService, ProjectService],
-    exports: [TaskService, ProjectService]
+    controllers: [TaskController, ProjectController, PpmController],
+    providers: [TaskService, ProjectService, PpmService],
+    exports: [TaskService, ProjectService, PpmService]
   })
 ], ProjectsModule);
 
 // backend/src/modules/epm/epm-foundation.service.ts
-import { Inject as Inject4, Injectable as Injectable5, Logger as Logger3, ConflictException, NotFoundException as NotFoundException2 } from "@nestjs/common";
-import { eq as eq4 } from "drizzle-orm";
+import { Inject as Inject5, Injectable as Injectable6, Logger as Logger4, ConflictException, NotFoundException as NotFoundException3 } from "@nestjs/common";
+import { eq as eq5 } from "drizzle-orm";
 var EPMFoundationService = class {
   constructor(db) {
     this.db = db;
-    __publicField(this, "logger", new Logger3(EPMFoundationService.name));
+    __publicField(this, "logger", new Logger4(EPMFoundationService.name));
   }
   async createScenario(name, code, isSystem = false) {
     const existing = await this.db.query.planScenarios.findFirst({
-      where: eq4(planScenarios.code, code)
+      where: eq5(planScenarios.code, code)
     });
     if (existing) {
       throw new ConflictException(`Scenario with code ${code} already exists`);
@@ -14442,10 +14742,10 @@ var EPMFoundationService = class {
   }
   async createVersion(name, code, scenarioCode, isFinal = false) {
     const scenario = await this.db.query.planScenarios.findFirst({
-      where: eq4(planScenarios.code, scenarioCode)
+      where: eq5(planScenarios.code, scenarioCode)
     });
     if (!scenario) {
-      throw new NotFoundException2(`Scenario ${scenarioCode} not found`);
+      throw new NotFoundException3(`Scenario ${scenarioCode} not found`);
     }
     const [version] = await this.db.insert(planVersions).values({
       name,
@@ -14464,16 +14764,16 @@ var EPMFoundationService = class {
   async getVersions(scenarioInput) {
     let scenarioId = scenarioInput;
     const scenario = await this.db.query.planScenarios.findFirst({
-      where: (scenarios, { or, eq: eq24 }) => or(
-        eq24(scenarios.id, scenarioInput),
-        eq24(scenarios.code, scenarioInput)
+      where: (scenarios, { or, eq: eq32 }) => or(
+        eq32(scenarios.id, scenarioInput),
+        eq32(scenarios.code, scenarioInput)
       )
     });
     if (!scenario) {
-      throw new NotFoundException2(`Scenario ${scenarioInput} not found`);
+      throw new NotFoundException3(`Scenario ${scenarioInput} not found`);
     }
     return this.db.query.planVersions.findMany({
-      where: eq4(planVersions.scenarioId, scenario.id)
+      where: eq5(planVersions.scenarioId, scenario.id)
     });
   }
   async ensureFoundation() {
@@ -14481,7 +14781,7 @@ var EPMFoundationService = class {
     const scenarios = ["ACTUAL", "BUDGET", "FORECAST"];
     for (const code of scenarios) {
       const exists = await this.db.query.planScenarios.findFirst({
-        where: eq4(planScenarios.code, code)
+        where: eq5(planScenarios.code, code)
       });
       if (!exists) {
         await this.createScenario(code.charAt(0) + code.slice(1).toLowerCase(), code, true);
@@ -14491,17 +14791,17 @@ var EPMFoundationService = class {
   }
 };
 EPMFoundationService = __decorateClass([
-  Injectable5(),
-  __decorateParam(0, Inject4(DRIZZLE_DB))
+  Injectable6(),
+  __decorateParam(0, Inject5(DRIZZLE_DB))
 ], EPMFoundationService);
 
 // backend/src/modules/epm/gl-integration.service.ts
-import { Inject as Inject5, Injectable as Injectable6, Logger as Logger4 } from "@nestjs/common";
-import { eq as eq5, and as and2 } from "drizzle-orm";
+import { Inject as Inject6, Injectable as Injectable7, Logger as Logger5 } from "@nestjs/common";
+import { eq as eq6, and as and3 } from "drizzle-orm";
 var EpmGLIntegrationService = class {
   constructor(db) {
     this.db = db;
-    __publicField(this, "logger", new Logger4(EpmGLIntegrationService.name));
+    __publicField(this, "logger", new Logger5(EpmGLIntegrationService.name));
   }
   /**
    * Fetches Actuals from the GL for a specific period and populates the EPM PlanUnit table.
@@ -14511,13 +14811,13 @@ var EpmGLIntegrationService = class {
   async fetchActuals(period, ledgerId) {
     this.logger.log(`Fetching Actuals from Ledger ${ledgerId} for ${period}...`);
     const scenario = await this.db.query.planScenarios.findFirst({
-      where: eq5(planScenarios.code, "ACTUAL")
+      where: eq6(planScenarios.code, "ACTUAL")
     });
     if (!scenario) throw new Error("ACTUAL scenario not found");
     let version = await this.db.query.planVersions.findFirst({
-      where: and2(
-        eq5(planVersions.scenarioId, scenario.id),
-        eq5(planVersions.code, "WORKING")
+      where: and3(
+        eq6(planVersions.scenarioId, scenario.id),
+        eq6(planVersions.code, "WORKING")
       )
     });
     if (!version) {
@@ -14530,9 +14830,9 @@ var EpmGLIntegrationService = class {
       version = newVersion;
     }
     const balances = await this.db.query.glBalances.findMany({
-      where: and2(
-        eq5(glBalances.ledgerId, ledgerId),
-        eq5(glBalances.periodName, period)
+      where: and3(
+        eq6(glBalances.ledgerId, ledgerId),
+        eq6(glBalances.periodName, period)
       )
     });
     if (balances.length === 0) {
@@ -14547,12 +14847,12 @@ var EpmGLIntegrationService = class {
       const accountId = parts[2] || "DEFAULT_ACCT";
       const amount = Number(bal.periodNetDr) - Number(bal.periodNetCr);
       const planUnit = await this.db.query.planUnits.findFirst({
-        where: and2(
-          eq5(planUnits.versionId, version.id),
-          eq5(planUnits.period, period),
-          eq5(planUnits.account, accountId),
-          eq5(planUnits.department, deptId),
-          eq5(planUnits.entityId, entityId)
+        where: and3(
+          eq6(planUnits.versionId, version.id),
+          eq6(planUnits.period, period),
+          eq6(planUnits.account, accountId),
+          eq6(planUnits.department, deptId),
+          eq6(planUnits.entityId, entityId)
         )
       });
       if (!planUnit) {
@@ -14570,7 +14870,7 @@ var EpmGLIntegrationService = class {
         await this.db.update(planUnits).set({
           amount: String(amount),
           currency: bal.currencyCode
-        }).where(eq5(planUnits.id, planUnit.id));
+        }).where(eq6(planUnits.id, planUnit.id));
       }
       seededCount++;
     }
@@ -14585,17 +14885,17 @@ var EpmGLIntegrationService = class {
   }
 };
 EpmGLIntegrationService = __decorateClass([
-  Injectable6(),
-  __decorateParam(0, Inject5(DRIZZLE_DB))
+  Injectable7(),
+  __decorateParam(0, Inject6(DRIZZLE_DB))
 ], EpmGLIntegrationService);
 
 // backend/src/modules/epm/planning.service.ts
-import { Inject as Inject6, Injectable as Injectable7, Logger as Logger5, BadRequestException } from "@nestjs/common";
-import { eq as eq6, and as and3 } from "drizzle-orm";
+import { Inject as Inject7, Injectable as Injectable8, Logger as Logger6, BadRequestException } from "@nestjs/common";
+import { eq as eq7, and as and4 } from "drizzle-orm";
 var EpmPlanningService = class {
   constructor(db) {
     this.db = db;
-    __publicField(this, "logger", new Logger5(EpmPlanningService.name));
+    __publicField(this, "logger", new Logger6(EpmPlanningService.name));
   }
   /**
    * Generates a Base Plan by copying from a source version (e.g., Actuals) to a target version (e.g., Budget).
@@ -14606,10 +14906,10 @@ var EpmPlanningService = class {
       return 0;
     }
     const sourceUnits = await this.db.query.planUnits.findMany({
-      where: eq6(planUnits.versionId, sourceVersionId)
+      where: eq7(planUnits.versionId, sourceVersionId)
     });
     const targetVersion = await this.db.query.planVersions.findFirst({
-      where: eq6(planVersions.id, targetVersionId)
+      where: eq7(planVersions.id, targetVersionId)
     });
     if (!targetVersion) throw new BadRequestException("Target Version ID invalid");
     let count = 0;
@@ -14639,27 +14939,27 @@ var EpmPlanningService = class {
    */
   async applyDriver(versionId, driverName, value, filter) {
     this.logger.log(`Applying Driver ${driverName} (${value * 100}%) to Version ${versionId}`);
-    const filters = [eq6(planUnits.versionId, versionId)];
-    if (filter?.department) filters.push(eq6(planUnits.department, filter.department));
-    if (filter?.account) filters.push(eq6(planUnits.account, filter.account));
+    const filters = [eq7(planUnits.versionId, versionId)];
+    if (filter?.department) filters.push(eq7(planUnits.department, filter.department));
+    if (filter?.account) filters.push(eq7(planUnits.account, filter.account));
     const units = await this.db.query.planUnits.findMany({
-      where: and3(...filters)
+      where: and4(...filters)
     });
     let updatedCount = 0;
     for (const unit of units) {
       const oldVal = Number(unit.amount);
       const newVal = String(oldVal * (1 + value));
-      await this.db.update(planUnits).set({ amount: newVal }).where(eq6(planUnits.id, unit.id));
+      await this.db.update(planUnits).set({ amount: newVal }).where(eq7(planUnits.id, unit.id));
       updatedCount++;
     }
     return updatedCount;
   }
   async getPlanUnits(versionId, entityId) {
-    const whereConditions = [eq6(planUnits.versionId, versionId)];
-    if (entityId) whereConditions.push(eq6(planUnits.entityId, entityId));
+    const whereConditions = [eq7(planUnits.versionId, versionId)];
+    if (entityId) whereConditions.push(eq7(planUnits.entityId, entityId));
     if (whereConditions.length > 1) {
       return this.db.query.planUnits.findMany({
-        where: and3(...whereConditions),
+        where: and4(...whereConditions),
         limit: 500
       });
     }
@@ -14670,17 +14970,17 @@ var EpmPlanningService = class {
   }
 };
 EpmPlanningService = __decorateClass([
-  Injectable7(),
-  __decorateParam(0, Inject6(DRIZZLE_DB))
+  Injectable8(),
+  __decorateParam(0, Inject7(DRIZZLE_DB))
 ], EpmPlanningService);
 
 // backend/src/modules/epm/driver.service.ts
-import { Inject as Inject7, Injectable as Injectable8, Logger as Logger6 } from "@nestjs/common";
-import { eq as eq7 } from "drizzle-orm";
+import { Inject as Inject8, Injectable as Injectable9, Logger as Logger7 } from "@nestjs/common";
+import { eq as eq8 } from "drizzle-orm";
 var DriverService = class {
   constructor(db) {
     this.db = db;
-    __publicField(this, "logger", new Logger6(DriverService.name));
+    __publicField(this, "logger", new Logger7(DriverService.name));
   }
   async createDriver(code, name, value) {
     const [driver] = await this.db.insert(planDrivers).values({
@@ -14696,28 +14996,28 @@ var DriverService = class {
   }
   async getDriver(code) {
     return this.db.query.planDrivers.findFirst({
-      where: eq7(planDrivers.type, code)
+      where: eq8(planDrivers.type, code)
       // Mapping code -> type
     });
   }
 };
 DriverService = __decorateClass([
-  Injectable8(),
-  __decorateParam(0, Inject7(DRIZZLE_DB))
+  Injectable9(),
+  __decorateParam(0, Inject8(DRIZZLE_DB))
 ], DriverService);
 
 // backend/src/modules/epm/workforce.service.ts
-import { Inject as Inject8, Injectable as Injectable9, Logger as Logger7 } from "@nestjs/common";
-import { eq as eq8 } from "drizzle-orm";
+import { Inject as Inject9, Injectable as Injectable10, Logger as Logger8 } from "@nestjs/common";
+import { eq as eq9 } from "drizzle-orm";
 var WorkforceService = class {
   constructor(db) {
     this.db = db;
-    __publicField(this, "logger", new Logger7(WorkforceService.name));
+    __publicField(this, "logger", new Logger8(WorkforceService.name));
   }
   async calculateHeadcountCosts(versionId) {
     this.logger.log(`Calculating Headcount Costs for Version ${versionId}...`);
     const positions = await this.db.query.planPositions.findMany({
-      where: eq8(planPositions.versionId, versionId)
+      where: eq9(planPositions.versionId, versionId)
     });
     let lineCount = 0;
     for (const pos of positions) {
@@ -14757,7 +15057,7 @@ var WorkforceService = class {
   // Revised method with actual lookup to be runnable
   async runCalculation(versionId, scenarioId) {
     const positions = await this.db.query.planPositions.findMany({
-      where: eq8(planPositions.versionId, versionId)
+      where: eq9(planPositions.versionId, versionId)
     });
     let count = 0;
     for (const pos of positions) {
@@ -14777,22 +15077,22 @@ var WorkforceService = class {
   }
 };
 WorkforceService = __decorateClass([
-  Injectable9(),
-  __decorateParam(0, Inject8(DRIZZLE_DB))
+  Injectable10(),
+  __decorateParam(0, Inject9(DRIZZLE_DB))
 ], WorkforceService);
 
 // backend/src/modules/epm/capex.service.ts
-import { Inject as Inject9, Injectable as Injectable10, Logger as Logger8 } from "@nestjs/common";
-import { eq as eq9 } from "drizzle-orm";
+import { Inject as Inject10, Injectable as Injectable11, Logger as Logger9 } from "@nestjs/common";
+import { eq as eq10 } from "drizzle-orm";
 var CapExService = class {
   constructor(db) {
     this.db = db;
-    __publicField(this, "logger", new Logger8(CapExService.name));
+    __publicField(this, "logger", new Logger9(CapExService.name));
   }
   async calculateDepreciation(versionId, scenarioId) {
     this.logger.log(`Calculating Depreciation for Version ${versionId}...`);
     const assets = await this.db.query.planAssets.findMany({
-      where: eq9(planAssets.versionId, versionId)
+      where: eq10(planAssets.versionId, versionId)
     });
     let count = 0;
     for (const asset of assets) {
@@ -14816,24 +15116,24 @@ var CapExService = class {
   }
 };
 CapExService = __decorateClass([
-  Injectable10(),
-  __decorateParam(0, Inject9(DRIZZLE_DB))
+  Injectable11(),
+  __decorateParam(0, Inject10(DRIZZLE_DB))
 ], CapExService);
 
 // backend/src/modules/epm/elimination.service.ts
-import { Inject as Inject10, Injectable as Injectable11, Logger as Logger9 } from "@nestjs/common";
-import { eq as eq10, and as and5 } from "drizzle-orm";
+import { Inject as Inject11, Injectable as Injectable12, Logger as Logger10 } from "@nestjs/common";
+import { eq as eq11, and as and6 } from "drizzle-orm";
 var EliminationService = class {
   constructor(db) {
     this.db = db;
-    __publicField(this, "logger", new Logger9(EliminationService.name));
+    __publicField(this, "logger", new Logger10(EliminationService.name));
   }
   async runEliminations(versionId, scenarioId) {
     this.logger.log(`Running IC Eliminations for Version ${versionId}...`);
     const icSales = await this.db.query.planUnits.findMany({
-      where: and5(
-        eq10(planUnits.versionId, versionId),
-        eq10(planUnits.account, "IC_SALES")
+      where: and6(
+        eq11(planUnits.versionId, versionId),
+        eq11(planUnits.account, "IC_SALES")
         // Placeholder
       )
     });
@@ -14856,44 +15156,44 @@ var EliminationService = class {
   }
 };
 EliminationService = __decorateClass([
-  Injectable11(),
-  __decorateParam(0, Inject10(DRIZZLE_DB))
+  Injectable12(),
+  __decorateParam(0, Inject11(DRIZZLE_DB))
 ], EliminationService);
 
 // backend/src/modules/epm/budget-control.service.ts
-import { Inject as Inject11, Injectable as Injectable12, Logger as Logger10, ConflictException as ConflictException2 } from "@nestjs/common";
-import { eq as eq11 } from "drizzle-orm";
+import { Inject as Inject12, Injectable as Injectable13, Logger as Logger11, ConflictException as ConflictException2 } from "@nestjs/common";
+import { eq as eq12 } from "drizzle-orm";
 var BudgetControlService = class {
   constructor(db) {
     this.db = db;
-    __publicField(this, "logger", new Logger10(BudgetControlService.name));
+    __publicField(this, "logger", new Logger11(BudgetControlService.name));
   }
   async publishToGL(versionId) {
     this.logger.log(`Publishing Budget Version ${versionId} to GL...`);
     const version = await this.db.query.planVersions.findFirst({
-      where: eq11(planVersions.id, versionId)
+      where: eq12(planVersions.id, versionId)
     });
     if (!version) throw new ConflictException2("Version not found");
     if (version.isLocked) {
       this.logger.warn("Version is already locked/published.");
       return;
     }
-    await this.db.update(planVersions).set({ isLocked: true, isFinal: true }).where(eq11(planVersions.id, versionId));
+    await this.db.update(planVersions).set({ isLocked: true, isFinal: true }).where(eq12(planVersions.id, versionId));
     this.logger.log(`Budget Version ${versionId} LOCKED and Synced to ERP.`);
   }
 };
 BudgetControlService = __decorateClass([
-  Injectable12(),
-  __decorateParam(0, Inject11(DRIZZLE_DB))
+  Injectable13(),
+  __decorateParam(0, Inject12(DRIZZLE_DB))
 ], BudgetControlService);
 
 // backend/src/modules/epm/formula.service.ts
-import { Inject as Inject12, Injectable as Injectable13, Logger as Logger11 } from "@nestjs/common";
-import { eq as eq12, and as and6 } from "drizzle-orm";
+import { Inject as Inject13, Injectable as Injectable14, Logger as Logger12 } from "@nestjs/common";
+import { eq as eq13, and as and7 } from "drizzle-orm";
 var FormulaService = class {
   constructor(db) {
     this.db = db;
-    __publicField(this, "logger", new Logger11(FormulaService.name));
+    __publicField(this, "logger", new Logger12(FormulaService.name));
   }
   /**
    * Safe Expression Evaluator (MVP)
@@ -14920,12 +15220,12 @@ var FormulaService = class {
    */
   async applyDriverRule(versionId, ruleExpression, targetFilter) {
     this.logger.log(`Applying Rule: "${ruleExpression}" to Version ${versionId}`);
-    const whereConditions = [eq12(planUnits.versionId, versionId)];
-    if (targetFilter.entityId) whereConditions.push(eq12(planUnits.entityId, targetFilter.entityId));
-    if (targetFilter.department) whereConditions.push(eq12(planUnits.department, targetFilter.department));
-    if (targetFilter.account) whereConditions.push(eq12(planUnits.account, targetFilter.account));
+    const whereConditions = [eq13(planUnits.versionId, versionId)];
+    if (targetFilter.entityId) whereConditions.push(eq13(planUnits.entityId, targetFilter.entityId));
+    if (targetFilter.department) whereConditions.push(eq13(planUnits.department, targetFilter.department));
+    if (targetFilter.account) whereConditions.push(eq13(planUnits.account, targetFilter.account));
     const units = await this.db.query.planUnits.findMany({
-      where: and6(...whereConditions)
+      where: and7(...whereConditions)
     });
     let count = 0;
     for (const unit of units) {
@@ -14938,7 +15238,7 @@ var FormulaService = class {
         await this.db.update(planUnits).set({
           amount: String(newValue),
           status: "CALCULATED"
-        }).where(eq12(planUnits.id, unit.id));
+        }).where(eq13(planUnits.id, unit.id));
         count++;
       }
     }
@@ -14973,30 +15273,30 @@ var FormulaService = class {
   }
 };
 FormulaService = __decorateClass([
-  Injectable13(),
-  __decorateParam(0, Inject12(DRIZZLE_DB))
+  Injectable14(),
+  __decorateParam(0, Inject13(DRIZZLE_DB))
 ], FormulaService);
 
 // backend/src/modules/epm/project-finance.service.ts
-import { Inject as Inject13, Injectable as Injectable14, Logger as Logger12 } from "@nestjs/common";
-import { eq as eq13, and as and7 } from "drizzle-orm";
+import { Inject as Inject14, Injectable as Injectable15, Logger as Logger13 } from "@nestjs/common";
+import { eq as eq14, and as and8 } from "drizzle-orm";
 var ProjectFinanceService = class {
   constructor(db) {
     this.db = db;
-    __publicField(this, "logger", new Logger12(ProjectFinanceService.name));
+    __publicField(this, "logger", new Logger13(ProjectFinanceService.name));
   }
   async calculateRevenueRecognition(projectCode, period, scenarioId, versionId, totalContractValue, estimatedTotalCost, revenueAccount) {
     this.logger.log(`Running Rev Rec for ${projectCode} in ${period}...`);
     const project = await this.db.query.planProjects.findFirst({
-      where: eq13(planProjects.code, projectCode)
+      where: eq14(planProjects.code, projectCode)
     });
     if (!project) throw new Error(`Project ${projectCode} not found`);
     const projectCodeVal = project.code || "UNKNOWN";
     const units = await this.db.query.planUnits.findMany({
-      where: and7(
-        eq13(planUnits.versionId, versionId),
-        eq13(planUnits.period, period),
-        eq13(planUnits.project, projectCodeVal)
+      where: and8(
+        eq14(planUnits.versionId, versionId),
+        eq14(planUnits.period, period),
+        eq14(planUnits.project, projectCodeVal)
       )
     });
     const costUnits = units.filter((u) => u.account !== revenueAccount);
@@ -15010,11 +15310,11 @@ var ProjectFinanceService = class {
     const revenueAmount = totalContractValue * pocPercent;
     this.logger.log(`Cost: ${periodCost}, Est.Total: ${estimatedTotalCost}, POC: ${(pocPercent * 100).toFixed(2)}%, Rev: ${revenueAmount}`);
     const revUnit = await this.db.query.planUnits.findFirst({
-      where: and7(
-        eq13(planUnits.versionId, versionId),
-        eq13(planUnits.period, period),
-        eq13(planUnits.project, projectCodeVal),
-        eq13(planUnits.account, revenueAccount)
+      where: and8(
+        eq14(planUnits.versionId, versionId),
+        eq14(planUnits.period, period),
+        eq14(planUnits.project, projectCodeVal),
+        eq14(planUnits.account, revenueAccount)
       )
     });
     if (!revUnit) {
@@ -15030,23 +15330,23 @@ var ProjectFinanceService = class {
         status: "CALCULATED"
       });
     } else {
-      await this.db.update(planUnits).set({ amount: String(revenueAmount) }).where(eq13(planUnits.id, revUnit.id));
+      await this.db.update(planUnits).set({ amount: String(revenueAmount) }).where(eq14(planUnits.id, revUnit.id));
     }
     return revenueAmount;
   }
 };
 ProjectFinanceService = __decorateClass([
-  Injectable14(),
-  __decorateParam(0, Inject13(DRIZZLE_DB))
+  Injectable15(),
+  __decorateParam(0, Inject14(DRIZZLE_DB))
 ], ProjectFinanceService);
 
 // backend/src/modules/epm/demand-planning.service.ts
-import { Inject as Inject14, Injectable as Injectable15, Logger as Logger13 } from "@nestjs/common";
-import { eq as eq14, and as and8 } from "drizzle-orm";
+import { Inject as Inject15, Injectable as Injectable16, Logger as Logger14 } from "@nestjs/common";
+import { eq as eq15, and as and9 } from "drizzle-orm";
 var DemandPlanningService = class {
   constructor(db) {
     this.db = db;
-    __publicField(this, "logger", new Logger13(DemandPlanningService.name));
+    __publicField(this, "logger", new Logger14(DemandPlanningService.name));
   }
   /**
    * Calculates Gross Margin for a specific Product and Period.
@@ -15059,15 +15359,15 @@ var DemandPlanningService = class {
   async calculateGrossMargin(productCode, period, scenarioId, versionId, volumeAccountId, revenueTargetAccount, cogsTargetAccount) {
     this.logger.log(`Calculating Gross Margin for ${productCode} in ${period}...`);
     const product = await this.db.query.planProducts.findFirst({
-      where: eq14(planProducts.sku, productCode)
+      where: eq15(planProducts.sku, productCode)
     });
     if (!product) throw new Error(`Product ${productCode} not found`);
     const volUnit = await this.db.query.planUnits.findFirst({
-      where: and8(
-        eq14(planUnits.versionId, versionId),
-        eq14(planUnits.period, period),
-        eq14(planUnits.product, product.sku),
-        eq14(planUnits.account, volumeAccountId)
+      where: and9(
+        eq15(planUnits.versionId, versionId),
+        eq15(planUnits.period, period),
+        eq15(planUnits.product, product.sku),
+        eq15(planUnits.account, volumeAccountId)
       )
     });
     if (!volUnit || Number(volUnit.amount) === 0) {
@@ -15084,11 +15384,11 @@ var DemandPlanningService = class {
   }
   async saveUnit(scenarioId, versionId, period, productId, accountId, amount, entityId) {
     const unit = await this.db.query.planUnits.findFirst({
-      where: and8(
-        eq14(planUnits.versionId, versionId),
-        eq14(planUnits.period, period),
-        eq14(planUnits.product, productId),
-        eq14(planUnits.account, accountId)
+      where: and9(
+        eq15(planUnits.versionId, versionId),
+        eq15(planUnits.period, period),
+        eq15(planUnits.product, productId),
+        eq15(planUnits.account, accountId)
       )
     });
     if (!unit) {
@@ -15104,22 +15404,22 @@ var DemandPlanningService = class {
         status: "CALCULATED"
       });
     } else {
-      await this.db.update(planUnits).set({ amount: String(amount) }).where(eq14(planUnits.id, unit.id));
+      await this.db.update(planUnits).set({ amount: String(amount) }).where(eq15(planUnits.id, unit.id));
     }
   }
 };
 DemandPlanningService = __decorateClass([
-  Injectable15(),
-  __decorateParam(0, Inject14(DRIZZLE_DB))
+  Injectable16(),
+  __decorateParam(0, Inject15(DRIZZLE_DB))
 ], DemandPlanningService);
 
 // backend/src/modules/epm/predictive-forecasting.service.ts
-import { Inject as Inject15, Injectable as Injectable16, Logger as Logger14 } from "@nestjs/common";
-import { eq as eq15, and as and9, asc } from "drizzle-orm";
+import { Inject as Inject16, Injectable as Injectable17, Logger as Logger15 } from "@nestjs/common";
+import { eq as eq16, and as and10, asc } from "drizzle-orm";
 var PredictiveForecastingService = class {
   constructor(db) {
     this.db = db;
-    __publicField(this, "logger", new Logger14(PredictiveForecastingService.name));
+    __publicField(this, "logger", new Logger15(PredictiveForecastingService.name));
   }
   /**
    * Generates a forecast for a target period range based on historical data.
@@ -15128,9 +15428,9 @@ var PredictiveForecastingService = class {
   async generateForecast(accountId, entityId, sourceScenarioId, targetScenarioId, versionId, startPeriod, endPeriod) {
     this.logger.log(`Generating AI forecast for ${accountId} (${startPeriod} to ${endPeriod})...`);
     const history = await this.db.query.planUnits.findMany({
-      where: and9(
-        eq15(planUnits.entityId, entityId),
-        eq15(planUnits.account, accountId)
+      where: and10(
+        eq16(planUnits.entityId, entityId),
+        eq16(planUnits.account, accountId)
       ),
       orderBy: [asc(planUnits.period)]
     });
@@ -15181,11 +15481,11 @@ var PredictiveForecastingService = class {
   }
   async saveForecast(scenarioId, versionId, period, entityId, accountId, amount) {
     const unit = await this.db.query.planUnits.findFirst({
-      where: and9(
-        eq15(planUnits.versionId, versionId),
-        eq15(planUnits.period, period),
-        eq15(planUnits.entityId, entityId),
-        eq15(planUnits.account, accountId)
+      where: and10(
+        eq16(planUnits.versionId, versionId),
+        eq16(planUnits.period, period),
+        eq16(planUnits.entityId, entityId),
+        eq16(planUnits.account, accountId)
       )
     });
     if (!unit) {
@@ -15211,18 +15511,18 @@ var PredictiveForecastingService = class {
         // Removing `comment` field for now to match strict schema assumptions.
       });
     } else {
-      await this.db.update(planUnits).set({ amount: String(amount) }).where(eq15(planUnits.id, unit.id));
+      await this.db.update(planUnits).set({ amount: String(amount) }).where(eq16(planUnits.id, unit.id));
     }
     this.logger.log(`Saved forecast for ${period}: ${amount.toFixed(2)}`);
   }
 };
 PredictiveForecastingService = __decorateClass([
-  Injectable16(),
-  __decorateParam(0, Inject15(DRIZZLE_DB))
+  Injectable17(),
+  __decorateParam(0, Inject16(DRIZZLE_DB))
 ], PredictiveForecastingService);
 
 // backend/src/modules/epm/epm-security.service.ts
-import { Injectable as Injectable17, ForbiddenException } from "@nestjs/common";
+import { Injectable as Injectable18, ForbiddenException } from "@nestjs/common";
 var EpmSecurityService = class {
   /**
    * Checks if a user has access to a specific planning intersection (Row-Level Security).
@@ -15257,16 +15557,16 @@ var EpmSecurityService = class {
   }
 };
 EpmSecurityService = __decorateClass([
-  Injectable17()
+  Injectable18()
 ], EpmSecurityService);
 
 // backend/src/modules/epm/esg-planning.service.ts
-import { Inject as Inject16, Injectable as Injectable18, Logger as Logger15 } from "@nestjs/common";
-import { eq as eq16, and as and10 } from "drizzle-orm";
+import { Inject as Inject17, Injectable as Injectable19, Logger as Logger16 } from "@nestjs/common";
+import { eq as eq17, and as and11 } from "drizzle-orm";
 var EsgPlanningService = class {
   constructor(db) {
     this.db = db;
-    __publicField(this, "logger", new Logger15(EsgPlanningService.name));
+    __publicField(this, "logger", new Logger16(EsgPlanningService.name));
   }
   /**
    * Calculates Scope 1 Carbon Emissions based on Activity Data.
@@ -15279,11 +15579,11 @@ var EsgPlanningService = class {
   async calculateCarbonFootprint(scenarioId, versionId, period, entityId, activityMetricCode, emissionMetricCode, emissionFactor) {
     this.logger.log(`Calculating Carbon Footprint for ${entityId}/${period}...`);
     const activity = await this.db.query.planEsgMetrics.findFirst({
-      where: and10(
-        eq16(planEsgMetrics.versionId, versionId),
-        eq16(planEsgMetrics.period, period),
-        eq16(planEsgMetrics.entityId, entityId),
-        eq16(planEsgMetrics.metricCode, activityMetricCode)
+      where: and11(
+        eq17(planEsgMetrics.versionId, versionId),
+        eq17(planEsgMetrics.period, period),
+        eq17(planEsgMetrics.entityId, entityId),
+        eq17(planEsgMetrics.metricCode, activityMetricCode)
       )
     });
     if (!activity) {
@@ -15305,11 +15605,11 @@ var EsgPlanningService = class {
   }
   async saveEsgMetric(scenarioId, versionId, period, entityId, metricCode, value, unit, comment) {
     const metric = await this.db.query.planEsgMetrics.findFirst({
-      where: and10(
-        eq16(planEsgMetrics.versionId, versionId),
-        eq16(planEsgMetrics.period, period),
-        eq16(planEsgMetrics.entityId, entityId),
-        eq16(planEsgMetrics.metricCode, metricCode)
+      where: and11(
+        eq17(planEsgMetrics.versionId, versionId),
+        eq17(planEsgMetrics.period, period),
+        eq17(planEsgMetrics.entityId, entityId),
+        eq17(planEsgMetrics.metricCode, metricCode)
       )
     });
     if (!metric) {
@@ -15331,22 +15631,22 @@ var EsgPlanningService = class {
       await this.db.update(planEsgMetrics).set({
         value: String(value)
         // comment
-      }).where(eq16(planEsgMetrics.id, metric.id));
+      }).where(eq17(planEsgMetrics.id, metric.id));
     }
   }
 };
 EsgPlanningService = __decorateClass([
-  Injectable18(),
-  __decorateParam(0, Inject16(DRIZZLE_DB))
+  Injectable19(),
+  __decorateParam(0, Inject17(DRIZZLE_DB))
 ], EsgPlanningService);
 
 // backend/src/modules/epm/treasury-planning.service.ts
-import { Injectable as Injectable19, Logger as Logger16, Inject as Inject17 } from "@nestjs/common";
-import { eq as eq17, and as and11 } from "drizzle-orm";
+import { Injectable as Injectable20, Logger as Logger17, Inject as Inject18 } from "@nestjs/common";
+import { eq as eq18, and as and12 } from "drizzle-orm";
 var TreasuryPlanningService = class {
   constructor(db) {
     this.db = db;
-    __publicField(this, "logger", new Logger16(TreasuryPlanningService.name));
+    __publicField(this, "logger", new Logger17(TreasuryPlanningService.name));
   }
   async calculateCashPosition(scenarioId, versionId, period, entityId, cashAccount, inflowAccount, outflowAccount, openingBalance) {
     this.logger.log(`Calculating Cash Position for ${entityId}/${period}...`);
@@ -15358,22 +15658,22 @@ var TreasuryPlanningService = class {
   }
   async getAmount(versionId, period, entityId, accountId) {
     const unit = await this.db.query.planUnits.findFirst({
-      where: and11(
-        eq17(planUnits.versionId, versionId),
-        eq17(planUnits.period, period),
-        eq17(planUnits.entityId, entityId),
-        eq17(planUnits.account, accountId)
+      where: and12(
+        eq18(planUnits.versionId, versionId),
+        eq18(planUnits.period, period),
+        eq18(planUnits.entityId, entityId),
+        eq18(planUnits.account, accountId)
       )
     });
     return unit ? Number(unit.amount) : 0;
   }
   async savePlanUnit(versionId, period, entityId, accountId, amount) {
     const existing = await this.db.query.planUnits.findFirst({
-      where: and11(
-        eq17(planUnits.versionId, versionId),
-        eq17(planUnits.period, period),
-        eq17(planUnits.entityId, entityId),
-        eq17(planUnits.account, accountId)
+      where: and12(
+        eq18(planUnits.versionId, versionId),
+        eq18(planUnits.period, period),
+        eq18(planUnits.entityId, entityId),
+        eq18(planUnits.account, accountId)
       )
     });
     if (!existing) {
@@ -15388,22 +15688,22 @@ var TreasuryPlanningService = class {
         // Default for this service
       });
     } else {
-      await this.db.update(planUnits).set({ amount: amount.toString() }).where(eq17(planUnits.id, existing.id));
+      await this.db.update(planUnits).set({ amount: amount.toString() }).where(eq18(planUnits.id, existing.id));
     }
   }
 };
 TreasuryPlanningService = __decorateClass([
-  Injectable19(),
-  __decorateParam(0, Inject17(DRIZZLE_DB))
+  Injectable20(),
+  __decorateParam(0, Inject18(DRIZZLE_DB))
 ], TreasuryPlanningService);
 
 // backend/src/modules/epm/project-integration.service.ts
-import { Inject as Inject18, Injectable as Injectable20, Logger as Logger17 } from "@nestjs/common";
-import { eq as eq18 } from "drizzle-orm";
+import { Inject as Inject19, Injectable as Injectable21, Logger as Logger18 } from "@nestjs/common";
+import { eq as eq19 } from "drizzle-orm";
 var ProjectIntegrationService = class {
   constructor(db) {
     this.db = db;
-    __publicField(this, "logger", new Logger17(ProjectIntegrationService.name));
+    __publicField(this, "logger", new Logger18(ProjectIntegrationService.name));
   }
   /**
    * Syncs active projects from the operational ERP table (projects2) 
@@ -15411,16 +15711,16 @@ var ProjectIntegrationService = class {
    */
   async syncProjects() {
     this.logger.log("Syncing ERP Projects to EPM...");
-    const erpProjects = await this.db.select().from(projects2).where(eq18(projects2.status, "active"));
+    const erpProjects = await this.db.select().from(projects2).where(eq19(projects2.status, "active"));
     let syncedCount = 0;
     for (const proj of erpProjects) {
       const projectCode = `PROJ-${(proj.id ?? "").substring(0, 8).toUpperCase()}`;
       let planProj = await this.db.query.planProjects.findFirst({
-        where: eq18(planProjects.erpProjectId, proj.id)
+        where: eq19(planProjects.erpProjectId, proj.id)
       });
       if (!planProj) {
         planProj = await this.db.query.planProjects.findFirst({
-          where: eq18(planProjects.code, projectCode)
+          where: eq19(planProjects.code, projectCode)
         });
       }
       if (!planProj) {
@@ -15447,7 +15747,7 @@ var ProjectIntegrationService = class {
           name: proj.name,
           description: proj.description || "",
           isActive: true
-        }).where(eq18(planProjects.id, planProj.id));
+        }).where(eq19(planProjects.id, planProj.id));
       }
       syncedCount++;
     }
@@ -15456,20 +15756,277 @@ var ProjectIntegrationService = class {
   }
 };
 ProjectIntegrationService = __decorateClass([
-  Injectable20(),
-  __decorateParam(0, Inject18(DRIZZLE_DB))
+  Injectable21(),
+  __decorateParam(0, Inject19(DRIZZLE_DB))
 ], ProjectIntegrationService);
+
+// backend/src/modules/epm/epm-mna-simulation.service.ts
+import { Injectable as Injectable22, Logger as Logger19, NotFoundException as NotFoundException4 } from "@nestjs/common";
+var EPMMnaSimulationService = class {
+  constructor() {
+    __publicField(this, "logger", new Logger19(EPMMnaSimulationService.name));
+    __publicField(this, "savedScenarios", /* @__PURE__ */ new Map());
+  }
+  /**
+   * Runs a full M&A simulation, merging two entity plans into a combined P&L.
+   */
+  simulateAcquisition(scenarioName, acquirer, target, params) {
+    const ownershipFactor = params.ownershipPct / 100;
+    const realizationFactor = params.synergyRealizationPct / 100;
+    const targetRevenue = target.revenue * ownershipFactor;
+    const targetCOGS = target.cogs * ownershipFactor;
+    const targetOpex = target.operatingExpenses * ownershipFactor;
+    const targetNetIncome = target.netIncome * ownershipFactor;
+    const realizedCostSynergies = params.costSynergies * realizationFactor;
+    const realizedRevenueSynergies = params.revenueSynergies * realizationFactor;
+    const combinedRevenue = acquirer.revenue + targetRevenue + realizedRevenueSynergies;
+    const combinedCOGS = acquirer.cogs + targetCOGS;
+    const combinedGrossProfit = combinedRevenue - combinedCOGS;
+    const grossMarginPct = combinedRevenue > 0 ? combinedGrossProfit / combinedRevenue * 100 : 0;
+    const combinedOpex = acquirer.operatingExpenses + targetOpex - realizedCostSynergies;
+    const combinedEbitda = combinedGrossProfit - combinedOpex;
+    const ebitdaMarginPct = combinedRevenue > 0 ? combinedEbitda / combinedRevenue * 100 : 0;
+    const combinedDepreciation = acquirer.depreciation + target.depreciation * ownershipFactor;
+    const combinedEbit = combinedEbitda - combinedDepreciation;
+    const combinedInterest = acquirer.interestExpense + target.interestExpense * ownershipFactor;
+    const combinedPreTaxIncome = combinedEbit - combinedInterest - params.integrationCosts - params.transactionCosts;
+    const blendedTaxRate = (acquirer.taxRate + target.taxRate) / 2 / 100;
+    const combinedNetIncome = combinedPreTaxIncome * (1 - blendedTaxRate);
+    const netMarginPct = combinedRevenue > 0 ? combinedNetIncome / combinedRevenue * 100 : 0;
+    const bookEquityAcquired = target.bookEquity * ownershipFactor;
+    const premiumOverBook = params.purchasePrice - bookEquityAcquired;
+    const identifiableIntangibles = premiumOverBook * 0.3;
+    const goodwill = premiumOverBook - identifiableIntangibles;
+    const synergySensitivity = [10, 50, 75, 100, 125].map((pct) => {
+      const rf = pct / 100;
+      const cs = params.costSynergies * rf;
+      const rs = params.revenueSynergies * rf;
+      const ebitda = combinedGrossProfit - combinedOpex - realizedCostSynergies + cs + rs;
+      const ni = (ebitda - combinedDepreciation - combinedInterest) * (1 - blendedTaxRate);
+      return { realizationPct: pct, costSynergies: cs, revenueSynergies: rs, combinedEbitda: Number(ebitda.toFixed(2)), combinedNetIncome: Number(ni.toFixed(2)) };
+    });
+    const sharesOutstanding = 1e3;
+    const baselineEPS = acquirer.netIncome / sharesOutstanding;
+    const combinedEPS = combinedNetIncome / sharesOutstanding;
+    const changeEPS = combinedEPS - baselineEPS;
+    const result = {
+      scenario: scenarioName,
+      period: acquirer.period,
+      acquirer,
+      target,
+      parameters: params,
+      combined: {
+        revenue: Number(combinedRevenue.toFixed(2)),
+        cogs: Number(combinedCOGS.toFixed(2)),
+        grossProfit: Number(combinedGrossProfit.toFixed(2)),
+        grossMarginPct: Number(grossMarginPct.toFixed(2)),
+        operatingExpenses: Number(combinedOpex.toFixed(2)),
+        realizedCostSynergies: Number(realizedCostSynergies.toFixed(2)),
+        realizedRevenueSynergies: Number(realizedRevenueSynergies.toFixed(2)),
+        ebitda: Number(combinedEbitda.toFixed(2)),
+        ebitdaMarginPct: Number(ebitdaMarginPct.toFixed(2)),
+        ebit: Number(combinedEbit.toFixed(2)),
+        interestExpense: Number(combinedInterest.toFixed(2)),
+        integrationCosts: params.integrationCosts,
+        transactionCosts: params.transactionCosts,
+        netIncome: Number(combinedNetIncome.toFixed(2)),
+        netMarginPct: Number(netMarginPct.toFixed(2))
+      },
+      goodwill: Number(goodwill.toFixed(2)),
+      purchasePriceAllocation: {
+        bookEquityAcquired: Number(bookEquityAcquired.toFixed(2)),
+        premiumOverBook: Number(premiumOverBook.toFixed(2)),
+        identifiableIntangibles: Number(identifiableIntangibles.toFixed(2)),
+        goodwill: Number(goodwill.toFixed(2))
+      },
+      synergySensitivity,
+      accretionDilution: {
+        baselineEPS: Number(baselineEPS.toFixed(4)),
+        combinedEPS: Number(combinedEPS.toFixed(4)),
+        changeEPS: Number(changeEPS.toFixed(4)),
+        isAccretive: changeEPS > 0
+      }
+    };
+    this.savedScenarios.set(scenarioName, result);
+    this.logger.log(
+      `M&A Simulation "${scenarioName}": Combined EBITDA=${combinedEbitda.toFixed(0)} (${ebitdaMarginPct.toFixed(1)}% margin), Goodwill=${goodwill.toFixed(0)}, Accretive=${changeEPS > 0}`
+    );
+    return result;
+  }
+  getScenario(scenarioName) {
+    const scenario = this.savedScenarios.get(scenarioName);
+    if (!scenario) throw new NotFoundException4(`M&A scenario "${scenarioName}" not found`);
+    return scenario;
+  }
+  listScenarios() {
+    return Array.from(this.savedScenarios.keys());
+  }
+  /**
+   * Compares two M&A scenarios side-by-side (e.g., full vs partial acquisition).
+   */
+  compareScenarios(scenarioA, scenarioB) {
+    const sA = this.getScenario(scenarioA);
+    const sB = this.getScenario(scenarioB);
+    return {
+      scenarioA: sA,
+      scenarioB: sB,
+      delta: {
+        ebitda: Number((sA.combined.ebitda - sB.combined.ebitda).toFixed(2)),
+        netIncome: Number((sA.combined.netIncome - sB.combined.netIncome).toFixed(2)),
+        goodwill: Number((sA.goodwill - sB.goodwill).toFixed(2)),
+        isAccretive_A: sA.accretionDilution.isAccretive,
+        isAccretive_B: sB.accretionDilution.isAccretive
+      }
+    };
+  }
+};
+EPMMnaSimulationService = __decorateClass([
+  Injectable22()
+], EPMMnaSimulationService);
+
+// backend/src/modules/epm/epm-esg-carbon.service.ts
+import { Injectable as Injectable23, Logger as Logger20, NotFoundException as NotFoundException5 } from "@nestjs/common";
+var EPMEsgCarbonService = class {
+  constructor() {
+    __publicField(this, "logger", new Logger20(EPMEsgCarbonService.name));
+    __publicField(this, "SBT_ANNUAL_REDUCTION_PCT", 4.2);
+    // Science-based target: 1.5°C pathway
+    __publicField(this, "targets", /* @__PURE__ */ new Map());
+    __publicField(this, "actuals", /* @__PURE__ */ new Map());
+    __publicField(this, "deiTargets", /* @__PURE__ */ new Map());
+  }
+  // ── Carbon Target Management ──────────────────────────────────────────────
+  setCarbonTarget(input) {
+    const id = `TGT-${input.scope}-${input.year}-${Date.now()}`;
+    const target = { id, ...input };
+    this.targets.set(id, target);
+    this.logger.log(`Carbon target set: ${input.scope} ${input.year} = ${input.targetMtCO2e} MtCO2e (${input.targetReductionPct}% reduction)`);
+    return target;
+  }
+  updateCarbonTarget(id, updates) {
+    const target = this.targets.get(id);
+    if (!target) throw new NotFoundException5(`Carbon target ${id} not found`);
+    Object.assign(target, updates);
+    return target;
+  }
+  listTargets(tenantId, year) {
+    return Array.from(this.targets.values()).filter((t) => t.tenantId === tenantId && (year == null || t.year === year));
+  }
+  // ── Emissions Actuals Recording ───────────────────────────────────────────
+  recordEmissions(input) {
+    const id = `ACT-${input.scope}-${input.year}-${Date.now()}`;
+    const actual = { id, ...input, recordedAt: /* @__PURE__ */ new Date() };
+    this.actuals.set(id, actual);
+    this.logger.log(`Emissions recorded: ${input.scope} ${input.year} Q${input.quarter || "full"} = ${input.actualMtCO2e} MtCO2e (source: ${input.dataSource})`);
+    return actual;
+  }
+  listActuals(tenantId, year) {
+    return Array.from(this.actuals.values()).filter((a) => a.tenantId === tenantId && a.year === year);
+  }
+  // ── Progress Report ───────────────────────────────────────────────────────
+  /**
+   * Generates a full carbon progress report for a given year.
+   * Compares actuals against reduction targets by scope.
+   */
+  generateProgressReport(tenantId, year) {
+    const yearTargets = this.listTargets(tenantId, year);
+    const yearActuals = this.listActuals(tenantId, year);
+    const scopes = ["SCOPE_1", "SCOPE_2", "SCOPE_3"];
+    const scopeReports = scopes.map((scope) => {
+      const target = yearTargets.find((t) => t.scope === scope && !t.scope3Category);
+      const scopeActuals = yearActuals.filter((a) => a.scope === scope);
+      const actualMtCO2e = scopeActuals.reduce((s, a) => s + a.actualMtCO2e, 0);
+      const targetMtCO2e = target?.targetMtCO2e ?? 0;
+      const baselineMtCO2e = target?.baselineMtCO2e ?? 0;
+      const reductionFromBaseline = baselineMtCO2e - actualMtCO2e;
+      const totalReductionNeeded = baselineMtCO2e - targetMtCO2e;
+      const progressPct = totalReductionNeeded > 0 ? Math.min(100, reductionFromBaseline / totalReductionNeeded * 100) : 100;
+      const remainingTarget = actualMtCO2e - targetMtCO2e;
+      const onTrack = actualMtCO2e <= targetMtCO2e;
+      const priorYearTarget = baselineMtCO2e * Math.pow(1 - this.SBT_ANNUAL_REDUCTION_PCT / 100, year - (target?.baselineYear || year));
+      const trend = actualMtCO2e < priorYearTarget * 0.98 ? "IMPROVING" : actualMtCO2e > priorYearTarget * 1.02 ? "WORSENING" : "FLAT";
+      return { scope, baselineMtCO2e, targetMtCO2e, actualMtCO2e, remainingTarget, progressPct: Number(progressPct.toFixed(1)), onTrack, trend };
+    });
+    const totalTargetMtCO2e = scopeReports.reduce((s, r) => s + r.targetMtCO2e, 0);
+    const totalActualMtCO2e = scopeReports.reduce((s, r) => s + r.actualMtCO2e, 0);
+    const totalBaseline = scopeReports.reduce((s, r) => s + r.baselineMtCO2e, 0);
+    const netReductionFromBaseline = totalBaseline - totalActualMtCO2e;
+    const netReductionPct = totalBaseline > 0 ? netReductionFromBaseline / totalBaseline * 100 : 0;
+    const requiredReductionPct = this.SBT_ANNUAL_REDUCTION_PCT;
+    const scienceBasedTargetAligned = netReductionPct >= requiredReductionPct;
+    this.logger.log(`ESG Carbon Report ${year}: Total actual=${totalActualMtCO2e.toFixed(1)} MtCO2e, net reduction=${netReductionPct.toFixed(1)}%, SBT aligned=${scienceBasedTargetAligned}`);
+    return {
+      tenantId,
+      year,
+      reportDate: /* @__PURE__ */ new Date(),
+      scopes: scopeReports,
+      totalTargetMtCO2e: Number(totalTargetMtCO2e.toFixed(2)),
+      totalActualMtCO2e: Number(totalActualMtCO2e.toFixed(2)),
+      netReductionFromBaseline: Number(netReductionFromBaseline.toFixed(2)),
+      netReductionPct: Number(netReductionPct.toFixed(2)),
+      scienceBasedTargetAligned
+    };
+  }
+  /**
+   * Returns Scope 3 breakdown by GHG Protocol category.
+   */
+  getScope3Breakdown(tenantId, year) {
+    const scope3Actuals = Array.from(this.actuals.values()).filter((a) => a.tenantId === tenantId && a.year === year && a.scope === "SCOPE_3" && a.scope3Category);
+    const scope3Targets = Array.from(this.targets.values()).filter((t) => t.tenantId === tenantId && t.year === year && t.scope === "SCOPE_3" && t.scope3Category);
+    const totalScope3 = scope3Actuals.reduce((s, a) => s + a.actualMtCO2e, 0);
+    const categoryMap = /* @__PURE__ */ new Map();
+    for (const actual of scope3Actuals) {
+      const key = actual.scope3Category;
+      categoryMap.set(key, (categoryMap.get(key) || 0) + actual.actualMtCO2e);
+    }
+    return Array.from(categoryMap.entries()).map(([category, actualMtCO2e]) => {
+      const target = scope3Targets.find((t) => t.scope3Category === category);
+      return {
+        category,
+        actualMtCO2e: Number(actualMtCO2e.toFixed(3)),
+        targetMtCO2e: target?.targetMtCO2e,
+        pctOfTotal: totalScope3 > 0 ? Number((actualMtCO2e / totalScope3 * 100).toFixed(1)) : 0
+      };
+    }).sort((a, b) => b.actualMtCO2e - a.actualMtCO2e);
+  }
+  // ── DEI Targets ───────────────────────────────────────────────────────────
+  setDeiTarget(input) {
+    const id = `DEI-${input.dimension}-${input.year}-${Date.now()}`;
+    const target = { id, ...input };
+    this.deiTargets.set(id, target);
+    this.logger.log(`DEI target set: ${input.dimension} ${input.year} = ${input.targetValue}${input.targetUnit}`);
+    return target;
+  }
+  updateDeiActual(targetId, currentValue) {
+    const target = this.deiTargets.get(targetId);
+    if (!target) throw new NotFoundException5(`DEI target ${targetId} not found`);
+    target.currentValue = currentValue;
+    return target;
+  }
+  getDeiProgress(tenantId, year) {
+    return Array.from(this.deiTargets.values()).filter((t) => t.tenantId === tenantId && t.year === year).map((t) => ({
+      dimension: t.dimension,
+      targetValue: t.targetValue,
+      currentValue: t.currentValue,
+      progressPct: t.currentValue != null && t.targetValue > 0 ? Number(Math.min(100, t.currentValue / t.targetValue * 100).toFixed(1)) : 0,
+      onTrack: t.currentValue != null && t.currentValue >= t.targetValue * 0.9
+    }));
+  }
+};
+EPMEsgCarbonService = __decorateClass([
+  Injectable23()
+], EPMEsgCarbonService);
 
 // backend/src/modules/finance/finance.module.ts
 import { Module as Module4 } from "@nestjs/common";
 
 // backend/src/modules/finance/expense.controller.ts
 import {
-  Controller as Controller5,
-  Get as Get5,
-  Post as Post5,
-  Body as Body5,
-  Param as Param5,
+  Controller as Controller6,
+  Get as Get6,
+  Post as Post6,
+  Body as Body6,
+  Param as Param6,
   Delete as Delete3,
   Patch,
   Query as Query2
@@ -15516,59 +16073,59 @@ var ExpenseController = class {
   }
 };
 __decorateClass([
-  Get5("reports")
+  Get6("reports")
 ], ExpenseController.prototype, "findAllReports", 1);
 __decorateClass([
-  Get5("items")
+  Get6("items")
 ], ExpenseController.prototype, "findAllLines", 1);
 __decorateClass([
-  Post5("items/validate"),
-  __decorateParam(0, Body5())
+  Post6("items/validate"),
+  __decorateParam(0, Body6())
 ], ExpenseController.prototype, "validateLine", 1);
 __decorateClass([
-  Post5("reports"),
-  __decorateParam(0, Body5())
+  Post6("reports"),
+  __decorateParam(0, Body6())
 ], ExpenseController.prototype, "createReport", 1);
 __decorateClass([
   Patch("reports/:id/status"),
-  __decorateParam(0, Param5("id")),
-  __decorateParam(1, Body5("status")),
-  __decorateParam(2, Body5("userId"))
+  __decorateParam(0, Param6("id")),
+  __decorateParam(1, Body6("status")),
+  __decorateParam(2, Body6("userId"))
 ], ExpenseController.prototype, "updateStatus", 1);
 __decorateClass([
-  Get5("reports/:id"),
-  __decorateParam(0, Param5("id"))
+  Get6("reports/:id"),
+  __decorateParam(0, Param6("id"))
 ], ExpenseController.prototype, "findOneReport", 1);
 __decorateClass([
-  Post5("items"),
-  __decorateParam(0, Body5())
+  Post6("items"),
+  __decorateParam(0, Body6())
 ], ExpenseController.prototype, "createLine", 1);
 __decorateClass([
-  Post5("items/extract"),
-  __decorateParam(0, Body5())
+  Post6("items/extract"),
+  __decorateParam(0, Body6())
 ], ExpenseController.prototype, "extractReceipt", 1);
 __decorateClass([
-  Get5("cards/transactions"),
+  Get6("cards/transactions"),
   __decorateParam(0, Query2("userId"))
 ], ExpenseController.prototype, "getCardTransactions", 1);
 __decorateClass([
-  Post5("cards/import"),
-  __decorateParam(0, Body5("userId"))
+  Post6("cards/import"),
+  __decorateParam(0, Body6("userId"))
 ], ExpenseController.prototype, "importCardTransactions", 1);
 __decorateClass([
   Delete3("reports/:id"),
-  __decorateParam(0, Param5("id"))
+  __decorateParam(0, Param6("id"))
 ], ExpenseController.prototype, "removeReport", 1);
 __decorateClass([
-  Post5("reports/:id/post-gl"),
-  __decorateParam(0, Param5("id"))
+  Post6("reports/:id/post-gl"),
+  __decorateParam(0, Param6("id"))
 ], ExpenseController.prototype, "postToGL", 1);
 ExpenseController = __decorateClass([
-  Controller5("api/expenses")
+  Controller6("api/expenses")
 ], ExpenseController);
 
 // backend/src/modules/finance/expense.service.ts
-import { Injectable as Injectable21 } from "@nestjs/common";
+import { Injectable as Injectable24 } from "@nestjs/common";
 var ExpenseService = class {
   constructor(glIntegrationService, auditService) {
     this.glIntegrationService = glIntegrationService;
@@ -15624,15 +16181,15 @@ var ExpenseService = class {
   }
 };
 ExpenseService = __decorateClass([
-  Injectable21()
+  Injectable24()
 ], ExpenseService);
 
 // backend/src/modules/finance/gl-integration.service.ts
-import { Injectable as Injectable22, Logger as Logger18, Inject as Inject19 } from "@nestjs/common";
+import { Injectable as Injectable25, Logger as Logger21, Inject as Inject20 } from "@nestjs/common";
 var FinanceGlIntegrationService = class {
   constructor(db) {
     this.db = db;
-    __publicField(this, "logger", new Logger18(FinanceGlIntegrationService.name));
+    __publicField(this, "logger", new Logger21(FinanceGlIntegrationService.name));
   }
   /**
    * Creates a GL Journal Entry.
@@ -15671,15 +16228,413 @@ var FinanceGlIntegrationService = class {
   }
 };
 FinanceGlIntegrationService = __decorateClass([
-  Injectable22(),
-  __decorateParam(0, Inject19(DRIZZLE_DB))
+  Injectable25(),
+  __decorateParam(0, Inject20(DRIZZLE_DB))
 ], FinanceGlIntegrationService);
+
+// backend/src/modules/finance/consolidation.service.ts
+import { Injectable as Injectable26, Logger as Logger22, Inject as Inject21 } from "@nestjs/common";
+import { eq as eq20, and as and13 } from "drizzle-orm";
+var ConsolidationService = class {
+  constructor(db) {
+    this.db = db;
+    __publicField(this, "logger", new Logger22(ConsolidationService.name));
+  }
+  // ── P0.10: CURRENCY TRANSLATION ───────────────────────────────────────────
+  /**
+   * Translates subsidiary GL balances to the parent consolidation currency.
+   * Uses the CTA (Cumulative Translation Adjustment) method:
+   *  - Revenue/Expense: Period Average Rate
+   *  - Balance Sheet: Current Rate
+   */
+  async translateCurrencyResults(params) {
+    this.logger.log(`Starting currency translation for ledger ${params.subsidiaryLedgerId}, period ${params.periodName}`);
+    const balances = await this.db.query.glBalances.findMany({
+      where: and13(
+        eq20(glBalances.ledgerId, params.subsidiaryLedgerId),
+        eq20(glBalances.periodName, params.periodName)
+      )
+    });
+    if (balances.length === 0) {
+      this.logger.warn(`No GL balances found for ledger ${params.subsidiaryLedgerId} period ${params.periodName}`);
+      return { journalsCreated: 0, totalTranslated: 0 };
+    }
+    const fxRates = await this.db.query.glDailyRates.findMany({
+      where: eq20(glDailyRates.toCurrency, params.targetCurrencyCode)
+    }).catch(() => []);
+    const getRateForCurrency = (currency) => {
+      const rate = fxRates.find((r) => r.fromCurrency === currency);
+      return rate ? Number(rate.rate) : 1;
+    };
+    let journalsCreated = 0;
+    let totalTranslated = 0;
+    for (const balance of balances) {
+      const amount = Number(balance.periodNetDr || 0) - Number(balance.periodNetCr || 0);
+      if (amount === 0) continue;
+      const fxRate = getRateForCurrency(balance.currencyCode || "USD");
+      const translatedAmount = Math.abs(amount) * fxRate;
+      totalTranslated += translatedAmount;
+      const [journal] = await this.db.insert(glJournals).values({
+        journalNumber: `CTA-${Date.now()}-${journalsCreated}`,
+        ledgerId: params.subsidiaryLedgerId,
+        source: "Consolidation",
+        status: "Posted",
+        description: `CTA Translation: ${balance.currencyCode} \u2192 ${params.targetCurrencyCode} @ ${fxRate}`,
+        currencyCode: params.targetCurrencyCode,
+        createdBy: "system-consolidation"
+      }).returning();
+      await this.db.insert(glJournalLines).values({
+        journalId: journal.id,
+        accountId: balance.codeCombinationId || "TRANSLATION-ADJ",
+        currencyCode: params.targetCurrencyCode,
+        enteredDebit: translatedAmount.toString(),
+        enteredCredit: "0",
+        debit: translatedAmount.toString(),
+        credit: "0",
+        description: `CTA: ${balance.periodName}`
+      });
+      journalsCreated++;
+    }
+    this.logger.log(`Translation complete: ${journalsCreated} journals, total=${totalTranslated.toFixed(2)} ${params.targetCurrencyCode}`);
+    return { journalsCreated, totalTranslated };
+  }
+  // ── P0.11: INTERCOMPANY ELIMINATION ENGINE ────────────────────────────────
+  /**
+   * Generates elimination journals for each intercompany rule pair.
+   * Dr Intercompany Payable / Cr Intercompany Receivable.
+   */
+  async runEliminationEngine(params) {
+    this.logger.log(`Running IC Elimination for period ${params.periodName}`);
+    const icRules = await this.db.query.glIntercompanyRules.findMany({
+      where: eq20(glIntercompanyRules.enabled, true)
+    }).catch(() => []);
+    let eliminationsCreated = 0;
+    let totalEliminated = 0;
+    for (const rule of icRules) {
+      const receivableBalance = await this.db.query.glBalances.findFirst({
+        where: and13(
+          eq20(glBalances.codeCombinationId, rule.receivableAccountId),
+          eq20(glBalances.periodName, params.periodName)
+        )
+      }).catch(() => null);
+      const amount = Number(receivableBalance?.endBalance || 0);
+      if (amount === 0) continue;
+      const [journal] = await this.db.insert(glJournals).values({
+        journalNumber: `ELIM-${Date.now()}-${eliminationsCreated}`,
+        ledgerId: "CONSOLIDATION",
+        source: "Consolidation",
+        status: "Posted",
+        description: `IC Elimination: ${rule.fromCompany} \u2192 ${rule.toCompany}`,
+        currencyCode: "USD",
+        createdBy: "system-consolidation"
+      }).returning();
+      await this.db.insert(glJournalLines).values([
+        {
+          journalId: journal.id,
+          accountId: rule.receivableAccountId,
+          currencyCode: "USD",
+          enteredCredit: amount.toString(),
+          enteredDebit: "0",
+          credit: amount.toString(),
+          debit: "0",
+          description: `Eliminate IC Receivable: ${rule.fromCompany}`
+        },
+        {
+          journalId: journal.id,
+          accountId: rule.payableAccountId,
+          currencyCode: "USD",
+          enteredDebit: amount.toString(),
+          enteredCredit: "0",
+          debit: amount.toString(),
+          credit: "0",
+          description: `Eliminate IC Payable: ${rule.toCompany}`
+        }
+      ]);
+      eliminationsCreated++;
+      totalEliminated += amount;
+    }
+    this.logger.log(`IC Elimination complete: ${eliminationsCreated} journals, total=${totalEliminated.toFixed(2)}`);
+    return { eliminationsCreated, totalEliminated };
+  }
+  // ── P0.12: DB-BACKED PERIOD CLOSE ─────────────────────────────────────────
+  async closeConsolidationPeriod(params) {
+    this.logger.log(`Starting full consolidation period close for ${params.periodName}`);
+    const translationResult = await this.translateCurrencyResults({
+      subsidiaryLedgerId: params.subsidiaryLedgerId,
+      targetCurrencyCode: params.consolidationCurrencyCode,
+      periodName: params.periodName
+    });
+    const eliminationResult = await this.runEliminationEngine({
+      consolidationGroupId: params.consolidationGroupId,
+      periodName: params.periodName
+    });
+    try {
+      const period = await this.db.query.glPeriods.findFirst({
+        where: eq20(glPeriods.periodName, params.periodName)
+      });
+      if (period) {
+        await this.db.update(glPeriods).set({ status: "Closed" }).where(eq20(glPeriods.periodName, params.periodName));
+        this.logger.log(`Period ${params.periodName} marked as Closed`);
+      }
+    } catch (e) {
+      this.logger.warn(`Could not update glPeriods for ${params.periodName}: ${e}`);
+    }
+    return {
+      periodName: params.periodName,
+      status: "CLOSED",
+      translationJournals: translationResult.journalsCreated,
+      eliminationJournals: eliminationResult.eliminationsCreated,
+      totalTranslated: translationResult.totalTranslated,
+      totalEliminated: eliminationResult.totalEliminated,
+      closedAt: (/* @__PURE__ */ new Date()).toISOString()
+    };
+  }
+};
+ConsolidationService = __decorateClass([
+  Injectable26(),
+  __decorateParam(0, Inject21(DRIZZLE_DB))
+], ConsolidationService);
+
+// backend/src/modules/finance/treasury-debt.service.ts
+import { Injectable as Injectable27, Logger as Logger23, Inject as Inject22 } from "@nestjs/common";
+var TreasuryDebtService = class {
+  constructor(db) {
+    this.db = db;
+    __publicField(this, "logger", new Logger23(TreasuryDebtService.name));
+    // In-memory repositories (production would use Drizzle DB tables)
+    __publicField(this, "debtFacilities", /* @__PURE__ */ new Map());
+    __publicField(this, "investments", /* @__PURE__ */ new Map());
+    __publicField(this, "fxHedges", /* @__PURE__ */ new Map());
+  }
+  // ── P1.F-1: DEBT MANAGEMENT ───────────────────────────────────────────────
+  /**
+   * Creates a new debt facility (credit line / term loan).
+   */
+  createDebtFacility(facility) {
+    const id = `DEBT-${Date.now()}`;
+    const full = { id, ...facility };
+    this.debtFacilities.set(id, full);
+    this.logger.log(`Debt facility created: ${facility.facilityName} (${facility.currency} ${facility.totalCommitment.toLocaleString()})`);
+    return full;
+  }
+  /**
+   * Records a drawdown on a revolving or term facility.
+   */
+  recordDrawdown(facilityId, amount, valueDate) {
+    const facility = this.debtFacilities.get(facilityId);
+    if (!facility) throw new Error(`Debt facility ${facilityId} not found`);
+    const headroom = facility.totalCommitment - facility.outstandingBalance;
+    if (amount > headroom) throw new Error(`Drawdown of ${amount} exceeds available headroom of ${headroom}`);
+    facility.outstandingBalance += amount;
+    return {
+      facilityId,
+      drawdownAmount: amount,
+      newOutstanding: facility.outstandingBalance,
+      availableHeadroom: facility.totalCommitment - facility.outstandingBalance,
+      valueDate,
+      journalEntry: [
+        { account: "CASH", debit: amount, credit: 0 },
+        { account: "LONG_TERM_DEBT", debit: 0, credit: amount }
+      ]
+    };
+  }
+  /**
+   * Accrues interest expense for all active facilities up to the given date.
+   */
+  accrueInterest(asOfDate = /* @__PURE__ */ new Date()) {
+    const results = [];
+    for (const [id, facility] of this.debtFacilities) {
+      if (facility.outstandingBalance <= 0) continue;
+      const daysInYear = 360;
+      const daysAccrued = 1;
+      const interestAmount = facility.outstandingBalance * (facility.interestRate / 100) / daysInYear * daysAccrued;
+      results.push({
+        facilityId: id,
+        facilityName: facility.facilityName,
+        principal: facility.outstandingBalance,
+        annualRate: facility.interestRate,
+        daysAccrued,
+        interestAmount: Number(interestAmount.toFixed(2)),
+        journalEntry: [
+          { account: "INTEREST_EXPENSE", debit: interestAmount, credit: 0 },
+          { account: "ACCRUED_INTEREST_PAYABLE", debit: 0, credit: interestAmount }
+        ]
+      });
+    }
+    this.logger.log(`Interest accrued for ${results.length} facilities as of ${asOfDate.toISOString()}`);
+    return results;
+  }
+  /**
+   * Runs covenant compliance checks on all debt facilities.
+   */
+  checkCovenants() {
+    const results = [];
+    for (const [id, facility] of this.debtFacilities) {
+      const breaches = facility.covenants.filter((c) => !c.inCompliance);
+      const warnings = facility.covenants.filter((c) => {
+        if (!c.inCompliance) return false;
+        const buffer = Math.abs(c.currentValue - c.threshold) / Math.abs(c.threshold);
+        return buffer < 0.1;
+      });
+      let status = "COMPLIANT";
+      if (breaches.length > 0) status = "BREACH";
+      else if (warnings.length > 0) status = "WARNING";
+      results.push({ facilityId: id, facilityName: facility.facilityName, covenantStatus: status, breaches, warnings });
+      if (status === "BREACH") {
+        this.logger.warn(`COVENANT BREACH: ${facility.facilityName} has ${breaches.length} breached covenant(s)`);
+      }
+    }
+    return results;
+  }
+  listDebtFacilities() {
+    return Array.from(this.debtFacilities.values());
+  }
+  // ── P1.F-2: INVESTMENT MANAGEMENT ────────────────────────────────────────
+  /**
+   * Creates a new investment position.
+   */
+  createInvestment(position) {
+    const id = `INV-${Date.now()}`;
+    const unrealizedGainLoss = position.currentMarketValue - position.principalAmount;
+    const full = { id, ...position, unrealizedGainLoss };
+    this.investments.set(id, full);
+    this.logger.log(`Investment created: ${position.instrumentType} ${position.currency} ${position.principalAmount.toLocaleString()} @ ${position.counterparty}`);
+    return full;
+  }
+  /**
+   * Mark-to-market: revalues all investment positions at current market prices.
+   */
+  markToMarket(marketPrices) {
+    const results = [];
+    for (const [id, position] of this.investments) {
+      const prevValue = position.currentMarketValue;
+      const newValue = marketPrices[id] ?? prevValue;
+      const mtmChange = newValue - prevValue;
+      position.currentMarketValue = newValue;
+      position.unrealizedGainLoss = newValue - position.principalAmount;
+      const journalEntry = mtmChange > 0 ? [{ account: "INVESTMENT_ASSET", debit: mtmChange, credit: 0 }, { account: "UNREALIZED_GAIN", debit: 0, credit: mtmChange }] : [{ account: "UNREALIZED_LOSS", debit: Math.abs(mtmChange), credit: 0 }, { account: "INVESTMENT_ASSET", debit: 0, credit: Math.abs(mtmChange) }];
+      results.push({
+        investmentId: id,
+        instrumentType: position.instrumentType,
+        previousMarketValue: prevValue,
+        newMarketValue: newValue,
+        mtmChange,
+        unrealizedGainLoss: position.unrealizedGainLoss,
+        journalEntry
+      });
+    }
+    this.logger.log(`Mark-to-market complete: ${results.length} positions revalued`);
+    return results;
+  }
+  listInvestments() {
+    return Array.from(this.investments.values());
+  }
+  getInvestmentPortfolioSummary() {
+    const positions = Array.from(this.investments.values());
+    const summary = {
+      totalPrincipal: 0,
+      totalMarketValue: 0,
+      totalUnrealizedGainLoss: 0,
+      byType: {}
+    };
+    for (const p of positions) {
+      summary.totalPrincipal += p.principalAmount;
+      summary.totalMarketValue += p.currentMarketValue;
+      summary.totalUnrealizedGainLoss += p.unrealizedGainLoss;
+      if (!summary.byType[p.instrumentType]) {
+        summary.byType[p.instrumentType] = { count: 0, principal: 0, marketValue: 0 };
+      }
+      summary.byType[p.instrumentType].count++;
+      summary.byType[p.instrumentType].principal += p.principalAmount;
+      summary.byType[p.instrumentType].marketValue += p.currentMarketValue;
+    }
+    return summary;
+  }
+  // ── P1.F-3: FX HEDGING ────────────────────────────────────────────────────
+  /**
+   * Creates a new FX hedging instrument (forward contract, option, or cross-currency swap).
+   * Validates hedge effectiveness per ASC 815 / IFRS 9 (≥ 80% to qualify as hedge accounting).
+   */
+  createFxHedge(hedge) {
+    const id = `HEDGE-${Date.now()}`;
+    const isHighlyEffective = hedge.hedgeEffectiveness >= 80;
+    const full = { id, ...hedge, isHighlyEffective };
+    this.fxHedges.set(id, full);
+    if (!isHighlyEffective) {
+      this.logger.warn(`Hedge ${id} effectiveness ${hedge.hedgeEffectiveness}% < 80% \u2014 NOT eligible for hedge accounting`);
+    } else {
+      this.logger.log(`FX Hedge created: ${hedge.hedgeType} ${hedge.buyCurrency}/${hedge.sellCurrency} notional=${hedge.notionalAmount.toLocaleString()}`);
+    }
+    return full;
+  }
+  /**
+   * Measures hedge effectiveness using the dollar-offset method.
+   * Compares fair value change of hedging instrument vs hedged item.
+   */
+  measureHedgeEffectiveness(hedgeId, hedgingInstrumentFVChange, hedgedItemFVChange) {
+    const hedge = this.fxHedges.get(hedgeId);
+    if (!hedge) throw new Error(`FX Hedge ${hedgeId} not found`);
+    const ratio = hedgedItemFVChange !== 0 ? Math.abs(hedgingInstrumentFVChange / hedgedItemFVChange) : 0;
+    const effectivenessPct = ratio * 100;
+    const qualifiesForHedgeAccounting = effectivenessPct >= 80 && effectivenessPct <= 125;
+    hedge.hedgeEffectiveness = effectivenessPct;
+    hedge.isHighlyEffective = qualifiesForHedgeAccounting;
+    hedge.fairValue = (hedge.fairValue || 0) + hedgingInstrumentFVChange;
+    const recommendation = qualifiesForHedgeAccounting ? "Hedge qualifies for hedge accounting \u2014 record effective portion in OCI" : `Hedge does NOT qualify (${effectivenessPct.toFixed(1)}% outside 80-125% range) \u2014 designate as trading instrument`;
+    return {
+      hedgeId,
+      hedgeType: hedge.hedgeType,
+      hedgingInstrumentFVChange,
+      hedgedItemFVChange,
+      effectivenessRatio: Number(ratio.toFixed(4)),
+      effectivenessPct: Number(effectivenessPct.toFixed(2)),
+      isHighlyEffective: qualifiesForHedgeAccounting,
+      qualifiesForHedgeAccounting,
+      recommendation
+    };
+  }
+  /**
+   * Generates cash flow hedge accounting entries (ASC 815):
+   *   - Effective portion → Other Comprehensive Income (OCI)
+   *   - Ineffective portion → P&L (Hedge Ineffectiveness)
+   */
+  generateHedgeAccountingEntries(hedgeId, totalFVChange) {
+    const hedge = this.fxHedges.get(hedgeId);
+    if (!hedge) throw new Error(`FX Hedge ${hedgeId} not found`);
+    const effectivenessFraction = Math.min(hedge.hedgeEffectiveness / 100, 1);
+    const effectivePortion = totalFVChange * effectivenessFraction;
+    const ineffectivePortion = totalFVChange - effectivePortion;
+    const ociEntry = effectivePortion > 0 ? [{ account: "HEDGE_ASSET", debit: effectivePortion, credit: 0 }, { account: "OCI_CASH_FLOW_HEDGE", debit: 0, credit: effectivePortion }] : [{ account: "OCI_CASH_FLOW_HEDGE", debit: Math.abs(effectivePortion), credit: 0 }, { account: "HEDGE_LIABILITY", debit: 0, credit: Math.abs(effectivePortion) }];
+    const plEntry = ineffectivePortion !== 0 ? [
+      { account: "HEDGE_INSTRUMENT", debit: ineffectivePortion > 0 ? ineffectivePortion : 0, credit: ineffectivePortion < 0 ? Math.abs(ineffectivePortion) : 0 },
+      { account: "HEDGE_INEFFECTIVENESS_PL", debit: ineffectivePortion < 0 ? Math.abs(ineffectivePortion) : 0, credit: ineffectivePortion > 0 ? ineffectivePortion : 0 }
+    ] : [];
+    return { hedgeId, effectivePortion, ineffectivePortion, ociEntry, plEntry };
+  }
+  listFxHedges() {
+    return Array.from(this.fxHedges.values());
+  }
+  getFxHedgeRiskSummary() {
+    const hedges = Array.from(this.fxHedges.values()).filter((h) => h.status === "Active");
+    return {
+      totalActiveHedges: hedges.length,
+      totalNotionalValue: hedges.reduce((sum, h) => sum + h.notionalAmount, 0),
+      highlyEffectiveCount: hedges.filter((h) => h.isHighlyEffective).length,
+      notQualifyingCount: hedges.filter((h) => !h.isHighlyEffective).length,
+      totalFairValue: hedges.reduce((sum, h) => sum + h.fairValue, 0)
+    };
+  }
+};
+TreasuryDebtService = __decorateClass([
+  Injectable27(),
+  __decorateParam(0, Inject22(DRIZZLE_DB))
+], TreasuryDebtService);
 
 // backend/src/modules/audit/audit.module.ts
 import { Module as Module3 } from "@nestjs/common";
 
 // backend/src/modules/audit/audit.service.ts
-import { Injectable as Injectable23 } from "@nestjs/common";
+import { Injectable as Injectable28 } from "@nestjs/common";
 var AuditService = class {
   constructor() {
     __publicField(this, "logs", []);
@@ -15723,7 +16678,7 @@ var AuditService = class {
   }
 };
 AuditService = __decorateClass([
-  Injectable23()
+  Injectable28()
 ], AuditService);
 
 // backend/src/modules/audit/audit.module.ts
@@ -15745,8 +16700,8 @@ FinanceModule = __decorateClass([
       AuditModule
     ],
     controllers: [ExpenseController],
-    providers: [ExpenseService, FinanceGlIntegrationService],
-    exports: [ExpenseService, FinanceGlIntegrationService]
+    providers: [ExpenseService, FinanceGlIntegrationService, ConsolidationService, TreasuryDebtService],
+    exports: [ExpenseService, FinanceGlIntegrationService, ConsolidationService, TreasuryDebtService]
   })
 ], FinanceModule);
 
@@ -15783,7 +16738,9 @@ EPMModule = __decorateClass([
       PredictiveForecastingService,
       EpmSecurityService,
       EsgPlanningService,
-      TreasuryPlanningService
+      TreasuryPlanningService,
+      EPMMnaSimulationService,
+      EPMEsgCarbonService
     ],
     exports: [
       EPMService,
@@ -15803,7 +16760,9 @@ EPMModule = __decorateClass([
       PredictiveForecastingService,
       EpmSecurityService,
       EsgPlanningService,
-      TreasuryPlanningService
+      TreasuryPlanningService,
+      EPMMnaSimulationService,
+      EPMEsgCarbonService
     ]
   })
 ], EPMModule);
@@ -15815,8 +16774,8 @@ var DatabaseModule = class {
 DatabaseModule = __decorateClass([
   Global(),
   Module6({
-    providers: [DrizzleProvider, DatabaseAliasProvider],
-    exports: [DrizzleProvider, DatabaseAliasProvider, DRIZZLE_DB, DATABASE]
+    providers: [DatabasePoolProvider, DrizzleProvider, DatabaseAliasProvider],
+    exports: [DatabasePoolProvider, DrizzleProvider, DatabaseAliasProvider, DRIZZLE_DB, DATABASE, DATABASE_POOL]
   })
 ], DatabaseModule);
 
@@ -15824,7 +16783,7 @@ DatabaseModule = __decorateClass([
 import { Module as Module8 } from "@nestjs/common";
 
 // backend/src/modules/admin/demo-environments/demo-environments.controller.ts
-import { Controller as Controller6, Get as Get6, Post as Post6, Put as Put3, Delete as Delete4, Patch as Patch2, Body as Body6, Param as Param6, Query as Query3 } from "@nestjs/common";
+import { Controller as Controller7, Get as Get7, Post as Post7, Put as Put3, Delete as Delete4, Patch as Patch2, Body as Body7, Param as Param7, Query as Query3 } from "@nestjs/common";
 var DemoEnvironmentsController = class {
   constructor(demoService) {
     this.demoService = demoService;
@@ -15849,38 +16808,38 @@ var DemoEnvironmentsController = class {
   }
 };
 __decorateClass([
-  Get6(),
+  Get7(),
   __decorateParam(0, Query3())
 ], DemoEnvironmentsController.prototype, "getAll", 1);
 __decorateClass([
-  Get6(":id"),
-  __decorateParam(0, Param6("id"))
+  Get7(":id"),
+  __decorateParam(0, Param7("id"))
 ], DemoEnvironmentsController.prototype, "getById", 1);
 __decorateClass([
-  Post6(),
-  __decorateParam(0, Body6())
+  Post7(),
+  __decorateParam(0, Body7())
 ], DemoEnvironmentsController.prototype, "create", 1);
 __decorateClass([
   Put3(":id"),
-  __decorateParam(0, Param6("id")),
-  __decorateParam(1, Body6())
+  __decorateParam(0, Param7("id")),
+  __decorateParam(1, Body7())
 ], DemoEnvironmentsController.prototype, "update", 1);
 __decorateClass([
   Patch2(":id/status"),
-  __decorateParam(0, Param6("id")),
-  __decorateParam(1, Body6())
+  __decorateParam(0, Param7("id")),
+  __decorateParam(1, Body7())
 ], DemoEnvironmentsController.prototype, "updateStatus", 1);
 __decorateClass([
   Delete4(":id"),
-  __decorateParam(0, Param6("id"))
+  __decorateParam(0, Param7("id"))
 ], DemoEnvironmentsController.prototype, "delete", 1);
 DemoEnvironmentsController = __decorateClass([
-  Controller6("api/admin/demo-environments")
+  Controller7("api/admin/demo-environments")
 ], DemoEnvironmentsController);
 
 // backend/src/modules/admin/demo-environments/demo-environments.service.ts
-import { Injectable as Injectable24, NotFoundException as NotFoundException3, Inject as Inject20 } from "@nestjs/common";
-import { eq as eq19 } from "drizzle-orm";
+import { Injectable as Injectable29, NotFoundException as NotFoundException6, Inject as Inject23 } from "@nestjs/common";
+import { eq as eq21 } from "drizzle-orm";
 import { demos as demos2 } from "@shared/schema/common";
 var DemoEnvironmentsService = class {
   constructor(db) {
@@ -15909,9 +16868,9 @@ var DemoEnvironmentsService = class {
     return { data: filtered };
   }
   async findById(id) {
-    const [demo] = await this.db.select().from(demos2).where(eq19(demos2.id, id)).limit(1);
+    const [demo] = await this.db.select().from(demos2).where(eq21(demos2.id, id)).limit(1);
     if (!demo) {
-      throw new NotFoundException3(`Demo environment ${id} not found`);
+      throw new NotFoundException6(`Demo environment ${id} not found`);
     }
     return {
       data: {
@@ -15959,9 +16918,9 @@ var DemoEnvironmentsService = class {
     if (data.industry) updateData.industry = data.industry;
     if (data.email) updateData.email = data.email;
     if (data.status) updateData.status = data.status;
-    const [updatedDemo] = await this.db.update(demos2).set(updateData).where(eq19(demos2.id, id)).returning();
+    const [updatedDemo] = await this.db.update(demos2).set(updateData).where(eq21(demos2.id, id)).returning();
     if (!updatedDemo) {
-      throw new NotFoundException3(`Demo environment ${id} not found`);
+      throw new NotFoundException6(`Demo environment ${id} not found`);
     }
     return {
       data: {
@@ -15979,9 +16938,9 @@ var DemoEnvironmentsService = class {
     };
   }
   async updateStatus(id, status, accessUrl) {
-    const [updatedDemo] = await this.db.update(demos2).set({ status }).where(eq19(demos2.id, id)).returning();
+    const [updatedDemo] = await this.db.update(demos2).set({ status }).where(eq21(demos2.id, id)).returning();
     if (!updatedDemo) {
-      throw new NotFoundException3(`Demo environment ${id} not found`);
+      throw new NotFoundException6(`Demo environment ${id} not found`);
     }
     return {
       data: {
@@ -15999,20 +16958,20 @@ var DemoEnvironmentsService = class {
     };
   }
   async delete(id) {
-    const [deletedDemo] = await this.db.delete(demos2).where(eq19(demos2.id, id)).returning();
+    const [deletedDemo] = await this.db.delete(demos2).where(eq21(demos2.id, id)).returning();
     if (!deletedDemo) {
-      throw new NotFoundException3(`Demo environment ${id} not found`);
+      throw new NotFoundException6(`Demo environment ${id} not found`);
     }
     return { data: { success: true } };
   }
 };
 DemoEnvironmentsService = __decorateClass([
-  Injectable24(),
-  __decorateParam(0, Inject20("DATABASE"))
+  Injectable29(),
+  __decorateParam(0, Inject23("DATABASE"))
 ], DemoEnvironmentsService);
 
 // backend/src/modules/admin/support-requests/support-requests.controller.ts
-import { Controller as Controller7, Get as Get7, Post as Post7, Put as Put4, Delete as Delete5, Body as Body7, Param as Param7, Query as Query4 } from "@nestjs/common";
+import { Controller as Controller8, Get as Get8, Post as Post8, Put as Put4, Delete as Delete5, Body as Body8, Param as Param8, Query as Query4 } from "@nestjs/common";
 var SupportRequestsController = class {
   constructor(requestsService) {
     this.requestsService = requestsService;
@@ -16040,42 +16999,42 @@ var SupportRequestsController = class {
   }
 };
 __decorateClass([
-  Get7(),
+  Get8(),
   __decorateParam(0, Query4())
 ], SupportRequestsController.prototype, "getAll", 1);
 __decorateClass([
-  Get7(":id"),
-  __decorateParam(0, Param7("id"))
+  Get8(":id"),
+  __decorateParam(0, Param8("id"))
 ], SupportRequestsController.prototype, "getById", 1);
 __decorateClass([
-  Post7(),
-  __decorateParam(0, Body7())
+  Post8(),
+  __decorateParam(0, Body8())
 ], SupportRequestsController.prototype, "create", 1);
 __decorateClass([
   Put4(":id"),
-  __decorateParam(0, Param7("id")),
-  __decorateParam(1, Body7())
+  __decorateParam(0, Param8("id")),
+  __decorateParam(1, Body8())
 ], SupportRequestsController.prototype, "update", 1);
 __decorateClass([
-  Post7(":id/assign"),
-  __decorateParam(0, Param7("id")),
-  __decorateParam(1, Body7())
+  Post8(":id/assign"),
+  __decorateParam(0, Param8("id")),
+  __decorateParam(1, Body8())
 ], SupportRequestsController.prototype, "assign", 1);
 __decorateClass([
-  Post7(":id/close"),
-  __decorateParam(0, Param7("id"))
+  Post8(":id/close"),
+  __decorateParam(0, Param8("id"))
 ], SupportRequestsController.prototype, "close", 1);
 __decorateClass([
   Delete5(":id"),
-  __decorateParam(0, Param7("id"))
+  __decorateParam(0, Param8("id"))
 ], SupportRequestsController.prototype, "delete", 1);
 SupportRequestsController = __decorateClass([
-  Controller7("api/admin/support-requests")
+  Controller8("api/admin/support-requests")
 ], SupportRequestsController);
 
 // backend/src/modules/admin/support-requests/support-requests.service.ts
-import { Injectable as Injectable25, NotFoundException as NotFoundException4, Inject as Inject21 } from "@nestjs/common";
-import { eq as eq20 } from "drizzle-orm";
+import { Injectable as Injectable30, NotFoundException as NotFoundException7, Inject as Inject24 } from "@nestjs/common";
+import { eq as eq22 } from "drizzle-orm";
 import { contactSubmissions as contactSubmissions2 } from "@shared/schema/common";
 var SupportRequestsService = class {
   constructor(db) {
@@ -16103,9 +17062,9 @@ var SupportRequestsService = class {
     return { data: filtered };
   }
   async findById(id) {
-    const [submission] = await this.db.select().from(contactSubmissions2).where(eq20(contactSubmissions2.id, id)).limit(1);
+    const [submission] = await this.db.select().from(contactSubmissions2).where(eq22(contactSubmissions2.id, id)).limit(1);
     if (!submission) {
-      throw new NotFoundException4(`Support request ${id} not found`);
+      throw new NotFoundException7(`Support request ${id} not found`);
     }
     return {
       data: {
@@ -16149,9 +17108,9 @@ var SupportRequestsService = class {
     if (data.subject) updateData.subject = data.subject;
     if (data.description) updateData.message = data.description;
     if (data.status) updateData.status = data.status;
-    const [updatedSubmission] = await this.db.update(contactSubmissions2).set(updateData).where(eq20(contactSubmissions2.id, id)).returning();
+    const [updatedSubmission] = await this.db.update(contactSubmissions2).set(updateData).where(eq22(contactSubmissions2.id, id)).returning();
     if (!updatedSubmission) {
-      throw new NotFoundException4(`Support request ${id} not found`);
+      throw new NotFoundException7(`Support request ${id} not found`);
     }
     return {
       data: {
@@ -16169,9 +17128,9 @@ var SupportRequestsService = class {
     };
   }
   async assign(id, userId) {
-    const [updatedSubmission] = await this.db.update(contactSubmissions2).set({ status: "read" }).where(eq20(contactSubmissions2.id, id)).returning();
+    const [updatedSubmission] = await this.db.update(contactSubmissions2).set({ status: "read" }).where(eq22(contactSubmissions2.id, id)).returning();
     if (!updatedSubmission) {
-      throw new NotFoundException4(`Support request ${id} not found`);
+      throw new NotFoundException7(`Support request ${id} not found`);
     }
     return {
       data: {
@@ -16189,9 +17148,9 @@ var SupportRequestsService = class {
     };
   }
   async close(id) {
-    const [updatedSubmission] = await this.db.update(contactSubmissions2).set({ status: "closed" }).where(eq20(contactSubmissions2.id, id)).returning();
+    const [updatedSubmission] = await this.db.update(contactSubmissions2).set({ status: "closed" }).where(eq22(contactSubmissions2.id, id)).returning();
     if (!updatedSubmission) {
-      throw new NotFoundException4(`Support request ${id} not found`);
+      throw new NotFoundException7(`Support request ${id} not found`);
     }
     return {
       data: {
@@ -16208,20 +17167,20 @@ var SupportRequestsService = class {
     };
   }
   async delete(id) {
-    const [deletedSubmission] = await this.db.delete(contactSubmissions2).where(eq20(contactSubmissions2.id, id)).returning();
+    const [deletedSubmission] = await this.db.delete(contactSubmissions2).where(eq22(contactSubmissions2.id, id)).returning();
     if (!deletedSubmission) {
-      throw new NotFoundException4(`Support request ${id} not found`);
+      throw new NotFoundException7(`Support request ${id} not found`);
     }
     return { data: { success: true } };
   }
 };
 SupportRequestsService = __decorateClass([
-  Injectable25(),
-  __decorateParam(0, Inject21("DATABASE"))
+  Injectable30(),
+  __decorateParam(0, Inject24("DATABASE"))
 ], SupportRequestsService);
 
 // backend/src/modules/admin/affiliates/affiliates.controller.ts
-import { Controller as Controller8, Get as Get8, Post as Post8, Put as Put5, Delete as Delete6, Patch as Patch4, Body as Body8, Param as Param8, Query as Query5 } from "@nestjs/common";
+import { Controller as Controller9, Get as Get9, Post as Post9, Put as Put5, Delete as Delete6, Patch as Patch4, Body as Body9, Param as Param9, Query as Query5 } from "@nestjs/common";
 var AffiliatesController = class {
   constructor(affiliatesService) {
     this.affiliatesService = affiliatesService;
@@ -16255,52 +17214,52 @@ var AffiliatesController = class {
   }
 };
 __decorateClass([
-  Get8(),
+  Get9(),
   __decorateParam(0, Query5())
 ], AffiliatesController.prototype, "getAll", 1);
 __decorateClass([
-  Get8(":id"),
-  __decorateParam(0, Param8("id"))
+  Get9(":id"),
+  __decorateParam(0, Param9("id"))
 ], AffiliatesController.prototype, "getById", 1);
 __decorateClass([
-  Get8(":id/referrals"),
-  __decorateParam(0, Param8("id"))
+  Get9(":id/referrals"),
+  __decorateParam(0, Param9("id"))
 ], AffiliatesController.prototype, "getReferrals", 1);
 __decorateClass([
-  Post8(),
-  __decorateParam(0, Body8())
+  Post9(),
+  __decorateParam(0, Body9())
 ], AffiliatesController.prototype, "create", 1);
 __decorateClass([
   Put5(":id"),
-  __decorateParam(0, Param8("id")),
-  __decorateParam(1, Body8())
+  __decorateParam(0, Param9("id")),
+  __decorateParam(1, Body9())
 ], AffiliatesController.prototype, "update", 1);
 __decorateClass([
   Patch4(":id/status"),
-  __decorateParam(0, Param8("id")),
-  __decorateParam(1, Body8())
+  __decorateParam(0, Param9("id")),
+  __decorateParam(1, Body9())
 ], AffiliatesController.prototype, "updateStatus", 1);
 __decorateClass([
-  Post8(":id/referrals"),
-  __decorateParam(0, Param8("id")),
-  __decorateParam(1, Body8())
+  Post9(":id/referrals"),
+  __decorateParam(0, Param9("id")),
+  __decorateParam(1, Body9())
 ], AffiliatesController.prototype, "createReferral", 1);
 __decorateClass([
-  Post8("referrals/:referralId/convert"),
-  __decorateParam(0, Param8("referralId")),
-  __decorateParam(1, Body8())
+  Post9("referrals/:referralId/convert"),
+  __decorateParam(0, Param9("referralId")),
+  __decorateParam(1, Body9())
 ], AffiliatesController.prototype, "convertReferral", 1);
 __decorateClass([
   Delete6(":id"),
-  __decorateParam(0, Param8("id"))
+  __decorateParam(0, Param9("id"))
 ], AffiliatesController.prototype, "delete", 1);
 AffiliatesController = __decorateClass([
-  Controller8("api/admin/affiliates")
+  Controller9("api/admin/affiliates")
 ], AffiliatesController);
 
 // backend/src/modules/admin/affiliates/affiliates.service.ts
-import { Injectable as Injectable26, NotFoundException as NotFoundException5, Inject as Inject22 } from "@nestjs/common";
-import { eq as eq21 } from "drizzle-orm";
+import { Injectable as Injectable31, NotFoundException as NotFoundException8, Inject as Inject25 } from "@nestjs/common";
+import { eq as eq23 } from "drizzle-orm";
 import { affiliates as affiliates2, affiliateReferrals as affiliateReferrals2 } from "@shared/schema/admin";
 var AffiliatesService = class {
   constructor(db) {
@@ -16318,9 +17277,9 @@ var AffiliatesService = class {
     return { data: filtered };
   }
   async findById(id) {
-    const [affiliate] = await this.db.select().from(affiliates2).where(eq21(affiliates2.id, id)).limit(1);
+    const [affiliate] = await this.db.select().from(affiliates2).where(eq23(affiliates2.id, id)).limit(1);
     if (!affiliate) {
-      throw new NotFoundException5(`Affiliate ${id} not found`);
+      throw new NotFoundException8(`Affiliate ${id} not found`);
     }
     return { data: affiliate };
   }
@@ -16346,68 +17305,76 @@ var AffiliatesService = class {
     if (data.status) updateData.status = data.status;
     if (data.commissionRate) updateData.commissionRate = data.commissionRate;
     updateData.updatedAt = /* @__PURE__ */ new Date();
-    const [updatedAffiliate] = await this.db.update(affiliates2).set(updateData).where(eq21(affiliates2.id, id)).returning();
+    const [updatedAffiliate] = await this.db.update(affiliates2).set(updateData).where(eq23(affiliates2.id, id)).returning();
     if (!updatedAffiliate) {
-      throw new NotFoundException5(`Affiliate ${id} not found`);
+      throw new NotFoundException8(`Affiliate ${id} not found`);
+    }
+    return { data: updatedAffiliate };
+  }
+  async updateStatus(id, status) {
+    const [updatedAffiliate] = await this.db.update(affiliates2).set({ status, updatedAt: /* @__PURE__ */ new Date() }).where(eq23(affiliates2.id, id)).returning();
+    if (!updatedAffiliate) {
+      throw new NotFoundException8(`Affiliate ${id} not found`);
     }
     return { data: updatedAffiliate };
   }
   async delete(id) {
-    const [deletedAffiliate] = await this.db.delete(affiliates2).where(eq21(affiliates2.id, id)).returning();
+    const [deletedAffiliate] = await this.db.delete(affiliates2).where(eq23(affiliates2.id, id)).returning();
     if (!deletedAffiliate) {
-      throw new NotFoundException5(`Affiliate ${id} not found`);
+      throw new NotFoundException8(`Affiliate ${id} not found`);
     }
     return { data: { success: true } };
   }
   // Referral management
   async getReferrals(affiliateId) {
-    const referrals = await this.db.select().from(affiliateReferrals2).where(eq21(affiliateReferrals2.affiliateId, affiliateId));
+    const referrals = await this.db.select().from(affiliateReferrals2).where(eq23(affiliateReferrals2.affiliateId, affiliateId));
     return { data: referrals };
   }
-  async createReferral(data) {
+  async createReferral(affiliateId, tenantId) {
     const [newReferral] = await this.db.insert(affiliateReferrals2).values({
-      affiliateId: data.affiliateId || "",
-      tenantId: data.tenantId || "",
+      affiliateId,
+      tenantId,
       status: "pending"
     }).returning();
     return { data: newReferral };
   }
   async convertReferral(referralId, commissionAmount) {
+    const commissionStr = String(commissionAmount);
     const [updatedReferral] = await this.db.update(affiliateReferrals2).set({
       status: "converted",
-      commissionAmount,
+      commissionAmount: commissionStr,
       convertedAt: /* @__PURE__ */ new Date()
-    }).where(eq21(affiliateReferrals2.id, referralId)).returning();
+    }).where(eq23(affiliateReferrals2.id, referralId)).returning();
     if (!updatedReferral) {
-      throw new NotFoundException5(`Referral ${referralId} not found`);
+      throw new NotFoundException8(`Referral ${referralId} not found`);
     }
-    const [affiliate] = await this.db.select().from(affiliates2).where(eq21(affiliates2.id, updatedReferral.affiliateId)).limit(1);
+    const [affiliate] = await this.db.select().from(affiliates2).where(eq23(affiliates2.id, updatedReferral.affiliateId)).limit(1);
     if (affiliate) {
       await this.db.update(affiliates2).set({
         totalReferrals: (affiliate.totalReferrals || 0) + 1,
-        totalEarnings: String(parseFloat(affiliate.totalEarnings || "0") + parseFloat(commissionAmount)),
+        totalEarnings: String(parseFloat(affiliate.totalEarnings || "0") + commissionAmount),
         updatedAt: /* @__PURE__ */ new Date()
-      }).where(eq21(affiliates2.id, updatedReferral.affiliateId));
+      }).where(eq23(affiliates2.id, updatedReferral.affiliateId));
     }
     return { data: updatedReferral };
   }
 };
 AffiliatesService = __decorateClass([
-  Injectable26(),
-  __decorateParam(0, Inject22("DATABASE"))
+  Injectable31(),
+  __decorateParam(0, Inject25("DATABASE"))
 ], AffiliatesService);
 
 // backend/src/modules/admin/system-config/system-config.controller.ts
-import { Controller as Controller9, Get as Get9, Put as Put6, Delete as Delete7, Body as Body9, Param as Param9, Post as Post9, Query as Query6 } from "@nestjs/common";
+import { Controller as Controller10, Get as Get10, Put as Put6, Delete as Delete7, Body as Body10, Param as Param10, Post as Post10, Query as Query6 } from "@nestjs/common";
 var SystemConfigController = class {
   constructor(configService) {
     this.configService = configService;
   }
   async getConfig(category) {
-    return this.configService.getConfig(category);
+    return this.configService.getAllConfig();
   }
   async getConfigValue(key) {
-    return this.configService.getConfigValue(key);
+    return this.configService.getConfig(key);
   }
   async setConfig(key, data) {
     return this.configService.setConfig(key, data.value, data.category, data.description);
@@ -16416,64 +17383,72 @@ var SystemConfigController = class {
     return this.configService.deleteConfig(key);
   }
   async getFlags() {
-    return this.configService.getFlags();
+    return this.configService.getAllFlags();
   }
   async checkFlag(name) {
-    return this.configService.checkFlag(name);
+    return this.configService.getFlag(name);
   }
   async createFlag(data) {
     return this.configService.createFlag(data);
   }
   async enableFlag(name) {
-    return this.configService.enableFlag(name);
+    const { data: flag } = await this.configService.getFlag(name);
+    if (!flag.enabled) {
+      return this.configService.toggleFlag(name);
+    }
+    return { data: flag };
   }
   async disableFlag(name) {
-    return this.configService.disableFlag(name);
+    const { data: flag } = await this.configService.getFlag(name);
+    if (flag.enabled) {
+      return this.configService.toggleFlag(name);
+    }
+    return { data: flag };
   }
 };
 __decorateClass([
-  Get9("config"),
+  Get10("config"),
   __decorateParam(0, Query6("category"))
 ], SystemConfigController.prototype, "getConfig", 1);
 __decorateClass([
-  Get9("config/:key"),
-  __decorateParam(0, Param9("key"))
+  Get10("config/:key"),
+  __decorateParam(0, Param10("key"))
 ], SystemConfigController.prototype, "getConfigValue", 1);
 __decorateClass([
   Put6("config/:key"),
-  __decorateParam(0, Param9("key")),
-  __decorateParam(1, Body9())
+  __decorateParam(0, Param10("key")),
+  __decorateParam(1, Body10())
 ], SystemConfigController.prototype, "setConfig", 1);
 __decorateClass([
   Delete7("config/:key"),
-  __decorateParam(0, Param9("key"))
+  __decorateParam(0, Param10("key"))
 ], SystemConfigController.prototype, "deleteConfig", 1);
 __decorateClass([
-  Get9("flags")
+  Get10("flags")
 ], SystemConfigController.prototype, "getFlags", 1);
 __decorateClass([
-  Get9("flags/:name/enabled"),
-  __decorateParam(0, Param9("name"))
+  Get10("flags/:name/enabled"),
+  __decorateParam(0, Param10("name"))
 ], SystemConfigController.prototype, "checkFlag", 1);
 __decorateClass([
-  Post9("flags"),
-  __decorateParam(0, Body9())
+  Post10("flags"),
+  __decorateParam(0, Body10())
 ], SystemConfigController.prototype, "createFlag", 1);
 __decorateClass([
-  Post9("flags/:name/enable"),
-  __decorateParam(0, Param9("name"))
+  Post10("flags/:name/enable"),
+  __decorateParam(0, Param10("name"))
 ], SystemConfigController.prototype, "enableFlag", 1);
 __decorateClass([
-  Post9("flags/:name/disable"),
-  __decorateParam(0, Param9("name"))
+  Post10("flags/:name/disable"),
+  __decorateParam(0, Param10("name"))
 ], SystemConfigController.prototype, "disableFlag", 1);
 SystemConfigController = __decorateClass([
-  Controller9("api/admin/system")
+  Controller10("api/admin/system")
 ], SystemConfigController);
 
 // backend/src/modules/admin/system-config/system-config.service.ts
-import { Injectable as Injectable27, NotFoundException as NotFoundException6, Inject as Inject23 } from "@nestjs/common";
-import { eq as eq22 } from "drizzle-orm";
+import { Injectable as Injectable32, NotFoundException as NotFoundException9, Inject as Inject26 } from "@nestjs/common";
+import { eq as eq24 } from "drizzle-orm";
 import { systemConfig as systemConfig2, featureFlags as featureFlags2 } from "@shared/schema/admin";
 var CONFIG_CACHE_PREFIX = "config";
 var FLAGS_CACHE_PREFIX = "flags";
@@ -16500,15 +17475,15 @@ var SystemConfigService = class {
     if (cached) {
       return { data: cached };
     }
-    const [config] = await this.db.select().from(systemConfig2).where(eq22(systemConfig2.key, key)).limit(1);
+    const [config] = await this.db.select().from(systemConfig2).where(eq24(systemConfig2.key, key)).limit(1);
     if (!config) {
-      throw new NotFoundException6(`Config ${key} not found`);
+      throw new NotFoundException9(`Config ${key} not found`);
     }
     await this.cacheService.set(cacheKey, config, { prefix: CONFIG_CACHE_PREFIX, ttl: CACHE_TTL });
     return { data: config };
   }
   async setConfig(key, value, category, description) {
-    const [existing] = await this.db.select().from(systemConfig2).where(eq22(systemConfig2.key, key)).limit(1);
+    const [existing] = await this.db.select().from(systemConfig2).where(eq24(systemConfig2.key, key)).limit(1);
     let result;
     if (existing) {
       const [updated] = await this.db.update(systemConfig2).set({
@@ -16516,7 +17491,7 @@ var SystemConfigService = class {
         category,
         description,
         updatedAt: /* @__PURE__ */ new Date()
-      }).where(eq22(systemConfig2.key, key)).returning();
+      }).where(eq24(systemConfig2.key, key)).returning();
       result = updated;
     } else {
       const [newConfig] = await this.db.insert(systemConfig2).values({
@@ -16532,9 +17507,9 @@ var SystemConfigService = class {
     return { data: result };
   }
   async deleteConfig(key) {
-    const [deleted] = await this.db.delete(systemConfig2).where(eq22(systemConfig2.key, key)).returning();
+    const [deleted] = await this.db.delete(systemConfig2).where(eq24(systemConfig2.key, key)).returning();
     if (!deleted) {
-      throw new NotFoundException6(`Config ${key} not found`);
+      throw new NotFoundException9(`Config ${key} not found`);
     }
     await this.cacheService.delete(`key:${key}`, CONFIG_CACHE_PREFIX);
     await this.cacheService.delete("all", CONFIG_CACHE_PREFIX);
@@ -16557,9 +17532,9 @@ var SystemConfigService = class {
     if (cached) {
       return { data: cached };
     }
-    const [flag] = await this.db.select().from(featureFlags2).where(eq22(featureFlags2.name, name)).limit(1);
+    const [flag] = await this.db.select().from(featureFlags2).where(eq24(featureFlags2.name, name)).limit(1);
     if (!flag) {
-      throw new NotFoundException6(`Feature flag ${name} not found`);
+      throw new NotFoundException9(`Feature flag ${name} not found`);
     }
     await this.cacheService.set(cacheKey, flag, { prefix: FLAGS_CACHE_PREFIX, ttl: CACHE_TTL });
     return { data: flag };
@@ -16570,22 +17545,22 @@ var SystemConfigService = class {
     return { data: newFlag };
   }
   async toggleFlag(name) {
-    const [flag] = await this.db.select().from(featureFlags2).where(eq22(featureFlags2.name, name)).limit(1);
+    const [flag] = await this.db.select().from(featureFlags2).where(eq24(featureFlags2.name, name)).limit(1);
     if (!flag) {
-      throw new NotFoundException6(`Feature flag ${name} not found`);
+      throw new NotFoundException9(`Feature flag ${name} not found`);
     }
     const [updated] = await this.db.update(featureFlags2).set({
       enabled: !flag.enabled,
       updatedAt: /* @__PURE__ */ new Date()
-    }).where(eq22(featureFlags2.name, name)).returning();
+    }).where(eq24(featureFlags2.name, name)).returning();
     await this.cacheService.delete(`name:${name}`, FLAGS_CACHE_PREFIX);
     await this.cacheService.delete("all", FLAGS_CACHE_PREFIX);
     return { data: updated };
   }
   async deleteFlag(name) {
-    const [deleted] = await this.db.delete(featureFlags2).where(eq22(featureFlags2.name, name)).returning();
+    const [deleted] = await this.db.delete(featureFlags2).where(eq24(featureFlags2.name, name)).returning();
     if (!deleted) {
-      throw new NotFoundException6(`Feature flag ${name} not found`);
+      throw new NotFoundException9(`Feature flag ${name} not found`);
     }
     await this.cacheService.delete(`name:${name}`, FLAGS_CACHE_PREFIX);
     await this.cacheService.delete("all", FLAGS_CACHE_PREFIX);
@@ -16593,12 +17568,12 @@ var SystemConfigService = class {
   }
 };
 SystemConfigService = __decorateClass([
-  Injectable27(),
-  __decorateParam(0, Inject23("DATABASE"))
+  Injectable32(),
+  __decorateParam(0, Inject26("DATABASE"))
 ], SystemConfigService);
 
 // backend/src/modules/admin/tenants/tenants.controller.ts
-import { Controller as Controller10, Get as Get10, Post as Post10, Put as Put7, Delete as Delete8, Body as Body10, Param as Param10, Query as Query7 } from "@nestjs/common";
+import { Controller as Controller11, Get as Get11, Post as Post11, Put as Put7, Patch as Patch5, Delete as Delete8, Body as Body11, Param as Param11, Query as Query7, HttpCode, HttpStatus } from "@nestjs/common";
 var TenantsController = class {
   constructor(tenantsService) {
     this.tenantsService = tenantsService;
@@ -16615,38 +17590,47 @@ var TenantsController = class {
   async update(id, data) {
     return this.tenantsService.update(id, data);
   }
+  async updateStatus(id, status) {
+    return this.tenantsService.update(id, { status });
+  }
   async delete(id) {
     return this.tenantsService.delete(id);
   }
 };
 __decorateClass([
-  Get10(),
+  Get11(),
   __decorateParam(0, Query7())
 ], TenantsController.prototype, "getAll", 1);
 __decorateClass([
-  Get10(":id"),
-  __decorateParam(0, Param10("id"))
+  Get11(":id"),
+  __decorateParam(0, Param11("id"))
 ], TenantsController.prototype, "getById", 1);
 __decorateClass([
-  Post10(),
-  __decorateParam(0, Body10())
+  Post11(),
+  __decorateParam(0, Body11())
 ], TenantsController.prototype, "create", 1);
 __decorateClass([
   Put7(":id"),
-  __decorateParam(0, Param10("id")),
-  __decorateParam(1, Body10())
+  __decorateParam(0, Param11("id")),
+  __decorateParam(1, Body11())
 ], TenantsController.prototype, "update", 1);
 __decorateClass([
+  Patch5(":id/status"),
+  HttpCode(HttpStatus.OK),
+  __decorateParam(0, Param11("id")),
+  __decorateParam(1, Body11("status"))
+], TenantsController.prototype, "updateStatus", 1);
+__decorateClass([
   Delete8(":id"),
-  __decorateParam(0, Param10("id"))
+  __decorateParam(0, Param11("id"))
 ], TenantsController.prototype, "delete", 1);
 TenantsController = __decorateClass([
-  Controller10("api/admin/tenants")
+  Controller11("api/admin/tenants")
 ], TenantsController);
 
 // backend/src/modules/admin/tenants/tenants.service.ts
-import { Injectable as Injectable28, NotFoundException as NotFoundException7, Inject as Inject24 } from "@nestjs/common";
-import { eq as eq23 } from "drizzle-orm";
+import { Injectable as Injectable33, NotFoundException as NotFoundException10, Inject as Inject27 } from "@nestjs/common";
+import { eq as eq25 } from "drizzle-orm";
 import { tenants as tenants2 } from "@shared/schema";
 var CACHE_PREFIX = "tenant";
 var CACHE_TTL2 = 3600;
@@ -16675,9 +17659,9 @@ var TenantsService = class {
     if (cached) {
       return { data: cached };
     }
-    const [tenant] = await this.db.select().from(tenants2).where(eq23(tenants2.id, id)).limit(1);
+    const [tenant] = await this.db.select().from(tenants2).where(eq25(tenants2.id, id)).limit(1);
     if (!tenant) {
-      throw new NotFoundException7(`Tenant ${id} not found`);
+      throw new NotFoundException10(`Tenant ${id} not found`);
     }
     await this.cacheService.set(cacheKey, tenant, { prefix: CACHE_PREFIX, ttl: CACHE_TTL2 });
     return { data: tenant };
@@ -16697,18 +17681,18 @@ var TenantsService = class {
     if (data.slug) updateData.slug = data.slug;
     if (data.status) updateData.status = data.status;
     updateData.updatedAt = /* @__PURE__ */ new Date();
-    const [updatedTenant] = await this.db.update(tenants2).set(updateData).where(eq23(tenants2.id, id)).returning();
+    const [updatedTenant] = await this.db.update(tenants2).set(updateData).where(eq25(tenants2.id, id)).returning();
     if (!updatedTenant) {
-      throw new NotFoundException7(`Tenant ${id} not found`);
+      throw new NotFoundException10(`Tenant ${id} not found`);
     }
     await this.cacheService.delete(`id:${id}`, CACHE_PREFIX);
     await this.cacheService.invalidateByPrefix(CACHE_PREFIX);
     return { data: updatedTenant };
   }
   async delete(id) {
-    const [deletedTenant] = await this.db.delete(tenants2).where(eq23(tenants2.id, id)).returning();
+    const [deletedTenant] = await this.db.delete(tenants2).where(eq25(tenants2.id, id)).returning();
     if (!deletedTenant) {
-      throw new NotFoundException7(`Tenant ${id} not found`);
+      throw new NotFoundException10(`Tenant ${id} not found`);
     }
     await this.cacheService.delete(`id:${id}`, CACHE_PREFIX);
     await this.cacheService.invalidateByPrefix(CACHE_PREFIX);
@@ -16716,12 +17700,12 @@ var TenantsService = class {
   }
 };
 TenantsService = __decorateClass([
-  Injectable28(),
-  __decorateParam(0, Inject24("DATABASE"))
+  Injectable33(),
+  __decorateParam(0, Inject27("DATABASE"))
 ], TenantsService);
 
 // backend/src/modules/admin/modules/modules.controller.ts
-import { Controller as Controller11, Get as Get11, Post as Post11, Put as Put8, Delete as Delete9, Patch as Patch5, Body as Body11, Param as Param11, Query as Query8 } from "@nestjs/common";
+import { Controller as Controller12, Get as Get12, Post as Post12, Put as Put8, Delete as Delete9, Patch as Patch6, Body as Body12, Param as Param12, Query as Query8 } from "@nestjs/common";
 var ModulesController = class {
   constructor(modulesService) {
     this.modulesService = modulesService;
@@ -16746,36 +17730,36 @@ var ModulesController = class {
   }
 };
 __decorateClass([
-  Get11(),
+  Get12(),
   __decorateParam(0, Query8())
 ], ModulesController.prototype, "getAll", 1);
 __decorateClass([
-  Get11(":id"),
-  __decorateParam(0, Param11("id"))
+  Get12(":id"),
+  __decorateParam(0, Param12("id"))
 ], ModulesController.prototype, "getById", 1);
 __decorateClass([
-  Post11(),
-  __decorateParam(0, Body11())
+  Post12(),
+  __decorateParam(0, Body12())
 ], ModulesController.prototype, "create", 1);
 __decorateClass([
   Put8(":id"),
-  __decorateParam(0, Param11("id")),
-  __decorateParam(1, Body11())
+  __decorateParam(0, Param12("id")),
+  __decorateParam(1, Body12())
 ], ModulesController.prototype, "update", 1);
 __decorateClass([
-  Patch5(":id/toggle"),
-  __decorateParam(0, Param11("id"))
+  Patch6(":id/toggle"),
+  __decorateParam(0, Param12("id"))
 ], ModulesController.prototype, "toggle", 1);
 __decorateClass([
   Delete9(":id"),
-  __decorateParam(0, Param11("id"))
+  __decorateParam(0, Param12("id"))
 ], ModulesController.prototype, "delete", 1);
 ModulesController = __decorateClass([
-  Controller11("api/admin/modules")
+  Controller12("api/admin/modules")
 ], ModulesController);
 
 // backend/src/modules/admin/modules/modules.service.ts
-import { Injectable as Injectable29, NotFoundException as NotFoundException8 } from "@nestjs/common";
+import { Injectable as Injectable34, NotFoundException as NotFoundException11 } from "@nestjs/common";
 var ModulesService = class {
   constructor() {
     // In-memory storage with system modules
@@ -16869,7 +17853,7 @@ var ModulesService = class {
   async findById(id) {
     const module = this.modules.find((m) => m.id === id);
     if (!module) {
-      throw new NotFoundException8(`Module ${id} not found`);
+      throw new NotFoundException11(`Module ${id} not found`);
     }
     return { data: module };
   }
@@ -16892,7 +17876,7 @@ var ModulesService = class {
   async update(id, data) {
     const index4 = this.modules.findIndex((m) => m.id === id);
     if (index4 === -1) {
-      throw new NotFoundException8(`Module ${id} not found`);
+      throw new NotFoundException11(`Module ${id} not found`);
     }
     this.modules[index4] = {
       ...this.modules[index4],
@@ -16905,7 +17889,7 @@ var ModulesService = class {
   async toggle(id) {
     const index4 = this.modules.findIndex((m) => m.id === id);
     if (index4 === -1) {
-      throw new NotFoundException8(`Module ${id} not found`);
+      throw new NotFoundException11(`Module ${id} not found`);
     }
     this.modules[index4] = {
       ...this.modules[index4],
@@ -16917,21 +17901,155 @@ var ModulesService = class {
   async delete(id) {
     const index4 = this.modules.findIndex((m) => m.id === id);
     if (index4 === -1) {
-      throw new NotFoundException8(`Module ${id} not found`);
+      throw new NotFoundException11(`Module ${id} not found`);
     }
     this.modules.splice(index4, 1);
     return { data: { success: true } };
   }
 };
 ModulesService = __decorateClass([
-  Injectable29()
+  Injectable34()
 ], ModulesService);
+
+// backend/src/modules/admin/metrics/metrics.controller.ts
+import { Controller as Controller13, Get as Get13 } from "@nestjs/common";
+var MetricsController = class {
+  constructor(metricsService) {
+    this.metricsService = metricsService;
+  }
+  async getMetrics() {
+    return this.metricsService.getAggregateMetrics();
+  }
+};
+__decorateClass([
+  Get13()
+], MetricsController.prototype, "getMetrics", 1);
+MetricsController = __decorateClass([
+  Controller13("api/admin/metrics")
+], MetricsController);
+
+// backend/src/modules/admin/metrics/metrics.service.ts
+import { Injectable as Injectable35, Inject as Inject28 } from "@nestjs/common";
+import { sql as sql90 } from "drizzle-orm";
+import { tenants as tenants3 } from "@shared/schema";
+import { adminLogs as adminLogs2 } from "@shared/schema/admin";
+import { eq as eq26, gte } from "drizzle-orm";
+var MetricsService = class {
+  constructor(db) {
+    this.db = db;
+  }
+  async getAggregateMetrics() {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1e3);
+    const [
+      totalTenantsResult,
+      activeTenantsResult,
+      recentLogsResult
+    ] = await Promise.all([
+      this.db.select({ count: sql90`count(*)::int` }).from(tenants3),
+      this.db.select({ count: sql90`count(*)::int` }).from(tenants3).where(eq26(tenants3.status, "active")),
+      this.db.select({ count: sql90`count(*)::int` }).from(adminLogs2).where(gte(adminLogs2.createdAt, sevenDaysAgo))
+    ]);
+    return {
+      data: {
+        totalTenants: totalTenantsResult[0]?.count ?? 0,
+        activeTenants: activeTenantsResult[0]?.count ?? 0,
+        recentAdminActions: recentLogsResult[0]?.count ?? 0
+      }
+    };
+  }
+};
+MetricsService = __decorateClass([
+  Injectable35(),
+  __decorateParam(0, Inject28("DATABASE"))
+], MetricsService);
+
+// backend/src/modules/admin/audit-logs/audit-logs.controller.ts
+import { Controller as Controller14, Get as Get14, Post as Post13, Query as Query9, Body as Body13 } from "@nestjs/common";
+var AuditLogsController = class {
+  constructor(auditLogsService) {
+    this.auditLogsService = auditLogsService;
+  }
+  async getLogs(page = "1", limit = "25", actor, action, type, from, to) {
+    return this.auditLogsService.findAll({
+      page: parseInt(page, 10),
+      limit: parseInt(limit, 10),
+      actor,
+      action,
+      type,
+      from: from ? new Date(from) : void 0,
+      to: to ? new Date(to) : void 0
+    });
+  }
+  async createLog(data) {
+    return this.auditLogsService.create(data);
+  }
+};
+__decorateClass([
+  Get14(),
+  __decorateParam(0, Query9("page")),
+  __decorateParam(1, Query9("limit")),
+  __decorateParam(2, Query9("actor")),
+  __decorateParam(3, Query9("action")),
+  __decorateParam(4, Query9("type")),
+  __decorateParam(5, Query9("from")),
+  __decorateParam(6, Query9("to"))
+], AuditLogsController.prototype, "getLogs", 1);
+__decorateClass([
+  Post13(),
+  __decorateParam(0, Body13())
+], AuditLogsController.prototype, "createLog", 1);
+AuditLogsController = __decorateClass([
+  Controller14("api/admin/audit-logs")
+], AuditLogsController);
+
+// backend/src/modules/admin/audit-logs/audit-logs.service.ts
+import { Injectable as Injectable36, Inject as Inject29 } from "@nestjs/common";
+import { sql as sql91, and as and14, gte as gte2, lte, eq as eq27, ilike, desc } from "drizzle-orm";
+import { adminLogs as adminLogs3 } from "@shared/schema";
+var AuditLogsService = class {
+  constructor(db) {
+    this.db = db;
+  }
+  async findAll(options) {
+    const { page, limit, actor, action, type, from, to } = options;
+    const offset = (page - 1) * limit;
+    const conditions = [];
+    if (actor) conditions.push(ilike(adminLogs3.actorEmail, `%${actor}%`));
+    if (action) conditions.push(ilike(adminLogs3.action, `%${action}%`));
+    if (type) conditions.push(eq27(adminLogs3.resourceType, type));
+    if (from) conditions.push(gte2(adminLogs3.createdAt, from));
+    if (to) conditions.push(lte(adminLogs3.createdAt, to));
+    const where = conditions.length > 0 ? and14(...conditions) : void 0;
+    const [logs, countResult] = await Promise.all([
+      this.db.select().from(adminLogs3).where(where).orderBy(desc(adminLogs3.createdAt)).limit(limit).offset(offset),
+      this.db.select({ count: sql91`count(*)::int` }).from(adminLogs3).where(where)
+    ]);
+    const total = countResult[0]?.count ?? 0;
+    return {
+      data: logs,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit)
+      }
+    };
+  }
+  async create(data) {
+    const [log] = await this.db.insert(adminLogs3).values(data).returning();
+    return { data: log };
+  }
+};
+AuditLogsService = __decorateClass([
+  Injectable36(),
+  __decorateParam(0, Inject29("DATABASE"))
+], AuditLogsService);
 
 // backend/src/cache/cache.module.ts
 import { Module as Module7, Global as Global2 } from "@nestjs/common";
 
-// backend/src/cache/cache.service.ts
-import { Injectable as Injectable30 } from "@nestjs/common";
+// backend/src/cache/cache-manager.service.ts
+import { Injectable as Injectable37 } from "@nestjs/common";
 
 // backend/src/cache/redis.client.ts
 import Redis from "ioredis";
@@ -16968,134 +18086,175 @@ process.on("SIGTERM", async () => {
   await closeRedisConnection();
 });
 
-// backend/src/cache/cache.service.ts
-var CacheService = class {
+// backend/src/cache/cache-manager.service.ts
+var CacheManagerService = class {
   constructor() {
-    __publicField(this, "defaultTTL", 3600);
-    // 1 hour default
-    __publicField(this, "isRedisAvailable", true);
-    this.checkRedisAvailability();
-  }
-  async checkRedisAvailability() {
-    try {
-      await redisClient.ping();
-      this.isRedisAvailable = true;
-      console.log("\u2705 Redis cache available");
-    } catch (error) {
-      this.isRedisAvailable = false;
-      console.warn("\u26A0\uFE0F  Redis not available - caching disabled");
-    }
+    __publicField(this, "stats", {
+      hits: 0,
+      misses: 0,
+      sets: 0,
+      deletes: 0
+    });
+    __publicField(this, "defaultTTL", parseInt(process.env.CACHE_TTL_DEFAULT || "3600", 10));
   }
   /**
-   * Get value from cache
+   * Build a namespaced cache key
    */
-  async get(key, prefix) {
-    if (!this.isRedisAvailable) return null;
+  buildKey(key, namespace) {
+    return namespace ? `${namespace}:${key}` : key;
+  }
+  /**
+   * Get a value from cache
+   */
+  async get(key, options) {
     try {
-      const fullKey = this.buildKey(key, prefix);
+      const fullKey = this.buildKey(key, options?.namespace);
       const value = await redisClient.get(fullKey);
-      if (!value) {
+      if (value === null) {
+        this.stats.misses++;
         return null;
       }
+      this.stats.hits++;
       return JSON.parse(value);
     } catch (error) {
-      console.error(`Cache get error for key ${key}:`, error);
+      console.error("Cache get error:", error);
       return null;
     }
   }
   /**
-   * Set value in cache
+   * Set a value in cache
    */
   async set(key, value, options) {
-    if (!this.isRedisAvailable) return;
     try {
-      const fullKey = this.buildKey(key, options?.prefix);
+      const fullKey = this.buildKey(key, options?.namespace);
       const ttl = options?.ttl || this.defaultTTL;
-      await redisClient.setex(fullKey, ttl, JSON.stringify(value));
+      const serialized = JSON.stringify(value);
+      await redisClient.setex(fullKey, ttl, serialized);
+      this.stats.sets++;
+      return true;
     } catch (error) {
-      console.error(`Cache set error for key ${key}:`, error);
-    }
-  }
-  /**
-   * Delete value from cache
-   */
-  async delete(key, prefix) {
-    if (!this.isRedisAvailable) return;
-    try {
-      const fullKey = this.buildKey(key, prefix);
-      await redisClient.del(fullKey);
-    } catch (error) {
-      console.error(`Cache delete error for key ${key}:`, error);
-    }
-  }
-  /**
-   * Delete all keys matching pattern
-   */
-  async deletePattern(pattern) {
-    if (!this.isRedisAvailable) return;
-    try {
-      const keys = await redisClient.keys(pattern);
-      if (keys.length > 0) {
-        await redisClient.del(...keys);
-      }
-    } catch (error) {
-      console.error(`Cache delete pattern error for ${pattern}:`, error);
-    }
-  }
-  /**
-   * Check if key exists
-   */
-  async exists(key, prefix) {
-    if (!this.isRedisAvailable) return false;
-    try {
-      const fullKey = this.buildKey(key, prefix);
-      const result = await redisClient.exists(fullKey);
-      return result === 1;
-    } catch (error) {
-      console.error(`Cache exists error for key ${key}:`, error);
+      console.error("Cache set error:", error);
       return false;
     }
   }
   /**
-   * Get or set pattern (cache-aside)
+   * Delete a value from cache
    */
-  async getOrSet(key, fetchFn, options) {
-    const cached = await this.get(key, options?.prefix);
-    if (cached !== null) {
-      return cached;
+  async delete(key, options) {
+    try {
+      const fullKey = this.buildKey(key, options?.namespace);
+      const result = await redisClient.del(fullKey);
+      this.stats.deletes++;
+      return result > 0;
+    } catch (error) {
+      console.error("Cache delete error:", error);
+      return false;
     }
-    const value = await fetchFn();
-    await this.set(key, value, options);
-    return value;
   }
   /**
-   * Invalidate cache by prefix
+   * Invalidate all keys matching a pattern
    */
-  async invalidateByPrefix(prefix) {
-    await this.deletePattern(`${prefix}:*`);
+  async invalidatePattern(pattern, namespace) {
+    try {
+      const fullPattern = this.buildKey(pattern, namespace);
+      const keys = await redisClient.keys(fullPattern);
+      if (keys.length === 0) {
+        return 0;
+      }
+      const result = await redisClient.del(...keys);
+      this.stats.deletes += result;
+      return result;
+    } catch (error) {
+      console.error("Cache invalidate pattern error:", error);
+      return 0;
+    }
   }
   /**
-   * Build full cache key
+   * Get multiple values from cache
    */
-  buildKey(key, prefix) {
-    return prefix ? `${prefix}:${key}` : key;
+  async mget(keys, options) {
+    try {
+      const fullKeys = keys.map((key) => this.buildKey(key, options?.namespace));
+      const values = await redisClient.mget(...fullKeys);
+      return values.map((value) => {
+        if (value === null) {
+          this.stats.misses++;
+          return null;
+        }
+        this.stats.hits++;
+        return JSON.parse(value);
+      });
+    } catch (error) {
+      console.error("Cache mget error:", error);
+      return keys.map(() => null);
+    }
+  }
+  /**
+   * Set multiple values in cache
+   */
+  async mset(entries, options) {
+    try {
+      const pipeline = redisClient.pipeline();
+      const ttl = options?.ttl || this.defaultTTL;
+      for (const entry of entries) {
+        const fullKey = this.buildKey(entry.key, options?.namespace);
+        const serialized = JSON.stringify(entry.value);
+        pipeline.setex(fullKey, ttl, serialized);
+      }
+      await pipeline.exec();
+      this.stats.sets += entries.length;
+      return true;
+    } catch (error) {
+      console.error("Cache mset error:", error);
+      return false;
+    }
+  }
+  /**
+   * Check if a key exists in cache
+   */
+  async exists(key, options) {
+    try {
+      const fullKey = this.buildKey(key, options?.namespace);
+      const result = await redisClient.exists(fullKey);
+      return result === 1;
+    } catch (error) {
+      console.error("Cache exists error:", error);
+      return false;
+    }
+  }
+  /**
+   * Get cache statistics
+   */
+  getStats() {
+    return { ...this.stats };
+  }
+  /**
+   * Reset cache statistics
+   */
+  resetStats() {
+    this.stats = {
+      hits: 0,
+      misses: 0,
+      sets: 0,
+      deletes: 0
+    };
   }
   /**
    * Clear all cache (use with caution!)
    */
   async clearAll() {
-    if (!this.isRedisAvailable) return;
     try {
       await redisClient.flushdb();
-      console.log("Cache cleared");
+      return true;
     } catch (error) {
-      console.error("Cache clear error:", error);
+      console.error("Cache clear all error:", error);
+      return false;
     }
   }
 };
-CacheService = __decorateClass([
-  Injectable30()
-], CacheService);
+CacheManagerService = __decorateClass([
+  Injectable37()
+], CacheManagerService);
 
 // backend/src/cache/cache.module.ts
 var CacheModule = class {
@@ -17103,8 +18262,8 @@ var CacheModule = class {
 CacheModule = __decorateClass([
   Global2(),
   Module7({
-    providers: [CacheService],
-    exports: [CacheService]
+    providers: [CacheManagerService],
+    exports: [CacheManagerService]
   })
 ], CacheModule);
 
@@ -17120,7 +18279,9 @@ AdminModule = __decorateClass([
       AffiliatesController,
       SystemConfigController,
       TenantsController,
-      ModulesController
+      ModulesController,
+      MetricsController,
+      AuditLogsController
     ],
     providers: [
       DemoEnvironmentsService,
@@ -17128,7 +18289,9 @@ AdminModule = __decorateClass([
       AffiliatesService,
       SystemConfigService,
       TenantsService,
-      ModulesService
+      ModulesService,
+      MetricsService,
+      AuditLogsService
     ],
     exports: [
       DemoEnvironmentsService,
@@ -17136,16 +18299,1581 @@ AdminModule = __decorateClass([
       AffiliatesService,
       SystemConfigService,
       TenantsService,
-      ModulesService
+      ModulesService,
+      MetricsService,
+      AuditLogsService
     ]
   })
 ], AdminModule);
+
+// backend/src/modules/manufacturing/manufacturing.module.ts
+import { Module as Module9 } from "@nestjs/common";
+
+// backend/src/modules/manufacturing/manufacturing-variance.controller.ts
+import { Controller as Controller15, Get as Get15, Query as Query10 } from "@nestjs/common";
+var ManufacturingVarianceController = class {
+  constructor(varianceService) {
+    this.varianceService = varianceService;
+  }
+  async getVarianceJournals(limit = "50", offset = "0", startDate, endDate) {
+    return this.varianceService.getVarianceJournals(
+      parseInt(limit, 10),
+      parseInt(offset, 10),
+      startDate ? new Date(startDate) : void 0,
+      endDate ? new Date(endDate) : void 0
+    );
+  }
+  async getVarianceSummary(startDate, endDate) {
+    return this.varianceService.getVarianceSummary(
+      startDate ? new Date(startDate) : void 0,
+      endDate ? new Date(endDate) : void 0
+    );
+  }
+};
+__decorateClass([
+  Get15(),
+  __decorateParam(0, Query10("limit")),
+  __decorateParam(1, Query10("offset")),
+  __decorateParam(2, Query10("startDate")),
+  __decorateParam(3, Query10("endDate"))
+], ManufacturingVarianceController.prototype, "getVarianceJournals", 1);
+__decorateClass([
+  Get15("summary"),
+  __decorateParam(0, Query10("startDate")),
+  __decorateParam(1, Query10("endDate"))
+], ManufacturingVarianceController.prototype, "getVarianceSummary", 1);
+ManufacturingVarianceController = __decorateClass([
+  Controller15("api/manufacturing/variance-journals")
+], ManufacturingVarianceController);
+
+// backend/src/modules/manufacturing/manufacturing-variance.service.ts
+import { Injectable as Injectable38, Inject as Inject30 } from "@nestjs/common";
+import { and as and15, desc as desc2, gte as gte3, lte as lte2, sql as sql92 } from "drizzle-orm";
+import { varianceJournals as varianceJournals2 } from "@shared/schema/manufacturing";
+var ManufacturingVarianceService = class {
+  constructor(db) {
+    this.db = db;
+  }
+  async getVarianceJournals(limit, offset, startDate, endDate) {
+    const conditions = [];
+    if (startDate) {
+      conditions.push(gte3(varianceJournals2.transactionDate, startDate));
+    }
+    if (endDate) {
+      const endOfDay = new Date(endDate);
+      endOfDay.setHours(23, 59, 59, 999);
+      conditions.push(lte2(varianceJournals2.transactionDate, endOfDay));
+    }
+    const where = conditions.length > 0 ? and15(...conditions) : void 0;
+    const [items, countResult] = await Promise.all([
+      this.db.select().from(varianceJournals2).where(where).orderBy(desc2(varianceJournals2.transactionDate)).limit(limit).offset(offset),
+      this.db.select({ count: sql92`count(*)::int` }).from(varianceJournals2).where(where)
+    ]);
+    return {
+      items,
+      total: countResult[0]?.count ?? 0
+    };
+  }
+  async getVarianceSummary(startDate, endDate) {
+    const conditions = [];
+    if (startDate) conditions.push(gte3(varianceJournals2.transactionDate, startDate));
+    if (endDate) {
+      const endOfDay = new Date(endDate);
+      endOfDay.setHours(23, 59, 59, 999);
+      conditions.push(lte2(varianceJournals2.transactionDate, endOfDay));
+    }
+    const where = conditions.length > 0 ? and15(...conditions) : void 0;
+    const summary = await this.db.select({
+      varianceType: varianceJournals2.varianceType,
+      total: sql92`sum(${varianceJournals2.amount})::numeric`,
+      count: sql92`count(*)::int`
+    }).from(varianceJournals2).where(where).groupBy(varianceJournals2.varianceType);
+    const netVariance = summary.reduce((acc, s) => acc + Number(s.total), 0);
+    return {
+      byType: summary,
+      netVariance,
+      totalPostings: summary.reduce((acc, s) => acc + s.count, 0)
+    };
+  }
+};
+ManufacturingVarianceService = __decorateClass([
+  Injectable38(),
+  __decorateParam(0, Inject30("DATABASE"))
+], ManufacturingVarianceService);
+
+// backend/src/modules/manufacturing/manufacturing.module.ts
+var ManufacturingModule = class {
+};
+ManufacturingModule = __decorateClass([
+  Module9({
+    controllers: [ManufacturingVarianceController],
+    providers: [ManufacturingVarianceService],
+    exports: [ManufacturingVarianceService]
+  })
+], ManufacturingModule);
+
+// backend/src/modules/hr/hr.module.ts
+import { Module as Module10 } from "@nestjs/common";
+
+// backend/src/modules/hr/employee.controller.ts
+import { Controller as Controller16, Get as Get16, Post as Post14, Body as Body14, Param as Param13, Put as Put9, Delete as Delete10 } from "@nestjs/common";
+var EmployeeController = class {
+  constructor(employeeService) {
+    this.employeeService = employeeService;
+  }
+  create(createEmployeeDto) {
+    return this.employeeService.create(createEmployeeDto);
+  }
+  findAll() {
+    return this.employeeService.findAll();
+  }
+  findOne(id) {
+    return this.employeeService.findOne(id);
+  }
+  update(id, updateEmployeeDto) {
+    return this.employeeService.update(id, updateEmployeeDto);
+  }
+  async remove(id) {
+    return this.employeeService.remove(id);
+  }
+};
+__decorateClass([
+  Post14(),
+  __decorateParam(0, Body14())
+], EmployeeController.prototype, "create", 1);
+__decorateClass([
+  Get16()
+], EmployeeController.prototype, "findAll", 1);
+__decorateClass([
+  Get16(":id"),
+  __decorateParam(0, Param13("id"))
+], EmployeeController.prototype, "findOne", 1);
+__decorateClass([
+  Put9(":id"),
+  __decorateParam(0, Param13("id")),
+  __decorateParam(1, Body14())
+], EmployeeController.prototype, "update", 1);
+__decorateClass([
+  Delete10(":id"),
+  __decorateParam(0, Param13("id"))
+], EmployeeController.prototype, "remove", 1);
+EmployeeController = __decorateClass([
+  Controller16("api/hr/employees")
+], EmployeeController);
+
+// backend/src/modules/hr/employee.service.ts
+import { Injectable as Injectable39, Inject as Inject31, NotFoundException as NotFoundException12 } from "@nestjs/common";
+import { eq as eq28, desc as desc3 } from "drizzle-orm";
+var EmployeeService = class {
+  constructor(db) {
+    this.db = db;
+  }
+  async create(createEmployeeDto) {
+    const [employee] = await this.db.insert(employees).values({
+      firstName: createEmployeeDto.firstName,
+      lastName: createEmployeeDto.lastName,
+      email: createEmployeeDto.email,
+      department: createEmployeeDto.department,
+      hireDate: createEmployeeDto.hireDate ? new Date(createEmployeeDto.hireDate) : /* @__PURE__ */ new Date(),
+      status: createEmployeeDto.status || "Active"
+    }).returning();
+    return employee;
+  }
+  async findAll() {
+    return this.db.query.employees.findMany({
+      orderBy: [desc3(employees.createdAt)]
+    });
+  }
+  async findOne(id) {
+    const employee = await this.db.query.employees.findFirst({
+      where: eq28(employees.id, id)
+    });
+    if (!employee) throw new NotFoundException12(`Employee ${id} not found`);
+    return employee;
+  }
+  async update(id, updateEmployeeDto) {
+    const [updated] = await this.db.update(employees).set({
+      firstName: updateEmployeeDto.firstName,
+      lastName: updateEmployeeDto.lastName,
+      email: updateEmployeeDto.email,
+      department: updateEmployeeDto.department,
+      hireDate: updateEmployeeDto.hireDate ? new Date(updateEmployeeDto.hireDate) : void 0,
+      status: updateEmployeeDto.status
+    }).where(eq28(employees.id, id)).returning();
+    if (!updated) throw new NotFoundException12(`Employee ${id} not found`);
+    return updated;
+  }
+  async remove(id) {
+    const [deleted] = await this.db.delete(employees).where(eq28(employees.id, id)).returning();
+    if (!deleted) throw new NotFoundException12(`Employee ${id} not found`);
+  }
+};
+EmployeeService = __decorateClass([
+  Injectable39(),
+  __decorateParam(0, Inject31(DRIZZLE_DB))
+], EmployeeService);
+
+// backend/src/modules/hr/leave.controller.ts
+import { Controller as Controller17, Get as Get17, Post as Post15, Body as Body15, Param as Param14, Put as Put10, Delete as Delete11 } from "@nestjs/common";
+var LeaveController = class {
+  constructor(leaveService) {
+    this.leaveService = leaveService;
+  }
+  create(createLeaveDto) {
+    return this.leaveService.create(createLeaveDto);
+  }
+  findAll() {
+    return this.leaveService.findAll();
+  }
+  findOne(id) {
+    return this.leaveService.findOne(id);
+  }
+  update(id, updateLeaveDto) {
+    return this.leaveService.update(id, updateLeaveDto);
+  }
+  remove(id) {
+    return this.leaveService.remove(id);
+  }
+};
+__decorateClass([
+  Post15(),
+  __decorateParam(0, Body15())
+], LeaveController.prototype, "create", 1);
+__decorateClass([
+  Get17()
+], LeaveController.prototype, "findAll", 1);
+__decorateClass([
+  Get17(":id"),
+  __decorateParam(0, Param14("id"))
+], LeaveController.prototype, "findOne", 1);
+__decorateClass([
+  Put10(":id"),
+  __decorateParam(0, Param14("id")),
+  __decorateParam(1, Body15())
+], LeaveController.prototype, "update", 1);
+__decorateClass([
+  Delete11(":id"),
+  __decorateParam(0, Param14("id"))
+], LeaveController.prototype, "remove", 1);
+LeaveController = __decorateClass([
+  Controller17("api/hr/leaves")
+], LeaveController);
+
+// backend/src/modules/hr/leave.service.ts
+import { Injectable as Injectable40, Inject as Inject32, NotFoundException as NotFoundException13 } from "@nestjs/common";
+import { eq as eq29, desc as desc4 } from "drizzle-orm";
+var LeaveService = class {
+  constructor(db) {
+    this.db = db;
+  }
+  async create(createLeaveDto) {
+    if (!createLeaveDto.employeeId) throw new Error("Employee ID required");
+    const employee = await this.db.query.employees.findFirst({
+      where: eq29(employees.id, createLeaveDto.employeeId)
+    });
+    if (!employee) throw new NotFoundException13("Employee not found");
+    const [leave] = await this.db.insert(leaveRequests).values({
+      employeeId: createLeaveDto.employeeId,
+      leaveType: createLeaveDto.leaveType,
+      startDate: new Date(createLeaveDto.startDate),
+      endDate: new Date(createLeaveDto.endDate),
+      reason: createLeaveDto.reason,
+      status: createLeaveDto.status || "PENDING"
+    }).returning();
+    return leave;
+  }
+  async findAll() {
+    return this.db.query.leaveRequests.findMany({
+      orderBy: [desc4(leaveRequests.createdAt)]
+    });
+  }
+  async findOne(id) {
+    const leave = await this.db.query.leaveRequests.findFirst({
+      where: eq29(leaveRequests.id, id)
+    });
+    if (!leave) throw new NotFoundException13("Leave request not found");
+    return leave;
+  }
+  async update(id, updateLeaveDto) {
+    const [updated] = await this.db.update(leaveRequests).set({
+      leaveType: updateLeaveDto.leaveType,
+      startDate: updateLeaveDto.startDate ? new Date(updateLeaveDto.startDate) : void 0,
+      endDate: updateLeaveDto.endDate ? new Date(updateLeaveDto.endDate) : void 0,
+      reason: updateLeaveDto.reason,
+      status: updateLeaveDto.status
+    }).where(eq29(leaveRequests.id, id)).returning();
+    if (!updated) throw new NotFoundException13("Leave request not found");
+    return updated;
+  }
+  async remove(id) {
+    const [deleted] = await this.db.delete(leaveRequests).where(eq29(leaveRequests.id, id)).returning();
+    if (!deleted) throw new NotFoundException13("Leave request not found");
+  }
+};
+LeaveService = __decorateClass([
+  Injectable40(),
+  __decorateParam(0, Inject32(DRIZZLE_DB))
+], LeaveService);
+
+// backend/src/modules/hr/timesheet.controller.ts
+import { Controller as Controller18, Get as Get18, Post as Post16, Body as Body16, Param as Param15, Put as Put11, Delete as Delete12 } from "@nestjs/common";
+var TimesheetController = class {
+  constructor(timesheetService) {
+    this.timesheetService = timesheetService;
+  }
+  create(createTimesheetDto) {
+    return this.timesheetService.create(createTimesheetDto);
+  }
+  findAll() {
+    return this.timesheetService.findAll();
+  }
+  findOne(id) {
+    return this.timesheetService.findOne(id);
+  }
+  update(id, updateTimesheetDto) {
+    return this.timesheetService.update(id, updateTimesheetDto);
+  }
+  remove(id) {
+    return this.timesheetService.remove(id);
+  }
+};
+__decorateClass([
+  Post16(),
+  __decorateParam(0, Body16())
+], TimesheetController.prototype, "create", 1);
+__decorateClass([
+  Get18()
+], TimesheetController.prototype, "findAll", 1);
+__decorateClass([
+  Get18(":id"),
+  __decorateParam(0, Param15("id"))
+], TimesheetController.prototype, "findOne", 1);
+__decorateClass([
+  Put11(":id"),
+  __decorateParam(0, Param15("id")),
+  __decorateParam(1, Body16())
+], TimesheetController.prototype, "update", 1);
+__decorateClass([
+  Delete12(":id"),
+  __decorateParam(0, Param15("id"))
+], TimesheetController.prototype, "remove", 1);
+TimesheetController = __decorateClass([
+  Controller18("api/hr/timesheets")
+], TimesheetController);
+
+// backend/src/modules/hr/timesheet.service.ts
+import { Injectable as Injectable41, Inject as Inject33, NotFoundException as NotFoundException14 } from "@nestjs/common";
+import { eq as eq30, desc as desc5 } from "drizzle-orm";
+var TimesheetService = class {
+  constructor(db) {
+    this.db = db;
+  }
+  async create(createTimesheetDto) {
+    if (!createTimesheetDto.employeeId) throw new Error("Employee ID required");
+    const employee = await this.db.query.employees.findFirst({
+      where: eq30(employees.id, createTimesheetDto.employeeId)
+    });
+    if (!employee) throw new NotFoundException14("Employee not found");
+    const [timesheet] = await this.db.insert(timeEntries).values({
+      employeeId: String(createTimesheetDto.employeeId),
+      projectId: createTimesheetDto.projectId,
+      taskId: createTimesheetDto.taskId,
+      date: createTimesheetDto.date ? new Date(createTimesheetDto.date) : /* @__PURE__ */ new Date(),
+      hours: createTimesheetDto.hours?.toString() || "0",
+      description: createTimesheetDto.description,
+      billableFlag: typeof createTimesheetDto.billableFlag === "boolean" ? createTimesheetDto.billableFlag : String(createTimesheetDto.billableFlag) === "true",
+      status: "SUBMITTED"
+    }).returning();
+    return timesheet;
+  }
+  async findAll() {
+    return this.db.query.timeEntries.findMany({
+      orderBy: [desc5(timeEntries.createdAt)]
+    });
+  }
+  async findOne(id) {
+    const timesheet = await this.db.query.timeEntries.findFirst({
+      where: eq30(timeEntries.id, id)
+    });
+    if (!timesheet) throw new NotFoundException14("Timesheet not found");
+    return timesheet;
+  }
+  async update(id, updateTimesheetDto) {
+    const [updated] = await this.db.update(timeEntries).set({
+      projectId: updateTimesheetDto.projectId,
+      taskId: updateTimesheetDto.taskId,
+      date: updateTimesheetDto.date ? new Date(updateTimesheetDto.date) : void 0,
+      hours: updateTimesheetDto.hours ? updateTimesheetDto.hours.toString() : void 0,
+      description: updateTimesheetDto.description,
+      billableFlag: updateTimesheetDto.billableFlag !== void 0 ? typeof updateTimesheetDto.billableFlag === "boolean" ? updateTimesheetDto.billableFlag : String(updateTimesheetDto.billableFlag) === "true" : void 0,
+      status: updateTimesheetDto.status
+    }).where(eq30(timeEntries.id, id)).returning();
+    if (!updated) throw new NotFoundException14("Timesheet not found");
+    return updated;
+  }
+  async remove(id) {
+    const [deleted] = await this.db.delete(timeEntries).where(eq30(timeEntries.id, id)).returning();
+    if (!deleted) throw new NotFoundException14("Timesheet not found");
+  }
+};
+TimesheetService = __decorateClass([
+  Injectable41(),
+  __decorateParam(0, Inject33(DRIZZLE_DB))
+], TimesheetService);
+
+// backend/src/modules/hr/hr-custom-report.service.ts
+import { Injectable as Injectable42, Logger as Logger24, Inject as Inject34, NotFoundException as NotFoundException15 } from "@nestjs/common";
+var HrCustomReportService = class {
+  constructor(db) {
+    this.db = db;
+    __publicField(this, "logger", new Logger24(HrCustomReportService.name));
+    __publicField(this, "savedReports", /* @__PURE__ */ new Map());
+    // ── Available Fields Catalog ─────────────────────────────────────────────
+    __publicField(this, "AVAILABLE_FIELDS", [
+      // Employee
+      { key: "emp_number", label: "Employee Number", type: "string", sourceTable: "hr_persons", sourceColumn: "person_number", category: "Employee" },
+      { key: "emp_name", label: "Full Name", type: "string", sourceTable: "hr_persons", sourceColumn: "display_name", category: "Employee" },
+      { key: "emp_email", label: "Work Email", type: "string", sourceTable: "hr_persons", sourceColumn: "email", category: "Employee" },
+      { key: "emp_hire_date", label: "Hire Date", type: "date", sourceTable: "hr_assignments", sourceColumn: "effective_start_date", category: "Employee" },
+      { key: "emp_status", label: "Employment Status", type: "string", sourceTable: "hr_assignments", sourceColumn: "status", category: "Employee" },
+      { key: "emp_type", label: "Worker Type", type: "string", sourceTable: "hr_assignments", sourceColumn: "worker_type", category: "Employee" },
+      // Position
+      { key: "pos_title", label: "Job Title", type: "string", sourceTable: "hr_assignments", sourceColumn: "position_title", category: "Position" },
+      { key: "pos_department", label: "Department", type: "string", sourceTable: "hr_departments", sourceColumn: "name", category: "Position" },
+      { key: "pos_location", label: "Work Location", type: "string", sourceTable: "hr_locations", sourceColumn: "location_name", category: "Position" },
+      { key: "pos_grade", label: "Pay Grade", type: "string", sourceTable: "hr_assignments", sourceColumn: "grade", category: "Position" },
+      { key: "pos_manager", label: "Manager", type: "string", sourceTable: "hr_assignments", sourceColumn: "manager_id", category: "Position" },
+      // Payroll
+      { key: "pay_salary", label: "Annual Salary", type: "number", sourceTable: "hrm_salaries", sourceColumn: "salary_amount", category: "Payroll" },
+      { key: "pay_currency", label: "Pay Currency", type: "string", sourceTable: "hrm_salaries", sourceColumn: "currency_code", category: "Payroll" },
+      { key: "pay_frequency", label: "Pay Frequency", type: "string", sourceTable: "hrm_salary_bases", sourceColumn: "frequency", category: "Payroll" },
+      // Leave
+      { key: "leave_balance", label: "Leave Balance (Days)", type: "number", sourceTable: "hr_absence_entitlements", sourceColumn: "balance_days", category: "Leave" },
+      { key: "leave_type", label: "Leave Type", type: "string", sourceTable: "hr_absence_entitlements", sourceColumn: "absence_type", category: "Leave" },
+      // Performance
+      { key: "perf_rating", label: "Performance Rating", type: "number", sourceTable: "hrm_performance_reviews", sourceColumn: "overall_rating", category: "Performance" },
+      { key: "perf_review_date", label: "Last Review Date", type: "date", sourceTable: "hrm_performance_reviews", sourceColumn: "review_date", category: "Performance" },
+      // Compliance
+      { key: "comp_violations", label: "Open Violations", type: "number", sourceTable: "hr_compliance_violations", sourceColumn: "count", category: "Compliance" },
+      { key: "comp_risk_score", label: "Compliance Risk Score", type: "number", sourceTable: "hr_compliance_risk", sourceColumn: "risk_score", category: "Compliance" }
+    ]);
+  }
+  // ── Field Catalog ─────────────────────────────────────────────────────────
+  getAvailableFields(category) {
+    if (category) {
+      return this.AVAILABLE_FIELDS.filter((f) => f.category === category);
+    }
+    return this.AVAILABLE_FIELDS;
+  }
+  getFieldsByCategory() {
+    return this.AVAILABLE_FIELDS.reduce((acc, f) => {
+      if (!acc[f.category]) acc[f.category] = [];
+      acc[f.category].push(f);
+      return acc;
+    }, {});
+  }
+  // ── Report Definition CRUD ────────────────────────────────────────────────
+  createReportDefinition(input) {
+    const invalidFields = input.selectedFields.filter((k) => !this.AVAILABLE_FIELDS.find((f) => f.key === k));
+    if (invalidFields.length > 0) {
+      throw new Error(`Invalid fields: ${invalidFields.join(", ")}`);
+    }
+    const id = `RPT-${Date.now()}`;
+    const now = /* @__PURE__ */ new Date();
+    const report = { id, ...input, createdAt: now, updatedAt: now };
+    this.savedReports.set(id, report);
+    this.logger.log(`Report definition created: "${input.name}" by user ${input.userId}`);
+    return report;
+  }
+  getReportDefinition(reportId) {
+    const report = this.savedReports.get(reportId);
+    if (!report) throw new NotFoundException15(`Report definition ${reportId} not found`);
+    return report;
+  }
+  listReportDefinitions(tenantId, userId) {
+    return Array.from(this.savedReports.values()).filter((r) => r.tenantId === tenantId && (r.userId === userId || r.isShared));
+  }
+  updateReportDefinition(reportId, updates) {
+    const report = this.getReportDefinition(reportId);
+    Object.assign(report, updates, { updatedAt: /* @__PURE__ */ new Date() });
+    return report;
+  }
+  deleteReportDefinition(reportId) {
+    const exists = this.savedReports.has(reportId);
+    if (!exists) throw new NotFoundException15(`Report ${reportId} not found`);
+    this.savedReports.delete(reportId);
+    return { deleted: true };
+  }
+  // ── Report Execution ──────────────────────────────────────────────────────
+  /**
+   * Executes a report definition against live HR data.
+   * Applies field selection, filters, and sort order.
+   */
+  async executeReport(reportId, overrideFilters) {
+    const startMs = Date.now();
+    const report = this.getReportDefinition(reportId);
+    const effectiveFilters = overrideFilters ?? report.filters;
+    const selectedFieldMeta = report.selectedFields.map((k) => this.AVAILABLE_FIELDS.find((f) => f.key === k)).filter(Boolean);
+    const columns = selectedFieldMeta.map((f) => ({ key: f.key, label: f.label, type: f.type }));
+    let rows = [];
+    try {
+      const persons = await this.db.select().from(hrPersons).limit(500).catch(() => []);
+      rows = persons.map((p) => {
+        const row = {};
+        for (const field of selectedFieldMeta) {
+          switch (field.key) {
+            case "emp_number":
+              row[field.key] = p.personNumber || p.id?.slice(-8);
+              break;
+            case "emp_name":
+              row[field.key] = p.displayName || `${p.firstName || ""} ${p.lastName || ""}`.trim();
+              break;
+            case "emp_email":
+              row[field.key] = p.workEmail;
+              break;
+            case "emp_hire_date":
+              row[field.key] = p.hireDate;
+              break;
+            case "emp_status":
+              row[field.key] = p.emplStatus || "Active";
+              break;
+            default:
+              row[field.key] = null;
+          }
+        }
+        return row;
+      });
+    } catch (err) {
+      this.logger.warn(`Report execution data query error: ${err.message}`);
+    }
+    rows = this._applyFilters(rows, effectiveFilters);
+    rows = this._applySorts(rows, report.sorts);
+    return {
+      reportId,
+      reportName: report.name,
+      executedAt: /* @__PURE__ */ new Date(),
+      rowCount: rows.length,
+      columns,
+      rows,
+      appliedFilters: effectiveFilters,
+      appliedSorts: report.sorts,
+      executionMs: Date.now() - startMs
+    };
+  }
+  // ── Private Helpers ────────────────────────────────────────────────────────
+  _applyFilters(rows, filters) {
+    for (const filter of filters) {
+      rows = rows.filter((row) => {
+        const val = row[filter.field];
+        switch (filter.operator) {
+          case "eq":
+            return val == filter.value;
+          case "neq":
+            return val != filter.value;
+          case "gt":
+            return Number(val) > Number(filter.value);
+          case "lt":
+            return Number(val) < Number(filter.value);
+          case "gte":
+            return Number(val) >= Number(filter.value);
+          case "lte":
+            return Number(val) <= Number(filter.value);
+          case "contains":
+            return String(val || "").toLowerCase().includes(String(filter.value).toLowerCase());
+          case "startsWith":
+            return String(val || "").toLowerCase().startsWith(String(filter.value).toLowerCase());
+          case "in":
+            return Array.isArray(filter.value) ? filter.value.includes(val) : val === filter.value;
+          default:
+            return true;
+        }
+      });
+    }
+    return rows;
+  }
+  _applySorts(rows, sorts) {
+    for (const sort of [...sorts].reverse()) {
+      rows.sort((a, b) => {
+        const aVal = a[sort.field];
+        const bVal = b[sort.field];
+        const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+        return sort.direction === "ASC" ? cmp : -cmp;
+      });
+    }
+    return rows;
+  }
+};
+HrCustomReportService = __decorateClass([
+  Injectable42(),
+  __decorateParam(0, Inject34(DRIZZLE_DB))
+], HrCustomReportService);
+
+// backend/src/modules/hr/core-hr-approval.service.ts
+import { Injectable as Injectable43, Logger as Logger25, Inject as Inject35, BadRequestException as BadRequestException3 } from "@nestjs/common";
+var CoreHrApprovalService = class {
+  constructor(db) {
+    this.db = db;
+    __publicField(this, "logger", new Logger25(CoreHrApprovalService.name));
+    __publicField(this, "transactions", /* @__PURE__ */ new Map());
+    // ── Default Approval Rules (per Oracle Fusion HCM patterns) ──────────────
+    __publicField(this, "APPROVAL_RULES", [
+      {
+        transactionType: "HIRE",
+        condition: "All new hire transactions",
+        approverRole: "HR_MANAGER",
+        requiresHrReview: true,
+        requiresLegalReview: false
+      },
+      {
+        transactionType: "TRANSFER",
+        condition: "Inter-department or inter-entity transfer",
+        approverRole: "DEPARTMENT_HEAD",
+        requiresHrReview: false,
+        requiresLegalReview: false
+      },
+      {
+        transactionType: "TERMINATE",
+        condition: "All terminations (voluntary and involuntary)",
+        approverRole: "HR_DIRECTOR",
+        requiresHrReview: true,
+        requiresLegalReview: true
+        // Legal required for involuntary
+      },
+      {
+        transactionType: "SALARY_CHANGE",
+        condition: "Salary change > 10%",
+        approverRole: "COMPENSATION_MANAGER",
+        requiresHrReview: true,
+        requiresLegalReview: false,
+        autoApproveBelow: 10
+        // Auto-approve if change < 10%
+      },
+      {
+        transactionType: "GRADE_CHANGE",
+        condition: "Grade promotion or demotion",
+        approverRole: "HR_MANAGER",
+        requiresHrReview: false,
+        requiresLegalReview: false
+      },
+      {
+        transactionType: "LEAVE_OF_ABSENCE",
+        condition: "Extended leave > 30 days",
+        approverRole: "LINE_MANAGER",
+        requiresHrReview: false,
+        requiresLegalReview: false
+      }
+    ]);
+  }
+  /**
+   * Initiates an HR transaction and determines if approval is required.
+   * For small salary changes, auto-approves per configured threshold.
+   */
+  async initiateTransaction(input) {
+    const rule = this.APPROVAL_RULES.find((r) => r.transactionType === input.transactionType);
+    if (!rule) throw new BadRequestException3(`No approval rule defined for ${input.transactionType}`);
+    const id = `HRTX-${Date.now()}`;
+    const now = /* @__PURE__ */ new Date();
+    let autoApprove = false;
+    if (input.transactionType === "SALARY_CHANGE" && rule.autoApproveBelow) {
+      const changePct = Math.abs(input.payload.changePct || 0);
+      autoApprove = changePct < rule.autoApproveBelow;
+    }
+    const tx = {
+      id,
+      transactionType: input.transactionType,
+      employeeId: input.employeeId,
+      initiatedBy: input.initiatedBy,
+      payload: input.payload,
+      status: autoApprove ? "APPROVED" : "PENDING_APPROVAL",
+      approverRole: rule.approverRole,
+      requiresHrReview: rule.requiresHrReview,
+      requiresLegalReview: rule.requiresLegalReview,
+      createdAt: now,
+      updatedAt: now,
+      auditLog: [{
+        timestamp: now,
+        actor: input.initiatedBy,
+        action: "TRANSACTION_INITIATED",
+        notes: `${input.transactionType} for employee ${input.employeeId}`
+      }]
+    };
+    if (autoApprove) {
+      tx.approverId = "SYSTEM";
+      tx.approvedAt = now;
+      tx.auditLog.push({ timestamp: now, actor: "SYSTEM", action: "AUTO_APPROVED", notes: `Change below ${rule.autoApproveBelow}% threshold` });
+      this.logger.log(`HR Transaction ${id} AUTO-APPROVED: ${input.transactionType}`);
+    } else {
+      this.logger.log(`HR Transaction ${id} pending ${rule.approverRole} approval: ${input.transactionType}`);
+    }
+    this.transactions.set(id, tx);
+    return tx;
+  }
+  /**
+   * Approves an HR transaction.
+   */
+  approveTransaction(txId, approverId, notes) {
+    const tx = this._getOrThrow(txId);
+    if (tx.status !== "PENDING_APPROVAL") {
+      throw new BadRequestException3(`Transaction ${txId} is not pending approval. Status: ${tx.status}`);
+    }
+    tx.status = "APPROVED";
+    tx.approverId = approverId;
+    tx.approvedAt = /* @__PURE__ */ new Date();
+    tx.updatedAt = /* @__PURE__ */ new Date();
+    tx.auditLog.push({
+      timestamp: /* @__PURE__ */ new Date(),
+      actor: approverId,
+      action: "TRANSACTION_APPROVED",
+      notes
+    });
+    this.logger.log(`HR Transaction ${txId} APPROVED by ${approverId}`);
+    return tx;
+  }
+  /**
+   * Rejects an HR transaction, returning it to REJECTED for rework.
+   */
+  rejectTransaction(txId, rejectorId, reason) {
+    const tx = this._getOrThrow(txId);
+    if (tx.status !== "PENDING_APPROVAL") {
+      throw new BadRequestException3(`Transaction ${txId} is not pending approval.`);
+    }
+    tx.status = "REJECTED";
+    tx.rejectionReason = reason;
+    tx.updatedAt = /* @__PURE__ */ new Date();
+    tx.auditLog.push({ timestamp: /* @__PURE__ */ new Date(), actor: rejectorId, action: "TRANSACTION_REJECTED", notes: reason });
+    this.logger.log(`HR Transaction ${txId} REJECTED by ${rejectorId}: ${reason}`);
+    return tx;
+  }
+  /**
+   * Marks HR compliance review as complete.
+   */
+  markHrReviewed(txId, reviewerId) {
+    const tx = this._getOrThrow(txId);
+    tx.hrReviewedBy = reviewerId;
+    tx.updatedAt = /* @__PURE__ */ new Date();
+    tx.auditLog.push({ timestamp: /* @__PURE__ */ new Date(), actor: reviewerId, action: "HR_REVIEW_COMPLETED" });
+    return tx;
+  }
+  /**
+   * Marks legal review as complete (required for terminations).
+   */
+  markLegalReviewed(txId, reviewerId) {
+    const tx = this._getOrThrow(txId);
+    tx.legalReviewedBy = reviewerId;
+    tx.updatedAt = /* @__PURE__ */ new Date();
+    tx.auditLog.push({ timestamp: /* @__PURE__ */ new Date(), actor: reviewerId, action: "LEGAL_REVIEW_COMPLETED" });
+    return tx;
+  }
+  getTransaction(txId) {
+    return this._getOrThrow(txId);
+  }
+  listPendingForApprover(approverRole) {
+    return Array.from(this.transactions.values()).filter((tx) => tx.status === "PENDING_APPROVAL" && tx.approverRole === approverRole);
+  }
+  listEmployeeTransactions(employeeId) {
+    return Array.from(this.transactions.values()).filter((tx) => tx.employeeId === employeeId).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+  getApprovalRules() {
+    return this.APPROVAL_RULES;
+  }
+  _getOrThrow(txId) {
+    const tx = this.transactions.get(txId);
+    if (!tx) throw new BadRequestException3(`HR Transaction ${txId} not found`);
+    return tx;
+  }
+};
+CoreHrApprovalService = __decorateClass([
+  Injectable43(),
+  __decorateParam(0, Inject35(DRIZZLE_DB))
+], CoreHrApprovalService);
+
+// backend/src/modules/hr/payroll-global-connector.service.ts
+import { Injectable as Injectable44, Logger as Logger26 } from "@nestjs/common";
+var AdpConnector = class {
+  constructor() {
+    __publicField(this, "providerId", "ADP");
+    __publicField(this, "providerName", "ADP Workforce Now");
+    __publicField(this, "logger", new Logger26("AdpConnector"));
+    // Production: base URL = https://api.adp.com
+    __publicField(this, "BASE_URL", "https://api.adp.com");
+  }
+  async testConnection() {
+    this.logger.log("ADP connection test (stub \u2014 configure ADPAPI_CLIENT_ID + ADPAPI_CLIENT_SECRET)");
+    return { connected: false, message: "Stub: configure ADPAPI_CLIENT_ID and ADPAPI_CLIENT_SECRET env vars", version: "v2" };
+  }
+  async pushEmployees(employees2) {
+    this.logger.log(`ADP: Pushing ${employees2.length} employees`);
+    return {
+      providerId: this.providerId,
+      direction: "PUSH",
+      recordsSynced: employees2.length,
+      errors: [],
+      syncedAt: /* @__PURE__ */ new Date()
+    };
+  }
+  async pushEarnings(periodId, earnings) {
+    this.logger.log(`ADP: Pushing ${earnings.length} earnings for period ${periodId}`);
+    return { providerId: this.providerId, direction: "PUSH", recordsSynced: earnings.length, errors: [], syncedAt: /* @__PURE__ */ new Date() };
+  }
+  async pushDeductions(periodId, deductions) {
+    return { providerId: this.providerId, direction: "PUSH", recordsSynced: deductions.length, errors: [], syncedAt: /* @__PURE__ */ new Date() };
+  }
+  async submitPayrollRun(periodId) {
+    this.logger.log(`ADP: Submitting payroll run ${periodId}`);
+    return {
+      periodId,
+      providerId: this.providerId,
+      status: "SUCCESS",
+      employeeCount: 0,
+      totalGrossPay: 0,
+      totalDeductions: 0,
+      totalNetPay: 0,
+      totalTaxWithheld: 0,
+      currencyCode: "USD",
+      processedAt: /* @__PURE__ */ new Date(),
+      errors: [],
+      confirmationId: `ADP-${Date.now()}`
+    };
+  }
+  async pullPayrollResults(periodId) {
+    return {
+      periodId,
+      providerId: this.providerId,
+      status: "PAID",
+      employeeCount: 0,
+      totalGrossPay: 0,
+      totalDeductions: 0,
+      totalNetPay: 0,
+      totalTaxWithheld: 0,
+      currencyCode: "USD",
+      processedAt: /* @__PURE__ */ new Date(),
+      errors: []
+    };
+  }
+  async getPayPeriods(fromDate, toDate) {
+    return [];
+  }
+};
+var WorkdayConnector = class {
+  constructor() {
+    __publicField(this, "providerId", "WORKDAY");
+    __publicField(this, "providerName", "Workday HCM");
+    __publicField(this, "logger", new Logger26("WorkdayConnector"));
+    // Production: base URL = https://{tenant}.workday.com/ccx/service/{tenant}/Human_Resources
+    __publicField(this, "BASE_URL", "https://wd2-impl-services1.workday.com");
+  }
+  async testConnection() {
+    this.logger.log("Workday connection test (stub \u2014 configure WORKDAY_TENANT + WORKDAY_USERNAME + WORKDAY_PASSWORD)");
+    return { connected: false, message: "Stub: configure WORKDAY_TENANT, WORKDAY_USERNAME, WORKDAY_PASSWORD env vars", version: "v38.1" };
+  }
+  async pushEmployees(employees2) {
+    this.logger.log(`Workday: Pushing ${employees2.length} employees`);
+    return { providerId: this.providerId, direction: "PUSH", recordsSynced: employees2.length, errors: [], syncedAt: /* @__PURE__ */ new Date() };
+  }
+  async pushEarnings(periodId, earnings) {
+    return { providerId: this.providerId, direction: "PUSH", recordsSynced: earnings.length, errors: [], syncedAt: /* @__PURE__ */ new Date() };
+  }
+  async pushDeductions(periodId, deductions) {
+    return { providerId: this.providerId, direction: "PUSH", recordsSynced: deductions.length, errors: [], syncedAt: /* @__PURE__ */ new Date() };
+  }
+  async submitPayrollRun(periodId) {
+    this.logger.log(`Workday: Submitting payroll run ${periodId}`);
+    return {
+      periodId,
+      providerId: this.providerId,
+      status: "SUBMITTED",
+      employeeCount: 0,
+      totalGrossPay: 0,
+      totalDeductions: 0,
+      totalNetPay: 0,
+      totalTaxWithheld: 0,
+      currencyCode: "USD",
+      processedAt: /* @__PURE__ */ new Date(),
+      errors: []
+    };
+  }
+  async pullPayrollResults(periodId) {
+    return {
+      periodId,
+      providerId: this.providerId,
+      status: "PAID",
+      employeeCount: 0,
+      totalGrossPay: 0,
+      totalDeductions: 0,
+      totalNetPay: 0,
+      totalTaxWithheld: 0,
+      currencyCode: "USD",
+      processedAt: /* @__PURE__ */ new Date(),
+      errors: []
+    };
+  }
+  async getPayPeriods(fromDate, toDate) {
+    return [];
+  }
+};
+var CeridianConnector = class {
+  constructor() {
+    __publicField(this, "providerId", "CERIDIAN");
+    __publicField(this, "providerName", "Ceridian Dayforce");
+    __publicField(this, "logger", new Logger26("CeridianConnector"));
+    // Production: base URL = https://ustest44.dayforcehcm.com/Api/{namespace}
+    __publicField(this, "BASE_URL", "https://ustest44.dayforcehcm.com/Api");
+  }
+  async testConnection() {
+    this.logger.log("Ceridian connection test (stub \u2014 configure CERIDIAN_NAMESPACE + CERIDIAN_USER + CERIDIAN_PASSWORD)");
+    return { connected: false, message: "Stub: configure CERIDIAN_NAMESPACE, CERIDIAN_USER, CERIDIAN_PASSWORD env vars", version: "v1" };
+  }
+  async pushEmployees(employees2) {
+    return { providerId: this.providerId, direction: "PUSH", recordsSynced: employees2.length, errors: [], syncedAt: /* @__PURE__ */ new Date() };
+  }
+  async pushEarnings(periodId, earnings) {
+    return { providerId: this.providerId, direction: "PUSH", recordsSynced: earnings.length, errors: [], syncedAt: /* @__PURE__ */ new Date() };
+  }
+  async pushDeductions(periodId, deductions) {
+    return { providerId: this.providerId, direction: "PUSH", recordsSynced: deductions.length, errors: [], syncedAt: /* @__PURE__ */ new Date() };
+  }
+  async submitPayrollRun(periodId) {
+    return {
+      periodId,
+      providerId: this.providerId,
+      status: "SUCCESS",
+      employeeCount: 0,
+      totalGrossPay: 0,
+      totalDeductions: 0,
+      totalNetPay: 0,
+      totalTaxWithheld: 0,
+      currencyCode: "USD",
+      processedAt: /* @__PURE__ */ new Date(),
+      errors: [],
+      confirmationId: `CDN-${Date.now()}`
+    };
+  }
+  async pullPayrollResults(periodId) {
+    return {
+      periodId,
+      providerId: this.providerId,
+      status: "PAID",
+      employeeCount: 0,
+      totalGrossPay: 0,
+      totalDeductions: 0,
+      totalNetPay: 0,
+      totalTaxWithheld: 0,
+      currencyCode: "USD",
+      processedAt: /* @__PURE__ */ new Date(),
+      errors: []
+    };
+  }
+  async getPayPeriods(fromDate, toDate) {
+    return [];
+  }
+};
+var PayrollGlobalConnectorService = class {
+  constructor() {
+    __publicField(this, "logger", new Logger26(PayrollGlobalConnectorService.name));
+    __publicField(this, "connectors", /* @__PURE__ */ new Map());
+    this.connectors.set("ADP", new AdpConnector());
+    this.connectors.set("WORKDAY", new WorkdayConnector());
+    this.connectors.set("CERIDIAN", new CeridianConnector());
+  }
+  getRegisteredProviders() {
+    return Array.from(this.connectors.keys());
+  }
+  async testConnection(providerId) {
+    const connector = this._getOrThrow(providerId);
+    return connector.testConnection();
+  }
+  async testAllConnections() {
+    const results = {};
+    for (const [id, connector] of this.connectors) {
+      results[id] = await connector.testConnection().catch((err) => ({ connected: false, message: err.message }));
+    }
+    return results;
+  }
+  async syncEmployees(providerId, employees2) {
+    return this._getOrThrow(providerId).pushEmployees(employees2);
+  }
+  async submitPayroll(providerId, periodId, earnings, deductions) {
+    const connector = this._getOrThrow(providerId);
+    const earningSync = await connector.pushEarnings(periodId, earnings);
+    const deductionSync = await connector.pushDeductions(periodId, deductions);
+    const runResult = await connector.submitPayrollRun(periodId);
+    this.logger.log(`Payroll submitted to ${providerId}: period=${periodId}, status=${runResult.status}`);
+    return { earningSync, deductionSync, runResult };
+  }
+  async pullResults(providerId, periodId) {
+    return this._getOrThrow(providerId).pullPayrollResults(periodId);
+  }
+  async getPayPeriods(providerId, fromDate, toDate) {
+    return this._getOrThrow(providerId).getPayPeriods(fromDate, toDate);
+  }
+  _getOrThrow(providerId) {
+    const connector = this.connectors.get(providerId.toUpperCase());
+    if (!connector) throw new Error(`Payroll connector "${providerId}" not registered. Available: ${this.getRegisteredProviders().join(", ")}`);
+    return connector;
+  }
+};
+PayrollGlobalConnectorService = __decorateClass([
+  Injectable44()
+], PayrollGlobalConnectorService);
+
+// backend/src/modules/hr/lms-virtual-classroom.service.ts
+import { Injectable as Injectable45, Logger as Logger27 } from "@nestjs/common";
+var LmsVirtualClassroomService = class {
+  constructor() {
+    __publicField(this, "logger", new Logger27(LmsVirtualClassroomService.name));
+    __publicField(this, "sessions", /* @__PURE__ */ new Map());
+    __publicField(this, "attendance", /* @__PURE__ */ new Map());
+    // sessionId -> records
+    __publicField(this, "registrations", /* @__PURE__ */ new Map());
+  }
+  // sessionId -> learnerIds
+  /**
+   * Creates a virtual classroom session and provisions the meeting via provider API.
+   *
+   * Zoom: POST https://api.zoom.us/v2/users/{userId}/meetings
+   * Teams: POST https://graph.microsoft.com/v1.0/me/onlineMeetings
+   * Google Meet: POST https://meet.googleapis.com/v2/conferenceRecords
+   */
+  async createSession(input) {
+    const id = `VS-${Date.now()}`;
+    let externalMeetingId;
+    let meetingUrl;
+    let passcode;
+    try {
+      switch (input.provider) {
+        case "ZOOM": {
+          const token = process.env.ZOOM_SERVER_TOKEN || process.env.ZOOM_JWT;
+          if (token) {
+            const resp = await fetch(`https://api.zoom.us/v2/users/${input.hostEmail}/meetings`, {
+              method: "POST",
+              headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+              body: JSON.stringify({
+                topic: input.title,
+                type: 2,
+                // Scheduled
+                start_time: input.scheduledStart,
+                duration: input.durationMinutes,
+                agenda: `Oracle LMS \u2014 ${input.title}`,
+                settings: {
+                  host_video: true,
+                  participant_video: true,
+                  join_before_host: false,
+                  waiting_room: true,
+                  auto_recording: "cloud",
+                  registration_type: input.requiresRegistration ? 1 : void 0
+                }
+              })
+            }).catch(() => null);
+            if (resp?.ok) {
+              const data = await resp.json();
+              externalMeetingId = String(data.id);
+              meetingUrl = data.join_url;
+              passcode = data.password;
+            }
+          }
+          if (!externalMeetingId) {
+            this.logger.warn("Zoom stub (set ZOOM_SERVER_TOKEN for live meeting creation)");
+            externalMeetingId = `ZOOM-STUB-${id}`;
+            meetingUrl = `https://zoom.us/j/stub${id}`;
+          }
+          break;
+        }
+        case "MICROSOFT_TEAMS": {
+          const token = process.env.TEAMS_GRAPH_TOKEN;
+          if (token) {
+            const resp = await fetch("https://graph.microsoft.com/v1.0/me/onlineMeetings", {
+              method: "POST",
+              headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+              body: JSON.stringify({
+                subject: input.title,
+                startDateTime: input.scheduledStart,
+                endDateTime: input.scheduledEnd,
+                allowedPresenters: "organizer",
+                isEntryExitAnnounced: true,
+                lobbyBypassSettings: { scope: "organizer" }
+              })
+            }).catch(() => null);
+            if (resp?.ok) {
+              const data = await resp.json();
+              externalMeetingId = data.id;
+              meetingUrl = data.joinWebUrl;
+            }
+          }
+          if (!externalMeetingId) {
+            this.logger.warn("Teams stub (set TEAMS_GRAPH_TOKEN for live meeting creation)");
+            externalMeetingId = `TEAMS-STUB-${id}`;
+            meetingUrl = `https://teams.microsoft.com/l/meetup-join/stub/${id}`;
+          }
+          break;
+        }
+        default:
+          externalMeetingId = `${input.provider}-STUB-${id}`;
+          meetingUrl = `https://meet.stub/${id}`;
+      }
+    } catch (err) {
+      this.logger.error(`Provider API error: ${err.message}`);
+      externalMeetingId = `${input.provider}-ERROR-${id}`;
+      meetingUrl = `https://meet.stub/${id}`;
+    }
+    const session = {
+      ...input,
+      id,
+      externalMeetingId,
+      meetingUrl,
+      passcode,
+      status: "SCHEDULED"
+    };
+    this.sessions.set(id, session);
+    this.attendance.set(id, []);
+    this.registrations.set(id, /* @__PURE__ */ new Set());
+    this.logger.log(`Virtual session created: "${input.title}" [${input.provider}] ${input.scheduledStart} \u2014 URL: ${meetingUrl}`);
+    return session;
+  }
+  registerParticipant(sessionId, learnerId) {
+    this.registrations.get(sessionId)?.add(learnerId);
+  }
+  /**
+   * Webhook handler for Zoom/Teams attendance events.
+   * Called when a participant joins or leaves.
+   */
+  recordAttendanceEvent(sessionId, event) {
+    const session = this.sessions.get(sessionId);
+    if (!session) return;
+    const records = this.attendance.get(sessionId) || [];
+    let record = records.find((r) => r.participantId === event.participantId && !r.leftAt);
+    if (event.eventType === "JOIN" && !record) {
+      record = {
+        sessionId,
+        participantId: event.participantId,
+        participantEmail: event.participantEmail,
+        participantName: event.participantName,
+        joinedAt: event.timestamp,
+        attendanceDurationMinutes: 0,
+        meetingMinutes: session.durationMinutes,
+        attendancePct: 0,
+        completed: false
+      };
+      records.push(record);
+      this.attendance.set(sessionId, records);
+    } else if (event.eventType === "LEAVE" && record) {
+      record.leftAt = event.timestamp;
+      record.attendanceDurationMinutes = Math.floor((event.timestamp.getTime() - record.joinedAt.getTime()) / 6e4);
+      record.attendancePct = Number((record.attendanceDurationMinutes / session.durationMinutes * 100).toFixed(1));
+      record.completed = record.attendancePct >= session.minimumAttendancePct;
+    }
+  }
+  closeSession(sessionId, recordingUrl) {
+    const session = this.sessions.get(sessionId);
+    if (!session) throw new Error(`Session ${sessionId} not found`);
+    session.status = "COMPLETED";
+    if (recordingUrl) session.recordingUrl = recordingUrl;
+    return session;
+  }
+  getSessionReport(sessionId) {
+    const session = this.sessions.get(sessionId);
+    if (!session) throw new Error(`Session ${sessionId} not found`);
+    const al = this.attendance.get(sessionId) || [];
+    const completedCount = al.filter((a) => a.completed).length;
+    const avgPct = al.length > 0 ? al.reduce((s, a) => s + a.attendancePct, 0) / al.length : 0;
+    return {
+      session,
+      registeredCount: this.registrations.get(sessionId)?.size || 0,
+      attendeeCount: al.length,
+      completedCount,
+      avgAttendancePct: Number(avgPct.toFixed(1)),
+      completionRate: al.length > 0 ? Number((completedCount / al.length * 100).toFixed(1)) : 0,
+      attendance: al
+    };
+  }
+  listSessions(courseId) {
+    return Array.from(this.sessions.values()).filter((s) => !courseId || s.courseId === courseId);
+  }
+};
+LmsVirtualClassroomService = __decorateClass([
+  Injectable45()
+], LmsVirtualClassroomService);
+
+// backend/src/modules/hr/lms-learning-journey.service.ts
+import { Injectable as Injectable46, Logger as Logger28, NotFoundException as NotFoundException16 } from "@nestjs/common";
+var LmsLearningJourneyService = class {
+  constructor() {
+    __publicField(this, "logger", new Logger28(LmsLearningJourneyService.name));
+    __publicField(this, "curricula", /* @__PURE__ */ new Map());
+    __publicField(this, "enrollments", /* @__PURE__ */ new Map());
+    // enrollmentId -> enrollment
+    __publicField(this, "learnerEnrollments", /* @__PURE__ */ new Map());
+  }
+  // learnerId -> enrollmentIds
+  // ── Curriculum Management ─────────────────────────────────────────────────
+  createCurriculum(input) {
+    const id = `CURR-${Date.now()}`;
+    const curriculum = { ...input, id, createdAt: /* @__PURE__ */ new Date(), updatedAt: /* @__PURE__ */ new Date() };
+    this.curricula.set(id, curriculum);
+    this.logger.log(`Curriculum created: "${input.name}" [${input.courses.length} courses, rule=${input.completionRule}]`);
+    return curriculum;
+  }
+  updateCurriculum(id, updates) {
+    const curr = this.curricula.get(id);
+    if (!curr) throw new NotFoundException16(`Curriculum ${id} not found`);
+    Object.assign(curr, updates, { updatedAt: /* @__PURE__ */ new Date() });
+    return curr;
+  }
+  getCurriculum(id) {
+    const curr = this.curricula.get(id);
+    if (!curr) throw new NotFoundException16(`Curriculum ${id} not found`);
+    return curr;
+  }
+  listCurricula(targetAudience, isCompliance) {
+    return Array.from(this.curricula.values()).filter(
+      (c) => (targetAudience == null || c.targetAudience === targetAudience) && (isCompliance == null || c.isCompliance === isCompliance)
+    );
+  }
+  // ── Enrollment ────────────────────────────────────────────────────────────
+  enroll(input) {
+    const curriculum = this.getCurriculum(input.curriculumId);
+    const id = `ENR-${input.learnerId}-${Date.now()}`;
+    const courseProgress = /* @__PURE__ */ new Map();
+    for (const course of curriculum.courses) {
+      const dueDate = course.dueOffsetDays ? new Date(Date.now() + course.dueOffsetDays * 864e5) : void 0;
+      courseProgress.set(course.courseId, { status: "NOT_STARTED", dueDate });
+    }
+    const overallDueDate = curriculum.expirationMonths ? new Date(Date.now() + curriculum.expirationMonths * 30 * 864e5) : void 0;
+    const enrollment = {
+      id,
+      curriculumId: input.curriculumId,
+      learnerId: input.learnerId,
+      enrolledAt: /* @__PURE__ */ new Date(),
+      enrollmentType: input.enrollmentType,
+      enrolledBy: input.enrolledBy,
+      dueDate: overallDueDate,
+      courseProgress,
+      overallStatus: "IN_PROGRESS"
+    };
+    this.enrollments.set(id, enrollment);
+    const learnerList = this.learnerEnrollments.get(input.learnerId) || [];
+    learnerList.push(id);
+    this.learnerEnrollments.set(input.learnerId, learnerList);
+    this.logger.log(`Learner ${input.learnerId} enrolled in curriculum "${curriculum.name}" [${input.enrollmentType}]`);
+    return enrollment;
+  }
+  /**
+   * Records a course completion within a learning journey enrollment.
+   * Validates prerequisites and checks if curriculum completion is triggered.
+   */
+  recordCourseCompletion(enrollmentId, courseId, score) {
+    const enrollment = this.enrollments.get(enrollmentId);
+    if (!enrollment) throw new NotFoundException16(`Enrollment ${enrollmentId} not found`);
+    const curriculum = this.getCurriculum(enrollment.curriculumId);
+    const course = curriculum.courses.find((c) => c.courseId === courseId);
+    if (!course) throw new Error(`Course ${courseId} not in curriculum ${enrollment.curriculumId}`);
+    for (const prereqId of course.prerequisites) {
+      const prereqStatus = enrollment.courseProgress.get(prereqId)?.status;
+      if (prereqStatus !== "COMPLETED" && prereqStatus !== "WAIVED") {
+        throw new Error(`Prerequisite course ${prereqId} must be completed before ${courseId}`);
+      }
+    }
+    enrollment.courseProgress.set(courseId, {
+      status: "COMPLETED",
+      completedAt: /* @__PURE__ */ new Date(),
+      score
+    });
+    const curriculumCompleted = this._checkCurriculumCompletion(enrollment, curriculum);
+    let certificateId;
+    if (curriculumCompleted && enrollment.overallStatus !== "COMPLETED") {
+      enrollment.overallStatus = "COMPLETED";
+      enrollment.completedAt = /* @__PURE__ */ new Date();
+      if (curriculum.certificationEnabled) {
+        certificateId = `CERT-${enrollment.learnerId}-${curriculum.id}-${Date.now()}`;
+        enrollment.certificateId = certificateId;
+        this.logger.log(`Certificate issued: ${certificateId} for learner ${enrollment.learnerId} in "${curriculum.name}"`);
+      }
+    }
+    return { enrollment, curriculumCompleted, certificateId };
+  }
+  waiveCourse(enrollmentId, courseId, waiverId) {
+    const enrollment = this.enrollments.get(enrollmentId);
+    if (!enrollment) throw new NotFoundException16(`Enrollment ${enrollmentId} not found`);
+    enrollment.courseProgress.set(courseId, { status: "WAIVED" });
+    this.logger.log(`Course ${courseId} waived in enrollment ${enrollmentId} by ${waiverId}`);
+    return enrollment;
+  }
+  // ── Progress & Status ─────────────────────────────────────────────────────
+  getLearningJourneyStatus(enrollmentId) {
+    const enrollment = this.enrollments.get(enrollmentId);
+    if (!enrollment) throw new NotFoundException16(`Enrollment ${enrollmentId} not found`);
+    const curriculum = this.getCurriculum(enrollment.curriculumId);
+    const now = /* @__PURE__ */ new Date();
+    let completedCourses = 0;
+    let mandatoryPending = 0;
+    let overdueCount = 0;
+    let estimatedHoursRemaining = 0;
+    let nextCourseToDo;
+    const sortedCourses = [...curriculum.courses].sort((a, b) => a.sequenceOrder - b.sequenceOrder);
+    for (const course of sortedCourses) {
+      const progress = enrollment.courseProgress.get(course.courseId);
+      const status = progress?.status || "NOT_STARTED";
+      if (status === "COMPLETED" || status === "WAIVED") {
+        completedCourses++;
+      } else {
+        const prereqsMet = course.prerequisites.every((p) => {
+          const ps = enrollment.courseProgress.get(p)?.status;
+          return ps === "COMPLETED" || ps === "WAIVED";
+        });
+        if (prereqsMet && !nextCourseToDo) {
+          nextCourseToDo = course.courseId;
+        }
+        estimatedHoursRemaining += course.estimatedHours;
+        if (course.isMandatory) mandatoryPending++;
+        if (progress?.dueDate && now > progress.dueDate) overdueCount++;
+      }
+    }
+    const totalCourses = curriculum.courses.length;
+    const progressPct = totalCourses > 0 ? Number((completedCourses / totalCourses * 100).toFixed(1)) : 100;
+    const isCompliant = !curriculum.isCompliance || enrollment.overallStatus === "COMPLETED";
+    return {
+      enrollment,
+      curriculum,
+      totalCourses,
+      completedCourses,
+      mandatoryPending,
+      progressPct,
+      nextCourseToDo,
+      overdueCount,
+      estimatedHoursRemaining,
+      isCompliant
+    };
+  }
+  getLearnerComplianceStatus(learnerId) {
+    const enrollmentIds = this.learnerEnrollments.get(learnerId) || [];
+    return enrollmentIds.map((eid) => {
+      const status = this.getLearningJourneyStatus(eid);
+      return {
+        curriculumName: status.curriculum.name,
+        isCompliance: status.curriculum.isCompliance,
+        status: status.enrollment.overallStatus,
+        completedAt: status.enrollment.completedAt,
+        dueDate: status.enrollment.dueDate,
+        isCompliant: status.isCompliant
+      };
+    });
+  }
+  // ── Private Helpers ───────────────────────────────────────────────────────
+  _checkCurriculumCompletion(enrollment, curriculum) {
+    const completed = /* @__PURE__ */ new Set();
+    for (const [cid, prog] of enrollment.courseProgress) {
+      if (prog.status === "COMPLETED" || prog.status === "WAIVED") {
+        completed.add(cid);
+      }
+    }
+    switch (curriculum.completionRule) {
+      case "ALL_COURSES":
+        return curriculum.courses.every((c) => completed.has(c.courseId));
+      case "ANY_N_COURSES": {
+        const n = curriculum.minCoursesForAnyN || curriculum.courses.length;
+        return completed.size >= n;
+      }
+      case "MANDATORY_PLUS_ELECTIVES": {
+        const mandatoryDone = curriculum.mandatoryCourseIds.every((id) => completed.has(id));
+        return mandatoryDone;
+      }
+      default:
+        return false;
+    }
+  }
+};
+LmsLearningJourneyService = __decorateClass([
+  Injectable46()
+], LmsLearningJourneyService);
+
+// backend/src/modules/hr/time-rule.controller.ts
+import {
+  Controller as Controller19,
+  Get as Get19,
+  Post as Post17,
+  Put as Put12,
+  Delete as Delete13,
+  Patch as Patch7,
+  Body as Body17,
+  Param as Param16,
+  Query as Query11
+} from "@nestjs/common";
+var TimeRuleController = class {
+  constructor(timeRuleService) {
+    this.timeRuleService = timeRuleService;
+  }
+  async findAll(tenantId) {
+    return this.timeRuleService.findAll(tenantId);
+  }
+  async findById(id) {
+    return this.timeRuleService.findById(id);
+  }
+  async create(data) {
+    return this.timeRuleService.create(data);
+  }
+  async update(id, data) {
+    return this.timeRuleService.update(id, data);
+  }
+  async delete(id) {
+    return this.timeRuleService.delete(id);
+  }
+  async toggleStatus(id) {
+    return this.timeRuleService.toggleStatus(id);
+  }
+  async simulate(tenantId, input) {
+    return this.timeRuleService.simulateRules(tenantId, input);
+  }
+};
+__decorateClass([
+  Get19(),
+  __decorateParam(0, Query11("tenantId"))
+], TimeRuleController.prototype, "findAll", 1);
+__decorateClass([
+  Get19(":id"),
+  __decorateParam(0, Param16("id"))
+], TimeRuleController.prototype, "findById", 1);
+__decorateClass([
+  Post17(),
+  __decorateParam(0, Body17())
+], TimeRuleController.prototype, "create", 1);
+__decorateClass([
+  Put12(":id"),
+  __decorateParam(0, Param16("id")),
+  __decorateParam(1, Body17())
+], TimeRuleController.prototype, "update", 1);
+__decorateClass([
+  Delete13(":id"),
+  __decorateParam(0, Param16("id"))
+], TimeRuleController.prototype, "delete", 1);
+__decorateClass([
+  Patch7(":id/toggle"),
+  __decorateParam(0, Param16("id"))
+], TimeRuleController.prototype, "toggleStatus", 1);
+__decorateClass([
+  Post17("simulate"),
+  __decorateParam(0, Query11("tenantId")),
+  __decorateParam(1, Body17())
+], TimeRuleController.prototype, "simulate", 1);
+TimeRuleController = __decorateClass([
+  Controller19("api/hr/time-rules")
+], TimeRuleController);
+
+// backend/src/modules/hr/time-rule.service.ts
+import { Injectable as Injectable47, Inject as Inject36, NotFoundException as NotFoundException17 } from "@nestjs/common";
+import { eq as eq31, and as and16 } from "drizzle-orm";
+import { hrmTimeRules as hrmTimeRules2 } from "@shared/schema/time_rules";
+var TimeRuleService = class {
+  constructor(db) {
+    this.db = db;
+  }
+  async findAll(tenantId) {
+    return this.db.select().from(hrmTimeRules2).where(eq31(hrmTimeRules2.tenantId, tenantId));
+  }
+  async findById(id) {
+    const [rule] = await this.db.select().from(hrmTimeRules2).where(eq31(hrmTimeRules2.id, id));
+    if (!rule) throw new NotFoundException17(`Time rule ${id} not found`);
+    return rule;
+  }
+  async create(data) {
+    const [rule] = await this.db.insert(hrmTimeRules2).values(data).returning();
+    return rule;
+  }
+  async update(id, data) {
+    const [rule] = await this.db.update(hrmTimeRules2).set(data).where(eq31(hrmTimeRules2.id, id)).returning();
+    if (!rule) throw new NotFoundException17(`Time rule ${id} not found`);
+    return rule;
+  }
+  async delete(id) {
+    await this.db.delete(hrmTimeRules2).where(eq31(hrmTimeRules2.id, id));
+    return { success: true };
+  }
+  async toggleStatus(id) {
+    const rule = await this.findById(id);
+    const newStatus = rule.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+    const [updated] = await this.db.update(hrmTimeRules2).set({ status: newStatus }).where(eq31(hrmTimeRules2.id, id)).returning();
+    return updated;
+  }
+  /**
+   * Rule Simulation Mode:
+   * Given a shift scenario (startTime, endTime, dayOfWeek, baseRate),
+   * returns which rules would apply and what the effective pay would be.
+   */
+  async simulateRules(tenantId, input) {
+    const allRules = await this.db.select().from(hrmTimeRules2).where(and16(
+      eq31(hrmTimeRules2.tenantId, tenantId),
+      eq31(hrmTimeRules2.status, "ACTIVE")
+    ));
+    const [startH, startM] = input.startTime.split(":").map(Number);
+    const [endH, endM] = input.endTime.split(":").map(Number);
+    const totalHours = (endH * 60 + endM - (startH * 60 + startM)) / 60;
+    const applicableRules = [];
+    for (const rule of allRules) {
+      let applies = false;
+      if (rule.daysOfWeek) {
+        const days = rule.daysOfWeek.split(",").map((d) => d.trim());
+        if (days.includes(input.dayOfWeek)) applies = true;
+      }
+      if (!applies && rule.startTime && rule.endTime) {
+        const [rStartH, rStartM] = rule.startTime.split(":").map(Number);
+        const [rEndH, rEndM] = rule.endTime.split(":").map(Number);
+        const rStartMins = rStartH * 60 + rStartM;
+        const rEndMins = rEndH * 60 + rEndM;
+        const inputStartMins = startH * 60 + startM;
+        const inputEndMins = endH * 60 + endM;
+        if (rStartMins > rEndMins) {
+          if (inputStartMins >= rStartMins || inputEndMins <= rEndMins) applies = true;
+        } else {
+          if (inputStartMins < rEndMins && inputEndMins > rStartMins) applies = true;
+        }
+      }
+      if (applies) {
+        const multiplier = Number(rule.multiplier ?? 1);
+        const flatAdd = Number(rule.flatRateAdd ?? 0);
+        const effectiveRate = input.baseHourlyRate * multiplier + flatAdd;
+        applicableRules.push({
+          ruleId: rule.id,
+          name: rule.name,
+          ruleType: rule.ruleType,
+          effectiveMultiplier: multiplier,
+          flatRateAdd: flatAdd,
+          effectivePay: effectiveRate * totalHours
+        });
+      }
+    }
+    const bestRule = applicableRules.reduce(
+      (best, r) => !best || r.effectivePay > best.effectivePay ? r : best,
+      null
+    );
+    const grossPay = bestRule ? bestRule.effectivePay : input.baseHourlyRate * totalHours;
+    const effectiveHourlyRate = totalHours > 0 ? grossPay / totalHours : input.baseHourlyRate;
+    return {
+      applicableRules,
+      totalHours: Math.round(totalHours * 100) / 100,
+      grossPay: Math.round(grossPay * 100) / 100,
+      effectiveHourlyRate: Math.round(effectiveHourlyRate * 100) / 100
+    };
+  }
+};
+TimeRuleService = __decorateClass([
+  Injectable47(),
+  __decorateParam(0, Inject36("DATABASE"))
+], TimeRuleService);
+
+// backend/src/modules/hr/hr.module.ts
+var HRModule = class {
+};
+HRModule = __decorateClass([
+  Module10({
+    controllers: [EmployeeController, LeaveController, TimesheetController, TimeRuleController],
+    providers: [EmployeeService, LeaveService, TimesheetService, HrCustomReportService, CoreHrApprovalService, PayrollGlobalConnectorService, LmsVirtualClassroomService, LmsLearningJourneyService, TimeRuleService],
+    exports: [EmployeeService, LeaveService, TimesheetService, HrCustomReportService, CoreHrApprovalService, PayrollGlobalConnectorService, LmsVirtualClassroomService, LmsLearningJourneyService, TimeRuleService]
+  })
+], HRModule);
 
 // backend/src/app.module.ts
 var AppModule = class {
 };
 AppModule = __decorateClass([
-  Module9({
+  Module11({
     imports: [
       DatabaseModule,
       ConfigModule.forRoot({
@@ -17153,7 +19881,9 @@ AppModule = __decorateClass([
       }),
       AuthModule,
       EPMModule,
-      AdminModule
+      AdminModule,
+      ManufacturingModule,
+      HRModule
       // ProjectsModule,
       // FinanceModule,
     ]
