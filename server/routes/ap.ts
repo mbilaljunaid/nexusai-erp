@@ -3,8 +3,9 @@ import express from "express";
 import { apService } from "../services/ap";
 import { storage } from "../storage";
 import { db } from "../db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import {
+    apSuppliers, apInvoices,
     insertApSupplierSchema, insertApInvoiceSchema, insertApPaymentSchema,
     insertApInvoiceLineSchema, insertApPaymentBatchSchema,
     slaJournalHeaders, slaJournalLines
@@ -105,8 +106,13 @@ apRouter.post("/distribution-sets", async (req, res) => {
 
 // Schema for the compound payload
 const createInvoiceSchema = z.object({
-    header: insertApInvoiceSchema,
-    lines: z.array(insertApInvoiceLineSchema),
+    header: insertApInvoiceSchema.omit({ invoiceDate: true, dueDate: true }).extend({
+        invoiceDate: z.coerce.date(),
+        dueDate: z.coerce.date().optional()
+    }),
+    lines: z.array(insertApInvoiceLineSchema.omit({ invoiceId: true }).extend({
+        invoiceId: z.string().optional()
+    })),
 });
 
 // Seed demo data
@@ -122,7 +128,15 @@ apRouter.post("/seed", async (req, res) => {
 
 // Supplier CRUD
 apRouter.get("/suppliers", async (req, res) => {
-    const list = await storage.listApSuppliers();
+    const list = await db.select({
+        ...apSuppliers,
+        totalBalance: sql<number>`COALESCE(SUM(CASE WHEN ${apInvoices.paymentStatus} = 'UNPAID' THEN ${apInvoices.invoiceAmount} ELSE 0 END), 0)`
+    })
+        .from(apSuppliers)
+        .leftJoin(apInvoices, eq(apInvoices.supplierId, apSuppliers.id))
+        .groupBy(apSuppliers.id)
+        .orderBy(apSuppliers.createdAt);
+
     res.json(list);
 });
 
@@ -383,6 +397,32 @@ apRouter.get("/reports/aging", async (_req, res) => {
     try {
         const aging = await apService.getAgingReport();
         res.json(aging);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+apRouter.get("/reports/1099", async (_req, res) => {
+    try {
+        const list = await db.select({
+            supplierId: apSuppliers.id,
+            supplierNumber: apSuppliers.supplierNumber,
+            supplierName: apSuppliers.name,
+            taxId: apSuppliers.taxId,
+            totalPaid: sql<number>`SUM(${apInvoices.invoiceAmount})`,
+            boxNumber: sql<string>`'Box 7 - Nonemployee Compensation'`
+        })
+            .from(apInvoices)
+            .innerJoin(apSuppliers, eq(apInvoices.supplierId, apSuppliers.id))
+            .where(and(
+                eq(apInvoices.paymentStatus, 'PAID'),
+                sql`${apSuppliers.taxId} IS NOT NULL`,
+                sql`${apSuppliers.taxOrganizationType} != 'Corporation'`
+            ))
+            .groupBy(apSuppliers.id)
+            .orderBy(sql`SUM(${apInvoices.invoiceAmount}) DESC`);
+
+        res.json(list);
     } catch (e: any) {
         res.status(500).json({ error: e.message });
     }

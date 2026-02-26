@@ -60,6 +60,11 @@ export default function APSuppliers() {
             cell: (row) => row.paymentTerms || "Net 30"
         },
         {
+            header: "Outstanding Balance",
+            accessorKey: "totalBalance",
+            cell: (row) => <span className="font-semibold text-primary">${parseFloat(row.totalBalance || 0).toLocaleString()}</span>
+        },
+        {
             header: "Status",
             accessorKey: "status",
             cell: (row) => (

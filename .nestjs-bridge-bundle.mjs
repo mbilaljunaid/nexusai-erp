@@ -165,6 +165,7 @@ __export(schema_exports, {
   apInvoicePayments: () => apInvoicePayments,
   apInvoices: () => apInvoices,
   apPaymentBatches: () => apPaymentBatches,
+  apPaymentTerms: () => apPaymentTerms,
   apPayments: () => apPayments,
   apPeriodStatuses: () => apPeriodStatuses,
   apPrepayApplications: () => apPrepayApplications,
@@ -557,6 +558,7 @@ __export(schema_exports, {
   insertApInvoiceSchema: () => insertApInvoiceSchema,
   insertApPaymentBatchSchema: () => insertApPaymentBatchSchema,
   insertApPaymentSchema: () => insertApPaymentSchema,
+  insertApPaymentTermSchema: () => insertApPaymentTermSchema,
   insertApPeriodStatusSchema: () => insertApPeriodStatusSchema,
   insertApPrepayApplicationSchema: () => insertApPrepayApplicationSchema,
   insertApSupplierSchema: () => insertApSupplierSchema,
@@ -1954,6 +1956,8 @@ var apInvoicePayments = pgTable2("ap_invoice_payments", {
   invoiceId: varchar2("invoice_id").notNull(),
   amount: numeric2("amount", { precision: 18, scale: 2 }).notNull(),
   // Amount of THIS invoice paid by THIS payment
+  discountTaken: numeric2("discount_taken", { precision: 18, scale: 2 }).default("0"),
+  // Early payment discount amount
   accountingDate: timestamp2("accounting_date"),
   createdAt: timestamp2("created_at").defaultNow()
 });
@@ -2026,6 +2030,22 @@ var apPrepayApplications = pgTable2("ap_prepay_applications", {
   createdAt: timestamp2("created_at").defaultNow()
 });
 var insertApPrepayApplicationSchema = createInsertSchema2(apPrepayApplications);
+var apPaymentTerms = pgTable2("ap_payment_terms", {
+  id: varchar2("id").primaryKey().default(sql2`gen_random_uuid()`),
+  termName: varchar2("term_name", { length: 100 }).unique().notNull(),
+  // e.g. "Net 30", "2% 10 Net 30"
+  description: text2("description"),
+  dueDays: integer2("due_days").notNull(),
+  // e.g. 30
+  discountDays: integer2("discount_days"),
+  // e.g. 10
+  discountPercent: numeric2("discount_percent", { precision: 5, scale: 2 }),
+  // e.g. 2.00
+  enabledFlag: boolean2("enabled_flag").default(true),
+  createdAt: timestamp2("created_at").defaultNow(),
+  updatedAt: timestamp2("updated_at").defaultNow()
+});
+var insertApPaymentTermSchema = createInsertSchema2(apPaymentTerms);
 
 // shared/schema/ar.ts
 import { pgTable as pgTable3, varchar as varchar3, text as text3, timestamp as timestamp3, numeric as numeric3, boolean as boolean3, integer as integer3 } from "drizzle-orm/pg-core";

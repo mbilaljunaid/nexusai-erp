@@ -168,9 +168,14 @@ export class ApService {
                 if (paySite) siteId = paySite.id;
             }
 
+            // Determine prepay remaining amount
+            const prepayRemaining =
+                data.header.invoiceType === "PREPAYMENT" ? data.header.invoiceAmount : null;
+
             // 2. Insert Header
             const [invoice] = await tx.insert(apInvoices).values({
                 ...data.header,
+                prepayAmountRemaining: prepayRemaining,
                 supplierSiteId: siteId,
                 invoiceStatus: "DRAFT",
                 validationStatus: "NEVER VALIDATED"
@@ -611,10 +616,10 @@ export class ApService {
         const results = await db.select({
             supplierName: apSuppliers.name,
             current: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} > NOW() THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
-            days1_30: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() AND ${apInvoices.dueDate} > NOW() - INTERVAL '30 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
-            days31_60: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() - INTERVAL '30 days' AND ${apInvoices.dueDate} > NOW() - INTERVAL '60 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
-            days61_90: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() - INTERVAL '60 days' AND ${apInvoices.dueDate} > NOW() - INTERVAL '90 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
-            daysOver90: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() - INTERVAL '90 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
+            days30: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() AND ${apInvoices.dueDate} > NOW() - INTERVAL '30 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
+            days60: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() - INTERVAL '30 days' AND ${apInvoices.dueDate} > NOW() - INTERVAL '60 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
+            days90: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() - INTERVAL '60 days' AND ${apInvoices.dueDate} > NOW() - INTERVAL '90 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
+            over90: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() - INTERVAL '90 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
             total: sql<number>`SUM(${apInvoices.invoiceAmount})`
         })
             .from(apInvoices)

@@ -20,6 +20,7 @@ export default function APInvoiceEntry() {
         supplierId: "",
         invoiceNumber: "",
         invoiceDate: new Date().toISOString().split("T")[0],
+        invoiceType: "STANDARD",
         invoiceAmount: "",
         invoiceCurrencyCode: "USD",
         description: "",
@@ -112,7 +113,7 @@ export default function APInvoiceEntry() {
                                     <SelectValue placeholder="Select Supplier" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {suppliers?.data?.map((sup: any) => (
+                                    {suppliers?.map((sup: any) => (
                                         <SelectItem key={sup.id} value={sup.id}>{sup.name}</SelectItem>
                                     ))}
                                 </SelectContent>
@@ -125,6 +126,19 @@ export default function APInvoiceEntry() {
                         <div className="space-y-2">
                             <Label>Invoice Date *</Label>
                             <Input type="date" value={header.invoiceDate} onChange={e => setHeader({ ...header, invoiceDate: e.target.value })} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Invoice Type</Label>
+                            <Select value={header.invoiceType} onValueChange={v => setHeader({ ...header, invoiceType: v })}>
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="STANDARD">Standard</SelectItem>
+                                    <SelectItem value="CREDIT_MEMO">Credit Memo</SelectItem>
+                                    <SelectItem value="DEBIT_MEMO">Debit Memo</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div className="space-y-2">
                             <Label>Total Amount *</Label>

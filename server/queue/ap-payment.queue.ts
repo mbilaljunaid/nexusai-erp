@@ -11,6 +11,7 @@ import { Job } from 'bullmq';
 import { createQueue, createWorker } from './bullmq';
 import { db } from '../db';
 import { eq } from 'drizzle-orm';
+import { PaymentWorker } from '../worker/PaymentWorker';
 
 // ---------------------------------------------------------------------------
 // Job Payload Types
@@ -51,7 +52,8 @@ async function processAPPayment(job: Job<APPaymentJobData>) {
             // Fetch unpaid payment schedule lines and mark as in-process
             if (!paymentBatchId) throw new Error('paymentBatchId required');
             console.log(`[APPaymentQueue] Scheduling batch ${paymentBatchId}`);
-            // TODO: integrate with payment-terms.service paymentBatch lifecycle
+            // Dispatch to the robust PaymentWorker logic
+            await PaymentWorker.processBatch(Number(paymentBatchId));
             await job.updateProgress(100);
             break;
         }
