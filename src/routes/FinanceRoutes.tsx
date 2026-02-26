@@ -12,6 +12,7 @@ import ReconciliationPage from "@/pages/ReconciliationPage";
 import FixedAssets from "@/pages/finance/FixedAssets";
 import FixedAssetWorkbench from "@/pages/finance/FixedAssetWorkbench";
 import APInvoices from "@/pages/finance/ap/APInvoices";
+import APInvoiceEntry from "@/pages/finance/ap/APInvoiceEntry";
 import APDashboard from "@/pages/finance/ap/APDashboard";
 import APSuppliers from "@/pages/finance/ap/APSuppliers";
 import APAICaptureUpload from "@/pages/finance/ap/APAICaptureUpload";
@@ -30,6 +31,7 @@ import CurrencyRevaluationView from "@/pages/finance/cash/CurrencyRevaluationVie
 import ZBAManagement from "@/pages/finance/cash/ZBAManagement";
 import BankReconciliationWorkbench from "@/pages/finance/cash/BankReconciliationWorkbench";
 import CashPositionDashboard from "@/pages/finance/cash/CashPositionDashboard";
+import TreasuryBankAccounts from "@/pages/finance/treasury/BankAccounts";
 
 import AccountsReceivable from "@/pages/AccountsReceivable";
 import EnterpriseBillingDashboard from "@/pages/billing/BillingDashboard";
@@ -167,11 +169,13 @@ export default function FinanceRoutes() {
                 <Route path="/finance/cash/bank-reconciliation" component={BankReconciliationWorkbench} />
                 <Route path="/finance/cash/position" component={CashPositionDashboard} />
                 <Route path="/finance/treasury" component={TreasuryCommandCenter} />
+                <Route path="/finance/treasury/bank-accounts" component={TreasuryBankAccounts} />
                 <Route path="/finance/cash/accounts/:id/reconcile" component={ReconciliationPage} />
                 <Route path="/finance/fixed-assets" component={FixedAssetWorkbench} />
                 <Route path="/finance/fixed-assets/workbench" component={FixedAssetWorkbench} />
                 <Route path="/finance/fixed-assets/inquiry" component={FixedAssets} />
                 <Route path="/finance/ap/suppliers" component={APSuppliers} />
+                <Route path="/finance/ap/invoices/new" component={APInvoiceEntry} />
                 <Route path="/finance/ap/invoices" component={APInvoices} />
                 <Route path="/finance/ap/payments" component={APPaymentBatches} />
                 <Route path="/finance/ap/ai-capture" component={APAICaptureUpload} />
