@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { DollarSign, Link, Unlink } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function APPrepayments() {
     const [page, setPage] = useState(1);
@@ -29,6 +30,18 @@ export default function APPrepayments() {
             const data = await response.json();
             return data.data?.filter((inv: any) =>
                 inv.invoiceType === "PREPAYMENT" &&
+                parseFloat(inv.remainingAmount || inv.invoiceAmount || 0) > 0
+            ) || [];
+        }
+    });
+
+    const { data: standardInvoices } = useQuery({
+        queryKey: ["/api/ap/invoices", "standard"],
+        queryFn: async () => {
+            const response = await fetch("/api/ap/invoices");
+            const data = await response.json();
+            return data.data?.filter((inv: any) =>
+                inv.invoiceType !== "PREPAYMENT" &&
                 parseFloat(inv.remainingAmount || inv.invoiceAmount || 0) > 0
             ) || [];
         }
@@ -207,13 +220,19 @@ export default function APPrepayments() {
                             </p>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="invoiceId">Invoice ID</Label>
-                            <Input
-                                id="invoiceId"
-                                value={invoiceId}
-                                onChange={(e) => setInvoiceId(e.target.value)}
-                                placeholder="Enter invoice ID"
-                            />
+                            <Label htmlFor="invoiceId">Apply to Invoice</Label>
+                            <Select value={invoiceId} onValueChange={setInvoiceId}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select an Invoice" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {standardInvoices?.filter((inv: any) => !selectedPrepay || inv.supplierId === selectedPrepay.supplierId).map((inv: any) => (
+                                        <SelectItem key={inv.id} value={inv.id}>
+                                            {inv.invoiceNumber} - ${parseFloat(inv.remainingAmount || inv.invoiceAmount).toFixed(2)} remaining
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="amount">Amount to Apply</Label>

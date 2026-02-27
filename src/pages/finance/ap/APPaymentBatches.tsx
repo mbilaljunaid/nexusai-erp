@@ -34,6 +34,11 @@ export default function APPaymentBatches() {
         refetchIntervalInBackground: true
     });
 
+    const { data: bankAccounts = [] } = useQuery({
+        queryKey: ["/api/cash/accounts"],
+        queryFn: () => fetch("/api/cash/accounts").then(r => r.json())
+    });
+
     const createMutation = useMutation({
         mutationFn: (data: any) =>
             fetch("/api/ap/payment-batches", {
@@ -291,12 +296,21 @@ export default function APPaymentBatches() {
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="bankAccountId">Bank Account</Label>
-                            <Input
-                                id="bankAccountId"
+                            <Select
                                 value={formData.bankAccountId}
-                                onChange={(e) => setFormData({ ...formData, bankAccountId: e.target.value })}
-                                placeholder="Operating Account"
-                            />
+                                onValueChange={(v) => setFormData({ ...formData, bankAccountId: v })}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select an Account" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {bankAccounts?.map((account: any) => (
+                                        <SelectItem key={account.id} value={account.id}>
+                                            {account.accountName} (*{account.accountNumber?.slice(-4) || 'XXXX'})
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
                     <DialogFooter>

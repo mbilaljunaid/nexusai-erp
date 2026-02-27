@@ -27,13 +27,18 @@ export default function APInvoiceEntry() {
         paymentTerms: "Net 30"
     });
 
-    const [lines, setLines] = useState([
-        { lineNumber: 1, lineType: "ITEM", amount: "", description: "" }
+    const [lines, setLines] = useState<{ lineNumber: number; lineType: string; amount: string; description: string; poHeaderId?: string }[]>([
+        { lineNumber: 1, lineType: "ITEM", amount: "", description: "", poHeaderId: "" }
     ]);
 
     const { data: suppliers } = useQuery({
         queryKey: ["/api/ap/suppliers"],
         queryFn: api.ap.suppliers.list,
+    });
+
+    const { data: purchaseOrders } = useQuery({
+        queryKey: ["/api/purchase-orders"],
+        queryFn: () => fetch("/api/purchase-orders").then(r => r.json()),
     });
 
     const createMutation = useMutation({
@@ -49,7 +54,7 @@ export default function APInvoiceEntry() {
     });
 
     const addLine = () => {
-        setLines([...lines, { lineNumber: lines.length + 1, lineType: "ITEM", amount: "", description: "" }]);
+        setLines([...lines, { lineNumber: lines.length + 1, lineType: "ITEM", amount: "", description: "", poHeaderId: "" }]);
     };
 
     const removeLine = (index: number) => {
@@ -218,7 +223,17 @@ export default function APInvoiceEntry() {
                                     </div>
                                     <div className="flex-1 space-y-2">
                                         <Label>Match to PO</Label>
-                                        <Input value={line.poHeaderId || ""} onChange={e => handleLineChange(index, "poHeaderId", e.target.value)} placeholder="PO ID..." />
+                                        <Select value={line.poHeaderId || ""} onValueChange={v => handleLineChange(index, "poHeaderId", v)}>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select PO" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="">None</SelectItem>
+                                                {purchaseOrders?.filter((po: any) => !header.supplierId || po.supplierId === header.supplierId).map((po: any) => (
+                                                    <SelectItem key={po.id} value={po.id}>{po.poNumber}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                     </div>
                                     <Button variant="ghost" size="icon" onClick={() => removeLine(index)} disabled={lines.length === 1} className="text-red-500 hover:text-red-700 hover:bg-red-50">
                                         <Trash2 className="h-4 w-4" />

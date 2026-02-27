@@ -33,6 +33,11 @@ export default function ARReceipts() {
         queryFn: () => fetch("/api/ar/customers").then(r => r.json()),
     });
 
+    const { data: invoices } = useQuery({
+        queryKey: ["/api/ar/invoices"],
+        queryFn: () => fetch("/api/ar/invoices").then(r => r.json()),
+    });
+
     const createMutation = useMutation({
         mutationFn: async (data: any) => await apiRequest("POST", "/api/ar/receipts", { ...data, amount: data.amount.toString() }),
         onSuccess: () => {
@@ -89,7 +94,14 @@ export default function ARReceipts() {
                         <DialogContent>
                             <DialogHeader><DialogTitle>Apply Receipt to Invoice</DialogTitle></DialogHeader>
                             <div className="space-y-4 pt-4">
-                                <Input placeholder="Invoice Number" value={applyData.invoiceId} onChange={e => setApplyData({ ...applyData, invoiceId: e.target.value })} />
+                                <Select value={applyData.invoiceId} onValueChange={v => setApplyData({ ...applyData, invoiceId: v })}>
+                                    <SelectTrigger><SelectValue placeholder="Select Invoice" /></SelectTrigger>
+                                    <SelectContent>
+                                        {invoices?.map((inv: any) => (
+                                            <SelectItem key={inv.id} value={inv.id}>{inv.invoiceNumber} - ${Number(inv.amountBalance || inv.amount).toFixed(2)} remaining</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                                 <Input placeholder="Amount to Apply" type="number" value={applyData.amount} onChange={e => setApplyData({ ...applyData, amount: e.target.value })} />
                                 <Button className="w-full" onClick={() => applyMutation.mutate({ id: r.id, data: applyData })}>Apply Balance</Button>
                             </div>
@@ -105,7 +117,14 @@ export default function ARReceipts() {
                         <DialogContent>
                             <DialogHeader><DialogTitle>Create Chargeback (Bounced Payment)</DialogTitle></DialogHeader>
                             <div className="space-y-4 pt-4">
-                                <Input placeholder="Original Invoice Number" value={chargebackData.invoiceId} onChange={e => setChargebackData({ ...chargebackData, invoiceId: e.target.value })} />
+                                <Select value={chargebackData.invoiceId} onValueChange={v => setChargebackData({ ...chargebackData, invoiceId: v })}>
+                                    <SelectTrigger><SelectValue placeholder="Select Original Invoice" /></SelectTrigger>
+                                    <SelectContent>
+                                        {invoices?.map((inv: any) => (
+                                            <SelectItem key={inv.id} value={inv.id}>{inv.invoiceNumber} (Amt: ${Number(inv.amount).toFixed(2)})</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                                 <Input placeholder="Chargeback Amount" type="number" value={chargebackData.amount} onChange={e => setChargebackData({ ...chargebackData, amount: e.target.value })} />
                                 <Button className="w-full bg-orange-600 hover:bg-orange-700" onClick={() => chargebackMutation.mutate({ receiptId: r.id, ...chargebackData })}>Process Chargeback</Button>
                             </div>

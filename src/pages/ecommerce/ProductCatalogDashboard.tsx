@@ -3,10 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { StandardTableimport PIMService from '@/services/pimService';
+import { StandardTable } from '@/components/ui/standard-table';
+import PIMService from '@/services/pimService';
 import { Package, Upload, FileText } from 'lucide-react';
 
-export default function ProductCatalog Dashboard() {
+export default function ProductCatalogDashboard() {
     const [products, setProducts] = useState<any[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);

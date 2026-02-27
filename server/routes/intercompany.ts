@@ -270,27 +270,28 @@ router.delete("/data-access/:id", async (req, res) => {
     }
 });
 
+// --- In-Memory Store for Mock Disputes ---
+let globalMockDisputes = [
+    {
+        id: "DISP-1001",
+        dispute_number: "DISP-2026-001",
+        from_entity: "US Corp",
+        to_entity: "UK Subsidiary",
+        disputed_amount: 15000,
+        currency: "USD",
+        status: "Open",
+        reason: "AMOUNT_MISMATCH",
+        opened_by: "Alice",
+        opened_at: new Date().toISOString(),
+        events: [{ at: new Date().toISOString(), by: "Alice", action: "OPENED", note: "Initial discrepancy" }]
+    }
+];
+
 // ── Disputes Module ──
 router.get("/disputes", async (req, res) => {
     try {
         const { status } = req.query;
-        // Mock disputes for ICDisputeWorkbench
-        const mockDisputes = [
-            {
-                id: "DISP-1001",
-                dispute_number: "DISP-2026-001",
-                from_entity: "US Corp",
-                to_entity: "UK Subsidiary",
-                disputed_amount: 15000,
-                currency: "USD",
-                status: "Open",
-                reason: "AMOUNT_MISMATCH",
-                opened_by: "Alice",
-                opened_at: new Date().toISOString(),
-                events: [{ at: new Date().toISOString(), by: "Alice", action: "OPENED", note: "Initial discrepancy" }]
-            }
-        ];
-        res.json(status ? mockDisputes.filter(d => d.status === status) : mockDisputes);
+        res.json(status ? globalMockDisputes.filter(d => d.status === status) : globalMockDisputes);
     } catch (e: any) {
         res.status(500).json({ error: e.message });
     }
@@ -298,8 +299,10 @@ router.get("/disputes", async (req, res) => {
 
 router.get("/disputes/summary", async (req, res) => {
     try {
+        const openCount = globalMockDisputes.filter(d => d.status === 'Open').length;
+        const openAmts = globalMockDisputes.filter(d => d.status === 'Open').reduce((acc, curr) => acc + (curr.disputed_amount || 0), 0);
         res.json([
-            { status: "Open", reason: "AMOUNT_MISMATCH", count: 1, total_disputed: 15000 }
+            { status: "Open", reason: "AMOUNT_MISMATCH", count: openCount || 1, total_disputed: openAmts || 15000 }
         ]);
     } catch (e: any) {
         res.status(500).json({ error: e.message });
@@ -316,6 +319,7 @@ router.post("/disputes", async (req, res) => {
             opened_at: new Date().toISOString(),
             events: [{ at: new Date().toISOString(), by: req.body.openedBy || 'System', action: "OPENED", note: req.body.notes || "" }]
         };
+        globalMockDisputes = [newDispute, ...globalMockDisputes];
         res.json(newDispute);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -324,6 +328,18 @@ router.post("/disputes", async (req, res) => {
 
 router.post("/disputes/:id/event", async (req, res) => {
     try {
+        const { action, note, actor } = req.body;
+        globalMockDisputes = globalMockDisputes.map(d => {
+            if (d.id === req.params.id) {
+                const newStatus = action === 'ESCALATE' ? 'Escalated' : action === 'REVIEW' ? 'Under_Review' : d.status;
+                return {
+                    ...d,
+                    status: newStatus,
+                    events: [...(d.events || []), { at: new Date().toISOString(), by: actor || 'System', action, note }]
+                };
+            }
+            return d;
+        });
         res.json({ success: true });
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -332,6 +348,18 @@ router.post("/disputes/:id/event", async (req, res) => {
 
 router.post("/disputes/:id/resolve", async (req, res) => {
     try {
+        const { resolution, resolvedBy } = req.body;
+        globalMockDisputes = globalMockDisputes.map(d => {
+            if (d.id === req.params.id) {
+                return {
+                    ...d,
+                    status: "Resolved",
+                    reason: resolution || "Resolved",
+                    events: [...(d.events || []), { at: new Date().toISOString(), by: resolvedBy || "System", action: "RESOLVED", note: resolution || "Resolved" }]
+                };
+            }
+            return d;
+        });
         res.json({ success: true });
     } catch (e: any) {
         res.status(400).json({ error: e.message });

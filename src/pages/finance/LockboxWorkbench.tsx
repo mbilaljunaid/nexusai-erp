@@ -84,7 +84,9 @@ export default function LockboxWorkbench() {
 
     const parseCSV = (csv: string) => {
         const lines = csv.split('\n').filter(Boolean);
-        return lines.slice(1).map(line => {
+        // Remove header only if the first line looks like a header (e.g., contains 'check' or 'amount')
+        const dataLines = lines[0]?.toLowerCase().includes('amount') || lines[0]?.toLowerCase().includes('check') ? lines.slice(1) : lines;
+        return dataLines.map((line: string) => {
             const parts = line.split(',').map(p => p.trim().replace(/"/g, ''));
             return { checkNumber: parts[0], remittanceRef: parts[1], payerName: parts[2], payerAccount: parts[3], amount: parseFloat(parts[4]) || 0, itemDate: parts[5] || batchDate };
         });
@@ -155,7 +157,7 @@ export default function LockboxWorkbench() {
                             return (
                                 <div key={b.id} className={`batch-card ${selectedBatch?.id === b.id ? 'selected' : ''}`} onClick={() => setSelectedBatch(b)}>
                                     <div className="bc-top">
-                                        <span className="bc-date mono">{b.batch_date}</span>
+                                        <span className="bc-date mono">{new Date(b.batch_date).toLocaleDateString()}</span>
                                         <span className="bc-status" style={{ background: cfg.bg, color: cfg.color }}>{b.status}</span>
                                     </div>
                                     <div className="bc-meta">{b.item_count} items · {fmt(b.total_amount)}</div>
@@ -171,7 +173,7 @@ export default function LockboxWorkbench() {
                     {selectedBatch ? (
                         <>
                             <div className="item-header">
-                                <div className="ih-title">Batch: {selectedBatch.batch_date} — {selectedBatch.item_count} items</div>
+                                <div className="ih-title">Batch: {new Date(selectedBatch.batch_date).toLocaleDateString()} — {selectedBatch.item_count} items</div>
                                 <div className="ih-stats">
                                     <span className="green"><CheckCircle2 size={12} /> {matched} matched</span>
                                     <span className="orange"><AlertCircle size={12} /> {unmatched} unmatched</span>

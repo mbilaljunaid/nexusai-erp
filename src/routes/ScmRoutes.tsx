@@ -137,11 +137,11 @@ export default function ScmRoutes() {
 
             {/* TMS - New Components */}
             <Route path="/tms/analytics" component={TransportationBIDashboard} />
-            <Route path="/tms/freight-accounting" component={FreightAccountingWorkbench} />
-            <Route path="/tms/settlement" component={FreightSettlementWorkbench} />
-            <Route path="/tms/carrier-scorecards" component={CarrierScorecardDashboard} />
             <Route path="/transportation/freight-accounting" component={FreightAccountingWorkbench} />
             <Route path="/transportation/freight-settlement" component={FreightSettlementWorkbench} />
+            <Route path="/transportation/carrier-scorecard" component={CarrierScorecardDashboard} />
+            <Route path="/transportation/carrier-rates" component={CarrierRateWorkbench} />
+            <Route path="/transportation/tracking" component={ShipmentTrackingDashboard} />
             <Route path="/transportation/carrier-scorecard" component={CarrierScorecardDashboard} />
             <Route path="/transportation/carrier-rates" component={CarrierRateWorkbench} />
             <Route path="/transportation/tracking" component={ShipmentTrackingDashboard} />

@@ -15,7 +15,7 @@ import {
     Cog,
     Brain,
     TrendingUp,
-    Workflow,
+    Workflow as WorkflowIcon,
     GitBranch,
     Search,
     ShoppingCart,
@@ -28,7 +28,6 @@ import {
     Lock,
     Radio,
     Truck,
-    Workflow as WorkflowIcon,
     Building,
     LogOut,
     BookOpen,
@@ -63,196 +62,144 @@ import {
     Calculator,
 } from "lucide-react";
 
-
 export const navigationConfig: SidebarNode[] = [
     {
-        id: "me-myteam",
-        title: "Me & My Team",
-        type: "section",
-        children: [
-            { id: "me", title: "Me", type: "link", icon: User, path: "/me" },
-            { id: "my-team", title: "My Team", type: "link", icon: Users, path: "/my-team", allowedRoles: ["admin", "editor"] },
-        ],
-    },
-    {
-        id: "core-business",
-        title: "Core Business",
+        id: "overview",
+        title: "Overview",
         type: "section",
         children: [
             { id: "dashboard", title: "Dashboard", type: "link", icon: LayoutDashboard, path: "/dashboard" },
             { id: "processes", title: "Processes", type: "link", icon: WorkflowIcon, path: "/processes" },
+        ]
+    },
+    {
+        id: "modules",
+        title: "Modules",
+        type: "section",
+        children: [
             {
-                id: "crm", title: "CRM & Sales", type: "group", icon: Target, path: "/crm", allowedRoles: ["admin", "editor"],
+                id: "me-team", title: "Me & My Team", type: "group", icon: User,
                 children: [
-                    { id: "crm-overview", title: "Overview", type: "link", path: "/crm" },
-                    { id: "crm-pipeline", title: "Opportunity Pipeline", type: "link", path: "/crm/pipeline" },
-                    { id: "crm-leads", title: "Lead Scoring", type: "link", path: "/crm/lead-scoring" },
-                    { id: "crm-quotes", title: "Quote Builder", type: "link", path: "/crm/quotes/builder" },
-                    { id: "crm-analytics", title: "Analytics", type: "link", path: "/crm/analytics" },
-                    { id: "crm-deal-desk", title: "Deal Desk", type: "link", path: "/crm/deal-desk" },
-                    { id: "crm-competitors", title: "Competitors", type: "link", path: "/crm/competitors" },
-                    { id: "crm-catalog", title: "Product Catalog", type: "link", path: "/crm/catalog" },
-                    { id: "crm-cpq", title: "CPQ Configurator", type: "link", path: "/crm/cpq" },
-                    { id: "crm-campaigns", title: "Email Campaigns", type: "link", path: "/crm/marketing/campaigns" },
-                    { id: "crm-automation", title: "Marketing Automation", type: "link", path: "/crm/marketing/automation" },
-                    { id: "crm-cases", title: "Case Management", type: "link", path: "/crm/service/cases" },
-                    { id: "crm-knowledge", title: "Knowledge Base", type: "link", path: "/crm/service/knowledge" },
-                    { id: "crm-partners", title: "Partners", type: "link", path: "/crm/partners" },
-                    { id: "crm-deals", title: "Deal Registration", type: "link", path: "/crm/partners/deals" },
-                ],
+                    { id: "me", title: "Me (ESS)", type: "link", path: "/me" },
+                    { id: "my-team", title: "My Team (MSS)", type: "link", path: "/my-team" }
+                ]
             },
             {
-                id: "finance", title: "Finance", type: "group", icon: DollarSign, path: "/finance", allowedRoles: ["admin", "editor"],
+                id: "finance", title: "Finance & Accounting", type: "group", icon: DollarSign, path: "/finance",
                 children: [
-                    { id: "finance-overview", title: "Overview", type: "link", path: "/finance" },
-                    // General Ledger
-                    { id: "gl-journals", title: "GL • Journals", type: "link", path: "/finance/gl/journals" },
-                    { id: "gl-trial-balance", title: "GL • Trial Balance", type: "link", path: "/finance/gl/trial-balance" },
-                    { id: "gl-period-close", title: "GL • Period Close", type: "link", path: "/finance/gl/period-close" },
-                    { id: "gl-budgets", title: "GL • Budgets", type: "link", path: "/finance/gl/budgets" },
-                    { id: "gl-consolidation", title: "GL • Consolidation", type: "link", path: "/finance/gl/consolidation" },
-                    { id: "gl-close-center", title: "GL • Close Center", type: "link", path: "/finance/gl/close-center" },
-                    // Core Finance
+                    { id: "finance-gl", title: "General Ledger", type: "link", path: "/finance/gl" },
                     { id: "finance-ap", title: "Accounts Payable", type: "link", path: "/finance/ap" },
                     { id: "finance-ar", title: "Accounts Receivable", type: "link", path: "/finance/accounts-receivable" },
-                    { id: "finance-ar-invoices", title: "AR Invoices", type: "link", path: "/finance/ar/invoices" },
-                    { id: "finance-ar-receipts", title: "AR Receipts", type: "link", path: "/finance/ar/receipts" },
-                    { id: "finance-ar-customers", title: "Customer Master", type: "link", path: "/finance/ar/customers" },
-                    { id: "finance-treasury", title: "Treasury", type: "link", path: "/finance/treasury" },
-                    { id: "finance-fixed-assets", title: "Fixed Assets", type: "link", path: "/finance/fixed-assets" },
-                    { id: "finance-tax", title: "Tax Management", type: "link", path: "/finance/tax" },
+                    { id: "finance-cm", title: "Cash & Treasury", type: "link", path: "/finance/treasury" },
+                    { id: "finance-rev", title: "Billing & Revenue", type: "link", path: "/finance/revenue" },
+                    { id: "finance-fa", title: "Fixed Assets", type: "link", path: "/finance/fixed-assets" },
+                    { id: "finance-ic", title: "Intercompany", type: "link", path: "/finance/intercompany/workbench" },
+                    { id: "finance-sla", title: "Subledger Accounting", type: "link", path: "/finance/sla" },
                     { id: "finance-expense", title: "Expense Management", type: "link", path: "/finance/expense-management" },
-                    // Billing
-                    { id: "billing-dashboard", title: "Billing • Dashboard", type: "link", path: "/finance/billing" },
-                    { id: "billing-subscriptions", title: "Billing • Subscriptions", type: "link", path: "/finance/billing/subscriptions" },
-                    { id: "billing-usage", title: "Billing • Usage Metering", type: "link", path: "/finance/billing/usage-metering" },
-                    { id: "billing-credit-memos", title: "Billing • Credit Memos", type: "link", path: "/finance/billing/credit-memos" },
-                    // Revenue Management
-                    { id: "rev-contracts", title: "Revenue • Contracts", type: "link", path: "/finance/revenue/contracts" },
-                    { id: "rev-ssp", title: "Revenue • SSP Manager", type: "link", path: "/finance/revenue/ssp" },
-                    { id: "rev-waterfall", title: "Revenue • Waterfall", type: "link", path: "/finance/revenue/waterfall" },
-                    { id: "rev-deferred", title: "Revenue • Deferred", type: "link", path: "/finance/revenue/deferred" },
-                ],
+                    { id: "finance-tax", title: "Tax Management", type: "link", path: "/finance/tax" },
+                ]
             },
-            { id: "epm", title: "EPM", type: "link", icon: TrendingUp, path: "/epm", allowedRoles: ["admin", "editor"] },
             {
-                id: "hr", title: "HR & Talent", type: "group", icon: Briefcase, path: "/hr", allowedRoles: ["admin", "editor"],
+                id: "epm", title: "Enterprise Performance (EPM)", type: "group", icon: TrendingUp, path: "/epm",
                 children: [
-                    { id: "hr-overview", title: "Overview", type: "link", path: "/hr" },
-                    // Recruitment
-                    { id: "recruit-dashboard", title: "Recruiting • Dashboard", type: "link", path: "/hr/recruitment" },
-                    { id: "recruit-interviews", title: "Recruiting • Interviews", type: "link", path: "/hr/recruitment/my-interviews" },
-                    { id: "recruit-onboarding", title: "Recruiting • Onboarding", type: "link", path: "/hr/recruitment/onboarding" },
-                    // Performance & Learning
-                    { id: "hr-performance", title: "Performance", type: "link", path: "/hr/performance" },
-                    { id: "learn-catalog", title: "Learning • Catalog", type: "link", path: "/talent/learning" },
-                    { id: "learn-manager", title: "Learning • Manager View", type: "link", path: "/talent/learning/manager" },
-                    { id: "learn-admin", title: "Learning • Admin", type: "link", path: "/talent/learning/admin" },
-                    // Analytics & Rewards
+                    { id: "epm-planning", title: "Planning", type: "link", path: "/epm/planning" },
+                    { id: "epm-budgeting", title: "Budgeting", type: "link", path: "/epm/budgeting" },
+                    { id: "epm-forecasting", title: "Forecasting", type: "link", path: "/epm/forecasting" },
+                    { id: "epm-modeling", title: "Financial Modeling", type: "link", path: "/epm/modeling" },
+                    { id: "epm-consolidation", title: "Consolidation", type: "link", path: "/finance/gl/consolidation" },
+                ]
+            },
+            {
+                id: "scm", title: "Supply Chain & Procurement", type: "group", icon: Package, path: "/scm",
+                children: [
+                    { id: "procurement", title: "Procurement", type: "link", path: "/scm/procurement" },
+                    { id: "portal-supplier", title: "Supplier Portal", type: "link", path: "/portal/supplier" },
+                    { id: "inventory", title: "Inventory", type: "link", path: "/inventory" },
+                    { id: "costing", title: "Cost Management", type: "link", path: "/scm/costing/dashboard" },
+                ]
+            },
+            {
+                id: "mfg", title: "Manufacturing & Operations", type: "group", icon: Hammer, path: "/manufacturing",
+                children: [
+                    { id: "manufacturing", title: "Manufacturing", type: "link", path: "/manufacturing/dashboard" },
+                    { id: "wms", title: "Warehouse (WMS)", type: "link", path: "/scm/wms/dashboard" },
+                    { id: "tms", title: "Transportation (TMS)", type: "link", path: "/transportation" },
+                    { id: "lcm", title: "Landed Cost (LCM)", type: "link", path: "/scm/lcm/operations" },
+                    { id: "logistics", title: "Logistics", type: "link", path: "/logistics" },
+                    { id: "quality", title: "Quality Management", type: "link", path: "/manufacturing/quality" },
+                    { id: "maintenance", title: "Maintenance (EAM)", type: "link", path: "/maintenance" },
+                ]
+            },
+            {
+                id: "crm", title: "CRM & Sales", type: "group", icon: Target, path: "/crm",
+                children: [
+                    { id: "crm-sales", title: "Sales Execution", type: "link", path: "/crm" },
+                    { id: "crm-cpq", title: "CPQ & Quotes", type: "link", path: "/crm/cpq" },
+                    { id: "crm-service", title: "Service & Customer Portal", type: "link", path: "/service" },
+                    { id: "crm-marketing", title: "Marketing", type: "link", path: "/marketing" },
+                    { id: "crm-partners", title: "Partners (PRM)", type: "link", path: "/crm/partners" }
+                ]
+            },
+            {
+                id: "hr", title: "HR & Talent", type: "group", icon: Briefcase, path: "/hr",
+                children: [
+                    { id: "hr-core", title: "Core HR", type: "link", path: "/hr" },
+                    { id: "hr-recruit", title: "Recruitment", type: "link", path: "/hr/recruitment" },
+                    { id: "hr-talent", title: "Talent & Learning", type: "link", path: "/talent/learning" },
+                    { id: "hr-wfm", title: "Workforce Mgmt (WFM)", type: "link", path: "/wfm/my-time" },
+                    { id: "hr-rewards", title: "Rewards", type: "link", path: "/rewards/compensation" },
                     { id: "hr-analytics", title: "HR Analytics", type: "link", path: "/hr/analytics" },
-                    { id: "hr-compensation", title: "Compensation", type: "link", path: "/rewards/compensation" },
-                    { id: "hr-payroll", title: "Payroll", type: "link", path: "/rewards/payroll" },
-                ],
-            },
-            { id: "projects", title: "Projects", type: "link", icon: Zap, path: "/projects", allowedRoles: ["admin", "editor"] },
-            { id: "construction", title: "Construction", type: "link", icon: Hammer, path: "/construction", allowedRoles: ["admin", "editor"] },
-            { id: "order-mgmt", title: "Order Management", type: "link", icon: ShoppingCart, path: "/order-management", allowedRoles: ["admin", "editor"] },
-            { id: "intercompany", title: "Intercompany", type: "link", icon: ArrowRightLeft, path: "/intercompany", allowedRoles: ["admin", "editor"] },
-            { id: "marketing", title: "Marketing", type: "link", icon: Megaphone, path: "/marketing", allowedRoles: ["admin", "editor"] },
-        ],
-    },
-    {
-        id: "operations-admin",
-        title: "Operations & Admin",
-        type: "section",
-        children: [
-            { id: "operations", title: "Operations", type: "link", icon: Cog, path: "/operations", allowedRoles: ["admin", "editor"] },
-            {
-                id: "supply-chain", title: "Supply Chain", type: "group", icon: Package, path: "/scm", allowedRoles: ["admin", "editor"],
-                children: [
-                    { id: "scm-overview", title: "Overview", type: "link", path: "/inventory" },
-                    {
-                        id: "wms-group", title: "Warehouse (WMS)", type: "group", icon: Warehouse,
-                        children: [
-                            { id: "wms-dashboard", title: "Dashboard", type: "link", path: "/scm/wms/dashboard" },
-                            { id: "wms-waves", title: "Wave Planning", type: "link", path: "/scm/wms/waves" },
-                            { id: "wms-tasks", title: "Task Console", type: "link", path: "/scm/wms/tasks" },
-                            { id: "wms-mobile", title: "Mobile UI", type: "link", path: "/scm/wms/mobile" },
-                            { id: "wms-masters", title: "Masters & Setup", type: "link", path: "/scm/wms/masters" },
-                            { id: "wms-yard", title: "Yard & Docks", type: "link", path: "/scm/wms/yard" },
-                            { id: "wms-shipping", title: "Shipping Hub", type: "link", path: "/scm/wms/shipping" },
-                        ],
-                    },
-                    {
-                        id: "procurement", title: "Procurement", type: "group", icon: ScrollText,
-                        children: [
-                            { id: "proc-suppliers", title: "Suppliers", type: "link", path: "/suppliers" },
-                            { id: "proc-fulfillment", title: "Fulfillment", type: "link", path: "/scm/fulfillment" },
-                        ],
-                    },
-                    {
-                        id: "scm-costing-group", title: "Cost Management", type: "group", icon: Calculator,
-                        children: [
-                            { id: "scm-costing-dashboard", title: "Cost Analysis", type: "link", path: "/scm/costing/dashboard" },
-                            { id: "lcm-workbench", title: "Landed Cost Workbench", type: "link", path: "/scm/lcm/operations" },
-                            { id: "lcm-components", title: "Cost Components", type: "link", path: "/scm/lcm/components" },
-                        ]
-                    },
-                    { id: "scm-logistics", title: "Logistics", type: "link", path: "/logistics" },
-                ],
+                ]
             },
             {
-                id: "transportation", title: "Transportation", type: "group", icon: Truck, path: "/transportation", allowedRoles: ["admin", "editor"],
+                id: "projects", title: "Projects & Contracts", type: "group", icon: Zap, path: "/projects",
                 children: [
-                    { id: "tms-overview", title: "Dashboard", type: "link", path: "/transportation" },
-                    { id: "tms-freight", title: "Freight Accounting", type: "link", path: "/transportation/freight-accounting" },
-                    { id: "tms-settlement", title: "Settlement", type: "link", path: "/transportation/freight-settlement" },
-                    { id: "tms-scorecard", title: "Carrier Scorecard", type: "link", path: "/transportation/carrier-scorecard" },
-                    { id: "tms-rates", title: "Carrier Rates", type: "link", path: "/transportation/carrier-rates" },
-                    { id: "tms-tracking", title: "Shipment Tracking", type: "link", path: "/transportation/tracking" },
-                ],
+                    { id: "ppm", title: "Project Portfolio (PPM)", type: "link", path: "/projects" },
+                    { id: "construction", title: "Construction", type: "link", path: "/construction" },
+                    { id: "lease-contracts", title: "Lease & Contract Mgmt", type: "link", path: "/projects/leases" }
+                ]
             },
-            { id: "inventory", title: "Inventory", type: "link", icon: Warehouse, path: "/inventory", allowedRoles: ["admin", "editor"] },
-            { id: "manufacturing", title: "Manufacturing", type: "link", icon: Factory, path: "/manufacturing/dashboard", allowedRoles: ["admin", "editor"] },
-            { id: "maintenance", title: "Maintenance", type: "link", icon: Wrench, path: "/maintenance", allowedRoles: ["admin", "editor"] },
-            { id: "wfm", title: "Workforce Mgmt", type: "link", icon: Activity, path: "/wfm/my-time", allowedRoles: ["admin", "editor"] },
-            { id: "service", title: "Service", type: "link", icon: Headphones, path: "/service", allowedRoles: ["admin", "editor"] },
-            { id: "mdm", title: "Master Data", type: "link", icon: Database, path: "/mdm", allowedRoles: ["admin", "editor"] },
-        ],
+            {
+                id: "intelligence", title: "Intelligence & Governance", type: "group", icon: Brain,
+                children: [
+                    { id: "mdm", title: "Master Data Mgmt (MDM)", type: "link", path: "/mdm" },
+                    { id: "analytics", title: "Analytics", type: "link", path: "/analytics" },
+                    { id: "compliance", title: "Compliance & Risk", type: "link", path: "/compliance/dashboard" },
+                    { id: "audit", title: "Audit Trails", type: "link", path: "/compliance/audit" },
+                    { id: "security", title: "Security Profiles", type: "link", path: "/compliance/security" },
+                ]
+            }
+        ]
     },
     {
-        id: "intelligence-automation",
-        title: "Intelligence & Governance",
-        type: "section",
-        children: [
-            { id: "analytics", title: "Analytics", type: "link", icon: BarChart3, path: "/analytics" },
-            { id: "reports", title: "Reports", type: "link", icon: FileText, path: "/reports" },
-            { id: "compliance", title: "Compliance & Risk", type: "link", icon: Shield, path: "/compliance/dashboard", allowedRoles: ["admin", "editor"] },
-            { id: "audit", title: "Audit Trails", type: "link", icon: HistoryIcon, path: "/compliance/audit", allowedRoles: ["admin"] },
-            { id: "security-profiles", title: "Security Profiles", type: "link", icon: Lock, path: "/compliance/security", allowedRoles: ["admin"] },
-        ],
-    },
-    {
-        id: "portals-section",
-        title: "Portals",
-        type: "section",
-        allowedRoles: ["admin", "editor"],
-        children: [
-            { id: "portal-customer", title: "Customer Portal", type: "link", icon: Globe, path: "/portal", allowedRoles: ["admin", "editor"] },
-            { id: "portal-supplier", title: "Supplier Portal", type: "link", icon: Truck, path: "/portal/supplier", allowedRoles: ["admin", "editor"] },
-        ],
-    },
-    {
-        id: "industry-verticals",
+        id: "industries",
         title: "Industries",
         type: "section",
-        allowedRoles: ["admin", "editor"],
         children: [
-            { id: "industries", title: "Industry Solutions", type: "link", icon: Landmark, path: "/industries", allowedRoles: ["admin", "editor"] },
-        ],
+            {
+                id: "industry-verticals", title: "Industry Solutions", type: "group", icon: Landmark, path: "/industries",
+                children: [
+                    { id: "ind-mfg", title: "Manufacturing & High-Tech", type: "link", path: "/industries/manufacturing" },
+                    { id: "ind-retail", title: "Retail & Consumer Goods", type: "link", path: "/industries/retail" },
+                    { id: "ind-health", title: "Healthcare & Life Sciences", type: "link", path: "/industries/healthcare" },
+                    { id: "ind-finserv", title: "Financial Services", type: "link", path: "/industries/financial-services" },
+                    { id: "ind-public", title: "Public Sector", type: "link", path: "/industries/public-sector" },
+                    { id: "ind-ec", title: "Engineering & Construction", type: "link", path: "/industries/engineering" },
+                    { id: "ind-proserv", title: "Professional Services", type: "link", path: "/industries/professional-services" },
+                    { id: "ind-telco", title: "Telecommunications", type: "link", path: "/industries/telecom" },
+                    { id: "ind-energy", title: "Energy & Utilities", type: "link", path: "/industries/energy" },
+                    { id: "ind-auto", title: "Automotive", type: "link", path: "/industries/automotive" },
+                    { id: "ind-aero", title: "Aerospace & Defense", type: "link", path: "/industries/aerospace" },
+                    { id: "ind-logistics", title: "Logistics & Transport", type: "link", path: "/industries/logistics" },
+                    { id: "ind-media", title: "Media & Entertainment", type: "link", path: "/industries/media" },
+                    { id: "ind-hospitality", title: "Hospitality & Travel", type: "link", path: "/industries/hospitality" },
+                    { id: "ind-realestate", title: "Real Estate", type: "link", path: "/industries/real-estate" },
+                ]
+            }
+        ]
     },
     {
-        id: "platform-admin-section",
+        id: "platform-admin",
         title: "Platform",
         type: "section",
         children: [

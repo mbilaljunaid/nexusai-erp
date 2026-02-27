@@ -226,8 +226,8 @@ function Router() {
         {/* Legacy/Aliases */}
         <Route path="/inventory*" component={ScmRoutes} />
         <Route path="/warehouse" component={ScmRoutes} />
-        <Route path="/suppliers" component={ScmRoutes} />
-        <Route path="/logistics" component={ScmRoutes} />
+        <Route path="/suppliers*" component={ScmRoutes} />
+        <Route path="/logistics*" component={ScmRoutes} />
         <Route path="/transportation*" component={ScmRoutes} />
         <Route path="/ppm*" component={ProjectRoutes} />
         <Route path="/construction*" component={ConstructionRoutes} />

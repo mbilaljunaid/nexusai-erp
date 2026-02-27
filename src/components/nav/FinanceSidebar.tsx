@@ -53,8 +53,9 @@ export const financeMenu = [
     {
         label: "Billing & Revenue",
         items: [
-            { title: "Billing Workbench", url: "/finance/billing", icon: FileText },
-            { title: "Revenue Contracts", url: "/revenue/contracts", icon: DollarSign },
+            { title: "Billing Dashboard", url: "/finance/billing", icon: BarChart3 },
+            { title: "Billing Workbench", url: "/finance/billing/workbench", icon: FileText },
+            { title: "Revenue Contracts", url: "/finance/revenue/contracts", icon: DollarSign },
             { title: "Tax Management", url: "/finance/tax", icon: DollarSign },
             { title: "Expense Management", url: "/finance/expense-management", icon: FileText },
         ],
@@ -75,9 +76,9 @@ export const financeMenu = [
     {
         label: "Intercompany",
         items: [
-            { title: "Workbench", url: "/intercompany", icon: TrendingUp },
-            { title: "Reconciliation", url: "/intercompany/reconciliation", icon: BarChart3 },
-            { title: "Netting", url: "/intercompany/netting", icon: TrendingUp },
+            { title: "Workbench", url: "/finance/intercompany/workbench", icon: TrendingUp },
+            { title: "Reconciliation", url: "/finance/intercompany/reconciliation", icon: BarChart3 },
+            { title: "Netting", url: "/finance/intercompany/netting", icon: TrendingUp },
         ],
     },
     {
