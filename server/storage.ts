@@ -1149,6 +1149,24 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(apApprovals);
   }
 
+  // Payment Terms
+  async listApPaymentTerms(): Promise<ApPaymentTerm[]> {
+    return await db.select().from(apPaymentTerms).orderBy(desc(apPaymentTerms.createdAt));
+  }
+  async getApPaymentTerm(id: string): Promise<ApPaymentTerm | undefined> {
+    const [res] = await db.select().from(apPaymentTerms).where(eq(apPaymentTerms.id, id));
+    return res;
+  }
+  async createApPaymentTerm(data: InsertApPaymentTerm): Promise<ApPaymentTerm> {
+    const [res] = await db.insert(apPaymentTerms).values(data).returning();
+    return res;
+  }
+  async updateApPaymentTerm(id: string, data: Partial<InsertApPaymentTerm>): Promise<ApPaymentTerm | undefined> {
+    const [res] = await db.update(apPaymentTerms).set({ ...data, updatedAt: new Date() }).where(eq(apPaymentTerms.id, id)).returning();
+    return res;
+  }
+
+
   async listGlJournalBatches() {
     return await db.select().from(glJournalBatches);
   }

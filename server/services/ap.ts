@@ -969,8 +969,9 @@ export class ApService {
     }
 
     // --- Approvals ---
+    // --- Approvals ---
     async approveInvoice(invoiceId: string | number, userId: string) {
-        const id = typeof invoiceId === 'string' ? parseInt(invoiceId) : invoiceId;
+        const id = String(invoiceId);
         const [invoice] = await db.update(apInvoices)
             .set({
                 approvalStatus: "APPROVED",
@@ -986,7 +987,7 @@ export class ApService {
     }
 
     async rejectInvoice(invoiceId: string | number, reason: string, userId: string) {
-        const id = typeof invoiceId === 'string' ? parseInt(invoiceId) : invoiceId;
+        const id = String(invoiceId);
         const [invoice] = await db.update(apInvoices)
             .set({
                 approvalStatus: "REJECTED",

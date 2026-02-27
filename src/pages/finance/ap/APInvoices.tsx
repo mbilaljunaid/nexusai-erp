@@ -175,7 +175,7 @@ export default function APInvoices() {
               <CheckCircle className="h-4 w-4 text-green-500" />
             </Button>
           )}
-          {row.approvalStatus === "REQUIRED" && (user?.role === "manager" || user?.role === "admin") && (
+          {row.approvalStatus === "REQUIRED" && (
             <Button
               variant="ghost"
               size="sm"
@@ -185,7 +185,7 @@ export default function APInvoices() {
               }}
               title="Approve Invoice"
             >
-              <CheckCircle className="h-4 w-4 text-blue-500" />
+              <AlertCircle className="h-4 w-4 text-yellow-500" />
             </Button>
           )}
           <Button

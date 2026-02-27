@@ -57,7 +57,7 @@ export default function APAICaptureUpload() {
                         description: item.description,
                         quantity: item.quantity || 1,
                         unitPrice: item.unitPrice,
-                        lineAmount: item.amount
+                        amount: item.amount
                     })) || []
                 })
             });

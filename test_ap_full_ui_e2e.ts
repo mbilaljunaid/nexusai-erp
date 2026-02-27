@@ -22,20 +22,34 @@ async function runTest() {
     const context = await browser.newContext();
     const page = await context.newPage();
 
+    page.on('response', async response => {
+        if (!response.ok() || response.url().includes('bulk-approve')) {
+            console.error(`⚠️ HTTP Trace: ${response.status()} ${response.url()}`);
+            try {
+                const text = await response.text();
+                console.error(`Response Body: ${text}`);
+            } catch (e) {
+                // ignore
+            }
+        }
+    });
+
     // 2. Login
     console.log("Logging into application...");
     await page.goto('http://localhost:5002/login');
     await page.locator('button', { hasText: 'Quick Admin Demo' }).click();
     await page.waitForURL('**/dashboard*', { timeout: 10000 });
     await page.waitForSelector('text=Command Center', { timeout: 15000 });
-    console.log("Login successful. Root Dashboard hydrated.");
+    await page.waitForTimeout(2500); // CRITICAL: Wait for LoginPage's trailing 1000ms navigate('/dashboard') to flush out of the JS event loop!
+    console.log("Login successful. Root Dashboard hydrated and event loop stabilized.");
 
     // 3. AI Multimodal Invoice Capture (Feature #4)
-    console.log("Navigating to AI Invoice Capture...");
+    console.log("Navigating to AI Invoice Capture via pushState...");
     await page.evaluate(() => {
         window.history.pushState({}, '', '/finance/ap/ai-capture');
         window.dispatchEvent(new Event('popstate'));
     });
+
     try {
         await page.waitForSelector('h1:has-text("AI Invoice Capture")', { timeout: 15000 });
     } catch (e) {
@@ -87,41 +101,42 @@ async function runTest() {
 
     // Wait for the mock extraction to populate the UI
     console.log("Saving Extracted AI Invoice...");
-    await page.waitForSelector('h3:has-text("Extracted Invoice Data")', { timeout: 10000 });
-    await page.click('button:has-text("Save Invoice")');
+    try {
+        await page.waitForSelector('text=Extracted Invoice Data', { timeout: 10000 });
+        await page.waitForTimeout(1000);
+        await page.locator('button:has-text("Save Invoice")').last().click();
+    } catch (e) {
+        await page.screenshot({ path: 'debug_save_invoice.png', fullPage: true });
+        throw e;
+    }
 
     // 4. Validate & Approve Invoice for Payment
     console.log("Navigating to Invoice List for Validation...");
-    await page.waitForSelector('h1:has-text("AP Invoices")', { timeout: 10000 });
+    try {
+        await page.waitForSelector('h1:has-text("Invoice Workbench")', { timeout: 15000 });
+    } catch (e) {
+        await page.screenshot({ path: 'debug_invoice_list.png', fullPage: true });
+        throw e;
+    }
 
     // Find our newly created invoice (first row, since sorted descending usually)
     const firstInvoiceRow = page.locator('tbody tr').first();
     const invoiceNum = await firstInvoiceRow.locator('td').nth(0).innerText();
     console.log(`Targeting Invoice: ${invoiceNum}`);
 
-    await firstInvoiceRow.locator('button:has-text("Validate")').click({ force: true }).catch(() => console.log("Validation button not visible, maybe context menu?"));
-    // Since we don't know the exact button path, we'll try to find any validate button for this row
-    // If not, we'll use evaluate to trigger validation API manually? No, must be UI data entry.
-    // Let's click the row to open the details slide-over or directly hit action menus
+    // Wait for the button to appear in the first row
+    await page.waitForTimeout(1000);
+    // Click Validate
+    await firstInvoiceRow.locator('button[title="Validate Invoice"]').click();
 
-    // Click row dropdown
-    await firstInvoiceRow.locator('button[aria-haspopup="menu"]').click();
-    await page.waitForTimeout(500);
-    const validateBtn = page.locator('div[role="menuitem"]:has-text("Validate")');
-    if (await validateBtn.isVisible()) {
-        await validateBtn.click();
-        console.log("Validation triggered from UI menu.");
-        await page.waitForTimeout(2000);
-    }
+    // Wait for the status badge to switch to VALIDATED (Wait up to 10s for the network roundtrip)
+    await expect(firstInvoiceRow.locator('td', { hasText: 'VALIDATED' })).toBeVisible({ timeout: 10000 });
 
-    await firstInvoiceRow.locator('button[aria-haspopup="menu"]').click();
-    await page.waitForTimeout(500);
-    const approveBtn = page.locator('div[role="menuitem"]:has-text("Approve")');
-    if (await approveBtn.isVisible()) {
-        await approveBtn.click();
-        console.log("Approval triggered from UI menu.");
-        await page.waitForTimeout(2000);
-    }
+    // Click Approve
+    await firstInvoiceRow.locator('button[title="Approve Invoice"]').click();
+
+    // Wait for approval badge
+    await expect(firstInvoiceRow.locator('td', { hasText: 'APPROVED' })).toBeVisible({ timeout: 10000 });
 
     // 5. Async Payment Worker + Payment Batch Creation (Feature #3)
     console.log("Transitioning to AP Payment Batches flow...");
@@ -132,11 +147,16 @@ async function runTest() {
     await page.waitForSelector('h1:has-text("Payment Batches")');
 
     console.log("Instantiating New Payment Batch...");
-    await page.click('button:has-text("New Batch")');
     const batchName = `UI-BATCH-${Date.now()}`;
-    await page.fill('input[placeholder="e.g., Weekly ACH Run"]', batchName);
-    await page.click('button:has-text("Create Batch")');
-    await page.waitForTimeout(2000);
+    try {
+        await page.locator('button:has-text("Create Batch")').first().click();
+        await page.fill('input[placeholder="Weekly Payment Run"]', batchName);
+        await page.locator('div[role="dialog"] button:has-text("Create Batch")').click();
+        await page.waitForTimeout(2000);
+    } catch (e) {
+        await page.screenshot({ path: 'debug_payment_batch.png', fullPage: true });
+        throw e;
+    }
 
     // Wait for the backend Drizzle insertion to finish processing
     let createdBatch = false;
@@ -172,7 +192,7 @@ async function runTest() {
     await page.waitForSelector('h1:has-text("AP Reports")');
 
     // Check Aging Bucket Content
-    await page.waitForSelector('h3:has-text("AP Aging Summary")');
+    await page.waitForSelector('text="AP Aging Summary"');
     const exportBtn = page.locator('button:has-text("Export CSV")');
     await expect(exportBtn).toBeVisible();
     console.log("5-Bucket Aging interface verified and structurally sound.");
@@ -192,7 +212,7 @@ async function runTest() {
     await page.waitForSelector('h1:has-text("AP Period Close")');
 
     await page.click('button[role="tab"]:has-text("Readiness Checks")');
-    await page.waitForSelector('h3:has-text("Exceptions Report")');
+    await page.waitForSelector('text="Exceptions Report"');
     console.log("Readiness Checks loaded successfully.");
 
     await page.click('button[role="tab"]:has-text("Period Control")');

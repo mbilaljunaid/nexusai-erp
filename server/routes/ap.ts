@@ -8,7 +8,8 @@ import {
     apSuppliers, apInvoices,
     insertApSupplierSchema, insertApInvoiceSchema, insertApPaymentSchema,
     insertApInvoiceLineSchema, insertApPaymentBatchSchema,
-    slaJournalHeaders, slaJournalLines
+    slaJournalHeaders, slaJournalLines,
+    apWhtGroups, apWhtRates, insertApWhtGroupSchema, insertApWhtRateSchema
 } from "@shared/schema";
 import { z } from "zod";
 import multer from "multer";
