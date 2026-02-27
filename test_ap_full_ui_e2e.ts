@@ -18,7 +18,7 @@ async function runTest() {
     const openPeriods = await db.select().from(glPeriods).where(eq(glPeriods.status, 'Open')).limit(1);
     const hasOpenPeriod = openPeriods.length > 0;
 
-    const browser = await chromium.launch({ headless: true });
+    const browser = await chromium.launch({ headless: false, slowMo: 600 });
     const context = await browser.newContext();
     const page = await context.newPage();
 
@@ -130,13 +130,13 @@ async function runTest() {
     await firstInvoiceRow.locator('button[title="Validate Invoice"]').click();
 
     // Wait for the status badge to switch to VALIDATED (Wait up to 10s for the network roundtrip)
-    await expect(firstInvoiceRow.locator('td', { hasText: 'VALIDATED' })).toBeVisible({ timeout: 10000 });
+    await expect(firstInvoiceRow.locator('td', { hasText: 'VALIDATED' }).first()).toBeVisible({ timeout: 10000 });
 
     // Click Approve
     await firstInvoiceRow.locator('button[title="Approve Invoice"]').click();
 
     // Wait for approval badge
-    await expect(firstInvoiceRow.locator('td', { hasText: 'APPROVED' })).toBeVisible({ timeout: 10000 });
+    await expect(firstInvoiceRow.locator('td', { hasText: 'APPROVED' }).first()).toBeVisible({ timeout: 10000 });
 
     // 5. Async Payment Worker + Payment Batch Creation (Feature #3)
     console.log("Transitioning to AP Payment Batches flow...");

@@ -61,7 +61,8 @@ export function RBACProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const checkBackendAuth = async () => {
       // If we already have a mock session, skip the backend check
-      if (localStorage.getItem("authToken") === "true" && localStorage.getItem("userId") === "user1") {
+      const mockUserId = localStorage.getItem("userId");
+      if (localStorage.getItem("authToken") === "true" && (mockUserId === "user1" || mockUserId === "demo-admin-user")) {
         setIsLoading(false);
         setIsAuthenticated(true);
         return;
@@ -146,7 +147,8 @@ export function RBACProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const handleFocus = async () => {
       // If we already have a mock session, skip the backend check
-      if (localStorage.getItem("authToken") === "true" && localStorage.getItem("userId") === "user1") {
+      const mockUserId = localStorage.getItem("userId");
+      if (localStorage.getItem("authToken") === "true" && (mockUserId === "user1" || mockUserId === "demo-admin-user")) {
         return;
       }
 
@@ -176,7 +178,8 @@ export function RBACProvider({ children }: { children: ReactNode }) {
           localStorage.setItem("authTimestamp", Date.now().toString());
         } else {
           // Check if we are using a local dev/demo session before wiping
-          const isDevSession = localStorage.getItem("authToken") === "true" && localStorage.getItem("userId") === "user1";
+          const mockUserId = localStorage.getItem("userId");
+          const isDevSession = localStorage.getItem("authToken") === "true" && (mockUserId === "user1" || mockUserId === "demo-admin-user");
           if (!isDevSession) {
             setIsAuthenticated(false);
             setUserId("");

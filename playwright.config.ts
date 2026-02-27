@@ -13,7 +13,7 @@ export default defineConfig({
     workers: 1,
     reporter: 'list',
     use: {
-        baseURL: 'http://localhost:5001',
+        baseURL: 'http://localhost:5002',
         trace: 'on-first-retry',
         viewport: { width: 1280, height: 720 },
     },

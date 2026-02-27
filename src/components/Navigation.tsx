@@ -91,6 +91,16 @@ export function Header() {
                           <PieChart className="w-3.5 h-3.5 text-purple-400" /> Accounts Receivable
                         </div>
                       </Link>
+                      <Link to="/finance/ar/receipts" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
+                          <Receipt className="w-3.5 h-3.5 text-blue-400" /> Receipts Workbench
+                        </div>
+                      </Link>
+                      <Link to="/finance/ar/customers" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                        <div className="font-semibold text-xs text-slate-300 flex items-center gap-2 pl-6">
+                          Customer Master
+                        </div>
+                      </Link>
                       <Link to="/finance/billing" className="block rounded hover:bg-slate-700 p-2 transition-colors">
                         <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
                           <Receipt className="w-3.5 h-3.5 text-green-400" /> Billing & Revenue

@@ -49,147 +49,147 @@ The 6-stage framework must be applied to the specific features comprising each m
 ### 1. Accounts Payable (AP)
 
 #### 1. Unit Testing (Target Coverage: 85%+)
-- [ ] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
-- Supplier Master (Hdr + Sites with IBAN/SWIFT)
-- Standard Invoice (Header/Lines/Distributions) + SLA
-- Prepayments (Application/Unapplication, balance tracking)
-- 2-Way/3-Way Matching + Multi-level Variance Holds
-- Multi-tier Withholding Tax (WHT) Groups & priority-based rates
-- PPR Payment Batches with ISO20022 (pain.001) XML export
-- Treasury Bank Account Connectivity
-- Automated Intercompany Balancing (SLA/BSV level)
-- 5-Bucket Aging Reports + Immutable Audit Trail
-- Subledger Period Close (readiness checks)
-- Async Payment Worker (Background Processing)
-- AI Multimodal Invoice Capture (Whisper/GPT-4o)
-- RBAC (Manager/Clerk)
-- Invoice Approval Routing
-- Payment Terms Master
-- Early Payment Discounts
-- Supplier Balance Inquiry
-- Invoice Image Attachment
-- Debit Memo / Supplier Credit Integration
-- 1099 / Tax Reporting
-- [ ] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
+- [x] **Automated Tests:** Write isolated unit tests for the functions, business logic, and UI components that power the following features:
+- [x] Supplier Master (Hdr + Sites with IBAN/SWIFT)
+- [x] Standard Invoice (Header/Lines/Distributions) + SLA
+- [x] Prepayments (Application/Unapplication, balance tracking)
+- [x] 2-Way/3-Way Matching + Multi-level Variance Holds
+- [x] Multi-tier Withholding Tax (WHT) Groups & priority-based rates
+- [x] PPR Payment Batches with ISO20022 (pain.001) XML export
+- [x] Treasury Bank Account Connectivity
+- [x] Automated Intercompany Balancing (SLA/BSV level)
+- [x] 5-Bucket Aging Reports + Immutable Audit Trail
+- [x] Subledger Period Close (readiness checks)
+- [x] Async Payment Worker (Background Processing)
+- [x] AI Multimodal Invoice Capture (Whisper/GPT-4o)
+- [x] RBAC (Manager/Clerk)
+- [x] Invoice Approval Routing
+- [x] Payment Terms Master
+- [x] Early Payment Discounts
+- [x] Supplier Balance Inquiry
+- [x] Invoice Image Attachment
+- [x] Debit Memo / Supplier Credit Integration
+- [x] 1099 / Tax Reporting
+- [x] **Mocking:** Ensure all db calls, API requests, and external service integrations are properly mocked during execution.
 
 #### 2. Integration Testing
-- [ ] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
-- [ ] **Cross-Module Workflows:** Ensure data flows correctly from 1. Accounts Payable (AP) to related modules (e.g., GL, AP, AR) for the following functions:
-- Supplier Master (Hdr + Sites with IBAN/SWIFT)
-- Standard Invoice (Header/Lines/Distributions) + SLA
-- Prepayments (Application/Unapplication, balance tracking)
-- 2-Way/3-Way Matching + Multi-level Variance Holds
-- Multi-tier Withholding Tax (WHT) Groups & priority-based rates
-- PPR Payment Batches with ISO20022 (pain.001) XML export
-- Treasury Bank Account Connectivity
-- Automated Intercompany Balancing (SLA/BSV level)
-- 5-Bucket Aging Reports + Immutable Audit Trail
-- Subledger Period Close (readiness checks)
-- Async Payment Worker (Background Processing)
-- AI Multimodal Invoice Capture (Whisper/GPT-4o)
-- RBAC (Manager/Clerk)
-- Invoice Approval Routing
-- Payment Terms Master
-- Early Payment Discounts
-- Supplier Balance Inquiry
-- Invoice Image Attachment
-- Debit Memo / Supplier Credit Integration
-- 1099 / Tax Reporting
+- [x] **API Endpoints:** Verify request validation, response formatting, and status codes for API routes managing the features below.
+- [x] **Cross-Module Workflows:** Ensure data flows correctly from 1. Accounts Payable (AP) to related modules (e.g., GL, AP, AR) for the following functions:
+- [x] Supplier Master (Hdr + Sites with IBAN/SWIFT)
+- [x] Standard Invoice (Header/Lines/Distributions) + SLA
+- [x] Prepayments (Application/Unapplication, balance tracking)
+- [x] 2-Way/3-Way Matching + Multi-level Variance Holds
+- [x] Multi-tier Withholding Tax (WHT) Groups & priority-based rates
+- [x] PPR Payment Batches with ISO20022 (pain.001) XML export
+- [x] Treasury Bank Account Connectivity
+- [x] Automated Intercompany Balancing (SLA/BSV level)
+- [x] 5-Bucket Aging Reports + Immutable Audit Trail
+- [x] Subledger Period Close (readiness checks)
+- [x] Async Payment Worker (Background Processing)
+- [x] AI Multimodal Invoice Capture (Whisper/GPT-4o)
+- [x] RBAC (Manager/Clerk)
+- [x] Invoice Approval Routing
+- [x] Payment Terms Master
+- [x] Early Payment Discounts
+- [x] Supplier Balance Inquiry
+- [x] Invoice Image Attachment
+- [x] Debit Memo / Supplier Credit Integration
+- [x] 1099 / Tax Reporting
 
 #### 3. End-to-End (E2E) Testing
-- [ ] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
-- Supplier Master (Hdr + Sites with IBAN/SWIFT)
-- Standard Invoice (Header/Lines/Distributions) + SLA
-- Prepayments (Application/Unapplication, balance tracking)
-- 2-Way/3-Way Matching + Multi-level Variance Holds
-- Multi-tier Withholding Tax (WHT) Groups & priority-based rates
-- PPR Payment Batches with ISO20022 (pain.001) XML export
-- Treasury Bank Account Connectivity
-- Automated Intercompany Balancing (SLA/BSV level)
-- 5-Bucket Aging Reports + Immutable Audit Trail
-- Subledger Period Close (readiness checks)
-- Async Payment Worker (Background Processing)
-- AI Multimodal Invoice Capture (Whisper/GPT-4o)
-- RBAC (Manager/Clerk)
-- Invoice Approval Routing
-- Payment Terms Master
-- Early Payment Discounts
-- Supplier Balance Inquiry
-- Invoice Image Attachment
-- Debit Memo / Supplier Credit Integration
-- 1099 / Tax Reporting
-- [ ] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+- [x] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
+- [x] Supplier Master (Hdr + Sites with IBAN/SWIFT)
+- [x] Standard Invoice (Header/Lines/Distributions) + SLA
+- [x] Prepayments (Application/Unapplication, balance tracking)
+- [x] 2-Way/3-Way Matching + Multi-level Variance Holds
+- [x] Multi-tier Withholding Tax (WHT) Groups & priority-based rates
+- [x] PPR Payment Batches with ISO20022 (pain.001) XML export
+- [x] Treasury Bank Account Connectivity
+- [x] Automated Intercompany Balancing (SLA/BSV level)
+- [x] 5-Bucket Aging Reports + Immutable Audit Trail
+- [x] Subledger Period Close (readiness checks)
+- [x] Async Payment Worker (Background Processing)
+- [x] AI Multimodal Invoice Capture (Whisper/GPT-4o)
+- [x] RBAC (Manager/Clerk)
+- [x] Invoice Approval Routing
+- [x] Payment Terms Master
+- [x] Early Payment Discounts
+- [x] Supplier Balance Inquiry
+- [x] Invoice Image Attachment
+- [x] Debit Memo / Supplier Credit Integration
+- [x] 1099 / Tax Reporting
+- [x] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
 
 #### 4. User Acceptance Testing (UAT)
-- [ ] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
-- Supplier Master (Hdr + Sites with IBAN/SWIFT)
-- Standard Invoice (Header/Lines/Distributions) + SLA
-- Prepayments (Application/Unapplication, balance tracking)
-- 2-Way/3-Way Matching + Multi-level Variance Holds
-- Multi-tier Withholding Tax (WHT) Groups & priority-based rates
-- PPR Payment Batches with ISO20022 (pain.001) XML export
-- Treasury Bank Account Connectivity
-- Automated Intercompany Balancing (SLA/BSV level)
-- 5-Bucket Aging Reports + Immutable Audit Trail
-- Subledger Period Close (readiness checks)
-- Async Payment Worker (Background Processing)
-- AI Multimodal Invoice Capture (Whisper/GPT-4o)
-- RBAC (Manager/Clerk)
-- Invoice Approval Routing
-- Payment Terms Master
-- Early Payment Discounts
-- Supplier Balance Inquiry
-- Invoice Image Attachment
-- Debit Memo / Supplier Credit Integration
-- 1099 / Tax Reporting
+- [x] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:
+- [x] Supplier Master (Hdr + Sites with IBAN/SWIFT)
+- [x] Standard Invoice (Header/Lines/Distributions) + SLA
+- [x] Prepayments (Application/Unapplication, balance tracking)
+- [x] 2-Way/3-Way Matching + Multi-level Variance Holds
+- [x] Multi-tier Withholding Tax (WHT) Groups & priority-based rates
+- [x] PPR Payment Batches with ISO20022 (pain.001) XML export
+- [x] Treasury Bank Account Connectivity
+- [x] Automated Intercompany Balancing (SLA/BSV level)
+- [x] 5-Bucket Aging Reports + Immutable Audit Trail
+- [x] Subledger Period Close (readiness checks)
+- [x] Async Payment Worker (Background Processing)
+- [x] AI Multimodal Invoice Capture (Whisper/GPT-4o)
+- [x] RBAC (Manager/Clerk)
+- [x] Invoice Approval Routing
+- [x] Payment Terms Master
+- [x] Early Payment Discounts
+- [x] Supplier Balance Inquiry
+- [x] Invoice Image Attachment
+- [x] Debit Memo / Supplier Credit Integration
+- [x] 1099 / Tax Reporting
 
 #### 5. Performance & Load Testing
-- [ ] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
-- Supplier Master (Hdr + Sites with IBAN/SWIFT)
-- Standard Invoice (Header/Lines/Distributions) + SLA
-- Prepayments (Application/Unapplication, balance tracking)
-- 2-Way/3-Way Matching + Multi-level Variance Holds
-- Multi-tier Withholding Tax (WHT) Groups & priority-based rates
-- PPR Payment Batches with ISO20022 (pain.001) XML export
-- Treasury Bank Account Connectivity
-- Automated Intercompany Balancing (SLA/BSV level)
-- 5-Bucket Aging Reports + Immutable Audit Trail
-- Subledger Period Close (readiness checks)
-- Async Payment Worker (Background Processing)
-- AI Multimodal Invoice Capture (Whisper/GPT-4o)
-- RBAC (Manager/Clerk)
-- Invoice Approval Routing
-- Payment Terms Master
-- Early Payment Discounts
-- Supplier Balance Inquiry
-- Invoice Image Attachment
-- Debit Memo / Supplier Credit Integration
-- 1099 / Tax Reporting
-- [ ] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
+- [x] **Concurrency & Responsiveness:** Simulate heavy concurrent enterprise user load executing operations related to:
+- [x] Supplier Master (Hdr + Sites with IBAN/SWIFT)
+- [x] Standard Invoice (Header/Lines/Distributions) + SLA
+- [x] Prepayments (Application/Unapplication, balance tracking)
+- [x] 2-Way/3-Way Matching + Multi-level Variance Holds
+- [x] Multi-tier Withholding Tax (WHT) Groups & priority-based rates
+- [x] PPR Payment Batches with ISO20022 (pain.001) XML export
+- [x] Treasury Bank Account Connectivity
+- [x] Automated Intercompany Balancing (SLA/BSV level)
+- [x] 5-Bucket Aging Reports + Immutable Audit Trail
+- [x] Subledger Period Close (readiness checks)
+- [x] Async Payment Worker (Background Processing)
+- [x] AI Multimodal Invoice Capture (Whisper/GPT-4o)
+- [x] RBAC (Manager/Clerk)
+- [x] Invoice Approval Routing
+- [x] Payment Terms Master
+- [x] Early Payment Discounts
+- [x] Supplier Balance Inquiry
+- [x] Invoice Image Attachment
+- [x] Debit Memo / Supplier Credit Integration
+- [x] 1099 / Tax Reporting
+- [x] **Queue Processing:** Validate system responsiveness (< 1.5s), handle database locks during concurrent writes, and monitor background queue processing for heavy jobs.
 
 #### 6. Security & Compliance Testing
-- [ ] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
-- [ ] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
-- Supplier Master (Hdr + Sites with IBAN/SWIFT)
-- Standard Invoice (Header/Lines/Distributions) + SLA
-- Prepayments (Application/Unapplication, balance tracking)
-- 2-Way/3-Way Matching + Multi-level Variance Holds
-- Multi-tier Withholding Tax (WHT) Groups & priority-based rates
-- PPR Payment Batches with ISO20022 (pain.001) XML export
-- Treasury Bank Account Connectivity
-- Automated Intercompany Balancing (SLA/BSV level)
-- 5-Bucket Aging Reports + Immutable Audit Trail
-- Subledger Period Close (readiness checks)
-- Async Payment Worker (Background Processing)
-- AI Multimodal Invoice Capture (Whisper/GPT-4o)
-- RBAC (Manager/Clerk)
-- Invoice Approval Routing
-- Payment Terms Master
-- Early Payment Discounts
-- Supplier Balance Inquiry
-- Invoice Image Attachment
-- Debit Memo / Supplier Credit Integration
-- 1099 / Tax Reporting
+- [x] **RBAC:** Verify Role-Based Access Control (Admin vs Read-Only vs Unauthorized) works correctly for all features.
+- [x] **Compliance & Masking:** Verify PII data masking (e.g., GDPR Right to Erasure / Masking) and immutable field-level audit logging (SOX strictness) is enforced for:
+- [x] Supplier Master (Hdr + Sites with IBAN/SWIFT)
+- [x] Standard Invoice (Header/Lines/Distributions) + SLA
+- [x] Prepayments (Application/Unapplication, balance tracking)
+- [x] 2-Way/3-Way Matching + Multi-level Variance Holds
+- [x] Multi-tier Withholding Tax (WHT) Groups & priority-based rates
+- [x] PPR Payment Batches with ISO20022 (pain.001) XML export
+- [x] Treasury Bank Account Connectivity
+- [x] Automated Intercompany Balancing (SLA/BSV level)
+- [x] 5-Bucket Aging Reports + Immutable Audit Trail
+- [x] Subledger Period Close (readiness checks)
+- [x] Async Payment Worker (Background Processing)
+- [x] AI Multimodal Invoice Capture (Whisper/GPT-4o)
+- [x] RBAC (Manager/Clerk)
+- [x] Invoice Approval Routing
+- [x] Payment Terms Master
+- [x] Early Payment Discounts
+- [x] Supplier Balance Inquiry
+- [x] Invoice Image Attachment
+- [x] Debit Memo / Supplier Credit Integration
+- [x] 1099 / Tax Reporting
 ---
 
 ### 2. Accounts Receivable (AR)

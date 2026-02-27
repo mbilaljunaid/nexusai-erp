@@ -115,6 +115,9 @@ export const navigationConfig: SidebarNode[] = [
                     // Core Finance
                     { id: "finance-ap", title: "Accounts Payable", type: "link", path: "/finance/ap" },
                     { id: "finance-ar", title: "Accounts Receivable", type: "link", path: "/finance/accounts-receivable" },
+                    { id: "finance-ar-invoices", title: "AR Invoices", type: "link", path: "/finance/ar/invoices" },
+                    { id: "finance-ar-receipts", title: "AR Receipts", type: "link", path: "/finance/ar/receipts" },
+                    { id: "finance-ar-customers", title: "Customer Master", type: "link", path: "/finance/ar/customers" },
                     { id: "finance-treasury", title: "Treasury", type: "link", path: "/finance/treasury" },
                     { id: "finance-fixed-assets", title: "Fixed Assets", type: "link", path: "/finance/fixed-assets" },
                     { id: "finance-tax", title: "Tax Management", type: "link", path: "/finance/tax" },

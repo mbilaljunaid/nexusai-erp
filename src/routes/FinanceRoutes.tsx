@@ -50,9 +50,15 @@ import RevenueWaterfallDashboard from "@/pages/billing/RevenueWaterfallDashboard
 import CreditMemoWorkbench from "@/pages/billing/CreditMemoWorkbench";
 
 import ARInvoices from "@/pages/finance/ar/ARInvoices";
+import ARReceipts from "@/pages/finance/ar/ARReceipts";
+import ARCustomers from "@/pages/finance/ar/ARCustomers";
 import ArAnalytics from "@/pages/finance/ar/ArAnalytics";
 import ArReports from "@/pages/finance/ar/ArReports";
 import ArDunningWorkbench from "@/pages/finance/ar/ArDunningWorkbench";
+import LockboxWorkbench from "@/pages/finance/LockboxWorkbench";
+import { ArRevenueWorkbench } from "@/components/ar/ArRevenueWorkbench";
+import CollectionsWorkbench from "@/pages/finance/ar/CollectionsWorkbench";
+import ICDisputeWorkbench from "@/pages/finance/ICDisputeWorkbench";
 import CustomerDetails from "@/pages/CustomerDetails";
 import JournalEntry from "@/pages/gl/JournalEntry";
 import JournalApprovalHub from "@/pages/gl/JournalApprovalHub";
@@ -205,12 +211,18 @@ export default function FinanceRoutes() {
                 <Route path="/finance/billing/profiles" component={BillingProfileManager} />
                 <Route path="/finance/billing/anomalies" component={BillingAnomalyDashboard} />
 
-                <Route path="/finance/ar/invoices" component={ArInvoiceList} />
+                <Route path="/finance/ar/invoices" component={ARInvoices} />
+                <Route path="/finance/ar/receipts" component={ARReceipts} />
+                <Route path="/finance/ar/customers" component={ARCustomers} />
                 <Route path="/finance/ar/analytics" component={ArAnalytics} />
                 <Route path="/finance/ar/reports" component={ArReports} />
                 <Route path="/finance/ar/customers/:id" component={CustomerDetails} />
                 <Route path="/finance/ar/period-close" component={ArPeriodClose} />
                 <Route path="/finance/ar/dunning" component={ArDunningWorkbench} />
+                <Route path="/finance/ar/lockbox" component={LockboxWorkbench} />
+                <Route path="/finance/ar/revenue-schedules" component={ArRevenueWorkbench} />
+                <Route path="/finance/ar/collections" component={CollectionsWorkbench} />
+                <Route path="/finance/ic/disputes" component={ICDisputeWorkbench} />
 
                 <Route path="/finance/gl/journals/new" component={JournalEntry} />
                 <Route path="/finance/gl/journals/wizard" component={JournalWizard} />

@@ -25,8 +25,11 @@ export default function ICDisputeWorkbench() {
     const eventMut = useMutation({ mutationFn: ({ id, action, note }: any) => fetch(`/api/ic/disputes/${id}/event`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ actor: 'current-user', action, note }) }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['ic-disputes'] }) });
     const resolveMut = useMutation({ mutationFn: ({ id, resolution }: any) => fetch(`/api/ic/disputes/${id}/resolve`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ resolvedBy: 'current-user', resolution }) }).then(r => r.json()), onSuccess: () => { qc.invalidateQueries({ queryKey: ['ic-disputes'] }); setResolveText(''); } });
 
-    const totalOpen = disputes.filter(d => d.status === 'Open' || d.status === 'Escalated').length;
-    const totalAmt = disputes.reduce((s, d) => s + Number(d.disputed_amount ?? 0), 0);
+    const safeDisputes = Array.isArray(disputes) ? disputes : [];
+    const safeSummary = Array.isArray(summary) ? summary : [];
+
+    const totalOpen = safeDisputes.filter(d => d.status === 'Open' || d.status === 'Escalated').length;
+    const totalAmt = safeDisputes.reduce((s, d) => s + Number(d.disputed_amount ?? 0), 0);
 
     return (
         <div style={{ padding: 24, maxWidth: 1400, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
@@ -40,13 +43,13 @@ export default function ICDisputeWorkbench() {
 
             {/* KPI row */}
             <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
-                {[{ label: 'Active Disputes', val: totalOpen, clr: '#dc2626' }, { label: 'Total Disputed', val: `$${totalAmt.toLocaleString(undefined, { minimumFractionDigits: 0 })}`, clr: '#d97706' }, { label: 'Total Disputes', val: disputes.length, clr: '#1d4ed8' }].map(k => (
+                {[{ label: 'Active Disputes', val: totalOpen, clr: '#dc2626' }, { label: 'Total Disputed', val: `$${totalAmt.toLocaleString(undefined, { minimumFractionDigits: 0 })}`, clr: '#d97706' }, { label: 'Total Disputes', val: safeDisputes.length, clr: '#1d4ed8' }].map(k => (
                     <div key={k.label} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 10, padding: '10px 16px', minWidth: 120 }}>
                         <div style={{ fontSize: 10, color: '#9ca3af', fontWeight: 600 }}>{k.label}</div>
                         <div style={{ fontSize: 20, fontWeight: 800, color: k.clr }}>{k.val}</div>
                     </div>
                 ))}
-                {summary.map(s => (
+                {safeSummary.map(s => (
                     <div key={s.status + s.reason} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 10, padding: '8px 12px' }}>
                         <div style={{ fontSize: 9, color: '#9ca3af', fontWeight: 600 }}>{s.reason}</div>
                         <div style={{ fontSize: 14, fontWeight: 700, color: STATUS_CLR[s.status] ?? '#374151' }}>{s.count} {s.status}</div>
@@ -95,7 +98,7 @@ export default function ICDisputeWorkbench() {
                             {['#', 'From → To', 'Reason', 'Amount', 'Status', 'Opened', 'Actions'].map(h => <th key={h} style={{ padding: '9px 10px', textAlign: 'left', fontWeight: 700, borderBottom: '2px solid #e5e7eb' }}>{h}</th>)}
                         </tr></thead>
                         <tbody>
-                            {disputes.map(d => {
+                            {safeDisputes.map(d => {
                                 const clr = STATUS_CLR[d.status] ?? '#6b7280';
                                 return (
                                     <tr key={d.id} onClick={() => setSelected(selected?.id === d.id ? null : d)} style={{ borderBottom: '1px solid #f3f4f6', cursor: 'pointer', background: selected?.id === d.id ? '#eff6ff' : d.status === 'Escalated' ? '#fff5f5' : undefined }}>
@@ -116,7 +119,7 @@ export default function ICDisputeWorkbench() {
                                     </tr>
                                 );
                             })}
-                            {disputes.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No disputes — open one to track IC discrepancies</td></tr>}
+                            {safeDisputes.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No disputes — open one to track IC discrepancies</td></tr>}
                         </tbody>
                     </table>
                 </div>

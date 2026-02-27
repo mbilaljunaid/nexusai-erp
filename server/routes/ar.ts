@@ -233,6 +233,15 @@ router.post("/receipts/:id/apply", async (req, res) => {
     }
 });
 
+router.post("/applications/:id/unapply", async (req, res) => {
+    try {
+        await arService.unapplyReceipt(req.params.id);
+        res.json({ message: "Receipt unapplied successfully" });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message || "Failed to unapply receipt" });
+    }
+});
+
 router.get("/receipts/:id/applications", async (req, res) => {
     try {
         const apps = await storage.listArReceiptApplications(req.params.id);

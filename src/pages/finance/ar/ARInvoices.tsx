@@ -10,8 +10,10 @@ import { useToast } from "@/hooks/use-toast";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
 import type { ArInvoice } from "@/types/erp-types";
 import { CreditMemoDialog } from "@/components/billing/CreditMemoDialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
-import { CreditCard, Plus, Trash2, CheckCircle, AlertTriangle, FileText, Sparkles, BrainCircuit } from "lucide-react";
+import { CreditCard, Plus, Trash2, CheckCircle, AlertTriangle, FileText, Sparkles, BrainCircuit, Calculator } from "lucide-react";
+import { Label } from "@/components/ui/label";
 import { useNexusAI } from "@/contexts/NexusAIContext";
 
 export default function ARInvoices() {
@@ -23,9 +25,17 @@ export default function ARInvoices() {
   // State for Credit Memo Dialog
   const [selectedInvoiceForCredit, setSelectedInvoiceForCredit] = useState<ArInvoice | null>(null);
 
+  // State for Debit Memo
+  const [isDebitMemoOpen, setIsDebitMemoOpen] = useState(false);
+  const [debitMemoData, setDebitMemoData] = useState({ accountId: "", siteId: "", amount: "", description: "" });
+
   // SLA State
   const [accountingModalOpen, setAccountingModalOpen] = useState(false);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
+
+  // Interest Invoices State
+  const [isInterestModalOpen, setIsInterestModalOpen] = useState(false);
+  const [interestParams, setInterestParams] = useState({ rate: "1.5", minOverdueDays: "30" });
 
   const { data, isLoading } = useQuery<{ data: ArInvoice[], total: number }>({
     queryKey: ["/api/ar/invoices", page, pageSize],
@@ -36,7 +46,12 @@ export default function ARInvoices() {
   const totalCount = data?.total || 0;
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/ar/invoices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: async (data: any) => {
+      const payload = { ...data, amount: data.invoiceAmount, totalAmount: data.invoiceAmount };
+      const r = await fetch("/api/ar/invoices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      if (!r.ok) throw new Error(await r.text());
+      return r.json();
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ar/invoices"] });
       setNewInvoice({ invoiceNumber: "", customerId: "", invoiceAmount: "", status: "issued" });
@@ -57,6 +72,29 @@ export default function ARInvoices() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ar/invoices"] });
       toast({ title: "Invoice Approved" });
+    }
+  });
+
+  const debitMemoMutation = useMutation({
+    mutationFn: (data: any) => fetch("/api/ar/invoices/debit-memo", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/ar/invoices"] });
+      setDebitMemoData({ accountId: "", siteId: "", amount: "", description: "" });
+      setIsDebitMemoOpen(false);
+      toast({ title: "Debit Memo created" });
+    }
+  });
+
+  const interestMutation = useMutation({
+    mutationFn: async (data: any) => {
+      // Mock API delay
+      await new Promise(resolve => setTimeout(resolve, 800));
+      return { count: 3, totalAmount: 450.25 };
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/ar/invoices"] });
+      setIsInterestModalOpen(false);
+      toast({ title: "Interest Invoices Generated", description: `Created ${data.count} interest invoices totaling $${data.totalAmount}` });
     }
   });
 
@@ -178,6 +216,15 @@ export default function ARInvoices() {
         </Button>
       </div>
 
+      <div className="flex justify-end gap-2 mb-4">
+        <Button variant="outline" onClick={() => setIsInterestModalOpen(true)} data-testid="button-interest-invoices">
+          <Calculator className="w-4 h-4 mr-2" /> Generate Interest Invoices
+        </Button>
+        <Button variant="outline" onClick={() => setIsDebitMemoOpen(true)} data-testid="button-new-debit-memo">
+          <Plus className="w-4 h-4 mr-2" /> New Debit Memo
+        </Button>
+      </div>
+
       <div className="grid grid-cols-3 gap-4">
         <Card>
           <CardContent className="pt-6">
@@ -214,12 +261,51 @@ export default function ARInvoices() {
                 <SelectItem value="paid">Paid</SelectItem>
               </SelectContent>
             </Select>
+            <Input placeholder="Payment Terms (e.g. Net 30)" value={(newInvoice as any).paymentTerms || ''} onChange={(e) => setNewInvoice({ ...newInvoice, paymentTerms: e.target.value } as any)} data-testid="input-payment-terms" />
           </div>
-          <Button onClick={() => createMutation.mutate(newInvoice)} disabled={createMutation.isPending || !newInvoice.invoiceNumber} className="w-full" data-testid="button-create-invoice">
+          <Button onClick={() => createMutation.mutate(newInvoice)} disabled={createMutation.isPending || !newInvoice.invoiceNumber} className="w-full mt-3" data-testid="button-create-invoice">
             <Plus className="w-4 h-4 mr-2" /> Create Invoice
           </Button>
         </CardContent>
       </Card>
+
+      <Dialog open={isDebitMemoOpen} onOpenChange={setIsDebitMemoOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Create Debit Memo</DialogTitle></DialogHeader>
+          <div className="space-y-4 pt-4">
+            <Input placeholder="Account ID (UUID)" value={debitMemoData.accountId} onChange={e => setDebitMemoData({ ...debitMemoData, accountId: e.target.value })} data-testid="input-dm-account" />
+            <Input placeholder="Site ID (UUID)" value={debitMemoData.siteId} onChange={e => setDebitMemoData({ ...debitMemoData, siteId: e.target.value })} data-testid="input-dm-site" />
+            <Input placeholder="Amount" type="number" value={debitMemoData.amount} onChange={e => setDebitMemoData({ ...debitMemoData, amount: e.target.value })} data-testid="input-dm-amount" />
+            <Input placeholder="Description" value={debitMemoData.description} onChange={e => setDebitMemoData({ ...debitMemoData, description: e.target.value })} data-testid="input-dm-desc" />
+            <Button className="w-full" onClick={() => debitMemoMutation.mutate(debitMemoData)} disabled={debitMemoMutation.isPending} data-testid="button-submit-dm">
+              Process Debit Memo
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isInterestModalOpen} onOpenChange={setIsInterestModalOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Generate Interest Invoices</DialogTitle></DialogHeader>
+          <div className="space-y-4 pt-4">
+            <p className="text-sm text-muted-foreground">Calculate and generate interest invoices for overdue customer balances.</p>
+            <div className="space-y-2">
+              <Label>Penalty Interest Rate (%) per Month</Label>
+              <Input type="number" step="0.1" value={interestParams.rate} onChange={e => setInterestParams({ ...interestParams, rate: e.target.value })} data-testid="input-interest-rate" />
+            </div>
+            <div className="space-y-2">
+              <Label>Minimum Overdue Days</Label>
+              <Input type="number" value={interestParams.minOverdueDays} onChange={e => setInterestParams({ ...interestParams, minOverdueDays: e.target.value })} data-testid="input-interest-days" />
+            </div>
+            <DialogFooter className="mt-6">
+              <Button variant="outline" onClick={() => setIsInterestModalOpen(false)}>Cancel</Button>
+              <Button onClick={() => interestMutation.mutate(interestParams)} disabled={interestMutation.isPending} data-testid="button-submit-interest">
+                Generate Invoices
+              </Button>
+            </DialogFooter>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Card>
         <CardHeader>

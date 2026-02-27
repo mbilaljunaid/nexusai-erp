@@ -15,7 +15,7 @@ async function runTest() {
     }
     const targetSupplier = suppliers[0];
 
-    const browser = await chromium.launch({ headless: true });
+    const browser = await chromium.launch({ headless: false, slowMo: 600 });
     const context = await browser.newContext();
     const page = await context.newPage();
 

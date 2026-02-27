@@ -89,8 +89,11 @@ export default function LockboxWorkbench() {
         });
     };
 
-    const matched = items.filter(i => i.match_status === 'Matched').length;
-    const unmatched = items.filter(i => i.match_status === 'Unmatched').length;
+    const safeItems = Array.isArray(items) ? items : [];
+    const safeBatches = Array.isArray(batches) ? batches : [];
+
+    const matched = safeItems.filter(i => i.match_status === 'Matched').length;
+    const unmatched = safeItems.filter(i => i.match_status === 'Unmatched').length;
 
     return (
         <div className="lbw-container">
@@ -140,7 +143,7 @@ export default function LockboxWorkbench() {
 
                     <div className="batch-list">
                         <div className="bl-title">Batch History</div>
-                        {batches.map(b => {
+                        {safeBatches.map(b => {
                             const cfg = BATCH_STATUS_CFG[b.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
                             return (
                                 <div key={b.id} className={`batch-card ${selectedBatch?.id === b.id ? 'selected' : ''}`} onClick={() => setSelectedBatch(b)}>
@@ -152,7 +155,7 @@ export default function LockboxWorkbench() {
                                 </div>
                             );
                         })}
-                        {batches.length === 0 && <div className="empty">No lockbox batches</div>}
+                        {safeBatches.length === 0 && <div className="empty">No lockbox batches</div>}
                     </div>
                 </div>
 
@@ -175,7 +178,7 @@ export default function LockboxWorkbench() {
                             <table className="item-table">
                                 <thead><tr><th>Check #</th><th>Remit Ref</th><th>Payer</th><th>Amount</th><th>Method</th><th>Status</th><th>Unapplied</th></tr></thead>
                                 <tbody>
-                                    {items.map(item => {
+                                    {safeItems.map(item => {
                                         const isMatched = item.match_status === 'Matched';
                                         return (
                                             <tr key={item.id} className="item-row">
@@ -195,7 +198,7 @@ export default function LockboxWorkbench() {
                                             </tr>
                                         );
                                     })}
-                                    {items.length === 0 && <tr><td colSpan={7} className="empty">No items</td></tr>}
+                                    {safeItems.length === 0 && <tr><td colSpan={7} className="empty">No items</td></tr>}
                                 </tbody>
                             </table>
                         </>

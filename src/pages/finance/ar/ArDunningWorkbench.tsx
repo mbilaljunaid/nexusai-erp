@@ -79,13 +79,18 @@ export default function ArDunningWorkbench() {
         }
     });
 
+    // Safe Array Wrappers for 404 responses
+    const safeInvoices = Array.isArray(invoices) ? invoices : [];
+    const safeTasks = Array.isArray(tasks) ? tasks : [];
+    const safeRuns = Array.isArray(dunningRuns) ? dunningRuns : [];
+
     // Aging Logic
     const agingBuckets = {
-        current: (invoices as any[]).filter((i: any) => i.status === "Sent" && new Date(i.dueDate) > new Date()),
-        "1-30": (invoices as any[]).filter((i: any) => i.status === "Overdue" && i.daysOverdue <= 30),
-        "31-60": (invoices as any[]).filter((i: any) => i.status === "Overdue" && i.daysOverdue > 30 && i.daysOverdue <= 60),
-        "61-90": (invoices as any[]).filter((i: any) => i.status === "Overdue" && i.daysOverdue > 60 && i.daysOverdue <= 90),
-        "91+": (invoices as any[]).filter((i: any) => i.status === "Overdue" && i.daysOverdue > 90),
+        current: safeInvoices.filter((i: any) => i.status === "Sent" && new Date(i.dueDate) > new Date()),
+        "1-30": safeInvoices.filter((i: any) => i.status === "Overdue" && i.daysOverdue <= 30),
+        "31-60": safeInvoices.filter((i: any) => i.status === "Overdue" && i.daysOverdue > 30 && i.daysOverdue <= 60),
+        "61-90": safeInvoices.filter((i: any) => i.status === "Overdue" && i.daysOverdue > 60 && i.daysOverdue <= 90),
+        "91+": safeInvoices.filter((i: any) => i.status === "Overdue" && i.daysOverdue > 90),
     };
 
     return (
@@ -134,7 +139,7 @@ export default function ArDunningWorkbench() {
                 </DashboardWidget>
                 <DashboardWidget title="Pending Tasks" icon={Filter}>
                     <div className="flex flex-col">
-                        <span className="text-2xl font-bold text-white">{(tasks as any[]).length}</span>
+                        <span className="text-2xl font-bold text-white">{safeTasks.length}</span>
                         <span className="text-xs text-slate-500">Awaiting action</span>
                     </div>
                 </DashboardWidget>
@@ -170,7 +175,7 @@ export default function ArDunningWorkbench() {
                                                 <span className="text-white font-bold">{(invs as any[]).length} Invoices</span>
                                             </div>
                                             <Progress
-                                                value={Math.min(100, ((invs as any[]).length / ((invoices as any[]).length || 1)) * 100)}
+                                                value={Math.min(100, (invs.length / (safeInvoices.length || 1)) * 100)}
                                                 className="h-2 bg-slate-800"
                                                 indicatorClassName={
                                                     bucket === 'current' ? 'bg-green-500' :
@@ -249,7 +254,7 @@ export default function ArDunningWorkbench() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {(tasks as any[]).map((task: any) => (
+                                    {safeTasks.map((task: any) => (
                                         <TableRow key={task.id} className="border-slate-800 hover:bg-slate-800/50 transition-colors">
                                             <TableCell className="font-medium text-slate-200">
                                                 <div className="flex items-center gap-2">
@@ -326,7 +331,7 @@ export default function ArDunningWorkbench() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {dunningRuns.map((run: any) => (
+                                    {safeRuns.map((run: any) => (
                                         <TableRow key={run.id} className="border-slate-800">
                                             <TableCell className="text-slate-300">{new Date(run.runDate).toLocaleString()}</TableCell>
                                             <TableCell className="text-white font-bold">{run.totalInvoicesProcessed}</TableCell>

@@ -55,6 +55,7 @@ import taxRouter from "./routes/tax";
 import nettingRouter from "./routes/netting";
 import portalRouter from "./routes/portal";
 import arAiRouter from "./routes/ar-ai";
+import arRouter from "./routes/ar";
 import arReportRouter from "./routes/ar-reports";
 import { fixedAssetsRouter } from "./routes/fixedAssets";
 import talentRouter from "./routes/talent";
@@ -118,7 +119,7 @@ export async function registerRoutes(
   app.use("/api/gl", glRoutes);
   app.use("/api/epm", epmRoutes);
   app.use("/api/ap", apRouter);
-  // app.use("/api/ar", arRouter); // TODO: Fix missing arRouter import
+  app.use("/api/ar", arRouter);
   app.use("/api/ar/ai", arAiRouter);
   app.use("/api/ar", arReportRouter); // Shares prefix but mounts specific paths
   // app.use("/api/cash", cashRouter); // Refactored to modules/finance/banking.routes.ts
