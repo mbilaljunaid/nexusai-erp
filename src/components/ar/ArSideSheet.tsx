@@ -275,7 +275,7 @@ export function ArSideSheet({ isOpen, onClose, data, type }: ArSideSheetProps) {
                 <div className="flex-1 overflow-hidden flex flex-col">
                     <Tabs defaultValue="details" className="flex-1 flex flex-col">
                         <div className="px-6 border-b">
-                            <TabsList className="grid w-full grid-cols-2 mb-2">
+                            <TabsList className="grid w-full grid-cols-3 mb-2">
                                 <TabsTrigger value="details">Details</TabsTrigger>
                                 <TabsTrigger value="aging" disabled={type !== "customer"}>Aging</TabsTrigger>
                                 <TabsTrigger value="accounting" disabled={type === "customer"}>Accounting</TabsTrigger>

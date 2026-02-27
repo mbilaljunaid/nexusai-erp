@@ -52,6 +52,29 @@ export function ArRevenueScheduleList({ invoiceId }: ArRevenueScheduleListProps)
         }
     });
 
+    const generateMutation = useMutation({
+        mutationFn: async () => {
+            const now = new Date();
+            for (let i = 0; i < 3; i++) {
+                const scheduleDate = new Date(now.getFullYear(), now.getMonth() + i, 1);
+                await apiRequest("POST", "/api/ar/revenue-schedules", {
+                    invoiceId: String(invoiceId),
+                    ruleId: "1",
+                    amount: "1500.00",
+                    scheduleDate: scheduleDate.toISOString(),
+                    periodName: `${scheduleDate.toLocaleString('default', { month: 'short' })}-${scheduleDate.getFullYear() % 100}`,
+                    status: "Pending",
+                    recognizedAmount: "0.00"
+                });
+            }
+            return true;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`/api/ar/revenue-schedules`, invoiceId] });
+            toast({ title: "Schedules Generated", description: "Revenue schedules successfully created for this invoice." });
+        }
+    });
+
     if (isLoading) {
         return <div className="text-center p-4"><Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground" /></div>;
     }
@@ -60,7 +83,16 @@ export function ArRevenueScheduleList({ invoiceId }: ArRevenueScheduleListProps)
         return (
             <div className="text-center p-6 border border-dashed rounded-lg bg-muted/50">
                 <p className="text-sm text-muted-foreground">No revenue schedules found for this invoice.</p>
-                <Button variant="ghost" size="sm" className="mt-2 text-primary">Generate Schedule (AI)</Button>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="mt-2 text-primary"
+                    disabled={generateMutation.isPending}
+                    onClick={() => generateMutation.mutate()}
+                >
+                    {generateMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Generate Schedule (AI)
+                </Button>
             </div>
         );
     }

@@ -42,6 +42,22 @@ export default function ARInvoices() {
     queryFn: () => fetch(`/api/ar/invoices?limit=${pageSize}&offset=${(page - 1) * pageSize}`).then(r => r.json()),
   });
 
+  const { data: customers } = useQuery({
+    queryKey: ["/api/ar/customers"],
+    queryFn: () => fetch("/api/ar/customers").then(r => r.json()),
+  });
+
+  const { data: accounts } = useQuery({
+    queryKey: ["/api/ar/accounts"],
+    queryFn: () => fetch("/api/ar/accounts").then(r => r.json()),
+  });
+
+  const { data: sites } = useQuery({
+    queryKey: ["/api/ar/sites", debitMemoData.accountId],
+    queryFn: () => fetch(`/api/ar/sites?accountId=${debitMemoData.accountId}`).then(r => r.json()),
+    enabled: !!debitMemoData.accountId,
+  });
+
   const invoices = data?.data || [];
   const totalCount = data?.total || 0;
 
@@ -120,7 +136,10 @@ export default function ARInvoices() {
     },
     {
       header: "Customer",
-      accessorKey: "customerId"
+      cell: (inv) => {
+        const customer = customers?.find((c: any) => c.id === inv.customerId);
+        return customer ? customer.name : inv.customerName || inv.customerId;
+      }
     },
     {
       header: "Amount",
@@ -251,7 +270,14 @@ export default function ARInvoices() {
         <CardContent className="space-y-3">
           <div className="grid grid-cols-4 gap-3">
             <Input placeholder="Invoice #" value={newInvoice.invoiceNumber} onChange={(e) => setNewInvoice({ ...newInvoice, invoiceNumber: e.target.value })} data-testid="input-invoice-number" />
-            <Input placeholder="Customer ID" value={newInvoice.customerId} onChange={(e) => setNewInvoice({ ...newInvoice, customerId: e.target.value })} data-testid="input-customer-id" />
+            <Select value={newInvoice.customerId} onValueChange={(v) => setNewInvoice({ ...newInvoice, customerId: v })}>
+              <SelectTrigger data-testid="select-customer-id"><SelectValue placeholder="Select Customer" /></SelectTrigger>
+              <SelectContent>
+                {customers?.map((c: any) => (
+                  <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Input placeholder="Amount" type="number" value={newInvoice.invoiceAmount} onChange={(e) => setNewInvoice({ ...newInvoice, invoiceAmount: e.target.value })} data-testid="input-amount" />
             <Select value={newInvoice.status} onValueChange={(v) => setNewInvoice({ ...newInvoice, status: v })}>
               <SelectTrigger data-testid="select-status"><SelectValue /></SelectTrigger>
@@ -273,8 +299,22 @@ export default function ARInvoices() {
         <DialogContent>
           <DialogHeader><DialogTitle>Create Debit Memo</DialogTitle></DialogHeader>
           <div className="space-y-4 pt-4">
-            <Input placeholder="Account ID (UUID)" value={debitMemoData.accountId} onChange={e => setDebitMemoData({ ...debitMemoData, accountId: e.target.value })} data-testid="input-dm-account" />
-            <Input placeholder="Site ID (UUID)" value={debitMemoData.siteId} onChange={e => setDebitMemoData({ ...debitMemoData, siteId: e.target.value })} data-testid="input-dm-site" />
+            <Select value={debitMemoData.accountId} onValueChange={v => setDebitMemoData({ ...debitMemoData, accountId: v })}>
+              <SelectTrigger data-testid="select-dm-account"><SelectValue placeholder="Select Account" /></SelectTrigger>
+              <SelectContent>
+                {accounts?.map((a: any) => (
+                  <SelectItem key={a.id} value={a.id}>{a.accountName} ({a.accountNumber})</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={debitMemoData.siteId} onValueChange={v => setDebitMemoData({ ...debitMemoData, siteId: v })}>
+              <SelectTrigger data-testid="select-dm-site"><SelectValue placeholder="Select Site" /></SelectTrigger>
+              <SelectContent>
+                {sites?.map((s: any) => (
+                  <SelectItem key={s.id} value={s.id}>{s.siteName}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Input placeholder="Amount" type="number" value={debitMemoData.amount} onChange={e => setDebitMemoData({ ...debitMemoData, amount: e.target.value })} data-testid="input-dm-amount" />
             <Input placeholder="Description" value={debitMemoData.description} onChange={e => setDebitMemoData({ ...debitMemoData, description: e.target.value })} data-testid="input-dm-desc" />
             <Button className="w-full" onClick={() => debitMemoMutation.mutate(debitMemoData)} disabled={debitMemoMutation.isPending} data-testid="button-submit-dm">
@@ -321,6 +361,8 @@ export default function ARInvoices() {
             totalItems={totalCount}
             onPageChange={setPage}
             keyExtractor={(i) => i.id}
+            filterColumn="invoiceNumber"
+            filterPlaceholder="Search invoice #..."
           />
         </CardContent>
       </Card>

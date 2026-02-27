@@ -221,6 +221,7 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ar/dunning" component={ArDunningWorkbench} />
                 <Route path="/finance/ar/lockbox" component={LockboxWorkbench} />
                 <Route path="/finance/ar/revenue-schedules" component={ArRevenueWorkbench} />
+                <Route path="/finance/ar/revenue" component={ArRevenueWorkbench} />
                 <Route path="/finance/ar/collections" component={CollectionsWorkbench} />
                 <Route path="/finance/ic/disputes" component={ICDisputeWorkbench} />
 

@@ -261,6 +261,74 @@ router.delete("/data-access/:id", async (req, res) => {
     }
 });
 
+// ── Disputes Module ──
+router.get("/disputes", async (req, res) => {
+    try {
+        const { status } = req.query;
+        // Mock disputes for ICDisputeWorkbench
+        const mockDisputes = [
+            {
+                id: "DISP-1001",
+                dispute_number: "DISP-2026-001",
+                from_entity: "US Corp",
+                to_entity: "UK Subsidiary",
+                disputed_amount: 15000,
+                currency: "USD",
+                status: "Open",
+                reason: "AMOUNT_MISMATCH",
+                opened_by: "Alice",
+                opened_at: new Date().toISOString(),
+                events: [{ at: new Date().toISOString(), by: "Alice", action: "OPENED", note: "Initial discrepancy" }]
+            }
+        ];
+        res.json(status ? mockDisputes.filter(d => d.status === status) : mockDisputes);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+router.get("/disputes/summary", async (req, res) => {
+    try {
+        res.json([
+            { status: "Open", reason: "AMOUNT_MISMATCH", count: 1, total_disputed: 15000 }
+        ]);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+router.post("/disputes", async (req, res) => {
+    try {
+        const newDispute = {
+            id: `DISP-${Date.now()}`,
+            dispute_number: `DISP-${Date.now()}`,
+            ...req.body,
+            status: "Open",
+            opened_at: new Date().toISOString(),
+            events: [{ at: new Date().toISOString(), by: req.body.openedBy || 'System', action: "OPENED", note: req.body.notes || "" }]
+        };
+        res.json(newDispute);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+router.post("/disputes/:id/event", async (req, res) => {
+    try {
+        res.json({ success: true });
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+router.post("/disputes/:id/resolve", async (req, res) => {
+    try {
+        res.json({ success: true });
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
 // ── Netting Module ──
 router.get("/netting/batches", async (req, res) => {
     try {

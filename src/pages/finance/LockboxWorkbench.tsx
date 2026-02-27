@@ -45,6 +45,7 @@ const fmt = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', c
 export default function LockboxWorkbench() {
     const [selectedBatch, setSelectedBatch] = useState<LockboxBatch | null>(null);
     const [matchFilter, setMatchFilter] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
     const [csvContent, setCsvContent] = useState('');
     const [batchDate, setBatchDate] = useState(new Date().toISOString().slice(0, 10));
     const fileRef = useRef<HTMLInputElement>(null);
@@ -91,6 +92,12 @@ export default function LockboxWorkbench() {
 
     const safeItems = Array.isArray(items) ? items : [];
     const safeBatches = Array.isArray(batches) ? batches : [];
+
+    const filteredItems = safeItems.filter(item => {
+        if (!searchQuery) return true;
+        const q = searchQuery.toLowerCase();
+        return (item.check_number?.toLowerCase().includes(q) || item.payer_name?.toLowerCase().includes(q) || item.remittance_ref?.toLowerCase().includes(q));
+    });
 
     const matched = safeItems.filter(i => i.match_status === 'Matched').length;
     const unmatched = safeItems.filter(i => i.match_status === 'Unmatched').length;
@@ -170,15 +177,24 @@ export default function LockboxWorkbench() {
                                     <span className="orange"><AlertCircle size={12} /> {unmatched} unmatched</span>
                                 </div>
                             </div>
-                            <div className="filter-row">
-                                {['', 'Matched', 'Unmatched', 'Partial', 'Overpayment'].map(s => (
-                                    <button key={s} className={`filter-pill ${matchFilter === s ? 'active' : ''}`} onClick={() => setMatchFilter(s)}>{s || 'All'}</button>
-                                ))}
+                            <div className="filter-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', gap: 4 }}>
+                                    {['', 'Matched', 'Unmatched', 'Partial', 'Overpayment'].map(s => (
+                                        <button key={s} className={`filter-pill ${matchFilter === s ? 'active' : ''}`} onClick={() => setMatchFilter(s)}>{s || 'All'}</button>
+                                    ))}
+                                </div>
+                                <input
+                                    type="text"
+                                    placeholder="Search checks or payers..."
+                                    value={searchQuery}
+                                    onChange={e => setSearchQuery(e.target.value)}
+                                    style={{ padding: '4px 10px', border: '1px solid #d1d5db', borderRadius: 9999, fontSize: 11, width: 220, boxSizing: 'border-box', outline: 'none' }}
+                                />
                             </div>
                             <table className="item-table">
                                 <thead><tr><th>Check #</th><th>Remit Ref</th><th>Payer</th><th>Amount</th><th>Method</th><th>Status</th><th>Unapplied</th></tr></thead>
                                 <tbody>
-                                    {safeItems.map(item => {
+                                    {filteredItems.map(item => {
                                         const isMatched = item.match_status === 'Matched';
                                         return (
                                             <tr key={item.id} className="item-row">
@@ -198,7 +214,7 @@ export default function LockboxWorkbench() {
                                             </tr>
                                         );
                                     })}
-                                    {safeItems.length === 0 && <tr><td colSpan={7} className="empty">No items</td></tr>}
+                                    {filteredItems.length === 0 && <tr><td colSpan={7} className="empty">No items</td></tr>}
                                 </tbody>
                             </table>
                         </>

@@ -13,6 +13,7 @@ export default function ICDisputeWorkbench() {
     const [selected, setSelected] = useState<Dispute | null>(null);
     const [showNew, setShowNew] = useState(false);
     const [statusFilter, setStatusFilter] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
     const [form, setForm] = useState({ fromEntity: '', toEntity: '', disputedAmount: '', currency: 'USD', reason: 'AMOUNT_MISMATCH', notes: '' });
     const [eventNote, setEventNote] = useState('');
     const [resolveText, setResolveText] = useState('');
@@ -27,6 +28,12 @@ export default function ICDisputeWorkbench() {
 
     const safeDisputes = Array.isArray(disputes) ? disputes : [];
     const safeSummary = Array.isArray(summary) ? summary : [];
+
+    const filteredDisputes = safeDisputes.filter(d => {
+        if (!searchQuery) return true;
+        const q = searchQuery.toLowerCase();
+        return (d.dispute_number?.toLowerCase().includes(q) || d.from_entity?.toLowerCase().includes(q) || d.to_entity?.toLowerCase().includes(q) || d.reason?.toLowerCase().includes(q));
+    });
 
     const totalOpen = safeDisputes.filter(d => d.status === 'Open' || d.status === 'Escalated').length;
     const totalAmt = safeDisputes.reduce((s, d) => s + Number(d.disputed_amount ?? 0), 0);
@@ -84,10 +91,19 @@ export default function ICDisputeWorkbench() {
             )}
 
             {/* Status filter */}
-            <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
-                {['', 'Open', 'Under_Review', 'Escalated', 'Resolved', 'Closed'].map(s => (
-                    <button key={s} onClick={() => setStatusFilter(s)} style={{ padding: '5px 10px', border: '1px solid #e5e7eb', borderRadius: 6, background: statusFilter === s ? '#111827' : '#fff', color: statusFilter === s ? '#fff' : '#6b7280', fontSize: 10, fontWeight: 600, cursor: 'pointer' }}>{s || 'All'}</button>
-                ))}
+            <div style={{ display: 'flex', gap: 6, marginBottom: 10, justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: 6 }}>
+                    {['', 'Open', 'Under_Review', 'Escalated', 'Resolved', 'Closed'].map(s => (
+                        <button key={s} onClick={() => setStatusFilter(s)} style={{ padding: '5px 10px', border: '1px solid #e5e7eb', borderRadius: 6, background: statusFilter === s ? '#111827' : '#fff', color: statusFilter === s ? '#fff' : '#6b7280', fontSize: 10, fontWeight: 600, cursor: 'pointer' }}>{s || 'All'}</button>
+                    ))}
+                </div>
+                <input
+                    type="text"
+                    placeholder="Search disputes..."
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    style={{ padding: '6px 12px', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 11, width: 250, boxSizing: 'border-box' }}
+                />
             </div>
 
             <div style={{ display: 'flex', gap: 14 }}>
@@ -98,7 +114,7 @@ export default function ICDisputeWorkbench() {
                             {['#', 'From → To', 'Reason', 'Amount', 'Status', 'Opened', 'Actions'].map(h => <th key={h} style={{ padding: '9px 10px', textAlign: 'left', fontWeight: 700, borderBottom: '2px solid #e5e7eb' }}>{h}</th>)}
                         </tr></thead>
                         <tbody>
-                            {safeDisputes.map(d => {
+                            {filteredDisputes.map(d => {
                                 const clr = STATUS_CLR[d.status] ?? '#6b7280';
                                 return (
                                     <tr key={d.id} onClick={() => setSelected(selected?.id === d.id ? null : d)} style={{ borderBottom: '1px solid #f3f4f6', cursor: 'pointer', background: selected?.id === d.id ? '#eff6ff' : d.status === 'Escalated' ? '#fff5f5' : undefined }}>
@@ -119,7 +135,7 @@ export default function ICDisputeWorkbench() {
                                     </tr>
                                 );
                             })}
-                            {safeDisputes.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No disputes — open one to track IC discrepancies</td></tr>}
+                            {filteredDisputes.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No disputes — open one to track IC discrepancies</td></tr>}
                         </tbody>
                     </table>
                 </div>

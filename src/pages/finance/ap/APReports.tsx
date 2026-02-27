@@ -158,6 +158,8 @@ export default function APReports() {
                                 onPageChange={() => { }}
                                 pageSize={100}
                                 isLoading={agingLoading}
+                                filterColumn="supplierName"
+                                filterPlaceholder="Search supplier..."
                             />
                         </CardContent>
                     </Card>

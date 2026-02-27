@@ -245,6 +245,8 @@ export default function APSystemConfig() {
                                 onPageChange={setPage}
                                 pageSize={pageSize}
                                 isLoading={distSetsLoading}
+                                filterColumn="name"
+                                filterPlaceholder="Search sets..."
                             />
                         </CardContent>
                     </Card>
@@ -266,6 +268,8 @@ export default function APSystemConfig() {
                                 onPageChange={() => { }}
                                 pageSize={100}
                                 isLoading={periodsLoading}
+                                filterColumn="periodName"
+                                filterPlaceholder="Search periods..."
                             />
                         </CardContent>
                     </Card>

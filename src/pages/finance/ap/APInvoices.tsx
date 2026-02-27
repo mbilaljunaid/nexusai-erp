@@ -273,6 +273,8 @@ export default function APInvoices() {
           onPageChange={setPage}
           pageSize={pageSize}
           isLoading={isLoading}
+          filterColumn="invoiceNumber"
+          filterPlaceholder="Search invoice #..."
         />
       </div>
 

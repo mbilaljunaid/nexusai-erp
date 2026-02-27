@@ -157,7 +157,7 @@ export default function ArAnalytics() {
                 <CardContent>
                     <div className="flex gap-4 mb-6">
                         <Input
-                            placeholder="Check Customer ID..."
+                            placeholder="Check Customer Number..."
                             value={selectedCustomer}
                             onChange={e => setSelectedCustomer(e.target.value)}
                             className="max-w-xs"

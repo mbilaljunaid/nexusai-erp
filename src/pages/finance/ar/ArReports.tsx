@@ -162,9 +162,9 @@ export default function ArReports() {
                         <CardContent className="space-y-4">
                             <div className="flex items-end gap-4">
                                 <div className="space-y-2 flex-1 max-w-sm">
-                                    <Label>Customer ID</Label>
+                                    <Label>Customer Number</Label>
                                     <Input
-                                        placeholder="Enter Customer ID"
+                                        placeholder="Enter Customer Number"
                                         value={statementCustomerId}
                                         onChange={e => setStatementCustomerId(e.target.value)}
                                         data-testid="input-statement-customer"

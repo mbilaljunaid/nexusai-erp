@@ -120,6 +120,8 @@ export default function PaymentTermsMaster() {
                 data={terms || []}
                 columns={columns}
                 isLoading={isLoading}
+                filterColumn="termName"
+                filterPlaceholder="Search terms..."
             />
 
             <Dialog open={modalOpen} onOpenChange={setModalOpen}>

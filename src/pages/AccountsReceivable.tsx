@@ -1,27 +1,18 @@
-import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-import {
-    ArMetricCards,
-    ArInvoiceList,
-    ArCustomerList,
-    ArReceiptList,
-    ArTransactionDialog,
-    ArRevenueWorkbench,
-    ArCollectionsDashboard,
-    ArSystemOptionsComponent,
-    ArCreditManagement,
-    ArRevenueRules
-} from "@/components/ar";
-
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { useLocation } from "wouter";
+import { ArMetricCards } from "@/components/ar";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/lib/api";
+import {
+    FileText, Users, Receipt, PieChart,
+    BarChart, Activity, RefreshCw, Briefcase, Settings
+} from "lucide-react";
 
 export default function AccountsReceivable() {
-    const [activeTab, setActiveTab] = useState("invoices");
-    const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
+    const [, setLocation] = useLocation();
     const { toast } = useToast();
 
     const handleSeedData = async () => {
@@ -34,21 +25,74 @@ export default function AccountsReceivable() {
         }
     };
 
+    const navigationCards = [
+        {
+            title: "Invoices",
+            description: "Manage sales invoices, debit and credit memos",
+            icon: FileText,
+            href: "/finance/ar/invoices",
+            color: "text-blue-600"
+        },
+        {
+            title: "Customers",
+            description: "Manage customer master data, accounts, and sites",
+            icon: Users,
+            href: "/finance/ar/customers",
+            color: "text-emerald-600"
+        },
+        {
+            title: "Receipts",
+            description: "Process incoming payments and remittances",
+            icon: Receipt,
+            href: "/finance/ar/receipts",
+            color: "text-purple-600"
+        },
+        {
+            title: "Collections Workbench",
+            description: "Manage overdue accounts and dunning",
+            icon: Briefcase,
+            href: "/finance/ar/collections",
+            color: "text-orange-600"
+        },
+        {
+            title: "Revenue Schedules",
+            description: "Track deferred revenue and rule-based recognition",
+            icon: PieChart,
+            href: "/finance/ar/revenue-schedules",
+            color: "text-indigo-600"
+        },
+        {
+            title: "Disputes Workbench",
+            description: "Manage IC disputes and resolutions",
+            icon: Activity,
+            href: "/finance/ic/disputes",
+            color: "text-red-500"
+        },
+        {
+            title: "Lockbox",
+            description: "Auto-apply receipts from bank lockboxes",
+            icon: RefreshCw,
+            href: "/finance/ar/lockbox",
+            color: "text-teal-600"
+        },
+        {
+            title: "Analytics & Reports",
+            description: "DSO tracking, aging, and predictive payment insights",
+            icon: BarChart,
+            href: "/finance/ar/analytics",
+            color: "text-pink-600"
+        }
+    ];
+
     return (
         <StandardPage
-            title="Accounts Receivable"
-            description="Track customer billing, sales invoices, and incoming receipts with AI assistance."
+            title="Accounts Receivable Hub"
+            description="Comprehensive AR management, billing, collections, and AI predictions."
             breadcrumbs={[{ label: "Finance", href: "/finance" }, { label: "Accounts Receivable" }]}
             actions={
                 <div className="flex gap-2">
                     <Button variant="outline" onClick={handleSeedData}>
                         Seed Demo Data
-                    </Button>
-                    <Button
-                        onClick={() => setIsTransactionDialogOpen(true)}
-                        className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 shadow-lg shadow-emerald-500/20"
-                    >
-                        <Plus className="mr-2 h-4 w-4" /> New AR Transaction
                     </Button>
                 </div>
             }
@@ -57,63 +101,29 @@ export default function AccountsReceivable() {
                 {/* Metric Cards */}
                 <ArMetricCards />
 
-                {/* Main Content Tabs */}
-                <Tabs defaultValue="invoices" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                    <div className="flex items-center justify-between">
-                        <TabsList className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-1 border shadow-sm rounded-lg w-auto">
-                            <TabsTrigger value="invoices" className="rounded-md data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-600">Invoices</TabsTrigger>
-                            <TabsTrigger value="customers" className="rounded-md data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-600">Customers</TabsTrigger>
-                            <TabsTrigger value="receipts" className="rounded-md data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-600">Receipts</TabsTrigger>
-                            <TabsTrigger value="credit" className="rounded-md data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-600">Credit Mgmt</TabsTrigger>
-                            <TabsTrigger value="revenue" className="rounded-md data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-600">Revenue</TabsTrigger>
-                            <TabsTrigger value="collections" className="rounded-md data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-600">Collections</TabsTrigger>
-                            <TabsTrigger value="config" className="rounded-md data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-600">Configuration</TabsTrigger>
-                        </TabsList>
+                {/* Navigation Cards */}
+                <div>
+                    <h3 className="text-lg font-semibold mb-4">Quick Access</h3>
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                        {navigationCards.map((card) => (
+                            <Card
+                                key={card.href}
+                                className="cursor-pointer hover:shadow-md transition-shadow group"
+                                onClick={() => setLocation(card.href)}
+                            >
+                                <CardHeader>
+                                    <div className="flex items-center gap-3">
+                                        <div className={`p-2 rounded-lg bg-opacity-10 group-hover:bg-opacity-20 transition-colors ${card.color.replace('text-', 'bg-')}`}>
+                                            <card.icon className={`h-6 w-6 ${card.color}`} />
+                                        </div>
+                                        <CardTitle className="text-base">{card.title}</CardTitle>
+                                    </div>
+                                    <CardDescription className="mt-2">{card.description}</CardDescription>
+                                </CardHeader>
+                            </Card>
+                        ))}
                     </div>
-
-                    <TabsContent value="invoices" className="space-y-4 focus-visible:outline-none">
-                        <ArInvoiceList />
-                    </TabsContent>
-
-                    <TabsContent value="customers" className="space-y-4 focus-visible:outline-none">
-                        <ArCustomerList />
-                    </TabsContent>
-
-                    <TabsContent value="receipts" className="space-y-4 focus-visible:outline-none">
-                        <ArReceiptList />
-                    </TabsContent>
-
-                    <TabsContent value="credit" className="space-y-4 focus-visible:outline-none">
-                        <ArCreditManagement />
-                    </TabsContent>
-
-                    <TabsContent value="revenue" className="space-y-4 focus-visible:outline-none">
-                        <ArRevenueWorkbench />
-                    </TabsContent>
-
-                    <TabsContent value="collections" className="space-y-4 focus-visible:outline-none">
-                        <ArCollectionsDashboard />
-                    </TabsContent>
-                    <TabsContent value="config" className="space-y-4 focus-visible:outline-none">
-                        <Tabs defaultValue="system-options" className="space-y-4">
-                            <TabsList>
-                                <TabsTrigger value="system-options">System Options</TabsTrigger>
-                                <TabsTrigger value="revenue-rules">Revenue Rules</TabsTrigger>
-                            </TabsList>
-                            <TabsContent value="system-options">
-                                <ArSystemOptionsComponent />
-                            </TabsContent>
-                            <TabsContent value="revenue-rules">
-                                <ArRevenueRules />
-                            </TabsContent>
-                        </Tabs>
-                    </TabsContent>
-                </Tabs>
-
-                <ArTransactionDialog
-                    isOpen={isTransactionDialogOpen}
-                    onClose={() => setIsTransactionDialogOpen(false)}
-                />
+                </div>
             </div>
         </StandardPage>
     );

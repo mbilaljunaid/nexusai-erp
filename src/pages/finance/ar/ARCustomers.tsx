@@ -123,6 +123,8 @@ export default function ARCustomers() {
             isLoading={loadingCustomers}
             onRowClick={(row) => { setSelectedCustomerId(row.id); setSelectedAccountId(null); }}
             className="w-full"
+            filterColumn="name"
+            filterPlaceholder="Search customers..."
           />
         </div>
 
@@ -155,6 +157,8 @@ export default function ARCustomers() {
               isLoading={loadingAccounts}
               onRowClick={(row) => setSelectedAccountId(row.id)}
               className="w-full"
+              filterColumn="accountName"
+              filterPlaceholder="Search accounts..."
             />
           ) : (
             <div className="text-center text-muted-foreground p-8">Select a customer parameter to view accounts...</div>
@@ -188,6 +192,8 @@ export default function ARCustomers() {
               data={sites}
               columns={siteCols}
               isLoading={loadingSites}
+              filterColumn="siteName"
+              filterPlaceholder="Search sites..."
             />
           ) : (
             <div className="text-center text-muted-foreground p-8">Select an account to view nested sites...</div>

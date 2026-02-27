@@ -41,10 +41,15 @@ export default function ArDunningWorkbench() {
         queryFn: () => fetch("/api/ar/dunning/runs").then(r => r.json()).catch(() => []),
     });
 
+    const { data: customers } = useQuery({
+        queryKey: ["/api/ar/customers"],
+        queryFn: () => fetch("/api/ar/customers").then(r => r.json()),
+    });
+
     // Mutations
     const runDunningMutation = useMutation({
         mutationFn: async () => {
-            const res = await fetch("/api/erp/ar/dunning/batch", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
+            const res = await fetch("/api/ar/dunning/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
             if (!res.ok) throw new Error("Failed to trigger dunning run");
             return res.json();
         },
@@ -259,7 +264,7 @@ export default function ArDunningWorkbench() {
                                             <TableCell className="font-medium text-slate-200">
                                                 <div className="flex items-center gap-2">
                                                     <User className="h-4 w-4 text-slate-500" />
-                                                    {task.customerId}
+                                                    {customers?.find((c: any) => c.id === task.customerId)?.name || task.customerId}
                                                 </div>
                                             </TableCell>
                                             <TableCell>

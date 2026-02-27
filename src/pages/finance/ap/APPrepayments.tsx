@@ -185,6 +185,8 @@ export default function APPrepayments() {
                             onPageChange={setPage}
                             pageSize={pageSize}
                             isLoading={isLoading}
+                            filterColumn="invoiceNumber"
+                            filterPlaceholder="Search prepayments..."
                         />
                     </CardContent>
                 </Card>

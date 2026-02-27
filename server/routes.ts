@@ -192,6 +192,7 @@ export async function registerRoutes(
 
   // Enterprise Billing
   app.use("/api/intercompany", intercompanyRouter);
+  app.use("/api/ic", intercompanyRouter);
   app.use("/api", talentRouter);
   app.use("/api", successionRouter);
   app.use("/api", learningRouter);

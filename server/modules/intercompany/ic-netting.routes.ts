@@ -3,7 +3,7 @@ import { nettingService, tpAnalyticsService, icDisputeWbService } from "./nettin
 
 export function registerIntercompanyNettingRoutes(app: any) {
     const r = Router();
-    const T = (req: any) => req.headers['x-tenant-id'] || req.query.tenantId || 'default';
+    const T = (req: any) => req.headers['x-tenant-id'] || req.query.tenantId || 'default-tenant';
 
     // ── Netting sessions ───────────────────────────────────────────────────
     r.post('/netting/sessions', async (req, res) => {

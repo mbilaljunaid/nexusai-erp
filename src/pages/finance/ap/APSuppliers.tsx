@@ -147,6 +147,8 @@ export default function APSuppliers() {
                 onPageChange={setPage}
                 pageSize={pageSize}
                 isLoading={isLoading}
+                filterColumn="name"
+                filterPlaceholder="Search suppliers..."
             />
 
             <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>

@@ -24,7 +24,7 @@ export function ArReceiptList() {
 
     const unapplyMutation = useMutation({
         mutationFn: async (receiptId: string) => {
-            const res = await fetch(`/api/erp/ar/receipts/${receiptId}/unapply`, {
+            const res = await fetch(`/api/ar/receipts/${receiptId}/unapply`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ reason: "Manual unapplication" })

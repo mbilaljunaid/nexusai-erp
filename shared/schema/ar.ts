@@ -1,5 +1,5 @@
 // server/shared/schema/ar.ts
-import { pgTable, varchar, text, timestamp, numeric, boolean, integer } from "drizzle-orm/pg-core";
+import { pgTable, varchar, text, timestamp, numeric, boolean, integer, date } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -494,3 +494,34 @@ export const insertCustomerNotificationSchema = createInsertSchema(customerNotif
 
 export type CustomerNotification = typeof customerNotifications.$inferSelect;
 export type InsertCustomerNotification = z.infer<typeof insertCustomerNotificationSchema>;
+
+// Lockbox Batches (APAR-OG-02)
+export const lockboxBatches = pgTable("lockbox_batches", {
+    id: text("id").primaryKey(), // e.g. "LB-169837192"
+    tenantId: text("tenant_id").notNull(),
+    bankAccountId: text("bank_account_id"),
+    batchDate: date("batch_date").notNull(),
+    totalAmount: numeric("total_amount", { precision: 20, scale: 2 }).notNull(),
+    itemCount: integer("item_count").notNull(),
+    status: text("status").default("Pending"), // Pending, Matched, Partial, Exception
+    importedBy: text("imported_by").notNull(),
+    rawFile: text("raw_file"),
+    createdAt: timestamp("created_at").defaultNow()
+});
+
+// Lockbox Items (APAR-OG-02)
+export const lockboxItems = pgTable("lockbox_items", {
+    id: text("id").primaryKey(),
+    batchId: text("batch_id").references(() => lockboxBatches.id).notNull(),
+    checkNumber: text("check_number"),
+    remittanceRef: text("remittance_ref"),
+    payerName: text("payer_name"),
+    payerAccount: text("payer_account"),
+    amount: numeric("amount", { precision: 20, scale: 2 }).notNull(),
+    itemDate: date("item_date").notNull(),
+    matchedInvoiceId: text("matched_invoice_id"),
+    matchMethod: text("match_method"), // Exact, Fuzzy_Ref, Amount, Manual
+    matchStatus: text("match_status").default("Unmatched"), // Unmatched, Matched, Partial
+    unappliedAmount: numeric("unapplied_amount", { precision: 20, scale: 2 }).notNull(),
+    createdAt: timestamp("created_at").defaultNow()
+});

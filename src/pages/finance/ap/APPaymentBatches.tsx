@@ -240,6 +240,8 @@ export default function APPaymentBatches() {
                             onPageChange={setPage}
                             pageSize={pageSize}
                             isLoading={isLoading}
+                            filterColumn="batchName"
+                            filterPlaceholder="Search batches..."
                         />
                     </CardContent>
                 </Card>

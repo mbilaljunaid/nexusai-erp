@@ -22,17 +22,21 @@ export function CreateTransactionDialog() {
     const [amount, setAmount] = useState("");
     const [refInvoiceId, setRefInvoiceId] = useState("");
     const [description, setDescription] = useState("");
+    const [paymentTerms, setPaymentTerms] = useState("");
 
     const { data: customers } = useQuery({
         queryKey: ["/api/ar/customers"],
         queryFn: async () => (await apiRequest("GET", "/api/ar/customers")).json()
     });
 
-    const { data: invoices } = useQuery({
+    const { data: invoicesData } = useQuery({
         queryKey: ["/api/ar/invoices"],
         queryFn: async () => (await apiRequest("GET", "/api/ar/invoices")).json(),
-        enabled: type !== "INV"
+        enabled: type !== "INV" && type !== "DM"
     });
+
+    const customerList = Array.isArray(customers) ? customers : customers?.data || [];
+    const invoiceList = Array.isArray(invoicesData) ? invoicesData : invoicesData?.data || [];
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -64,10 +68,11 @@ export function CreateTransactionDialog() {
                     transactionClass: "INV",
                     status: "Sent",
                     description,
+                    paymentTerms,
                     dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
                 };
-            } else if (type === "CM") {
-                endpoint = "/api/ar/credit-memos";
+            } else if (type === "CM" || type === "CB") {
+                endpoint = type === "CM" ? "/api/ar/credit-memos" : "/api/ar/chargebacks";
                 payload = {
                     sourceInvoiceId: refInvoiceId,
                     amount: Number(amount),
@@ -126,11 +131,12 @@ export function CreateTransactionDialog() {
                                 <SelectItem value="INV">Standard Invoice</SelectItem>
                                 <SelectItem value="CM">Credit Memo</SelectItem>
                                 <SelectItem value="DM">Debit Memo</SelectItem>
+                                <SelectItem value="CB">Chargeback</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
 
-                    {/* Customer Picker (Hide if CM derived from Invoice) */}
+                    {/* Customer Picker (Hide if derived from Invoice) */}
                     {(type === "INV" || type === "DM") && (
                         <div className="space-y-2">
                             <Label>Customer</Label>
@@ -139,16 +145,16 @@ export function CreateTransactionDialog() {
                                     <SelectValue placeholder="Select Customer" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {customers?.map((c: any) => (
-                                        <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                                    {customerList.map((c: any) => (
+                                        <SelectItem key={c.id} value={c.id}>{c.name || c.partyName || c.id}</SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
                         </div>
                     )}
 
-                    {/* Reference Invoice Picker (For CM) */}
-                    {type === "CM" && (
+                    {/* Reference Invoice Picker (For CM and CB) */}
+                    {(type === "CM" || type === "CB") && (
                         <div className="space-y-2">
                             <Label>Reference Invoice</Label>
                             <Select value={refInvoiceId} onValueChange={setRefInvoiceId}>
@@ -156,11 +162,18 @@ export function CreateTransactionDialog() {
                                     <SelectValue placeholder="Select Original Invoice" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {invoices?.map((i: any) => (
+                                    {invoiceList.map((i: any) => (
                                         <SelectItem key={i.id} value={i.id}>{i.invoiceNumber} (${i.totalAmount})</SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
+                        </div>
+                    )}
+
+                    {type === "INV" && (
+                        <div className="space-y-2">
+                            <Label>Payment Terms</Label>
+                            <Input placeholder="e.g. Net 30" value={paymentTerms} onChange={e => setPaymentTerms(e.target.value)} />
                         </div>
                     )}
 
