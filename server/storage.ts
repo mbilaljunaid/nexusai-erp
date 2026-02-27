@@ -1080,8 +1080,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Enterprise Invoice Methods
-  async listApInvoices(limit?: number, offset?: number): Promise<ApInvoice[]> {
-    let query = db.select().from(apInvoices).orderBy(desc(apInvoices.createdAt));
+  async listApInvoices(limit?: number, offset?: number): Promise<any[]> {
+    let query = db.select({
+      invoice: apInvoices,
+      supplier: apSuppliers
+    }).from(apInvoices)
+      .leftJoin(apSuppliers, eq(apInvoices.supplierId, apSuppliers.id))
+      .orderBy(desc(apInvoices.createdAt));
+
     if (limit !== undefined) {
       // @ts-ignore
       query = query.limit(limit);
@@ -1090,7 +1096,8 @@ export class DatabaseStorage implements IStorage {
       // @ts-ignore
       query = query.offset(offset);
     }
-    return await query;
+    const results = await query;
+    return results.map(r => ({ ...r.invoice, supplier: r.supplier }));
   }
 
   async getApInvoicesCount(): Promise<number> {

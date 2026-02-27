@@ -21,6 +21,7 @@ export default function ICDisputeWorkbench() {
 
     const { data: disputes = [] } = useQuery<Dispute[]>({ queryKey: ['ic-disputes', statusFilter], queryFn: () => fetch(`/api/ic/disputes${statusFilter ? `?status=${statusFilter}` : ''}`).then(r => r.json()) });
     const { data: summary = [] } = useQuery<Summary[]>({ queryKey: ['ic-disputes-summary'], queryFn: () => fetch('/api/ic/disputes/summary').then(r => r.json()) });
+    const { data: icOrgs = [] } = useQuery<any[]>({ queryKey: ['ic-orgs'], queryFn: () => fetch('/api/ic/orgs').then(r => r.json()) });
 
     const openMut = useMutation({ mutationFn: (d: any) => fetch('/api/ic/disputes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }).then(r => r.json()), onSuccess: () => { qc.invalidateQueries({ queryKey: ['ic-disputes'] }); qc.invalidateQueries({ queryKey: ['ic-disputes-summary'] }); setShowNew(false); } });
     const eventMut = useMutation({ mutationFn: ({ id, action, note }: any) => fetch(`/api/ic/disputes/${id}/event`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ actor: 'current-user', action, note }) }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['ic-disputes'] }) });
@@ -68,7 +69,21 @@ export default function ICDisputeWorkbench() {
                 <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 10, padding: 14, marginBottom: 12 }}>
                     <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 8 }}>Open New IC Dispute</div>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 10 }}>
-                        {[['From Entity', 'fromEntity', 'text'], ['To Entity', 'toEntity', 'text'], ['Currency', 'currency', 'text'], ['Disputed Amount', 'disputedAmount', 'number']].map(([lbl, key, type]) => (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            <label style={{ fontSize: 10, fontWeight: 700 }}>From Entity</label>
+                            <select value={form.fromEntity} onChange={e => setForm(p => ({ ...p, fromEntity: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #fca5a5', borderRadius: 6, fontSize: 12 }}>
+                                <option value="">Select Entity...</option>
+                                {icOrgs.map(org => <option key={org.id} value={org.id}>{org.org_name || org.id}</option>)}
+                            </select>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            <label style={{ fontSize: 10, fontWeight: 700 }}>To Entity</label>
+                            <select value={form.toEntity} onChange={e => setForm(p => ({ ...p, toEntity: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #fca5a5', borderRadius: 6, fontSize: 12 }}>
+                                <option value="">Select Entity...</option>
+                                {icOrgs.map(org => <option key={org.id} value={org.id}>{org.org_name || org.id}</option>)}
+                            </select>
+                        </div>
+                        {[['Currency', 'currency', 'text'], ['Disputed Amount', 'disputedAmount', 'number']].map(([lbl, key, type]) => (
                             <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                 <label style={{ fontSize: 10, fontWeight: 700 }}>{lbl}</label>
                                 <input type={type} value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #fca5a5', borderRadius: 6, fontSize: 12 }} aria-label={lbl} />

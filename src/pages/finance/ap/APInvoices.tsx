@@ -125,7 +125,7 @@ export default function APInvoices() {
 
   const columns: Column<any>[] = [
     { header: "Invoice #", accessorKey: "invoiceNumber", className: "font-mono font-medium" },
-    { header: "Supplier", accessorKey: "supplier.name" },
+    { header: "Supplier", accessorKey: "supplierId", cell: (row) => row.supplier?.name || "Unknown" },
     { header: "Amount", accessorKey: "invoiceAmount", cell: (row) => `$${parseFloat(row.invoiceAmount).toFixed(2)}` },
     {
       header: "Status",

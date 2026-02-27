@@ -5,6 +5,12 @@ export function registerIntercompanyNettingRoutes(app: any) {
     const r = Router();
     const T = (req: any) => req.headers['x-tenant-id'] || req.query.tenantId || 'default-tenant';
 
+    // ── Orgs ───────────────────────────────────────────────────────────────
+    r.get('/orgs', async (req, res) => {
+        try { res.json(await icDisputeWbService.listOrgs(T(req))); }
+        catch (e: any) { console.error('IC Route Error:', e); res.status(500).json({ error: e.message }); }
+    });
+
     // ── Netting sessions ───────────────────────────────────────────────────
     r.post('/netting/sessions', async (req, res) => {
         try { res.json(await nettingService.createSession({ tenantId: T(req), ...req.body })); }

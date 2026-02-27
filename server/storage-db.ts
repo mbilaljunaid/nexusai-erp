@@ -1011,8 +1011,13 @@ export const dbStorage = {
     return result.length > 0;
   },
 
-  async listApInvoices(): Promise<ApInvoice[]> {
-    return await db.select().from(apInvoicesTable);
+  async listApInvoices(): Promise<any[]> {
+    const results = await db.select({
+      invoice: apInvoicesTable,
+      supplier: apSuppliersTable
+    }).from(apInvoicesTable)
+      .leftJoin(apSuppliersTable, eq(apInvoicesTable.supplierId, apSuppliersTable.id));
+    return results.map(r => ({ ...r.invoice, supplier: r.supplier }));
   },
   async getApInvoice(id: string): Promise<ApInvoice | undefined> {
     const result = await db.select().from(apInvoicesTable).where(eq(apInvoicesTable.id, parseInt(id))).limit(1);

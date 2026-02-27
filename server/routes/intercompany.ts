@@ -53,6 +53,15 @@ router.get("/users/search", async (req, res) => {
 });
 
 // 1. Get Setup Data
+router.get("/orgs", async (req, res) => {
+    try {
+        const orgs = await db.select({ id: icOrgs.id, org_name: icOrgs.orgName }).from(icOrgs);
+        res.json(orgs);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch IC Orgs" });
+    }
+});
+
 router.get("/setup/orgs", async (req, res) => {
     try {
         const orgs = await db.select().from(icOrgs);

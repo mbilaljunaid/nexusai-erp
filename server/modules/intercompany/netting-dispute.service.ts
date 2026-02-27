@@ -7,13 +7,13 @@ export class NettingService {
         tenantId: string; sessionName: string; period: string;
         currency?: string; entitiesInScope?: string[]; settlementDate?: string;
     }) {
-        const [r] = (await db.execute(sql`
+        const r = (await db.execute(sql`
             INSERT INTO ic_netting_sessions (tenant_id, session_name, period, currency, entities_in_scope, settlement_date)
             VALUES (${params.tenantId}, ${params.sessionName}, ${params.period}, ${params.currency ?? 'USD'},
                 ${JSON.stringify(params.entitiesInScope ?? [])}::jsonb, ${params.settlementDate ?? null})
             RETURNING *
         `)) as any;
-        return r;
+        return r.rows[0];
     }
 
     async runNetting(sessionId: string, tenantId: string) {
@@ -82,7 +82,7 @@ export class TransferPricingAnalyticsService {
         benchmarkRangeLow?: number; benchmarkRangeHigh?: number;
         effectiveFrom: string; effectiveTo?: string; approvedBy?: string;
     }) {
-        const [r] = (await db.execute(sql`
+        const r = (await db.execute(sql`
             INSERT INTO transfer_pricing_policies (tenant_id, policy_name, transaction_category, method, from_entity, to_entity, arm_length_margin_pct, benchmark_range_low, benchmark_range_high, effective_from, effective_to, approved_by)
             VALUES (${params.tenantId}, ${params.policyName}, ${params.transactionCategory}, ${params.method},
                 ${params.fromEntity ?? null}, ${params.toEntity ?? null},
@@ -90,7 +90,7 @@ export class TransferPricingAnalyticsService {
                 ${params.effectiveFrom}, ${params.effectiveTo ?? null}, ${params.approvedBy ?? null})
             RETURNING *
         `)) as any;
-        return r;
+        return r.rows[0];
     }
 
     async runAnalysis(params: {
@@ -105,14 +105,14 @@ export class TransferPricingAnalyticsService {
         const inRange = policy.benchmark_range_low && policy.benchmark_range_high
             ? params.actualMarginPct >= Number(policy.benchmark_range_low) && params.actualMarginPct <= Number(policy.benchmark_range_high)
             : true;
-        const [r] = (await db.execute(sql`
+        const r = (await db.execute(sql`
             INSERT INTO transfer_pricing_analyses (tenant_id, policy_id, period, actual_margin_pct, benchmark_margin_pct, variance_pct, in_range, flagged, transactions_reviewed, analysis_notes)
             VALUES (${params.tenantId}, ${params.policyId}, ${params.period}, ${params.actualMarginPct},
                 ${benchmarkMid}, ${variancePct}, ${inRange}, ${!inRange},
                 ${params.transactionsReviewed ?? 0}, ${params.notes ?? null})
             RETURNING *
         `)) as any;
-        return r;
+        return r.rows[0];
     }
 
     async listPolicies(tenantId: string) {
@@ -139,7 +139,7 @@ export class ICDisputeWbService {
     }) {
         const disputeNumber = `ICD-${Date.now().toString(36).toUpperCase()}`;
         const initEvent = { at: new Date().toISOString(), by: params.openedBy, action: 'OPENED', note: params.notes ?? params.reason };
-        const [r] = (await db.execute(sql`
+        const r = (await db.execute(sql`
             INSERT INTO ic_disputes (tenant_id, dispute_number, ic_transaction_id, from_entity, to_entity, disputed_amount, currency, reason, opened_by, events)
             VALUES (${params.tenantId}, ${disputeNumber}, ${params.icTransactionId ?? null},
                 ${params.fromEntity}, ${params.toEntity}, ${params.disputedAmount ?? null},
@@ -147,7 +147,7 @@ export class ICDisputeWbService {
                 ${JSON.stringify([initEvent])}::jsonb)
             RETURNING *
         `)) as any;
-        return r;
+        return r.rows[0];
     }
 
     async addEvent(disputeId: string, actor: string, action: string, note: string) {
@@ -190,6 +190,10 @@ export class ICDisputeWbService {
             FROM ic_disputes WHERE tenant_id = ${tenantId}
             GROUP BY status, reason ORDER BY count DESC
         `) as any).rows;
+    }
+
+    async listOrgs(tenantId: string) {
+        return (await db.execute(sql`SELECT id, org_name FROM ic_orgs`) as any).rows;
     }
 }
 
