@@ -1,6 +1,7 @@
 
 import { Route, Switch } from "wouter";
 import { lazyWithRetry } from "@/lib/lazyWithRetry";
+import GenericModuleDashboard from "@/components/shared/GenericModuleDashboard";
 
 const ConstructionContractWorkbench = lazyWithRetry(() => import("@/components/construction/ConstructionContractWorkbench"));
 const ConstructionBillingWorkbench = lazyWithRetry(() => import("@/components/construction/ConstructionBillingWorkbench"));
@@ -24,6 +25,7 @@ export default function ConstructionRoutes() {
             <Route path="/construction/setup" component={ConstructionSetup} />
             <Route path="/construction/resources" component={ConstructionResourceWorkbench} />
             <Route path="/construction/site-management" component={ConstructionSiteManagement} />
+            <Route component={GenericModuleDashboard} />
         </Switch>
     );
 }

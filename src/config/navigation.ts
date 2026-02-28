@@ -69,7 +69,17 @@ export const navigationConfig: SidebarNode[] = [
         type: "section",
         children: [
             { id: "dashboard", title: "Dashboard", type: "link", icon: LayoutDashboard, path: "/dashboard" },
-            { id: "processes", title: "Processes", type: "link", icon: WorkflowIcon, path: "/processes" },
+            {
+                id: "processes", title: "Processes", type: "group", icon: WorkflowIcon,
+                children: [
+                    { id: "o2c", title: "Order-to-Cash (O2C)", type: "link", path: "/processes/o2c" },
+                    { id: "p2p", title: "Procure-to-Pay (P2P)", type: "link", path: "/processes/p2p" },
+                    { id: "r2r", title: "Record-to-Report (R2R)", type: "link", path: "/processes/r2r" },
+                    { id: "plan2produce", title: "Plan-to-Produce", type: "link", path: "/processes/plan-to-produce" },
+                    { id: "h2r", title: "Hire-to-Retire", type: "link", path: "/processes/hire-to-retire" },
+                    { id: "p2a", title: "Project-to-Asset", type: "link", path: "/processes/project-to-asset" }
+                ]
+            },
         ]
     },
     {
@@ -145,9 +155,9 @@ export const navigationConfig: SidebarNode[] = [
                 children: [
                     { id: "hr-core", title: "Core HR", type: "link", path: "/hr" },
                     { id: "hr-recruit", title: "Recruitment", type: "link", path: "/hr/recruitment" },
-                    { id: "hr-talent", title: "Talent & Learning", type: "link", path: "/talent/learning" },
-                    { id: "hr-wfm", title: "Workforce Mgmt (WFM)", type: "link", path: "/wfm/my-time" },
-                    { id: "hr-rewards", title: "Rewards", type: "link", path: "/rewards/compensation" },
+                    { id: "hr-talent", title: "Talent & Learning", type: "link", path: "/hr/learning/me" },
+                    { id: "hr-wfm", title: "Workforce Mgmt (WFM)", type: "link", path: "/hr/wfm/me/time" },
+                    { id: "hr-rewards", title: "Rewards", type: "link", path: "/hr/rewards/compensation" },
                     { id: "hr-analytics", title: "HR Analytics", type: "link", path: "/hr/analytics" },
                 ]
             },
@@ -177,23 +187,23 @@ export const navigationConfig: SidebarNode[] = [
         type: "section",
         children: [
             {
-                id: "industry-verticals", title: "Industry Solutions", type: "group", icon: Landmark, path: "/industries",
+                id: "industry-verticals", title: "Industry Solutions", type: "group", icon: Landmark, path: "/industry",
                 children: [
-                    { id: "ind-mfg", title: "Manufacturing & High-Tech", type: "link", path: "/industries/manufacturing" },
-                    { id: "ind-retail", title: "Retail & Consumer Goods", type: "link", path: "/industries/retail" },
-                    { id: "ind-health", title: "Healthcare & Life Sciences", type: "link", path: "/industries/healthcare" },
-                    { id: "ind-finserv", title: "Financial Services", type: "link", path: "/industries/financial-services" },
-                    { id: "ind-public", title: "Public Sector", type: "link", path: "/industries/public-sector" },
-                    { id: "ind-ec", title: "Engineering & Construction", type: "link", path: "/industries/engineering" },
-                    { id: "ind-proserv", title: "Professional Services", type: "link", path: "/industries/professional-services" },
-                    { id: "ind-telco", title: "Telecommunications", type: "link", path: "/industries/telecom" },
-                    { id: "ind-energy", title: "Energy & Utilities", type: "link", path: "/industries/energy" },
-                    { id: "ind-auto", title: "Automotive", type: "link", path: "/industries/automotive" },
-                    { id: "ind-aero", title: "Aerospace & Defense", type: "link", path: "/industries/aerospace" },
-                    { id: "ind-logistics", title: "Logistics & Transport", type: "link", path: "/industries/logistics" },
-                    { id: "ind-media", title: "Media & Entertainment", type: "link", path: "/industries/media" },
-                    { id: "ind-hospitality", title: "Hospitality & Travel", type: "link", path: "/industries/hospitality" },
-                    { id: "ind-realestate", title: "Real Estate", type: "link", path: "/industries/real-estate" },
+                    { id: "ind-mfg", title: "Manufacturing & High-Tech", type: "link", path: "/industry/manufacturing" },
+                    { id: "ind-retail", title: "Retail & Consumer Goods", type: "link", path: "/industry/retail" },
+                    { id: "ind-health", title: "Healthcare & Life Sciences", type: "link", path: "/industry/healthcare" },
+                    { id: "ind-finserv", title: "Financial Services", type: "link", path: "/industry/financial-services" },
+                    { id: "ind-public", title: "Public Sector", type: "link", path: "/industry/public-sector" },
+                    { id: "ind-ec", title: "Engineering & Construction", type: "link", path: "/industry/engineering" },
+                    { id: "ind-proserv", title: "Professional Services", type: "link", path: "/industry/professional-services" },
+                    { id: "ind-telco", title: "Telecommunications", type: "link", path: "/industry/telecom" },
+                    { id: "ind-energy", title: "Energy & Utilities", type: "link", path: "/industry/energy" },
+                    { id: "ind-auto", title: "Automotive", type: "link", path: "/industry/automotive" },
+                    { id: "ind-aero", title: "Aerospace & Defense", type: "link", path: "/industry/aerospace" },
+                    { id: "ind-logistics", title: "Logistics & Transport", type: "link", path: "/industry/logistics" },
+                    { id: "ind-media", title: "Media & Entertainment", type: "link", path: "/industry/media" },
+                    { id: "ind-hospitality", title: "Hospitality & Travel", type: "link", path: "/industry/hospitality" },
+                    { id: "ind-realestate", title: "Real Estate", type: "link", path: "/industry/real-estate" },
                 ]
             }
         ]

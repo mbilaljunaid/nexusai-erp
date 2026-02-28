@@ -1,6 +1,7 @@
 
 import { Route, Switch } from "wouter";
 import { lazyWithRetry } from "@/lib/lazyWithRetry";
+import GenericModuleDashboard from "@/components/shared/GenericModuleDashboard";
 
 const ProcessHub = lazyWithRetry(() => import("@/pages/processes/ProcessHub"));
 const ProcureToPayProcess = lazyWithRetry(() => import("@/pages/processes/pages/ProcureToPayProcess"));
@@ -25,14 +26,14 @@ const SubscriptionBillingProcess = lazyWithRetry(() => import("@/pages/processes
 export default function ProcessRoutes() {
     return (
         <Switch>
-            <Route path="/processes/procure-to-pay" component={ProcureToPayProcess} />
-            <Route path="/processes/order-to-cash" component={OrderToCashProcess} />
+            <Route path="/processes/p2p" component={ProcureToPayProcess} />
+            <Route path="/processes/o2c" component={OrderToCashProcess} />
             <Route path="/processes/hire-to-retire" component={HireToRetireProcess} />
-            <Route path="/processes/month-end-consolidation" component={MonthEndConsolidationProcess} />
+            <Route path="/processes/r2r" component={MonthEndConsolidationProcess} />
             <Route path="/processes/compliance-risk" component={ComplianceRiskProcess} />
             <Route path="/processes/inventory-management" component={InventoryManagementProcess} />
-            <Route path="/processes/fixed-asset-lifecycle" component={FixedAssetLifecycleProcess} />
-            <Route path="/processes/production-planning" component={ProductionPlanningProcess} />
+            <Route path="/processes/project-to-asset" component={FixedAssetLifecycleProcess} />
+            <Route path="/processes/plan-to-produce" component={ProductionPlanningProcess} />
             <Route path="/processes/mrp" component={MRPProcess} />
             <Route path="/processes/quality-assurance" component={QualityAssuranceProcess} />
             <Route path="/processes/contract-management" component={ContractManagementProcess} />
@@ -44,6 +45,7 @@ export default function ProcessRoutes() {
             <Route path="/processes/vendor-performance" component={VendorPerformanceProcess} />
             <Route path="/processes/subscription-billing" component={SubscriptionBillingProcess} />
             <Route path="/processes" component={ProcessHub} />
+            <Route component={GenericModuleDashboard} />
         </Switch>
     );
 }

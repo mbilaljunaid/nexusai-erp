@@ -123,34 +123,43 @@ function Router() {
         <Route path="/dashboard" component={DashboardPage} />
 
         {/* Processes */}
-        <Route path="/processes*" component={ProcessRoutes} />
+        <Route path="/processes" component={ProcessRoutes} />
+        <Route path="/processes/:rest*" component={ProcessRoutes} />
         <Route path="/operations" component={SCMDashboard} />
         <Route path="/system-configuration" component={SettingsPage} />
         <Route path="/manufacturing"><Redirect to="/manufacturing/dashboard" /></Route>
         <Route path="/scm" component={SCMDashboard} />
         <Route path="/epm" component={EPMPage} />
+        <Route path="/epm/:rest*" component={EPMPage} />
         <Route path="/wfm"><Redirect to="/wfm/my-time" /></Route>
 
         {/* Analytics & Compliance */}
-        <Route path="/analytics*" component={AnalyticsRoutes} />
-        <Route path="/compliance*" component={ComplianceRoutes} />
+        <Route path="/analytics" component={AnalyticsRoutes} />
+        <Route path="/analytics/:rest*" component={AnalyticsRoutes} />
+        <Route path="/compliance" component={ComplianceRoutes} />
+        <Route path="/compliance/:rest*" component={ComplianceRoutes} />
         <Route path="/compliance-module" component={ComplianceRoutes} />
         <Route path="/wfm/analytics" component={WfmAnalytics} />
         <Route path="/rewards/payroll" component={PayrollWorkbench} />
         <Route path="/wfm/admin/accrual-test" component={AccrualTesting} />
 
         {/* Marketing */}
-        <Route path="/marketing*" component={MarketingRoutes} />
-        <Route path="/modules*" component={ModuleRoutes} />
+        <Route path="/marketing" component={MarketingRoutes} />
+        <Route path="/marketing/:rest*" component={MarketingRoutes} />
+        <Route path="/modules" component={ModuleRoutes} />
+        <Route path="/modules/:rest*" component={ModuleRoutes} />
 
         {/* Order Management */}
-        <Route path="/order-management*" component={OrderRoutes} />
+        <Route path="/order-management" component={OrderRoutes} />
+        <Route path="/order-management/:rest*" component={OrderRoutes} />
 
         {/* Industries */}
-        <Route path="/industry*" component={IndustryRoutes} />
+        <Route path="/industry" component={IndustryRoutes} />
+        <Route path="/industry/:rest*" component={IndustryRoutes} />
 
         {/* Platform/Admin (including Settings, Integrations) */}
-        <Route path="/admin*" component={AdminRoutes} />
+        <Route path="/admin" component={AdminRoutes} />
+        <Route path="/admin/:rest*" component={AdminRoutes} />
         <Route path="/settings" component={AdminRoutes} />
         <Route path="/integrations" component={AdminRoutes} />
         <Route path="/tenant-admin" component={AdminRoutes} />
@@ -164,11 +173,15 @@ function Router() {
         <Route path="/testroute" component={TestRoute} />
 
         {/* Core Modules */}
-        <Route path="/crm*" component={CrmRoutes} />
-        <Route path="/finance/*" component={FinanceRoutes} />
+        <Route path="/crm" component={CrmRoutes} />
+        <Route path="/crm/:rest*" component={CrmRoutes} />
+        <Route path="/finance" component={FinanceRoutes} />
+        <Route path="/finance/:rest*" component={FinanceRoutes} />
 
-        <Route path="/scm*" component={ScmRoutes} />
-        <Route path="/mdm*" component={MdmRoutes} />
+        <Route path="/scm" component={ScmRoutes} />
+        <Route path="/scm/:rest*" component={ScmRoutes} />
+        <Route path="/mdm" component={MdmRoutes} />
+        <Route path="/mdm/:rest*" component={MdmRoutes} />
 
         {/* Talent Management Direct Routes (Debug/Fix for 404) */}
         <Route path="/talent/learning/manager" component={ManagerLearningDashboard} />
@@ -215,21 +228,30 @@ function Router() {
         <Route path="/wfm/admin/holidays" component={HolidayCalendar} />
         <Route path="/wfm/admin/accrual-test" component={AccrualTesting} />
 
-        <Route path="/hr*" component={HrRoutes} />
-        <Route path="/projects*" component={ProjectRoutes} />
-        <Route path="/service*" component={ServiceRoutes} />
+        <Route path="/hr" component={HrRoutes} />
+        <Route path="/hr/:rest*" component={HrRoutes} />
+        <Route path="/talent" component={HrRoutes} />
+        <Route path="/talent/:rest*" component={HrRoutes} />
+        <Route path="/projects" component={ProjectRoutes} />
+        <Route path="/projects/:rest*" component={ProjectRoutes} />
+        <Route path="/service" component={ServiceRoutes} />
+        <Route path="/service/:rest*" component={ServiceRoutes} />
 
         {/* Portal Login (Public) must come before PortalRoutes catch-all */}
         <Route path="/portal/login" component={PublicRoutes} />
-        <Route path="/portal*" component={PortalRoutes} />
+        <Route path="/portal" component={PortalRoutes} />
+        <Route path="/portal/:rest*" component={PortalRoutes} />
 
         {/* Legacy/Aliases */}
-        <Route path="/inventory*" component={ScmRoutes} />
+        <Route path="/inventory" component={ScmRoutes} />
+        <Route path="/inventory/:rest*" component={ScmRoutes} />
         <Route path="/warehouse" component={ScmRoutes} />
         <Route path="/suppliers" component={ScmRoutes} />
         <Route path="/logistics" component={ScmRoutes} />
-        <Route path="/transportation*" component={ScmRoutes} />
-        <Route path="/ppm*" component={ProjectRoutes} />
+        <Route path="/transportation" component={ScmRoutes} />
+        <Route path="/transportation/:rest*" component={ScmRoutes} />
+        <Route path="/ppm" component={ProjectRoutes} />
+        <Route path="/ppm/:rest*" component={ProjectRoutes} />
         <Route path="/construction*" component={ConstructionRoutes} />
         <Route path="/maintenance*" component={MaintenanceRoutes} />
 

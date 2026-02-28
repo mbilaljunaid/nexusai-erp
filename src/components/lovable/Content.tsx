@@ -22,7 +22,7 @@ export function FeatureGrid({ features, columns = 3 }: FeatureGridProps) {
 
     return (
         <div className={cn("grid gap-8", gridCols[columns])}>
-            {features.map((feature, index) => (
+            {(features || []).map((feature, index) => (
                 <motion.div
                     key={index}
                     className="flex flex-col items-start p-6 rounded-xl border bg-card hover:shadow-lg transition-shadow"

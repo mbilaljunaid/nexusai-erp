@@ -21,6 +21,7 @@ import CompetencyManagement from "../pages/talent/CompetencyManagement";
 import HRPredictiveAnalytics from "../pages/analytics/HRPredictiveAnalytics";
 import ModuleLayout from "@/components/layouts/ModuleLayout";
 import { HrSidebar } from "@/components/nav/HrSidebar";
+import GenericModuleDashboard from "@/components/shared/GenericModuleDashboard";
 
 // Payroll & Rewards Imports
 import CompensationDashboard from "../pages/rewards/CompensationDashboard";

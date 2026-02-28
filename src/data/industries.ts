@@ -1,6 +1,6 @@
 import {
     Heart, Store, Radio, Hotel, Landmark, Car, ShieldCheck, Building2, GraduationCap,
-    Lightbulb, Film, Factory, Home, Construction, Truck, Cloud, ShoppingCart, TrendingUp
+    Lightbulb, Film, Factory, Home, Construction, Truck, Cloud, ShoppingCart, TrendingUp, Users, Clock, Briefcase
 } from "lucide-react";
 
 export interface IndustryData {
@@ -232,6 +232,94 @@ export const industries: Record<string, IndustryData> = {
         ],
         benefits: [
             { title: "Transparency", description: "Open data and audit trails built-in." }
+        ]
+    },
+    "public-sector": {
+        slug: "public-sector",
+        name: "Public Sector",
+        icon: Building2,
+        hero: {
+            title: "Digital Public Sector",
+            subtitle: "Efficient, transparent, and secure public sector management.",
+            gradient: "from-slate-600 to-slate-800"
+        },
+        features: [
+            { title: "Citizen Services", description: "Digital portals for public services.", icon: Building2 },
+            { title: "Budgeting", description: "Public finance and fund accounting.", icon: Landmark },
+            { title: "Procurement", description: "Transparent tendering and purchasing.", icon: ShoppingCart }
+        ],
+        stats: [
+            { label: "Citizen Trust", value: "+40%" },
+            { label: "Process Time", value: "-60%" }
+        ],
+        benefits: [
+            { title: "Transparency", description: "Open data and audit trails built-in." }
+        ]
+    },
+    "engineering": {
+        slug: "engineering",
+        name: "Engineering & Construction",
+        icon: Construction,
+        hero: {
+            title: "Engineering Excellence",
+            subtitle: "Manage complex engineering projects with precision.",
+            gradient: "from-orange-600 to-red-700"
+        },
+        features: [
+            { title: "Project Management", description: "End-to-end project tracking.", icon: Construction },
+            { title: "Resource Allocation", description: "Optimize talent and equipment.", icon: TrendingUp },
+            { title: "Cost Control", description: "Real-time budget tracking.", icon: ShoppingCart }
+        ],
+        stats: [
+            { label: "Margin Improvement", value: "15%" },
+            { label: "On-time Delivery", value: "95%" }
+        ],
+        benefits: [
+            { title: "Integrated Data", description: "Unified view of all active projects." }
+        ]
+    },
+    "professional-services": {
+        slug: "professional-services",
+        name: "Professional Services",
+        icon: Briefcase,
+        hero: {
+            title: "Empowering Professional Services",
+            subtitle: "Maximize billable hours and resource utilization.",
+            gradient: "from-blue-600 to-indigo-700"
+        },
+        features: [
+            { title: "Resource Management", description: "Match skills to projects.", icon: Users },
+            { title: "Time & Expense", description: "Easy tracking and invoicing.", icon: Clock },
+            { title: "Project Accounting", description: "Detailed profitability analysis.", icon: Landmark }
+        ],
+        stats: [
+            { label: "Utilization Rate", value: "+20%" },
+            { label: "Billing Accuracy", value: "99.9%" }
+        ],
+        benefits: [
+            { title: "Real-time Insights", description: "Monitor project health instantly." }
+        ]
+    },
+    "aerospace": {
+        slug: "aerospace",
+        name: "Aerospace & Defense",
+        icon: ShieldCheck,
+        hero: {
+            title: "Mission Critical Solutions",
+            subtitle: "Secure and compliant operations for A&D.",
+            gradient: "from-slate-700 to-slate-900"
+        },
+        features: [
+            { title: "Compliance", description: "ITAR and strict regulatory adherence.", icon: ShieldCheck },
+            { title: "Supply Chain", description: "Traceability of every component.", icon: Truck },
+            { title: "Program Management", description: "Complex lifecycle management.", icon: Cloud }
+        ],
+        stats: [
+            { label: "Compliance Rate", value: "100%" },
+            { label: "Supply Chain Visibility", value: "Full" }
+        ],
+        benefits: [
+            { title: "Security First", description: "Highest levels of data security." }
         ]
     },
     education: {

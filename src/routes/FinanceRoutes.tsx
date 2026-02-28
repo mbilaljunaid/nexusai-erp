@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import JournalWizard from "@/pages/gl/JournalWizard";
 import { AlertCircle } from "lucide-react";
+import GenericModuleDashboard from "@/components/shared/GenericModuleDashboard";
 
 // Static Imports for Finance & GL
 import TreasuryCommandCenter from "@/pages/TreasuryCommandCenter";
@@ -225,6 +226,11 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ar/collections" component={CollectionsWorkbench} />
                 <Route path="/finance/ic/disputes" component={ICDisputeWorkbench} />
 
+                <Route path="/finance/gl" component={() => {
+                    const [, setLocation] = useLocation();
+                    useEffect(() => setLocation("/finance/gl/journals"), [setLocation]);
+                    return null;
+                }} />
                 <Route path="/finance/gl/journals/new" component={JournalEntry} />
                 <Route path="/finance/gl/journals/wizard" component={JournalWizard} />
                 <Route path="/finance/gl/journals/approvals" component={JournalApprovalHub} />
@@ -250,6 +256,11 @@ export default function FinanceRoutes() {
                 <Route path="/finance/gl/config/calendars" component={CalendarSetup} />
                 <Route path="/finance/gl/config/sla" component={AccountingHubWorkbench} />
                 <Route path="/finance/gl/config/sla/adr" component={AdrBuilder} />
+                <Route path="/finance/sla" component={() => {
+                    const [, setLocation] = useLocation();
+                    useEffect(() => setLocation("/finance/sla/dashboard"), [setLocation]);
+                    return null;
+                }} />
                 <Route path="/finance/sla/dashboard" component={SlaDashboard} />
                 <Route path="/finance/sla/manual-entry" component={ManualJournalEntry} />
                 <Route path="/finance/sla/reconciliation" component={SlaReconciliation} />
@@ -293,6 +304,11 @@ export default function FinanceRoutes() {
                 </Route>
 
                 {/* Revenue Management */}
+                <Route path="/finance/revenue" component={() => {
+                    const [, setLocation] = useLocation();
+                    useEffect(() => setLocation("/finance/revenue/intelligence"), [setLocation]);
+                    return null;
+                }} />
                 <Route path="/finance/revenue/contracts" component={RevenueContractWorkbench} />
                 <Route path="/finance/revenue/contracts/:id" component={RevenueContractDetail} />
                 <Route path="/finance/revenue/periods" component={RevenuePeriodClose} />
@@ -317,35 +333,12 @@ export default function FinanceRoutes() {
                 <Route path="/finance/leases/:id/schedules">{(params: { id: string }) => <LeaseSchedulesView leaseId={params.id} />}</Route>
                 <Route path="/finance/leases/:id/modify">{(params: { id: string }) => <LeaseModificationWizard leaseId={params.id} />}</Route>
 
-                <Route path="/finance/contracts" component={ContractList} />
                 <Route path="/finance/contracts/:id" component={ContractDetailView} />
-
-                {/* Fallback for Finance Routes */}
-                <Route>
-                    {(_params) => {
-                        const [loc] = useLocation();
-                        console.warn(`FINANCE ROUTE NOT FOUND. Global: ${window.location.pathname} | Wouter Nested: ${loc}`);
-                        return (
-                            <div className="flex flex-col items-center justify-center p-12 text-center h-full">
-                                <div className="p-4 bg-red-50 text-red-600 rounded-full mb-4">
-                                    <AlertCircle className="w-8 h-8" />
-                                </div>
-                                <h2 className="text-xl font-semibold text-gray-900 mb-2">404 - Page Not Found (Finance)</h2>
-                                <p className="text-gray-500 max-w-md">
-                                    The requested page could not be found within the Finance module.
-                                    <br /><br />
-                                    <strong>Debug Info:</strong>
-                                    <br />Global Path: {window.location.pathname}
-                                    <br />Wouter Nested Path: {loc}
-                                </p>
-                            </div>
-                        );
-                    }}
-                </Route>
 
                 {/* Module Overview & Catch-all */}
                 <Route path="/finance-module" component={Finance} />
                 <Route path="/finance/:page?" component={Finance} />
+                <Route component={GenericModuleDashboard} />
             </Switch>
         </ModuleLayout>
     );

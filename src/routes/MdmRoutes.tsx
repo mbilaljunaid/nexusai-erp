@@ -6,6 +6,7 @@ import DuplicateDetectionWorkbench from "@/pages/mdm/DuplicateDetectionWorkbench
 import MatchRuleBuilder from "@/pages/mdm/MatchRuleBuilder";
 import SurvivorshipRuleBuilder from "@/pages/mdm/SurvivorshipRuleBuilder";
 import DataQualityDashboard from "@/pages/mdm/DataQualityDashboard";
+import GenericModuleDashboard from "@/components/shared/GenericModuleDashboard";
 
 // Master Data Components (Phase 2)
 import ItemMasterUI from "@/pages/mdm/ItemMasterUI";
@@ -31,36 +32,40 @@ import ChangeRequestInbox from "@/pages/ChangeRequestInbox";
 export default function MdmRoutes() {
     return (
         <ModuleLayout>
-            {/* Data Quality & Matching - NEW COMPONENTS */}
-            <Route path="/mdm/quality/dashboard" component={DataQualityDashboard} />
-            <Route path="/mdm/quality/duplicates" component={DuplicateDetectionWorkbench} />
-            <Route path="/mdm/quality/match-rules" component={MatchRuleBuilder} />
-            <Route path="/mdm/quality/survivorship-rules" component={SurvivorshipRuleBuilder} />
+            <Switch>
+                {/* Data Quality & Matching - NEW COMPONENTS */}
+                <Route path="/mdm" component={DataQualityDashboard} />
+                <Route path="/mdm/quality/dashboard" component={DataQualityDashboard} />
+                <Route path="/mdm/quality/duplicates" component={DuplicateDetectionWorkbench} />
+                <Route path="/mdm/quality/match-rules" component={MatchRuleBuilder} />
+                <Route path="/mdm/quality/survivorship-rules" component={SurvivorshipRuleBuilder} />
 
-            {/* Master Data - Phase 2 NEW */}
-            <Route path="/mdm/items-pim" component={ItemMasterUI} />
-            <Route path="/mdm/locations" component={LocationManager} />
+                {/* Master Data - Phase 2 NEW */}
+                <Route path="/mdm/items-pim" component={ItemMasterUI} />
+                <Route path="/mdm/locations" component={LocationManager} />
 
-            {/* Master Data - existing */}
-            <Route path="/mdm/parties" component={PartyDirectory} />
-            <Route path="/mdm/parties/:id" component={PartyProfile} />
-            <Route path="/mdm/reference-data" component={ReferenceDataList} />
-            <Route path="/mdm/reference-data/:id" component={ReferenceDataDetail} />
-            <Route path="/mdm/items" component={ItemDirectory} />
-            <Route path="/mdm/items/:id" component={ItemProfile} />
+                {/* Master Data - existing */}
+                <Route path="/mdm/parties" component={PartyDirectory} />
+                <Route path="/mdm/parties/:id" component={PartyProfile} />
+                <Route path="/mdm/reference-data" component={ReferenceDataList} />
+                <Route path="/mdm/reference-data/:id" component={ReferenceDataDetail} />
+                <Route path="/mdm/items" component={ItemDirectory} />
+                <Route path="/mdm/items/:id" component={ItemProfile} />
 
-            {/* Governance - Phase 3 NEW */}
-            <Route path="/mdm/governance/import" component={BulkImportWizard} />
-            <Route path="/mdm/governance/change-requests" component={ChangeRequestWorkbench} />
-            <Route path="/mdm/governance/audit" component={MDMAuditViewer} />
+                {/* Governance - Phase 3 NEW */}
+                <Route path="/mdm/governance/import" component={BulkImportWizard} />
+                <Route path="/mdm/governance/change-requests" component={ChangeRequestWorkbench} />
+                <Route path="/mdm/governance/audit" component={MDMAuditViewer} />
 
-            {/* Governance - existing */}
-            <Route path="/mdm/governance" component={DataGovernancePage} />
-            <Route path="/mdm/change-requests" component={ChangeRequestInbox} />
-            <Route path="/mdm/import" component={BulkImportWizard} />
+                {/* Governance - existing */}
+                <Route path="/mdm/governance" component={DataGovernancePage} />
+                <Route path="/mdm/change-requests" component={ChangeRequestInbox} />
+                <Route path="/mdm/import" component={BulkImportWizard} />
 
-            {/* Default */}
-            <Route path="/mdm" component={DataQualityDashboard} />
+                {/* Default */}
+                <Route path="/mdm" component={DataQualityDashboard} />
+                <Route component={GenericModuleDashboard} />
+            </Switch>
         </ModuleLayout>
     );
 }

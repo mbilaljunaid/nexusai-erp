@@ -1,6 +1,7 @@
 
 import { Route, Switch } from "wouter";
 import { lazyWithRetry } from "@/lib/lazyWithRetry";
+import GenericModuleDashboard from "@/components/shared/GenericModuleDashboard";
 
 const Compliance = lazyWithRetry(() => import("@/pages/Compliance"));
 
@@ -21,6 +22,7 @@ export default function ComplianceRoutes() {
             <Route path="/compliance/governance" component={ComplianceGovernance} />
             <Route path="/compliance/audit" component={AuditTrails} />
             <Route path="/compliance/security" component={SecurityProfiles} />
+            <Route component={GenericModuleDashboard} />
         </Switch>
     );
 }

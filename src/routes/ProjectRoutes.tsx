@@ -3,6 +3,7 @@ import { Route, Switch } from "wouter";
 import Projects from "@/pages/Projects";
 
 import { lazyWithRetry } from "@/lib/lazyWithRetry";
+import GenericModuleDashboard from "@/components/shared/GenericModuleDashboard";
 
 // Unified Project Container
 // const Projects = lazyWithRetry(() => import("@/pages/Projects"));
@@ -16,6 +17,7 @@ const BillRateManager = lazyWithRetry(() => import("@/pages/projects/BillRateMan
 const BillingRulesManager = lazyWithRetry(() => import("@/pages/projects/BillingRulesManager"));
 const BurdenManager = lazyWithRetry(() => import("@/pages/projects/BurdenManager"));
 const ProjectTemplateManager = lazyWithRetry(() => import("@/pages/projects/ProjectTemplateManager"));
+const LeasePortfolioWorkbench = lazyWithRetry(() => import("@/pages/leases/LeasePortfolioWorkbench"));
 
 // PPM Advanced Components
 const CostImportWorkbench = lazyWithRetry(() => import("@/pages/projects/CostImportWorkbench"));
@@ -45,6 +47,7 @@ export default function ProjectRoutes() {
             <Route path="/projects/burden" component={BurdenManager} />
             <Route path="/projects/assets" component={AssetWorkbench} />
             <Route path="/projects/templates" component={ProjectTemplateManager} />
+            <Route path="/projects/leases" component={LeasePortfolioWorkbench} />
 
             {/* PPM Advanced Features */}
             <Route path="/projects/cost-import" component={CostImportWorkbench} />
@@ -65,6 +68,8 @@ export default function ProjectRoutes() {
             {/* PPM Alias */}
             <Route path="/ppm" component={Projects} />
             <Route path="/ppm/*" component={Projects} />
+
+            <Route component={GenericModuleDashboard} />
         </Switch>
     );
 }

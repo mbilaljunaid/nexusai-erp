@@ -1,6 +1,7 @@
 
 import { Route, Switch } from "wouter";
 import { lazyWithRetry } from "@/lib/lazyWithRetry";
+import GenericModuleDashboard from "@/components/shared/GenericModuleDashboard";
 
 
 const Analytics = lazyWithRetry(() => import("@/pages/Analytics"));
@@ -24,6 +25,7 @@ export default function AnalyticsRoutes() {
             <Route path="/analytics/operational" component={OperationalAnalytics} />
             <Route path="/analytics/lead-scoring" component={LeadScoringAnalytics} />
             <Route path="/analytics/churn" component={ChurnRiskAnalysis} />
+            <Route component={GenericModuleDashboard} />
         </Switch>
     );
 }

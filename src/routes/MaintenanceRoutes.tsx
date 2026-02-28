@@ -1,6 +1,7 @@
 
 import { Route, Switch } from "wouter";
 import { lazyWithRetry } from "@/lib/lazyWithRetry";
+import GenericModuleDashboard from "@/components/shared/GenericModuleDashboard";
 
 const MaintenanceWorkbench = lazyWithRetry(() => import("@/pages/maintenance/MaintenanceWorkbench"));
 const PMDefinitionBuilder = lazyWithRetry(() => import("@/pages/maintenance/PMDefinitionBuilder"));
@@ -52,6 +53,7 @@ export default function MaintenanceRoutes() {
             </Route>
             <Route path="/maintenance/technician" component={TechnicianTaskView} />
             <Route path="/maintenance/asset-360" component={Asset360View} />
+            <Route component={GenericModuleDashboard} />
         </Switch>
     );
 }

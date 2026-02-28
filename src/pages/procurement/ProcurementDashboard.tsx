@@ -32,23 +32,28 @@ export default function ProcurementDashboard() {
         queryKey: ["/api/procurement/ap/invoices"],
     });
 
+    // API Data normalization
+    const safePos = (Array.isArray(pos) ? pos : []);
+    const safeSuppliers = (Array.isArray(suppliers) ? suppliers : []);
+    const safeInvoices = (Array.isArray(invoices) ? invoices : []);
+
     // KPI Calculations
-    const openOrdersCount = pos.filter(p => p.status === 'Open').length;
-    const pendingReceiptsCount = pos.filter(p => p.status === 'Open' && p.lines?.some((l: any) => Number(l.quantityReceived) < Number(l.quantity))).length;
-    const draftInvoicesCount = invoices.filter(i => i.status === 'Draft').length;
+    const openOrdersCount = safePos.filter(p => p.status === 'Open').length;
+    const pendingReceiptsCount = safePos.filter(p => p.status === 'Open' && p.lines?.some((l: any) => Number(l.quantityReceived) < Number(l.quantity))).length;
+    const draftInvoicesCount = safeInvoices.filter(i => i.status === 'Draft').length;
 
     // Chart Data Preparation
-    const spendBySupplier = suppliers.map((s: any) => {
-        const spend = pos
+    const spendBySupplier = safeSuppliers.map((s: any) => {
+        const spend = safePos
             .filter((p: any) => (p.supplierId === s.id || p.supplier?.id === s.id) && p.status !== 'Cancelled')
             .reduce((sum: number, p: any) => sum + Number(p.totalAmount || p.amount || 0), 0);
         return { name: s.supplierName, amount: spend };
     }).filter((s: any) => s.amount > 0).slice(0, 10); // Top 10
 
     const poStatusData = [
-        { name: 'Draft', value: pos.filter(p => p.status === 'Draft').length, color: '#94a3b8' },
-        { name: 'Open', value: pos.filter(p => p.status === 'Open').length, color: '#3b82f6' },
-        { name: 'Closed', value: pos.filter(p => p.status === 'Closed').length, color: '#22c55e' },
+        { name: 'Draft', value: safePos.filter(p => p.status === 'Draft').length, color: '#94a3b8' },
+        { name: 'Open', value: safePos.filter(p => p.status === 'Open').length, color: '#3b82f6' },
+        { name: 'Closed', value: safePos.filter(p => p.status === 'Closed').length, color: '#22c55e' },
     ].filter(d => d.value > 0);
 
     return (

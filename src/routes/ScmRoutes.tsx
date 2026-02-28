@@ -1,6 +1,7 @@
 
-import { Route } from "wouter";
+import { Route, Switch } from "wouter";
 // import { lazy } from "react";
+import GenericModuleDashboard from "@/components/shared/GenericModuleDashboard";
 
 // Static Imports for Manufacturing
 import ManufacturingDashboard from "@/pages/manufacturing/ManufacturingDashboard";
@@ -24,6 +25,7 @@ import BatchWorkbench from "@/pages/manufacturing/BatchWorkbench";
 import BatchGenealogy from "@/pages/manufacturing/BatchGenealogy";
 
 // Static Imports for SCM & Logistics
+import ProcurementDashboard from "@/pages/procurement/ProcurementDashboard";
 import FulfillmentWorkbench from "@/pages/scm/FulfillmentWorkbench";
 import Inventory from "@/pages/Inventory";
 import WorkOrdersDashboard from "@/pages/WorkOrdersDashboard";
@@ -68,7 +70,7 @@ import SlottingWorkbench from "@/pages/scm/wms/SlottingWorkbench";
 
 export default function ScmRoutes() {
     return (
-        <>
+        <Switch>
             {/* Manufacturing */}
             <Route path="/manufacturing/dashboard" component={ManufacturingDashboard} />
             <Route path="/manufacturing/mrp-dashboard" component={ManufacturingDashboard} />
@@ -94,6 +96,7 @@ export default function ScmRoutes() {
             <Route path="/manufacturing/genealogy" component={BatchGenealogy} />
 
             {/* SCM */}
+            <Route path="/scm/procurement" component={ProcurementDashboard} />
             <Route path="/scm/fulfillment" component={FulfillmentWorkbench} />
             <Route path="/inventory" component={Inventory} />
             <Route path="/inventory/dashboard" component={Inventory} />
@@ -145,6 +148,8 @@ export default function ScmRoutes() {
             <Route path="/transportation/carrier-scorecard" component={CarrierScorecardDashboard} />
             <Route path="/transportation/carrier-rates" component={CarrierRateWorkbench} />
             <Route path="/transportation/tracking" component={ShipmentTrackingDashboard} />
-        </>
+
+            <Route component={GenericModuleDashboard} />
+        </Switch>
     );
 }

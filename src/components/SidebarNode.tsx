@@ -52,7 +52,7 @@ export function SidebarNodeRenderer({ node, level = 0 }: SidebarNodeProps) {
                     <CollapsibleTrigger asChild>
                         <SidebarMenuButton tooltip={node.title}>
                             {node.icon && <node.icon />}
-                            <span>{node.title}</span>
+                            <span className="truncate">{node.title}</span>
                             <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                         </SidebarMenuButton>
                     </CollapsibleTrigger>
@@ -78,7 +78,7 @@ export function SidebarNodeRenderer({ node, level = 0 }: SidebarNodeProps) {
                 <SidebarMenuSubItem>
                     <SidebarMenuSubButton asChild isActive={isActive}>
                         <Link to={node.path || "#"}>
-                            <span>{node.title}</span>
+                            <span className="truncate">{node.title}</span>
                         </Link>
                     </SidebarMenuSubButton>
                 </SidebarMenuSubItem>
@@ -90,7 +90,7 @@ export function SidebarNodeRenderer({ node, level = 0 }: SidebarNodeProps) {
                 <SidebarMenuButton asChild isActive={isActive} tooltip={node.title}>
                     <Link to={node.path || "#"}>
                         {node.icon && <node.icon />}
-                        <span>{node.title}</span>
+                        <span className="truncate">{node.title}</span>
                     </Link>
                 </SidebarMenuButton>
             </SidebarMenuItem>

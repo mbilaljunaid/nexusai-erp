@@ -1,6 +1,7 @@
 
 import { Route, Switch } from "wouter";
 import { lazyWithRetry } from "@/lib/lazyWithRetry";
+import GenericModuleDashboard from "@/components/shared/GenericModuleDashboard";
 
 
 const TicketDashboard = lazyWithRetry(() => import("@/pages/TicketDashboard"));
@@ -16,6 +17,7 @@ export default function ServiceRoutes() {
             <Route path="/service" component={Service} />
             <Route path="/service/tickets" component={ServiceTicketsDetail} />
             <Route path="/service/ticket/:id" component={ServiceTicket} />
+            <Route component={GenericModuleDashboard} />
         </Switch>
     );
 }

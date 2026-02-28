@@ -51,6 +51,7 @@ export default function AdminRoutes() {
             {/* System Configuration */}
             <Route path="/admin/config" component={SystemConfiguration} />
             <Route path="/admin/system-config" component={SystemConfiguration} />
+            <Route path="/system-configuration" component={SystemConfiguration} />
 
             {/* Affiliates & Marketing */}
             <Route path="/admin/affiliates" component={Affiliates} />

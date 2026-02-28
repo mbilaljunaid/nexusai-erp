@@ -1,5 +1,6 @@
 
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
+import { useEffect } from "react";
 // import { lazy } from "react";
 
 // Static load CRM components
@@ -56,51 +57,60 @@ import DealRegistration from "@/pages/crm/DealRegistration";
 import CrmDashboard from "@/pages/crm/CrmDashboard";
 
 import ModuleLayout from "@/components/layouts/ModuleLayout";
+import GenericModuleDashboard from "@/components/shared/GenericModuleDashboard";
 // import { CrmSidebar } from "@/components/nav/CrmSidebar";
 
 export default function CrmRoutes() {
     return (
         <ModuleLayout>
-            <Route path="/crm/leads/:id" component={LeadsDetail} />
-            <Route path="/crm/leads" component={LeadsDetail} />
-            <Route path="/crm/accounts" component={AccountsDetail} />
-            <Route path="/crm/accounts/:id" component={Account360} />
-            <Route path="/crm/contacts" component={ContactList} />
-            <Route path="/crm/territories" component={TerritoryManager} />
-            <Route path="/crm/incentives" component={IncentiveDashboard} />
-            <Route path="/crm/commissions/admin" component={CommissionPlanManager} />
-            <Route path="/crm/forecast" component={SalesForecasting} />
-            <Route path="/crm/campaigns" component={CampaignDashboard} />
-            <Route path="/crm/campaigns/:id" component={CampaignDetail} />
-            <Route path="/crm/cases" component={CaseDashboard} />
-            <Route path="/crm/cases/:id" component={CaseDetail} />
-            <Route path="/crm/knowledge" component={KnowledgeBaseDashboard} />
-            <Route path="/crm/contracts" component={ContractDashboard} />
-            <Route path="/crm/contracts/:id" component={ContractDetail} />
-            <Route path="/crm/partner" component={PartnerDashboard} />
-            <Route path="/crm/quotas" component={CrmQuotaManagement} />
-            <Route path="/crm/analytics" component={CrmAnalyticsDashboard} />
-            <Route path="/crm/field-service" component={FieldServiceDashboard} />
-            <Route path="/crm/field-service/:id" component={WorkOrderDetail} />
-            <Route path="/crm/pipeline" component={OpportunityPipeline} />
-            <Route path="/crm/quotes/builder" component={QuoteBuilder} />
-            <Route path="/crm/lead-scoring" component={LeadScoringDashboard} />
-            <Route path="/crm/competitors" component={CompetitorIntelligence} />
-            <Route path="/crm/analytics" component={CrmAnalyticsDashboard} />
-            <Route path="/crm/deal-desk" component={DealDesk} />
-            <Route path="/crm/catalog" component={ProductCatalogManager} />
-            <Route path="/crm/cpq" component={CpqConfigurator} />
-            <Route path="/crm/marketing/campaigns" component={EmailCampaignBuilder} />
-            <Route path="/crm/marketing/automation" component={MarketingAutomation} />
-            <Route path="/crm/service/cases" component={CaseManagement} />
-            <Route path="/crm/service/knowledge" component={KnowledgeBase} />
-            <Route path="/crm/partners" component={PartnerManagement} />
-            <Route path="/crm/partners/deals" component={DealRegistration} />
+            <Switch>
+                <Route path="/crm/leads/:id" component={LeadsDetail} />
+                <Route path="/crm/leads" component={LeadsDetail} />
+                <Route path="/crm/accounts" component={AccountsDetail} />
+                <Route path="/crm/accounts/:id" component={Account360} />
+                <Route path="/crm/contacts" component={ContactList} />
+                <Route path="/crm/territories" component={TerritoryManager} />
+                <Route path="/crm/incentives" component={IncentiveDashboard} />
+                <Route path="/crm/commissions/admin" component={CommissionPlanManager} />
+                <Route path="/crm/forecast" component={SalesForecasting} />
+                <Route path="/crm/campaigns" component={CampaignDashboard} />
+                <Route path="/crm/campaigns/:id" component={CampaignDetail} />
+                <Route path="/crm/cases" component={CaseDashboard} />
+                <Route path="/crm/cases/:id" component={CaseDetail} />
+                <Route path="/crm/knowledge" component={KnowledgeBaseDashboard} />
+                <Route path="/crm/contracts" component={ContractDashboard} />
+                <Route path="/crm/contracts/:id" component={ContractDetail} />
+                <Route path="/crm/partner" component={PartnerDashboard} />
+                <Route path="/crm/quotas" component={CrmQuotaManagement} />
+                <Route path="/crm/analytics" component={CrmAnalyticsDashboard} />
+                <Route path="/crm/field-service" component={FieldServiceDashboard} />
+                <Route path="/crm/field-service/:id" component={WorkOrderDetail} />
+                <Route path="/crm/pipeline" component={OpportunityPipeline} />
+                <Route path="/crm/quotes/builder" component={QuoteBuilder} />
+                <Route path="/crm/lead-scoring" component={LeadScoringDashboard} />
+                <Route path="/crm/competitors" component={CompetitorIntelligence} />
+                <Route path="/crm/analytics" component={CrmAnalyticsDashboard} />
+                <Route path="/crm/deal-desk" component={DealDesk} />
+                <Route path="/crm/catalog" component={ProductCatalogManager} />
+                <Route path="/crm/cpq" component={CpqConfigurator} />
+                <Route path="/crm/marketing/campaigns" component={EmailCampaignBuilder} />
+                <Route path="/crm/marketing/automation" component={MarketingAutomation} />
+                <Route path="/crm/service" component={() => {
+                    const [, setLocation] = useLocation();
+                    useEffect(() => setLocation("/crm/service/cases"), [setLocation]);
+                    return null;
+                }} />
+                <Route path="/crm/service/cases" component={CaseManagement} />
+                <Route path="/crm/service/knowledge" component={KnowledgeBase} />
+                <Route path="/crm/partners" component={PartnerManagement} />
+                <Route path="/crm/partners/deals" component={DealRegistration} />
 
-            {/* Module Overview & Catch-all */}
-            <Route path="/crm-module" component={CRM} />
-            <Route path="/crm" component={CrmDashboard} />
-            <Route path="/crm/:page?" component={CRM} />
+                {/* Module Overview & Catch-all */}
+                <Route path="/crm-module" component={CRM} />
+                <Route path="/crm" component={CrmDashboard} />
+                <Route path="/crm/:page?" component={CRM} />
+                <Route component={GenericModuleDashboard} />
+            </Switch>
         </ModuleLayout>
     );
 }
