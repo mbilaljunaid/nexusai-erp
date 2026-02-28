@@ -69,6 +69,7 @@ export type ArCustomerAccount = typeof arCustomerAccounts.$inferSelect;
 export const arCustomerSites = pgTable("ar_customer_sites", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     accountId: varchar("account_id").notNull(),
+    orgId: varchar("org_id").default("1"), // Business Unit assignment (Oracle Parity)
     siteName: varchar("site_name").notNull(),
     address: text("address").notNull(),
     isBillTo: boolean("is_bill_to").default(true),
@@ -80,6 +81,7 @@ export const arCustomerSites = pgTable("ar_customer_sites", {
 
 export const insertArCustomerSiteSchema = createInsertSchema(arCustomerSites).extend({
     accountId: z.string().min(1),
+    orgId: z.string().optional(),
     siteName: z.string().min(1),
     address: z.string().min(1),
     isBillTo: z.boolean().optional(),
@@ -89,6 +91,38 @@ export const insertArCustomerSiteSchema = createInsertSchema(arCustomerSites).ex
 
 export type InsertArCustomerSite = z.infer<typeof insertArCustomerSiteSchema>;
 export type ArCustomerSite = typeof arCustomerSites.$inferSelect;
+
+// AR Customer Contacts (TCA Party Contacts)
+export const arCustomerContacts = pgTable("ar_customer_contacts", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    customerId: varchar("customer_id").notNull(),
+    siteId: varchar("site_id"), // Optional: can be global or site-specific
+    firstName: varchar("first_name").notNull(),
+    lastName: varchar("last_name").notNull(),
+    jobTitle: varchar("job_title"),
+    email: varchar("email").notNull(),
+    phone: varchar("phone"),
+    role: varchar("role").default("BILLING"), // BILLING, SHIPPING, DUNNING, PRIMARY
+    isPrimary: boolean("is_primary").default(false),
+    status: varchar("status").default("Active"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertArCustomerContactSchema = createInsertSchema(arCustomerContacts).extend({
+    customerId: z.string().min(1),
+    siteId: z.string().optional().nullable(),
+    firstName: z.string().min(1),
+    lastName: z.string().min(1),
+    jobTitle: z.string().optional().nullable(),
+    email: z.string().email(),
+    phone: z.string().optional().nullable(),
+    role: z.string().optional(),
+    isPrimary: z.boolean().optional(),
+    status: z.string().optional(),
+});
+
+export type InsertArCustomerContact = z.infer<typeof insertArCustomerContactSchema>;
+export type ArCustomerContact = typeof arCustomerContacts.$inferSelect;
 
 // AR Invoices (Sales Invoices)
 export const arInvoices = pgTable("ar_invoices", {
@@ -414,6 +448,65 @@ export const arAdjustments = pgTable("ar_adjustments", {
 export const insertArAdjustmentSchema = createInsertSchema(arAdjustments);
 export type ArAdjustment = typeof arAdjustments.$inferSelect;
 export type InsertArAdjustment = typeof arAdjustments.$inferInsert;
+
+// ==========================================
+// PHASE 2 & ADVANCED AR BILLING SCHEMA
+// ==========================================
+
+// AR AutoInvoice Staging Area
+export const arAutoInvoiceStaging = pgTable("ar_autoinvoice_staging", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    batchSourceId: varchar("batch_source_id").notNull(),
+    transactionTypeId: varchar("transaction_type_id").notNull(),
+    customerId: varchar("customer_id").notNull(),
+    currency: varchar("currency").default("USD"),
+    amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
+    lineType: varchar("line_type").default("LINE"),
+    description: text("description").notNull(),
+    status: varchar("status").default("NEW"), // NEW, ERROR, PROCESSED
+    importDate: timestamp("import_date").default(sql`now()`),
+    processDate: timestamp("process_date"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertArAutoInvoiceStagingSchema = createInsertSchema(arAutoInvoiceStaging).extend({
+    amount: z.string().min(1),
+});
+export type ArAutoInvoiceStaging = typeof arAutoInvoiceStaging.$inferSelect;
+export type InsertArAutoInvoiceStaging = z.infer<typeof insertArAutoInvoiceStagingSchema>;
+
+// AR AutoInvoice Errors
+export const arAutoInvoiceErrors = pgTable("ar_autoinvoice_errors", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    stagingId: varchar("staging_id").notNull(),
+    errorMessage: text("error_message").notNull(),
+    invalidValue: varchar("invalid_value"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertArAutoInvoiceErrorSchema = createInsertSchema(arAutoInvoiceErrors);
+export type ArAutoInvoiceError = typeof arAutoInvoiceErrors.$inferSelect;
+export type InsertArAutoInvoiceError = typeof arAutoInvoiceErrors.$inferInsert;
+
+// AR Sales Credits (Revenue Splits)
+export const arSalesCredits = pgTable("ar_sales_credits", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    invoiceLineId: varchar("invoice_line_id").notNull(),
+    salespersonId: varchar("salesperson_id").notNull(),
+    salesCreditType: varchar("sales_credit_type").default("Quota"), // Quota, Non-Quota
+    percentage: numeric("percentage", { precision: 5, scale: 2 }).notNull(), // e.g. 50.00
+    amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
+    glAccountId: varchar("gl_account_id"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertArSalesCreditSchema = createInsertSchema(arSalesCredits).extend({
+    percentage: z.string().min(1),
+    amount: z.string().min(1),
+});
+export type ArSalesCredit = typeof arSalesCredits.$inferSelect;
+export type InsertArSalesCredit = z.infer<typeof insertArSalesCreditSchema>;
+
 
 // AR Period Statuses (Control)
 export const arPeriodStatuses = pgTable("ar_period_statuses", {
@@ -786,3 +879,61 @@ export const insertArCustomerBankAccountSchema = createInsertSchema(arCustomerBa
 
 export type ArCustomerBankAccount = typeof arCustomerBankAccounts.$inferSelect;
 export type InsertArCustomerBankAccount = z.infer<typeof insertArCustomerBankAccountSchema>;
+
+// Document Sequences (Gapless/Automatic Config)
+export const arDocumentSequences = pgTable("ar_document_sequences", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull().unique(), // e.g., "US_INV_2026"
+    description: text("description"),
+    module: varchar("module").default("AR"), // AR, AP, GL
+    type: varchar("type").notNull().default("GAPLESS"), // GAPLESS, AUTOMATIC, MANUAL
+    initialValue: integer("initial_value").notNull().default(1),
+    startDate: timestamp("start_date").notNull(),
+    endDate: timestamp("end_date"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertArDocumentSequenceSchema = createInsertSchema(arDocumentSequences).extend({
+    name: z.string().min(1),
+    description: z.string().optional().nullable(),
+    module: z.string().optional(),
+    type: z.enum(["GAPLESS", "AUTOMATIC", "MANUAL"]),
+    initialValue: z.number().int().min(1),
+    startDate: z.preprocess((arg) => {
+        if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+    }, z.date()),
+    endDate: z.preprocess((arg) => {
+        if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+    }, z.date()).optional().nullable(),
+});
+
+export type InsertArDocumentSequence = z.infer<typeof insertArDocumentSequenceSchema>;
+export type ArDocumentSequence = typeof arDocumentSequences.$inferSelect;
+
+// Document Sequence Assignments (Assign sequence to Ledger/Entity + Document Category)
+export const arDocumentSequenceAssignments = pgTable("ar_document_sequence_assignments", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    sequenceId: varchar("sequence_id").notNull(), // FK to ar_document_sequences
+    contextType: varchar("context_type").notNull().default("LEDGER"), // LEDGER, LEGAL_ENTITY
+    contextValue: varchar("context_value").notNull(), // Ledger ID or Legal Entity ID
+    documentCategory: varchar("document_category").notNull(), // Link to ArTransactionType ID
+    startDate: timestamp("start_date").notNull(),
+    endDate: timestamp("end_date"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertArDocumentSequenceAssignmentSchema = createInsertSchema(arDocumentSequenceAssignments).extend({
+    sequenceId: z.string().min(1),
+    contextType: z.enum(["LEDGER", "LEGAL_ENTITY"]),
+    contextValue: z.string().min(1),
+    documentCategory: z.string().min(1),
+    startDate: z.preprocess((arg) => {
+        if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+    }, z.date()),
+    endDate: z.preprocess((arg) => {
+        if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+    }, z.date()).optional().nullable(),
+});
+
+export type InsertArDocumentSequenceAssignment = z.infer<typeof insertArDocumentSequenceAssignmentSchema>;
+export type ArDocumentSequenceAssignment = typeof arDocumentSequenceAssignments.$inferSelect;

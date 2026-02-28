@@ -42,11 +42,14 @@ import {
   cashTransactions as cashTransactionsTable,
   cashReconciliationRules as cashReconciliationRulesTable,
   cashMatchingGroups as cashMatchingGroupsTable,
-  cashBankAccounts as cashBankAccountsTable,
   glJournalApprovals as glJournalApprovalsTable,
   arInvoices as arInvoicesTable,
+  arInvoiceLines as arInvoiceLinesTable,
   arReceipts as arReceiptsTable,
   arCustomers as arCustomersTable,
+  arCustomerAccounts as arCustomerAccountsTable,
+  arCustomerSites as arCustomerSitesTable,
+  arCustomerContacts as arCustomerContactsTable,
   apSuppliers as apSuppliersTable,
   apInvoices as apInvoicesTable,
   apPayments as apPaymentsTable,
@@ -63,6 +66,8 @@ import {
   type GlJournalBatch,
   type GlJournalApproval,
   arSystemOptions as arSystemOptionsTable,
+  arDocumentSequences as arDocumentSequencesTable,
+  arDocumentSequenceAssignments as arDocumentSequenceAssignmentsTable,
   glAutoPostRules as glAutoPostRulesTable,
   glDataAccessSets as glDataAccessSetsTable,
   expenseReports as expenseReportsTable,
@@ -143,8 +148,16 @@ import type {
   // AR Module
   ArCustomer,
   InsertArCustomer,
+  ArCustomerAccount,
+  InsertArCustomerAccount,
+  ArCustomerSite,
+  InsertArCustomerSite,
+  ArCustomerContact,
+  InsertArCustomerContact,
   ArInvoice,
   InsertArInvoice,
+  ArInvoiceLine,
+  InsertArInvoiceLine,
   ArReceipt,
   InsertArReceipt,
   ApSupplier,
@@ -163,7 +176,9 @@ import type {
   CashReconciliationRule, InsertCashReconciliationRule,
   CashMatchingGroup, InsertCashMatchingGroup,
   CashBankAccount, InsertCashBankAccount,
-  ArSystemOptions, InsertArSystemOptions
+  ArSystemOptions, InsertArSystemOptions,
+  ArDocumentSequence, InsertArDocumentSequence,
+  ArDocumentSequenceAssignment, InsertArDocumentSequenceAssignment
 } from "@shared/schema";
 import { revenueService } from "./modules/revenue/services/RevenueService";
 import { partyService } from "./services/PartyService";
@@ -1171,25 +1186,6 @@ export const dbStorage = {
   },
 
   // ========== ACCOUNTS RECEIVABLE ==========
-  async listArCustomers(): Promise<ArCustomer[]> {
-    return await db.select().from(arCustomersTable);
-  },
-  async getArCustomer(id: string): Promise<ArCustomer | undefined> {
-    const result = await db.select().from(arCustomersTable).where(eq(arCustomersTable.id, id)).limit(1);
-    return result[0];
-  },
-  async createArCustomer(data: InsertArCustomer): Promise<ArCustomer> {
-    const result = await db.insert(arCustomersTable).values(data).returning();
-    return result[0];
-  },
-  async updateArCustomer(id: string, data: Partial<InsertArCustomer>): Promise<ArCustomer | undefined> {
-    const result = await db.update(arCustomersTable).set(data).where(eq(arCustomersTable.id, id)).returning();
-    return result[0];
-  },
-  async deleteArCustomer(id: string): Promise<boolean> {
-    const result = await db.delete(arCustomersTable).where(eq(arCustomersTable.id, id)).returning();
-    return result.length > 0;
-  },
 
   async listArInvoices(): Promise<ArInvoice[]> {
     return await db.select().from(arInvoicesTable);
@@ -1211,6 +1207,18 @@ export const dbStorage = {
     return result.length > 0;
   },
 
+  async listArInvoiceLines(invoiceId: string): Promise<ArInvoiceLine[]> {
+    return await db.select().from(arInvoiceLinesTable).where(eq(arInvoiceLinesTable.invoiceId, invoiceId)).orderBy(arInvoiceLinesTable.lineNumber);
+  },
+  async createArInvoiceLine(data: InsertArInvoiceLine): Promise<ArInvoiceLine> {
+    const result = await db.insert(arInvoiceLinesTable).values(data).returning();
+    return result[0];
+  },
+  async updateArInvoiceLine(id: string, data: Partial<InsertArInvoiceLine>): Promise<ArInvoiceLine | undefined> {
+    const result = await db.update(arInvoiceLinesTable).set(data).where(eq(arInvoiceLinesTable.id, id)).returning();
+    return result[0];
+  },
+
   async listArReceipts(): Promise<ArReceipt[]> {
     return await db.select().from(arReceiptsTable);
   },
@@ -1228,6 +1236,81 @@ export const dbStorage = {
   },
   async deleteArReceipt(id: string): Promise<boolean> {
     const result = await db.delete(arReceiptsTable).where(eq(arReceiptsTable.id, id)).returning();
+    return result.length > 0;
+  },
+
+  // ========== AR CUSTOMERS (TCA) ==========
+  async listArCustomers(): Promise<ArCustomer[]> {
+    return await db.select().from(arCustomersTable);
+  },
+  async getArCustomer(id: string): Promise<ArCustomer | undefined> {
+    const result = await db.select().from(arCustomersTable).where(eq(arCustomersTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createArCustomer(data: InsertArCustomer): Promise<ArCustomer> {
+    const result = await db.insert(arCustomersTable).values(data).returning();
+    return result[0];
+  },
+  async updateArCustomer(id: string, data: Partial<InsertArCustomer>): Promise<ArCustomer | undefined> {
+    const result = await db.update(arCustomersTable).set(data).where(eq(arCustomersTable.id, id)).returning();
+    return result[0];
+  },
+
+  // ========== AR CUSTOMER ACCOUNTS ==========
+  async listArCustomerAccounts(customerId?: string): Promise<ArCustomerAccount[]> {
+    if (customerId) {
+      return await db.select().from(arCustomerAccountsTable).where(eq(arCustomerAccountsTable.customerId, customerId));
+    }
+    return await db.select().from(arCustomerAccountsTable);
+  },
+  async getArCustomerAccount(id: string): Promise<ArCustomerAccount | undefined> {
+    const result = await db.select().from(arCustomerAccountsTable).where(eq(arCustomerAccountsTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createArCustomerAccount(data: InsertArCustomerAccount): Promise<ArCustomerAccount> {
+    const result = await db.insert(arCustomerAccountsTable).values(data).returning();
+    return result[0];
+  },
+  async updateArCustomerAccount(id: string, data: Partial<InsertArCustomerAccount>): Promise<ArCustomerAccount | undefined> {
+    const result = await db.update(arCustomerAccountsTable).set(data).where(eq(arCustomerAccountsTable.id, id)).returning();
+    return result[0];
+  },
+
+  // ========== AR CUSTOMER SITES ==========
+  async listArCustomerSites(accountId: string): Promise<ArCustomerSite[]> {
+    return await db.select().from(arCustomerSitesTable).where(eq(arCustomerSitesTable.accountId, accountId));
+  },
+  async getArCustomerSite(id: string): Promise<ArCustomerSite | undefined> {
+    const result = await db.select().from(arCustomerSitesTable).where(eq(arCustomerSitesTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createArCustomerSite(data: InsertArCustomerSite): Promise<ArCustomerSite> {
+    const result = await db.insert(arCustomerSitesTable).values(data).returning();
+    return result[0];
+  },
+  async updateArCustomerSite(id: string, data: Partial<InsertArCustomerSite>): Promise<ArCustomerSite | undefined> {
+    const result = await db.update(arCustomerSitesTable).set(data).where(eq(arCustomerSitesTable.id, id)).returning();
+    return result[0];
+  },
+
+  // ========== AR CUSTOMER CONTACTS ==========
+  async listArCustomerContacts(customerId: string): Promise<ArCustomerContact[]> {
+    return await db.select().from(arCustomerContactsTable).where(eq(arCustomerContactsTable.customerId, customerId));
+  },
+  async getArCustomerContact(id: string): Promise<ArCustomerContact | undefined> {
+    const result = await db.select().from(arCustomerContactsTable).where(eq(arCustomerContactsTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createArCustomerContact(data: InsertArCustomerContact): Promise<ArCustomerContact> {
+    const result = await db.insert(arCustomerContactsTable).values(data).returning();
+    return result[0];
+  },
+  async updateArCustomerContact(id: string, data: Partial<InsertArCustomerContact>): Promise<ArCustomerContact | undefined> {
+    const result = await db.update(arCustomerContactsTable).set(data).where(eq(arCustomerContactsTable.id, id)).returning();
+    return result[0];
+  },
+  async deleteArCustomerContact(id: string): Promise<boolean> {
+    const result = await db.delete(arCustomerContactsTable).where(eq(arCustomerContactsTable.id, id)).returning();
     return result.length > 0;
   },
 
@@ -1365,6 +1448,60 @@ export const dbStorage = {
     return await db.select().from(usersTable);
   },
 
+
+  // ========== AUTOINVOICE STAGING ==========
+  async listArAutoInvoiceStaging(status?: string): Promise<ArAutoInvoiceStaging[]> {
+    if (status) {
+      return await db.select().from(arAutoInvoiceStagingTable).where(eq(arAutoInvoiceStagingTable.status, status));
+    }
+    return await db.select().from(arAutoInvoiceStagingTable);
+  },
+  async getArAutoInvoiceStaging(id: string): Promise<ArAutoInvoiceStaging | undefined> {
+    const result = await db.select().from(arAutoInvoiceStagingTable).where(eq(arAutoInvoiceStagingTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createArAutoInvoiceStaging(data: InsertArAutoInvoiceStaging): Promise<ArAutoInvoiceStaging> {
+    const result = await db.insert(arAutoInvoiceStagingTable).values(data).returning();
+    return result[0];
+  },
+  async updateArAutoInvoiceStaging(id: string, data: Partial<InsertArAutoInvoiceStaging>): Promise<ArAutoInvoiceStaging | undefined> {
+    const result = await db.update(arAutoInvoiceStagingTable).set(data).where(eq(arAutoInvoiceStagingTable.id, id)).returning();
+    return result[0];
+  },
+  async deleteArAutoInvoiceStaging(id: string): Promise<boolean> {
+    const result = await db.delete(arAutoInvoiceStagingTable).where(eq(arAutoInvoiceStagingTable.id, id)).returning();
+    return result.length > 0;
+  },
+
+  // ========== AUTOINVOICE ERRORS ==========
+  async listArAutoInvoiceErrors(stagingId: string): Promise<ArAutoInvoiceError[]> {
+    return await db.select().from(arAutoInvoiceErrorsTable).where(eq(arAutoInvoiceErrorsTable.stagingId, stagingId));
+  },
+  async createArAutoInvoiceError(data: InsertArAutoInvoiceError): Promise<ArAutoInvoiceError> {
+    const result = await db.insert(arAutoInvoiceErrorsTable).values(data).returning();
+    return result[0];
+  },
+  async deleteArAutoInvoiceErrors(stagingId: string): Promise<boolean> {
+    const result = await db.delete(arAutoInvoiceErrorsTable).where(eq(arAutoInvoiceErrorsTable.stagingId, stagingId)).returning();
+    return result.length > 0;
+  },
+
+  // ========== AR SALES CREDITS ==========
+  async listArSalesCredits(invoiceLineId: string): Promise<ArSalesCredit[]> {
+    return await db.select().from(arSalesCreditsTable).where(eq(arSalesCreditsTable.invoiceLineId, invoiceLineId));
+  },
+  async createArSalesCredit(data: InsertArSalesCredit): Promise<ArSalesCredit> {
+    const result = await db.insert(arSalesCreditsTable).values(data).returning();
+    return result[0];
+  },
+  async updateArSalesCredit(id: string, data: Partial<InsertArSalesCredit>): Promise<ArSalesCredit | undefined> {
+    const result = await db.update(arSalesCreditsTable).set(data).where(eq(arSalesCreditsTable.id, id)).returning();
+    return result[0];
+  },
+  async deleteArSalesCredit(id: string): Promise<boolean> {
+    const result = await db.delete(arSalesCreditsTable).where(eq(arSalesCreditsTable.id, id)).returning();
+    return result.length > 0;
+  },
 
   // ========== PROJECTS ==========
   async getProject(id: string): Promise<Project | undefined> {
@@ -1609,6 +1746,41 @@ export const dbStorage = {
       .set(data)
       .where(eq(corporateCardTransactionsTable.id, id))
       .returning();
+    return updated;
+  },
+
+  // Document Sequences (Gapless Config)
+  async listArDocumentSequences(module?: string): Promise<ArDocumentSequence[]> {
+    if (module) {
+      return await db.select().from(arDocumentSequencesTable).where(eq(arDocumentSequencesTable.module, module));
+    }
+    return await db.select().from(arDocumentSequencesTable);
+  },
+
+  async createArDocumentSequence(data: InsertArDocumentSequence): Promise<ArDocumentSequence> {
+    const [inserted] = await db.insert(arDocumentSequencesTable).values(data).returning();
+    return inserted;
+  },
+
+  async updateArDocumentSequence(id: string, data: Partial<InsertArDocumentSequence>): Promise<ArDocumentSequence | undefined> {
+    const [updated] = await db.update(arDocumentSequencesTable).set(data).where(eq(arDocumentSequencesTable.id, id)).returning();
+    return updated;
+  },
+
+  async listArDocumentSequenceAssignments(sequenceId?: string): Promise<ArDocumentSequenceAssignment[]> {
+    if (sequenceId) {
+      return await db.select().from(arDocumentSequenceAssignmentsTable).where(eq(arDocumentSequenceAssignmentsTable.sequenceId, sequenceId));
+    }
+    return await db.select().from(arDocumentSequenceAssignmentsTable);
+  },
+
+  async createArDocumentSequenceAssignment(data: InsertArDocumentSequenceAssignment): Promise<ArDocumentSequenceAssignment> {
+    const [inserted] = await db.insert(arDocumentSequenceAssignmentsTable).values(data).returning();
+    return inserted;
+  },
+
+  async updateArDocumentSequenceAssignment(id: string, data: Partial<InsertArDocumentSequenceAssignment>): Promise<ArDocumentSequenceAssignment | undefined> {
+    const [updated] = await db.update(arDocumentSequenceAssignmentsTable).set(data).where(eq(arDocumentSequenceAssignmentsTable.id, id)).returning();
     return updated;
   },
 };

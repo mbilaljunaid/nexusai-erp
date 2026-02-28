@@ -122,6 +122,8 @@ import {
   type ArCustomer, type InsertArCustomer,
   type ArCustomerAccount, type InsertArCustomerAccount,
   type ArCustomerSite, type InsertArCustomerSite,
+  arCustomerContacts, type ArCustomerContact, type InsertArCustomerContact,
+  arInvoiceLines, type ArInvoiceLine, type InsertArInvoiceLine,
   type ArInvoice, type InsertArInvoice,
   type ArReceipt, type InsertArReceipt,
   type ArReceiptApplication, type InsertArReceiptApplication,
@@ -135,6 +137,9 @@ import {
   type ArDunningRun, type InsertArDunningRun,
   type ArCollectorTask, type InsertArCollectorTask,
   type ArAdjustment, type InsertArAdjustment,
+  type ArAutoInvoiceStaging, type InsertArAutoInvoiceStaging,
+  type ArAutoInvoiceError, type InsertArAutoInvoiceError,
+  type ArSalesCredit, type InsertArSalesCredit,
   type ArPeriodStatus, type InsertArPeriodStatus,
   type ArSystemOptions, type InsertArSystemOptions,
   // AR Config (Oracle Parity)
@@ -144,6 +149,8 @@ import {
   arCustomerBankAccounts, type ArCustomerBankAccount, type InsertArCustomerBankAccount,
   arReceiptMethods, type ArReceiptMethod, type InsertArReceiptMethod,
   arAutoAccountingRules, type ArAutoAccountingRule, type InsertArAutoAccountingRule,
+  arDocumentSequences, type ArDocumentSequence, type InsertArDocumentSequence,
+  arDocumentSequenceAssignments, type ArDocumentSequenceAssignment, type InsertArDocumentSequenceAssignment,
 
 
   // Tax
@@ -691,12 +698,41 @@ export interface IStorage {
   createArCustomerSite(data: InsertArCustomerSite): Promise<ArCustomerSite>;
   updateArCustomerSite(id: string, data: Partial<InsertArCustomerSite>): Promise<ArCustomerSite | undefined>;
 
+  // AR Contacts
+  listArCustomerContacts(customerId: string): Promise<ArCustomerContact[]>;
+  getArCustomerContact(id: string): Promise<ArCustomerContact | undefined>;
+  createArCustomerContact(data: InsertArCustomerContact): Promise<ArCustomerContact>;
+  updateArCustomerContact(id: string, data: Partial<InsertArCustomerContact>): Promise<ArCustomerContact | undefined>;
+  deleteArCustomerContact(id: string): Promise<boolean>;
+
   listArInvoices(limit?: number, offset?: number): Promise<ArInvoice[]>;
   getArInvoicesCount(): Promise<number>;
   getArInvoice(id: string): Promise<ArInvoice | undefined>;
   createArInvoice(data: InsertArInvoice): Promise<ArInvoice>;
   updateArInvoice(id: string, data: Partial<InsertArInvoice>): Promise<ArInvoice | undefined>;
   deleteArInvoice(id: string): Promise<boolean>;
+
+  listArInvoiceLines(invoiceId: string): Promise<ArInvoiceLine[]>;
+  createArInvoiceLine(data: InsertArInvoiceLine): Promise<ArInvoiceLine>;
+  updateArInvoiceLine(id: string, data: Partial<InsertArInvoiceLine>): Promise<ArInvoiceLine | undefined>;
+
+  // AutoInvoice Staging
+  listArAutoInvoiceStaging(status?: string): Promise<ArAutoInvoiceStaging[]>;
+  getArAutoInvoiceStaging(id: string): Promise<ArAutoInvoiceStaging | undefined>;
+  createArAutoInvoiceStaging(data: InsertArAutoInvoiceStaging): Promise<ArAutoInvoiceStaging>;
+  updateArAutoInvoiceStaging(id: string, data: Partial<InsertArAutoInvoiceStaging>): Promise<ArAutoInvoiceStaging | undefined>;
+  deleteArAutoInvoiceStaging(id: string): Promise<boolean>;
+
+  // AutoInvoice Errors
+  listArAutoInvoiceErrors(stagingId: string): Promise<ArAutoInvoiceError[]>;
+  createArAutoInvoiceError(data: InsertArAutoInvoiceError): Promise<ArAutoInvoiceError>;
+  deleteArAutoInvoiceErrors(stagingId: string): Promise<boolean>;
+
+  // Sales Credits
+  listArSalesCredits(invoiceLineId: string): Promise<ArSalesCredit[]>;
+  createArSalesCredit(data: InsertArSalesCredit): Promise<ArSalesCredit>;
+  updateArSalesCredit(id: string, data: Partial<InsertArSalesCredit>): Promise<ArSalesCredit | undefined>;
+  deleteArSalesCredit(id: string): Promise<boolean>;
 
   listArReceipts(): Promise<ArReceipt[]>;
   getArReceipt(id: string): Promise<ArReceipt | undefined>;
@@ -709,10 +745,37 @@ export interface IStorage {
   getArSystemOptions(ledgerId: string): Promise<ArSystemOptions | undefined>;
   upsertArSystemOptions(data: InsertArSystemOptions): Promise<ArSystemOptions>;
 
+  // Document Sequences
+  listArDocumentSequences(module?: string): Promise<ArDocumentSequence[]>;
+  createArDocumentSequence(data: InsertArDocumentSequence): Promise<ArDocumentSequence>;
+  updateArDocumentSequence(id: string, data: Partial<InsertArDocumentSequence>): Promise<ArDocumentSequence | undefined>;
+
+  listArDocumentSequenceAssignments(sequenceId?: string): Promise<ArDocumentSequenceAssignment[]>;
+  createArDocumentSequenceAssignment(data: InsertArDocumentSequenceAssignment): Promise<ArDocumentSequenceAssignment>;
+  updateArDocumentSequenceAssignment(id: string, data: Partial<InsertArDocumentSequenceAssignment>): Promise<ArDocumentSequenceAssignment | undefined>;
+
   // AR Foundation Configurations (Oracle Parity)
   listArTransactionTypes(): Promise<ArTransactionType[]>;
   getArTransactionType(id: string): Promise<ArTransactionType | undefined>;
   createArTransactionType(data: InsertArTransactionType): Promise<ArTransactionType>;
+
+  // AutoInvoice Staging
+  listArAutoInvoiceStaging(status?: string): Promise<ArAutoInvoiceStaging[]>;
+  getArAutoInvoiceStaging(id: string): Promise<ArAutoInvoiceStaging | undefined>;
+  createArAutoInvoiceStaging(data: InsertArAutoInvoiceStaging): Promise<ArAutoInvoiceStaging>;
+  updateArAutoInvoiceStaging(id: string, data: Partial<InsertArAutoInvoiceStaging>): Promise<ArAutoInvoiceStaging | undefined>;
+  deleteArAutoInvoiceStaging(id: string): Promise<boolean>;
+
+  // AutoInvoice Errors
+  listArAutoInvoiceErrors(stagingId: string): Promise<ArAutoInvoiceError[]>;
+  createArAutoInvoiceError(data: InsertArAutoInvoiceError): Promise<ArAutoInvoiceError>;
+  deleteArAutoInvoiceErrors(stagingId: string): Promise<boolean>;
+
+  // Sales Credits
+  listArSalesCredits(invoiceLineId: string): Promise<ArSalesCredit[]>;
+  createArSalesCredit(data: InsertArSalesCredit): Promise<ArSalesCredit>;
+  updateArSalesCredit(id: string, data: Partial<InsertArSalesCredit>): Promise<ArSalesCredit | undefined>;
+  deleteArSalesCredit(id: string): Promise<boolean>;
 
   listArBatchSources(): Promise<ArBatchSource[]>;
   getArBatchSource(id: string): Promise<ArBatchSource | undefined>;

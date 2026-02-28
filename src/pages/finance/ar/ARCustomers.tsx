@@ -9,8 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useForm } from "react-hook-form";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Users, Building, MapPin } from "lucide-react";
-import type { ArCustomer, ArCustomerAccount, ArCustomerSite } from "@shared/schema";
+import { Plus, Users, Building, MapPin, Contact2 } from "lucide-react";
+import type { ArCustomer, ArCustomerAccount, ArCustomerSite, ArCustomerContact } from "@shared/schema";
 
 export default function ARCustomers() {
   const { toast } = useToast();
@@ -32,6 +32,11 @@ export default function ARCustomers() {
     enabled: !!selectedAccountId,
   });
 
+  const { data: contacts = [], isLoading: loadingContacts } = useQuery<ArCustomerContact[]>({
+    queryKey: ["/api/ar/contacts", { customerId: selectedCustomerId }],
+    enabled: !!selectedCustomerId,
+  });
+
   // Forms
   const customerForm = useForm({
     defaultValues: { businessUnitId: "", name: "", customerType: "Commercial", taxId: "", contactEmail: "" }
@@ -42,7 +47,11 @@ export default function ARCustomers() {
   });
 
   const siteForm = useForm({
-    defaultValues: { siteName: "", address: "", isBillTo: true, isShipTo: false }
+    defaultValues: { orgId: "1", siteName: "", address: "", isBillTo: true, isShipTo: false }
+  });
+
+  const contactForm = useForm({
+    defaultValues: { firstName: "", lastName: "", email: "", phone: "", role: "BILLING", isPrimary: false, siteId: "" }
   });
 
   // Mutations
@@ -70,6 +79,14 @@ export default function ARCustomers() {
     }
   });
 
+  const createContact = useMutation({
+    mutationFn: async (data: any) => await apiRequest("POST", "/api/ar/contacts", { ...data, customerId: selectedCustomerId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/ar/contacts"] });
+      toast({ title: "Contact Created" });
+    }
+  });
+
   // Columns
   const customerCols: Column<ArCustomer>[] = [
     { header: "BU", accessorKey: "businessUnitId", className: "text-muted-foreground font-mono text-xs w-20", cell: (r: any) => r.businessUnitId || "Default" },
@@ -87,9 +104,17 @@ export default function ARCustomers() {
   ];
 
   const siteCols: Column<ArCustomerSite>[] = [
+    { header: "BU", accessorKey: "orgId", className: "text-muted-foreground font-mono text-xs w-16" },
     { header: "Site Name", accessorKey: "siteName" },
     { header: "Address", accessorKey: "address" },
     { header: "Bill-To", accessorKey: "isBillTo", cell: (r) => r.isBillTo ? "Yes" : "No" },
+  ];
+
+  const contactCols: Column<ArCustomerContact>[] = [
+    { header: "Name", accessorKey: "firstName", cell: (r) => `${r.firstName} ${r.lastName}` },
+    { header: "Email", accessorKey: "email" },
+    { header: "Role", accessorKey: "role" },
+    { header: "Primary", accessorKey: "isPrimary", cell: (r) => r.isPrimary ? "Yes" : "No" },
   ];
 
   return (
@@ -98,9 +123,9 @@ export default function ARCustomers() {
         <h1 className="text-3xl font-bold tracking-tight">Customer Master (TCA)</h1>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
         {/* Customers (Parties) */}
-        <div className="xl:col-span-1 border rounded-lg p-4 bg-card">
+        <div className="border rounded-lg p-4 bg-card">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold flex items-center gap-2"><Users className="w-5 h-5" /> Customers</h2>
             <Dialog>
@@ -142,7 +167,7 @@ export default function ARCustomers() {
         </div>
 
         {/* Accounts */}
-        <div className="xl:col-span-1 border rounded-lg p-4 bg-card">
+        <div className="border rounded-lg p-4 bg-card">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold flex items-center gap-2"><Building className="w-5 h-5" /> Accounts {selectedCustomerId && "(Selected)"}</h2>
             <Dialog>
@@ -179,7 +204,7 @@ export default function ARCustomers() {
         </div>
 
         {/* Sites */}
-        <div className="xl:col-span-1 border rounded-lg p-4 bg-card">
+        <div className="border rounded-lg p-4 bg-card">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold flex items-center gap-2"><MapPin className="w-5 h-5" /> Sites {selectedAccountId && "(Selected)"}</h2>
             <Dialog>
@@ -188,6 +213,18 @@ export default function ARCustomers() {
                 <DialogHeader><DialogTitle>Create Customer Site (Address)</DialogTitle></DialogHeader>
                 <Form {...siteForm}>
                   <form onSubmit={siteForm.handleSubmit((d) => createSite.mutate(d))} className="space-y-4">
+                    <FormField control={siteForm.control} name="orgId" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Business Unit (Operating Unit) *</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl><SelectTrigger><SelectValue placeholder="Select BU..." /></SelectTrigger></FormControl>
+                          <SelectContent>
+                            <SelectItem value="1">US Operations (BU_US)</SelectItem>
+                            <SelectItem value="2">EU Operations (BU_EU)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )} />
                     <FormField control={siteForm.control} name="siteName" render={({ field }) => (
                       <FormItem><FormLabel>Site Name (Code)</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
                     )} />
@@ -210,6 +247,63 @@ export default function ARCustomers() {
             />
           ) : (
             <div className="text-center text-muted-foreground p-8">Select an account to view nested sites...</div>
+          )}
+        </div>
+
+        {/* Contacts */}
+        <div className="border rounded-lg p-4 bg-card">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold flex items-center gap-2"><Contact2 className="w-5 h-5" /> Contacts {selectedCustomerId && "(Selected)"}</h2>
+            <Dialog>
+              <DialogTrigger asChild><Button size="sm" disabled={!selectedCustomerId}><Plus className="w-4 h-4 mr-2" /> New Contact</Button></DialogTrigger>
+              <DialogContent>
+                <DialogHeader><DialogTitle>Create Customer Contact</DialogTitle></DialogHeader>
+                <Form {...contactForm}>
+                  <form onSubmit={contactForm.handleSubmit((d) => createContact.mutate({ ...d, siteId: d.siteId || undefined }))} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField control={contactForm.control} name="firstName" render={({ field }) => (
+                        <FormItem><FormLabel>First Name</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
+                      )} />
+                      <FormField control={contactForm.control} name="lastName" render={({ field }) => (
+                        <FormItem><FormLabel>Last Name</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
+                      )} />
+                    </div>
+                    <FormField control={contactForm.control} name="email" render={({ field }) => (
+                      <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field} /></FormControl></FormItem>
+                    )} />
+                    <FormField control={contactForm.control} name="phone" render={({ field }) => (
+                      <FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
+                    )} />
+                    <FormField control={contactForm.control} name="role" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Role</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                          <SelectContent>
+                            <SelectItem value="BILLING">Billing Contact</SelectItem>
+                            <SelectItem value="DUNNING">Dunning Contact</SelectItem>
+                            <SelectItem value="SHIPPING">Shipping Contact</SelectItem>
+                            <SelectItem value="PRIMARY">Primary Contact</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )} />
+                    <Button type="submit">Save</Button>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
+          </div>
+          {selectedCustomerId ? (
+            <StandardTable
+              data={contacts}
+              columns={contactCols}
+              isLoading={loadingContacts}
+              filterColumn="firstName"
+              filterPlaceholder="Search contacts..."
+            />
+          ) : (
+            <div className="text-center text-muted-foreground p-8">Select a customer to view linked contacts...</div>
           )}
         </div>
 

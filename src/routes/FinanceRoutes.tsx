@@ -58,6 +58,9 @@ import CreditMemoWorkbench from "@/pages/billing/CreditMemoWorkbench";
 
 import ARInvoices from "@/pages/finance/ar/ARInvoices";
 import ARInvoiceDetail from "@/pages/finance/ar/ARInvoiceDetail";
+import AutoInvoiceWorkbench from "@/pages/finance/ar/AutoInvoiceWorkbench";
+import ArAutoAccountingSetup from "@/pages/finance/ar/ArAutoAccountingSetup";
+import ArDocumentSequencingSetup from "@/pages/finance/ar/ArDocumentSequencingSetup";
 import ARReceipts from "@/pages/finance/ar/ARReceipts";
 import ARReceiptDetail from "@/pages/finance/ar/ARReceiptDetail";
 import ARCustomers from "@/pages/finance/ar/ARCustomers";
@@ -228,6 +231,9 @@ export default function FinanceRoutes() {
 
                 <Route path="/finance/ar/invoices/:id" component={ARInvoiceDetail} />
                 <Route path="/finance/ar/invoices" component={ARInvoices} />
+                <Route path="/finance/ar/autoinvoice" component={AutoInvoiceWorkbench} />
+                <Route path="/finance/ar/auto-accounting" component={ArAutoAccountingSetup} />
+                <Route path="/finance/ar/document-sequencing" component={ArDocumentSequencingSetup} />
                 <Route path="/finance/ar/receipts/:id" component={ARReceiptDetail} />
                 <Route path="/finance/ar/receipts" component={ARReceipts} />
                 <Route path="/finance/ar/customers" component={ARCustomers} />

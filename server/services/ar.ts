@@ -8,6 +8,8 @@ import {
     ArCustomerSite,
     InsertArInvoice,
     ArInvoice,
+    ArInvoiceLine,
+    InsertArInvoiceLine,
     ArReceipt,
     InsertArReceipt,
     InsertArReceiptApplication,
@@ -89,9 +91,6 @@ export class ArService {
         return await storage.createArCustomerBankAccount(data);
     }
 
-    async updateCustomer(id: string, data: Partial<InsertArCustomer>): Promise<ArCustomer | undefined> {
-        return await storage.updateArCustomer(id, data);
-    }
 
     // Configuration Entities
 
@@ -139,6 +138,74 @@ export class ArService {
         return await storage.createArAutoAccountingRule(data);
     }
 
+    /**
+     * Advanced AutoAccounting Derivation Engine
+     * Constructs a GL Account string (e.g., "01-100-4000-0000") by evaluating all active
+     * AutoAccounting rules for a specific accountType (e.g., "Revenue", "Receivable").
+     */
+    async deriveAutoAccounting(
+        accountType: string,
+        context: {
+            transactionTypeId?: string | null;
+            salespersonId?: string | null;
+            memoLineId?: string | null;
+            standardLineAccountId?: string | null; // Account string from standard line
+            transactionTypeAccountId?: string | null; // e.g., defaultRevenueAccount
+            customerSiteAccountId?: string | null;
+        }
+    ): Promise<string> {
+        const rules = await this.listAutoAccountingRules();
+
+        // Filter rules by the target accountType (e.g., "Revenue")
+        const activeRules = rules.filter(r => r.status === "Active" && r.accountType === accountType);
+
+        if (activeRules.length === 0) {
+            // Fallback to transaction type defaults if no rules found
+            return context.transactionTypeAccountId || "00-000-0000-0000";
+        }
+
+        // Suppose typical GL string has 4 segments for this ERP context: Company-Department-Account-SubAccount
+        // In a real system the segment structure is obtained from `glCoaStructures`.
+        // We will mock the derivation of a 4-segment string based on exact segment names or index.
+        const segmentNames = ["Company", "Department", "Account", "SubAccount"];
+        const derivedSegments: string[] = ["00", "000", "0000", "0000"];
+
+        for (let i = 0; i < segmentNames.length; i++) {
+            const segName = segmentNames[i];
+            const rule = activeRules.find(r => r.segmentName === segName);
+
+            if (rule) {
+                switch (rule.sourceType) {
+                    case "Constant":
+                        derivedSegments[i] = rule.constantValue || derivedSegments[i];
+                        break;
+                    case "Transaction Type":
+                        // Extract the i-th segment from the default strings
+                        if (context.transactionTypeAccountId) {
+                            const parts = context.transactionTypeAccountId.split("-");
+                            if (parts.length > i) derivedSegments[i] = parts[i];
+                        }
+                        break;
+                    case "Standard Line":
+                        if (context.standardLineAccountId) {
+                            const parts = context.standardLineAccountId.split("-");
+                            if (parts.length > i) derivedSegments[i] = parts[i];
+                        }
+                        break;
+                    case "Customer Site":
+                        if (context.customerSiteAccountId) {
+                            const parts = context.customerSiteAccountId.split("-");
+                            if (parts.length > i) derivedSegments[i] = parts[i];
+                        }
+                        break;
+                    // Additional sources like Salesperson, Taxes go here
+                }
+            }
+        }
+
+        return derivedSegments.join("-");
+    }
+
     // System Options
     async getSystemOptions(ledgerId: string): Promise<ArSystemOptions | undefined> {
         return await storage.getArSystemOptions(ledgerId);
@@ -172,6 +239,167 @@ export class ArService {
 
     async getSite(id: string): Promise<ArCustomerSite | undefined> {
         return await storage.getArCustomerSite(id);
+    }
+
+    // Contacts
+    async listContacts(customerId: string): Promise<ArCustomerContact[]> {
+        return await storage.listArCustomerContacts(customerId);
+    }
+
+    async createContact(data: InsertArCustomerContact): Promise<ArCustomerContact> {
+        return await storage.createArCustomerContact(data);
+    }
+
+    async getContact(id: string): Promise<ArCustomerContact | undefined> {
+        return await storage.getArCustomerContact(id);
+    }
+
+    async updateContact(id: string, data: Partial<InsertArCustomerContact>): Promise<ArCustomerContact | undefined> {
+        return await storage.updateArCustomerContact(id, data);
+    }
+
+    async deleteContact(id: string): Promise<boolean> {
+        return await storage.deleteArCustomerContact(id);
+    }
+
+    // ==========================================
+    // PHASE 2 & ADVANCED AR BILLING SCHEMA
+    // ==========================================
+
+    // AutoInvoice Staging
+    async listAutoInvoiceStaging(status?: string): Promise<ArAutoInvoiceStaging[]> {
+        return await storage.listArAutoInvoiceStaging(status);
+    }
+
+    async getAutoInvoiceStaging(id: string): Promise<ArAutoInvoiceStaging | undefined> {
+        return await storage.getArAutoInvoiceStaging(id);
+    }
+
+    async createAutoInvoiceStaging(data: InsertArAutoInvoiceStaging): Promise<ArAutoInvoiceStaging> {
+        return await storage.createArAutoInvoiceStaging(data);
+    }
+
+    async updateAutoInvoiceStaging(id: string, data: Partial<InsertArAutoInvoiceStaging>): Promise<ArAutoInvoiceStaging | undefined> {
+        return await storage.updateArAutoInvoiceStaging(id, data);
+    }
+
+    async deleteAutoInvoiceStaging(id: string): Promise<boolean> {
+        return await storage.deleteArAutoInvoiceStaging(id);
+    }
+
+    // AutoInvoice Errors
+    async listAutoInvoiceErrors(stagingId: string): Promise<ArAutoInvoiceError[]> {
+        return await storage.listArAutoInvoiceErrors(stagingId);
+    }
+
+    async createAutoInvoiceError(data: InsertArAutoInvoiceError): Promise<ArAutoInvoiceError> {
+        return await storage.createArAutoInvoiceError(data);
+    }
+
+    async deleteAutoInvoiceErrors(stagingId: string): Promise<boolean> {
+        return await storage.deleteArAutoInvoiceErrors(stagingId);
+    }
+
+    // Sales Credits
+    async listSalesCredits(invoiceLineId: string): Promise<ArSalesCredit[]> {
+        return await storage.listArSalesCredits(invoiceLineId);
+    }
+
+    async createSalesCredit(data: InsertArSalesCredit): Promise<ArSalesCredit> {
+        return await storage.createArSalesCredit(data);
+    }
+
+    async updateSalesCredit(id: string, data: Partial<InsertArSalesCredit>): Promise<ArSalesCredit | undefined> {
+        return await storage.updateArSalesCredit(id, data);
+    }
+
+    async deleteSalesCredit(id: string): Promise<boolean> {
+        return await storage.deleteArSalesCredit(id);
+    }
+
+    // AutoInvoice Import Batch Logic
+    async importAutoInvoiceBatch(): Promise<{ processed: number; errors: number }> {
+        // Fetch all lines in "NEW" or "ERROR" status
+        const stagingLines = await storage.listArAutoInvoiceStaging();
+        const pendingLines = stagingLines.filter(line => line.status === 'NEW' || line.status === 'ERROR');
+
+        let processedCount = 0;
+        let errorCount = 0;
+
+        // In a real Oracle Parity system, this handles Grouping Rules (into Headers) based on specific attributes.
+        // Simplified Grouping: Create 1 Invoice per Staging Line for this implementation
+        for (const line of pendingLines) {
+            // Clear previous errors for this line
+            await storage.deleteArAutoInvoiceErrors(line.id);
+
+            const errors: string[] = [];
+
+            // 1. Validation Logic
+            const customer = await storage.getArCustomer(line.customerId);
+            if (!customer) errors.push(`Customer ID ${line.customerId} is invalid or missing.`);
+
+            const txType = await storage.getArTransactionType(line.transactionTypeId);
+            if (!txType) errors.push(`Transaction Type ID ${line.transactionTypeId} is invalid or missing.`);
+
+            const batchSource = await storage.getArBatchSource(line.batchSourceId);
+            if (!batchSource) errors.push(`Batch Source ID ${line.batchSourceId} is invalid or missing.`);
+
+            if (Number(line.amount) <= 0) errors.push(`Line amount must be greater than 0.`);
+
+            // 2. Action based on Validation
+            if (errors.length > 0) {
+                errorCount++;
+                // Log Errors
+                for (const err of errors) {
+                    await storage.createArAutoInvoiceError({ stagingId: line.id, errorMessage: err, invalidValue: "MULTIPLE" });
+                }
+                // Mark Staging Line as Error
+                await storage.updateArAutoInvoiceStaging(line.id, { status: 'ERROR', processDate: new Date() });
+            } else {
+                try {
+                    // Create the Invoice Header
+                    const invoice = await this.createInvoice({
+                        businessUnitId: customer?.businessUnitId || "1",
+                        customerId: line.customerId,
+                        accountId: null, // Depending on grouping rules, might be derived
+                        siteId: null, // Usually derived from AutoInvoice grouping attributes
+                        invoiceNumber: `AUTOINV-${line.id.substring(0, 8).toUpperCase()}`,
+                        amount: line.amount,
+                        taxAmount: "0.00", // Would be computed normally
+                        totalAmount: line.amount,
+                        currency: line.currency || "USD",
+                        transactionTypeId: line.transactionTypeId,
+                        batchSourceId: line.batchSourceId,
+                        description: line.description,
+                        status: "Draft",
+                        glDate: new Date(),
+                        glStatus: "Unprocessed",
+                        transactionClass: "INV"
+                    });
+
+                    // Create the Invoice Line
+                    await this.createInvoiceLine({
+                        invoiceId: invoice.id,
+                        lineNumber: 1,
+                        lineType: line.lineType || "LINE",
+                        description: line.description,
+                        amount: line.amount,
+                        quantity: "1",
+                        unitPrice: line.amount
+                    });
+
+                    // Mark Staging Line as Processed
+                    await storage.updateArAutoInvoiceStaging(line.id, { status: 'PROCESSED', processDate: new Date() });
+                    processedCount++;
+                } catch (e: any) {
+                    errorCount++;
+                    await storage.createArAutoInvoiceError({ stagingId: line.id, errorMessage: `System error creating invoice: ${e.message}`, invalidValue: "SYSTEM" });
+                    await storage.updateArAutoInvoiceStaging(line.id, { status: 'ERROR', processDate: new Date() });
+                }
+            }
+        }
+
+        return { processed: processedCount, errors: errorCount };
     }
 
     // Invoices
@@ -274,6 +502,65 @@ export class ArService {
         }
 
         return invoice;
+    }
+
+    async createInvoiceLine(data: InsertArInvoiceLine): Promise<ArInvoiceLine> {
+        const invoice = await storage.getArInvoice(data.invoiceId);
+        if (!invoice) throw new Error("Invoice not found");
+
+        // 1. DYNAMIC CVR & AUTOACCOUNTING
+        if (!data.ccid) {
+            let accountClass: "Revenue" | "Receivable" | "Freight" | "Tax" = "Revenue";
+            if (data.lineType === "TAX") accountClass = "Tax";
+            if (data.lineType === "FREIGHT") accountClass = "Freight";
+
+            data.ccid = await this.deriveAutoAccounting(invoice, accountClass);
+        }
+
+        // 2. CROSS-VALIDATION RULES (CVR) EVALUATION ON SAVE
+        if (data.ccid) {
+            try {
+                const [ledger] = await db.select({ id: glLedgers.id }).from(glLedgers).orderBy(glLedgers.createdAt).limit(1);
+                const ledgerId = ledger?.id || "PRIMARY";
+
+                // Fetch Rules
+                const crossValidationRules = await storage.listCrossValidationRules(ledgerId);
+                const segments = data.ccid.split("-");
+
+                // Evaluate Each Rule
+                for (const rule of crossValidationRules) {
+                    if (!rule.isEnabled) continue;
+
+                    // Simple parsing for "SegmentN=Value"
+                    const evaluateFilter = (filter: string) => {
+                        const match = filter.match(/Segment(\d+)=(.+)/i);
+                        if (!match) return false;
+                        const index = parseInt(match[1]) - 1;
+                        const value = match[2].trim();
+                        return segments[index] === value;
+                    };
+
+                    if (rule.conditionFilter && evaluateFilter(rule.conditionFilter)) {
+                        if (rule.validationFilter && !evaluateFilter(rule.validationFilter)) {
+                            // CVR Violated!
+                            const message = rule.errorMessage || `Cross-Validation Failed: ${rule.name}`;
+                            if (rule.errorAction === "Error") throw new Error(message);
+                            else console.warn(`[AR] CVR Warning: ${message}`);
+                        }
+                    }
+                }
+            } catch (err: any) {
+                console.error("[AR] CVR validation failed:", err);
+                // Propagate Error up to block save
+                if (err.message.includes("Cross-Validation")) throw err;
+            }
+        }
+
+        return await storage.createArInvoiceLine(data);
+    }
+
+    async listInvoiceLines(invoiceId: string): Promise<ArInvoiceLine[]> {
+        return await storage.listArInvoiceLines(invoiceId);
     }
 
     async createCreditMemo(sourceInvoiceId: string, amount: number, reason: string): Promise<ArInvoice> {

@@ -184,22 +184,34 @@ __export(schema_exports, {
   approvalRules: () => approvalRules,
   apps: () => apps,
   arAdjustments: () => arAdjustments,
+  arAutoAccountingRules: () => arAutoAccountingRules,
+  arAutoInvoiceErrors: () => arAutoInvoiceErrors,
+  arAutoInvoiceStaging: () => arAutoInvoiceStaging,
+  arBatchSources: () => arBatchSources,
   arCollectorTasks: () => arCollectorTasks,
   arCustomerAccounts: () => arCustomerAccounts,
+  arCustomerBankAccounts: () => arCustomerBankAccounts,
+  arCustomerContacts: () => arCustomerContacts,
+  arCustomerProfiles: () => arCustomerProfiles,
   arCustomerSites: () => arCustomerSites,
   arCustomers: () => arCustomers,
   arDisputeAttachments: () => arDisputeAttachments,
   arDisputes: () => arDisputes,
+  arDocumentSequenceAssignments: () => arDocumentSequenceAssignments,
+  arDocumentSequences: () => arDocumentSequences,
   arDunningRuns: () => arDunningRuns,
   arDunningTemplates: () => arDunningTemplates,
   arInvoiceLines: () => arInvoiceLines,
   arInvoices: () => arInvoices,
   arPeriodStatuses: () => arPeriodStatuses,
   arReceiptApplications: () => arReceiptApplications,
+  arReceiptMethods: () => arReceiptMethods,
   arReceipts: () => arReceipts,
   arRevenueRules: () => arRevenueRules,
   arRevenueSchedules: () => arRevenueSchedules,
+  arSalesCredits: () => arSalesCredits,
   arSystemOptions: () => arSystemOptions,
+  arTransactionTypes: () => arTransactionTypes,
   asnHeaders: () => asnHeaders,
   asnLines: () => asnLines,
   auditLogs: () => auditLogs,
@@ -581,22 +593,34 @@ __export(schema_exports, {
   insertApprovalRequestSchema: () => insertApprovalRequestSchema,
   insertApprovalRuleSchema: () => insertApprovalRuleSchema,
   insertArAdjustmentSchema: () => insertArAdjustmentSchema,
+  insertArAutoAccountingRuleSchema: () => insertArAutoAccountingRuleSchema,
+  insertArAutoInvoiceErrorSchema: () => insertArAutoInvoiceErrorSchema,
+  insertArAutoInvoiceStagingSchema: () => insertArAutoInvoiceStagingSchema,
+  insertArBatchSourceSchema: () => insertArBatchSourceSchema,
   insertArCollectorTaskSchema: () => insertArCollectorTaskSchema,
   insertArCustomerAccountSchema: () => insertArCustomerAccountSchema,
+  insertArCustomerBankAccountSchema: () => insertArCustomerBankAccountSchema,
+  insertArCustomerContactSchema: () => insertArCustomerContactSchema,
+  insertArCustomerProfileSchema: () => insertArCustomerProfileSchema,
   insertArCustomerSchema: () => insertArCustomerSchema,
   insertArCustomerSiteSchema: () => insertArCustomerSiteSchema,
   insertArDisputeAttachmentSchema: () => insertArDisputeAttachmentSchema,
   insertArDisputeSchema: () => insertArDisputeSchema,
+  insertArDocumentSequenceAssignmentSchema: () => insertArDocumentSequenceAssignmentSchema,
+  insertArDocumentSequenceSchema: () => insertArDocumentSequenceSchema,
   insertArDunningRunSchema: () => insertArDunningRunSchema,
   insertArDunningTemplateSchema: () => insertArDunningTemplateSchema,
   insertArInvoiceLineSchema: () => insertArInvoiceLineSchema,
   insertArInvoiceSchema: () => insertArInvoiceSchema,
   insertArPeriodStatusSchema: () => insertArPeriodStatusSchema,
   insertArReceiptApplicationSchema: () => insertArReceiptApplicationSchema,
+  insertArReceiptMethodSchema: () => insertArReceiptMethodSchema,
   insertArReceiptSchema: () => insertArReceiptSchema,
   insertArRevenueRuleSchema: () => insertArRevenueRuleSchema,
   insertArRevenueScheduleSchema: () => insertArRevenueScheduleSchema,
+  insertArSalesCreditSchema: () => insertArSalesCreditSchema,
   insertArSystemOptionsSchema: () => insertArSystemOptionsSchema,
+  insertArTransactionTypeSchema: () => insertArTransactionTypeSchema,
   insertAsnHeaderSchema: () => insertAsnHeaderSchema,
   insertAsnLineSchema: () => insertAsnLineSchema,
   insertAssignmentSchema: () => insertAssignmentSchema,
@@ -2190,6 +2214,8 @@ var insertArCustomerAccountSchema = createInsertSchema3(arCustomerAccounts).exte
 var arCustomerSites = pgTable3("ar_customer_sites", {
   id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
   accountId: varchar3("account_id").notNull(),
+  orgId: varchar3("org_id").default("1"),
+  // Business Unit assignment (Oracle Parity)
   siteName: varchar3("site_name").notNull(),
   address: text3("address").notNull(),
   isBillTo: boolean3("is_bill_to").default(true),
@@ -2200,11 +2226,40 @@ var arCustomerSites = pgTable3("ar_customer_sites", {
 });
 var insertArCustomerSiteSchema = createInsertSchema3(arCustomerSites).extend({
   accountId: z2.string().min(1),
+  orgId: z2.string().optional(),
   siteName: z2.string().min(1),
   address: z2.string().min(1),
   isBillTo: z2.boolean().optional(),
   isShipTo: z2.boolean().optional(),
   primaryFlag: z2.boolean().optional()
+});
+var arCustomerContacts = pgTable3("ar_customer_contacts", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  customerId: varchar3("customer_id").notNull(),
+  siteId: varchar3("site_id"),
+  // Optional: can be global or site-specific
+  firstName: varchar3("first_name").notNull(),
+  lastName: varchar3("last_name").notNull(),
+  jobTitle: varchar3("job_title"),
+  email: varchar3("email").notNull(),
+  phone: varchar3("phone"),
+  role: varchar3("role").default("BILLING"),
+  // BILLING, SHIPPING, DUNNING, PRIMARY
+  isPrimary: boolean3("is_primary").default(false),
+  status: varchar3("status").default("Active"),
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertArCustomerContactSchema = createInsertSchema3(arCustomerContacts).extend({
+  customerId: z2.string().min(1),
+  siteId: z2.string().optional().nullable(),
+  firstName: z2.string().min(1),
+  lastName: z2.string().min(1),
+  jobTitle: z2.string().optional().nullable(),
+  email: z2.string().email(),
+  phone: z2.string().optional().nullable(),
+  role: z2.string().optional(),
+  isPrimary: z2.boolean().optional(),
+  status: z2.string().optional()
 });
 var arInvoices = pgTable3("ar_invoices", {
   id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
@@ -2237,9 +2292,16 @@ var arInvoices = pgTable3("ar_invoices", {
   // Accounting Date
   glPostedDate: timestamp3("gl_posted_date"),
   transactionClass: varchar3("transaction_class").default("INV"),
-  // INV, CM (Credit Memo), DM (Debit Memo), CB (Chargeback)
+  // INV, CM (Credit Memo), DM (Debit Memo), CB (Chargeback), DEP (Deposit), GUAR (Guarantee)
   sourceTransactionId: varchar3("source_transaction_id"),
   // Original invoice for CM/CB
+  exchangeRateType: varchar3("exchange_rate_type").default("Corporate"),
+  exchangeRateDate: timestamp3("exchange_rate_date"),
+  exchangeRate: numeric3("exchange_rate", { precision: 15, scale: 5 }).default("1"),
+  transactionTypeId: varchar3("transaction_type_id"),
+  // Link to ar_transaction_types
+  batchSourceId: varchar3("batch_source_id"),
+  // Link to ar_batch_sources
   createdAt: timestamp3("created_at").default(sql3`now()`)
 });
 var insertArInvoiceSchema = createInsertSchema3(arInvoices).extend({
@@ -2265,20 +2327,38 @@ var insertArInvoiceSchema = createInsertSchema3(arInvoices).extend({
   glDate: z2.date().optional(),
   glPostedDate: z2.date().optional(),
   transactionClass: z2.string().optional(),
-  sourceTransactionId: z2.string().optional().nullable()
+  sourceTransactionId: z2.string().optional().nullable(),
+  exchangeRateType: z2.string().optional(),
+  exchangeRateDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()).optional().nullable(),
+  exchangeRate: z2.string().optional(),
+  transactionTypeId: z2.string().optional().nullable(),
+  batchSourceId: z2.string().optional().nullable()
 });
 var arInvoiceLines = pgTable3("ar_invoice_lines", {
   id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
   invoiceId: varchar3("invoice_id").notNull(),
   lineNumber: integer3("line_number").notNull(),
+  lineType: varchar3("line_type").default("LINE"),
+  // LINE, TAX, FREIGHT, CHARGE
   description: text3("description").notNull(),
+  memoLineId: varchar3("memo_line_id"),
+  // Standard Memo Line for recurring/standard items
+  inventoryItemId: varchar3("inventory_item_id"),
+  // Optional Item linking
   quantity: numeric3("quantity").default("1"),
   unitPrice: numeric3("unit_price", { precision: 18, scale: 2 }).default("0"),
   amount: numeric3("amount", { precision: 18, scale: 2 }).notNull(),
   taxAmount: numeric3("tax_amount", { precision: 18, scale: 2 }).default("0"),
+  taxClassificationCode: varchar3("tax_classification_code"),
+  // e.g. "Standard", "Exempt"
   taxCode: varchar3("tax_code"),
+  // Legacy/display code
   glAccount: varchar3("gl_account"),
-  // Revenue Account
+  // Revenue Account String
+  ccid: varchar3("ccid"),
+  // Code Combination ID for SLA
   billingEventId: varchar3("billing_event_id"),
   // Link back to source event
   createdAt: timestamp3("created_at").default(sql3`now()`)
@@ -2286,56 +2366,91 @@ var arInvoiceLines = pgTable3("ar_invoice_lines", {
 var insertArInvoiceLineSchema = createInsertSchema3(arInvoiceLines).extend({
   invoiceId: z2.string().min(1),
   lineNumber: z2.number().int(),
+  lineType: z2.string().optional(),
   description: z2.string().min(1),
+  memoLineId: z2.string().optional().nullable(),
+  inventoryItemId: z2.string().optional().nullable(),
   quantity: z2.string().optional(),
   unitPrice: z2.string().optional(),
   amount: z2.string().min(1),
-  taxAmount: z2.string().optional()
+  taxAmount: z2.string().optional(),
+  taxClassificationCode: z2.string().optional().nullable(),
+  taxCode: z2.string().optional().nullable(),
+  glAccount: z2.string().optional().nullable(),
+  ccid: z2.string().optional().nullable()
 });
 var arReceipts = pgTable3("ar_receipts", {
   id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
-  customerId: varchar3("customer_id").notNull(),
+  customerId: varchar3("customer_id"),
+  // Optional for unidentified
   accountId: varchar3("account_id"),
   amount: numeric3("amount", { precision: 18, scale: 2 }).notNull(),
+  currency: varchar3("currency").default("USD"),
   receiptDate: timestamp3("receipt_date"),
   paymentMethod: varchar3("payment_method"),
   // Bank, Wire, CreditCard, Check
   transactionId: varchar3("transaction_id"),
-  status: varchar3("status").default("Completed"),
-  // Applied, Unapplied, Reversed
+  status: varchar3("status").default("Unapplied"),
+  // Applied, Unapplied, Unidentified, OnAccount, Reversed
+  type: varchar3("type").default("Standard"),
+  // Standard, Misc
   invoiceId: varchar3("invoice_id"),
-  // Optional if unapplied receipt
+  // Kept for backwards compatibility/simple flows
   unappliedAmount: numeric3("unapplied_amount", { precision: 18, scale: 2 }).default("0"),
+  exchangeRateType: varchar3("exchange_rate_type").default("Corporate"),
+  exchangeRateDate: timestamp3("exchange_rate_date"),
+  exchangeRate: numeric3("exchange_rate", { precision: 15, scale: 5 }).default("1"),
   createdAt: timestamp3("created_at").default(sql3`now()`)
 });
 var insertArReceiptSchema = createInsertSchema3(arReceipts).extend({
-  customerId: z2.string().min(1),
+  customerId: z2.string().optional().nullable(),
   accountId: z2.string().optional().nullable(),
   amount: z2.string().min(1),
+  currency: z2.string().optional(),
   receiptDate: z2.preprocess((arg) => {
     if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
   }, z2.date()).optional().nullable(),
   paymentMethod: z2.string().optional(),
   transactionId: z2.string().optional().nullable(),
   status: z2.string().optional(),
+  type: z2.string().optional(),
   invoiceId: z2.string().optional().nullable(),
-  unappliedAmount: z2.string().optional()
+  unappliedAmount: z2.string().optional(),
+  exchangeRateType: z2.string().optional(),
+  exchangeRateDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()).optional().nullable(),
+  exchangeRate: z2.string().optional()
 });
 var arReceiptApplications = pgTable3("ar_receipt_applications", {
   id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
   receiptId: varchar3("receipt_id").notNull(),
   invoiceId: varchar3("invoice_id").notNull(),
   amountApplied: numeric3("amount_applied", { precision: 18, scale: 2 }).notNull(),
+  // Amount in invoice currency
+  allocatedReceiptAmount: numeric3("allocated_receipt_amount", { precision: 18, scale: 2 }),
+  // Amount consumed from receipt in receipt currency
   applicationDate: timestamp3("application_date").default(sql3`now()`),
+  glDate: timestamp3("gl_date"),
   status: varchar3("status").default("Applied"),
   // Applied, Reversed
+  fxGainLoss: numeric3("fx_gain_loss", { precision: 18, scale: 2 }).default("0"),
+  // Realized Gain/Loss
   createdAt: timestamp3("created_at").default(sql3`now()`)
 });
 var insertArReceiptApplicationSchema = createInsertSchema3(arReceiptApplications).extend({
   receiptId: z2.string().min(1),
   invoiceId: z2.string().min(1),
   amountApplied: z2.string().min(1),
-  status: z2.string().optional()
+  allocatedReceiptAmount: z2.string().optional().nullable(),
+  applicationDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()).optional().nullable(),
+  glDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()).optional().nullable(),
+  status: z2.string().optional(),
+  fxGainLoss: z2.string().optional()
 });
 var arRevenueRules = pgTable3("ar_revenue_rules", {
   id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
@@ -2454,6 +2569,48 @@ var arAdjustments = pgTable3("ar_adjustments", {
   createdBy: varchar3("created_by")
 });
 var insertArAdjustmentSchema = createInsertSchema3(arAdjustments);
+var arAutoInvoiceStaging = pgTable3("ar_autoinvoice_staging", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  batchSourceId: varchar3("batch_source_id").notNull(),
+  transactionTypeId: varchar3("transaction_type_id").notNull(),
+  customerId: varchar3("customer_id").notNull(),
+  currency: varchar3("currency").default("USD"),
+  amount: numeric3("amount", { precision: 18, scale: 2 }).notNull(),
+  lineType: varchar3("line_type").default("LINE"),
+  description: text3("description").notNull(),
+  status: varchar3("status").default("NEW"),
+  // NEW, ERROR, PROCESSED
+  importDate: timestamp3("import_date").default(sql3`now()`),
+  processDate: timestamp3("process_date"),
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertArAutoInvoiceStagingSchema = createInsertSchema3(arAutoInvoiceStaging).extend({
+  amount: z2.string().min(1)
+});
+var arAutoInvoiceErrors = pgTable3("ar_autoinvoice_errors", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  stagingId: varchar3("staging_id").notNull(),
+  errorMessage: text3("error_message").notNull(),
+  invalidValue: varchar3("invalid_value"),
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertArAutoInvoiceErrorSchema = createInsertSchema3(arAutoInvoiceErrors);
+var arSalesCredits = pgTable3("ar_sales_credits", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  invoiceLineId: varchar3("invoice_line_id").notNull(),
+  salespersonId: varchar3("salesperson_id").notNull(),
+  salesCreditType: varchar3("sales_credit_type").default("Quota"),
+  // Quota, Non-Quota
+  percentage: numeric3("percentage", { precision: 5, scale: 2 }).notNull(),
+  // e.g. 50.00
+  amount: numeric3("amount", { precision: 18, scale: 2 }).notNull(),
+  glAccountId: varchar3("gl_account_id"),
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertArSalesCreditSchema = createInsertSchema3(arSalesCredits).extend({
+  percentage: z2.string().min(1),
+  amount: z2.string().min(1)
+});
 var arPeriodStatuses = pgTable3("ar_period_statuses", {
   periodName: varchar3("period_name").primaryKey(),
   // e.g., "Jan-26"
@@ -2593,6 +2750,255 @@ var lockboxItems = pgTable3("lockbox_items", {
   // Unmatched, Matched, Partial
   unappliedAmount: numeric3("unapplied_amount", { precision: 20, scale: 2 }).notNull(),
   createdAt: timestamp3("created_at").defaultNow()
+});
+var arTransactionTypes = pgTable3("ar_transaction_types", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  name: varchar3("name").notNull().unique(),
+  // e.g. "Standard Invoice", "Credit Memo - Tax Only"
+  description: text3("description"),
+  class: varchar3("class").notNull(),
+  // INV, CM, DM, CB, DEP, GUAR
+  creationSign: varchar3("creation_sign").default("Any"),
+  // Positive, Negative, Any
+  generateOpenReceivable: boolean3("generate_open_receivable").default(true),
+  postToGl: boolean3("post_to_gl").default(true),
+  defaultReceivableAccount: varchar3("default_receivable_account"),
+  defaultRevenueAccount: varchar3("default_revenue_account"),
+  defaultTaxAccount: varchar3("default_tax_account"),
+  defaultFreightAccount: varchar3("default_freight_account"),
+  defaultClearingAccount: varchar3("default_clearing_account"),
+  defaultUnbilledAccount: varchar3("default_unbilled_account"),
+  defaultUnearnedAccount: varchar3("default_unearned_account"),
+  status: varchar3("status").default("Active"),
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertArTransactionTypeSchema = createInsertSchema3(arTransactionTypes).extend({
+  name: z2.string().min(1),
+  class: z2.string().min(1),
+  creationSign: z2.string().optional(),
+  generateOpenReceivable: z2.boolean().optional(),
+  postToGl: z2.boolean().optional(),
+  defaultReceivableAccount: z2.string().optional().nullable(),
+  defaultRevenueAccount: z2.string().optional().nullable(),
+  defaultTaxAccount: z2.string().optional().nullable(),
+  defaultFreightAccount: z2.string().optional().nullable(),
+  defaultClearingAccount: z2.string().optional().nullable(),
+  defaultUnbilledAccount: z2.string().optional().nullable(),
+  defaultUnearnedAccount: z2.string().optional().nullable(),
+  status: z2.string().optional()
+});
+var arBatchSources = pgTable3("ar_batch_sources", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  name: varchar3("name").notNull().unique(),
+  // e.g. "Manual Invoice", "Order Management Import"
+  description: text3("description"),
+  type: varchar3("type").notNull().default("Manual"),
+  // Manual, Imported
+  activeDate: timestamp3("active_date").default(sql3`now()`),
+  inactiveDate: timestamp3("inactive_date"),
+  autoNumbering: boolean3("auto_numbering").default(true),
+  lastNumber: integer3("last_number").default(0),
+  standardTransactionType: varchar3("standard_transaction_type"),
+  // Default trans type for this source
+  copyDocumentNumber: boolean3("copy_document_number").default(false),
+  allowDuplicateDocument: boolean3("allow_duplicate_document").default(false),
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertArBatchSourceSchema = createInsertSchema3(arBatchSources).extend({
+  name: z2.string().min(1),
+  type: z2.string().optional(),
+  activeDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()).optional().nullable(),
+  inactiveDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()).optional().nullable(),
+  autoNumbering: z2.boolean().optional(),
+  lastNumber: z2.number().int().optional(),
+  standardTransactionType: z2.string().optional().nullable(),
+  copyDocumentNumber: z2.boolean().optional(),
+  allowDuplicateDocument: z2.boolean().optional()
+});
+var arReceiptMethods = pgTable3("ar_receipt_methods", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  name: varchar3("name").notNull().unique(),
+  // e.g. "Bank Transfer - USD", "Lockbox"
+  receiptClass: varchar3("receipt_class").notNull(),
+  // Manual, Automatic
+  creationMethod: varchar3("creation_method").default("Manual"),
+  // Manual, Automatic, Routing
+  remittanceMethod: varchar3("remittance_method").default("Standard"),
+  // Standard, Factoring, None
+  clearanceMethod: varchar3("clearance_method").default("Directly"),
+  // By Automatic Clearing, By Matching, Directly
+  remittanceBankAccount: varchar3("remittance_bank_account"),
+  cashAccount: varchar3("cash_account"),
+  unappliedAccount: varchar3("unapplied_account"),
+  unidentifiedAccount: varchar3("unidentified_account"),
+  onAccountAccount: varchar3("on_account_account"),
+  earnedDiscountAccount: varchar3("earned_discount_account"),
+  unearnedDiscountAccount: varchar3("unearned_discount_account"),
+  status: varchar3("status").default("Active"),
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertArReceiptMethodSchema = createInsertSchema3(arReceiptMethods).extend({
+  name: z2.string().min(1),
+  receiptClass: z2.string().min(1),
+  creationMethod: z2.string().optional(),
+  remittanceMethod: z2.string().optional(),
+  clearanceMethod: z2.string().optional(),
+  remittanceBankAccount: z2.string().optional().nullable(),
+  cashAccount: z2.string().optional().nullable(),
+  unappliedAccount: z2.string().optional().nullable(),
+  unidentifiedAccount: z2.string().optional().nullable(),
+  onAccountAccount: z2.string().optional().nullable(),
+  earnedDiscountAccount: z2.string().optional().nullable(),
+  unearnedDiscountAccount: z2.string().optional().nullable(),
+  status: z2.string().optional()
+});
+var arAutoAccountingRules = pgTable3("ar_auto_accounting_rules", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  accountType: varchar3("account_type").notNull(),
+  // Receivable, Revenue, Tax, Freight, Clearing, Unbilled, Unearned
+  segmentName: varchar3("segment_name").notNull(),
+  // e.g. "Company", "Department", "Account"
+  sourceType: varchar3("source_type").notNull(),
+  // Constant, Transaction Type, Salesperson, Standard Line, Taxes
+  constantValue: varchar3("constant_value"),
+  // Value if sourceType is Constant
+  description: text3("description"),
+  status: varchar3("status").default("Active"),
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertArAutoAccountingRuleSchema = createInsertSchema3(arAutoAccountingRules).extend({
+  accountType: z2.string().min(1),
+  segmentName: z2.string().min(1),
+  sourceType: z2.string().min(1),
+  constantValue: z2.string().optional().nullable(),
+  description: z2.string().optional().nullable(),
+  status: z2.string().optional()
+});
+var arCustomerProfiles = pgTable3("ar_customer_profiles", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  entityType: varchar3("entity_type").notNull(),
+  // 'CUSTOMER', 'ACCOUNT', 'SITE'
+  entityId: varchar3("entity_id").notNull(),
+  // ID of the Customer, Account, or Site
+  profileClassName: varchar3("profile_class_name").notNull(),
+  // e.g., 'Corporate Standard'
+  creditLimit: numeric3("credit_limit", { precision: 18, scale: 2 }),
+  orderLimit: numeric3("order_limit", { precision: 18, scale: 2 }),
+  currency: varchar3("currency").default("USD"),
+  paymentTerms: varchar3("payment_terms"),
+  statementCycle: varchar3("statement_cycle"),
+  // e.g., 'Monthly', 'Weekly'
+  dunningLetters: boolean3("dunning_letters").default(true),
+  sendStatements: boolean3("send_statements").default(true),
+  lateChargeAssessment: boolean3("late_charge_assessment").default(false),
+  creditHold: boolean3("credit_hold").default(false),
+  status: varchar3("status").default("Active"),
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertArCustomerProfileSchema = createInsertSchema3(arCustomerProfiles).extend({
+  entityType: z2.string().min(1),
+  entityId: z2.string().min(1),
+  profileClassName: z2.string().min(1),
+  creditLimit: z2.string().optional().nullable(),
+  orderLimit: z2.string().optional().nullable(),
+  currency: z2.string().optional(),
+  paymentTerms: z2.string().optional().nullable(),
+  statementCycle: z2.string().optional().nullable(),
+  dunningLetters: z2.boolean().optional(),
+  sendStatements: z2.boolean().optional(),
+  lateChargeAssessment: z2.boolean().optional(),
+  creditHold: z2.boolean().optional(),
+  status: z2.string().optional()
+});
+var arCustomerBankAccounts = pgTable3("ar_customer_bank_accounts", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  customerId: varchar3("customer_id").notNull(),
+  accountId: varchar3("account_id"),
+  // Optional: link to specific account or site
+  siteId: varchar3("site_id"),
+  bankName: varchar3("bank_name").notNull(),
+  branchName: varchar3("branch_name"),
+  accountNumber: varchar3("account_number").notNull(),
+  routingNumber: varchar3("routing_number"),
+  currency: varchar3("currency").default("USD"),
+  primaryFlag: boolean3("primary_flag").default(false),
+  activeDate: timestamp3("active_date").default(sql3`now()`),
+  inactiveDate: timestamp3("inactive_date"),
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertArCustomerBankAccountSchema = createInsertSchema3(arCustomerBankAccounts).extend({
+  customerId: z2.string().min(1),
+  accountId: z2.string().optional().nullable(),
+  siteId: z2.string().optional().nullable(),
+  bankName: z2.string().min(1),
+  branchName: z2.string().optional().nullable(),
+  accountNumber: z2.string().min(1),
+  routingNumber: z2.string().optional().nullable(),
+  currency: z2.string().optional(),
+  primaryFlag: z2.boolean().optional(),
+  activeDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()).optional().nullable(),
+  inactiveDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()).optional().nullable()
+});
+var arDocumentSequences = pgTable3("ar_document_sequences", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  name: varchar3("name").notNull().unique(),
+  // e.g., "US_INV_2026"
+  description: text3("description"),
+  module: varchar3("module").default("AR"),
+  // AR, AP, GL
+  type: varchar3("type").notNull().default("GAPLESS"),
+  // GAPLESS, AUTOMATIC, MANUAL
+  initialValue: integer3("initial_value").notNull().default(1),
+  startDate: timestamp3("start_date").notNull(),
+  endDate: timestamp3("end_date"),
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertArDocumentSequenceSchema = createInsertSchema3(arDocumentSequences).extend({
+  name: z2.string().min(1),
+  description: z2.string().optional().nullable(),
+  module: z2.string().optional(),
+  type: z2.enum(["GAPLESS", "AUTOMATIC", "MANUAL"]),
+  initialValue: z2.number().int().min(1),
+  startDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()),
+  endDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()).optional().nullable()
+});
+var arDocumentSequenceAssignments = pgTable3("ar_document_sequence_assignments", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  sequenceId: varchar3("sequence_id").notNull(),
+  // FK to ar_document_sequences
+  contextType: varchar3("context_type").notNull().default("LEDGER"),
+  // LEDGER, LEGAL_ENTITY
+  contextValue: varchar3("context_value").notNull(),
+  // Ledger ID or Legal Entity ID
+  documentCategory: varchar3("document_category").notNull(),
+  // Link to ArTransactionType ID
+  startDate: timestamp3("start_date").notNull(),
+  endDate: timestamp3("end_date"),
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertArDocumentSequenceAssignmentSchema = createInsertSchema3(arDocumentSequenceAssignments).extend({
+  sequenceId: z2.string().min(1),
+  contextType: z2.enum(["LEDGER", "LEGAL_ENTITY"]),
+  contextValue: z2.string().min(1),
+  documentCategory: z2.string().min(1),
+  startDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()),
+  endDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()).optional().nullable()
 });
 
 // shared/schema/crm.ts
@@ -14590,6 +14996,210 @@ TaskController = __decorateClass([
 // backend/src/modules/projects/task.service.ts
 import { Inject as Inject2, Injectable as Injectable3 } from "@nestjs/common";
 import { eq as eq2 } from "drizzle-orm";
+
+// shared/schema.ts
+import { pgTable as pgTable99, varchar as varchar95, numeric as numeric61, timestamp as timestamp98, text as text83, boolean as boolean84, integer as integer82 } from "drizzle-orm/pg-core";
+import { createInsertSchema as createInsertSchema91 } from "drizzle-zod";
+import { sql as sql90 } from "drizzle-orm";
+import { z as z36 } from "zod";
+var arTransactionTypes2 = pgTable99("ar_transaction_types", {
+  id: varchar95("id").primaryKey().default(sql90`gen_random_uuid()`),
+  name: varchar95("name").notNull().unique(),
+  // e.g. "Standard Invoice", "Credit Memo - Tax Only"
+  description: text83("description"),
+  class: varchar95("class").notNull(),
+  // INV, CM, DM, CB, DEP, GUAR
+  creationSign: varchar95("creation_sign").default("Any"),
+  // Positive, Negative, Any
+  generateOpenReceivable: boolean84("generate_open_receivable").default(true),
+  postToGl: boolean84("post_to_gl").default(true),
+  defaultReceivableAccount: varchar95("default_receivable_account"),
+  defaultRevenueAccount: varchar95("default_revenue_account"),
+  defaultTaxAccount: varchar95("default_tax_account"),
+  defaultFreightAccount: varchar95("default_freight_account"),
+  defaultClearingAccount: varchar95("default_clearing_account"),
+  defaultUnbilledAccount: varchar95("default_unbilled_account"),
+  defaultUnearnedAccount: varchar95("default_unearned_account"),
+  status: varchar95("status").default("Active"),
+  createdAt: timestamp98("created_at").default(sql90`now()`)
+});
+var insertArTransactionTypeSchema2 = createInsertSchema91(arTransactionTypes2).extend({
+  name: z36.string().min(1),
+  class: z36.string().min(1),
+  creationSign: z36.string().optional(),
+  generateOpenReceivable: z36.boolean().optional(),
+  postToGl: z36.boolean().optional(),
+  defaultReceivableAccount: z36.string().optional().nullable(),
+  defaultRevenueAccount: z36.string().optional().nullable(),
+  defaultTaxAccount: z36.string().optional().nullable(),
+  defaultFreightAccount: z36.string().optional().nullable(),
+  defaultClearingAccount: z36.string().optional().nullable(),
+  defaultUnbilledAccount: z36.string().optional().nullable(),
+  defaultUnearnedAccount: z36.string().optional().nullable(),
+  status: z36.string().optional()
+});
+var arBatchSources2 = pgTable99("ar_batch_sources", {
+  id: varchar95("id").primaryKey().default(sql90`gen_random_uuid()`),
+  name: varchar95("name").notNull().unique(),
+  // e.g. "Manual Invoice", "Order Management Import"
+  description: text83("description"),
+  type: varchar95("type").notNull().default("Manual"),
+  // Manual, Imported
+  activeDate: timestamp98("active_date").default(sql90`now()`),
+  inactiveDate: timestamp98("inactive_date"),
+  autoNumbering: boolean84("auto_numbering").default(true),
+  lastNumber: integer82("last_number").default(0),
+  standardTransactionType: varchar95("standard_transaction_type"),
+  // Default trans type for this source
+  copyDocumentNumber: boolean84("copy_document_number").default(false),
+  allowDuplicateDocument: boolean84("allow_duplicate_document").default(false),
+  createdAt: timestamp98("created_at").default(sql90`now()`)
+});
+var insertArBatchSourceSchema2 = createInsertSchema91(arBatchSources2).extend({
+  name: z36.string().min(1),
+  type: z36.string().optional(),
+  activeDate: z36.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z36.date()).optional().nullable(),
+  inactiveDate: z36.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z36.date()).optional().nullable(),
+  autoNumbering: z36.boolean().optional(),
+  lastNumber: z36.number().int().optional(),
+  standardTransactionType: z36.string().optional().nullable(),
+  copyDocumentNumber: z36.boolean().optional(),
+  allowDuplicateDocument: z36.boolean().optional()
+});
+var arReceiptMethods2 = pgTable99("ar_receipt_methods", {
+  id: varchar95("id").primaryKey().default(sql90`gen_random_uuid()`),
+  name: varchar95("name").notNull().unique(),
+  // e.g. "Bank Transfer - USD", "Lockbox"
+  receiptClass: varchar95("receipt_class").notNull(),
+  // Manual, Automatic
+  creationMethod: varchar95("creation_method").default("Manual"),
+  // Manual, Automatic, Routing
+  remittanceMethod: varchar95("remittance_method").default("Standard"),
+  // Standard, Factoring, None
+  clearanceMethod: varchar95("clearance_method").default("Directly"),
+  // By Automatic Clearing, By Matching, Directly
+  remittanceBankAccount: varchar95("remittance_bank_account"),
+  cashAccount: varchar95("cash_account"),
+  unappliedAccount: varchar95("unapplied_account"),
+  unidentifiedAccount: varchar95("unidentified_account"),
+  onAccountAccount: varchar95("on_account_account"),
+  earnedDiscountAccount: varchar95("earned_discount_account"),
+  unearnedDiscountAccount: varchar95("unearned_discount_account"),
+  status: varchar95("status").default("Active"),
+  createdAt: timestamp98("created_at").default(sql90`now()`)
+});
+var insertArReceiptMethodSchema2 = createInsertSchema91(arReceiptMethods2).extend({
+  name: z36.string().min(1),
+  receiptClass: z36.string().min(1),
+  creationMethod: z36.string().optional(),
+  remittanceMethod: z36.string().optional(),
+  clearanceMethod: z36.string().optional(),
+  remittanceBankAccount: z36.string().optional().nullable(),
+  cashAccount: z36.string().optional().nullable(),
+  unappliedAccount: z36.string().optional().nullable(),
+  unidentifiedAccount: z36.string().optional().nullable(),
+  onAccountAccount: z36.string().optional().nullable(),
+  earnedDiscountAccount: z36.string().optional().nullable(),
+  unearnedDiscountAccount: z36.string().optional().nullable(),
+  status: z36.string().optional()
+});
+var arAutoAccountingRules2 = pgTable99("ar_auto_accounting_rules", {
+  id: varchar95("id").primaryKey().default(sql90`gen_random_uuid()`),
+  accountType: varchar95("account_type").notNull(),
+  // Receivable, Revenue, Tax, Freight, Clearing, Unbilled, Unearned
+  segmentName: varchar95("segment_name").notNull(),
+  // e.g. "Company", "Department", "Account"
+  sourceType: varchar95("source_type").notNull(),
+  // Constant, Transaction Type, Salesperson, Standard Line, Taxes
+  constantValue: varchar95("constant_value"),
+  // Value if sourceType is Constant
+  description: text83("description"),
+  status: varchar95("status").default("Active"),
+  createdAt: timestamp98("created_at").default(sql90`now()`)
+});
+var insertArAutoAccountingRuleSchema2 = createInsertSchema91(arAutoAccountingRules2).extend({
+  accountType: z36.string().min(1),
+  segmentName: z36.string().min(1),
+  sourceType: z36.string().min(1),
+  constantValue: z36.string().optional().nullable(),
+  description: z36.string().optional().nullable(),
+  status: z36.string().optional()
+});
+var arCustomerProfiles2 = pgTable99("ar_customer_profiles", {
+  id: varchar95("id").primaryKey().default(sql90`gen_random_uuid()`),
+  entityType: varchar95("entity_type").notNull(),
+  // 'CUSTOMER', 'ACCOUNT', 'SITE'
+  entityId: varchar95("entity_id").notNull(),
+  // ID of the Customer, Account, or Site
+  profileClassName: varchar95("profile_class_name").notNull(),
+  // e.g., 'Corporate Standard'
+  creditLimit: numeric61("credit_limit", { precision: 18, scale: 2 }),
+  orderLimit: numeric61("order_limit", { precision: 18, scale: 2 }),
+  currency: varchar95("currency").default("USD"),
+  paymentTerms: varchar95("payment_terms"),
+  statementCycle: varchar95("statement_cycle"),
+  // e.g., 'Monthly', 'Weekly'
+  dunningLetters: boolean84("dunning_letters").default(true),
+  sendStatements: boolean84("send_statements").default(true),
+  lateChargeAssessment: boolean84("late_charge_assessment").default(false),
+  creditHold: boolean84("credit_hold").default(false),
+  status: varchar95("status").default("Active"),
+  createdAt: timestamp98("created_at").default(sql90`now()`)
+});
+var insertArCustomerProfileSchema2 = createInsertSchema91(arCustomerProfiles2).extend({
+  entityType: z36.string().min(1),
+  entityId: z36.string().min(1),
+  profileClassName: z36.string().min(1),
+  creditLimit: z36.string().optional().nullable(),
+  orderLimit: z36.string().optional().nullable(),
+  currency: z36.string().optional(),
+  paymentTerms: z36.string().optional().nullable(),
+  statementCycle: z36.string().optional().nullable(),
+  dunningLetters: z36.boolean().optional(),
+  sendStatements: z36.boolean().optional(),
+  lateChargeAssessment: z36.boolean().optional(),
+  creditHold: z36.boolean().optional(),
+  status: z36.string().optional()
+});
+var arCustomerBankAccounts2 = pgTable99("ar_customer_bank_accounts", {
+  id: varchar95("id").primaryKey().default(sql90`gen_random_uuid()`),
+  customerId: varchar95("customer_id").notNull(),
+  accountId: varchar95("account_id"),
+  // Optional: link to specific account or site
+  siteId: varchar95("site_id"),
+  bankName: varchar95("bank_name").notNull(),
+  branchName: varchar95("branch_name"),
+  accountNumber: varchar95("account_number").notNull(),
+  routingNumber: varchar95("routing_number"),
+  currency: varchar95("currency").default("USD"),
+  primaryFlag: boolean84("primary_flag").default(false),
+  activeDate: timestamp98("active_date").default(sql90`now()`),
+  inactiveDate: timestamp98("inactive_date"),
+  createdAt: timestamp98("created_at").default(sql90`now()`)
+});
+var insertArCustomerBankAccountSchema2 = createInsertSchema91(arCustomerBankAccounts2).extend({
+  customerId: z36.string().min(1),
+  accountId: z36.string().optional().nullable(),
+  siteId: z36.string().optional().nullable(),
+  bankName: z36.string().min(1),
+  branchName: z36.string().optional().nullable(),
+  accountNumber: z36.string().min(1),
+  routingNumber: z36.string().optional().nullable(),
+  currency: z36.string().optional(),
+  primaryFlag: z36.boolean().optional(),
+  activeDate: z36.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z36.date()).optional().nullable(),
+  inactiveDate: z36.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z36.date()).optional().nullable()
+});
+
+// backend/src/modules/projects/task.service.ts
 var TaskService = class {
   constructor(db) {
     this.db = db;
@@ -18131,7 +18741,7 @@ MetricsController = __decorateClass([
 
 // backend/src/modules/admin/metrics/metrics.service.ts
 import { Injectable as Injectable35, Inject as Inject28 } from "@nestjs/common";
-import { sql as sql90 } from "drizzle-orm";
+import { sql as sql91 } from "drizzle-orm";
 import { tenants as tenants3 } from "@shared/schema";
 import { adminLogs as adminLogs2 } from "@shared/schema/admin";
 import { eq as eq26, gte } from "drizzle-orm";
@@ -18146,9 +18756,9 @@ var MetricsService = class {
       activeTenantsResult,
       recentLogsResult
     ] = await Promise.all([
-      this.db.select({ count: sql90`count(*)::int` }).from(tenants3),
-      this.db.select({ count: sql90`count(*)::int` }).from(tenants3).where(eq26(tenants3.status, "active")),
-      this.db.select({ count: sql90`count(*)::int` }).from(adminLogs2).where(gte(adminLogs2.createdAt, sevenDaysAgo))
+      this.db.select({ count: sql91`count(*)::int` }).from(tenants3),
+      this.db.select({ count: sql91`count(*)::int` }).from(tenants3).where(eq26(tenants3.status, "active")),
+      this.db.select({ count: sql91`count(*)::int` }).from(adminLogs2).where(gte(adminLogs2.createdAt, sevenDaysAgo))
     ]);
     return {
       data: {
@@ -18205,7 +18815,7 @@ AuditLogsController = __decorateClass([
 
 // backend/src/modules/admin/audit-logs/audit-logs.service.ts
 import { Injectable as Injectable36, Inject as Inject29 } from "@nestjs/common";
-import { sql as sql91, and as and14, gte as gte2, lte, eq as eq27, ilike, desc } from "drizzle-orm";
+import { sql as sql92, and as and14, gte as gte2, lte, eq as eq27, ilike, desc } from "drizzle-orm";
 import { adminLogs as adminLogs3 } from "@shared/schema";
 var AuditLogsService = class {
   constructor(db) {
@@ -18223,7 +18833,7 @@ var AuditLogsService = class {
     const where = conditions.length > 0 ? and14(...conditions) : void 0;
     const [logs, countResult] = await Promise.all([
       this.db.select().from(adminLogs3).where(where).orderBy(desc(adminLogs3.createdAt)).limit(limit).offset(offset),
-      this.db.select({ count: sql91`count(*)::int` }).from(adminLogs3).where(where)
+      this.db.select({ count: sql92`count(*)::int` }).from(adminLogs3).where(where)
     ]);
     const total = countResult[0]?.count ?? 0;
     return {
@@ -18549,7 +19159,7 @@ ManufacturingVarianceController = __decorateClass([
 
 // backend/src/modules/manufacturing/manufacturing-variance.service.ts
 import { Injectable as Injectable38, Inject as Inject30 } from "@nestjs/common";
-import { and as and15, desc as desc2, gte as gte3, lte as lte2, sql as sql92 } from "drizzle-orm";
+import { and as and15, desc as desc2, gte as gte3, lte as lte2, sql as sql93 } from "drizzle-orm";
 import { varianceJournals as varianceJournals2 } from "@shared/schema/manufacturing";
 var ManufacturingVarianceService = class {
   constructor(db) {
@@ -18568,7 +19178,7 @@ var ManufacturingVarianceService = class {
     const where = conditions.length > 0 ? and15(...conditions) : void 0;
     const [items, countResult] = await Promise.all([
       this.db.select().from(varianceJournals2).where(where).orderBy(desc2(varianceJournals2.transactionDate)).limit(limit).offset(offset),
-      this.db.select({ count: sql92`count(*)::int` }).from(varianceJournals2).where(where)
+      this.db.select({ count: sql93`count(*)::int` }).from(varianceJournals2).where(where)
     ]);
     return {
       items,
@@ -18586,8 +19196,8 @@ var ManufacturingVarianceService = class {
     const where = conditions.length > 0 ? and15(...conditions) : void 0;
     const summary = await this.db.select({
       varianceType: varianceJournals2.varianceType,
-      total: sql92`sum(${varianceJournals2.amount})::numeric`,
-      count: sql92`count(*)::int`
+      total: sql93`sum(${varianceJournals2.amount})::numeric`,
+      count: sql93`count(*)::int`
     }).from(varianceJournals2).where(where).groupBy(varianceJournals2.varianceType);
     const netVariance = summary.reduce((acc, s) => acc + Number(s.total), 0);
     return {

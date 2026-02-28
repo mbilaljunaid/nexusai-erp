@@ -6,6 +6,7 @@ import {
     insertArCustomerAccountSchema,
     insertArCustomerSiteSchema,
     insertArInvoiceSchema,
+    insertArInvoiceLineSchema,
     insertArReceiptSchema,
     insertArRevenueRuleSchema,
     insertArRevenueScheduleSchema,
@@ -14,6 +15,9 @@ import {
     insertArCollectorTaskSchema,
     insertArAdjustmentSchema,
     insertArSystemOptionsSchema,
+    insertArAutoInvoiceStagingSchema,
+    insertArAutoInvoiceErrorSchema,
+    insertArSalesCreditSchema,
     arCustomers, // Added
     slaJournalHeaders,
     slaJournalLines,
@@ -23,7 +27,10 @@ import {
     insertArReceiptMethodSchema,
     insertArAutoAccountingRuleSchema,
     insertArCustomerProfileSchema,
-    insertArCustomerBankAccountSchema
+    insertArCustomerBankAccountSchema,
+    insertArCustomerContactSchema,
+    insertArDocumentSequenceSchema,
+    insertArDocumentSequenceAssignmentSchema
 } from "@shared/schema";
 import { storage } from "../storage";
 import { ZodError } from "zod";
@@ -128,6 +135,32 @@ router.post("/sites", async (req, res) => {
     }
 });
 
+// Contacts
+router.get("/contacts", async (req, res) => {
+    try {
+        const { customerId } = req.query;
+        if (!customerId) return res.status(400).json({ message: "customerId query param is required" });
+        const contacts = await arService.listContacts(customerId as string);
+        res.json(contacts);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list contacts" });
+    }
+});
+
+router.post("/contacts", async (req, res) => {
+    try {
+        const data = insertArCustomerContactSchema.parse(req.body);
+        const contact = await arService.createContact(data);
+        res.status(201).json(contact);
+    } catch (error) {
+        if (error instanceof ZodError) {
+            res.status(400).json({ message: "Invalid contact data", errors: error.errors });
+        } else {
+            res.status(500).json({ message: "Failed to create contact" });
+        }
+    }
+});
+
 // Profiles
 router.get("/profiles", async (req, res) => {
     try {
@@ -206,6 +239,29 @@ router.post("/invoices", async (req, res) => {
     }
 });
 
+router.get("/invoices/:id/lines", async (req, res) => {
+    try {
+        const lines = await arService.listInvoiceLines(req.params.id);
+        res.json(lines);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list invoice lines" });
+    }
+});
+
+router.post("/invoices/:id/lines", async (req, res) => {
+    try {
+        const data = insertArInvoiceLineSchema.parse({ ...req.body, invoiceId: req.params.id });
+        const line = await arService.createInvoiceLine(data);
+        res.status(201).json(line);
+    } catch (error) {
+        if (error instanceof ZodError) {
+            res.status(400).json({ message: "Invalid invoice line data", errors: error.errors });
+        } else {
+            res.status(500).json({ message: error instanceof Error ? error.message : "Failed to create invoice line" });
+        }
+    }
+});
+
 router.post("/invoices/credit-memo", async (req, res) => {
     try {
         const { sourceInvoiceId, amount, reason } = req.body;
@@ -263,6 +319,108 @@ router.get("/invoices/:id/accounting", async (req, res) => {
         res.json(results);
     } catch (error) {
         res.status(500).json({ message: "Failed to fetch accounting" });
+    }
+});
+
+// AutoInvoice (Phase 2)
+router.get("/autoinvoice/staging", async (req, res) => {
+    try {
+        const { status } = req.query;
+        const staging = await arService.listAutoInvoiceStaging(status as string);
+        res.json(staging);
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: "Failed to list staging lines" });
+    }
+});
+
+router.post("/autoinvoice/staging", async (req, res) => {
+    try {
+        const data = insertArAutoInvoiceStagingSchema.parse(req.body);
+        const staging = await arService.createAutoInvoiceStaging(data);
+        res.status(201).json(staging);
+    } catch (e) {
+        if (e instanceof ZodError) {
+            res.status(400).json({ message: "Invalid staging data", errors: e.errors });
+        } else {
+            res.status(500).json({ message: "Failed to create staging line" });
+        }
+    }
+});
+
+router.patch("/autoinvoice/staging/:id", async (req, res) => {
+    try {
+        // Allow partial updates on staging lines for correction
+        const staging = await arService.updateAutoInvoiceStaging(req.params.id, req.body);
+        if (!staging) return res.status(404).json({ message: "Staging line not found" });
+        res.json(staging);
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: "Failed to update staging line" });
+    }
+});
+
+router.post("/autoinvoice/import", async (req, res) => {
+    try {
+        const result = await arService.importAutoInvoiceBatch();
+        res.json({ message: "AutoInvoice Import Processed", ...result });
+    } catch (e: any) {
+        console.error(e);
+        res.status(500).json({ message: e.message || "Failed to process AutoInvoice batch" });
+    }
+});
+
+router.get("/autoinvoice/errors", async (req, res) => {
+    try {
+        const { stagingId } = req.query;
+        if (!stagingId) return res.status(400).json({ message: "stagingId is required" });
+        const errors = await arService.listAutoInvoiceErrors(stagingId as string);
+        res.json(errors);
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: "Failed to list AutoInvoice errors" });
+    }
+});
+
+// Sales Credits
+router.get("/sales-credits", async (req, res) => {
+    try {
+        const { invoiceLineId } = req.query;
+        if (!invoiceLineId) return res.status(400).json({ message: "invoiceLineId is required" });
+        const credits = await arService.listSalesCredits(invoiceLineId as string);
+        res.json(credits);
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: "Failed to list sales credits" });
+    }
+});
+
+router.post("/sales-credits", async (req, res) => {
+    try {
+        const data = insertArSalesCreditSchema.parse(req.body);
+        const credit = await arService.createSalesCredit(data);
+        res.status(201).json(credit);
+    } catch (e) {
+        if (e instanceof ZodError) {
+            res.status(400).json({ message: "Invalid sales credit data", errors: e.errors });
+        } else {
+            console.error(e);
+            res.status(500).json({ message: "Failed to create sales credit" });
+        }
+    }
+});
+
+router.delete("/sales-credits/:id", async (req, res) => {
+    try {
+        const success = await arService.deleteSalesCredit(req.params.id);
+        if (success) {
+            res.json({ message: "Deleted successfully" });
+        } else {
+            res.status(404).json({ message: "Sales credit not found" });
+        }
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: "Failed to delete sales credit" });
     }
 });
 
@@ -737,6 +895,53 @@ router.post("/config/autoaccounting-rules", async (req, res) => {
             res.status(400).json({ message: "Invalid AutoAccounting rule data", errors: error.errors });
         } else {
             res.status(500).json({ message: "Failed to create AutoAccounting rule" });
+        }
+    }
+});
+
+// Document Sequences
+router.get("/config/document-sequences", async (req, res) => {
+    try {
+        const sequences = await storage.listArDocumentSequences(req.query.module as string);
+        res.json(sequences);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list document sequences" });
+    }
+});
+
+router.post("/config/document-sequences", async (req, res) => {
+    try {
+        const data = insertArDocumentSequenceSchema.parse(req.body);
+        const sequence = await storage.createArDocumentSequence(data);
+        res.status(201).json(sequence);
+    } catch (error) {
+        if (error instanceof ZodError) {
+            res.status(400).json({ message: "Invalid sequence data", errors: error.errors });
+        } else {
+            res.status(500).json({ message: "Failed to create sequence" });
+        }
+    }
+});
+
+router.get("/config/document-sequence-assignments", async (req, res) => {
+    try {
+        const assignments = await storage.listArDocumentSequenceAssignments(req.query.sequenceId as string);
+        res.json(assignments);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list sequence assignments" });
+    }
+});
+
+router.post("/config/document-sequence-assignments", async (req, res) => {
+    try {
+        const data = insertArDocumentSequenceAssignmentSchema.parse(req.body);
+        const assignment = await storage.createArDocumentSequenceAssignment(data);
+        res.status(201).json(assignment);
+    } catch (error) {
+        if (error instanceof ZodError) {
+            res.status(400).json({ message: "Invalid assignment data", errors: error.errors });
+        } else {
+            res.status(500).json({ message: "Failed to create assignment" });
         }
     }
 });
