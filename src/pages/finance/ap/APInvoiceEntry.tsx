@@ -113,14 +113,14 @@ export default function APInvoiceEntry() {
                     <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label>Supplier *</Label>
-                            <Select value={header.supplierId} onValueChange={v => setHeader({ ...header, supplierId: v })}>
+                            <Select value={header.supplierId || undefined} onValueChange={v => setHeader({ ...header, supplierId: v })}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select Supplier" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {suppliers?.map((sup: any) => (
-                                        <SelectItem key={sup.id} value={sup.id}>{sup.name}</SelectItem>
-                                    ))}
+                                    {Array.isArray(suppliers) ? suppliers.filter(s => s && s.id).map((sup: any) => (
+                                        <SelectItem key={sup.id} value={sup.id}>{String(sup.name || "Unknown Supplier")}</SelectItem>
+                                    )) : null}
                                 </SelectContent>
                             </Select>
                         </div>
@@ -223,15 +223,15 @@ export default function APInvoiceEntry() {
                                     </div>
                                     <div className="flex-1 space-y-2">
                                         <Label>Match to PO</Label>
-                                        <Select value={line.poHeaderId || ""} onValueChange={v => handleLineChange(index, "poHeaderId", v)}>
+                                        <Select value={(line.poHeaderId === "none" ? undefined : line.poHeaderId) || undefined} onValueChange={v => handleLineChange(index, "poHeaderId", v)}>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Select PO" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="">None</SelectItem>
-                                                {purchaseOrders?.filter((po: any) => !header.supplierId || po.supplierId === header.supplierId).map((po: any) => (
-                                                    <SelectItem key={po.id} value={po.id}>{po.poNumber}</SelectItem>
-                                                ))}
+                                                <SelectItem value="none">None</SelectItem>
+                                                {Array.isArray(purchaseOrders) ? purchaseOrders.filter((po: any) => po && po.id && (!header.supplierId || po.supplierId === header.supplierId)).map((po: any) => (
+                                                    <SelectItem key={po.id} value={po.id}>{String(po.poNumber)}</SelectItem>
+                                                )) : null}
                                             </SelectContent>
                                         </Select>
                                     </div>

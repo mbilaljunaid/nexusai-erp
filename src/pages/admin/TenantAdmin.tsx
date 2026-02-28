@@ -41,7 +41,7 @@ export default function TenantAdmin() {
   const [activeNav, setActiveNav] = useState("overview");
   const [tenantName] = useState("Acme Corp");
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
-  
+
   const navItems = [
     { id: "overview", label: "Overview", icon: BarChart3, color: "text-blue-500" },
     { id: "users", label: "Users & Roles", icon: Users, color: "text-green-500" },

@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
 
 export default function APSuppliers() {
     const [page, setPage] = useState(1);
@@ -18,6 +19,7 @@ export default function APSuppliers() {
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const [, setLocation] = useLocation();
 
     const { data: suppliers, isLoading } = useQuery({
         queryKey: ["/api/ap/suppliers"],
@@ -149,6 +151,7 @@ export default function APSuppliers() {
                 isLoading={isLoading}
                 filterColumn="name"
                 filterPlaceholder="Search suppliers..."
+                onRowClick={(item) => setLocation(`/finance/ap/suppliers/${item.id}`)}
             />
 
             <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>

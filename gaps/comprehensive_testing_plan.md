@@ -96,29 +96,42 @@ The 6-stage framework must be applied to the specific features comprising each m
 - [x] Debit Memo / Supplier Credit Integration
 - [x] 1099 / Tax Reporting
 
-#### 3. End-to-End (E2E) Testing
-- [x] **User Journeys:** Automate UI/API tests mimicking real-user journeys across the entire application stack. Focus heavily on testing every button, form validation, and data persistence layer for:
-- [x] Supplier Master (Hdr + Sites with IBAN/SWIFT)
-- [x] Standard Invoice (Header/Lines/Distributions) + SLA
-- [x] Prepayments (Application/Unapplication, balance tracking)
-- [x] 2-Way/3-Way Matching + Multi-level Variance Holds
-- [x] Multi-tier Withholding Tax (WHT) Groups & priority-based rates
-- [x] PPR Payment Batches with ISO20022 (pain.001) XML export
-- [x] Treasury Bank Account Connectivity
-- [x] Automated Intercompany Balancing (SLA/BSV level)
-- [x] 5-Bucket Aging Reports + Immutable Audit Trail
-- [x] Subledger Period Close (readiness checks)
-- [x] Async Payment Worker (Background Processing)
-- [x] AI Multimodal Invoice Capture (Whisper/GPT-4o)
-- [x] RBAC (Manager/Clerk)
-- [x] Invoice Approval Routing
-- [x] Payment Terms Master
-- [x] Early Payment Discounts
-- [x] Supplier Balance Inquiry
-- [x] Invoice Image Attachment
-- [x] Debit Memo / Supplier Credit Integration
-- [x] 1099 / Tax Reporting
-- [x] **UI Validation:** Verify empty states, loading spinners, optimistic updates, and error toasts.
+#### 3. End-to-End (E2E) & Detailed UI Testing
+- [ ] **Objective:** Exhaustively test every UI component, form, button, and data persistence mechanism within the AP module manually and through automated E2E suites.
+- [x] **AP.UI.01: Supplier Master (`/ap/suppliers`)**
+  - [x] **Grid View:** Verify table loads supplier data, pagination works, column sorting/filtering functions.
+  - [x] **Create Supplier Form:**
+    - [x] Validate mandatory fields (Supplier Name, Tax ID, Currency).
+    - [x] Verify maximum character limits on text fields.
+    - [x] Check dropdown lookups (Country, Terms) populate correctly.
+    - [x] Test form submission and optimistic UI update on success.
+    - [x] Attempt submission with duplicate Tax ID to verify error toast (400 validation).
+  - [x] **Edit Supplier:** Verify clicking a row opens the edit modal with pre-filled data. Ensure modifications persist upon saving.
+  - [x] **Supplier Sites & Banking:** Verify ability to add multiple addresses (Sites) and banking details (IBAN/SWIFT validation rules).
+- [x] **AP.UI.02: Invoice Processing (`/ap/invoices`)**
+  - [x] **Grid View:** Validate invoice statuses (Draft, Approved, Paid), amount totals, and date formatting. Use search bar to filter by Invoice Number.
+  - [x] **Create Standard Invoice:**
+    - [x] Verify Supplier dropdown auto-populates terms and currency.
+    - [x] Validate Invoice Date, GL Date, and Header Amount fields.
+    - [x] **Lines & Distributions:** Add multiple line items. Verify line totals match the Header Amount (tolerance check validation).
+    - [x] Check tax calculation logic visually updates when Tax Rate changes.
+  - [x] **Prepayments:** Select 'Prepayment' invoice type. Verify application/unapplication UI against standard invoices.
+  - [x] **Invoice Approval:** Test the 'Approve' action button. Verify status changes and correct RBAC restrictions (manager only).
+- [x] **AP.UI.03: Payments & PPR (`/ap/payments`)**
+  - [x] **Payment Batch Creation:** Select multiple approved invoices. Verify the aggregated payment sum.
+  - [x] **Generate XML:** Click 'Export' or 'Generate XML'. Verify pain.001 format structure triggers a download or correct backend call.
+  - [x] **Payment Status:** Mark batch as 'Paid'. Verify corresponding invoices are marked as closed in the invoice grid.
+- [ ] **AP.UI.04: AP Aging Analysis (`/ap/aging`)**
+  - [ ] **Report Rendering:** Verify the 5-bucket chart/table (0-30, 31-60, 61-90, 91-120, 120+) calculates outstanding balances correctly.
+  - [ ] **Drill-down:** Click on a specific aging bucket to view the underlying invoices comprising that balance.
+  - [ ] **Export:** Test exporting the aging report to CSV/PDF.
+- [ ] **AP.UI.05: Subledger Period Close (`/ap/period-close`)**
+  - [ ] **Dashboard:** Verify the readiness checklist components (Unaccounted transactions, orphan records).
+  - [ ] **Close Action:** Attempt to close the period with pending unaccounted invoices—ensure the system blocks the action and provides a detailed error.
+- [ ] **AP.UI.06: General UI & Resilience**
+  - [ ] **Navigation & Responsiveness:** Ensure the sidebar AP links work. Resize the browser to mobile viewport to verify responsive grid structures (e.g., stacked cards instead of tables).
+  - [ ] **Loading States:** Verify skeletons/spinners appear during network latency.
+  - [ ] **Error Handling:** Simulate a 500 API error (e.g., via network intercept) and ensure a user-friendly error toast appears without crashing the React app.
 
 #### 4. User Acceptance Testing (UAT)
 - [x] **Business Scenario Validation:** Business stakeholders to manually execute real-world operational scenarios encompassing:

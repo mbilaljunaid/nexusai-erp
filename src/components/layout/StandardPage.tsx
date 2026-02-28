@@ -39,20 +39,14 @@ export function StandardPage({
                 title={title}
                 description={description}
                 breadcrumbs={breadcrumbs}
+                actions={actions}
                 className="mb-6"
             />
 
             {/* Main Content */}
-            <div className={cn("flex-1 space-y-4 pb-20", !actions && "pb-4")}>
+            <div className={cn("flex-1 space-y-4 pb-4")}>
                 {children}
             </div>
-
-            {/* Sticky Bottom Action Bar */}
-            {actions && (
-                <div className="sticky bottom-0 -mx-6 -mb-6 p-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t shadow-md z-10 flex justify-end gap-2 mt-auto">
-                    {actions}
-                </div>
-            )}
         </div>
     );
 }

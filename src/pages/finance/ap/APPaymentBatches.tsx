@@ -9,8 +9,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Play, CheckCircle, Download, Loader2 } from "lucide-react";
+import { Plus, Play, CheckCircle, Download, Loader2, FileText } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
+import { useLocation } from "wouter";
 
 export default function APPaymentBatches() {
     const [page, setPage] = useState(1);
@@ -19,13 +21,17 @@ export default function APPaymentBatches() {
     const [selectedBatch, setSelectedBatch] = useState<any>(null);
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const [, setLocation] = useLocation();
 
     const [formData, setFormData] = useState({
         batchName: "",
-        paymentMethod: "EFT",
-        paymentDate: new Date().toISOString().split("T")[0],
+        paymentMethodCode: "EFT",
+        checkDate: new Date().toISOString().split("T")[0],
         bankAccountId: ""
     });
+
+    const [accountingModalOpen, setAccountingModalOpen] = useState(false);
+    const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
 
     const { data: batches, isLoading } = useQuery({
         queryKey: ["/api/ap/payment-batches"],
@@ -99,14 +105,14 @@ export default function APPaymentBatches() {
         { header: "Batch Name", accessorKey: "batchName" },
         {
             header: "Payment Date",
-            accessorKey: "paymentDate",
-            cell: (row) => new Date(row.paymentDate).toLocaleDateString()
+            accessorKey: "checkDate",
+            cell: (row) => row.checkDate ? new Date(row.checkDate).toLocaleDateString() : "-"
         },
-        { header: "Payment Method", accessorKey: "paymentMethod" },
+        { header: "Payment Method", accessorKey: "paymentMethodCode" },
         {
             header: "Invoice Count",
-            accessorKey: "invoiceCount",
-            cell: (row) => row.invoiceCount || 0
+            accessorKey: "paymentCount",
+            cell: (row) => row.paymentCount || 0
         },
         {
             header: "Total Amount",
@@ -119,9 +125,10 @@ export default function APPaymentBatches() {
             cell: (row) => {
                 const status = row.status?.toUpperCase();
                 const variant =
-                    status === "CONFIRMED" ? "default" :
-                        status === "SELECTED" ? "secondary" :
-                            "outline";
+                    status === "CONFIRMED" || status === "PAID" || status === "COMPLETED" ? "default" :
+                        status === "ERROR" ? "destructive" :
+                            status === "SELECTED" ? "secondary" :
+                                "outline";
                 return <Badge variant={variant}>{row.status}</Badge>;
             }
         },
@@ -132,6 +139,18 @@ export default function APPaymentBatches() {
                 const status = row.status?.toUpperCase();
                 return (
                     <div className="flex gap-2">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedEntityId(row.id);
+                                setAccountingModalOpen(true);
+                            }}
+                            title="View Accounting"
+                        >
+                            <FileText className="h-4 w-4" />
+                        </Button>
                         {(status === "DRAFT" || status === "NEW") && (
                             <Button
                                 variant="ghost"
@@ -155,7 +174,7 @@ export default function APPaymentBatches() {
                                 }}
                             >
                                 <CheckCircle className="h-4 w-4 mr-1" />
-                                Confirm
+                                Confirm & Pay
                             </Button>
                         )}
                         {status === "CONFIRMED" && (
@@ -247,6 +266,7 @@ export default function APPaymentBatches() {
                             isLoading={isLoading}
                             filterColumn="batchName"
                             filterPlaceholder="Search batches..."
+                            onRowClick={(item) => setLocation(`/finance/ap/payments/${item.id}`)}
                         />
                     </CardContent>
                 </Card>
@@ -269,10 +289,10 @@ export default function APPaymentBatches() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="paymentMethod">Payment Method</Label>
+                            <Label htmlFor="paymentMethodCode">Payment Method</Label>
                             <Select
-                                value={formData.paymentMethod}
-                                onValueChange={(v) => setFormData({ ...formData, paymentMethod: v })}
+                                value={formData.paymentMethodCode}
+                                onValueChange={(v) => setFormData({ ...formData, paymentMethodCode: v })}
                             >
                                 <SelectTrigger>
                                     <SelectValue />
@@ -286,12 +306,12 @@ export default function APPaymentBatches() {
                             </Select>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="paymentDate">Payment Date</Label>
+                            <Label htmlFor="checkDate">Payment Date</Label>
                             <Input
-                                id="paymentDate"
+                                id="checkDate"
                                 type="date"
-                                value={formData.paymentDate}
-                                onChange={(e) => setFormData({ ...formData, paymentDate: e.target.value })}
+                                value={formData.checkDate}
+                                onChange={(e) => setFormData({ ...formData, checkDate: e.target.value })}
                             />
                         </div>
                         <div className="space-y-2">

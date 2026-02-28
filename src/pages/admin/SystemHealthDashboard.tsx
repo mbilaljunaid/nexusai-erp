@@ -117,8 +117,8 @@ export default function SystemHealthDashboard() {
                     <button
                         onClick={() => setAutoRefresh(!autoRefresh)}
                         className={`px-3 py-2 text-sm rounded-md border ${autoRefresh
-                                ? 'bg-blue-50 text-blue-700 border-blue-200'
-                                : 'bg-white text-gray-700 border-gray-300'
+                            ? 'bg-blue-50 text-blue-700 border-blue-200'
+                            : 'bg-white text-gray-700 border-gray-300'
                             }`}
                     >
                         {autoRefresh ? 'Auto-refresh: ON' : 'Auto-refresh: OFF'}

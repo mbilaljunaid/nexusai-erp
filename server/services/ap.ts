@@ -406,7 +406,6 @@ export class ApService {
         await this.logAuditAction("SYSTEM", "VALIDATE", "INVOICE", String(invoiceId),
             `Invoice validated with status ${validationStatus}. Total WHT: ${whtAmountStr}`);
 
-        // 6. Trigger Accounting if Validated
         if (validationStatus === "VALIDATED") {
             try {
                 await slaEngine.createAccounting({
@@ -417,10 +416,10 @@ export class ApService {
                     description: `Invoice ${invoice.invoiceNumber} Validated (WHT: ${whtAmountStr})`,
                     amount: Number(invoice.invoiceAmount),
                     currencyCode: invoice.invoiceCurrencyCode || "USD",
-                    eventDate: new Date(),
-                    glDate: new Date(),
+                    eventDate: invoice.invoiceDate || new Date(),
+                    glDate: invoice.invoiceDate || new Date(),
                     ledgerId,
-                    sourceData: { supplierId: invoice.supplierId, withholdingAmount: whtAmountStr }
+                    sourceData: { supplierId: invoice.supplierId, withholdingAmount: whtAmountStr, invoiceNumber: invoice.invoiceNumber }
                 });
             } catch (err) {
                 console.error(`[AP] Accounting failed for invoice ${invoiceId}:`, err);

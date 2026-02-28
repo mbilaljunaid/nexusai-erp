@@ -15,10 +15,12 @@ import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { CreditCard, Plus, Trash2, CheckCircle, AlertTriangle, FileText, Sparkles, BrainCircuit, Calculator } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { useNexusAI } from "@/contexts/NexusAIContext";
+import { useLocation } from "wouter";
 
 export default function ARInvoices() {
   const { toast } = useToast();
   const { open, sendMessage } = useNexusAI();
+  const [, setLocation] = useLocation();
   const [newInvoice, setNewInvoice] = useState({ invoiceNumber: "", customerId: "", invoiceAmount: "", status: "issued" });
   const [page, setPage] = useState(1);
   const pageSize = 10;
@@ -363,6 +365,7 @@ export default function ARInvoices() {
             keyExtractor={(i) => i.id}
             filterColumn="invoiceNumber"
             filterPlaceholder="Search invoice #..."
+            onRowClick={(item) => setLocation(`/finance/ar/invoices/${item.id}`)}
           />
         </CardContent>
       </Card>

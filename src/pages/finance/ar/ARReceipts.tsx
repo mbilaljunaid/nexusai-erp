@@ -11,9 +11,11 @@ import { useToast } from "@/hooks/use-toast";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { Plus, Link, Unlink, RotateCcw } from "lucide-react";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
+import { useLocation } from "wouter";
 
 export default function ARReceipts() {
     const { toast } = useToast();
+    const [, setLocation] = useLocation();
     const [page, setPage] = useState(1);
     const [accountingModalOpen, setAccountingModalOpen] = useState(false);
     const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
@@ -173,7 +175,7 @@ export default function ARReceipts() {
             <Card>
                 <CardHeader><CardTitle>Receipt Inventory</CardTitle></CardHeader>
                 <CardContent>
-                    <StandardTable data={receipts} columns={columns} isLoading={isLoading} filterColumn="transactionId" filterPlaceholder="Search by Ref #..." />
+                    <StandardTable data={receipts} columns={columns} isLoading={isLoading} filterColumn="transactionId" filterPlaceholder="Search by Ref #..." onRowClick={(item) => setLocation(`/finance/ar/receipts/${item.id}`)} />
                 </CardContent>
             </Card>
 

@@ -14,13 +14,16 @@ import FixedAssets from "@/pages/finance/FixedAssets";
 import FixedAssetWorkbench from "@/pages/finance/FixedAssetWorkbench";
 import APInvoices from "@/pages/finance/ap/APInvoices";
 import APInvoiceEntry from "@/pages/finance/ap/APInvoiceEntry";
+import APInvoiceDetail from "@/pages/finance/ap/APInvoiceDetail";
 import APDashboard from "@/pages/finance/ap/APDashboard";
 import APSuppliers from "@/pages/finance/ap/APSuppliers";
+import APSupplierDetail from "@/pages/finance/ap/APSupplierDetail";
 import APWithholdingTax from "@/pages/finance/ap/APWithholdingTax";
 import APAICaptureUpload from "@/pages/finance/ap/APAICaptureUpload";
 import APReports from "@/pages/finance/ap/APReports";
 import APPrepayments from "@/pages/finance/ap/APPrepayments";
 import APPaymentBatches from "@/pages/finance/ap/APPaymentBatches";
+import APPaymentDetail from "@/pages/finance/ap/APPaymentDetail";
 import APSystemConfig from "@/pages/finance/ap/APSystemConfig";
 import PaymentTermsMaster from "@/pages/finance/ap/PaymentTermsMaster";
 import APPeriodClose from "@/pages/finance/ap/APPeriodClose";
@@ -51,7 +54,9 @@ import RevenueWaterfallDashboard from "@/pages/billing/RevenueWaterfallDashboard
 import CreditMemoWorkbench from "@/pages/billing/CreditMemoWorkbench";
 
 import ARInvoices from "@/pages/finance/ar/ARInvoices";
+import ARInvoiceDetail from "@/pages/finance/ar/ARInvoiceDetail";
 import ARReceipts from "@/pages/finance/ar/ARReceipts";
+import ARReceiptDetail from "@/pages/finance/ar/ARReceiptDetail";
 import ARCustomers from "@/pages/finance/ar/ARCustomers";
 import ArAnalytics from "@/pages/finance/ar/ArAnalytics";
 import ArReports from "@/pages/finance/ar/ArReports";
@@ -182,9 +187,12 @@ export default function FinanceRoutes() {
                 <Route path="/finance/fixed-assets" component={FixedAssetWorkbench} />
                 <Route path="/finance/fixed-assets/workbench" component={FixedAssetWorkbench} />
                 <Route path="/finance/fixed-assets/inquiry" component={FixedAssets} />
+                <Route path="/finance/ap/suppliers/:id" component={APSupplierDetail} />
                 <Route path="/finance/ap/suppliers" component={APSuppliers} />
                 <Route path="/finance/ap/invoices/new" component={APInvoiceEntry} />
+                <Route path="/finance/ap/invoices/:id" component={APInvoiceDetail} />
                 <Route path="/finance/ap/invoices" component={APInvoices} />
+                <Route path="/finance/ap/payments/:id" component={APPaymentDetail} />
                 <Route path="/finance/ap/payments" component={APPaymentBatches} />
                 <Route path="/finance/ap/withholding-tax" component={APWithholdingTax} />
                 <Route path="/finance/ap/ai-capture" component={APAICaptureUpload} />
@@ -212,7 +220,9 @@ export default function FinanceRoutes() {
                 <Route path="/finance/billing/profiles" component={BillingProfileManager} />
                 <Route path="/finance/billing/anomalies" component={BillingAnomalyDashboard} />
 
+                <Route path="/finance/ar/invoices/:id" component={ARInvoiceDetail} />
                 <Route path="/finance/ar/invoices" component={ARInvoices} />
+                <Route path="/finance/ar/receipts/:id" component={ARReceiptDetail} />
                 <Route path="/finance/ar/receipts" component={ARReceipts} />
                 <Route path="/finance/ar/customers" component={ARCustomers} />
                 <Route path="/finance/ar/analytics" component={ArAnalytics} />

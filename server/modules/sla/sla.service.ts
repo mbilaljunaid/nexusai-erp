@@ -176,10 +176,10 @@ export class SlaEngine {
                 lineNumber: lineNumber,
                 accountingClass: jlt.accountingClass,
                 codeCombinationId: codeCombinationId,
-                enteredDr: jlt.side === 'DEBIT' ? amountStr : null,
-                enteredCr: jlt.side === 'CREDIT' ? amountStr : null,
-                accountedDr: jlt.side === 'DEBIT' ? amountStr : null,
-                accountedCr: jlt.side === 'CREDIT' ? amountStr : null,
+                enteredDr: (jlt.side === 'DEBIT' || jlt.side === 'Dr') ? amountStr : null,
+                enteredCr: (jlt.side === 'CREDIT' || jlt.side === 'Cr') ? amountStr : null,
+                accountedDr: (jlt.side === 'DEBIT' || jlt.side === 'Dr') ? amountStr : null,
+                accountedCr: (jlt.side === 'CREDIT' || jlt.side === 'Cr') ? amountStr : null,
                 currencyCode: payload.currencyCode,
                 description: description
             });

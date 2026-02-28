@@ -275,6 +275,7 @@ export default function APInvoices() {
           isLoading={isLoading}
           filterColumn="invoiceNumber"
           filterPlaceholder="Search invoice #..."
+          onRowClick={(item) => setLocation(`/finance/ap/invoices/${item.id}`)}
         />
       </div>
 

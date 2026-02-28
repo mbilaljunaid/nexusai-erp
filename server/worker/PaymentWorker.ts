@@ -121,7 +121,8 @@ export class PaymentWorker {
                                     supplierId: invoice.supplierId,
                                     invoiceId: invoice.id,
                                     paymentMethod: batch.paymentMethodCode,
-                                    withholdingAmount: invoice.withholdingTaxAmount
+                                    withholdingAmount: invoice.withholdingTaxAmount,
+                                    batchNumber: batch.batchName || String(batch.id)
                                 }
                             });
                         } catch (e: any) {

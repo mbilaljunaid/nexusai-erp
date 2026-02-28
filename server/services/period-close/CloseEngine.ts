@@ -1,7 +1,7 @@
 import { db } from "../../db";
 import { glPeriods, slaPeriodStatuses, glCloseTasks, glPeriodCloseChecklistTemplates } from "../../../shared/schema";
 import { slaJournalHeaders } from "../../../shared/schema/sla";
-import { eq, and, ne, lt, gte, sql } from "drizzle-orm";
+import { eq, and, ne, lt, lte, gte, sql } from "drizzle-orm";
 
 /**
  * Close Engine: Single Source of Truth for Financial Close
@@ -178,7 +178,7 @@ export class CloseEngine {
             .where(and(
                 eq(glPeriods.ledgerId, ledgerId),
                 gte(glPeriods.endDate, date),
-                lt(glPeriods.startDate, date) // Adjust logic if inclusive
+                lte(glPeriods.startDate, date) // Adjust logic if inclusive
             ));
 
         // Fix date query logic: startDate <= date < endDate
