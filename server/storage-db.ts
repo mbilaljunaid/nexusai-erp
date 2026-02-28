@@ -995,7 +995,7 @@ export const dbStorage = {
     return await db.select().from(apSuppliersTable);
   },
   async getApSupplier(id: string): Promise<ApSupplier | undefined> {
-    const result = await db.select().from(apSuppliersTable).where(eq(apSuppliersTable.id, parseInt(id))).limit(1);
+    const result = await db.select().from(apSuppliersTable).where(eq(apSuppliersTable.id, id)).limit(1);
     return result[0];
   },
   async createApSupplier(data: InsertApSupplier): Promise<ApSupplier> {
@@ -1003,24 +1003,77 @@ export const dbStorage = {
     return result[0];
   },
   async updateApSupplier(id: string, data: Partial<InsertApSupplier>): Promise<ApSupplier | undefined> {
-    const result = await db.update(apSuppliersTable).set(data).where(eq(apSuppliersTable.id, parseInt(id))).returning();
+    const result = await db.update(apSuppliersTable).set(data).where(eq(apSuppliersTable.id, id)).returning();
     return result[0];
   },
   async deleteApSupplier(id: string): Promise<boolean> {
-    const result = await db.delete(apSuppliersTable).where(eq(apSuppliersTable.id, parseInt(id))).returning();
+    const result = await db.delete(apSuppliersTable).where(eq(apSuppliersTable.id, id)).returning();
     return result.length > 0;
   },
 
-  async listApInvoices(): Promise<any[]> {
-    const results = await db.select({
+  async listApInvoices(options?: {
+    limit?: number;
+    offset?: number;
+    status?: string | "all";
+    validationStatus?: string | "all";
+    filters?: Record<string, any>;
+  }): Promise<any[]> {
+    const conditions = [];
+    if (options?.status && options.status !== "all") {
+      conditions.push(sql`lower(${apInvoicesTable.invoiceStatus}) = lower(${options.status})`);
+    }
+    if (options?.validationStatus && options.validationStatus !== "all") {
+      conditions.push(sql`lower(${apInvoicesTable.validationStatus}) = lower(${options.validationStatus})`);
+    }
+
+    if (options?.filters) {
+      for (const [key, value] of Object.entries(options.filters)) {
+        if (key === 'invoiceNumber') {
+          conditions.push(sql`lower(${apInvoicesTable.invoiceNumber}) LIKE lower(${`%${value}%`})`);
+        }
+        else if (key === 'supplierId') {
+          conditions.push(eq(apInvoicesTable.supplierId, value));
+        }
+        else if (key === 'businessUnitId') {
+          conditions.push(eq(apInvoicesTable.businessUnitId, value));
+        }
+        else if (key === 'fromDate') {
+          conditions.push(sql`${apInvoicesTable.invoiceDate} >= ${new Date(value).toISOString()}`);
+        }
+        else if (key === 'toDate') {
+          conditions.push(sql`${apInvoicesTable.invoiceDate} <= ${new Date(value).toISOString()}`);
+        }
+      }
+    }
+
+    let query = db.select({
       invoice: apInvoicesTable,
       supplier: apSuppliersTable
     }).from(apInvoicesTable)
       .leftJoin(apSuppliersTable, eq(apInvoicesTable.supplierId, apSuppliersTable.id));
+
+    if (conditions.length > 0) {
+      // @ts-ignore
+      query = query.where(and(...conditions));
+    }
+
+    // @ts-ignore
+    query = query.orderBy(desc(apInvoicesTable.createdAt));
+
+    if (options?.limit !== undefined) {
+      // @ts-ignore
+      query = query.limit(options.limit);
+    }
+    if (options?.offset !== undefined) {
+      // @ts-ignore
+      query = query.offset(options.offset);
+    }
+
+    const results = await query;
     return results.map(r => ({ ...r.invoice, supplier: r.supplier }));
   },
   async getApInvoice(id: string): Promise<ApInvoice | undefined> {
-    const result = await db.select().from(apInvoicesTable).where(eq(apInvoicesTable.id, parseInt(id))).limit(1);
+    const result = await db.select().from(apInvoicesTable).where(eq(apInvoicesTable.id, id)).limit(1);
     return result[0];
   },
   async createApInvoice(data: InsertApInvoice): Promise<ApInvoice> {
@@ -1028,11 +1081,11 @@ export const dbStorage = {
     return result[0];
   },
   async updateApInvoice(id: string, data: Partial<InsertApInvoice>): Promise<ApInvoice | undefined> {
-    const result = await db.update(apInvoicesTable).set(data).where(eq(apInvoicesTable.id, parseInt(id))).returning();
+    const result = await db.update(apInvoicesTable).set(data).where(eq(apInvoicesTable.id, id)).returning();
     return result[0];
   },
   async deleteApInvoice(id: string): Promise<boolean> {
-    const result = await db.delete(apInvoicesTable).where(eq(apInvoicesTable.id, parseInt(id))).returning();
+    const result = await db.delete(apInvoicesTable).where(eq(apInvoicesTable.id, id)).returning();
     return result.length > 0;
   },
 
@@ -1040,7 +1093,7 @@ export const dbStorage = {
     return await db.select().from(apPaymentsTable);
   },
   async getApPayment(id: string): Promise<ApPayment | undefined> {
-    const result = await db.select().from(apPaymentsTable).where(eq(apPaymentsTable.id, parseInt(id))).limit(1);
+    const result = await db.select().from(apPaymentsTable).where(eq(apPaymentsTable.id, id)).limit(1);
     return result[0];
   },
   async createApPayment(data: InsertApPayment): Promise<ApPayment> {
@@ -1048,11 +1101,11 @@ export const dbStorage = {
     return result[0];
   },
   async updateApPayment(id: string, data: Partial<InsertApPayment>): Promise<ApPayment | undefined> {
-    const result = await db.update(apPaymentsTable).set(data).where(eq(apPaymentsTable.id, parseInt(id))).returning();
+    const result = await db.update(apPaymentsTable).set(data).where(eq(apPaymentsTable.id, id)).returning();
     return result[0];
   },
   async deleteApPayment(id: string): Promise<boolean> {
-    const result = await db.delete(apPaymentsTable).where(eq(apPaymentsTable.id, parseInt(id))).returning();
+    const result = await db.delete(apPaymentsTable).where(eq(apPaymentsTable.id, id)).returning();
     return result.length > 0;
   },
 
@@ -1060,7 +1113,7 @@ export const dbStorage = {
     return await db.select().from(apApprovalsTable);
   },
   async getApApproval(id: string): Promise<ApApproval | undefined> {
-    const result = await db.select().from(apApprovalsTable).where(eq(apApprovalsTable.id, parseInt(id))).limit(1);
+    const result = await db.select().from(apApprovalsTable).where(eq(apApprovalsTable.id, id)).limit(1);
     return result[0];
   },
   async createApApproval(data: InsertApApproval): Promise<ApApproval> {
@@ -1068,11 +1121,52 @@ export const dbStorage = {
     return result[0];
   },
   async updateApApproval(id: string, data: Partial<InsertApApproval>): Promise<ApApproval | undefined> {
-    const result = await db.update(apApprovalsTable).set(data).where(eq(apApprovalsTable.id, parseInt(id))).returning();
+    const result = await db.update(apApprovalsTable).set(data).where(eq(apApprovalsTable.id, id)).returning();
     return result[0];
   },
   async deleteApApproval(id: string): Promise<boolean> {
-    const result = await db.delete(apApprovalsTable).where(eq(apApprovalsTable.id, parseInt(id))).returning();
+    const result = await db.delete(apApprovalsTable).where(eq(apApprovalsTable.id, id)).returning();
+    return result.length > 0;
+  },
+
+  // ========== ORACLE PARITY: AP ENTERPRISE SETUP ==========
+  async listApTolerances(): Promise<ApTolerance[]> {
+    return await db.select().from(apTolerancesTable);
+  },
+  async getApTolerance(id: string): Promise<ApTolerance | undefined> {
+    const result = await db.select().from(apTolerancesTable).where(eq(apTolerancesTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createApTolerance(data: InsertApTolerance): Promise<ApTolerance> {
+    const result = await db.insert(apTolerancesTable).values(data).returning();
+    return result[0];
+  },
+  async updateApTolerance(id: string, data: Partial<InsertApTolerance>): Promise<ApTolerance | undefined> {
+    const result = await db.update(apTolerancesTable).set(data).where(eq(apTolerancesTable.id, id)).returning();
+    return result[0];
+  },
+  async deleteApTolerance(id: string): Promise<boolean> {
+    const result = await db.delete(apTolerancesTable).where(eq(apTolerancesTable.id, id)).returning();
+    return result.length > 0;
+  },
+
+  async listApPprTemplates(): Promise<ApPprTemplate[]> {
+    return await db.select().from(apPprTemplatesTable);
+  },
+  async getApPprTemplate(id: string): Promise<ApPprTemplate | undefined> {
+    const result = await db.select().from(apPprTemplatesTable).where(eq(apPprTemplatesTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createApPprTemplate(data: InsertApPprTemplate): Promise<ApPprTemplate> {
+    const result = await db.insert(apPprTemplatesTable).values(data).returning();
+    return result[0];
+  },
+  async updateApPprTemplate(id: string, data: Partial<InsertApPprTemplate>): Promise<ApPprTemplate | undefined> {
+    const result = await db.update(apPprTemplatesTable).set(data).where(eq(apPprTemplatesTable.id, id)).returning();
+    return result[0];
+  },
+  async deleteApPprTemplate(id: string): Promise<boolean> {
+    const result = await db.delete(apPprTemplatesTable).where(eq(apPprTemplatesTable.id, id)).returning();
     return result.length > 0;
   },
 

@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, CheckCircle, AlertCircle, FileText, Paperclip, Loader2 } from "lucide-react";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
 import { StandardTable } from "@/components/ui/StandardTable";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 
 export default function APInvoiceDetail() {
     const [, params] = useRoute("/finance/ap/invoices/:id");
@@ -19,12 +19,14 @@ export default function APInvoiceDetail() {
 
     const [accountingModalOpen, setAccountingModalOpen] = useState(false);
     const [holdsDialogOpen, setHoldsDialogOpen] = useState(false);
+    const [distributionsModalOpen, setDistributionsModalOpen] = useState(false);
+    const [selectedLine, setSelectedLine] = useState<any>(null);
 
     const { data: invoiceData, isLoading } = useQuery<any>({
         queryKey: [`/api/ap/invoices/${invoiceId}`],
         enabled: !!invoiceId,
         queryFn: async () => {
-            const res = await fetch(`/api/erp/invoices/${invoiceId}`);
+            const res = await fetch(`/api/ap/invoices/${invoiceId}`);
             if (!res.ok) throw new Error("Failed to fetch invoice");
             return res.json();
         }
@@ -56,15 +58,23 @@ export default function APInvoiceDetail() {
     const invoice = invoiceData.invoice || invoiceData;
     const lines = invoiceData.lines || [];
 
+    const displayInvoiceId = invoice.invoiceNumber || invoice.id.substring(0, 8).toUpperCase();
+
+    // Mock distributions for demonstration
+    const mockDistributions = (lineValue: number) => [
+        { account: "01-100-5100-0000", amount: (lineValue * 0.8).toFixed(2), description: "Primary Expense" },
+        { account: "01-100-2400-0000", amount: (lineValue * 0.2).toFixed(2), description: "Tax / Freight Allocation" },
+    ];
+
     return (
         <StandardPage
-            title={`Invoice: ${invoice.invoiceNumber || invoice.id}`}
+            title={`Invoice: ${displayInvoiceId}`}
             description={invoice.description || "View invoice details, lines, and accounting distributions."}
             breadcrumbs={[
                 { label: "Finance", href: "/finance" },
                 { label: "Accounts Payable", href: "/finance/ap" },
                 { label: "Invoices", href: "/finance/ap/invoices" },
-                { label: invoice.invoiceNumber || "Details" }
+                { label: displayInvoiceId }
             ]}
             actions={
                 <div className="flex gap-2">
@@ -123,9 +133,26 @@ export default function APInvoiceDetail() {
                             columns={[
                                 { header: "Line #", accessorKey: "lineNumber", width: "10%" },
                                 { header: "Type", accessorKey: "lineType", width: "15%" },
-                                { header: "Description", accessorKey: "description", width: "40%" },
-                                { header: "Amount", cell: (r) => `$${parseFloat(r.amount || 0).toLocaleString()}`, width: "15%" },
-                                { header: "PO Header ID", accessorKey: "poHeaderId", width: "20%" },
+                                { header: "Description", accessorKey: "description", width: "35%" },
+                                { header: "Amount", cell: (r) => `$${parseFloat(r.amount || 0).toLocaleString()}`, width: "10%" },
+                                { header: "PO Header ID", accessorKey: "poHeaderId", width: "15%" },
+                                {
+                                    header: "Actions",
+                                    width: "15%",
+                                    cell: (r) => (
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="text-xs text-indigo-600"
+                                            onClick={() => {
+                                                setSelectedLine(r);
+                                                setDistributionsModalOpen(true);
+                                            }}
+                                        >
+                                            View Distributions
+                                        </Button>
+                                    )
+                                }
                             ]}
                         />
                     ) : (
@@ -167,6 +194,48 @@ export default function APInvoiceDetail() {
                         )}
                         <div className="flex justify-end pt-4">
                             <Button variant="outline" onClick={() => setHoldsDialogOpen(false)}>Close</Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={distributionsModalOpen} onOpenChange={setDistributionsModalOpen}>
+                <DialogContent className="sm:max-w-[700px]">
+                    <DialogHeader>
+                        <DialogTitle>Line Distributions</DialogTitle>
+                        <DialogDescription>
+                            Accounting distribution splits for Line {selectedLine?.lineNumber}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 pt-4">
+                        {selectedLine && (
+                            <table className="w-full text-sm text-left">
+                                <thead className="bg-muted text-muted-foreground">
+                                    <tr>
+                                        <th className="px-4 py-2 rounded-tl-md font-medium">GL Account</th>
+                                        <th className="px-4 py-2 font-medium">Description</th>
+                                        <th className="px-4 py-2 rounded-tr-md font-medium text-right">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {mockDistributions(parseFloat(selectedLine.amount || 0)).map((dist, idx) => (
+                                        <tr key={idx} className="border-b last:border-0 hover:bg-muted/50 transition-colors">
+                                            <td className="px-4 py-3 font-mono text-xs">{dist.account}</td>
+                                            <td className="px-4 py-3 text-muted-foreground">{dist.description}</td>
+                                            <td className="px-4 py-3 text-right font-medium">${parseFloat(dist.amount).toLocaleString()}</td>
+                                        </tr>
+                                    ))}
+                                    <tr className="bg-slate-50 border-t-2">
+                                        <td colSpan={2} className="px-4 py-2 font-semibold text-right">Total Line Amount:</td>
+                                        <td className="px-4 py-2 font-bold text-right text-green-700">
+                                            ${parseFloat(selectedLine.amount || 0).toLocaleString()}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        )}
+                        <div className="flex justify-end pt-4">
+                            <Button variant="outline" onClick={() => setDistributionsModalOpen(false)}>Close</Button>
                         </div>
                     </div>
                 </DialogContent>

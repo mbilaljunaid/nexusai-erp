@@ -77,7 +77,11 @@ export const apInvoices = pgTable("ap_invoices", {
     invoiceId: varchar("invoice_id", { length: 50 }), // Logical ID if needed, or use serial ID
 
     supplierId: varchar("supplier_id").notNull(),
-    supplierSiteId: varchar("supplier_site_id"), // FK to ap_supplier_sites (Migration will populate this)
+    supplierSiteId: varchar("supplier_site_id").notNull(), // Enforced for enterprise banking routing
+
+    // Multi-Org
+    businessUnitId: varchar("business_unit_id"),
+    legalEntityId: varchar("legal_entity_id"),
 
     invoiceNumber: varchar("invoice_number", { length: 100 }).notNull(),
     invoiceDate: timestamp("invoice_date").notNull(),
@@ -106,6 +110,14 @@ export const apInvoices = pgTable("ap_invoices", {
     // Controls
     cancelledDate: timestamp("cancelled_date"),
     glDate: timestamp("gl_date"), // Default GL Date
+    termsDate: timestamp("terms_date"),
+    goodsReceivedDate: timestamp("goods_received_date"),
+    invoiceReceivedDate: timestamp("invoice_received_date"),
+    controlAmount: numeric("control_amount", { precision: 18, scale: 2 }),
+    payGroup: varchar("pay_group", { length: 50 }),
+    paymentMethodOverride: varchar("payment_method_override", { length: 50 }),
+    documentCategory: varchar("document_category", { length: 50 }),
+    exchangeRate: numeric("exchange_rate", { precision: 18, scale: 6 }),
 
     // AI Extraction Metadata
     audioUrl: text("audio_url"),
@@ -141,6 +153,13 @@ export const apInvoiceLines = pgTable("ap_invoice_lines", {
     poLineId: varchar("po_line_id"),
     quantityInvoiced: numeric("quantity_invoiced", { precision: 18, scale: 4 }),
     unitPrice: numeric("unit_price", { precision: 18, scale: 4 }),
+    uom: varchar("uom", { length: 50 }),
+
+    // Tax & Assets
+    taxClassificationCode: varchar("tax_classification_code", { length: 50 }),
+    trackAsAssetFlag: boolean("track_as_asset_flag").default(false),
+    assetCategoryId: varchar("asset_category_id"),
+    requesterId: varchar("requester_id"), // Employee ID for routing
 
     // Status
     discardedFlag: boolean("discarded_flag").default(false),
@@ -171,6 +190,7 @@ export const apInvoiceDistributions = pgTable("ap_invoice_distributions", {
     invoiceLineId: varchar("invoice_line_id").notNull(),
     distLineNumber: integer("dist_line_number").notNull(),
 
+    distributionLineType: varchar("distribution_line_type", { length: 50 }).notNull().default("ITEM"), // ITEM, ACCRUAL, TAX, VARIANCE
     amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
 
     // Accounting
@@ -178,6 +198,12 @@ export const apInvoiceDistributions = pgTable("ap_invoice_distributions", {
     accountingDate: timestamp("accounting_date"),
 
     description: text("description"),
+
+    // PPM & Costing Project integration extensions
+    ppmProjectId: varchar("ppm_project_id"),
+    ppmTaskId: varchar("ppm_task_id"),
+    expenditureItemDate: timestamp("expenditure_item_date"),
+    expenditureType: varchar("expenditure_type", { length: 100 }),
 
     // Status
     postedFlag: boolean("posted_flag").default(false), // Has this been sent to SLA/GL?
@@ -194,12 +220,16 @@ export type InsertApInvoiceDistribution = typeof apInvoiceDistributions.$inferIn
 export const apPaymentBatches = pgTable("ap_payment_batches", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     batchName: varchar("batch_name", { length: 100 }).notNull(),
-    status: varchar("status", { length: 50 }).default("NEW"), // NEW, SELECTED, CONFIRMED, CANCELLED
+    status: varchar("status", { length: 50 }).default("SELECTING"), // SELECTING, BUILDING, FORMATTING, CONFIRMED, CANCELLED
 
     // Selection Criteria
+    templateId: varchar("template_id"),
     checkDate: timestamp("check_date").notNull().defaultNow(),
+    payThroughDate: timestamp("pay_through_date"),
     payGroup: varchar("pay_group", { length: 50 }),
+    priorityRange: varchar("priority_range", { length: 50 }),
     paymentMethodCode: varchar("payment_method_code", { length: 50 }).default("CHECK"),
+    paymentDocumentId: varchar("payment_document_id"),
 
     // Totals
     totalAmount: numeric("total_amount", { precision: 18, scale: 2 }).default("0"),
@@ -431,6 +461,55 @@ export const apPaymentTerms = pgTable("ap_payment_terms", {
 export const insertApPaymentTermSchema = createInsertSchema(apPaymentTerms);
 export type ApPaymentTerm = typeof apPaymentTerms.$inferSelect;
 export type InsertApPaymentTerm = typeof apPaymentTerms.$inferInsert;
+
+// ========== ORACLE PARITY: ENTERPRISE SETUP ==========
+
+// Tolerances (System Parameters)
+export const apTolerances = pgTable("ap_tolerances", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name", { length: 100 }).notNull().unique(),
+    description: text("description"),
+
+    // Percentage Variances (0 - 100)
+    priceTolerancePct: numeric("price_tolerance_pct", { precision: 5, scale: 2 }).default("0"),
+    quantityTolerancePct: numeric("quantity_tolerance_pct", { precision: 5, scale: 2 }).default("0"),
+
+    // Amount Variances
+    maxAmountTolerance: numeric("max_amount_tolerance", { precision: 18, scale: 2 }).default("0"),
+
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const insertApToleranceSchema = createInsertSchema(apTolerances);
+export type ApTolerance = typeof apTolerances.$inferSelect;
+export type InsertApTolerance = typeof apTolerances.$inferInsert;
+
+// PPR (Payment Process Request) Templates
+export const apPprTemplates = pgTable("ap_ppr_templates", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    templateName: varchar("template_name", { length: 100 }).notNull().unique(),
+    description: text("description"),
+
+    // Selection Criteria
+    payGroupId: varchar("pay_group_id"),
+    priorityRangeFrom: integer("priority_range_from"),
+    priorityRangeTo: integer("priority_range_to"),
+    paymentMethodCode: varchar("payment_method_code", { length: 50 }),
+    bankAccountId: varchar("bank_account_id"),
+
+    // Processing Options 
+    autoReviewInvoices: boolean("auto_review_invoices").default(true),
+    autoFormatPayments: boolean("auto_format_payments").default(false),
+
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const insertApPprTemplateSchema = createInsertSchema(apPprTemplates);
+export type ApPprTemplate = typeof apPprTemplates.$inferSelect;
+export type InsertApPprTemplate = typeof apPprTemplates.$inferInsert;
+
 
 // ========== RELATIONS ==========
 import { relations } from "drizzle-orm";

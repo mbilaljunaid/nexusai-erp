@@ -1,6 +1,8 @@
 // Accounts Payable (AP) API Routes
 import express from "express";
 import { apService } from "../services/ap";
+import { ApMatchingService } from "../services/apMatching";
+import { ApTaxService } from "../services/apTax";
 import { storage } from "../storage";
 import { db } from "../db";
 import { eq, and, sql } from "drizzle-orm";
@@ -195,12 +197,24 @@ apRouter.post("/suppliers/:id/hold", async (req, res) => {
 // Invoice CRUD
 apRouter.get("/invoices", async (req, res) => {
     try {
-        const { limit, offset } = req.query;
-        const list = await apService.listInvoices(
-            limit ? Number(limit) : undefined,
-            offset ? Number(offset) : undefined
-        );
-        const total = await apService.getInvoicesCount();
+        const { limit, offset, status, validationStatus, invoiceNumber, supplierId, businessUnitId, fromDate, toDate } = req.query;
+
+        // Pass the advanced search filters down to the Data Access Layer
+        const filters: Record<string, any> = {};
+        if (invoiceNumber) filters.invoiceNumber = invoiceNumber;
+        if (supplierId) filters.supplierId = supplierId;
+        if (businessUnitId) filters.businessUnitId = businessUnitId;
+        if (fromDate) filters.fromDate = fromDate;
+        if (toDate) filters.toDate = toDate;
+
+        const list = await storage.listApInvoices({ // Updated to use storage direct call with options
+            limit: limit ? Number(limit) : undefined,
+            offset: offset ? Number(offset) : undefined,
+            status: status as string | undefined,
+            validationStatus: validationStatus as string | undefined,
+            filters
+        });
+        const total = await apService.getInvoicesCount(); // Count could be updated to apply filters later if needed
         res.json({ data: list, total });
     } catch (e: any) {
         res.status(500).json({ error: e.message });
@@ -247,8 +261,40 @@ apRouter.post("/invoices/:id/validate", async (req, res) => {
 
 apRouter.post("/invoices/:id/match", async (req, res) => {
     try {
-        const result = await apService.matchInvoiceToPO(req.params.id, req.body);
-        res.json(result);
+        const { lineMatches } = req.body; // Expect array of { invoiceLineId, poLineId }
+
+        if (!lineMatches || !Array.isArray(lineMatches)) {
+            return res.status(400).json({ error: "No lineMatches provided." });
+        }
+
+        const results = [];
+        for (const match of lineMatches) {
+            const result = await ApMatchingService.matchInvoiceLine(match.invoiceLineId, match.poLineId);
+            results.push(result);
+        }
+
+        res.json(results);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+// Calculate and generate Tax Distributions for an Invoice
+apRouter.post("/invoices/:id/calculate-tax", async (req, res) => {
+    try {
+        const { invoiceLineIds } = req.body;
+
+        if (!invoiceLineIds || !Array.isArray(invoiceLineIds)) {
+            return res.status(400).json({ error: "No invoiceLineIds provided." });
+        }
+
+        const results = [];
+        for (const lineId of invoiceLineIds) {
+            const result = await ApTaxService.calculateAndDistributeTax(req.params.id, lineId);
+            results.push(result);
+        }
+
+        res.json(results);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
     }

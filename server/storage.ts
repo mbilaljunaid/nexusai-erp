@@ -106,13 +106,15 @@ import {
 
   // AP
   apSuppliers, apInvoices, apInvoiceLines, apInvoiceDistributions, apPayments, apApprovals,
-  apPaymentTerms,
+  apPaymentTerms, apTolerances, apPprTemplates,
   type ApSupplier, type InsertApSupplier,
   type ApInvoice, type InsertApInvoice, type ApInvoiceLine, type InsertApInvoiceLine,
   type ApInvoiceDistribution, type InsertApInvoiceDistribution,
   type ApPayment, type InsertApPayment,
   type ApApproval, type InsertApApproval,
   type ApPaymentTerm, type InsertApPaymentTerm,
+  type ApTolerance, type InsertApTolerance,
+  type ApPprTemplate, type InsertApPprTemplate,
 
   // AR
   arCustomers, arInvoices, arReceipts,
@@ -638,6 +640,19 @@ export interface IStorage {
   updateApApproval(id: string, data: Partial<InsertApApproval>): Promise<ApApproval | undefined>;
   deleteApApproval(id: string): Promise<boolean>;
 
+  // AP Oracle Parity Additions
+  listApTolerances(): Promise<ApTolerance[]>;
+  getApTolerance(id: string): Promise<ApTolerance | undefined>;
+  createApTolerance(data: InsertApTolerance): Promise<ApTolerance>;
+  updateApTolerance(id: string, data: Partial<InsertApTolerance>): Promise<ApTolerance | undefined>;
+  deleteApTolerance(id: string): Promise<boolean>;
+
+  listApPprTemplates(): Promise<ApPprTemplate[]>;
+  getApPprTemplate(id: string): Promise<ApPprTemplate | undefined>;
+  createApPprTemplate(data: InsertApPprTemplate): Promise<ApPprTemplate>;
+  updateApPprTemplate(id: string, data: Partial<InsertApPprTemplate>): Promise<ApPprTemplate | undefined>;
+  deleteApPprTemplate(id: string): Promise<boolean>;
+
   // AR Module
   listArCustomers(): Promise<ArCustomer[]>;
   getArCustomer(id: string): Promise<ArCustomer | undefined>;
@@ -1060,7 +1075,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getApSupplier(id: string): Promise<ApSupplier | undefined> {
-    const [supplier] = await db.select().from(apSuppliers).where(eq(apSuppliers.id, parseInt(id)));
+    const [supplier] = await db.select().from(apSuppliers).where(eq(apSuppliers.id, id));
     return supplier;
   }
 
@@ -1070,23 +1085,38 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateApSupplier(id: string, supplier: Partial<InsertApSupplier>): Promise<ApSupplier | undefined> {
-    const [updated] = await db.update(apSuppliers).set(supplier).where(eq(apSuppliers.id, parseInt(id))).returning();
+    const [updated] = await db.update(apSuppliers).set(supplier).where(eq(apSuppliers.id, id)).returning();
     return updated;
   }
 
   async deleteApSupplier(id: string): Promise<boolean> {
-    const [deleted] = await db.delete(apSuppliers).where(eq(apSuppliers.id, parseInt(id))).returning();
+    const [deleted] = await db.delete(apSuppliers).where(eq(apSuppliers.id, id)).returning();
     return !!deleted;
   }
 
   // Enterprise Invoice Methods
-  async listApInvoices(limit?: number, offset?: number): Promise<any[]> {
+  async listApInvoices(limit?: number, offset?: number, status?: string, validationStatus?: string): Promise<any[]> {
+    const conditions = [];
+    if (status && status !== "all") {
+      conditions.push(sql`lower(${apInvoices.invoiceStatus}) = lower(${status})`);
+    }
+    if (validationStatus && validationStatus !== "all") {
+      conditions.push(sql`lower(${apInvoices.validationStatus}) = lower(${validationStatus})`);
+    }
+
     let query = db.select({
       invoice: apInvoices,
       supplier: apSuppliers
     }).from(apInvoices)
-      .leftJoin(apSuppliers, eq(apInvoices.supplierId, apSuppliers.id))
-      .orderBy(desc(apInvoices.createdAt));
+      .leftJoin(apSuppliers, eq(apInvoices.supplierId, apSuppliers.id));
+
+    if (conditions.length > 0) {
+      // @ts-ignore
+      query = query.where(and(...conditions));
+    }
+
+    // @ts-ignore
+    query = query.orderBy(desc(apInvoices.createdAt));
 
     if (limit !== undefined) {
       // @ts-ignore
@@ -1106,7 +1136,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getApInvoice(id: string): Promise<ApInvoice | undefined> {
-    const [invoice] = await db.select().from(apInvoices).where(eq(apInvoices.id, parseInt(id)));
+    const [invoice] = await db.select().from(apInvoices).where(eq(apInvoices.id, id));
     return invoice;
   }
 
@@ -1131,15 +1161,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateApInvoice(id: string, invoice: Partial<InsertApInvoice>): Promise<ApInvoice | undefined> {
-    const [updated] = await db.update(apInvoices).set(invoice).where(eq(apInvoices.id, parseInt(id))).returning();
+    const [updated] = await db.update(apInvoices).set(invoice).where(eq(apInvoices.id, id)).returning();
     return updated;
   }
 
   async deleteApInvoice(id: string): Promise<boolean> {
     // Service must handle cascade
-    await db.delete(apInvoiceDistributions).where(eq(apInvoiceDistributions.invoiceId, parseInt(id)));
-    await db.delete(apInvoiceLines).where(eq(apInvoiceLines.invoiceId, parseInt(id)));
-    const [deleted] = await db.delete(apInvoices).where(eq(apInvoices.id, parseInt(id))).returning();
+    await db.delete(apInvoiceDistributions).where(eq(apInvoiceDistributions.invoiceId, id));
+    await db.delete(apInvoiceLines).where(eq(apInvoiceLines.invoiceId, id));
+    const [deleted] = await db.delete(apInvoices).where(eq(apInvoices.id, id)).returning();
     return !!deleted;
   }
 
@@ -1370,7 +1400,7 @@ export class DatabaseStorage implements IStorage {
 
   // Missing IStorage Methods - AP Approvals
   async getApApproval(id: string) {
-    const [res] = await db.select().from(apApprovals).where(eq(apApprovals.id, parseInt(id)));
+    const [res] = await db.select().from(apApprovals).where(eq(apApprovals.id, id));
     return res;
   }
   async createApApproval(data: InsertApApproval) {
@@ -1386,7 +1416,7 @@ export class DatabaseStorage implements IStorage {
 
 
   async deleteApApproval(id: string) {
-    await db.delete(apApprovals).where(eq(apApprovals.id, parseInt(id)));
+    await db.delete(apApprovals).where(eq(apApprovals.id, id));
     return true;
   }
 

@@ -100,7 +100,8 @@ export default function APPaymentBatches() {
         {
             header: "Batch #",
             accessorKey: "id",
-            className: "font-mono font-medium"
+            className: "font-mono font-medium",
+            cell: (row: any) => row.id.substring(0, 8).toUpperCase()
         },
         { header: "Batch Name", accessorKey: "batchName" },
         {
@@ -206,8 +207,8 @@ export default function APPaymentBatches() {
                 { label: "Payment Batches" }
             ]}
             actions={
-                <Button onClick={() => setCreateDialogOpen(true)}>
-                    <Plus className="mr-2 h-4 w-4" /> Create Batch
+                <Button onClick={() => setLocation('/finance/ap/payments/new')}>
+                    <Plus className="mr-2 h-4 w-4" /> Create PPR
                 </Button>
             }
         >

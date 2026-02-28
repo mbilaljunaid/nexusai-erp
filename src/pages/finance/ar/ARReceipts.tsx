@@ -71,7 +71,12 @@ export default function ARReceipts() {
     });
 
     const columns: Column<any>[] = [
-        { header: "Transaction Ref", accessorKey: "transactionId", className: "font-semibold" },
+        {
+            header: "Transaction Ref",
+            accessorKey: "transactionId",
+            className: "font-semibold",
+            cell: (row: any) => row.transactionId?.substring(0, 8).toUpperCase() || row.id.substring(0, 8).toUpperCase()
+        },
         { header: "Method", accessorKey: "paymentMethod" },
         { header: "Amount", cell: (r) => `$${Number(r.amount).toFixed(2)}` },
         { header: "Status", cell: (r) => <Badge variant={r.status === 'Applied' ? 'default' : 'secondary'}>{r.status}</Badge> },

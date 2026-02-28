@@ -9,12 +9,21 @@ import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { Plus, Trash2, Save, ArrowLeft } from "lucide-react";
+import { Plus, Trash2, Save, ArrowLeft, Calculator, Network } from "lucide-react";
+import { APInvoiceDistributions } from "./APInvoiceDistributions";
 
 export default function APInvoiceEntry() {
     const [, setLocation] = useLocation();
     const { toast } = useToast();
     const queryClient = useQueryClient();
+
+    const [advancedOptionsOpen, setAdvancedOptionsOpen] = useState(false);
+    const [selectedLineForDistributions, setSelectedLineForDistributions] = useState<number | null>(null);
+
+    const { data: items } = useQuery({
+        queryKey: ["/api/mdm/items"],
+        queryFn: () => fetch("/api/mdm/items").then(r => r.json()),
+    });
 
     const [header, setHeader] = useState({
         supplierId: "",
@@ -24,12 +33,68 @@ export default function APInvoiceEntry() {
         invoiceAmount: "",
         invoiceCurrencyCode: "USD",
         description: "",
-        paymentTerms: "Net 30"
+        paymentTerms: "Net 30",
+        businessUnitId: "",
+        legalEntityId: "",
+        glDate: new Date().toISOString().split("T")[0],
+        termsDate: new Date().toISOString().split("T")[0],
+        controlAmount: ""
     });
 
-    const [lines, setLines] = useState<{ lineNumber: number; lineType: string; amount: string; description: string; poHeaderId?: string }[]>([
-        { lineNumber: 1, lineType: "ITEM", amount: "", description: "", poHeaderId: "" }
-    ]);
+    interface InvoiceLine {
+        lineNumber: number;
+        lineType: string;
+        amount: string;
+        description: string;
+        poHeaderId: string;
+        poLineId: string;
+        itemId: string;
+        taxClassificationCode: string;
+        trackAsAssetFlag: boolean;
+    }
+
+    const [lines, setLines] = useState<InvoiceLine[]>([{
+        lineNumber: 1,
+        lineType: "ITEM",
+        amount: "",
+        description: "",
+        poHeaderId: "",
+        poLineId: "",
+        itemId: "",
+        taxClassificationCode: "EXEMPT",
+        trackAsAssetFlag: false
+    }]);
+
+    const handlePOSelection = async (poId: string) => {
+        if (!poId || poId === "none") return;
+
+        const po = purchaseOrders?.find((p: any) => p.id === poId);
+        if (po) {
+            setHeader({ ...header, supplierId: po.supplierId, invoiceAmount: po.totalAmount || header.invoiceAmount });
+
+            try {
+                const res = await fetch(`/api/scm/procurement/purchase-orders/${poId}/lines`);
+                if (res.ok) {
+                    const poLines = await res.json();
+                    if (poLines && poLines.length > 0) {
+                        setLines(poLines.map((l: any, i: number): InvoiceLine => ({
+                            lineNumber: i + 1,
+                            lineType: "ITEM",
+                            amount: l.unitPrice && l.quantity ? (parseFloat(l.unitPrice) * parseFloat(l.quantity)).toString() : "0",
+                            description: l.description || "PO Line",
+                            poHeaderId: poId,
+                            poLineId: l.id || "",
+                            itemId: l.itemId || "",
+                            taxClassificationCode: "EXEMPT",
+                            trackAsAssetFlag: false
+                        })));
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to fetch PO lines", err);
+            }
+        }
+    };
 
     const { data: suppliers } = useQuery({
         queryKey: ["/api/ap/suppliers"],
@@ -37,8 +102,8 @@ export default function APInvoiceEntry() {
     });
 
     const { data: purchaseOrders } = useQuery({
-        queryKey: ["/api/purchase-orders"],
-        queryFn: () => fetch("/api/purchase-orders").then(r => r.json()),
+        queryKey: ["/api/scm/procurement/purchase-orders"],
+        queryFn: () => fetch("/api/scm/procurement/purchase-orders").then(r => r.json()),
     });
 
     const createMutation = useMutation({
@@ -54,7 +119,39 @@ export default function APInvoiceEntry() {
     });
 
     const addLine = () => {
-        setLines([...lines, { lineNumber: lines.length + 1, lineType: "ITEM", amount: "", description: "", poHeaderId: "" }]);
+        setLines([...lines, {
+            lineNumber: lines.length + 1,
+            lineType: "ITEM",
+            amount: "",
+            description: "",
+            poHeaderId: "",
+            poLineId: "",
+            itemId: "",
+            taxClassificationCode: "EXEMPT",
+            trackAsAssetFlag: false
+        }]);
+    };
+
+    const calculateTax = () => {
+        // Assume 5% standard tax on all ITEM lines for demo purposes
+        const itemTotal = lines.filter(l => l.lineType === "ITEM").reduce((sum, l) => sum + parseFloat(l.amount || "0"), 0);
+        if (itemTotal > 0) {
+            const taxAmount = (itemTotal * 0.05).toFixed(2);
+            setLines([...lines, {
+                lineNumber: lines.length + 1,
+                lineType: "TAX",
+                amount: taxAmount,
+                description: "Standard Tax (5%)",
+                poHeaderId: "",
+                poLineId: "",
+                itemId: "",
+                taxClassificationCode: "STANDARD_20",
+                trackAsAssetFlag: false
+            }]);
+            toast({ title: "Tax Calculated", description: "Added 5% standard tax line." });
+        } else {
+            toast({ title: "No Items", description: "Add ITEM lines first to calculate tax", variant: "destructive" });
+        }
     };
 
     const removeLine = (index: number) => {
@@ -125,6 +222,20 @@ export default function APInvoiceEntry() {
                             </Select>
                         </div>
                         <div className="space-y-2">
+                            <Label>Purchase Order Reference</Label>
+                            <Select onValueChange={handlePOSelection}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Auto-populate from PO" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="none">None</SelectItem>
+                                    {Array.isArray(purchaseOrders) ? purchaseOrders.filter(po => po && po.id && (!header.supplierId || po.supplierId === header.supplierId)).map((po: any) => (
+                                        <SelectItem key={po.id} value={po.id}>{String(po.poNumber || po.id)} - ${po.totalAmount}</SelectItem>
+                                    )) : null}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
                             <Label>Invoice Number *</Label>
                             <Input value={header.invoiceNumber} onChange={e => setHeader({ ...header, invoiceNumber: e.target.value })} placeholder="INV-001" />
                         </div>
@@ -185,12 +296,66 @@ export default function APInvoiceEntry() {
                     </CardContent>
                 </Card>
 
+                {/* Advanced Options Toggle */}
+                <div className="flex justify-end">
+                    <Button variant="link" onClick={() => setAdvancedOptionsOpen(!advancedOptionsOpen)}>
+                        {advancedOptionsOpen ? "Hide Advanced Options" : "Show Advanced Options"}
+                    </Button>
+                </div>
+
+                {advancedOptionsOpen && (
+                    <Card className="bg-slate-50 border-slate-200">
+                        <CardHeader>
+                            <CardTitle className="text-md">Advanced Enterprise Options</CardTitle>
+                        </CardHeader>
+                        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                                <Label>Business Unit</Label>
+                                <Select value={header.businessUnitId} onValueChange={v => setHeader({ ...header, businessUnitId: v })}>
+                                    <SelectTrigger><SelectValue placeholder="Select BU..." /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="BU_US">US Operations</SelectItem>
+                                        <SelectItem value="BU_EU">EU Operations</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Legal Entity</Label>
+                                <Select value={header.legalEntityId} onValueChange={v => setHeader({ ...header, legalEntityId: v })}>
+                                    <SelectTrigger><SelectValue placeholder="Select LE..." /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="LE_1">NexusAI Inc.</SelectItem>
+                                        <SelectItem value="LE_2">NexusAI Ltd.</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Control Amount</Label>
+                                <Input type="number" step="0.01" value={header.controlAmount} onChange={e => setHeader({ ...header, controlAmount: e.target.value })} placeholder="0.00" />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>GL Date</Label>
+                                <Input type="date" value={header.glDate} onChange={e => setHeader({ ...header, glDate: e.target.value })} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Terms Date</Label>
+                                <Input type="date" value={header.termsDate} onChange={e => setHeader({ ...header, termsDate: e.target.value })} />
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
+
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle>Invoice Lines</CardTitle>
-                        <Button variant="outline" size="sm" onClick={addLine}>
-                            <Plus className="mr-2 h-4 w-4" /> Add Line
-                        </Button>
+                        <div className="flex gap-2">
+                            <Button variant="secondary" size="sm" onClick={calculateTax}>
+                                <Calculator className="mr-2 h-4 w-4" /> Calculate Tax
+                            </Button>
+                            <Button variant="outline" size="sm" onClick={addLine}>
+                                <Plus className="mr-2 h-4 w-4" /> Add Line
+                            </Button>
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
@@ -213,31 +378,90 @@ export default function APInvoiceEntry() {
                                             </SelectContent>
                                         </Select>
                                     </div>
-                                    <div className="flex-[2] space-y-2">
+                                    {line.lineType === 'ITEM' && (
+                                        <div className="flex-[1.5] space-y-2">
+                                            <Label>Item Number</Label>
+                                            <Select value={line.itemId || undefined} onValueChange={(v) => {
+                                                const selectedItem = items?.find((i: any) => i.id === v);
+                                                handleLineChange(index, "itemId", v);
+                                                if (selectedItem) {
+                                                    handleLineChange(index, "description", selectedItem.name || selectedItem.description || "");
+                                                }
+                                            }}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select Item" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="none">None</SelectItem>
+                                                    {Array.isArray(items) ? items.map((item: any) => (
+                                                        <SelectItem key={item.id} value={item.id}>{item.itemNumber || item.name}</SelectItem>
+                                                    )) : null}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    )}
+                                    <div className={line.lineType === 'ITEM' ? "flex-1 space-y-2" : "flex-[2.5] space-y-2"}>
                                         <Label>Description</Label>
                                         <Input value={line.description} onChange={e => handleLineChange(index, "description", e.target.value)} placeholder="Line description..." />
                                     </div>
                                     <div className="flex-1 space-y-2">
-                                        <Label>Amount</Label>
-                                        <Input type="number" step="0.01" value={line.amount} onChange={e => handleLineChange(index, "amount", e.target.value)} placeholder="0.00" />
-                                    </div>
-                                    <div className="flex-1 space-y-2">
-                                        <Label>Match to PO</Label>
-                                        <Select value={(line.poHeaderId === "none" ? undefined : line.poHeaderId) || undefined} onValueChange={v => handleLineChange(index, "poHeaderId", v)}>
+                                        <Label>Tax Classification</Label>
+                                        <Select value={line.taxClassificationCode} onValueChange={v => handleLineChange(index, "taxClassificationCode", v)}>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Select PO" />
+                                                <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="none">None</SelectItem>
-                                                {Array.isArray(purchaseOrders) ? purchaseOrders.filter((po: any) => po && po.id && (!header.supplierId || po.supplierId === header.supplierId)).map((po: any) => (
-                                                    <SelectItem key={po.id} value={po.id}>{String(po.poNumber)}</SelectItem>
-                                                )) : null}
+                                                <SelectItem value="STANDARD_20">Standard (20%)</SelectItem>
+                                                <SelectItem value="REDUCED_5">Reduced (5%)</SelectItem>
+                                                <SelectItem value="EXEMPT">Exempt (0%)</SelectItem>
+                                                <SelectItem value="ZERO">Zero-Rated</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
-                                    <Button variant="ghost" size="icon" onClick={() => removeLine(index)} disabled={lines.length === 1} className="text-red-500 hover:text-red-700 hover:bg-red-50">
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
+                                    <div className="flex-1 space-y-2">
+                                        <Label>Match to PO</Label>
+                                        <div className="flex gap-2">
+                                            <Select value={(line.poHeaderId === "none" ? undefined : line.poHeaderId) || undefined} onValueChange={v => handleLineChange(index, "poHeaderId", v)}>
+                                                <SelectTrigger className="flex-1">
+                                                    <SelectValue placeholder="PO" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="none">None</SelectItem>
+                                                    {Array.isArray(purchaseOrders) ? purchaseOrders.filter((po: any) => po && po.id && (!header.supplierId || po.supplierId === header.supplierId)).map((po: any) => (
+                                                        <SelectItem key={po.id} value={po.id}>{String(po.poNumber)}</SelectItem>
+                                                    )) : null}
+                                                </SelectContent>
+                                            </Select>
+                                            <Input
+                                                placeholder="Line #"
+                                                className="w-20"
+                                                value={line.poLineId || ""}
+                                                onChange={e => handleLineChange(index, "poLineId", e.target.value)}
+                                                disabled={!line.poHeaderId || line.poHeaderId === "none"}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-2 pb-0">
+                                        <Button variant="ghost" size="icon" title="View Distributions" onClick={(e) => {
+                                            e.preventDefault();
+                                            setSelectedLineForDistributions(selectedLineForDistributions === index ? null : index);
+                                        }}>
+                                            <Network className="h-4 w-4" />
+                                        </Button>
+                                        <Button variant="ghost" size="icon" onClick={() => removeLine(index)} disabled={lines.length === 1} className="text-red-500 hover:text-red-700 hover:bg-red-50">
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                    {selectedLineForDistributions === index && (
+                                        <div className="pt-0 px-4 pb-4">
+                                            <APInvoiceDistributions
+                                                invoiceId="draft"
+                                                invoiceLineId="draft_line"
+                                                lineAmount={parseFloat(line.amount || "0")}
+                                                onClose={() => setSelectedLineForDistributions(null)}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>

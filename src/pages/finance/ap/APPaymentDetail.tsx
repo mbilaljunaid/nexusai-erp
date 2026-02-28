@@ -62,10 +62,11 @@ export default function APPaymentDetail() {
     if (!batch) return <div className="p-8 text-center text-muted-foreground">Payment Batch not found.</div>;
 
     const status = batch.status?.toUpperCase() || "NEW";
+    const displayBatchId = batch.batchName || batch.id.substring(0, 8).toUpperCase();
 
     return (
         <StandardPage
-            title={`Payment Batch: ${batch.batchName || batch.id}`}
+            title={`Payment Batch: ${displayBatchId}`}
             description={`Manage payment execution for ${batch.paymentMethodCode || 'EFT'} run.`}
             breadcrumbs={[
                 { label: "Finance", href: "/finance" },

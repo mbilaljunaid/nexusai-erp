@@ -1,7 +1,7 @@
 
 import { Router } from "express";
 import { db } from "../../db";
-import { purchaseOrders, suppliers } from "../../../shared/schema/scm";
+import { purchaseOrders, purchaseOrderLines, suppliers } from "../../../shared/schema/scm";
 import { eq, desc } from "drizzle-orm";
 import { procurementService } from "./ProcurementService";
 
@@ -37,6 +37,19 @@ procurementRouter.post("/purchase-orders", async (req, res) => {
     try {
         const po = await procurementService.createPurchaseOrder(req.body);
         res.json(po);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get Purchase Order Lines by PO ID
+procurementRouter.get("/purchase-orders/:id/lines", async (req, res) => {
+    try {
+        const lines = await db.select()
+            .from(purchaseOrderLines)
+            .where(eq(purchaseOrderLines.poHeaderId, req.params.id))
+            .orderBy(purchaseOrderLines.lineNumber);
+        res.json(lines);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }

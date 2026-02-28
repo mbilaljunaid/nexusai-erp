@@ -98,7 +98,6 @@ export function AdvancedSchedulingBoard() {
                 setWorkOrders(fetchedWOs.length ? fetchedWOs : []);
             }
         } catch (error) {
-        } catch (error) {
             console.error("Failed to load schedule data:", error);
         } finally {
             setLoading(false);
