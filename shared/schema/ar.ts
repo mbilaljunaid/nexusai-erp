@@ -8,6 +8,7 @@ import { z } from "zod";
 export const arCustomers = pgTable("ar_customers", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     name: varchar("name").notNull(),
+    businessUnitId: varchar("business_unit_id"),
     taxId: varchar("tax_id"),
     customerType: varchar("customer_type").default("Commercial"), // Commercial, Individual
     address: text("address"), // Registry address
@@ -19,6 +20,7 @@ export const arCustomers = pgTable("ar_customers", {
 
 export const insertArCustomerSchema = createInsertSchema(arCustomers).extend({
     name: z.string().min(1),
+    businessUnitId: z.string().optional().nullable(),
     taxId: z.string().optional().nullable(),
     customerType: z.string().optional(),
     address: z.string().optional().nullable(),
@@ -91,6 +93,7 @@ export type ArCustomerSite = typeof arCustomerSites.$inferSelect;
 // AR Invoices (Sales Invoices)
 export const arInvoices = pgTable("ar_invoices", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    businessUnitId: varchar("business_unit_id"),
     customerId: varchar("customer_id").notNull(), // Party
     accountId: varchar("account_id"), // Linked Account (Oracle Parity)
     siteId: varchar("site_id"), // Bill-to Site (Oracle Parity)
@@ -116,6 +119,7 @@ export const arInvoices = pgTable("ar_invoices", {
 });
 
 export const insertArInvoiceSchema = createInsertSchema(arInvoices).extend({
+    businessUnitId: z.string().optional().nullable(),
     customerId: z.string().min(1),
     accountId: z.string().optional().nullable(),
     siteId: z.string().optional().nullable(),

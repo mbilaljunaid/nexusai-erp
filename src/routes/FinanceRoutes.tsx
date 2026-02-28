@@ -24,6 +24,8 @@ import APReports from "@/pages/finance/ap/APReports";
 import APPrepayments from "@/pages/finance/ap/APPrepayments";
 import APPaymentBatches from "@/pages/finance/ap/APPaymentBatches";
 import APPaymentDetail from "@/pages/finance/ap/APPaymentDetail";
+import CreatePPR from "@/pages/finance/ap/CreatePPR";
+import APQuickPayment from "@/pages/finance/ap/APQuickPayment";
 import APSystemConfig from "@/pages/finance/ap/APSystemConfig";
 import PaymentTermsMaster from "@/pages/finance/ap/PaymentTermsMaster";
 import APPeriodClose from "@/pages/finance/ap/APPeriodClose";
@@ -192,6 +194,8 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ap/invoices/new" component={APInvoiceEntry} />
                 <Route path="/finance/ap/invoices/:id" component={APInvoiceDetail} />
                 <Route path="/finance/ap/invoices" component={APInvoices} />
+                <Route path="/finance/ap/payments/new" component={CreatePPR} />
+                <Route path="/finance/ap/payments/quick" component={APQuickPayment} />
                 <Route path="/finance/ap/payments/:id" component={APPaymentDetail} />
                 <Route path="/finance/ap/payments" component={APPaymentBatches} />
                 <Route path="/finance/ap/withholding-tax" component={APWithholdingTax} />

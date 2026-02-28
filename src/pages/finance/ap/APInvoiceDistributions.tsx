@@ -16,6 +16,7 @@ interface DistributionLine {
     amount: string;
     description: string;
     glAccountId: string;
+    accountingDate?: string;
     ppmProjectId?: string;
     ppmTaskId?: string;
     expenditureItemDate?: string;
@@ -39,7 +40,8 @@ export function APInvoiceDistributions({ invoiceId, invoiceLineId, lineAmount, o
             distributionLineType: "ITEM",
             amount: lineAmount.toString(),
             description: "",
-            glAccountId: ""
+            glAccountId: "",
+            accountingDate: new Date().toISOString().split("T")[0]
         }
     ]);
 
@@ -54,7 +56,8 @@ export function APInvoiceDistributions({ invoiceId, invoiceLineId, lineAmount, o
             distributionLineType: "ITEM",
             amount: "0",
             description: "",
-            glAccountId: ""
+            glAccountId: "",
+            accountingDate: new Date().toISOString().split("T")[0]
         }]);
     };
 
@@ -104,6 +107,7 @@ export function APInvoiceDistributions({ invoiceId, invoiceLineId, lineAmount, o
                         distributionLineType: dist.distributionLineType,
                         description: dist.description,
                         glAccountId: dist.glAccountId,
+                        accountingDate: dist.accountingDate ? new Date(dist.accountingDate).toISOString() : null,
                         ppmProjectId: dist.ppmProjectId,
                         ppmTaskId: dist.ppmTaskId,
                         expenditureItemDate: dist.expenditureItemDate ? new Date(dist.expenditureItemDate).toISOString() : null,
@@ -150,6 +154,7 @@ export function APInvoiceDistributions({ invoiceId, invoiceLineId, lineAmount, o
                         <tr>
                             <th className="px-4 py-3 font-medium w-16">No.</th>
                             <th className="px-4 py-3 font-medium w-40">Type</th>
+                            <th className="px-4 py-3 font-medium w-40">GL Date</th>
                             <th className="px-4 py-3 font-medium w-64">GL Account</th>
                             <th className="px-4 py-3 font-medium w-32">Amount</th>
                             <th className="px-4 py-3 font-medium">Description</th>
@@ -172,6 +177,14 @@ export function APInvoiceDistributions({ invoiceId, invoiceLineId, lineAmount, o
                                             <SelectItem value="PREPAYMENT">Prepayment</SelectItem>
                                         </SelectContent>
                                     </Select>
+                                </td>
+                                <td className="px-4 py-3">
+                                    <Input
+                                        type="date"
+                                        className="h-8 text-xs"
+                                        value={dist.accountingDate || ""}
+                                        onChange={e => handleDistributionChange(index, "accountingDate", e.target.value)}
+                                    />
                                 </td>
                                 <td className="px-4 py-3">
                                     <Select value={dist.glAccountId || undefined} onValueChange={v => handleDistributionChange(index, "glAccountId", v)}>

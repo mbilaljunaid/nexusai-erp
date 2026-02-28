@@ -168,12 +168,14 @@ __export(schema_exports, {
   apPaymentTerms: () => apPaymentTerms,
   apPayments: () => apPayments,
   apPeriodStatuses: () => apPeriodStatuses,
+  apPprTemplates: () => apPprTemplates,
   apPrepayApplications: () => apPrepayApplications,
   apSupplierSites: () => apSupplierSites,
   apSupplierSitesRelations: () => apSupplierSitesRelations,
   apSuppliers: () => apSuppliers,
   apSuppliersRelations: () => apSuppliersRelations,
   apSystemParameters: () => apSystemParameters,
+  apTolerances: () => apTolerances,
   apWhtGroups: () => apWhtGroups,
   apWhtRates: () => apWhtRates,
   appInstallations: () => appInstallations,
@@ -564,10 +566,12 @@ __export(schema_exports, {
   insertApPaymentSchema: () => insertApPaymentSchema,
   insertApPaymentTermSchema: () => insertApPaymentTermSchema,
   insertApPeriodStatusSchema: () => insertApPeriodStatusSchema,
+  insertApPprTemplateSchema: () => insertApPprTemplateSchema,
   insertApPrepayApplicationSchema: () => insertApPrepayApplicationSchema,
   insertApSupplierSchema: () => insertApSupplierSchema,
   insertApSupplierSiteSchema: () => insertApSupplierSiteSchema,
   insertApSystemParametersSchema: () => insertApSystemParametersSchema,
+  insertApToleranceSchema: () => insertApToleranceSchema,
   insertApWhtGroupSchema: () => insertApWhtGroupSchema,
   insertApWhtRateSchema: () => insertApWhtRateSchema,
   insertAppInstallationSchema: () => insertAppInstallationSchema,
@@ -1764,8 +1768,11 @@ var apInvoices = pgTable2("ap_invoices", {
   invoiceId: varchar2("invoice_id", { length: 50 }),
   // Logical ID if needed, or use serial ID
   supplierId: varchar2("supplier_id").notNull(),
-  supplierSiteId: varchar2("supplier_site_id"),
-  // FK to ap_supplier_sites (Migration will populate this)
+  supplierSiteId: varchar2("supplier_site_id").notNull(),
+  // Enforced for enterprise banking routing
+  // Multi-Org
+  businessUnitId: varchar2("business_unit_id"),
+  legalEntityId: varchar2("legal_entity_id"),
   invoiceNumber: varchar2("invoice_number", { length: 100 }).notNull(),
   invoiceDate: timestamp2("invoice_date").notNull(),
   description: text2("description"),
@@ -1796,6 +1803,14 @@ var apInvoices = pgTable2("ap_invoices", {
   cancelledDate: timestamp2("cancelled_date"),
   glDate: timestamp2("gl_date"),
   // Default GL Date
+  termsDate: timestamp2("terms_date"),
+  goodsReceivedDate: timestamp2("goods_received_date"),
+  invoiceReceivedDate: timestamp2("invoice_received_date"),
+  controlAmount: numeric2("control_amount", { precision: 18, scale: 2 }),
+  payGroup: varchar2("pay_group", { length: 50 }),
+  paymentMethodOverride: varchar2("payment_method_override", { length: 50 }),
+  documentCategory: varchar2("document_category", { length: 50 }),
+  exchangeRate: numeric2("exchange_rate", { precision: 18, scale: 6 }),
   // AI Extraction Metadata
   audioUrl: text2("audio_url"),
   documentUrl: text2("document_url"),
@@ -1822,6 +1837,13 @@ var apInvoiceLines = pgTable2("ap_invoice_lines", {
   poLineId: varchar2("po_line_id"),
   quantityInvoiced: numeric2("quantity_invoiced", { precision: 18, scale: 4 }),
   unitPrice: numeric2("unit_price", { precision: 18, scale: 4 }),
+  uom: varchar2("uom", { length: 50 }),
+  // Tax & Assets
+  taxClassificationCode: varchar2("tax_classification_code", { length: 50 }),
+  trackAsAssetFlag: boolean2("track_as_asset_flag").default(false),
+  assetCategoryId: varchar2("asset_category_id"),
+  requesterId: varchar2("requester_id"),
+  // Employee ID for routing
   // Status
   discardedFlag: boolean2("discarded_flag").default(false),
   cancelledFlag: boolean2("cancelled_flag").default(false),
@@ -1844,12 +1866,19 @@ var apInvoiceDistributions = pgTable2("ap_invoice_distributions", {
   invoiceId: varchar2("invoice_id").notNull(),
   invoiceLineId: varchar2("invoice_line_id").notNull(),
   distLineNumber: integer2("dist_line_number").notNull(),
+  distributionLineType: varchar2("distribution_line_type", { length: 50 }).notNull().default("ITEM"),
+  // ITEM, ACCRUAL, TAX, VARIANCE
   amount: numeric2("amount", { precision: 18, scale: 2 }).notNull(),
   // Accounting
   distCodeCombinationId: varchar2("dist_code_combination_id").notNull(),
   // GL Account
   accountingDate: timestamp2("accounting_date"),
   description: text2("description"),
+  // PPM & Costing Project integration extensions
+  ppmProjectId: varchar2("ppm_project_id"),
+  ppmTaskId: varchar2("ppm_task_id"),
+  expenditureItemDate: timestamp2("expenditure_item_date"),
+  expenditureType: varchar2("expenditure_type", { length: 100 }),
   // Status
   postedFlag: boolean2("posted_flag").default(false),
   // Has this been sent to SLA/GL?
@@ -1860,12 +1889,16 @@ var insertApInvoiceDistributionSchema = createInsertSchema2(apInvoiceDistributio
 var apPaymentBatches = pgTable2("ap_payment_batches", {
   id: varchar2("id").primaryKey().default(sql2`gen_random_uuid()`),
   batchName: varchar2("batch_name", { length: 100 }).notNull(),
-  status: varchar2("status", { length: 50 }).default("NEW"),
-  // NEW, SELECTED, CONFIRMED, CANCELLED
+  status: varchar2("status", { length: 50 }).default("SELECTING"),
+  // SELECTING, BUILDING, FORMATTING, CONFIRMED, CANCELLED
   // Selection Criteria
+  templateId: varchar2("template_id"),
   checkDate: timestamp2("check_date").notNull().defaultNow(),
+  payThroughDate: timestamp2("pay_through_date"),
   payGroup: varchar2("pay_group", { length: 50 }),
+  priorityRange: varchar2("priority_range", { length: 50 }),
   paymentMethodCode: varchar2("payment_method_code", { length: 50 }).default("CHECK"),
+  paymentDocumentId: varchar2("payment_document_id"),
   // Totals
   totalAmount: numeric2("total_amount", { precision: 18, scale: 2 }).default("0"),
   paymentCount: integer2("payment_count").default(0),
@@ -2055,6 +2088,36 @@ var apPaymentTerms = pgTable2("ap_payment_terms", {
   updatedAt: timestamp2("updated_at").defaultNow()
 });
 var insertApPaymentTermSchema = createInsertSchema2(apPaymentTerms);
+var apTolerances = pgTable2("ap_tolerances", {
+  id: varchar2("id").primaryKey().default(sql2`gen_random_uuid()`),
+  name: varchar2("name", { length: 100 }).notNull().unique(),
+  description: text2("description"),
+  // Percentage Variances (0 - 100)
+  priceTolerancePct: numeric2("price_tolerance_pct", { precision: 5, scale: 2 }).default("0"),
+  quantityTolerancePct: numeric2("quantity_tolerance_pct", { precision: 5, scale: 2 }).default("0"),
+  // Amount Variances
+  maxAmountTolerance: numeric2("max_amount_tolerance", { precision: 18, scale: 2 }).default("0"),
+  createdAt: timestamp2("created_at").defaultNow(),
+  updatedAt: timestamp2("updated_at").defaultNow()
+});
+var insertApToleranceSchema = createInsertSchema2(apTolerances);
+var apPprTemplates = pgTable2("ap_ppr_templates", {
+  id: varchar2("id").primaryKey().default(sql2`gen_random_uuid()`),
+  templateName: varchar2("template_name", { length: 100 }).notNull().unique(),
+  description: text2("description"),
+  // Selection Criteria
+  payGroupId: varchar2("pay_group_id"),
+  priorityRangeFrom: integer2("priority_range_from"),
+  priorityRangeTo: integer2("priority_range_to"),
+  paymentMethodCode: varchar2("payment_method_code", { length: 50 }),
+  bankAccountId: varchar2("bank_account_id"),
+  // Processing Options 
+  autoReviewInvoices: boolean2("auto_review_invoices").default(true),
+  autoFormatPayments: boolean2("auto_format_payments").default(false),
+  createdAt: timestamp2("created_at").defaultNow(),
+  updatedAt: timestamp2("updated_at").defaultNow()
+});
+var insertApPprTemplateSchema = createInsertSchema2(apPprTemplates);
 var apSuppliersRelations = relations(apSuppliers, ({ many }) => ({
   sites: many(apSupplierSites)
 }));

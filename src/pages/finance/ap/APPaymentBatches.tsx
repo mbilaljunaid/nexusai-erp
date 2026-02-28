@@ -24,6 +24,7 @@ export default function APPaymentBatches() {
     const [, setLocation] = useLocation();
 
     const [formData, setFormData] = useState({
+        businessUnitId: "",
         batchName: "",
         paymentMethodCode: "EFT",
         checkDate: new Date().toISOString().split("T")[0],
@@ -97,6 +98,7 @@ export default function APPaymentBatches() {
     };
 
     const columns: Column<any>[] = [
+        { header: "BU", accessorKey: "businessUnitId", className: "text-muted-foreground font-mono text-xs w-20", cell: (row) => row.businessUnitId || "Default" },
         {
             header: "Batch #",
             accessorKey: "id",
@@ -280,6 +282,21 @@ export default function APPaymentBatches() {
                         <DialogTitle>Create Payment Batch</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="businessUnitId">Business Unit *</Label>
+                            <Select
+                                value={formData.businessUnitId}
+                                onValueChange={(v) => setFormData({ ...formData, businessUnitId: v })}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select Business Unit" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="BU_US">US Operations</SelectItem>
+                                    <SelectItem value="BU_EU">EU Operations</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                         <div className="space-y-2">
                             <Label htmlFor="batchName">Batch Name</Label>
                             <Input

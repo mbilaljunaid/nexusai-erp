@@ -54,6 +54,7 @@ export default function APSuppliers() {
     });
 
     const columns: Column<any>[] = [
+        { header: "BU", accessorKey: "businessUnitId", className: "text-muted-foreground font-mono text-xs w-20", cell: (row) => row.businessUnitId || "Default" },
         { header: "Supplier #", accessorKey: "supplierNumber", className: "font-mono" },
         { header: "Name", accessorKey: "name", className: "font-medium" },
         { header: "Tax ID", accessorKey: "taxId" },
@@ -112,6 +113,7 @@ export default function APSuppliers() {
     });
 
     const [formData, setFormData] = useState({
+        businessUnitId: "",
         supplierNumber: "",
         name: "",
         taxId: "",
@@ -160,6 +162,16 @@ export default function APSuppliers() {
                         <DialogTitle>Create Supplier</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="businessUnit">Business Unit *</Label>
+                            <Select value={formData.businessUnitId} onValueChange={(v) => setFormData({ ...formData, businessUnitId: v })}>
+                                <SelectTrigger><SelectValue placeholder="Select BU..." /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="BU_US">US Operations</SelectItem>
+                                    <SelectItem value="BU_EU">EU Operations</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                         <div className="space-y-2">
                             <Label htmlFor="supplierNumber">Supplier Number</Label>
                             <Input

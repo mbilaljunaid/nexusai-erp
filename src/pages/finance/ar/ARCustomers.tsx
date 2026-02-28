@@ -34,7 +34,7 @@ export default function ARCustomers() {
 
   // Forms
   const customerForm = useForm({
-    defaultValues: { name: "", customerType: "Commercial", taxId: "", contactEmail: "" }
+    defaultValues: { businessUnitId: "", name: "", customerType: "Commercial", taxId: "", contactEmail: "" }
   });
 
   const accountForm = useForm({
@@ -72,6 +72,7 @@ export default function ARCustomers() {
 
   // Columns
   const customerCols: Column<ArCustomer>[] = [
+    { header: "BU", accessorKey: "businessUnitId", className: "text-muted-foreground font-mono text-xs w-20", cell: (r: any) => r.businessUnitId || "Default" },
     { header: "Customer Name", accessorKey: "name" },
     { header: "Type", accessorKey: "customerType" },
     { header: "Status", accessorKey: "status" },
@@ -108,6 +109,18 @@ export default function ARCustomers() {
                 <DialogHeader><DialogTitle>Create Customer Party</DialogTitle></DialogHeader>
                 <Form {...customerForm}>
                   <form onSubmit={customerForm.handleSubmit((d) => createCustomer.mutate({ ...d, contactEmail: d.contactEmail || undefined, taxId: d.taxId || undefined }))} className="space-y-4">
+                    <FormField control={customerForm.control} name="businessUnitId" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Business Unit *</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl><SelectTrigger><SelectValue placeholder="Select BU..." /></SelectTrigger></FormControl>
+                          <SelectContent>
+                            <SelectItem value="BU_US">US Operations</SelectItem>
+                            <SelectItem value="BU_EU">EU Operations</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )} />
                     <FormField control={customerForm.control} name="name" render={({ field }) => (
                       <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
                     )} />

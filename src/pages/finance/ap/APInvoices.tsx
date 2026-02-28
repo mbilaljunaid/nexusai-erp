@@ -135,6 +135,7 @@ export default function APInvoices() {
   const filteredData = data?.data || [];
 
   const columns: Column<any>[] = [
+    { header: "BU", accessorKey: "businessUnitId", className: "text-muted-foreground font-mono text-xs w-20" },
     { header: "Invoice #", accessorKey: "invoiceNumber", className: "font-mono font-medium" },
     { header: "Supplier", accessorKey: "supplierId", cell: (row) => row.supplier?.name || "Unknown" },
     { header: "Amount", accessorKey: "invoiceAmount", cell: (row) => `$${parseFloat(row.invoiceAmount).toFixed(2)}` },
@@ -338,6 +339,17 @@ export default function APInvoices() {
               <CardContent className="pt-6">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div className="space-y-2">
+                    <Label>Business Unit</Label>
+                    <Select value={filters.businessUnitId || "all"} onValueChange={(v) => setFilters(f => ({ ...f, businessUnitId: v === "all" ? undefined : v }))}>
+                      <SelectTrigger><SelectValue placeholder="All BUs" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All BUs</SelectItem>
+                        <SelectItem value="BU_US">US Operations</SelectItem>
+                        <SelectItem value="BU_EU">EU Operations</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
                     <Label>Invoice Number</Label>
                     <Input
                       placeholder="Search invoice #..."
@@ -376,7 +388,8 @@ export default function APInvoices() {
                 </div>
               </CardContent>
             </Card>
-          )}
+          )
+          }
 
           <StandardTable
             data={filteredData}
@@ -390,7 +403,7 @@ export default function APInvoices() {
             filterPlaceholder="Search invoice #..."
             onRowClick={(item) => setLocation(`/finance/ap/invoices/${item.id}`)}
           />
-        </div>
+        </div >
 
         <ViewAccountingModal
           open={accountingModalOpen}
@@ -510,7 +523,7 @@ export default function APInvoices() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </div>
-    </StandardPage>
+      </div >
+    </StandardPage >
   );
 }

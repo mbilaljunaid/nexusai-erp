@@ -21,7 +21,7 @@ export default function ARInvoices() {
   const { toast } = useToast();
   const { open, sendMessage } = useNexusAI();
   const [, setLocation] = useLocation();
-  const [newInvoice, setNewInvoice] = useState({ invoiceNumber: "", customerId: "", invoiceAmount: "", status: "issued" });
+  const [newInvoice, setNewInvoice] = useState({ businessUnitId: "", invoiceNumber: "", customerId: "", invoiceAmount: "", status: "issued" });
   const [page, setPage] = useState(1);
   const pageSize = 10;
   // State for Credit Memo Dialog
@@ -72,7 +72,7 @@ export default function ARInvoices() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ar/invoices"] });
-      setNewInvoice({ invoiceNumber: "", customerId: "", invoiceAmount: "", status: "issued" });
+      setNewInvoice({ businessUnitId: "", invoiceNumber: "", customerId: "", invoiceAmount: "", status: "issued" });
       toast({ title: "Invoice created" });
     },
   });
@@ -131,6 +131,12 @@ export default function ARInvoices() {
   };
 
   const columns: Column<ArInvoice>[] = [
+    {
+      header: "BU",
+      accessorKey: "businessUnitId",
+      className: "text-muted-foreground font-mono text-xs w-20",
+      cell: (inv) => inv.businessUnitId || "Default"
+    },
     {
       header: "Invoice #",
       accessorKey: "invoiceNumber",
@@ -270,7 +276,14 @@ export default function ARInvoices() {
       <Card data-testid="card-new-invoice">
         <CardHeader><CardTitle className="text-base">Create Invoice</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-6 gap-3">
+            <Select value={newInvoice.businessUnitId} onValueChange={(v) => setNewInvoice({ ...newInvoice, businessUnitId: v })}>
+              <SelectTrigger><SelectValue placeholder="BU" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="BU_US">US Operations</SelectItem>
+                <SelectItem value="BU_EU">EU Operations</SelectItem>
+              </SelectContent>
+            </Select>
             <Input placeholder="Invoice #" value={newInvoice.invoiceNumber} onChange={(e) => setNewInvoice({ ...newInvoice, invoiceNumber: e.target.value })} data-testid="input-invoice-number" />
             <Select value={newInvoice.customerId} onValueChange={(v) => setNewInvoice({ ...newInvoice, customerId: v })}>
               <SelectTrigger data-testid="select-customer-id"><SelectValue placeholder="Select Customer" /></SelectTrigger>

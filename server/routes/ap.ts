@@ -149,6 +149,17 @@ apRouter.get("/suppliers/:id", async (req, res) => {
     res.json(sup);
 });
 
+// Supplier Sites
+apRouter.get("/suppliers/:id/sites", async (req, res) => {
+    try {
+        const { apSupplierSites } = await import("@shared/schema");
+        const sites = await db.select().from(apSupplierSites).where(eq(apSupplierSites.supplierId, req.params.id));
+        res.json(sites);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 apRouter.post("/suppliers", async (req, res) => {
     const parse = insertApSupplierSchema.safeParse(req.body);
     if (!parse.success) return res.status(400).json(parse.error);

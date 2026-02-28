@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Settings, Calendar, Lock, Unlock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function APSystemConfig() {
     const [page, setPage] = useState(1);
@@ -20,6 +21,7 @@ export default function APSystemConfig() {
     const queryClient = useQueryClient();
 
     const [distSetForm, setDistSetForm] = useState({
+        businessUnitId: "",
         name: "",
         description: "",
         defaultAccount: ""
@@ -32,6 +34,7 @@ export default function APSystemConfig() {
     });
 
     const [params, setParams] = useState({
+        defaultBusinessUnit: systemParams?.defaultBusinessUnit || "BU_US",
         defaultPaymentTerms: systemParams?.defaultPaymentTerms || "Net 30",
         autoValidation: systemParams?.autoValidation || false,
         requirePOMatch: systemParams?.requirePOMatch || false,
@@ -89,6 +92,7 @@ export default function APSystemConfig() {
     });
 
     const distSetColumns: Column<any>[] = [
+        { header: "BU", accessorKey: "businessUnitId", className: "text-muted-foreground font-mono text-xs w-20", cell: (row) => row.businessUnitId || "Default" },
         { header: "Name", accessorKey: "name", className: "font-medium" },
         { header: "Description", accessorKey: "description" },
         { header: "Default Account", accessorKey: "defaultAccount", className: "font-mono" }
@@ -162,6 +166,16 @@ export default function APSystemConfig() {
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <div className="grid gap-4 md:grid-cols-2">
+                                <div className="space-y-2">
+                                    <Label htmlFor="defaultBusinessUnit">Default Business Unit</Label>
+                                    <Select value={params.defaultBusinessUnit} onValueChange={(v) => setParams({ ...params, defaultBusinessUnit: v })}>
+                                        <SelectTrigger><SelectValue placeholder="Select Default BU" /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="BU_US">US Operations</SelectItem>
+                                            <SelectItem value="BU_EU">EU Operations</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="defaultPaymentTerms">Default Payment Terms</Label>
                                     <Input
@@ -283,6 +297,16 @@ export default function APSystemConfig() {
                         <DialogTitle>Create Distribution Set</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="businessUnit">Business Unit *</Label>
+                            <Select value={distSetForm.businessUnitId} onValueChange={(v) => setDistSetForm({ ...distSetForm, businessUnitId: v })}>
+                                <SelectTrigger><SelectValue placeholder="Select Business Unit" /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="BU_US">US Operations</SelectItem>
+                                    <SelectItem value="BU_EU">EU Operations</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                         <div className="space-y-2">
                             <Label htmlFor="name">Name</Label>
                             <Input

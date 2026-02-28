@@ -77,6 +77,10 @@ export default function APSupplierDetail() {
         >
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
+                    <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">Business Unit</CardTitle></CardHeader>
+                    <CardContent><div className="text-lg font-medium">{supplier.businessUnitId || "System Default"}</div></CardContent>
+                </Card>
+                <Card>
                     <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">Supplier Number</CardTitle></CardHeader>
                     <CardContent><div className="text-xl font-bold font-mono">{supplier.supplierNumber}</div></CardContent>
                 </Card>

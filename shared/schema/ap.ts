@@ -110,6 +110,7 @@ export const apInvoices = pgTable("ap_invoices", {
     // Controls
     cancelledDate: timestamp("cancelled_date"),
     glDate: timestamp("gl_date"), // Default GL Date
+    transactionDate: timestamp("transaction_date"),
     termsDate: timestamp("terms_date"),
     goodsReceivedDate: timestamp("goods_received_date"),
     invoiceReceivedDate: timestamp("invoice_received_date"),
