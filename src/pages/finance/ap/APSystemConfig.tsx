@@ -13,6 +13,10 @@ import { Plus, Settings, Calendar, Lock, Unlock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+import { APTolerances } from "./config/APTolerances";
+import { APHoldRules } from "./config/APHoldRules";
+import { APMasterData } from "./config/APMasterData";
+
 export default function APSystemConfig() {
     const [page, setPage] = useState(1);
     const pageSize = 20;
@@ -153,7 +157,10 @@ export default function APSystemConfig() {
             <Tabs defaultValue="parameters" className="space-y-4">
                 <TabsList>
                     <TabsTrigger value="parameters">System Parameters</TabsTrigger>
+                    <TabsTrigger value="tolerances">Tolerances</TabsTrigger>
+                    <TabsTrigger value="holds">Hold Rules</TabsTrigger>
                     <TabsTrigger value="distribution">Distribution Sets</TabsTrigger>
+                    <TabsTrigger value="masterdata">Master Data</TabsTrigger>
                     <TabsTrigger value="periods">Period Control</TabsTrigger>
                 </TabsList>
 
@@ -235,6 +242,16 @@ export default function APSystemConfig() {
                     </Card>
                 </TabsContent>
 
+                {/* Tolerances Tab */}
+                <TabsContent value="tolerances">
+                    <APTolerances />
+                </TabsContent>
+
+                {/* Holds Tab */}
+                <TabsContent value="holds">
+                    <APHoldRules />
+                </TabsContent>
+
                 {/* Distribution Sets Tab */}
                 <TabsContent value="distribution">
                     <Card>
@@ -264,6 +281,11 @@ export default function APSystemConfig() {
                             />
                         </CardContent>
                     </Card>
+                </TabsContent>
+
+                {/* Master Data Tab */}
+                <TabsContent value="masterdata">
+                    <APMasterData />
                 </TabsContent>
 
                 {/* Period Control Tab */}

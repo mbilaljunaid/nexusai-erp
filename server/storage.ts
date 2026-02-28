@@ -135,8 +135,16 @@ import {
   type ArDunningRun, type InsertArDunningRun,
   type ArCollectorTask, type InsertArCollectorTask,
   type ArAdjustment, type InsertArAdjustment,
-  arPeriodStatuses, type ArPeriodStatus, type InsertArPeriodStatus,
+  type ArPeriodStatus, type InsertArPeriodStatus,
   type ArSystemOptions, type InsertArSystemOptions,
+  // AR Config (Oracle Parity)
+  arTransactionTypes, type ArTransactionType, type InsertArTransactionType,
+  arBatchSources, type ArBatchSource, type InsertArBatchSource,
+  arCustomerProfiles, type ArCustomerProfile, type InsertArCustomerProfile,
+  arCustomerBankAccounts, type ArCustomerBankAccount, type InsertArCustomerBankAccount,
+  arReceiptMethods, type ArReceiptMethod, type InsertArReceiptMethod,
+  arAutoAccountingRules, type ArAutoAccountingRule, type InsertArAutoAccountingRule,
+
 
   // Tax
   taxCodes, taxJurisdictions, taxExemptions,
@@ -660,6 +668,17 @@ export interface IStorage {
   updateArCustomer(id: string, data: Partial<InsertArCustomer>): Promise<ArCustomer | undefined>;
   deleteArCustomer(id: string): Promise<boolean>;
 
+  // Customer Profiles & Bank Accounts (TCA)
+  listArCustomerProfiles(): Promise<ArCustomerProfile[]>;
+  getArCustomerProfile(id: string): Promise<ArCustomerProfile | undefined>;
+  createArCustomerProfile(data: InsertArCustomerProfile): Promise<ArCustomerProfile>;
+  updateArCustomerProfile(id: string, data: Partial<InsertArCustomerProfile>): Promise<ArCustomerProfile | undefined>;
+
+  listArCustomerBankAccounts(customerId?: string): Promise<ArCustomerBankAccount[]>;
+  getArCustomerBankAccount(id: string): Promise<ArCustomerBankAccount | undefined>;
+  createArCustomerBankAccount(data: InsertArCustomerBankAccount): Promise<ArCustomerBankAccount>;
+  updateArCustomerBankAccount(id: string, data: Partial<InsertArCustomerBankAccount>): Promise<ArCustomerBankAccount | undefined>;
+
   // AR Accounts
   listArCustomerAccounts(customerId?: string): Promise<ArCustomerAccount[]>;
   getArCustomerAccount(id: string): Promise<ArCustomerAccount | undefined>;
@@ -689,6 +708,24 @@ export interface IStorage {
   // AR System Options
   getArSystemOptions(ledgerId: string): Promise<ArSystemOptions | undefined>;
   upsertArSystemOptions(data: InsertArSystemOptions): Promise<ArSystemOptions>;
+
+  // AR Foundation Configurations (Oracle Parity)
+  listArTransactionTypes(): Promise<ArTransactionType[]>;
+  getArTransactionType(id: string): Promise<ArTransactionType | undefined>;
+  createArTransactionType(data: InsertArTransactionType): Promise<ArTransactionType>;
+
+  listArBatchSources(): Promise<ArBatchSource[]>;
+  getArBatchSource(id: string): Promise<ArBatchSource | undefined>;
+  createArBatchSource(data: InsertArBatchSource): Promise<ArBatchSource>;
+
+  listArReceiptMethods(): Promise<ArReceiptMethod[]>;
+  getArReceiptMethod(id: string): Promise<ArReceiptMethod | undefined>;
+  createArReceiptMethod(data: InsertArReceiptMethod): Promise<ArReceiptMethod>;
+
+  listArAutoAccountingRules(): Promise<ArAutoAccountingRule[]>;
+  getArAutoAccountingRule(id: string): Promise<ArAutoAccountingRule | undefined>;
+  createArAutoAccountingRule(data: InsertArAutoAccountingRule): Promise<ArAutoAccountingRule>;
+
 
   // AR Revenue Recognition
   listArRevenueRules(): Promise<ArRevenueRule[]>;
@@ -1433,6 +1470,55 @@ export class DatabaseStorage implements IStorage {
   }
 
   // AR Module Implementation (DB-Backed)
+  // AR Foundation Configurations (Oracle Parity)
+  async listArTransactionTypes() {
+    return await db.select().from(arTransactionTypes);
+  }
+  async getArTransactionType(id: string) {
+    const [res] = await db.select().from(arTransactionTypes).where(eq(arTransactionTypes.id, id));
+    return res;
+  }
+  async createArTransactionType(data: InsertArTransactionType) {
+    const [res] = await db.insert(arTransactionTypes).values(data).returning();
+    return res;
+  }
+
+  async listArBatchSources() {
+    return await db.select().from(arBatchSources);
+  }
+  async getArBatchSource(id: string) {
+    const [res] = await db.select().from(arBatchSources).where(eq(arBatchSources.id, id));
+    return res;
+  }
+  async createArBatchSource(data: InsertArBatchSource) {
+    const [res] = await db.insert(arBatchSources).values(data).returning();
+    return res;
+  }
+
+  async listArReceiptMethods() {
+    return await db.select().from(arReceiptMethods);
+  }
+  async getArReceiptMethod(id: string) {
+    const [res] = await db.select().from(arReceiptMethods).where(eq(arReceiptMethods.id, id));
+    return res;
+  }
+  async createArReceiptMethod(data: InsertArReceiptMethod) {
+    const [res] = await db.insert(arReceiptMethods).values(data).returning();
+    return res;
+  }
+
+  async listArAutoAccountingRules() {
+    return await db.select().from(arAutoAccountingRules);
+  }
+  async getArAutoAccountingRule(id: string) {
+    const [res] = await db.select().from(arAutoAccountingRules).where(eq(arAutoAccountingRules.id, id));
+    return res;
+  }
+  async createArAutoAccountingRule(data: InsertArAutoAccountingRule) {
+    const [res] = await db.insert(arAutoAccountingRules).values(data).returning();
+    return res;
+  }
+
   async listArCustomers() {
     return await db.select().from(arCustomers);
   }
@@ -1451,6 +1537,43 @@ export class DatabaseStorage implements IStorage {
   async deleteArCustomer(id: string) {
     await db.delete(arCustomers).where(eq(arCustomers.id, id));
     return true;
+  }
+
+  // TCA Customer Profiles
+  async listArCustomerProfiles(): Promise<ArCustomerProfile[]> {
+    return await db.select().from(arCustomerProfiles);
+  }
+  async getArCustomerProfile(id: string): Promise<ArCustomerProfile | undefined> {
+    const [res] = await db.select().from(arCustomerProfiles).where(eq(arCustomerProfiles.id, id));
+    return res;
+  }
+  async createArCustomerProfile(data: InsertArCustomerProfile): Promise<ArCustomerProfile> {
+    const [res] = await db.insert(arCustomerProfiles).values(data).returning();
+    return res;
+  }
+  async updateArCustomerProfile(id: string, data: Partial<InsertArCustomerProfile>): Promise<ArCustomerProfile | undefined> {
+    const [res] = await db.update(arCustomerProfiles).set(data).where(eq(arCustomerProfiles.id, id)).returning();
+    return res;
+  }
+
+  // TCA Customer Bank Accounts
+  async listArCustomerBankAccounts(customerId?: string): Promise<ArCustomerBankAccount[]> {
+    if (customerId) {
+      return await db.select().from(arCustomerBankAccounts).where(eq(arCustomerBankAccounts.customerId, customerId));
+    }
+    return await db.select().from(arCustomerBankAccounts);
+  }
+  async getArCustomerBankAccount(id: string): Promise<ArCustomerBankAccount | undefined> {
+    const [res] = await db.select().from(arCustomerBankAccounts).where(eq(arCustomerBankAccounts.id, id));
+    return res;
+  }
+  async createArCustomerBankAccount(data: InsertArCustomerBankAccount): Promise<ArCustomerBankAccount> {
+    const [res] = await db.insert(arCustomerBankAccounts).values(data).returning();
+    return res;
+  }
+  async updateArCustomerBankAccount(id: string, data: Partial<InsertArCustomerBankAccount>): Promise<ArCustomerBankAccount | undefined> {
+    const [res] = await db.update(arCustomerBankAccounts).set(data).where(eq(arCustomerBankAccounts.id, id)).returning();
+    return res;
   }
 
   // AR Accounts

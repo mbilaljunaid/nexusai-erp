@@ -24,7 +24,7 @@ import { Loader2, Search } from "lucide-react";
 import { List } from "react-window";
 
 export interface Column<T> {
-    header: string;
+    header: string | React.ReactNode;
     accessorKey?: keyof T;
     id?: string;
     cell?: (item: T) => React.ReactNode;

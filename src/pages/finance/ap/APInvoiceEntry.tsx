@@ -34,6 +34,9 @@ export default function APInvoiceEntry() {
         invoiceType: "STANDARD",
         invoiceAmount: "",
         invoiceCurrencyCode: "USD",
+        paymentCurrencyCode: "USD",
+        exchangeRate: "1.0",
+        payGroupId: "",
         description: "",
         paymentTerms: "Net 30",
         businessUnitId: "",
@@ -120,6 +123,11 @@ export default function APInvoiceEntry() {
     const { data: purchaseOrders } = useQuery({
         queryKey: ["/api/scm/procurement/purchase-orders"],
         queryFn: () => fetch("/api/scm/procurement/purchase-orders").then(r => r.json()),
+    });
+
+    const { data: payGroups } = useQuery({
+        queryKey: ["/api/finance/ap/pay-groups"],
+        queryFn: () => fetch("/api/finance/ap/pay-groups").then(r => r.json()),
     });
 
     const createMutation = useMutation({
@@ -321,7 +329,7 @@ export default function APInvoiceEntry() {
                             <Input type="number" step="0.01" value={header.invoiceAmount} onChange={e => setHeader({ ...header, invoiceAmount: e.target.value })} placeholder="0.00" />
                         </div>
                         <div className="space-y-2">
-                            <Label>Currency</Label>
+                            <Label>Invoice Currency</Label>
                             <Select value={header.invoiceCurrencyCode} onValueChange={v => setHeader({ ...header, invoiceCurrencyCode: v })}>
                                 <SelectTrigger>
                                     <SelectValue />
@@ -332,6 +340,29 @@ export default function APInvoiceEntry() {
                                     <SelectItem value="GBP">GBP</SelectItem>
                                 </SelectContent>
                             </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Payment Currency</Label>
+                            <Select value={header.paymentCurrencyCode} onValueChange={v => setHeader({ ...header, paymentCurrencyCode: v, exchangeRate: v === header.invoiceCurrencyCode ? "1.0" : header.exchangeRate })}>
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="USD">USD</SelectItem>
+                                    <SelectItem value="EUR">EUR</SelectItem>
+                                    <SelectItem value="GBP">GBP</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Exchange Rate</Label>
+                            <Input
+                                type="number"
+                                step="0.000001"
+                                value={header.exchangeRate}
+                                onChange={e => setHeader({ ...header, exchangeRate: e.target.value })}
+                                disabled={header.invoiceCurrencyCode === header.paymentCurrencyCode}
+                            />
                         </div>
                         <div className="space-y-2">
                             <Label>Payment Terms</Label>
@@ -345,6 +376,19 @@ export default function APInvoiceEntry() {
                                     <SelectItem value="Net 30">Net 30</SelectItem>
                                     <SelectItem value="Net 45">Net 45</SelectItem>
                                     <SelectItem value="Net 60">Net 60</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Pay Group</Label>
+                            <Select value={header.payGroupId || undefined} onValueChange={v => setHeader({ ...header, payGroupId: v })}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="System Default" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {Array.isArray(payGroups) ? payGroups.map((pg: any) => (
+                                        <SelectItem key={pg.id} value={pg.id.toString()}>{pg.name}</SelectItem>
+                                    )) : <SelectItem value="none" disabled>No custom pay groups</SelectItem>}
                                 </SelectContent>
                             </Select>
                         </div>

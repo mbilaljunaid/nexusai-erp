@@ -26,7 +26,19 @@ import {
     ArAdjustment,
     InsertArSystemOptions,
     ArSystemOptions,
-    arReceiptApplications
+    arReceiptApplications,
+    InsertArTransactionType,
+    ArTransactionType,
+    InsertArBatchSource,
+    ArBatchSource,
+    InsertArReceiptMethod,
+    ArReceiptMethod,
+    InsertArAutoAccountingRule,
+    ArAutoAccountingRule,
+    InsertArCustomerProfile,
+    ArCustomerProfile,
+    InsertArCustomerBankAccount,
+    ArCustomerBankAccount
 } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import { financeService } from "./finance";
@@ -53,6 +65,78 @@ export class ArService {
 
     async updateCustomer(id: string, data: Partial<InsertArCustomer>): Promise<ArCustomer | undefined> {
         return await storage.updateArCustomer(id, data);
+    }
+
+    // TCA Depth: Customer Profiles
+    async listCustomerProfiles(): Promise<ArCustomerProfile[]> {
+        return await storage.listArCustomerProfiles();
+    }
+    async getCustomerProfile(id: string): Promise<ArCustomerProfile | undefined> {
+        return await storage.getArCustomerProfile(id);
+    }
+    async createCustomerProfile(data: InsertArCustomerProfile): Promise<ArCustomerProfile> {
+        return await storage.createArCustomerProfile(data);
+    }
+
+    // TCA Depth: Customer Bank Accounts
+    async listCustomerBankAccounts(customerId?: string): Promise<ArCustomerBankAccount[]> {
+        return await storage.listArCustomerBankAccounts(customerId);
+    }
+    async getCustomerBankAccount(id: string): Promise<ArCustomerBankAccount | undefined> {
+        return await storage.getArCustomerBankAccount(id);
+    }
+    async createCustomerBankAccount(data: InsertArCustomerBankAccount): Promise<ArCustomerBankAccount> {
+        return await storage.createArCustomerBankAccount(data);
+    }
+
+    async updateCustomer(id: string, data: Partial<InsertArCustomer>): Promise<ArCustomer | undefined> {
+        return await storage.updateArCustomer(id, data);
+    }
+
+    // Configuration Entities
+
+    // Transaction Types
+    async listTransactionTypes(): Promise<ArTransactionType[]> {
+        return await storage.listArTransactionTypes();
+    }
+    async getTransactionType(id: string): Promise<ArTransactionType | undefined> {
+        return await storage.getArTransactionType(id);
+    }
+    async createTransactionType(data: InsertArTransactionType): Promise<ArTransactionType> {
+        return await storage.createArTransactionType(data);
+    }
+
+    // Batch Sources
+    async listBatchSources(): Promise<ArBatchSource[]> {
+        return await storage.listArBatchSources();
+    }
+    async getBatchSource(id: string): Promise<ArBatchSource | undefined> {
+        return await storage.getArBatchSource(id);
+    }
+    async createBatchSource(data: InsertArBatchSource): Promise<ArBatchSource> {
+        return await storage.createArBatchSource(data);
+    }
+
+    // Receipt Methods
+    async listReceiptMethods(): Promise<ArReceiptMethod[]> {
+        return await storage.listArReceiptMethods();
+    }
+    async getReceiptMethod(id: string): Promise<ArReceiptMethod | undefined> {
+        return await storage.getArReceiptMethod(id);
+    }
+    async createReceiptMethod(data: InsertArReceiptMethod): Promise<ArReceiptMethod> {
+        return await storage.createArReceiptMethod(data);
+    }
+
+    // AutoAccounting Rules
+    async listAutoAccountingRules(): Promise<ArAutoAccountingRule[]> {
+        return await storage.listArAutoAccountingRules();
+    }
+    async getAutoAccountingRule(id: string): Promise<ArAutoAccountingRule | undefined> {
+        return await storage.getArAutoAccountingRule(id);
+    }
+    async createAutoAccountingRule(data: InsertArAutoAccountingRule): Promise<ArAutoAccountingRule> {
+        return await storage.createArAutoAccountingRule(data);
     }
 
     // System Options
@@ -315,11 +399,19 @@ export class ArService {
     }
 
     async createReceipt(data: InsertArReceipt): Promise<ArReceipt> {
+        // Handle explicit statuses or derive them
+        let status = data.status || "Unapplied";
+        if (data.invoiceId) {
+            status = "Applied";
+        } else if (!data.customerId) {
+            status = "Unidentified";
+        }
+
         // Initialize unappliedAmount to total amount if not set
         const receiptData = {
             ...data,
             unappliedAmount: data.unappliedAmount || data.amount,
-            status: data.invoiceId ? "Applied" : "Unapplied"
+            status: status
         };
         const receipt = await storage.createArReceipt(receiptData);
 
@@ -328,19 +420,23 @@ export class ArService {
             await this.applyReceipt(receipt.id, receipt.invoiceId, Number(receipt.amount));
         }
 
-        // 2. Trigger SLA Accounting (for the receipt creation itself - Cash DR, Unapplied CR)
+        // 2. Trigger SLA Accounting (for the receipt creation itself - Cash DR, Unapplied/Unidentified CR)
         try {
             const [ledger] = await db.select({ id: glLedgers.id }).from(glLedgers).orderBy(glLedgers.createdAt).limit(1);
             const ledgerId = ledger?.id || "PRIMARY";
+
+            // If cross-currency, SLA needs the accounted amount
+            const exchangeRate = Number(receipt.exchangeRate) || 1;
+            const accountedAmount = Number(receipt.amount) * exchangeRate;
 
             await slaEngine.createAccounting({
                 eventClassId: "AR_RECEIPT",
                 eventTypeId: "AR_RECEIPT_CREATED",
                 entityId: receipt.id,
                 entityTable: "ar_receipts",
-                description: `Customer Receipt: ${receipt.id.slice(0, 8)}`,
-                amount: Number(receipt.amount),
-                currencyCode: "USD", // Should ideally from receipt
+                description: `Customer Receipt: ${receipt.id.slice(0, 8)} - ${status}`,
+                amount: accountedAmount, // Ensure SLA gets the base currency amount
+                currencyCode: ledger?.currency || "USD", // SLA entries are in ledger currency usually unless multi-curr SLA is implemented fully
                 eventDate: new Date(),
                 glDate: new Date(),
                 ledgerId,
@@ -348,7 +444,9 @@ export class ArService {
                     receiptNumber: receipt.id.slice(0, 8), // or real number field
                     accountId: receipt.accountId,
                     customerId: receipt.customerId,
-                    amount: receipt.amount
+                    amount: receipt.amount,
+                    currency: receipt.currency,
+                    exchangeRate
                 }
             });
         } catch (err) {
@@ -365,23 +463,81 @@ export class ArService {
         const invoice = await storage.getArInvoice(invoiceId);
         if (!invoice) throw new Error("Invoice not found");
 
-        if (Number(receipt.unappliedAmount) < amount) {
-            throw new Error(`Insufficient unapplied amount on receipt. Available: ${receipt.unappliedAmount}`);
+        // 1. Cross-Currency Calculation (Simplified)
+        let allocatedReceiptAmount = amount; // Assume same currency by default
+        let fxGainLoss = 0;
+
+        if (receipt.currency !== invoice.currency) {
+            // In a real system, you'd lookup daily rates if not provided on the receipt
+            // Here we use the exchange rate stamped on the receipt as a proxy,
+            // or just a mock calculation for parity demonstration
+            const receiptRate = Number(receipt.exchangeRate) || 1.0;
+            // Assume invoice is in USD (1.0) and receipt is in EUR (1.1)
+            // Amount applied is in INVOICE currency (USD).
+            // We need to know how much of the RECEIPT currency (EUR) that consumed.
+            allocatedReceiptAmount = amount / receiptRate;
+
+            // Very simplified FX Gain/Loss (just an illustration, real math requires inverse/direct rate understanding)
+            // If they paid less EUR to clear the USD invoice than expected = Gain
+            fxGainLoss = (amount * 1.0) - (allocatedReceiptAmount * receiptRate);
         }
 
-        // 1. Create Application Record
+        if (Number(receipt.unappliedAmount) < allocatedReceiptAmount) {
+            throw new Error(`Insufficient unapplied amount on receipt. Available: ${receipt.unappliedAmount}, Required: ${allocatedReceiptAmount}`);
+        }
+
+        // 2. Create Application Record
         const application = await storage.createArReceiptApplication({
             receiptId,
             invoiceId,
             amountApplied: String(amount),
+            allocatedReceiptAmount: String(allocatedReceiptAmount),
+            fxGainLoss: String(fxGainLoss),
             status: "Applied",
         });
 
-        // 2. Update Receipt Unapplied Balance
-        const newUnapplied = Number(receipt.unappliedAmount) - amount;
+        // 3. Update Receipt Unapplied Balance
+        // We deduct the allocatedReceiptAmount (in receipt currency) from the unapplied pool
+        let newUnapplied = Number(receipt.unappliedAmount) - allocatedReceiptAmount;
+        let pStatus = newUnapplied <= 0 ? "Applied" : "Unapplied";
+
+        // Advanced Cash App: Automatic Write-Off for small remaining unapplied amounts (e.g., < $1.00)
+        // In a real system, this threshold is controlled by System Options / Receipt Method limits.
+        const WRITE_OFF_THRESHOLD = 1.00;
+        if (newUnapplied > 0 && newUnapplied <= WRITE_OFF_THRESHOLD) {
+            // Create a small adjustment to clear the invoice balance if needed, or just write off the receipt
+            // Since this is receipt write-off, we typically create an adjustment on the applied invoice,
+            // or a dedicated Miscellaneous Receipt line. Let's do an Invoice Adjustment to close it.
+            try {
+                await this.createAdjustment({
+                    invoiceId: invoiceId,
+                    adjustmentType: "WriteOff",
+                    amount: String(-newUnapplied), // Credit adjustment to close invoice if it was under-paid
+                    reason: `Auto Receipt Write-Off for ${receipt.id.slice(0, 8)}`,
+                    status: "Approved",
+                    glAccountId: "Auto-Write-Off-Account", // Should come from System Options
+                    createdBy: "SYSTEM"
+                });
+
+                // Ensure we also consume the rest of the receipt so it doesn't hover unapplied
+                await storage.createArReceiptApplication({
+                    receiptId,
+                    invoiceId,
+                    amountApplied: String(newUnapplied * Number(receipt.exchangeRate || 1)), // Re-convert back to invoice curr if applying to invoice
+                    allocatedReceiptAmount: String(newUnapplied),
+                    status: "Applied",
+                });
+
+                newUnapplied = 0;
+                pStatus = "Applied";
+            } catch (woErr) {
+                console.warn("[AR] Auto write-off failed, leaving unapplied balance", woErr);
+            }
+        }
+
         await storage.updateArReceipt(receiptId, {
             unappliedAmount: String(newUnapplied),
-            status: newUnapplied === 0 ? "Applied" : "Unapplied"
+            status: pStatus
         });
 
         // 3. Update Invoice Status
@@ -573,15 +729,25 @@ export class ArService {
         const receipts = await storage.listArReceipts();
 
         const accountInvoices = invoices.filter(i => i.accountId === accountId && i.status !== "Cancelled");
-        const accountReceipts = receipts.filter(r => r.accountId === accountId);
+        const accountReceipts = receipts.filter(r => r.accountId === accountId && r.status !== "Reversed");
 
+        // Outstanding Invoices
         const totalInvoiced = accountInvoices.reduce((sum, i) => sum + Number(i.totalAmount), 0);
-        const totalPaid = accountReceipts.reduce((sum, r) => sum + Number(r.amount), 0);
+
+        // Receipts applied or available
+        const totalPaid = accountReceipts.reduce((sum, r) => sum + (Number(r.amount) - Number(r.unappliedAmount)), 0);
+
+        // Unapplied / On Account (Customer's money we hold)
+        const totalUnapplied = accountReceipts
+            .filter(r => r.status === "Unapplied" || r.status === "OnAccount")
+            .reduce((sum, r) => sum + Number(r.unappliedAmount), 0);
 
         return {
             totalInvoiced,
             totalPaid,
-            outstanding: totalInvoiced - totalPaid
+            totalUnapplied,
+            outstanding: totalInvoiced - totalPaid,
+            netBalance: (totalInvoiced - totalPaid) - totalUnapplied // What they actually owe us right now
         };
     }
 

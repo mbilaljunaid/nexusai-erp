@@ -6,7 +6,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Play, CheckCircle, Download, FileText, Loader2 } from "lucide-react";
+import { Play, CheckCircle, Download, FileText, Loader2, Trash2 } from "lucide-react";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { useToast } from "@/hooks/use-toast";
 
@@ -40,6 +40,14 @@ export default function APPaymentDetail() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/ap/payment-batches"] });
             toast({ title: "Payment batch confirmed" });
+        }
+    });
+
+    const voidMutation = useMutation({
+        mutationFn: (id: number) => fetch(`/api/ap/payment-batches/${id}/void`, { method: "POST" }).then(r => r.json()),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["/api/ap/payment-batches"] });
+            toast({ title: "Payment batch voided successfully" });
         }
     });
 
@@ -99,9 +107,14 @@ export default function APPaymentDetail() {
                         </Button>
                     )}
                     {(status === "CONFIRMED" || status === "PAID" || status === "COMPLETED") && (
-                        <Button variant="outline" onClick={downloadISO20022}>
-                            <Download className="h-4 w-4 mr-2" /> Export ISO20022 XML
-                        </Button>
+                        <>
+                            <Button variant="outline" onClick={downloadISO20022}>
+                                <Download className="h-4 w-4 mr-2" /> Export ISO20022 XML
+                            </Button>
+                            <Button variant="destructive" onClick={() => voidMutation.mutate(batch.id)} disabled={voidMutation.isPending}>
+                                <Trash2 className="h-4 w-4 mr-2" /> Void Payment
+                            </Button>
+                        </>
                     )}
                 </div>
             }

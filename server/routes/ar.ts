@@ -16,7 +16,14 @@ import {
     insertArSystemOptionsSchema,
     arCustomers, // Added
     slaJournalHeaders,
-    slaJournalLines
+    slaJournalLines,
+    // Configuration Entities
+    insertArTransactionTypeSchema,
+    insertArBatchSourceSchema,
+    insertArReceiptMethodSchema,
+    insertArAutoAccountingRuleSchema,
+    insertArCustomerProfileSchema,
+    insertArCustomerBankAccountSchema
 } from "@shared/schema";
 import { storage } from "../storage";
 import { ZodError } from "zod";
@@ -117,6 +124,55 @@ router.post("/sites", async (req, res) => {
             res.status(400).json({ message: "Invalid site data", errors: error.errors });
         } else {
             res.status(500).json({ message: "Failed to create site" });
+        }
+    }
+});
+
+// Profiles
+router.get("/profiles", async (req, res) => {
+    try {
+        const profiles = await arService.listCustomerProfiles();
+        res.json(profiles);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list customer profiles" });
+    }
+});
+
+router.post("/profiles", async (req, res) => {
+    try {
+        const data = insertArCustomerProfileSchema.parse(req.body);
+        const profile = await arService.createCustomerProfile(data);
+        res.status(201).json(profile);
+    } catch (error) {
+        if (error instanceof ZodError) {
+            res.status(400).json({ message: "Invalid profile data", errors: error.errors });
+        } else {
+            res.status(500).json({ message: "Failed to create customer profile" });
+        }
+    }
+});
+
+// Bank Accounts
+router.get("/bank-accounts", async (req, res) => {
+    try {
+        const { customerId } = req.query;
+        const accounts = await arService.listCustomerBankAccounts(customerId as string);
+        res.json(accounts);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list customer bank accounts" });
+    }
+});
+
+router.post("/bank-accounts", async (req, res) => {
+    try {
+        const data = insertArCustomerBankAccountSchema.parse(req.body);
+        const account = await arService.createCustomerBankAccount(data);
+        res.status(201).json(account);
+    } catch (error) {
+        if (error instanceof ZodError) {
+            res.status(400).json({ message: "Invalid bank account data", errors: error.errors });
+        } else {
+            res.status(500).json({ message: "Failed to create customer bank account" });
         }
     }
 });
@@ -584,6 +640,104 @@ router.get("/reconciliation", async (req, res) => {
     } catch (error) {
         console.error("Error fetching reconciliation:", error);
         res.status(500).json({ error: "Failed to get reconciliation report" });
+    }
+});
+
+// AR Configuration Routes
+
+// Transaction Types
+router.get("/config/transaction-types", async (req, res) => {
+    try {
+        const types = await arService.listTransactionTypes();
+        res.json(types);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list transaction types" });
+    }
+});
+
+router.post("/config/transaction-types", async (req, res) => {
+    try {
+        const data = insertArTransactionTypeSchema.parse(req.body);
+        const type = await arService.createTransactionType(data);
+        res.status(201).json(type);
+    } catch (error) {
+        if (error instanceof ZodError) {
+            res.status(400).json({ message: "Invalid transaction type data", errors: error.errors });
+        } else {
+            res.status(500).json({ message: "Failed to create transaction type" });
+        }
+    }
+});
+
+// Batch Sources
+router.get("/config/batch-sources", async (req, res) => {
+    try {
+        const sources = await arService.listBatchSources();
+        res.json(sources);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list batch sources" });
+    }
+});
+
+router.post("/config/batch-sources", async (req, res) => {
+    try {
+        const data = insertArBatchSourceSchema.parse(req.body);
+        const source = await arService.createBatchSource(data);
+        res.status(201).json(source);
+    } catch (error) {
+        if (error instanceof ZodError) {
+            res.status(400).json({ message: "Invalid batch source data", errors: error.errors });
+        } else {
+            res.status(500).json({ message: "Failed to create batch source" });
+        }
+    }
+});
+
+// Receipt Methods
+router.get("/config/receipt-methods", async (req, res) => {
+    try {
+        const methods = await arService.listReceiptMethods();
+        res.json(methods);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list receipt methods" });
+    }
+});
+
+router.post("/config/receipt-methods", async (req, res) => {
+    try {
+        const data = insertArReceiptMethodSchema.parse(req.body);
+        const method = await arService.createReceiptMethod(data);
+        res.status(201).json(method);
+    } catch (error) {
+        if (error instanceof ZodError) {
+            res.status(400).json({ message: "Invalid receipt method data", errors: error.errors });
+        } else {
+            res.status(500).json({ message: "Failed to create receipt method" });
+        }
+    }
+});
+
+// AutoAccounting Rules
+router.get("/config/autoaccounting-rules", async (req, res) => {
+    try {
+        const rules = await arService.listAutoAccountingRules();
+        res.json(rules);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list AutoAccounting rules" });
+    }
+});
+
+router.post("/config/autoaccounting-rules", async (req, res) => {
+    try {
+        const data = insertArAutoAccountingRuleSchema.parse(req.body);
+        const rule = await arService.createAutoAccountingRule(data);
+        res.status(201).json(rule);
+    } catch (error) {
+        if (error instanceof ZodError) {
+            res.status(400).json({ message: "Invalid AutoAccounting rule data", errors: error.errors });
+        } else {
+            res.status(500).json({ message: "Failed to create AutoAccounting rule" });
+        }
     }
 });
 

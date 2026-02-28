@@ -28,11 +28,13 @@ export default function CreatePPR() {
     const [formData, setFormData] = useState<any>({
         batchName: `PPR-${new Date().toISOString().split('T')[0]}-01`,
         paymentMethodCode: "EFT",
+        paymentCurrency: "USD",
         checkDate: new Date().toISOString().split("T")[0],
         bankAccountId: "",
         payThroughDate: new Date().toISOString().split("T")[0],
         supplierId: "all",
         businessUnitId: "all",
+        templateId: "none",
     });
 
     // Step 2 & 3 State
@@ -187,7 +189,25 @@ export default function CreatePPR() {
                         {currentStep === 1 && (
                             <div className="grid md:grid-cols-2 gap-6">
                                 <div className="space-y-4">
-                                    <h3 className="font-semibold text-sm border-b pb-2">Identification</h3>
+                                    <div className="flex justify-between items-center border-b pb-2">
+                                        <h3 className="font-semibold text-sm">Identification</h3>
+                                        <div className="flex items-center gap-2">
+                                            <Label className="text-xs text-muted-foreground">Load Template</Label>
+                                            <Select value={formData.templateId} onValueChange={(v) => {
+                                                if (v === 'weekly_eft') {
+                                                    setFormData({ ...formData, templateId: v, paymentMethodCode: 'EFT', batchName: `PPR-Weekly-${new Date().toISOString().split('T')[0]}` });
+                                                    toast({ title: "Weekly Check Run template applied" });
+                                                }
+                                            }}>
+                                                <SelectTrigger className="h-7 text-xs w-[140px]"><SelectValue placeholder="None" /></SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="none">None</SelectItem>
+                                                    <SelectItem value="weekly_eft">Weekly EFT Run</SelectItem>
+                                                    <SelectItem value="monthly_wires">Monthly Wires</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
                                     <div className="space-y-2">
                                         <Label>PPR Name</Label>
                                         <Input value={formData.batchName} onChange={e => setFormData({ ...formData, batchName: e.target.value })} />
@@ -219,6 +239,17 @@ export default function CreatePPR() {
                                                 <SelectItem value="EFT">EFT / BACS</SelectItem>
                                                 <SelectItem value="Check">Check</SelectItem>
                                                 <SelectItem value="Wire">Wire Transfer</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Payment Currency</Label>
+                                        <Select value={formData.paymentCurrency} onValueChange={(v) => setFormData({ ...formData, paymentCurrency: v })}>
+                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="USD">USD</SelectItem>
+                                                <SelectItem value="EUR">EUR</SelectItem>
+                                                <SelectItem value="GBP">GBP</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>

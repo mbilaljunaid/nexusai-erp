@@ -29,6 +29,7 @@ import APQuickPayment from "@/pages/finance/ap/APQuickPayment";
 import APSystemConfig from "@/pages/finance/ap/APSystemConfig";
 import PaymentTermsMaster from "@/pages/finance/ap/PaymentTermsMaster";
 import APPeriodClose from "@/pages/finance/ap/APPeriodClose";
+import SupplierPortal from "@/pages/finance/ap/SupplierPortal";
 
 // Cash Management
 import CashManagementDashboard from "@/pages/finance/cash/CashManagementDashboard";
@@ -189,6 +190,7 @@ export default function FinanceRoutes() {
                 <Route path="/finance/fixed-assets" component={FixedAssetWorkbench} />
                 <Route path="/finance/fixed-assets/workbench" component={FixedAssetWorkbench} />
                 <Route path="/finance/fixed-assets/inquiry" component={FixedAssets} />
+                <Route path="/finance/ap/supplier-portal" component={SupplierPortal} />
                 <Route path="/finance/ap/suppliers/:id" component={APSupplierDetail} />
                 <Route path="/finance/ap/suppliers" component={APSuppliers} />
                 <Route path="/finance/ap/invoices/new" component={APInvoiceEntry} />

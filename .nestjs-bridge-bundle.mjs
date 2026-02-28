@@ -1803,6 +1803,7 @@ var apInvoices = pgTable2("ap_invoices", {
   cancelledDate: timestamp2("cancelled_date"),
   glDate: timestamp2("gl_date"),
   // Default GL Date
+  transactionDate: timestamp2("transaction_date"),
   termsDate: timestamp2("terms_date"),
   goodsReceivedDate: timestamp2("goods_received_date"),
   invoiceReceivedDate: timestamp2("invoice_received_date"),
@@ -2136,6 +2137,7 @@ import { z as z2 } from "zod";
 var arCustomers = pgTable3("ar_customers", {
   id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
   name: varchar3("name").notNull(),
+  businessUnitId: varchar3("business_unit_id"),
   taxId: varchar3("tax_id"),
   customerType: varchar3("customer_type").default("Commercial"),
   // Commercial, Individual
@@ -2148,6 +2150,7 @@ var arCustomers = pgTable3("ar_customers", {
 });
 var insertArCustomerSchema = createInsertSchema3(arCustomers).extend({
   name: z2.string().min(1),
+  businessUnitId: z2.string().optional().nullable(),
   taxId: z2.string().optional().nullable(),
   customerType: z2.string().optional(),
   address: z2.string().optional().nullable(),
@@ -2205,6 +2208,7 @@ var insertArCustomerSiteSchema = createInsertSchema3(arCustomerSites).extend({
 });
 var arInvoices = pgTable3("ar_invoices", {
   id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  businessUnitId: varchar3("business_unit_id"),
   customerId: varchar3("customer_id").notNull(),
   // Party
   accountId: varchar3("account_id"),
@@ -2239,6 +2243,7 @@ var arInvoices = pgTable3("ar_invoices", {
   createdAt: timestamp3("created_at").default(sql3`now()`)
 });
 var insertArInvoiceSchema = createInsertSchema3(arInvoices).extend({
+  businessUnitId: z2.string().optional().nullable(),
   customerId: z2.string().min(1),
   accountId: z2.string().optional().nullable(),
   siteId: z2.string().optional().nullable(),

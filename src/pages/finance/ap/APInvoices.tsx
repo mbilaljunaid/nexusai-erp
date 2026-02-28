@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function APInvoices() {
@@ -34,6 +35,8 @@ export default function APInvoices() {
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
   const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [savedSearch, setSavedSearch] = useState<string>("none");
 
   const { data, isLoading } = useQuery<{ data: any[], total: number }>({
     queryKey: ["/api/ap/invoices", page, pageSize, statusFilter, validationFilter, filters],
@@ -87,6 +90,33 @@ export default function APInvoices() {
     }
   });
 
+  const bulkValidateMutation = useMutation({
+    mutationFn: (ids: string[]) => fetch('/api/ap/invoices/bulk-validate', { method: 'POST', body: JSON.stringify({ ids }) }),
+    onSuccess: () => {
+      toast({ title: `${selectedIds.size} invoices validated successfully` });
+      setSelectedIds(new Set());
+      queryClient.invalidateQueries({ queryKey: ["/api/ap/invoices"] });
+    }
+  });
+
+  const bulkApproveMutation = useMutation({
+    mutationFn: (ids: string[]) => fetch('/api/ap/invoices/bulk-approve', { method: 'POST', headers: { "Content-Type": "application/json" }, body: JSON.stringify({ invoiceIds: ids }) }),
+    onSuccess: () => {
+      toast({ title: `${selectedIds.size} invoices approved successfully` });
+      setSelectedIds(new Set());
+      queryClient.invalidateQueries({ queryKey: ["/api/ap/invoices"] });
+    }
+  });
+
+  const bulkCancelMutation = useMutation({
+    mutationFn: (ids: string[]) => fetch('/api/ap/invoices/bulk-cancel', { method: 'POST', body: JSON.stringify({ ids }) }),
+    onSuccess: () => {
+      toast({ title: `${selectedIds.size} invoices cancelled successfully` });
+      setSelectedIds(new Set());
+      queryClient.invalidateQueries({ queryKey: ["/api/ap/invoices"] });
+    }
+  });
+
   const uploadAttachmentMutation = useMutation({
     mutationFn: async ({ invoiceId, file }: { invoiceId: string, file: File }) => {
       const formData = new FormData();
@@ -134,7 +164,42 @@ export default function APInvoices() {
 
   const filteredData = data?.data || [];
 
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedIds(new Set(filteredData.map(d => d.id)));
+    } else {
+      setSelectedIds(new Set());
+    }
+  };
+
+  const toggleSelection = (id: string, checked: boolean) => {
+    const newSet = new Set(selectedIds);
+    if (checked) newSet.add(id);
+    else newSet.delete(id);
+    setSelectedIds(newSet);
+  };
+
   const columns: Column<any>[] = [
+    {
+      header: (
+        <Checkbox
+          checked={filteredData.length > 0 && selectedIds.size === filteredData.length}
+          onCheckedChange={handleSelectAll}
+          aria-label="Select all"
+          className="translate-y-[2px]"
+        />
+      ),
+      id: "select",
+      width: "40px",
+      cell: (row) => (
+        <Checkbox
+          checked={selectedIds.has(row.id)}
+          onCheckedChange={(c) => toggleSelection(row.id, c as boolean)}
+          onClick={(e) => e.stopPropagation()}
+          aria-label={`Select ${row.invoiceNumber}`}
+        />
+      )
+    },
     { header: "BU", accessorKey: "businessUnitId", className: "text-muted-foreground font-mono text-xs w-20" },
     { header: "Invoice #", accessorKey: "invoiceNumber", className: "font-mono font-medium" },
     { header: "Supplier", accessorKey: "supplierId", cell: (row) => row.supplier?.name || "Unknown" },
@@ -299,6 +364,19 @@ export default function APInvoices() {
         <div className="flex flex-col gap-4">
           <div className="flex gap-4">
             <div className="flex-1 max-w-xs">
+              <Select value={savedSearch} onValueChange={setSavedSearch}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Saved Searches" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Standard View</SelectItem>
+                  <SelectItem value="high_value">High Value (&gt;$50k)</SelectItem>
+                  <SelectItem value="my_approvals">My Pending Approvals</SelectItem>
+                  <SelectItem value="recent_failed">Recently Failed Validation</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex-1 max-w-xs">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger>
                   <SelectValue placeholder="Filter by Status" />
@@ -388,8 +466,18 @@ export default function APInvoices() {
                 </div>
               </CardContent>
             </Card>
-          )
-          }
+          )}
+
+          {selectedIds.size > 0 && (
+            <div className="bg-slate-100 p-3 rounded-md flex items-center justify-between border shadow-sm">
+              <span className="text-sm font-medium ml-2 text-slate-700">{selectedIds.size} invoices selected for bulk action</span>
+              <div className="flex gap-2">
+                <Button size="sm" variant="outline" onClick={() => bulkValidateMutation.mutate(Array.from(selectedIds))}>Validate Selected</Button>
+                <Button size="sm" onClick={() => bulkApproveMutation.mutate(Array.from(selectedIds))}>Approve Selected</Button>
+                <Button size="sm" variant="destructive" onClick={() => bulkCancelMutation.mutate(Array.from(selectedIds))}>Cancel Selected</Button>
+              </div>
+            </div>
+          )}
 
           <StandardTable
             data={filteredData}
