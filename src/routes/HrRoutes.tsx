@@ -1,4 +1,5 @@
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
+import { useEffect } from "react";
 import HR from "@/pages/HR";
 import RecruitmentManagement from "@/pages/RecruitmentManagement";
 import PerformanceManagement from "@/pages/PerformanceManagement";
@@ -75,6 +76,17 @@ export default function HrRoutes() {
     return (
         <ModuleLayout sidebar={<HrSidebar />}>
             <Switch>
+                {/* WFM Base Route Redirect */}
+                <Route path="/hr/wfm" component={() => {
+                    const [loc, setLocation] = useLocation();
+                    useEffect(() => {
+                        if (loc === "/hr/wfm" || loc === "/hr/wfm/") {
+                            setLocation("/hr/wfm/me/time");
+                        }
+                    }, [loc, setLocation]);
+                    return null;
+                }} />
+
                 <Route path="/hr/recruitment" component={RecruitmentManagement} />
                 <Route path="/hr/recruitment/pipeline" component={RecruitmentPipelineBoard} />
                 <Route path="/hr/recruitment/requisitions/:id" component={JobRequisitionDetail} />

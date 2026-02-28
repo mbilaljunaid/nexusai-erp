@@ -40,15 +40,7 @@ export default function CarrierScorecardDashboard() {
         queryFn: async () => {
             const res = await fetch("/api/carriers");
             if (!res.ok) {
-                // Mock data
-                return [
-                    { id: "carr-1", name: "FedEx", rating: "4.8", status: "ACTIVE" },
-                    { id: "carr-2", name: "UPS", rating: "4.5", status: "ACTIVE" },
-                    { id: "carr-3", name: "DHL", rating: "4.2", status: "ACTIVE" },
-                    { id: "carr-4", name: "USPS", rating: "3.9", status: "ACTIVE" },
-                    { id: "carr-5", name: "Amazon Logistics", rating: "4.6", status: "ACTIVE" },
-                    { id: "carr-6", name: "XPO Logistics", rating: "3.4", status: "ACTIVE" }
-                ];
+                return [];
             }
             return res.json();
         }
@@ -61,16 +53,7 @@ export default function CarrierScorecardDashboard() {
             if (!selectedCarrier) return null;
             const res = await fetch(`/api/carriers/${selectedCarrier}/scorecard`);
             if (!res.ok) {
-                // Mock scorecard data
-                const mockData: Record<string, CarrierScorecard> = {
-                    "carr-1": { onTimePercent: 96.5, totalShipments: 1243, avgRating: 4.8 },
-                    "carr-2": { onTimePercent: 94.2, totalShipments: 1087, avgRating: 4.5 },
-                    "carr-3": { onTimePercent: 91.8, totalShipments: 856, avgRating: 4.2 },
-                    "carr-4": { onTimePercent: 87.3, totalShipments: 652, avgRating: 3.9 },
-                    "carr-5": { onTimePercent: 95.1, totalShipments: 1456, avgRating: 4.6 },
-                    "carr-6": { onTimePercent: 78.5, totalShipments: 423, avgRating: 3.4 }
-                };
-                return mockData[selectedCarrier] || { onTimePercent: 0, totalShipments: 0, avgRating: 0 };
+                return { onTimePercent: 0, totalShipments: 0, avgRating: 0 };
             }
             return res.json();
         },
@@ -83,15 +66,7 @@ export default function CarrierScorecardDashboard() {
         queryFn: async () => {
             const res = await fetch("/api/carriers/metrics");
             if (!res.ok) {
-                // Mock metrics
-                return carriers.map(c => ({
-                    ...c,
-                    onTimePercent: 90 + Math.random() * 10,
-                    totalShipments: Math.floor(Math.random() * 1000) + 500,
-                    avgRating: parseFloat(c.rating),
-                    costPerMile: 1.5 + Math.random() * 0.5,
-                    avgLeadTime: 2 + Math.random() * 2
-                }));
+                return [];
             }
             return res.json();
         }

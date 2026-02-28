@@ -48,10 +48,15 @@ export default function BatchWorkbench() {
     const batches = data?.items || [];
     const totalItems = data?.total || 0;
 
+    const completedBatches = batches.filter(b => b.status === "completed" && b.actualYield);
+    const avgYield = completedBatches.length > 0
+        ? completedBatches.reduce((acc, b) => acc + ((b.actualYield! / b.plannedQuantity) * 100), 0) / completedBatches.length
+        : 100;
+
     const stats = {
         active: batches.filter(b => ["released", "in_progress"].includes(b.status)).length,
         qc: batches.filter(b => b.status === "qc_pending").length,
-        avgYield: 98.2 // Mocked for now
+        avgYield: avgYield.toFixed(1)
     };
 
     const statusMutation = useMutation({

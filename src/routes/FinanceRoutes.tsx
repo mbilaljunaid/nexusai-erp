@@ -227,8 +227,12 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ic/disputes" component={ICDisputeWorkbench} />
 
                 <Route path="/finance/gl" component={() => {
-                    const [, setLocation] = useLocation();
-                    useEffect(() => setLocation("/finance/gl/journals"), [setLocation]);
+                    const [loc, setLocation] = useLocation();
+                    useEffect(() => {
+                        if (loc === "/finance/gl" || loc === "/finance/gl/") {
+                            setLocation("/finance/gl/journals");
+                        }
+                    }, [loc, setLocation]);
                     return null;
                 }} />
                 <Route path="/finance/gl/journals/new" component={JournalEntry} />

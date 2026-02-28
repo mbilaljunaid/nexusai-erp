@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DollarSign, TrendingUp, CheckCircle2, Clock } from "lucide-react";
+import { format } from "date-fns";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -18,19 +19,37 @@ import { PageHeader } from "@/components/ui/PageHeader";
 export default function RevenueWaterfallDashboard() {
     const [selectedCustomer, setSelectedCustomer] = React.useState<string>("");
 
-    // Mock data for waterfall (in production, this would come from the API)
-    const waterfallData = {
-        contractValue: 100000,
-        invoiced: 75000,
-        recognized: 50000,
-        deferred: 25000,
+    const { data, isLoading } = useQuery({
+        queryKey: ["/api/billing/revenue/waterfall", selectedCustomer],
+        queryFn: async () => {
+            const url = selectedCustomer ? `/api/billing/revenue/waterfall?customerId=${selectedCustomer}` : `/api/billing/revenue/waterfall`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error("Failed to fetch waterfall data");
+            return res.json();
+        }
+    });
+
+    const { data: schedules = [], isLoading: isSchedulesLoading } = useQuery({
+        queryKey: ["/api/ar/revenue/schedules"],
+        queryFn: async () => {
+            const res = await fetch("/api/ar/revenue/schedules");
+            if (!res.ok) return [];
+            return res.json();
+        }
+    });
+
+    const waterfallData = data || {
+        contractValue: 0,
+        invoiced: 0,
+        recognized: 0,
+        deferred: 0,
     };
 
-    const metrics = {
-        totalDeferred: 125000,
-        recognizedMTD: 15000,
-        upcomingRecognition: 10000,
-        complianceScore: 98,
+    const metrics = data || {
+        totalDeferred: 0,
+        recognizedMTD: 0,
+        upcomingRecognition: 0,
+        complianceScore: 100,
     };
 
     return (
@@ -192,32 +211,35 @@ export default function RevenueWaterfallDashboard() {
                     <CardDescription>Monthly revenue to be recognized</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    {/* TODO: Connect to /api/billing/revenue/schedules API when implemented */}
                     <div className="space-y-4">
-                        {[
-                            { month: "Feb 2026", deferred: 25000, toRecognize: 8333, remaining: 16667 },
-                            { month: "Mar 2026", deferred: 16667, toRecognize: 8333, remaining: 8334 },
-                            { month: "Apr 2026", deferred: 8334, toRecognize: 8334, remaining: 0 },
-                        ].map((schedule, idx) => (
-                            <div key={idx} className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent/50 transition-colors">
-                                <div className="flex-1">
-                                    <div className="font-medium">{schedule.month}</div>
-                                    <div className="text-xs text-muted-foreground">
-                                        Deferred: ${schedule.deferred.toLocaleString()}
+                        {isSchedulesLoading ? (
+                            <div className="text-sm text-muted-foreground py-4">Loading schedules...</div>
+                        ) : schedules.length > 0 ? (
+                            schedules.slice(0, 5).map((schedule: any, idx: number) => (
+                                <div key={idx} className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent/50 transition-colors">
+                                    <div className="flex-1">
+                                        <div className="font-medium">
+                                            {schedule.scheduledDate ? format(new Date(schedule.scheduledDate), "MMM yyyy") : "Pending"}
+                                        </div>
+                                        <div className="text-xs text-muted-foreground">
+                                            Status: {schedule.status}
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="font-bold text-green-600">
+                                            +${Number(schedule.amount).toLocaleString()}
+                                        </div>
+                                        <div className="text-xs text-muted-foreground">
+                                            Invoice ID: {schedule.invoiceId}
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <div className="font-bold text-green-600">
-                                        +${schedule.toRecognize.toLocaleString()}
-                                    </div>
-                                    <div className="text-xs text-muted-foreground">
-                                        Remaining: ${schedule.remaining.toLocaleString()}
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            <div className="text-sm text-muted-foreground py-4">No upcoming recognition schedules.</div>
+                        )}
                         <div className="text-center text-xs text-muted-foreground pt-2">
-                            Sample data · Connect to ar_revenue_schedules for real-time data
+                            Showing top 5 upcoming revenue recognition events.
                         </div>
                     </div>
                 </CardContent>

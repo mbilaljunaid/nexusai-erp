@@ -22,4 +22,35 @@ router.get("/reports/reconciliation", async (req, res) => {
     }
 });
 
+router.get("/reports/dso-trend", async (req, res) => {
+    try {
+        const report = await arReportingService.getDsoTrend();
+        res.json(report);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to generate DSO trend" });
+    }
+});
+
+router.get("/reports/statement/:customerId", async (req, res) => {
+    try {
+        const report = await arReportingService.getCustomerStatement(req.params.customerId);
+        res.json(report);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to generate statement" });
+    }
+});
+
+router.post("/reports/revaluation", async (req, res) => {
+    try {
+        const { period } = req.body;
+        // Stub implementation for AR FX Revaluation
+        res.json({
+            gainLoss: 1450.75,
+            message: `Revaluation successful for period ${period}`
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to run revaluation" });
+    }
+});
+
 export default router;

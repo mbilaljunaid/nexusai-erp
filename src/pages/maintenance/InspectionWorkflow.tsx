@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { qualityService } from "@/services/maintenance.service";
+import { qualityService, type InspectionItem } from "@/services/maintenance.service";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -29,15 +29,6 @@ interface InspectionTemplate {
     estimatedDuration: number; // minutes
     requiresPhotos: boolean;
     requiresSignature: boolean;
-}
-
-interface InspectionItem {
-    id: string;
-    sequence: number;
-    description: string;
-    type: "YES_NO" | "PASS_FAIL" | "NUMERIC" | "TEXT";
-    required: boolean;
-    acceptableLimits?: { min?: number; max?: number };
 }
 
 interface Inspection {
@@ -109,7 +100,7 @@ export function InspectionWorkflow() {
             const apiInspections = await qualityService.getInspections();
 
             // Map API response to component format (add missing fields)
-            const mappedInspections = apiInspections.map(inspection => ({
+            const mappedInspections = apiInspections.map((inspection: any) => ({
                 ...inspection,
                 inspectorId: inspection.inspector?.id || inspection.createdBy || "unknown",
                 inspectorName: inspection.inspector?.name || "Unknown Inspector",
@@ -124,47 +115,13 @@ export function InspectionWorkflow() {
     };
 
     const handleStartInspection = async (template: InspectionTemplate) => {
-        // Load inspection items for template
-        const mockItems: InspectionItem[] = [
-            {
-                id: "item-001",
-                sequence: 1,
-                description: "Check hydraulic fluid level",
-                type: "PASS_FAIL",
-                required: true
-            },
-            {
-                id: "item-002",
-                sequence: 2,
-                description: "Inspect tires for wear and damage",
-                type: "PASS_FAIL",
-                required: true
-            },
-            {
-                id: "item-003",
-                sequence: 3,
-                description: "Test horn operation",
-                type: "YES_NO",
-                required: true
-            },
-            {
-                id: "item-004",
-                sequence: 4,
-                description: "Check battery charge level (%)",
-                type: "NUMERIC",
-                required: true,
-                acceptableLimits: { min: 70, max: 100 }
-            },
-            {
-                id: "item-005",
-                sequence: 5,
-                description: "General observations",
-                type: "TEXT",
-                required: false
-            }
-        ];
-
-        setInspectionItems(mockItems);
+        try {
+            const items = await qualityService.getTemplateItems(template.id);
+            setInspectionItems(items);
+        } catch (e) {
+            console.error("Failed to load template items", e);
+            setInspectionItems([]);
+        }
         setSelectedTemplate(template);
 
         // Create new inspection

@@ -42,17 +42,11 @@ export default function ArReports() {
 
     const statementMutation = useMutation({
         mutationFn: async (customerId: string) => {
-            // Mock API delay
-            await new Promise(resolve => setTimeout(resolve, 500));
-            // Return mock statement data
-            return [
-                { date: "2026-01-01", description: "Beginning Balance", amount: 0, balance: 5000 },
-                { date: "2026-01-15", description: "Invoice INV-2026-001", amount: 1500, balance: 6500 },
-                { date: "2026-02-01", description: "Payment REC-992", amount: -2000, balance: 4500 }
-            ];
+            const res = await apiRequest("GET", `/api/ar/reports/statement/${customerId}`);
+            return res.json();
         },
         onSuccess: (data) => {
-            setStatementData(data);
+            setStatementData(data.transactions || []);
             toast({ title: "Statement Generated", description: `Successfully generated statement for customer ${statementCustomerId}` });
         }
     });
@@ -62,9 +56,8 @@ export default function ArReports() {
 
     const revalMutation = useMutation({
         mutationFn: async (period: string) => {
-            // Mock API delay
-            await new Promise(resolve => setTimeout(resolve, 800));
-            return { gainLoss: 1450.75, message: `Revaluation successful for period ${period}` };
+            const res = await apiRequest("POST", "/api/ar/reports/revaluation", { period });
+            return res.json();
         },
         onSuccess: (data) => {
             setRevalResult(`Unrealized Gain: $${data.gainLoss.toLocaleString()}`);

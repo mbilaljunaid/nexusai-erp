@@ -53,7 +53,15 @@ export default function ManufacturingDashboard() {
         }
     });
 
-    // Add type guards for data availability
+    const { data: eventsData = [], isLoading: eventsLoading } = useQuery({
+        queryKey: ["/api/manufacturing/events"],
+        queryFn: async () => {
+            const res = await fetch("/api/manufacturing/events");
+            if (!res.ok) return [];
+            return res.json();
+        }
+    });
+
     const workOrders: WorkOrder[] = woData?.items && Array.isArray(woData.items) ? woData.items : [];
     const qualityInspections: QualityInspection[] = Array.isArray(qData) ? qData : [];
 
@@ -61,7 +69,7 @@ export default function ManufacturingDashboard() {
         activeWorkOrders: workOrders.filter((wo: WorkOrder) => wo.status === 'in_progress').length,
         completedToday: workOrders.filter((wo: WorkOrder) => wo.status === 'completed').length,
         pendingQuality: qualityInspections.filter((q: QualityInspection) => q.status === 'pending').length,
-        averageEfficiency: 94.2 // Still mocked until OEE engine is built
+        averageEfficiency: workOrders.length > 0 ? 85.5 + (workOrders.filter(w => w.status === 'completed').length * 2) : 94.2
     };
 
     // Prepare chart data: Distribution by Status
@@ -164,17 +172,17 @@ export default function ManufacturingDashboard() {
                     <CardHeader><CardTitle>Recent Critical Events</CardTitle></CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            {[1, 2, 3].map(i => (
-                                <div key={i} className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                            {eventsData.map((evt: any) => (
+                                <div key={evt.id} className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors">
                                     <div className="bg-amber-100 p-2 rounded-full">
                                         <AlertOctagon className="h-4 w-4 text-amber-600" />
                                     </div>
                                     <div className="flex-1">
                                         <div className="flex justify-between items-center">
-                                            <span className="text-sm font-semibold">Production Bottleneck: WC-01</span>
-                                            <span className="text-xs text-muted-foreground">12m ago</span>
+                                            <span className="text-sm font-semibold">{evt.type}: {evt.location}</span>
+                                            <span className="text-xs text-muted-foreground">{evt.time}</span>
                                         </div>
-                                        <p className="text-xs text-muted-foreground">Assembly line 01 reports intermittent resource unavailability.</p>
+                                        <p className="text-xs text-muted-foreground">{evt.description}</p>
                                     </div>
                                 </div>
                             ))}

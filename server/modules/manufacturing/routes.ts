@@ -51,6 +51,8 @@ router.post("/cost-elements", manufacturingController.createCostElement);
 router.get("/standard-costs", manufacturingController.getStandardCosts);
 router.post("/standard-costs/rollup", manufacturingController.calculateStandardCostRollup);
 router.get("/wip-balances", manufacturingController.getWipBalances);
+router.get("/wip-trend", manufacturingController.getWipTrend);
+router.get("/events", manufacturingController.getManufacturingEvents);
 router.get("/variance-journals", manufacturingController.getVarianceJournals);
 
 // Cost AI

@@ -56,6 +56,15 @@ export interface InspectionTemplate {
     description?: string;
 }
 
+export interface InspectionItem {
+    id: string;
+    sequence: number;
+    description: string;
+    type: "YES_NO" | "PASS_FAIL" | "NUMERIC" | "TEXT";
+    required: boolean;
+    acceptableLimits?: { min?: number; max?: number };
+}
+
 export interface Inspection {
     id: string;
     woId?: string;
@@ -301,6 +310,10 @@ export const qualityService = {
 
     async getTemplate(id: string): Promise<InspectionTemplate> {
         return apiRequest("GET", `/maintenance/inspections/templates/${id}`).then(r => r.json());
+    },
+
+    async getTemplateItems(id: string): Promise<InspectionItem[]> {
+        return apiRequest("GET", `/maintenance/inspections/templates/${id}/items`).then(r => r.json());
     },
 
     async getInspections(): Promise<Inspection[]> {

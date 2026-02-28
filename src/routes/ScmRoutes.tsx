@@ -1,5 +1,5 @@
-
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
+import { useEffect } from "react";
 // import { lazy } from "react";
 import GenericModuleDashboard from "@/components/shared/GenericModuleDashboard";
 
@@ -72,6 +72,15 @@ export default function ScmRoutes() {
     return (
         <Switch>
             {/* Manufacturing */}
+            <Route path="/manufacturing" component={() => {
+                const [loc, setLocation] = useLocation();
+                useEffect(() => {
+                    if (loc === "/manufacturing" || loc === "/manufacturing/") {
+                        setLocation("/manufacturing/dashboard");
+                    }
+                }, [loc, setLocation]);
+                return null;
+            }} />
             <Route path="/manufacturing/dashboard" component={ManufacturingDashboard} />
             <Route path="/manufacturing/mrp-dashboard" component={ManufacturingDashboard} />
             <Route path="/mrp-dashboard" component={ManufacturingDashboard} />

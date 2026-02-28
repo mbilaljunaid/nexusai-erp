@@ -24,7 +24,7 @@ export default function SupplierDashboard() {
         }
     });
 
-    // Fetch Orders (Mock/Real) - We'll just fetch orders to count stats for now
+    // Fetch Orders - We'll just fetch orders to count stats for now
     const { data: orders } = useQuery({
         queryKey: ["/api/portal/supplier/orders"],
         queryFn: async () => {

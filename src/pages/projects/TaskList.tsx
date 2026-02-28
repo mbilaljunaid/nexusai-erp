@@ -2,6 +2,7 @@ import React from 'react';
 import { StandardTable } from "@/components/ui/StandardTable";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useQuery } from "@tanstack/react-query";
 
 export interface Task {
     id: string;
@@ -14,12 +15,14 @@ export interface Task {
 }
 
 export default function TaskList() {
-    const tasks: Task[] = [
-        { id: "1", title: "Design homepage mockups", status: "done", priority: "high", assignee: { name: "Maria Garcia", initials: "MG" }, project: "Website Redesign" },
-        { id: "2", title: "Implement user authentication", status: "in_progress", priority: "urgent", assignee: { name: "James Wilson", initials: "JW" }, dueDate: "Dec 14", project: "Mobile App" },
-        { id: "3", title: "Setup CI/CD pipeline", status: "todo", priority: "medium", assignee: { name: "Alex Chen", initials: "AC" }, project: "ERP Migration" },
-        { id: "4", title: "Review database schema", status: "review", priority: "high", assignee: { name: "Sarah Jones", initials: "SJ" }, dueDate: "Dec 20", project: "ERP Migration" },
-    ];
+    const { data: tasks = [] } = useQuery<Task[]>({
+        queryKey: ['/api/projects/tasks'],
+        queryFn: async () => {
+            const res = await fetch('/api/projects/tasks');
+            if (!res.ok) return [];
+            return res.json();
+        }
+    });
 
     const columns: any[] = [
         {

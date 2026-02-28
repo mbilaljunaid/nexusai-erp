@@ -52,15 +52,13 @@ export default function ArAnalytics() {
         queryFn: async () => (await apiRequest("GET", `/api/ar/ai/collection-advice/${selectedCustomer}`)).json()
     });
 
-    // Mock Data for DSO Trend
-    const data = [
-        { name: 'Jan', dso: 45, industry: 40 },
-        { name: 'Feb', dso: 42, industry: 40 },
-        { name: 'Mar', dso: 48, industry: 40 },
-        { name: 'Apr', dso: 40, industry: 40 },
-        { name: 'May', dso: 38, industry: 40 },
-        { name: 'Jun', dso: 35, industry: 40 },
-    ];
+    const { data: dsoTrend = [] } = useQuery({
+        queryKey: ["/api/ar/reports/dso-trend"],
+        queryFn: async () => {
+            const res = await apiRequest("GET", "/api/ar/reports/dso-trend");
+            return res.json();
+        }
+    });
 
     return (
         <div className="space-y-6">
@@ -105,7 +103,7 @@ export default function ArAnalytics() {
                     </CardHeader>
                     <CardContent className="h-[300px]">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={data}>
+                            <BarChart data={dsoTrend}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="name" />
                                 <YAxis />

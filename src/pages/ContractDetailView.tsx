@@ -238,7 +238,7 @@ export default function ContractDetailView() {
                             <Button variant="outline" size="sm" onClick={() => {
                                 const name = prompt("Document Name:");
                                 if (!name) return;
-                                const url = "s3://mock-bucket/" + name.replace(/\s+/g, '-').toLowerCase() + ".pdf";
+                                const url = "s3://nexusai-erp/" + name.replace(/\s+/g, '-').toLowerCase() + ".pdf";
 
                                 fetch(`/api/contracts/${id}/documents`, {
                                     method: "POST",
@@ -268,7 +268,7 @@ export default function ContractDetailView() {
                                                 </div>
                                             </div>
                                             <Button variant="ghost" size="sm" asChild>
-                                                <a href="#" onClick={(e) => { e.preventDefault(); alert(`Mock Download: ${doc.url}`); }}>Download</a>
+                                                <a href="#" onClick={(e) => { e.preventDefault(); window.open(doc.url, '_blank'); }}>Download</a>
                                             </Button>
                                         </div>
                                     ))}

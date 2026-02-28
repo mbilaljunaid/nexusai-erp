@@ -63,23 +63,16 @@ export default function BillingProfileManager() {
     });
 
     // 2. Fetch Profiles (We need to add this endpoint or just query billing_profiles directly depending on backend setup)
-    // Logic: For now, I'll assume we can fetch all profiles. If endpoints don't exist, I'll need to mock/add them.
+
     // Given I cannot touch backend logic without strict approval, I will first check if generic crud exists.
     // Actually, I should probably implement a quick fetch for this.
     // For safety, I will rely on standard patterns.
     const { data: profiles = [], isLoading } = useQuery({
         queryKey: ["billing-profiles"],
         queryFn: async () => {
-            // Mock for now until endpoint confirmed, or try generic
-            // I'll try to fetch from a new endpoint I'll likely need to verify
-            // Let's assume GET /api/billing/profiles exists, if not I'll catch error
-            try {
-                const res = await fetch("/api/billing/profiles");
-                if (!res.ok) return []; // Fallback to empty
-                return res.json();
-            } catch (e) {
-                return [];
-            }
+            const res = await fetch("/api/billing/profiles");
+            if (!res.ok) throw new Error("Failed to fetch billing profiles");
+            return res.json();
         }
     });
 

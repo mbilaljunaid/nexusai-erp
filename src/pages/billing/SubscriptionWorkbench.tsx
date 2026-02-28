@@ -28,12 +28,6 @@ export function SubscriptionWorkbench() {
     const [selectedSub, setSelectedSub] = useState<any>(null);
 
     // --- Fetch Query ---
-    // Ideally this would be a paginated list endpoint, reusing get-all logic or new endpoint
-    // For MVP, sticking to basic fetch or assuming an endpoint exists, or mock data if we didn't add LIST endpoint.
-    // Wait, I didn't add a LIST endpoint in the backend controller step! I only added create/get-one.
-    // I need to add that endpoint or just fetch specific one for demo.
-    // Let's add a list endpoint now? Or just mock the data fetch here to avoid breaking flow.
-    // To keep it clean, I'll mock the hook for list, but implement the detail view properly.
 
     // Fetch Customers for Lookup
     const { data: customers = [] } = useQuery({
@@ -49,10 +43,9 @@ export function SubscriptionWorkbench() {
     const { data: subscriptions, isLoading } = useQuery({
         queryKey: ["subscriptions"],
         queryFn: async () => {
-            // Placeholder for List API
-            return [
-                { id: "sub_demo_123", contractNumber: "SUB-001", customerId: "Cust-A", status: "Active", totalMrr: "5000" }
-            ]
+            const res = await fetch("/api/billing/subscriptions");
+            if (!res.ok) return [];
+            return res.json();
         }
     });
 

@@ -19,47 +19,30 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet";
 import { DollarSign, FileText, AlertCircle, RefreshCw, ChevronRight } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
-// Mock data for initial UI build
-const mockMetrics = [
-    {
-        title: "Total Tax Collected",
-        value: "$1,245,678",
-        change: 12.5,
-        icon: DollarSign,
-        iconColor: "text-green-600",
-    },
-    {
-        title: "Tax Payable",
-        value: "$45,230",
-        change: -2.3,
-        icon: FileText,
-        iconColor: "text-blue-600",
-    },
-    {
-        title: "Pending Filings",
-        value: "3",
-        change: 0,
-        icon: AlertCircle,
-        iconColor: "text-orange-600",
-    },
-    {
-        title: "Audit Risks",
-        value: "0",
-        change: 0,
-        icon: RefreshCw,
-        iconColor: "text-purple-600",
-    },
-];
 
-const mockTransactions = [
-    { id: "TX-001", date: "2024-03-15", customer: "Acme Corp", amount: "$15,000.00", tax: "$1,200.00", jurisdiction: "US Federal", status: "Posted" },
-    { id: "TX-002", date: "2024-03-16", customer: "Globex Inc", amount: "$8,500.00", tax: "$680.00", jurisdiction: "NY State", status: "Posted" },
-    { id: "TX-003", date: "2024-03-16", customer: "Soylent Corp", amount: "$22,100.00", tax: "$1,768.00", jurisdiction: "CA State", status: "Review" },
-];
 
 export function TaxDashboardTab() {
     const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
+
+    const { data: metrics = [] } = useQuery({
+        queryKey: ["/api/tax/dashboard/metrics"],
+        queryFn: async () => {
+            const res = await fetch("/api/tax/dashboard/metrics");
+            if (!res.ok) return [];
+            return res.json();
+        }
+    });
+
+    const { data: transactions = [] } = useQuery({
+        queryKey: ["/api/tax/dashboard/recent-transactions"],
+        queryFn: async () => {
+            const res = await fetch("/api/tax/dashboard/recent-transactions");
+            if (!res.ok) return [];
+            return res.json();
+        }
+    });
 
     return (
         <div className="space-y-6">
@@ -69,7 +52,7 @@ export function TaxDashboardTab() {
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                {mockMetrics.map((metric) => (
+                {metrics.map((metric: any) => (
                     <MetricCard key={metric.title} {...metric} />
                 ))}
             </div>
@@ -95,7 +78,7 @@ export function TaxDashboardTab() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {mockTransactions.map((tx) => (
+                                {transactions.map((tx: any) => (
                                     <TableRow key={tx.id}>
                                         <TableCell className="font-medium">{tx.id}</TableCell>
                                         <TableCell>{tx.date}</TableCell>

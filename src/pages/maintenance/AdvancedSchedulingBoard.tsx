@@ -84,116 +84,20 @@ export function AdvancedSchedulingBoard() {
     const loadScheduleData = async () => {
         setLoading(true);
         try {
-            const mockTechs: Technician[] = [
-                {
-                    id: "tech-001",
-                    name: "John Smith",
-                    skills: ["Mechanical", "Electrical"],
-                    availability: 85,
-                    currentLoad: 34,
-                    maxCapacity: 40
-                },
-                {
-                    id: "tech-002",
-                    name: "Sarah Johnson",
-                    skills: ["Mechanical", "Hydraulics"],
-                    availability: 60,
-                    currentLoad: 24,
-                    maxCapacity: 40
-                },
-                {
-                    id: "tech-003",
-                    name: "Mike Davis",
-                    skills: ["Electrical", "Controls"],
-                    availability: 95,
-                    currentLoad: 38,
-                    maxCapacity: 40
-                },
-                {
-                    id: "tech-004",
-                    name: "Lisa Chen",
-                    skills: ["Mechanical"],
-                    availability: 75,
-                    currentLoad: 30,
-                    maxCapacity: 40
-                }
-            ];
+            const [techRes, woRes] = await Promise.all([
+                fetch('/api/maintenance/technicians'),
+                fetch('/api/maintenance/scheduled-work-orders')
+            ]);
 
-            const mockWOs: ScheduledWorkOrder[] = [
-                {
-                    id: "wo-001",
-                    woNumber: "WO-12345",
-                    description: "Air Compressor Monthly PM",
-                    assetName: "Air Compressor #1",
-                    priority: "MEDIUM",
-                    status: "SCHEDULED",
-                    scheduledStart: "2026-02-13",
-                    scheduledEnd: "2026-02-13",
-                    estimatedHours: 2.5,
-                    assignedTechnician: "John Smith",
-                    technicianId: "tech-001",
-                    skillRequired: "Mechanical"
-                },
-                {
-                    id: "wo-002",
-                    woNumber: "WO-12347",
-                    description: "Conveyor Belt Inspection",
-                    assetName: "Conveyor Belt #3",
-                    priority: "LOW",
-                    status: "SCHEDULED",
-                    scheduledStart: "2026-02-14",
-                    scheduledEnd: "2026-02-15",
-                    estimatedHours: 4,
-                    assignedTechnician: "Sarah Johnson",
-                    technicianId: "tech-002",
-                    skillRequired: "Mechanical"
-                },
-                {
-                    id: "wo-003",
-                    woNumber: "WO-12348",
-                    description: "Electrical Panel Upgrade",
-                    assetName: "Main Distribution Panel",
-                    priority: "HIGH",
-                    status: "IN_PROGRESS",
-                    scheduledStart: "2026-02-12",
-                    scheduledEnd: "2026-02-14",
-                    estimatedHours: 8,
-                    assignedTechnician: "Mike Davis",
-                    technicianId: "tech-003",
-                    skillRequired: "Electrical"
-                },
-                {
-                    id: "wo-004",
-                    woNumber: "WO-12349",
-                    description: "Chiller Emergency Repair",
-                    assetName: "Chiller Unit Main",
-                    priority: "URGENT",
-                    status: "SCHEDULED",
-                    scheduledStart: "2026-02-13",
-                    scheduledEnd: "2026-02-13",
-                    estimatedHours: 6,
-                    assignedTechnician: "Mike Davis",
-                    technicianId: "tech-003",
-                    skillRequired: "Electrical"
-                },
-                {
-                    id: "wo-005",
-                    woNumber: "WO-12350",
-                    description: "Forklift Brake Maintenance",
-                    assetName: "Forklift FL-05",
-                    priority: "HIGH",
-                    status: "SCHEDULED",
-                    scheduledStart: "2026-02-15",
-                    scheduledEnd: "2026-02-16",
-                    estimatedHours: 3,
-                    assignedTechnician: "Lisa Chen",
-                    technicianId: "tech-004",
-                    skillRequired: "Mechanical"
-                }
-            ];
-
-            setTechnicians(mockTechs);
-            setWorkOrders(mockWOs);
+            if (techRes.ok) {
+                const fetchedTechs = await techRes.json();
+                setTechnicians(fetchedTechs.length ? fetchedTechs : []);
+            }
+            if (woRes.ok) {
+                const fetchedWOs = await woRes.json();
+                setWorkOrders(fetchedWOs.length ? fetchedWOs : []);
+            }
+        } catch (error) {
         } catch (error) {
             console.error("Failed to load schedule data:", error);
         } finally {

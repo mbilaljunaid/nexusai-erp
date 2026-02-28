@@ -26,15 +26,21 @@ import {
     Line
 } from "recharts";
 
-const mockPerformanceData = [
-    { name: 'John D.', tasks: 145, efficiency: 98, errorRate: 0.2 },
-    { name: 'Sarah M.', tasks: 132, efficiency: 94, errorRate: 0.5 },
-    { name: 'Mike R.', tasks: 128, efficiency: 91, errorRate: 0.8 },
-    { name: 'Elena K.', tasks: 160, efficiency: 102, errorRate: 0.1 },
-    { name: 'David L.', tasks: 110, efficiency: 85, errorRate: 1.2 },
-];
+
 
 export default function WmsLaborPerformance() {
+    const { data: performanceData = [] } = useQuery({
+        queryKey: ['wms-labor-performance'],
+        queryFn: async () => {
+            const res = await fetch('/api/scm/wms/labor-performance');
+            if (!res.ok) {
+                // Return gracefully if endpoint not yet implemented
+                return [];
+            }
+            return res.json();
+        }
+    });
+
     return (
         <StandardPage
             title="Labor & Productivity"
@@ -88,7 +94,7 @@ export default function WmsLaborPerformance() {
                     <CardContent>
                         <div className="h-[300px]">
                             <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={mockPerformanceData} layout="vertical">
+                                <BarChart data={performanceData} layout="vertical">
                                     <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" horizontal={false} />
                                     <XAxis type="number" stroke="#64748b" fontSize={12} />
                                     <YAxis dataKey="name" type="category" stroke="#64748b" fontSize={12} width={80} />
@@ -151,7 +157,7 @@ export default function WmsLaborPerformance() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-800">
-                                {mockPerformanceData.map((worker) => (
+                                {performanceData.map((worker: any) => (
                                     <tr key={worker.name} className="hover:bg-blue-500/5 transition-colors">
                                         <td className="p-4 font-semibold text-white">{worker.name}</td>
                                         <td className="p-4 text-slate-400">{worker.tasks}</td>

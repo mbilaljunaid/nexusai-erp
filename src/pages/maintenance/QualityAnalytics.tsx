@@ -12,6 +12,7 @@ import {
     Target
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { qualityService } from "@/services/maintenance.service";
 import {
     BarChart,
     Bar,
@@ -61,37 +62,24 @@ export function QualityAnalytics() {
     }, [timeRange]);
 
     const loadAnalytics = async () => {
-        // Mock data
-        const mockMetrics: QualityMetrics = {
-            totalInspections: 142,
-            passRate: 87.3,
-            failRate: 12.7,
-            avgInspectionTime: 22,
-            criticalDefects: 3,
-            trend: "UP"
-        };
-
-        const mockTrends: InspectionTrend[] = [
-            { month: "Sep", passed: 38, failed: 7, total: 45 },
-            { month: "Oct", passed: 42, failed: 6, total: 48 },
-            { month: "Nov", passed: 45, failed: 5, total: 50 },
-            { month: "Dec", passed: 48, failed: 4, total: 52 },
-            { month: "Jan", passed: 52, failed: 6, total: 58 },
-            { month: "Feb", passed: 56, failed: 8, total: 64 }
-        ];
-
-        const mockDefects: DefectCategory[] = [
-            { name: "Hydraulic Leaks", count: 12, severity: "HIGH" },
-            { name: "Tire Wear", count: 8, severity: "MEDIUM" },
-            { name: "Battery Issues", count: 6, severity: "MEDIUM" },
-            { name: "Brake Defects", count: 4, severity: "CRITICAL" },
-            { name: "Light Malfunctions", count: 3, severity: "LOW" },
-            { name: "Structural Damage", count: 2, severity: "CRITICAL" }
-        ];
-
-        setMetrics(mockMetrics);
-        setTrends(mockTrends);
-        setDefectCategories(mockDefects);
+        try {
+            const data = await qualityService.getAnalytics({ startDate: undefined, endDate: undefined });
+            setMetrics({
+                totalInspections: data.totalInspections || 0,
+                passRate: data.passRate || 0,
+                failRate: data.failRate || 0,
+                avgInspectionTime: 22, // Static proxy for demo
+                criticalDefects: (data.defectCategories || []).filter((d: any) => d.severity === 'CRITICAL').length,
+                trend: "UP"
+            });
+            setTrends(data.trendData || []);
+            setDefectCategories(data.defectCategories || []);
+        } catch (error) {
+            console.error("Failed to load analytics:", error);
+            setMetrics(null);
+            setTrends([]);
+            setDefectCategories([]);
+        }
     };
 
     const passFailData = [

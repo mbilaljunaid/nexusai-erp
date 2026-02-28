@@ -18,10 +18,6 @@ export default function AccessControl() {
     const { data: users, isLoading: usersLoading } = useQuery({
         queryKey: ["/api/users"],
         queryFn: async () => {
-            // Mocking fetch as we don't have a direct /api/users endpoint exposed for this yet in provided context, 
-            // but we will assume it exists or use a placeholder.
-            // Actually, usually admin/users exists. 
-            // If not, we might need to add it. Let's assume /api/admin/users exists based on `admin` module.
             const res = await fetch("/api/admin/users");
             if (!res.ok) throw new Error("Failed to fetch users");
             return res.json();

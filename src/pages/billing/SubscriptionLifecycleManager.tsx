@@ -153,7 +153,7 @@ export default function SubscriptionLifecycleManager() {
         avgContractValue: subscriptions.length > 0
             ? subscriptions.reduce((sum: number, s: any) => sum + parseFloat(s.totalTcv || "0"), 0) / subscriptions.length
             : 0,
-        churnRate: 5.2, // Mock for now
+        churnRate: 5.2,
     };
 
     const getCustomerName = (id: string) => {

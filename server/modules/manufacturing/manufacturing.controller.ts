@@ -535,6 +535,36 @@ export class ManufacturingController {
             res.status(500).json({ error: error.message });
         }
     }
+
+    // WIP Trend endpoint
+    async getWipTrend(req: Request, res: Response) {
+        try {
+            // Mock trend data for chart MVP
+            const trendData = [
+                { name: "Mon", material: 4000, labor: 2400, overhead: 1400 },
+                { name: "Tue", material: 3000, labor: 1398, overhead: 2210 },
+                { name: "Wed", material: 2000, labor: 9800, overhead: 2290 },
+                { name: "Thu", material: 2780, labor: 3908, overhead: 2000 },
+                { name: "Fri", material: 1890, labor: 4800, overhead: 2181 },
+            ];
+            res.json(trendData);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to fetch WIP trend" });
+        }
+    }
+
+    // Recent Critical Events
+    async getManufacturingEvents(req: Request, res: Response) {
+        try {
+            res.json([
+                { id: 1, type: "Production Bottleneck", location: "WC-01", time: "12m ago", description: "Assembly line 01 reports intermittent resource unavailability." },
+                { id: 2, type: "Quality Alert", location: "QC-Station-A", time: "1h ago", description: "High defect rate on recent batch of product XYZ." },
+                { id: 3, type: "Machine Maintenance", location: "CNC-04", time: "3h ago", description: "Scheduled maintenance in progress. Expected downtime: 2h." }
+            ]);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to fetch events" });
+        }
+    }
 }
 
 export const manufacturingController = new ManufacturingController();

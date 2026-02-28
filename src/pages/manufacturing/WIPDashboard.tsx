@@ -30,14 +30,14 @@ export default function WIPDashboard() {
     const wipBalances = data?.items || [];
     const totalItems = data?.total || 0;
 
-    // Mock trend data for chart
-    const trendData = [
-        { name: "Mon", material: 4000, labor: 2400, overhead: 1400 },
-        { name: "Tue", material: 3000, labor: 1398, overhead: 2210 },
-        { name: "Wed", material: 2000, labor: 9800, overhead: 2290 },
-        { name: "Thu", material: 2780, labor: 3908, overhead: 2000 },
-        { name: "Fri", material: 1890, labor: 4800, overhead: 2181 },
-    ];
+    const { data: trendData = [] } = useQuery({
+        queryKey: ["/api/manufacturing/wip-trend"],
+        queryFn: async () => {
+            const res = await fetch("/api/manufacturing/wip-trend");
+            if (!res.ok) throw new Error("Failed to fetch WIP trend");
+            return res.json();
+        }
+    });
 
     const columns: Column<WipBalance>[] = [
         { header: "Order ID", accessorKey: "productionOrderId" },

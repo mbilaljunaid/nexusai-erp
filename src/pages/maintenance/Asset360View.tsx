@@ -9,15 +9,7 @@ import { Activity, Thermometer, Gauge, Zap, AlertTriangle, FileText, Sparkles } 
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useNexusAI } from "@/contexts/NexusAIContext";
 
-const mockTelemetry = [
-    { time: '08:00', temp: 45, vibration: 0.2 },
-    { time: '09:00', temp: 48, vibration: 0.25 },
-    { time: '10:00', temp: 52, vibration: 0.3 },
-    { time: '11:00', temp: 55, vibration: 0.4 },
-    { time: '12:00', temp: 54, vibration: 0.35 },
-    { time: '13:00', temp: 58, vibration: 0.45 },
-    { time: '14:00', temp: 62, vibration: 0.6 }, // Spike
-];
+
 
 export default function Asset360View() {
     const { open, sendMessage } = useNexusAI();
@@ -37,6 +29,15 @@ export default function Asset360View() {
             lastMaintenance: "2023-10-15",
             nextMaintenance: "2023-11-15"
         })
+    });
+
+    const { data: telemetry = [] } = useQuery({
+        queryKey: ["/api/maintenance/assets", assetId, "telemetry"],
+        queryFn: async () => {
+            const res = await fetch(`/api/maintenance/assets/${assetId}/telemetry`);
+            if (!res.ok) return [];
+            return res.json();
+        }
     });
 
     return (
@@ -103,7 +104,7 @@ export default function Asset360View() {
                             <CardHeader><CardTitle>Real-Time Telemetry</CardTitle></CardHeader>
                             <CardContent className="h-[300px]">
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <LineChart data={mockTelemetry}>
+                                    <LineChart data={telemetry}>
                                         <XAxis dataKey="time" />
                                         <YAxis />
                                         <Tooltip />

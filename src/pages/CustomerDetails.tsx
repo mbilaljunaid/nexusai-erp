@@ -14,23 +14,10 @@ export default function CustomerDetails() {
     const { data: customer, isLoading } = useQuery({
         queryKey: [`/api/ar/customers/${customerId}`],
         enabled: !!customerId,
-        // Mock API call if route doesn't exist yet, or assume it does
         queryFn: async () => {
-            // For now, let's just fetch from a generic endpoint or mock it if strictly needed.
-            // Assuming generic entity fetch or similar. 
-            // Actually, let's mock the return for safety if we aren't sure of the exact endpoint 
-            // or fetch from ar invoices to get customer details? No, better to try standardized fetch.
-            // We can use the portal/me logic pattern but for admin.
-            // Let's assume GET /api/finance/customers/:id exists or similar. 
-            // Safer: Mock it to avoid 404 block for this task.
-            return {
-                id: customerId,
-                name: "Acme Corp",
-                email: "contact@acme.com",
-                phone: "+1 555 0123",
-                address: "123 Business Rd, Tech City",
-                status: "Active"
-            };
+            const res = await fetch(`/api/ar/customers/${customerId}`);
+            if (!res.ok) throw new Error("Failed to fetch customer details");
+            return res.json();
         }
     });
 

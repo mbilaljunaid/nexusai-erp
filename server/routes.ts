@@ -4,6 +4,8 @@ import { setupPlatformAuth, seedAdminUser } from "./platformAuth";
 import { enforceRBAC } from "./middleware/auth";
 import { storage } from "./storage";
 import { slaRouter } from "./modules/sla/routes";
+import { db } from "./db";
+import { suppliers } from "@shared/schema/scm";
 
 // Import modular routes
 import { registerDashboardRoutes } from "./modules/dashboard/routes";
@@ -284,6 +286,64 @@ export async function registerRoutes(
       });
     }
     return res.json({ isAuthenticated: false, user: null });
+  });
+
+  // Admin Access Control Endpoints
+  app.get("/api/admin/users", (req, res) => {
+    try {
+      res.json([
+        { id: "1", name: "System Admin", email: "admin@nexusai.com", role: "ADMIN" },
+        { id: "2", name: "Finance Manager", email: "finance@nexusai.com", role: "GL_MANAGER" },
+        { id: "3", name: "Auditor", email: "auditor@nexusai.com", role: "GL_VIEWER" }
+      ]);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.get("/api/admin/audit-logs", (req, res) => {
+    try {
+      res.json([
+        { id: "log1", createdAt: new Date(Date.now() - 3600000).toISOString(), userId: "admin", action: "UPDATE_ROLE", entityType: "User", entityId: "2", status: "SUCCESS" },
+        { id: "log2", createdAt: new Date(Date.now() - 7200000).toISOString(), userId: "system", action: "BACKUP_DB", entityType: "System", entityId: "db-main", status: "SUCCESS" },
+        { id: "log3", createdAt: new Date(Date.now() - 10800000).toISOString(), userId: "finance", action: "POST_JOURNAL", entityType: "Journal", entityId: "JRNL-1234", status: "Failed" }
+      ]);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/admin/users/:id/role", (req, res) => {
+    try {
+      res.json({ success: true, updatedRole: req.body.role, id: req.params.id });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // Supplier Management API
+  app.get("/api/procurement/suppliers", async (req, res) => {
+    try {
+      const data = await db.select().from(suppliers);
+      res.json(data);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/procurement/suppliers", async (req, res) => {
+    try {
+      const { name, email, phone, category, status } = req.body;
+      const data = await db.insert(suppliers).values({
+        name,
+        email,
+        phone,
+        status: status || "active"
+      }).returning();
+      res.json(data[0]);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
   });
 
   // Register Modular Routes

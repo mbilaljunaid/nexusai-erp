@@ -86,8 +86,7 @@ export default function PortalDisputes() {
         setFiles(files.filter((_, i) => i !== index));
     };
 
-    // Mock disputes for display (in real app, would fetch from backend)
-    const mockDisputes = [];
+
 
     return (
         <div className="space-y-6">

@@ -13,7 +13,8 @@ import {
     insertArDunningRunSchema,
     insertArCollectorTaskSchema,
     insertArAdjustmentSchema,
-    insertArSystemOptionsSchema, // Added
+    insertArSystemOptionsSchema,
+    arCustomers, // Added
     slaJournalHeaders,
     slaJournalLines
 } from "@shared/schema";
@@ -32,6 +33,17 @@ router.get("/customers", async (req, res) => {
         res.json(customers);
     } catch (error) {
         res.status(500).json({ message: "Failed to list customers" });
+    }
+});
+
+router.get("/customers/:id", async (req, res) => {
+    try {
+        const id = req.params.id;
+        const customers = await db.select().from(arCustomers).where(eq(arCustomers.id, id));
+        if (customers.length === 0) return res.status(404).json({ message: "Customer not found" });
+        res.json(customers[0]);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to get customer" });
     }
 });
 

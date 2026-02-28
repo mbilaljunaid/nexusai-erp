@@ -70,84 +70,11 @@ export function WorkLibrary() {
     const loadDefinitions = async () => {
         setLoading(true);
         try {
-            // Mock work definitions
-            const mockDefinitions: WorkDefinition[] = [
-                {
-                    id: "wd-001",
-                    code: "PM-COMP-MONTHLY",
-                    name: "Air Compressor Monthly Service",
-                    category: "Preventive Maintenance",
-                    version: 3,
-                    status: "ACTIVE",
-                    estimatedDuration: 2.5,
-                    estimatedCost: 450,
-                    operationCount: 8,
-                    materialCount: 5,
-                    skillsRequired: ["Mechanical", "Electrical"],
-                    lastUsed: "2026-01-15",
-                    useCount: 24
-                },
-                {
-                    id: "wd-002",
-                    code: "BRAKE-REPLACE",
-                    name: "Forklift Brake System Replacement",
-                    category: "Corrective Maintenance",
-                    version: 2,
-                    status: "ACTIVE",
-                    estimatedDuration: 4.0,
-                    estimatedCost: 850,
-                    operationCount: 12,
-                    materialCount: 8,
-                    skillsRequired: ["Mechanical", "Hydraulics"],
-                    lastUsed: "2026-02-10",
-                    useCount: 15
-                },
-                {
-                    id: "wd-003",
-                    code: "HVAC-FILTER-CHANGE",
-                    name: "HVAC Filter Replacement",
-                    category: "Preventive Maintenance",
-                    version: 1,
-                    status: "ACTIVE",
-                    estimatedDuration: 0.5,
-                    estimatedCost: 120,
-                    operationCount: 3,
-                    materialCount: 2,
-                    skillsRequired: ["HVAC"],
-                    lastUsed: "2026-02-01",
-                    useCount: 48
-                },
-                {
-                    id: "wd-004",
-                    code: "CONVEYOR-BEARING",
-                    name: "Conveyor Belt Bearing Replacement",
-                    category: "Corrective Maintenance",
-                    version: 2,
-                    status: "ACTIVE",
-                    estimatedDuration: 3.5,
-                    estimatedCost: 680,
-                    operationCount: 10,
-                    materialCount: 6,
-                    skillsRequired: ["Mechanical"],
-                    lastUsed: "2025-12-20",
-                    useCount: 8
-                },
-                {
-                    id: "wd-005",
-                    code: "ANNUAL-SHUTDOWN",
-                    name: "Annual Plant Shutdown Inspection",
-                    category: "Shutdown Maintenance",
-                    version: 1,
-                    status: "DRAFT",
-                    estimatedDuration: 16.0,
-                    estimatedCost: 3500,
-                    operationCount: 25,
-                    materialCount: 15,
-                    skillsRequired: ["Mechanical", "Electrical", "Instrumentation"],
-                    useCount: 1
-                }
-            ];
-            setDefinitions(mockDefinitions);
+            const res = await fetch('/api/maintenance/work-definitions');
+            if (res.ok) {
+                const data = await res.json();
+                setDefinitions(data);
+            }
         } catch (error) {
             console.error("Failed to load work definitions:", error);
         } finally {
@@ -156,30 +83,21 @@ export function WorkLibrary() {
     };
 
     const loadDefinitionDetail = async (definition: WorkDefinition) => {
-        // Mock detailed work definition
-        const mockDetail: WorkDefinitionDetail = {
-            ...definition,
-            operations: [
-                { sequence: 1, description: "Isolate equipment and lock out energy sources", duration: 0.25, skillRequired: "Mechanical" },
-                { sequence: 2, description: "Drain air from system", duration: 0.25, skillRequired: "Mechanical" },
-                { sequence: 3, description: "Remove and inspect air/oil separator", duration: 0.5, skillRequired: "Mechanical" },
-                { sequence: 4, description: "Replace oil filter", duration: 0.25, skillRequired: "Mechanical" },
-                { sequence: 5, description: "Replace air filter", duration: 0.25, skillRequired: "Mechanical" },
-                { sequence: 6, description: "Check and adjust belt tension", duration: 0.5, skillRequired: "Mechanical" },
-                { sequence: 7, description: "Inspect electrical connections", duration: 0.25, skillRequired: "Electrical" },
-                { sequence: 8, description: "System startup and test", duration: 0.25, skillRequired: "Mechanical" }
-            ],
-            materials: [
-                { itemCode: "FILTER-OIL-123", description: "Oil Filter Cartridge", quantity: 1, uom: "EA", estimatedCost: 45 },
-                { itemCode: "FILTER-AIR-456", description: "Air Filter Element", quantity: 1, uom: "EA", estimatedCost: 35 },
-                { itemCode: "OIL-COMP-20W50", description: "Compressor Oil 20W-50", quantity: 5, uom: "L", estimatedCost: 150 },
-                { itemCode: "SEPARATOR-789", description: "Air/Oil Separator", quantity: 1, uom: "EA", estimatedCost: 180 },
-                { itemCode: "GASKET-SET-01", description: "Gasket Set", quantity: 1, uom: "SET", estimatedCost: 40 }
-            ],
-            notes: "Follow manufacturer lockout/tagout procedure. Ensure oil temperature is below 50°C before draining."
-        };
-
-        setSelectedDefinition(mockDetail);
+        try {
+            const res = await fetch(`/api/maintenance/work-definitions/${definition.id}`);
+            if (res.ok) {
+                const data = await res.json();
+                setSelectedDefinition(data);
+            } else {
+                setSelectedDefinition({
+                    ...definition,
+                    operations: [],
+                    materials: []
+                });
+            }
+        } catch (error) {
+            console.error("Failed to load details:", error);
+        }
     };
 
     const handleApplyToWorkOrder = () => {

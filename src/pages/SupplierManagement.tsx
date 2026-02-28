@@ -27,18 +27,21 @@ export default function SupplierManagement() {
 
   const { data: suppliers = [], isLoading } = useQuery<Supplier[]>({
     queryKey: ["/api/procurement/suppliers"],
-    // Fallback to vendors API if specific supplier API missing, or assume standard
+    queryFn: async () => {
+      const res = await fetch("/api/procurement/suppliers");
+      if (!res.ok) throw new Error("Failed to fetch suppliers");
+      return res.json();
+    }
   });
 
   const mutation = useMutation({
     mutationFn: async (data: Partial<Supplier>) => {
-      // Mock API endpoint for now, or assume generic endpoint
-      // In a real scenario, this would POST/PUT to /api/vendors
       const res = await fetch("/api/procurement/suppliers", {
-        method: "POST", // Simplified for now
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
+      if (!res.ok) throw new Error("Failed to save supplier");
       return res.json();
     },
     onSuccess: () => {
@@ -47,11 +50,8 @@ export default function SupplierManagement() {
       setEditingSupplier(null);
       toast({ title: "Success", description: "Supplier saved successfully" });
     },
-    onError: () => {
-      // Mock success since API might not exist perfectly
-      queryClient.invalidateQueries({ queryKey: ["/api/procurement/suppliers"] });
-      setIsSheetOpen(false);
-      toast({ title: "Success (Mock)", description: "Supplier saved (Mock)" });
+    onError: (err) => {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
     }
   });
 

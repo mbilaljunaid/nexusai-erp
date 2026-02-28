@@ -90,10 +90,9 @@ export default function SupplierOrders() {
         mutationFn: async (po: any) => {
             const payload = {
                 invoiceNumber: `INV-${po.poNumber}-${Date.now()}`,
-                items: [
-                    // Mock item for MVP parity - simulating billing for the remaining amount
-                    { poLineId: "mock-line", quantity: 1, unitPrice: Number(po.totalAmount) }
-                ]
+                items: po.items && po.items.length > 0
+                    ? po.items.map((item: any) => ({ poLineId: item.id, quantity: item.quantity, unitPrice: item.unitPrice }))
+                    : [{ poLineId: `${po.id}-line-1`, quantity: 1, unitPrice: Number(po.totalAmount) }]
             };
 
             const res = await fetch(`/api/portal/supplier/orders/${po.id}/invoice`, {

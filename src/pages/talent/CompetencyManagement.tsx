@@ -59,34 +59,23 @@ export default function CompetencyManagement() {
         queryKey: ['/talent/competencies'],
         queryFn: async () => {
             const res = await fetch('/api/talent/competencies');
-            if (!res.ok) {
-                // Mock data for development
-                return [
-                    { id: 'comp-1', name: 'JavaScript', category: 'Technical', description: 'Programming language', proficiencyLevels: ['Beginner', 'Intermediate', 'Advanced', 'Expert', 'Master'] },
-                    { id: 'comp-2', name: 'React', category: 'Technical', description: 'Frontend framework', proficiencyLevels: ['Beginner', 'Intermediate', 'Advanced', 'Expert', 'Master'] },
-                    { id: 'comp-3', name: 'Leadership', category: 'Soft Skills', description: 'Team leadership', proficiencyLevels: ['Developing', 'Competent', 'Proficient', 'Expert', 'Strategic'] },
-                    { id: 'comp-4', name: 'Communication', category: 'Soft Skills', description: 'Effective communication', proficiencyLevels: ['Basic', 'Good', 'Excellent', 'Expert', 'Master'] },
-                    { id: 'comp-5', name: 'Project Management', category: 'Business', description: 'Managing projects', proficiencyLevels: ['Beginner', 'Intermediate', 'Advanced', 'Expert', 'Master'] },
-                    { id: 'comp-6', name: 'SQL', category: 'Technical', description: 'Database queries', proficiencyLevels: ['Beginner', 'Intermediate', 'Advanced', 'Expert', 'Master'] },
-                    { id: 'comp-7', name: 'Problem Solving', category: 'Soft Skills', description: 'Analytical thinking', proficiencyLevels: ['Developing', 'Competent', 'Proficient', 'Expert', 'Strategic'] },
-                    { id: 'comp-8', name: 'Financial Analysis', category: 'Business', description: 'Financial reporting', proficiencyLevels: ['Beginner', 'Intermediate', 'Advanced', 'Expert', 'Master'] }
-                ];
-            }
+            if (!res.ok) return [];
             return res.json();
         }
     });
 
     // Fetch people for selector
     const { data: people = [] } = useQuery<Person[]>({
-        queryKey: ['/api/persons'],
+        queryKey: ['/api/hr/persons'],
         queryFn: async () => {
-            // Mock data
-            return [
-                { id: 'p1', name: 'John Smith', department: 'Engineering' },
-                { id: 'p2', name: 'Sarah Johnson', department: 'Engineering' },
-                { id: 'p3', name: 'Michael Chen', department: 'Finance' },
-                { id: 'p4', name: 'Emily Davis', department: 'HR' }
-            ];
+            const res = await fetch('/api/hr/persons');
+            if (!res.ok) return [];
+            const data = await res.json();
+            return data.map((p: any) => ({
+                id: p.id,
+                name: `${p.firstName} ${p.lastName}`,
+                department: p.department || 'N/A'
+            }));
         }
     });
 
@@ -97,17 +86,7 @@ export default function CompetencyManagement() {
             if (!selectedPerson) return [];
 
             const res = await fetch(`/api/talent/profile/${selectedPerson}/skills`);
-            if (!res.ok) {
-                // Mock data based on person
-                if (selectedPerson === 'p1') {
-                    return [
-                        { id: 's1', competencyId: 'comp-1', competencyName: 'JavaScript', proficiency: 5, endorsed: true },
-                        { id: 's2', competencyId: 'comp-2', competencyName: 'React', proficiency: 4, endorsed: true },
-                        { id: 's3', competencyId: 'comp-3', competencyName: 'Leadership', proficiency: 3, endorsed: false }
-                    ];
-                }
-                return [];
-            }
+            if (!res.ok) return [];
             return res.json();
         },
         enabled: !!selectedPerson

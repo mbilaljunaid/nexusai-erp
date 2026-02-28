@@ -97,7 +97,8 @@ export default function OpportunityPipeline() {
 
     // Group opportunities by stage
     const opportunitiesByStage = STAGES.reduce((acc, stage) => {
-        acc[stage.id] = opportunities.filter(opp => opp.stage === stage.id);
+        const safeOpportunities = Array.isArray(opportunities) ? opportunities : [];
+        acc[stage.id] = safeOpportunities.filter(opp => opp.stage === stage.id);
         return acc;
     }, {} as Record<OpportunityStage, Opportunity[]>);
 
