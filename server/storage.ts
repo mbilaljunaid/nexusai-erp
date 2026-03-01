@@ -129,6 +129,7 @@ import {
   type ArReceiptApplication, type InsertArReceiptApplication,
   arRevenueRules, type ArRevenueRule, type InsertArRevenueRule,
   arRevenueSchedules, type ArRevenueSchedule, type InsertArRevenueSchedule,
+  arPaymentSchedules, type ArPaymentSchedule, type InsertArPaymentSchedule,
   arDunningTemplates, // Removed arCollections if not exists
   arDunningRuns,
   arCollectorTasks,
@@ -151,6 +152,10 @@ import {
   arAutoAccountingRules, type ArAutoAccountingRule, type InsertArAutoAccountingRule,
   arDocumentSequences, type ArDocumentSequence, type InsertArDocumentSequence,
   arDocumentSequenceAssignments, type ArDocumentSequenceAssignment, type InsertArDocumentSequenceAssignment,
+
+  // Lockbox
+  arLockboxBatches, type ArLockboxBatch, type InsertArLockboxBatch,
+  arLockboxItems, type ArLockboxItem, type InsertArLockboxItem,
 
 
   // Tax
@@ -709,6 +714,7 @@ export interface IStorage {
   getArInvoicesCount(): Promise<number>;
   getArInvoice(id: string): Promise<ArInvoice | undefined>;
   createArInvoice(data: InsertArInvoice): Promise<ArInvoice>;
+  createArPaymentSchedulesBulk(data: InsertArPaymentSchedule[]): Promise<ArPaymentSchedule[]>;
   updateArInvoice(id: string, data: Partial<InsertArInvoice>): Promise<ArInvoice | undefined>;
   deleteArInvoice(id: string): Promise<boolean>;
 
@@ -798,6 +804,17 @@ export interface IStorage {
   listArRevenueSchedules(status?: string): Promise<ArRevenueSchedule[]>;
   getArRevenueSchedule(id: string): Promise<ArRevenueSchedule | undefined>;
   updateArRevenueSchedule(id: string, data: Partial<InsertArRevenueSchedule>): Promise<ArRevenueSchedule | undefined>;
+
+  // Lockbox Methods
+  createArLockboxBatch(data: InsertArLockboxBatch): Promise<ArLockboxBatch>;
+  getArLockboxBatch(id: string): Promise<ArLockboxBatch | undefined>;
+  listArLockboxBatches(): Promise<ArLockboxBatch[]>;
+  updateArLockboxBatch(id: string, data: Partial<InsertArLockboxBatch>): Promise<ArLockboxBatch | undefined>;
+
+  createArLockboxItem(data: InsertArLockboxItem): Promise<ArLockboxItem>;
+  getArLockboxItem(id: string): Promise<ArLockboxItem | undefined>;
+  listArLockboxItems(batchId: string): Promise<ArLockboxItem[]>;
+  updateArLockboxItem(id: string, data: Partial<InsertArLockboxItem>): Promise<ArLockboxItem | undefined>;
   deleteArRevenueSchedule(id: string): Promise<boolean>;
 
   // AR Collections
@@ -1701,6 +1718,13 @@ export class DatabaseStorage implements IStorage {
     const [res] = await db.insert(arInvoices).values(data).returning();
     return res;
   }
+  async createArInvoiceLine(data: InsertArInvoiceLine) {
+    const [res] = await db.insert(arInvoiceLines).values(data).returning();
+    return res;
+  }
+  async createArPaymentSchedulesBulk(data: InsertArPaymentSchedule[]) {
+    return await db.insert(arPaymentSchedules).values(data).returning();
+  }
   async updateArInvoice(id: string, data: Partial<InsertArInvoice>) {
     const [res] = await db.update(arInvoices).set(data).where(eq(arInvoices.id, id)).returning();
     return res;
@@ -1792,6 +1816,45 @@ export class DatabaseStorage implements IStorage {
   async createArRevenueSchedulesBulk(data: InsertArRevenueSchedule[]): Promise<ArRevenueSchedule[]> {
     if (data.length === 0) return [];
     return await db.insert(arRevenueSchedules).values(data).returning();
+  }
+
+  // Lockbox Methods
+  async createArLockboxBatch(data: InsertArLockboxBatch): Promise<ArLockboxBatch> {
+    const [res] = await db.insert(arLockboxBatches).values({ ...data, id: data.id || randomUUID(), tenantId: "00000000-0000-0000-0000-000000000000" }).returning();
+    return res;
+  }
+
+  async getArLockboxBatch(id: string): Promise<ArLockboxBatch | undefined> {
+    const [res] = await db.select().from(arLockboxBatches).where(eq(arLockboxBatches.id, id));
+    return res;
+  }
+
+  async listArLockboxBatches(): Promise<ArLockboxBatch[]> {
+    return await db.select().from(arLockboxBatches).orderBy(desc(arLockboxBatches.createdAt));
+  }
+
+  async updateArLockboxBatch(id: string, data: Partial<InsertArLockboxBatch>): Promise<ArLockboxBatch | undefined> {
+    const [res] = await db.update(arLockboxBatches).set({ ...data, updatedAt: new Date() }).where(eq(arLockboxBatches.id, id)).returning();
+    return res;
+  }
+
+  async createArLockboxItem(data: InsertArLockboxItem): Promise<ArLockboxItem> {
+    const [res] = await db.insert(arLockboxItems).values({ ...data, id: data.id || randomUUID(), tenantId: "00000000-0000-0000-0000-000000000000" }).returning();
+    return res;
+  }
+
+  async getArLockboxItem(id: string): Promise<ArLockboxItem | undefined> {
+    const [res] = await db.select().from(arLockboxItems).where(eq(arLockboxItems.id, id));
+    return res;
+  }
+
+  async listArLockboxItems(batchId: string): Promise<ArLockboxItem[]> {
+    return await db.select().from(arLockboxItems).where(eq(arLockboxItems.batchId, batchId)).orderBy(arLockboxItems.createdAt);
+  }
+
+  async updateArLockboxItem(id: string, data: Partial<InsertArLockboxItem>): Promise<ArLockboxItem | undefined> {
+    const [res] = await db.update(arLockboxItems).set({ ...data, updatedAt: new Date() }).where(eq(arLockboxItems.id, id)).returning();
+    return res;
   }
 
   // AR Collections

@@ -203,6 +203,8 @@ __export(schema_exports, {
   arDunningTemplates: () => arDunningTemplates,
   arInvoiceLines: () => arInvoiceLines,
   arInvoices: () => arInvoices,
+  arLockboxBatches: () => arLockboxBatches,
+  arLockboxItems: () => arLockboxItems,
   arPeriodStatuses: () => arPeriodStatuses,
   arReceiptApplications: () => arReceiptApplications,
   arReceiptMethods: () => arReceiptMethods,
@@ -612,6 +614,8 @@ __export(schema_exports, {
   insertArDunningTemplateSchema: () => insertArDunningTemplateSchema,
   insertArInvoiceLineSchema: () => insertArInvoiceLineSchema,
   insertArInvoiceSchema: () => insertArInvoiceSchema,
+  insertArLockboxBatchSchema: () => insertArLockboxBatchSchema,
+  insertArLockboxItemSchema: () => insertArLockboxItemSchema,
   insertArPeriodStatusSchema: () => insertArPeriodStatusSchema,
   insertArReceiptApplicationSchema: () => insertArReceiptApplicationSchema,
   insertArReceiptMethodSchema: () => insertArReceiptMethodSchema,
@@ -1144,8 +1148,6 @@ __export(schema_exports, {
   leasePayments: () => leasePayments,
   leaseSchedules: () => leaseSchedules,
   leaveRequests: () => leaveRequests,
-  lockboxBatches: () => lockboxBatches,
-  lockboxItems: () => lockboxItems,
   maintAssetsExtension: () => maintAssetsExtension,
   maintCostTypeEnum: () => maintCostTypeEnum,
   maintFailureCodes: () => maintFailureCodes,
@@ -2154,7 +2156,7 @@ var apSupplierSitesRelations = relations(apSupplierSites, ({ one }) => ({
 }));
 
 // shared/schema/ar.ts
-import { pgTable as pgTable3, varchar as varchar3, text as text3, timestamp as timestamp3, numeric as numeric3, boolean as boolean3, integer as integer3, date } from "drizzle-orm/pg-core";
+import { pgTable as pgTable3, varchar as varchar3, text as text3, timestamp as timestamp3, numeric as numeric3, boolean as boolean3, integer as integer3 } from "drizzle-orm/pg-core";
 import { sql as sql3 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema3 } from "drizzle-zod";
 import { z as z2 } from "zod";
@@ -2720,36 +2722,63 @@ var insertCustomerNotificationSchema = createInsertSchema3(customerNotifications
   read: z2.boolean().optional(),
   referenceId: z2.string().optional().nullable()
 });
-var lockboxBatches = pgTable3("lockbox_batches", {
-  id: text3("id").primaryKey(),
-  // e.g. "LB-169837192"
-  tenantId: text3("tenant_id").notNull(),
-  bankAccountId: text3("bank_account_id"),
-  batchDate: date("batch_date").notNull(),
+var arLockboxBatches = pgTable3("ar_lockbox_batches", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  tenantId: varchar3("tenant_id").default("1"),
+  bankAccountId: varchar3("bank_account_id"),
+  batchDate: timestamp3("batch_date").notNull(),
   totalAmount: numeric3("total_amount", { precision: 20, scale: 2 }).notNull(),
   itemCount: integer3("item_count").notNull(),
-  status: text3("status").default("Pending"),
+  currencyCode: varchar3("currency_code").default("USD"),
+  status: varchar3("status").default("Pending"),
   // Pending, Matched, Partial, Exception
-  importedBy: text3("imported_by").notNull(),
+  importedBy: varchar3("imported_by").default("System"),
   rawFile: text3("raw_file"),
-  createdAt: timestamp3("created_at").defaultNow()
+  createdAt: timestamp3("created_at").default(sql3`now()`)
 });
-var lockboxItems = pgTable3("lockbox_items", {
-  id: text3("id").primaryKey(),
-  batchId: text3("batch_id").references(() => lockboxBatches.id).notNull(),
-  checkNumber: text3("check_number"),
-  remittanceRef: text3("remittance_ref"),
-  payerName: text3("payer_name"),
-  payerAccount: text3("payer_account"),
+var insertArLockboxBatchSchema = createInsertSchema3(arLockboxBatches).extend({
+  bankAccountId: z2.string().optional().nullable(),
+  batchDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()),
+  totalAmount: z2.string().min(1),
+  itemCount: z2.number().int(),
+  currencyCode: z2.string().optional(),
+  status: z2.string().optional(),
+  importedBy: z2.string().optional(),
+  rawFile: z2.string().optional().nullable()
+});
+var arLockboxItems = pgTable3("ar_lockbox_items", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  batchId: varchar3("batch_id").notNull(),
+  checkNumber: varchar3("check_number"),
+  remittanceRef: varchar3("remittance_ref"),
+  payerName: varchar3("payer_name"),
+  payerAccount: varchar3("payer_account"),
   amount: numeric3("amount", { precision: 20, scale: 2 }).notNull(),
-  itemDate: date("item_date").notNull(),
-  matchedInvoiceId: text3("matched_invoice_id"),
-  matchMethod: text3("match_method"),
+  itemDate: timestamp3("item_date").notNull(),
+  matchedInvoiceId: varchar3("matched_invoice_id"),
+  matchMethod: varchar3("match_method"),
   // Exact, Fuzzy_Ref, Amount, Manual
-  matchStatus: text3("match_status").default("Unmatched"),
+  matchStatus: varchar3("match_status").default("Unmatched"),
   // Unmatched, Matched, Partial
   unappliedAmount: numeric3("unapplied_amount", { precision: 20, scale: 2 }).notNull(),
-  createdAt: timestamp3("created_at").defaultNow()
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertArLockboxItemSchema = createInsertSchema3(arLockboxItems).extend({
+  batchId: z2.string().min(1),
+  checkNumber: z2.string().optional().nullable(),
+  remittanceRef: z2.string().optional().nullable(),
+  payerName: z2.string().optional().nullable(),
+  payerAccount: z2.string().optional().nullable(),
+  amount: z2.string().min(1),
+  itemDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()),
+  matchedInvoiceId: z2.string().optional().nullable(),
+  matchMethod: z2.string().optional().nullable(),
+  matchStatus: z2.string().optional(),
+  unappliedAmount: z2.string().min(1)
 });
 var arTransactionTypes = pgTable3("ar_transaction_types", {
   id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),

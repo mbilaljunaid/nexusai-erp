@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Upload, CheckCircle2, AlertCircle, Search, Link2 } from 'lucide-react';
+import { UploadCloud, CheckCircle2, AlertCircle, Search, Link2, X } from 'lucide-react';
 
 interface LockboxBatch {
     id: string;
@@ -34,10 +34,10 @@ interface LockboxSummary {
 }
 
 const BATCH_STATUS_CFG: Record<string, { bg: string; color: string }> = {
-    Matched: { bg: '#d1fae5', color: '#059669' },
-    Partial: { bg: '#fef3c7', color: '#d97706' },
-    Pending: { bg: '#eff6ff', color: '#1d4ed8' },
-    Exception: { bg: '#fee2e2', color: '#dc2626' },
+    Matched: { bg: 'bg-emerald-100', color: 'text-emerald-700' },
+    Partial: { bg: 'bg-amber-100', color: 'text-amber-700' },
+    Pending: { bg: 'bg-blue-100', color: 'text-blue-700' },
+    Exception: { bg: 'bg-red-100', color: 'text-red-700' },
 };
 
 const fmt = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n ?? 0);
@@ -46,32 +46,67 @@ export default function LockboxWorkbench() {
     const [selectedBatch, setSelectedBatch] = useState<LockboxBatch | null>(null);
     const [matchFilter, setMatchFilter] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
+    const [matchingItem, setMatchingItem] = useState<any>(null);
+    const [manualInvoiceSearch, setManualInvoiceSearch] = useState('');
     const [csvContent, setCsvContent] = useState('');
     const [batchDate, setBatchDate] = useState(new Date().toISOString().slice(0, 10));
     const fileRef = useRef<HTMLInputElement>(null);
     const qc = useQueryClient();
 
-    const { data: batches = [] } = useQuery<LockboxBatch[]>({
+    const { data: batches = [] } = useQuery<any[]>({
         queryKey: ['lockbox-batches'],
-        queryFn: () => fetch('/api/finance/lockbox/batches').then(r => r.json()),
+        queryFn: () => fetch('/api/ar/lockbox/batches').then(r => r.json()),
     });
 
-    const { data: summary } = useQuery<LockboxSummary>({
+    const { data: summary } = useQuery<any>({
         queryKey: ['lockbox-summary'],
-        queryFn: () => fetch('/api/finance/lockbox/summary').then(r => r.json()),
+        queryFn: () => fetch('/api/ar/lockbox/summary').then(r => r.json()),
     });
 
-    const { data: items = [] } = useQuery<LockboxItem[]>({
-        queryKey: ['lockbox-items', selectedBatch?.id, matchFilter],
+    const { data: items = [] } = useQuery<any[]>({
+        queryKey: ['lockbox-items', selectedBatch?.id],
         queryFn: () => selectedBatch
-            ? fetch(`/api/finance/lockbox/batches/${selectedBatch.id}/items${matchFilter ? `?matchStatus=${matchFilter}` : ''}`).then(r => r.json())
+            ? fetch(`/api/ar/lockbox/batches/${selectedBatch.id}/items${matchFilter ? `?matchStatus=${matchFilter}` : ''}`).then(r => r.json())
             : Promise.resolve([]),
-        enabled: !!selectedBatch,
+        enabled: !!selectedBatch?.id,
+    });
+
+    const { data: openInvoices = [] } = useQuery<any[]>({
+        queryKey: ['ar-invoices-open'],
+        queryFn: () => fetch('/api/ar/invoices').then(r => r.json()),
+        enabled: !!matchingItem
     });
 
     const importMutation = useMutation({
-        mutationFn: (data: any) => fetch('/api/finance/lockbox/batches', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).then(r => r.json()),
-        onSuccess: () => { qc.invalidateQueries({ queryKey: ['lockbox-batches', 'lockbox-summary'] }); setCsvContent(''); },
+        mutationFn: (data: any) => fetch('/api/ar/lockbox/batches', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).then(r => r.json()),
+        onSuccess: (data) => {
+            qc.invalidateQueries({ queryKey: ['lockbox-batches'] });
+            qc.invalidateQueries({ queryKey: ['lockbox-summary'] });
+            setCsvContent('');
+            // If the new batch is returned, select it
+            if (data?.id) {
+                setSelectedBatch(data);
+            }
+        },
+    });
+
+    // Manual Match Mutation
+    const manualMatchMutation = useMutation({
+        mutationFn: async ({ itemId, invoiceId }: { itemId: string; invoiceId: string }) => {
+            const res = await fetch(`/api/ar/lockbox/items/${itemId}/match`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ invoiceId })
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: ['lockbox-items'] });
+            qc.invalidateQueries({ queryKey: ['lockbox-batches'] });
+            qc.invalidateQueries({ queryKey: ['lockbox-summary'] });
+            setMatchingItem(null);
+        }
     });
 
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,7 +164,7 @@ export default function LockboxWorkbench() {
                         <div className="ib-title">Import Lockbox File</div>
                         <input ref={fileRef} type="file" accept=".csv,.txt" onChange={handleFile} hidden />
                         <div className="drop-zone" onClick={() => fileRef.current?.click()}>
-                            <Upload size={24} style={{ color: '#9ca3af' }} />
+                            <UploadCloud size={24} color="#9ca3af" />
                             <div className="dz-text">Upload CSV or paste below</div>
                             <div className="dz-sub">check#, remit_ref, payer, account, amount, date</div>
                         </div>
@@ -139,7 +174,21 @@ export default function LockboxWorkbench() {
                             <input className="di" type="date" value={batchDate} onChange={e => setBatchDate(e.target.value)} aria-label="Batch date" />
                         </div>
                         <button className="import-btn" disabled={!csvContent || importMutation.isPending}
-                            onClick={() => importMutation.mutate({ batchDate, items: parseCSV(csvContent) })} aria-label="Import lockbox batch">
+                            onClick={() => {
+                                const parsedItems = parseCSV(csvContent);
+                                importMutation.mutate({
+                                    batchData: {
+                                        batchDate: batchDate,
+                                        totalAmount: parsedItems.reduce((sum: number, item: any) => sum + item.amount, 0).toString(),
+                                        itemCount: parsedItems.length,
+                                        currencyCode: 'USD'
+                                    },
+                                    itemsData: parsedItems.map((item: any) => ({
+                                        ...item,
+                                        amount: item.amount.toString()
+                                    }))
+                                });
+                            }} aria-label="Import lockbox batch">
                             {importMutation.isPending ? 'Processing & Matching…' : 'Import & Auto-Match'}
                         </button>
                         {importMutation.isSuccess && (
@@ -158,7 +207,7 @@ export default function LockboxWorkbench() {
                                 <div key={b.id} className={`batch-card ${selectedBatch?.id === b.id ? 'selected' : ''}`} onClick={() => setSelectedBatch(b)}>
                                     <div className="bc-top">
                                         <span className="bc-date mono">{new Date(b.batch_date).toLocaleDateString()}</span>
-                                        <span className="bc-status" style={{ background: cfg.bg, color: cfg.color }}>{b.status}</span>
+                                        <span className={`bc-status ${cfg.bg} ${cfg.color}`}>{b.status}</span>
                                     </div>
                                     <div className="bc-meta">{b.item_count} items · {fmt(b.total_amount)}</div>
                                 </div>
@@ -179,8 +228,8 @@ export default function LockboxWorkbench() {
                                     <span className="orange"><AlertCircle size={12} /> {unmatched} unmatched</span>
                                 </div>
                             </div>
-                            <div className="filter-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div style={{ display: 'flex', gap: 4 }}>
+                            <div className="filter-row-container">
+                                <div className="filter-buttons">
                                     {['', 'Matched', 'Unmatched', 'Partial', 'Overpayment'].map(s => (
                                         <button key={s} className={`filter-pill ${matchFilter === s ? 'active' : ''}`} onClick={() => setMatchFilter(s)}>{s || 'All'}</button>
                                     ))}
@@ -190,11 +239,11 @@ export default function LockboxWorkbench() {
                                     placeholder="Search checks or payers..."
                                     value={searchQuery}
                                     onChange={e => setSearchQuery(e.target.value)}
-                                    style={{ padding: '4px 10px', border: '1px solid #d1d5db', borderRadius: 9999, fontSize: 11, width: 220, boxSizing: 'border-box', outline: 'none' }}
+                                    className="filter-search-input"
                                 />
                             </div>
                             <table className="item-table">
-                                <thead><tr><th>Check #</th><th>Remit Ref</th><th>Payer</th><th>Amount</th><th>Method</th><th>Status</th><th>Unapplied</th></tr></thead>
+                                <thead><tr><th>Check #</th><th>Remit Ref</th><th>Payer</th><th>Amount</th><th>Method</th><th>Status</th><th>Unapplied</th><th>Action</th></tr></thead>
                                 <tbody>
                                     {filteredItems.map(item => {
                                         const isMatched = item.match_status === 'Matched';
@@ -213,6 +262,16 @@ export default function LockboxWorkbench() {
                                                 <td className={`mono ${item.unapplied_amount > 0 ? 'red' : 'grey'}`}>
                                                     {item.unapplied_amount > 0 ? fmt(item.unapplied_amount) : '—'}
                                                 </td>
+                                                <td>
+                                                    {!isMatched && item.unapplied_amount > 0 && (
+                                                        <button
+                                                            className="btn-match-action"
+                                                            onClick={() => setMatchingItem(item)}
+                                                        >
+                                                            Match
+                                                        </button>
+                                                    )}
+                                                </td>
                                             </tr>
                                         );
                                     })}
@@ -228,6 +287,60 @@ export default function LockboxWorkbench() {
                     )}
                 </div>
             </div>
+
+            {/* Manual Match Modal */}
+            {matchingItem && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h2>Manual Match</h2>
+                            <button className="close-btn" aria-label="Close modal" onClick={() => { setMatchingItem(null); setManualInvoiceSearch(''); }}><X size={20} /></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="match-context">
+                                <div className="mc-row"><span className="lbl">Check #:</span> <span className="val mono">{matchingItem.check_number || 'N/A'}</span></div>
+                                <div className="mc-row"><span className="lbl">Payer Name:</span> <span className="val">{matchingItem.payer_name || 'N/A'}</span></div>
+                                <div className="mc-row"><span className="lbl">Read Remit Ref:</span> <span className="val mono">{matchingItem.remittance_ref || 'N/A'}</span></div>
+                                <div className="mc-row"><span className="lbl">Amount to Apply:</span> <span className="val mono orange">{fmt(matchingItem.unapplied_amount)}</span></div>
+                            </div>
+
+                            <h3 className="section-title mt-24">Search Target Invoice</h3>
+                            <input
+                                type="text"
+                                placeholder="Search by Invoice Number or Customer..."
+                                className="filter-search-input manual-search-input"
+                                value={manualInvoiceSearch}
+                                onChange={e => setManualInvoiceSearch(e.target.value)}
+                            />
+
+                            <div className="invoice-results">
+                                {openInvoices.filter(inv =>
+                                    inv.invoice_number.toLowerCase().includes(manualInvoiceSearch.toLowerCase()) ||
+                                    (inv.customer_id && inv.customer_id.toLowerCase().includes(manualInvoiceSearch.toLowerCase()))
+                                ).slice(0, 5).map(inv => (
+                                    <div key={inv.id} className="inv-result-row">
+                                        <div className="irr-left">
+                                            <div className="irr-num mono">{inv.invoice_number}</div>
+                                            <div className="irr-cust">Cust: {inv.customer_id.split('-')[0]}...</div>
+                                        </div>
+                                        <div className="irr-right">
+                                            <div className="irr-amt mono">{fmt(inv.total_amount)}</div>
+                                            <button
+                                                className="btn-apply-match"
+                                                disabled={manualMatchMutation.isPending}
+                                                onClick={() => manualMatchMutation.mutate({ itemId: matchingItem.id, invoiceId: inv.id })}
+                                            >
+                                                {manualMatchMutation.isPending ? 'Applying...' : 'Apply'}
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                                {openInvoices.length === 0 && <div className="empty">No open invoices found.</div>}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <style>{`
                 .lbw-container { padding: 24px; max-width: 1400px; margin: 0 auto; font-family: 'Inter', sans-serif; }
@@ -272,7 +385,9 @@ export default function LockboxWorkbench() {
                 .item-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid #e5e7eb; }
                 .ih-title { font-size: 14px; font-weight: 700; color: #111827; }
                 .ih-stats { display: flex; gap: 14px; font-size: 12px; }
-                .filter-row { display: flex; gap: 4px; padding: 8px 14px; border-bottom: 1px solid #f3f4f6; }
+                .filter-row-container { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; border-bottom: 1px solid #f3f4f6; }
+                .filter-buttons { display: flex; gap: 4px; }
+                .filter-search-input { padding: 4px 10px; border: 1px solid #d1d5db; border-radius: 9999px; font-size: 11px; width: 220px; box-sizing: border-box; outline: none; }
                 .filter-pill { padding: 3px 10px; border: 1px solid #e5e7eb; border-radius: 9999px; font-size: 11px; cursor: pointer; background: #fff; color: #6b7280; }
                 .filter-pill.active { background: #1d4ed8; color: #fff; border-color: #1d4ed8; }
                 .item-table { width: 100%; border-collapse: collapse; font-size: 12px; }
@@ -288,6 +403,11 @@ export default function LockboxWorkbench() {
                 .orange { color: #d97706; display: flex; align-items: center; gap: 4px; }
                 .red { color: #dc2626; }
                 .grey { color: #9ca3af; }
+                .btn-apply-match { background: #4f46e5; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+                .btn-apply-match:hover:not(:disabled) { background: #4338ca; box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3); }
+                .btn-apply-match:disabled { background: #a5b4fc; cursor: not-allowed; }
+                .section-title { margin-top: 24px; font-size: 13px; margin-bottom: 8px; }
+                .manual-search-input { width: 100%; margin-bottom: 16px; }
             `}</style>
         </div>
     );

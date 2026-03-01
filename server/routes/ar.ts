@@ -18,6 +18,8 @@ import {
     insertArAutoInvoiceStagingSchema,
     insertArAutoInvoiceErrorSchema,
     insertArSalesCreditSchema,
+    insertArLockboxBatchSchema,
+    insertArLockboxItemSchema,
     arCustomers, // Added
     slaJournalHeaders,
     slaJournalLines,
@@ -30,7 +32,9 @@ import {
     insertArCustomerBankAccountSchema,
     insertArCustomerContactSchema,
     insertArDocumentSequenceSchema,
-    insertArDocumentSequenceAssignmentSchema
+    insertArDocumentSequenceAssignmentSchema,
+    insertArRemittanceBatchSchema,
+    insertArPromiseToPaySchema
 } from "@shared/schema";
 import { storage } from "../storage";
 import { ZodError } from "zod";
@@ -424,6 +428,68 @@ router.delete("/sales-credits/:id", async (req, res) => {
     }
 });
 
+// Lockbox Integration Engine (Phase 3)
+router.get("/lockbox/batches", async (req, res) => {
+    try {
+        const batches = await arService.listLockboxBatches();
+        res.json(batches);
+    } catch (e) {
+        console.error("Lockbox fetch error:", e);
+        res.status(500).json({ message: "Failed to list lockbox batches" });
+    }
+});
+
+router.post("/lockbox/batches", async (req, res) => {
+    try {
+        // Expected payload: { batchData: { ... }, itemsData: [ { ... } ] }
+        const { batchData, itemsData } = req.body;
+        if (!batchData || !Array.isArray(itemsData)) {
+            return res.status(400).json({ message: "Invalid payload format. Expected { batchData: {}, itemsData: [] }" });
+        }
+
+        const result = await arService.processLockboxBatch(batchData, itemsData);
+        res.json(result);
+    } catch (e: any) {
+        console.error("Lockbox import error:", e);
+        res.status(500).json({ message: e.message || "Failed to process lockbox batch" });
+    }
+});
+
+router.get("/lockbox/summary", async (req, res) => {
+    try {
+        const summary = await arService.getLockboxSummary();
+        res.json(summary);
+    } catch (e) {
+        console.error("Lockbox summary error:", e);
+        res.status(500).json({ message: "Failed to fetch lockbox summary" });
+    }
+});
+
+router.get("/lockbox/batches/:id/items", async (req, res) => {
+    try {
+        const { matchStatus } = req.query;
+        const items = await arService.listLockboxItems(req.params.id, matchStatus as string);
+        res.json(items);
+    } catch (e) {
+        console.error("Lockbox items error:", e);
+        res.status(500).json({ message: "Failed to list lockbox items" });
+    }
+});
+
+router.post("/lockbox/items/:id/match", async (req, res) => {
+    try {
+        const { invoiceId } = req.body;
+        if (!invoiceId) {
+            return res.status(400).json({ message: "invoiceId is required" });
+        }
+        const result = await arService.manuallyMatchLockboxItem(req.params.id, invoiceId);
+        res.json(result);
+    } catch (e: any) {
+        console.error("Lockbox manual match error:", e);
+        res.status(500).json({ message: e.message || "Failed to manually match lockbox item" });
+    }
+});
+
 // Receipts
 router.get("/receipts", async (req, res) => {
     try {
@@ -450,9 +516,12 @@ router.post("/receipts", async (req, res) => {
 
 router.post("/receipts/:id/apply", async (req, res) => {
     try {
-        const { invoiceId, amount } = req.body;
+        const { invoiceId, amount, earnedDiscountAmount, unearnedDiscountAmount } = req.body;
         if (!invoiceId || !amount) return res.status(400).json({ message: "invoiceId and amount are required" });
-        const app = await arService.applyReceipt(req.params.id, invoiceId, Number(amount));
+        const app = await arService.applyReceipt(req.params.id, invoiceId, Number(amount), {
+            earnedDiscountAmount: earnedDiscountAmount ? Number(earnedDiscountAmount) : 0,
+            unearnedDiscountAmount: unearnedDiscountAmount ? Number(unearnedDiscountAmount) : 0
+        });
         res.json(app);
     } catch (error: any) {
         res.status(500).json({ message: error.message || "Failed to apply receipt" });
@@ -968,6 +1037,139 @@ router.post("/system-options", async (req, res) => {
         } else {
             res.status(500).json({ message: e.message });
         }
+    }
+});
+
+// ==========================================
+// PHASE 4: BILLING EXPANSION ROUTES
+// ==========================================
+
+// Payment Schedules (Installments)
+router.get("/invoices/:id/installments", async (req, res) => {
+    try {
+        const schedules = await arService.getPaymentSchedules(req.params.id);
+        res.json(schedules);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message || "Failed to fetch installments" });
+    }
+});
+
+// Balance Forward Statements
+router.post("/statements/generate", async (req, res) => {
+    try {
+        const { customerId, billingCycle } = req.body;
+        if (!customerId) return res.status(400).json({ message: "customerId is required" });
+
+        const statement = await arService.generateBalanceForwardStatements(customerId, billingCycle);
+        if (statement) {
+            res.status(201).json({ message: "Statement generated", statement });
+        } else {
+            res.status(200).json({ message: "No outstanding balances found for statement generation." });
+        }
+    } catch (error: any) {
+        res.status(500).json({ message: error.message || "Failed to generate statement" });
+    }
+});
+
+// Recurring Invoices Processing
+router.post("/recurring/process", async (req, res) => {
+    try {
+        const result = await arService.processRecurringInvoices();
+        res.json({ message: "Recurring Invoice Processing Complete", ...result });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message || "Failed to process recurring invoices" });
+    }
+});
+
+// ==========================================
+// PHASE 5: CASH & COLLECTIONS EXPANSION
+// ==========================================
+
+// Remittance Batches
+router.get("/remittance-batches", async (req, res) => {
+    try {
+        const batches = await arService.listRemittanceBatches();
+        res.json(batches);
+    } catch (e: any) {
+        res.status(500).json({ message: e.message || "Failed to list remittance batches" });
+    }
+});
+
+router.post("/remittance-batches", async (req, res) => {
+    try {
+        // Expected body: { batchData: { ... }, receiptIds: ['id1', 'id2'] }
+        const { batchData, receiptIds } = req.body;
+        if (!batchData || !Array.isArray(receiptIds)) {
+            return res.status(400).json({ message: "Invalid payload. Expected batchData and receiptIds array." });
+        }
+
+        const data = insertArRemittanceBatchSchema.parse(batchData);
+        const batch = await arService.createRemittanceBatch(data, receiptIds);
+        res.status(201).json(batch);
+    } catch (e: any) {
+        if (e instanceof ZodError) {
+            res.status(400).json({ message: "Invalid batch data", errors: e.errors });
+        } else {
+            res.status(500).json({ message: e.message || "Failed to create remittance batch" });
+        }
+    }
+});
+
+router.post("/remittance-batches/:id/clear", async (req, res) => {
+    try {
+        const batch = await arService.clearRemittanceBatch(req.params.id);
+        res.json(batch);
+    } catch (e: any) {
+        res.status(500).json({ message: e.message || "Failed to clear remittance batch" });
+    }
+});
+
+// Promises to Pay (PTP)
+router.get("/promises-to-pay", async (req, res) => {
+    try {
+        const { customerId } = req.query;
+        const ptps = await arService.listPromisesToPay(customerId as string);
+        res.json(ptps);
+    } catch (e: any) {
+        res.status(500).json({ message: e.message || "Failed to list promises to pay" });
+    }
+});
+
+router.post("/promises-to-pay", async (req, res) => {
+    try {
+        const data = insertArPromiseToPaySchema.parse(req.body);
+        const ptp = await arService.createPromiseToPay(data);
+        res.status(201).json(ptp);
+    } catch (e: any) {
+        if (e instanceof ZodError) {
+            res.status(400).json({ message: "Invalid ptp data", errors: e.errors });
+        } else {
+            res.status(500).json({ message: e.message || "Failed to create promise to pay" });
+        }
+    }
+});
+
+router.post("/promises-to-pay/evaluate", async (req, res) => {
+    try {
+        const result = await arService.evaluatePromisesToPay();
+        res.json({ message: "PTP Evaluation Complete", ...result });
+    } catch (e: any) {
+        res.status(500).json({ message: e.message || "Failed to evaluate PTPs" });
+    }
+});
+
+// Dispute Management
+router.post("/disputes/:id/resolve", async (req, res) => {
+    try {
+        const { resolution, creditAmount, resolvedBy } = req.body;
+        if (!resolution || !['Approved', 'Rejected'].includes(resolution)) {
+            return res.status(400).json({ message: "resolution must be 'Approved' or 'Rejected'" });
+        }
+
+        const dispute = await arService.resolveDispute(req.params.id, resolution, creditAmount ? Number(creditAmount) : 0, resolvedBy);
+        res.json(dispute);
+    } catch (e: any) {
+        res.status(500).json({ message: e.message || "Failed to resolve dispute" });
     }
 });
 

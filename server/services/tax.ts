@@ -1,5 +1,7 @@
 import { storage } from "../storage";
-import { TaxCode, TaxExemption, TaxJurisdiction } from "@shared/schema";
+import { TaxCode, TaxExemption, TaxJurisdiction, arInvoices, arInvoiceLines } from "@shared/schema";
+import { db } from "../db";
+import { eq } from "drizzle-orm";
 
 interface TaxCalculationResult {
     taxAmount: number;
@@ -89,6 +91,55 @@ export class TaxService {
         }
 
         return { taxAmount: totalTax, taxDetails: details };
+    }
+
+    /**
+     * Applies the calculated tax to an invoice by updating its taxAmount, totalAmount, 
+     * and creating formal TAX invoice lines.
+     */
+    async applyTaxToInvoice(invoiceId: string): Promise<boolean> {
+        const result = await this.calculateTaxForInvoice(invoiceId);
+        if (result.taxAmount === 0 && result.taxDetails.length === 0) return true;
+
+        const [invoice] = await db.select().from(arInvoices).where(eq(arInvoices.id, invoiceId));
+        if (!invoice) throw new Error("Invoice not found");
+
+        const lines = await db.select().from(arInvoiceLines).where(eq(arInvoiceLines.invoiceId, invoiceId));
+
+        // Remove existing TAX lines to prevent duplication if run multiple times
+        await db.delete(arInvoiceLines).where(
+            eq(arInvoiceLines.invoiceId, invoiceId) && eq(arInvoiceLines.lineType, "TAX")
+        );
+
+        const newTaxLines = [];
+        for (const detail of result.taxDetails) {
+            newTaxLines.push({
+                invoiceId: invoiceId,
+                lineNumber: lines.length + newTaxLines.length + 1,
+                lineType: "TAX",
+                description: `Tax (${detail.code} @ ${detail.rate * 100}%)${detail.exempt ? " - EXEMPT" : ""}`,
+                quantity: "1",
+                unitPrice: detail.amount.toFixed(2),
+                amount: detail.amount.toFixed(2),
+                taxAmount: "0",
+                taxClassificationCode: detail.code,
+                glAccount: invoice.glAccountId, // Simplified for now
+            });
+        }
+
+        if (newTaxLines.length > 0) {
+            await db.insert(arInvoiceLines).values(newTaxLines);
+
+            const newTotal = Number(invoice.amount) + result.taxAmount;
+            await db.update(arInvoices)
+                .set({
+                    taxAmount: result.taxAmount.toFixed(2),
+                    totalAmount: newTotal.toFixed(2)
+                })
+                .where(eq(arInvoices.id, invoiceId));
+        }
+
+        return true;
     }
 
     /**

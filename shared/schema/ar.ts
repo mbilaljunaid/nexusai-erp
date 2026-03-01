@@ -251,6 +251,7 @@ export const arReceipts = pgTable("ar_receipts", {
     exchangeRateType: varchar("exchange_rate_type").default("Corporate"),
     exchangeRateDate: timestamp("exchange_rate_date"),
     exchangeRate: numeric("exchange_rate", { precision: 15, scale: 5 }).default("1"),
+    remittanceBatchId: varchar("remittance_batch_id"),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -273,6 +274,7 @@ export const insertArReceiptSchema = createInsertSchema(arReceipts).extend({
         if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
     }, z.date()).optional().nullable(),
     exchangeRate: z.string().optional(),
+    remittanceBatchId: z.string().optional().nullable(),
 });
 
 export type InsertArReceipt = z.infer<typeof insertArReceiptSchema>;
@@ -289,6 +291,8 @@ export const arReceiptApplications = pgTable("ar_receipt_applications", {
     glDate: timestamp("gl_date"),
     status: varchar("status").default("Applied"), // Applied, Reversed
     fxGainLoss: numeric("fx_gain_loss", { precision: 18, scale: 2 }).default("0"), // Realized Gain/Loss
+    earnedDiscountAmount: numeric("earned_discount_amount", { precision: 18, scale: 2 }).default("0"),
+    unearnedDiscountAmount: numeric("unearned_discount_amount", { precision: 18, scale: 2 }).default("0"),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -305,9 +309,63 @@ export const insertArReceiptApplicationSchema = createInsertSchema(arReceiptAppl
     }, z.date()).optional().nullable(),
     status: z.string().optional(),
     fxGainLoss: z.string().optional(),
+    earnedDiscountAmount: z.string().optional(),
+    unearnedDiscountAmount: z.string().optional(),
 });
 export type InsertArReceiptApplication = z.infer<typeof insertArReceiptApplicationSchema>;
 export type ArReceiptApplication = typeof arReceiptApplications.$inferSelect;
+
+// AR Remittance Batches
+export const arRemittanceBatches = pgTable("ar_remittance_batches", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull(),
+    bankAccountId: varchar("bank_account_id"),
+    batchDate: timestamp("batch_date").notNull(),
+    totalAmount: numeric("total_amount", { precision: 20, scale: 2 }).notNull(),
+    itemCount: integer("item_count").notNull(),
+    status: varchar("status").default("Pending"), // Pending, Cleared
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertArRemittanceBatchSchema = createInsertSchema(arRemittanceBatches).extend({
+    name: z.string().min(1),
+    bankAccountId: z.string().optional().nullable(),
+    batchDate: z.preprocess((arg) => {
+        if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+    }, z.date()),
+    totalAmount: z.string().min(1),
+    itemCount: z.number().int(),
+    status: z.string().optional(),
+});
+
+export type ArRemittanceBatch = typeof arRemittanceBatches.$inferSelect;
+export type InsertArRemittanceBatch = z.infer<typeof insertArRemittanceBatchSchema>;
+
+// AR Promises to Pay
+export const arPromisesToPay = pgTable("ar_promises_to_pay", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    customerId: varchar("customer_id").notNull(),
+    invoiceId: varchar("invoice_id").notNull(),
+    promisedAmount: numeric("promised_amount", { precision: 18, scale: 2 }).notNull(),
+    promisedDate: timestamp("promised_date").notNull(),
+    status: varchar("status").default("Open"), // Open, Kept, Broken
+    notes: text("notes"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertArPromiseToPaySchema = createInsertSchema(arPromisesToPay).extend({
+    customerId: z.string().min(1),
+    invoiceId: z.string().min(1),
+    promisedAmount: z.string().min(1),
+    promisedDate: z.preprocess((arg) => {
+        if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+    }, z.date()),
+    status: z.string().optional(),
+    notes: z.string().optional().nullable(),
+});
+
+export type ArPromiseToPay = typeof arPromisesToPay.$inferSelect;
+export type InsertArPromiseToPay = z.infer<typeof insertArPromiseToPaySchema>;
 
 // AR Revenue Rules (e.g., 12 Month Ratable)
 export const arRevenueRules = pgTable("ar_revenue_rules", {
@@ -638,36 +696,72 @@ export const insertCustomerNotificationSchema = createInsertSchema(customerNotif
 export type CustomerNotification = typeof customerNotifications.$inferSelect;
 export type InsertCustomerNotification = z.infer<typeof insertCustomerNotificationSchema>;
 
-// Lockbox Batches (APAR-OG-02)
-export const lockboxBatches = pgTable("lockbox_batches", {
-    id: text("id").primaryKey(), // e.g. "LB-169837192"
-    tenantId: text("tenant_id").notNull(),
-    bankAccountId: text("bank_account_id"),
-    batchDate: date("batch_date").notNull(),
+// AR Lockbox Batches (Phase 3)
+export const arLockboxBatches = pgTable("ar_lockbox_batches", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").default("1"),
+    bankAccountId: varchar("bank_account_id"),
+    batchDate: timestamp("batch_date").notNull(),
     totalAmount: numeric("total_amount", { precision: 20, scale: 2 }).notNull(),
     itemCount: integer("item_count").notNull(),
-    status: text("status").default("Pending"), // Pending, Matched, Partial, Exception
-    importedBy: text("imported_by").notNull(),
+    currencyCode: varchar("currency_code").default("USD"),
+    status: varchar("status").default("Pending"), // Pending, Matched, Partial, Exception
+    importedBy: varchar("imported_by").default("System"),
     rawFile: text("raw_file"),
-    createdAt: timestamp("created_at").defaultNow()
+    createdAt: timestamp("created_at").default(sql`now()`),
 });
 
-// Lockbox Items (APAR-OG-02)
-export const lockboxItems = pgTable("lockbox_items", {
-    id: text("id").primaryKey(),
-    batchId: text("batch_id").references(() => lockboxBatches.id).notNull(),
-    checkNumber: text("check_number"),
-    remittanceRef: text("remittance_ref"),
-    payerName: text("payer_name"),
-    payerAccount: text("payer_account"),
-    amount: numeric("amount", { precision: 20, scale: 2 }).notNull(),
-    itemDate: date("item_date").notNull(),
-    matchedInvoiceId: text("matched_invoice_id"),
-    matchMethod: text("match_method"), // Exact, Fuzzy_Ref, Amount, Manual
-    matchStatus: text("match_status").default("Unmatched"), // Unmatched, Matched, Partial
-    unappliedAmount: numeric("unapplied_amount", { precision: 20, scale: 2 }).notNull(),
-    createdAt: timestamp("created_at").defaultNow()
+export const insertArLockboxBatchSchema = createInsertSchema(arLockboxBatches).extend({
+    bankAccountId: z.string().optional().nullable(),
+    batchDate: z.preprocess((arg) => {
+        if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+    }, z.date()),
+    totalAmount: z.string().min(1),
+    itemCount: z.number().int(),
+    currencyCode: z.string().optional(),
+    status: z.string().optional(),
+    importedBy: z.string().optional(),
+    rawFile: z.string().optional().nullable(),
 });
+
+export type ArLockboxBatch = typeof arLockboxBatches.$inferSelect;
+export type InsertArLockboxBatch = z.infer<typeof insertArLockboxBatchSchema>;
+
+// AR Lockbox Items (Phase 3)
+export const arLockboxItems = pgTable("ar_lockbox_items", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    batchId: varchar("batch_id").notNull(),
+    checkNumber: varchar("check_number"),
+    remittanceRef: varchar("remittance_ref"),
+    payerName: varchar("payer_name"),
+    payerAccount: varchar("payer_account"),
+    amount: numeric("amount", { precision: 20, scale: 2 }).notNull(),
+    itemDate: timestamp("item_date").notNull(),
+    matchedInvoiceId: varchar("matched_invoice_id"),
+    matchMethod: varchar("match_method"), // Exact, Fuzzy_Ref, Amount, Manual
+    matchStatus: varchar("match_status").default("Unmatched"), // Unmatched, Matched, Partial
+    unappliedAmount: numeric("unapplied_amount", { precision: 20, scale: 2 }).notNull(),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertArLockboxItemSchema = createInsertSchema(arLockboxItems).extend({
+    batchId: z.string().min(1),
+    checkNumber: z.string().optional().nullable(),
+    remittanceRef: z.string().optional().nullable(),
+    payerName: z.string().optional().nullable(),
+    payerAccount: z.string().optional().nullable(),
+    amount: z.string().min(1),
+    itemDate: z.preprocess((arg) => {
+        if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+    }, z.date()),
+    matchedInvoiceId: z.string().optional().nullable(),
+    matchMethod: z.string().optional().nullable(),
+    matchStatus: z.string().optional(),
+    unappliedAmount: z.string().min(1),
+});
+
+export type ArLockboxItem = typeof arLockboxItems.$inferSelect;
+export type InsertArLockboxItem = z.infer<typeof insertArLockboxItemSchema>;
 // AR Transaction Types (Oracle Parity)
 export const arTransactionTypes = pgTable("ar_transaction_types", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -937,3 +1031,107 @@ export const insertArDocumentSequenceAssignmentSchema = createInsertSchema(arDoc
 
 export type InsertArDocumentSequenceAssignment = z.infer<typeof insertArDocumentSequenceAssignmentSchema>;
 export type ArDocumentSequenceAssignment = typeof arDocumentSequenceAssignments.$inferSelect;
+
+// ==========================================
+// PHASE 4: BILLING EXPANSION SCHEMA
+// ==========================================
+
+// AR Payment Schedules (Multi-Installment)
+export const arPaymentSchedules = pgTable("ar_payment_schedules", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    invoiceId: varchar("invoice_id").notNull(),
+    installmentNumber: integer("installment_number").notNull(),
+    dueDate: timestamp("due_date").notNull(),
+    amountDue: numeric("amount_due", { precision: 18, scale: 2 }).notNull(),
+    amountApplied: numeric("amount_applied", { precision: 18, scale: 2 }).default("0"),
+    status: varchar("status").default("Open"), // Open, Closed
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertArPaymentScheduleSchema = createInsertSchema(arPaymentSchedules).extend({
+    invoiceId: z.string().min(1),
+    installmentNumber: z.number().int(),
+    dueDate: z.preprocess((arg) => {
+        if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+    }, z.date()),
+    amountDue: z.string().min(1),
+    amountApplied: z.string().optional(),
+    status: z.string().optional(),
+});
+
+export type ArPaymentSchedule = typeof arPaymentSchedules.$inferSelect;
+export type InsertArPaymentSchedule = z.infer<typeof insertArPaymentScheduleSchema>;
+
+
+// AR Recurring Invoices (Templates & Frequency)
+export const arRecurringInvoices = pgTable("ar_recurring_invoices", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    customerId: varchar("customer_id").notNull(),
+    templateName: varchar("template_name").notNull(),
+    templateAmount: numeric("template_amount", { precision: 18, scale: 2 }).notNull(),
+    templateCurrency: varchar("template_currency").default("USD"),
+    frequency: varchar("frequency").default("Monthly"), // Weekly, Monthly, Quarterly, Yearly
+    startDate: timestamp("start_date").notNull(),
+    endDate: timestamp("end_date"),
+    lastRunDate: timestamp("last_run_date"),
+    nextRunDate: timestamp("next_run_date").notNull(),
+    status: varchar("status").default("Active"), // Active, Paused, Completed, Cancelled
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertArRecurringInvoiceSchema = createInsertSchema(arRecurringInvoices).extend({
+    customerId: z.string().min(1),
+    templateName: z.string().min(1),
+    templateAmount: z.string().min(1),
+    templateCurrency: z.string().optional(),
+    frequency: z.string().optional(),
+    startDate: z.preprocess((arg) => {
+        if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+    }, z.date()),
+    endDate: z.preprocess((arg) => {
+        if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+    }, z.date()).optional().nullable(),
+    lastRunDate: z.preprocess((arg) => {
+        if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+    }, z.date()).optional().nullable(),
+    nextRunDate: z.preprocess((arg) => {
+        if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+    }, z.date()),
+    status: z.string().optional(),
+});
+
+export type ArRecurringInvoice = typeof arRecurringInvoices.$inferSelect;
+export type InsertArRecurringInvoice = z.infer<typeof insertArRecurringInvoiceSchema>;
+
+// AR Consolidated Statements (Balance Forward Billing)
+export const arConsolidatedStatements = pgTable("ar_consolidated_statements", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    customerId: varchar("customer_id").notNull(),
+    statementDate: timestamp("statement_date").notNull(),
+    billingCycle: varchar("billing_cycle").default("Monthly"),
+    balanceForwardAmount: numeric("balance_forward_amount", { precision: 18, scale: 2 }).default("0"),
+    currentPeriodAmount: numeric("current_period_amount", { precision: 18, scale: 2 }).default("0"),
+    totalDue: numeric("total_due", { precision: 18, scale: 2 }).default("0"),
+    dueDate: timestamp("due_date"),
+    status: varchar("status").default("Draft"), // Draft, Sent, Paid
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertArConsolidatedStatementSchema = createInsertSchema(arConsolidatedStatements).extend({
+    customerId: z.string().min(1),
+    statementDate: z.preprocess((arg) => {
+        if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+    }, z.date()),
+    billingCycle: z.string().optional(),
+    balanceForwardAmount: z.string().optional(),
+    currentPeriodAmount: z.string().optional(),
+    totalDue: z.string().optional(),
+    dueDate: z.preprocess((arg) => {
+        if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+    }, z.date()).optional().nullable(),
+    status: z.string().optional(),
+});
+
+export type ArConsolidatedStatement = typeof arConsolidatedStatements.$inferSelect;
+export type InsertArConsolidatedStatement = z.infer<typeof insertArConsolidatedStatementSchema>;
