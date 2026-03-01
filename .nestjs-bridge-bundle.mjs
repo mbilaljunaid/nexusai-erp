@@ -165,6 +165,7 @@ __export(schema_exports, {
   apInvoicePayments: () => apInvoicePayments,
   apInvoices: () => apInvoices,
   apPaymentBatches: () => apPaymentBatches,
+  apPaymentSchedules: () => apPaymentSchedules,
   apPaymentTerms: () => apPaymentTerms,
   apPayments: () => apPayments,
   apPeriodStatuses: () => apPeriodStatuses,
@@ -339,6 +340,11 @@ __export(schema_exports, {
   egpSystemItemsRelations: () => egpSystemItemsRelations,
   employees: () => employees,
   encryptedFields: () => encryptedFields,
+  entBuLedgerMapping: () => entBuLedgerMapping,
+  entBusinessUnits: () => entBusinessUnits,
+  entLegalGroupBuMapping: () => entLegalGroupBuMapping,
+  entLegalGroups: () => entLegalGroups,
+  entUserDataAccess: () => entUserDataAccess,
   epmAudits: () => epmAudits,
   etlPipelines: () => etlPipelines,
   expenseLines: () => expenseLines,
@@ -585,6 +591,7 @@ __export(schema_exports, {
   insertApInvoiceLineSchema: () => insertApInvoiceLineSchema,
   insertApInvoiceSchema: () => insertApInvoiceSchema,
   insertApPaymentBatchSchema: () => insertApPaymentBatchSchema,
+  insertApPaymentScheduleSchema: () => insertApPaymentScheduleSchema,
   insertApPaymentSchema: () => insertApPaymentSchema,
   insertApPaymentTermSchema: () => insertApPaymentTermSchema,
   insertApPeriodStatusSchema: () => insertApPeriodStatusSchema,
@@ -656,7 +663,9 @@ __export(schema_exports, {
   insertBillingRuleSchema: () => insertBillingRuleSchema,
   insertBomItemSchema: () => insertBomItemSchema,
   insertBomSchema: () => insertBomSchema,
+  insertBuLedgerMapSchema: () => insertBuLedgerMapSchema,
   insertBudgetSchema: () => insertBudgetSchema,
+  insertBusinessUnitSchema: () => insertBusinessUnitSchema,
   insertCampaignMemberSchema: () => insertCampaignMemberSchema,
   insertCampaignSchema: () => insertCampaignSchema,
   insertCandidateSchema: () => insertCandidateSchema,
@@ -891,6 +900,8 @@ __export(schema_exports, {
   insertLeaseHeaderSchema: () => insertLeaseHeaderSchema,
   insertLeasePaymentSchema: () => insertLeasePaymentSchema,
   insertLeaveRequestSchema: () => insertLeaveRequestSchema,
+  insertLegalGroupSchema: () => insertLegalGroupSchema,
+  insertLegalGrpBuMapSchema: () => insertLegalGrpBuMapSchema,
   insertLineItemSchema: () => insertLineItemSchema,
   insertLocationSchema: () => insertLocationSchema,
   insertMaintAssetExtSchema: () => insertMaintAssetExtSchema,
@@ -1108,6 +1119,7 @@ __export(schema_exports, {
   insertUserActivityPointSchema: () => insertUserActivityPointSchema,
   insertUserBadgeSchema: () => insertUserBadgeSchema,
   insertUserDashboardWidgetSchema: () => insertUserDashboardWidgetSchema,
+  insertUserDataAccessSchema: () => insertUserDataAccessSchema,
   insertUserEarnedBadgeSchema: () => insertUserEarnedBadgeSchema,
   insertUserFeedbackSchema: () => insertUserFeedbackSchema,
   insertUserNotificationSchema: () => insertUserNotificationSchema,
@@ -1814,6 +1826,8 @@ var apInvoices = pgTable2("ap_invoices", {
   // Enforced for enterprise banking routing
   // Multi-Org
   businessUnitId: varchar2("business_unit_id"),
+  entBusinessUnitId: varchar2("ent_business_unit_id"),
+  // Enterprise Scoping Key
   legalEntityId: varchar2("legal_entity_id"),
   invoiceNumber: varchar2("invoice_number", { length: 100 }).notNull(),
   invoiceDate: timestamp2("invoice_date").notNull(),
@@ -1929,6 +1943,22 @@ var apInvoiceDistributions = pgTable2("ap_invoice_distributions", {
   createdAt: timestamp2("created_at").defaultNow()
 });
 var insertApInvoiceDistributionSchema = createInsertSchema2(apInvoiceDistributions);
+var apPaymentSchedules = pgTable2("ap_payment_schedules", {
+  id: varchar2("id").primaryKey().default(sql2`gen_random_uuid()`),
+  invoiceId: varchar2("invoice_id").notNull(),
+  paymentNumber: integer2("payment_number").notNull().default(1),
+  dueDate: timestamp2("due_date").notNull(),
+  amountDue: numeric2("amount_due", { precision: 18, scale: 2 }).notNull(),
+  amountPaid: numeric2("amount_paid", { precision: 18, scale: 2 }).default("0"),
+  paymentStatus: varchar2("payment_status", { length: 50 }).default("UNPAID"),
+  // UNPAID, PARTIAL, PAID
+  entBusinessUnitId: varchar2("ent_business_unit_id"),
+  // Enterprise Scoping Key
+  holdFlag: boolean2("hold_flag").default(false),
+  createdAt: timestamp2("created_at").defaultNow(),
+  updatedAt: timestamp2("updated_at").defaultNow()
+});
+var insertApPaymentScheduleSchema = createInsertSchema2(apPaymentSchedules);
 var apPaymentBatches = pgTable2("ap_payment_batches", {
   id: varchar2("id").primaryKey().default(sql2`gen_random_uuid()`),
   batchName: varchar2("batch_name", { length: 100 }).notNull(),
@@ -1965,6 +1995,8 @@ var apPayments = pgTable2("ap_payments", {
   paymentMethodCode: varchar2("payment_method_code", { length: 50 }).notNull(),
   // CHECK, WIRE, CLEARING
   supplierId: varchar2("supplier_id").notNull(),
+  entBusinessUnitId: varchar2("ent_business_unit_id"),
+  // Enterprise Scoping Key
   status: varchar2("status", { length: 50 }).default("NEGOTIABLE"),
   // NEGOTIABLE, CLEARED, VOIDED
   createdAt: timestamp2("created_at").defaultNow()
@@ -2281,7 +2313,9 @@ var insertArCustomerContactSchema = createInsertSchema3(arCustomerContacts).exte
 });
 var arInvoices = pgTable3("ar_invoices", {
   id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  entBusinessUnitId: varchar3("ent_business_unit_id"),
   businessUnitId: varchar3("business_unit_id"),
+  // legacy BU id, might be used for other things
   customerId: varchar3("customer_id").notNull(),
   // Party
   accountId: varchar3("account_id"),
@@ -2399,6 +2433,8 @@ var insertArInvoiceLineSchema = createInsertSchema3(arInvoiceLines).extend({
 });
 var arReceipts = pgTable3("ar_receipts", {
   id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  entBusinessUnitId: varchar3("ent_business_unit_id"),
+  businessUnitId: varchar3("business_unit_id"),
   customerId: varchar3("customer_id"),
   // Optional for unidentified
   accountId: varchar3("account_id"),
@@ -2422,6 +2458,7 @@ var arReceipts = pgTable3("ar_receipts", {
   createdAt: timestamp3("created_at").default(sql3`now()`)
 });
 var insertArReceiptSchema = createInsertSchema3(arReceipts).extend({
+  businessUnitId: z2.string().optional().nullable(),
   customerId: z2.string().optional().nullable(),
   accountId: z2.string().optional().nullable(),
   amount: z2.string().min(1),
@@ -8946,8 +8983,11 @@ var insertUserActivityPointSchema = createInsertSchema39(userActivityPoints).ext
 import { pgTable as pgTable40, varchar as varchar39, numeric as numeric22, timestamp as timestamp40, integer as integer30, boolean as boolean34, text as text31, jsonb as jsonb25 } from "drizzle-orm/pg-core";
 import { sql as sql39 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema40 } from "drizzle-zod";
+import { z as z25 } from "zod";
 var cashBankAccounts = pgTable40("cash_bank_accounts", {
   id: varchar39("id").primaryKey().default(sql39`gen_random_uuid()`),
+  entLegalEntityId: varchar39("ent_legal_entity_id"),
+  entBusinessUnitId: varchar39("ent_business_unit_id"),
   name: varchar39("name", { length: 255 }).notNull(),
   accountNumber: varchar39("account_number", { length: 100 }).notNull(),
   bankName: varchar39("bank_name", { length: 255 }).notNull(),
@@ -8972,9 +9012,13 @@ var cashBankAccounts = pgTable40("cash_bank_accounts", {
   createdAt: timestamp40("created_at").default(sql39`now()`),
   updatedAt: timestamp40("updated_at").default(sql39`now()`)
 });
-var insertCashBankAccountSchema = createInsertSchema40(cashBankAccounts);
+var insertCashBankAccountSchema = createInsertSchema40(cashBankAccounts).extend({
+  entLegalEntityId: z25.string().optional().nullable()
+});
 var cashStatementHeaders = pgTable40("cash_statement_headers", {
   id: varchar39("id").primaryKey().default(sql39`gen_random_uuid()`),
+  entLegalEntityId: varchar39("ent_legal_entity_id"),
+  entBusinessUnitId: varchar39("ent_business_unit_id"),
   bankAccountId: varchar39("bank_account_id").notNull(),
   statementNumber: varchar39("statement_number", { length: 50 }),
   statementDate: timestamp40("statement_date").notNull(),
@@ -8989,6 +9033,8 @@ var cashStatementHeaders = pgTable40("cash_statement_headers", {
 var insertCashStatementHeaderSchema = createInsertSchema40(cashStatementHeaders);
 var cashStatementLines = pgTable40("cash_statement_lines", {
   id: varchar39("id").primaryKey().default(sql39`gen_random_uuid()`),
+  entLegalEntityId: varchar39("ent_legal_entity_id"),
+  entBusinessUnitId: varchar39("ent_business_unit_id"),
   headerId: varchar39("header_id"),
   // Link to header
   bankAccountId: varchar39("bank_account_id").notNull(),
@@ -9005,6 +9051,8 @@ var cashStatementLines = pgTable40("cash_statement_lines", {
 var insertCashStatementLineSchema = createInsertSchema40(cashStatementLines);
 var cashTransactions = pgTable40("cash_transactions", {
   id: varchar39("id").primaryKey().default(sql39`gen_random_uuid()`),
+  entLegalEntityId: varchar39("ent_legal_entity_id"),
+  entBusinessUnitId: varchar39("ent_business_unit_id"),
   bankAccountId: varchar39("bank_account_id").notNull(),
   sourceModule: varchar39("source_module", { length: 20 }).notNull(),
   // 'AP', 'AR', 'GL'
@@ -9045,6 +9093,8 @@ var cashMatchingGroups = pgTable40("cash_matching_groups", {
 var insertCashMatchingGroupSchema = createInsertSchema40(cashMatchingGroups);
 var cashZbaStructures = pgTable40("cash_zba_structures", {
   id: varchar39("id").primaryKey().default(sql39`gen_random_uuid()`),
+  entLegalEntityId: varchar39("ent_legal_entity_id"),
+  entBusinessUnitId: varchar39("ent_business_unit_id"),
   masterAccountId: varchar39("master_account_id").notNull(),
   subAccountId: varchar39("sub_account_id").notNull(),
   targetBalance: numeric22("target_balance", { precision: 20, scale: 2 }).default("0"),
@@ -9118,6 +9168,8 @@ var cashRevaluationHistory = pgTable40("cash_revaluation_history", {
 var insertCashRevaluationHistorySchema = createInsertSchema40(cashRevaluationHistory);
 var cashForecasts = pgTable40("cash_forecasts", {
   id: varchar39("id").primaryKey().default(sql39`gen_random_uuid()`),
+  entLegalEntityId: varchar39("ent_legal_entity_id"),
+  entBusinessUnitId: varchar39("ent_business_unit_id"),
   bankAccountId: varchar39("bank_account_id"),
   // Optional if global, but usually specific
   forecastDate: timestamp40("forecast_date").notNull(),
@@ -9570,7 +9622,7 @@ var insertGlLedgerControlSchema = createInsertSchema43(glLedgerControls);
 // shared/schema/tax.ts
 import { pgTable as pgTable44, serial as serial3, varchar as varchar43, numeric as numeric25, integer as integer34, foreignKey, boolean as boolean38 } from "drizzle-orm/pg-core";
 import { createInsertSchema as createInsertSchema44 } from "drizzle-zod";
-import { z as z25 } from "zod";
+import { z as z26 } from "zod";
 var taxJurisdictions = pgTable44("tax_jurisdictions", {
   id: serial3("id").primaryKey(),
   name: varchar43("name", { length: 255 }).notNull(),
@@ -9592,7 +9644,7 @@ var taxCodes = pgTable44("tax_codes", {
   jurisdictionFk: foreignKey({ columns: [t.jurisdictionId], foreignColumns: [taxJurisdictions.id] })
 }));
 var insertTaxCodeSchema = createInsertSchema44(taxCodes).extend({
-  rate: z25.string()
+  rate: z26.string()
   // numeric is string in zod usually
 });
 var taxExemptions = pgTable44("tax_exemptions", {
@@ -9607,7 +9659,7 @@ var taxExemptions = pgTable44("tax_exemptions", {
   taxCodeFk: foreignKey({ columns: [t.taxCodeId], foreignColumns: [taxCodes.id] })
 }));
 var insertTaxExemptionSchema = createInsertSchema44(taxExemptions).extend({
-  exemptionValue: z25.string().optional()
+  exemptionValue: z26.string().optional()
 });
 
 // shared/schema/netting.ts
@@ -11248,7 +11300,7 @@ var insertCorporateCardTransactionSchema = createInsertSchema54(corporateCardTra
 import { pgTable as pgTable55, varchar as varchar54, text as text44, timestamp as timestamp54, numeric as numeric31, boolean as boolean47, integer as integer43, jsonb as jsonb31 } from "drizzle-orm/pg-core";
 import { sql as sql52 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema55 } from "drizzle-zod";
-import { z as z26 } from "zod";
+import { z as z27 } from "zod";
 var billingRules = pgTable55("billing_rules", {
   id: varchar54("id").primaryKey().default(sql52`gen_random_uuid()`),
   name: varchar54("name").notNull(),
@@ -11266,11 +11318,11 @@ var billingRules = pgTable55("billing_rules", {
   updatedAt: timestamp54("updated_at").default(sql52`now()`)
 });
 var insertBillingRuleSchema = createInsertSchema55(billingRules).extend({
-  name: z26.string().min(1),
-  ruleType: z26.enum(["Recurring", "Milestone", "Usage", "OneTime"]),
-  frequency: z26.enum(["Monthly", "Quarterly", "Annually"]).optional(),
-  milestonePercentage: z26.string().optional(),
-  usageUnit: z26.string().optional()
+  name: z27.string().min(1),
+  ruleType: z27.enum(["Recurring", "Milestone", "Usage", "OneTime"]),
+  frequency: z27.enum(["Monthly", "Quarterly", "Annually"]).optional(),
+  milestonePercentage: z27.string().optional(),
+  usageUnit: z27.string().optional()
 });
 var billingProfiles = pgTable55("billing_profiles", {
   id: varchar54("id").primaryKey().default(sql52`gen_random_uuid()`),
@@ -11288,10 +11340,10 @@ var billingProfiles = pgTable55("billing_profiles", {
   updatedAt: timestamp54("updated_at").default(sql52`now()`)
 });
 var insertBillingProfileSchema = createInsertSchema55(billingProfiles).extend({
-  customerId: z26.string().min(1),
-  defaultRuleId: z26.string().optional(),
-  taxExempt: z26.boolean().optional(),
-  currency: z26.string().optional()
+  customerId: z27.string().min(1),
+  defaultRuleId: z27.string().optional(),
+  taxExempt: z27.boolean().optional(),
+  currency: z27.string().optional()
 });
 var billingBatches = pgTable55("billing_batches", {
   id: varchar54("id").primaryKey().default(sql52`gen_random_uuid()`),
@@ -11348,17 +11400,17 @@ var billingEvents = pgTable55("billing_events", {
   updatedAt: timestamp54("updated_at").default(sql52`now()`)
 });
 var insertBillingEventSchema = createInsertSchema55(billingEvents).extend({
-  sourceSystem: z26.enum(["Projects", "Orders", "Contracts", "Usage", "Manual"]),
-  sourceTransactionId: z26.string().min(1),
-  customerId: z26.string().min(1),
-  eventDate: z26.preprocess((arg) => {
+  sourceSystem: z27.enum(["Projects", "Orders", "Contracts", "Usage", "Manual"]),
+  sourceTransactionId: z27.string().min(1),
+  customerId: z27.string().min(1),
+  eventDate: z27.preprocess((arg) => {
     if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
-  }, z26.date()),
-  amount: z26.string().min(1),
-  taxAmount: z26.string().optional(),
-  taxLines: z26.any().optional(),
-  glStatus: z26.string().optional(),
-  glDate: z26.date().optional()
+  }, z27.date()),
+  amount: z27.string().min(1),
+  taxAmount: z27.string().optional(),
+  taxLines: z27.any().optional(),
+  glStatus: z27.string().optional(),
+  glDate: z27.date().optional()
 });
 var billingAnomalies = pgTable55("billing_anomalies", {
   id: varchar54("id").primaryKey().default(sql52`gen_random_uuid()`),
@@ -11455,7 +11507,7 @@ var subscriptionActionsRelations = relations7(subscriptionActions, ({ one }) => 
 import { pgTable as pgTable57, varchar as varchar55, text as text46, timestamp as timestamp56, numeric as numeric33, boolean as boolean49, jsonb as jsonb33 } from "drizzle-orm/pg-core";
 import { sql as sql53 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema56 } from "drizzle-zod";
-import { z as z27 } from "zod";
+import { z as z28 } from "zod";
 var usageMeters = pgTable57("usage_meters", {
   id: varchar55("id").primaryKey().default(sql53`gen_random_uuid()`),
   name: varchar55("name").notNull(),
@@ -11473,10 +11525,10 @@ var usageMeters = pgTable57("usage_meters", {
   updatedAt: timestamp56("updated_at").default(sql53`now()`)
 });
 var insertUsageMeterSchema = createInsertSchema56(usageMeters).extend({
-  name: z27.string().min(1),
-  unitOfMeasure: z27.string().min(1),
-  meterType: z27.enum(["Counter", "Gauge"]).optional(),
-  pricingTiers: z27.any().optional()
+  name: z28.string().min(1),
+  unitOfMeasure: z28.string().min(1),
+  meterType: z28.enum(["Counter", "Gauge"]).optional(),
+  pricingTiers: z28.any().optional()
 });
 var usageEvents = pgTable57("usage_events", {
   id: varchar55("id").primaryKey().default(sql53`gen_random_uuid()`),
@@ -11500,14 +11552,14 @@ var usageEvents = pgTable57("usage_events", {
   createdAt: timestamp56("created_at").default(sql53`now()`)
 });
 var insertUsageEventSchema = createInsertSchema56(usageEvents).extend({
-  customerId: z27.string().min(1),
-  meterId: z27.string().min(1),
-  timestamp: z27.preprocess((arg) => {
+  customerId: z28.string().min(1),
+  meterId: z28.string().min(1),
+  timestamp: z28.preprocess((arg) => {
     if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
-  }, z27.date()),
-  quantity: z27.string().min(1),
-  resourceId: z27.string().optional().nullable(),
-  metadata: z27.any().optional()
+  }, z28.date()),
+  quantity: z28.string().min(1),
+  resourceId: z28.string().optional().nullable(),
+  metadata: z28.any().optional()
 });
 var usageThresholds = pgTable57("usage_thresholds", {
   id: varchar55("id").primaryKey().default(sql53`gen_random_uuid()`),
@@ -11528,11 +11580,11 @@ var usageThresholds = pgTable57("usage_thresholds", {
   createdAt: timestamp56("created_at").default(sql53`now()`)
 });
 var insertUsageThresholdSchema = createInsertSchema56(usageThresholds).extend({
-  customerId: z27.string().min(1),
-  meterId: z27.string().min(1),
-  thresholdValue: z27.string().min(1),
-  thresholdType: z27.enum(["Value", "Percentage"]).optional(),
-  period: z27.enum(["Daily", "Weekly", "Monthly"]).optional()
+  customerId: z28.string().min(1),
+  meterId: z28.string().min(1),
+  thresholdValue: z28.string().min(1),
+  thresholdType: z28.enum(["Value", "Percentage"]).optional(),
+  period: z28.enum(["Daily", "Weekly", "Monthly"]).optional()
 });
 
 // shared/schema/order_management.ts
@@ -13068,7 +13120,7 @@ var insertTlTrackingAlertSchema = createInsertSchema71(tlTrackingAlerts);
 import { pgTable as pgTable78, varchar as varchar75, text as text64, timestamp as timestamp77, numeric as numeric47, integer as integer63, boolean as boolean64, jsonb as jsonb43 } from "drizzle-orm/pg-core";
 import { sql as sql71 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema72 } from "drizzle-zod";
-import { z as z28 } from "zod";
+import { z as z29 } from "zod";
 var leaseHeaders = pgTable78("lease_headers", {
   id: varchar75("id").primaryKey().default(sql71`gen_random_uuid()`),
   leaseNumber: varchar75("lease_number").notNull().unique(),
@@ -13165,18 +13217,18 @@ var leaseAmendments = pgTable78("lease_amendments", {
   createdAt: timestamp77("created_at").default(sql71`now()`)
 });
 var insertLeaseHeaderSchema = createInsertSchema72(leaseHeaders).extend({
-  leaseNumber: z28.string().min(1),
-  description: z28.string().min(1),
-  vendorId: z28.string().min(1),
-  discountRate: z28.number().min(0).max(1),
-  commencementDate: z28.string(),
+  leaseNumber: z29.string().min(1),
+  description: z29.string().min(1),
+  vendorId: z29.string().min(1),
+  discountRate: z29.number().min(0).max(1),
+  commencementDate: z29.string(),
   // Receives date string
-  expirationDate: z28.string()
+  expirationDate: z29.string()
 });
 var insertLeasePaymentSchema = createInsertSchema72(leasePayments).extend({
-  amount: z28.number(),
-  startDate: z28.string(),
-  endDate: z28.string()
+  amount: z29.number(),
+  startDate: z29.string(),
+  endDate: z29.string()
 });
 var insertLeaseAssetSchema = createInsertSchema72(leaseAssets);
 var insertLeaseAmendmentSchema = createInsertSchema72(leaseAmendments);
@@ -13185,7 +13237,7 @@ var insertLeaseAmendmentSchema = createInsertSchema72(leaseAmendments);
 import { pgTable as pgTable79, varchar as varchar76, text as text65, timestamp as timestamp78, numeric as numeric48, integer as integer64, boolean as boolean65 } from "drizzle-orm/pg-core";
 import { sql as sql72 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema73 } from "drizzle-zod";
-import { z as z29 } from "zod";
+import { z as z30 } from "zod";
 var contracts = pgTable79("contracts", {
   id: varchar76("id").primaryKey().default(sql72`gen_random_uuid()`),
   contractNumber: varchar76("contract_number").notNull().unique(),
@@ -13257,11 +13309,11 @@ var contractDocuments = pgTable79("contract_documents", {
   uploadedAt: timestamp78("uploaded_at").default(sql72`now()`)
 });
 var insertContractSchema = createInsertSchema73(contracts).extend({
-  contractNumber: z29.string().min(1),
-  title: z29.string().min(1),
-  startDate: z29.string(),
+  contractNumber: z30.string().min(1),
+  title: z30.string().min(1),
+  startDate: z30.string(),
   // Input as ISO string
-  endDate: z29.string().optional()
+  endDate: z30.string().optional()
 });
 var insertContractLineSchema = createInsertSchema73(contractLines);
 var insertContractPartySchema = createInsertSchema73(contractParties);
@@ -14429,7 +14481,7 @@ var insertAccrualPolicyRuleSchema = createInsertSchema83(hrmAccrualPolicyRules);
 import { pgTable as pgTable92, varchar as varchar88, text as text76, timestamp as timestamp91, boolean as boolean77, numeric as numeric58 } from "drizzle-orm/pg-core";
 import { sql as sql83 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema84 } from "drizzle-zod";
-import { z as z30 } from "zod";
+import { z as z31 } from "zod";
 var hzLocations = pgTable92("hz_locations", {
   id: varchar88("id").primaryKey().default(sql83`gen_random_uuid()`),
   address1: varchar88("address1").notNull(),
@@ -14482,24 +14534,24 @@ var hzPartySiteUses = pgTable92("hz_party_site_uses", {
   updatedAt: timestamp91("updated_at").default(sql83`now()`)
 });
 var insertHzLocationSchema = createInsertSchema84(hzLocations).extend({
-  address1: z30.string().min(1),
-  city: z30.string().min(1),
-  country: z30.string().length(2)
+  address1: z31.string().min(1),
+  city: z31.string().min(1),
+  country: z31.string().length(2)
 });
 var insertHzPartySiteSchema = createInsertSchema84(hzPartySites).extend({
-  partyId: z30.string().min(1),
-  locationId: z30.string().min(1)
+  partyId: z31.string().min(1),
+  locationId: z31.string().min(1)
 });
 var insertHzPartySiteUseSchema = createInsertSchema84(hzPartySiteUses).extend({
-  partySiteId: z30.string().min(1),
-  siteUseType: z30.enum(["BILL_TO", "SHIP_TO", "LEGAL", "MARKETING", "PAY_TO", "OTHER"])
+  partySiteId: z31.string().min(1),
+  siteUseType: z31.enum(["BILL_TO", "SHIP_TO", "LEGAL", "MARKETING", "PAY_TO", "OTHER"])
 });
 
 // shared/schema/reference.ts
 import { pgTable as pgTable93, varchar as varchar89, text as text77, timestamp as timestamp92, boolean as boolean78, integer as integer77 } from "drizzle-orm/pg-core";
 import { sql as sql84 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema85 } from "drizzle-zod";
-import { z as z31 } from "zod";
+import { z as z32 } from "zod";
 var fndLookupTypes = pgTable93("fnd_lookup_types", {
   id: varchar89("id").primaryKey().default(sql84`gen_random_uuid()`),
   lookupType: varchar89("lookup_type", { length: 30 }).notNull().unique(),
@@ -14530,20 +14582,20 @@ var fndLookupValues = pgTable93("fnd_lookup_values", {
   updatedAt: timestamp92("updated_at").default(sql84`now()`)
 });
 var insertFndLookupTypeSchema = createInsertSchema85(fndLookupTypes).extend({
-  lookupType: z31.string().min(1),
-  userLookupName: z31.string().min(1)
+  lookupType: z32.string().min(1),
+  userLookupName: z32.string().min(1)
 });
 var insertFndLookupValueSchema = createInsertSchema85(fndLookupValues).extend({
-  lookupTypeId: z31.string().min(1),
-  lookupCode: z31.string().min(1),
-  meaning: z31.string().min(1)
+  lookupTypeId: z32.string().min(1),
+  lookupCode: z32.string().min(1),
+  meaning: z32.string().min(1)
 });
 
 // shared/schema/relationships.ts
 import { pgTable as pgTable94, varchar as varchar90, text as text78, timestamp as timestamp93, boolean as boolean79, date as date30 } from "drizzle-orm/pg-core";
 import { sql as sql85 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema86 } from "drizzle-zod";
-import { z as z32 } from "zod";
+import { z as z33 } from "zod";
 var hzRelationships = pgTable94("hz_relationships", {
   id: varchar90("id").primaryKey().default(sql85`gen_random_uuid()`),
   subjectId: varchar90("subject_id").references(() => hzParties.id).notNull(),
@@ -14574,19 +14626,19 @@ var hzOrgContacts = pgTable94("hz_org_contacts", {
   createdAt: timestamp93("created_at").default(sql85`now()`)
 });
 var insertHzRelationshipSchema = createInsertSchema86(hzRelationships).extend({
-  subjectId: z32.string().min(1),
-  objectId: z32.string().min(1),
-  relationshipCode: z32.string().min(1)
+  subjectId: z33.string().min(1),
+  objectId: z33.string().min(1),
+  relationshipCode: z33.string().min(1)
 });
 var insertHzOrgContactSchema = createInsertSchema86(hzOrgContacts).extend({
-  partyRelationshipId: z32.string().min(1)
+  partyRelationshipId: z33.string().min(1)
 });
 
 // shared/schema/data-quality.ts
 import { pgTable as pgTable95, varchar as varchar91, text as text79, timestamp as timestamp94, integer as integer78, numeric as numeric59, boolean as boolean80, json } from "drizzle-orm/pg-core";
 import { sql as sql86 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema87 } from "drizzle-zod";
-import { z as z33 } from "zod";
+import { z as z34 } from "zod";
 import { relations as relations23 } from "drizzle-orm";
 var hzDupBatch = pgTable95("hz_dup_batch", {
   id: varchar91("id").primaryKey().default(sql86`gen_random_uuid()`),
@@ -14666,27 +14718,27 @@ var hzDupSetPartiesRelations = relations23(hzDupSetParties, ({ one }) => ({
   })
 }));
 var insertHzDupBatchSchema = createInsertSchema87(hzDupBatch).extend({
-  batchName: z33.string().min(1)
+  batchName: z34.string().min(1)
 });
 var insertHzDupSetSchema = createInsertSchema87(hzDupSets).extend({
-  batchId: z33.string().optional()
+  batchId: z34.string().optional()
 });
 var insertHzDupSetPartySchema = createInsertSchema87(hzDupSetParties).extend({
-  score: z33.number().or(z33.string().transform((v) => Number(v)))
+  score: z34.number().or(z34.string().transform((v) => Number(v)))
 });
 var insertHzMatchRuleSchema = createInsertSchema87(hzMatchRules).extend({
-  ruleName: z33.string().min(1),
-  matchScoreThreshold: z33.number().min(0).max(100)
+  ruleName: z34.string().min(1),
+  matchScoreThreshold: z34.number().min(0).max(100)
 });
 var insertHzSurvivorshipRuleSchema = createInsertSchema87(hzSurvivorshipRules).extend({
-  ruleName: z33.string().min(1)
+  ruleName: z34.string().min(1)
 });
 
 // shared/schema/pim.ts
 import { pgTable as pgTable96, varchar as varchar92, text as text80, timestamp as timestamp95 } from "drizzle-orm/pg-core";
 import { sql as sql87, relations as relations24 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema88 } from "drizzle-zod";
-import { z as z34 } from "zod";
+import { z as z35 } from "zod";
 var egpSystemItems = pgTable96("egp_system_items", {
   id: varchar92("id").primaryKey().default(sql87`gen_random_uuid()`),
   itemNumber: varchar92("item_number", { length: 100 }).notNull().unique(),
@@ -14729,9 +14781,9 @@ var egpItemCategoriesRelations = relations24(egpItemCategories, ({ one }) => ({
   })
 }));
 var insertEgpSystemItemSchema = createInsertSchema88(egpSystemItems).extend({
-  itemNumber: z34.string().min(1),
-  itemName: z34.string().min(1),
-  primaryUomCode: z34.string().min(1)
+  itemNumber: z35.string().min(1),
+  itemName: z35.string().min(1),
+  primaryUomCode: z35.string().min(1)
 });
 var insertEgpItemCategorySchema = createInsertSchema88(egpItemCategories);
 
@@ -14774,7 +14826,7 @@ var insertMdmChangeRequestSchema = createInsertSchema89(mdmChangeRequests);
 import { pgTable as pgTable98, varchar as varchar94, text as text82, timestamp as timestamp97, boolean as boolean83, integer as integer81, jsonb as jsonb55 } from "drizzle-orm/pg-core";
 import { sql as sql89 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema90 } from "drizzle-zod";
-import { z as z35 } from "zod";
+import { z as z36 } from "zod";
 var aiProviderConfigs = pgTable98("ai_provider_configs", {
   id: varchar94("id").primaryKey().default(sql89`gen_random_uuid()`),
   tenantId: varchar94("tenant_id"),
@@ -14799,16 +14851,16 @@ var aiProviderConfigs = pgTable98("ai_provider_configs", {
   updatedAt: timestamp97("updated_at").default(sql89`now()`)
 });
 var insertAiProviderConfigSchema = createInsertSchema90(aiProviderConfigs).extend({
-  name: z35.string().min(1),
-  provider: z35.string().min(1),
-  apiKey: z35.string().min(1),
-  model: z35.string().min(1),
-  baseUrl: z35.string().optional().nullable(),
-  isActive: z35.boolean().optional(),
-  isDefault: z35.boolean().optional(),
-  maxTokens: z35.number().optional(),
-  temperature: z35.number().optional(),
-  settings: z35.record(z35.any()).optional()
+  name: z36.string().min(1),
+  provider: z36.string().min(1),
+  apiKey: z36.string().min(1),
+  model: z36.string().min(1),
+  baseUrl: z36.string().optional().nullable(),
+  isActive: z36.boolean().optional(),
+  isDefault: z36.boolean().optional(),
+  maxTokens: z36.number().optional(),
+  temperature: z36.number().optional(),
+  settings: z36.record(z36.any()).optional()
 });
 var nexusConversations = pgTable98("nexus_conversations", {
   id: varchar94("id").primaryKey().default(sql89`gen_random_uuid()`),
@@ -14823,10 +14875,10 @@ var nexusConversations = pgTable98("nexus_conversations", {
   updatedAt: timestamp97("updated_at").default(sql89`now()`)
 });
 var insertNexusConversationSchema = createInsertSchema90(nexusConversations).extend({
-  userId: z35.string().min(1),
-  title: z35.string().optional(),
-  moduleContext: z35.string().optional(),
-  messages: z35.array(z35.any()).optional()
+  userId: z36.string().min(1),
+  title: z36.string().optional(),
+  moduleContext: z36.string().optional(),
+  messages: z36.array(z36.any()).optional()
 });
 var aiCapabilities = pgTable98("ai_capabilities", {
   id: varchar94("id").primaryKey().default(sql89`gen_random_uuid()`),
@@ -14894,6 +14946,120 @@ var aiAgentLogs = pgTable98("ai_agent_logs", {
   createdAt: timestamp97("created_at").default(sql89`now()`)
 });
 var insertAiAgentLogSchema = createInsertSchema90(aiAgentLogs);
+
+// shared/schema/enterprise.ts
+import { pgTable as pgTable99, varchar as varchar95, text as text83, timestamp as timestamp98, boolean as boolean84, jsonb as jsonb56 } from "drizzle-orm/pg-core";
+import { sql as sql90 } from "drizzle-orm";
+import { createInsertSchema as createInsertSchema91 } from "drizzle-zod";
+import { z as z37 } from "zod";
+var entLegalGroups = pgTable99("ent_legal_groups", {
+  id: varchar95("id").primaryKey().default(sql90`gen_random_uuid()`),
+  tenantId: varchar95("tenant_id").notNull(),
+  name: varchar95("name").notNull(),
+  // Company Name / Legal Group Name
+  description: text83("description"),
+  registrationNumber: varchar95("registration_number"),
+  taxId: varchar95("tax_id"),
+  currency: varchar95("currency").notNull().default("USD"),
+  status: varchar95("status").default("Active"),
+  metadata: jsonb56("metadata"),
+  createdAt: timestamp98("created_at").default(sql90`now()`),
+  updatedAt: timestamp98("updated_at").default(sql90`now()`)
+});
+var insertLegalGroupSchema = createInsertSchema91(entLegalGroups).extend({
+  tenantId: z37.string().min(1),
+  name: z37.string().min(1, "Legal Group Name is required"),
+  description: z37.string().optional(),
+  registrationNumber: z37.string().optional(),
+  taxId: z37.string().optional(),
+  currency: z37.string().optional(),
+  status: z37.string().optional(),
+  metadata: z37.record(z37.any()).optional()
+});
+var entBusinessUnits = pgTable99("ent_business_units", {
+  id: varchar95("id").primaryKey().default(sql90`gen_random_uuid()`),
+  tenantId: varchar95("tenant_id").notNull(),
+  code: varchar95("code").notNull(),
+  // e.g., BU-001
+  name: varchar95("name").notNull(),
+  // e.g., North America Operations
+  description: text83("description"),
+  managerId: varchar95("manager_id"),
+  // Reference to a user/employee
+  status: varchar95("status").default("Active"),
+  metadata: jsonb56("metadata"),
+  createdAt: timestamp98("created_at").default(sql90`now()`),
+  updatedAt: timestamp98("updated_at").default(sql90`now()`)
+});
+var insertBusinessUnitSchema = createInsertSchema91(entBusinessUnits).extend({
+  tenantId: z37.string().min(1),
+  code: z37.string().min(1, "Business Unit Code is required"),
+  name: z37.string().min(1, "Business Unit Name is required"),
+  description: z37.string().optional(),
+  managerId: z37.string().optional(),
+  status: z37.string().optional(),
+  metadata: z37.record(z37.any()).optional()
+});
+var entLegalGroupBuMapping = pgTable99("ent_legal_group_bu_mapping", {
+  id: varchar95("id").primaryKey().default(sql90`gen_random_uuid()`),
+  tenantId: varchar95("tenant_id").notNull(),
+  legalGroupId: varchar95("legal_group_id").notNull(),
+  businessUnitId: varchar95("business_unit_id").notNull(),
+  effectiveStartDate: timestamp98("effective_start_date").default(sql90`now()`),
+  effectiveEndDate: timestamp98("effective_end_date"),
+  isActive: boolean84("is_active").default(true),
+  createdAt: timestamp98("created_at").default(sql90`now()`)
+});
+var insertLegalGrpBuMapSchema = createInsertSchema91(entLegalGroupBuMapping).extend({
+  tenantId: z37.string().min(1),
+  legalGroupId: z37.string().min(1),
+  businessUnitId: z37.string().min(1),
+  effectiveStartDate: z37.string().or(z37.date()).optional(),
+  effectiveEndDate: z37.string().or(z37.date()).optional().nullable(),
+  isActive: z37.boolean().optional()
+});
+var entBuLedgerMapping = pgTable99("ent_bu_ledger_mapping", {
+  id: varchar95("id").primaryKey().default(sql90`gen_random_uuid()`),
+  tenantId: varchar95("tenant_id").notNull(),
+  businessUnitId: varchar95("business_unit_id").notNull(),
+  ledgerId: varchar95("ledger_id").notNull(),
+  isPrimary: boolean84("is_primary").default(true),
+  effectiveStartDate: timestamp98("effective_start_date").default(sql90`now()`),
+  effectiveEndDate: timestamp98("effective_end_date"),
+  isActive: boolean84("is_active").default(true),
+  createdAt: timestamp98("created_at").default(sql90`now()`)
+});
+var insertBuLedgerMapSchema = createInsertSchema91(entBuLedgerMapping).extend({
+  tenantId: z37.string().min(1),
+  businessUnitId: z37.string().min(1),
+  ledgerId: z37.string().min(1),
+  isPrimary: z37.boolean().optional(),
+  effectiveStartDate: z37.string().or(z37.date()).optional(),
+  effectiveEndDate: z37.string().or(z37.date()).optional().nullable(),
+  isActive: z37.boolean().optional()
+});
+var entUserDataAccess = pgTable99("ent_user_data_access", {
+  id: varchar95("id").primaryKey().default(sql90`gen_random_uuid()`),
+  tenantId: varchar95("tenant_id").notNull(),
+  userId: varchar95("user_id").notNull(),
+  roleId: varchar95("role_id").notNull(),
+  // The role granting this access
+  contextType: varchar95("context_type").notNull(),
+  // 'BU', 'LE', 'INV_ORG', 'LEDGER', 'SET_ID'
+  contextValue: varchar95("context_value").notNull(),
+  // ID of the BU/LE/etc.
+  isDefault: boolean84("is_default").default(false),
+  // Is this their default active context?
+  createdAt: timestamp98("created_at").default(sql90`now()`)
+});
+var insertUserDataAccessSchema = createInsertSchema91(entUserDataAccess).extend({
+  tenantId: z37.string().min(1),
+  userId: z37.string().min(1),
+  roleId: z37.string().min(1),
+  contextType: z37.enum(["BU", "LE", "INV_ORG", "LEDGER", "SET_ID", "GLOBAL"]),
+  contextValue: z37.string().min(1),
+  isDefault: z37.boolean().optional()
+});
 
 // backend/src/config/database.config.ts
 var databaseConfig = {
@@ -15207,205 +15373,205 @@ import { Inject as Inject2, Injectable as Injectable3 } from "@nestjs/common";
 import { eq as eq2 } from "drizzle-orm";
 
 // shared/schema.ts
-import { pgTable as pgTable99, varchar as varchar95, numeric as numeric61, timestamp as timestamp98, text as text83, boolean as boolean84, integer as integer82 } from "drizzle-orm/pg-core";
-import { createInsertSchema as createInsertSchema91 } from "drizzle-zod";
-import { sql as sql90 } from "drizzle-orm";
-import { z as z36 } from "zod";
-var arTransactionTypes2 = pgTable99("ar_transaction_types", {
-  id: varchar95("id").primaryKey().default(sql90`gen_random_uuid()`),
-  name: varchar95("name").notNull().unique(),
+import { pgTable as pgTable100, varchar as varchar96, numeric as numeric61, timestamp as timestamp99, text as text84, boolean as boolean85, integer as integer82 } from "drizzle-orm/pg-core";
+import { createInsertSchema as createInsertSchema92 } from "drizzle-zod";
+import { sql as sql91 } from "drizzle-orm";
+import { z as z38 } from "zod";
+var arTransactionTypes2 = pgTable100("ar_transaction_types", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  name: varchar96("name").notNull().unique(),
   // e.g. "Standard Invoice", "Credit Memo - Tax Only"
-  description: text83("description"),
-  class: varchar95("class").notNull(),
+  description: text84("description"),
+  class: varchar96("class").notNull(),
   // INV, CM, DM, CB, DEP, GUAR
-  creationSign: varchar95("creation_sign").default("Any"),
+  creationSign: varchar96("creation_sign").default("Any"),
   // Positive, Negative, Any
-  generateOpenReceivable: boolean84("generate_open_receivable").default(true),
-  postToGl: boolean84("post_to_gl").default(true),
-  defaultReceivableAccount: varchar95("default_receivable_account"),
-  defaultRevenueAccount: varchar95("default_revenue_account"),
-  defaultTaxAccount: varchar95("default_tax_account"),
-  defaultFreightAccount: varchar95("default_freight_account"),
-  defaultClearingAccount: varchar95("default_clearing_account"),
-  defaultUnbilledAccount: varchar95("default_unbilled_account"),
-  defaultUnearnedAccount: varchar95("default_unearned_account"),
-  status: varchar95("status").default("Active"),
-  createdAt: timestamp98("created_at").default(sql90`now()`)
+  generateOpenReceivable: boolean85("generate_open_receivable").default(true),
+  postToGl: boolean85("post_to_gl").default(true),
+  defaultReceivableAccount: varchar96("default_receivable_account"),
+  defaultRevenueAccount: varchar96("default_revenue_account"),
+  defaultTaxAccount: varchar96("default_tax_account"),
+  defaultFreightAccount: varchar96("default_freight_account"),
+  defaultClearingAccount: varchar96("default_clearing_account"),
+  defaultUnbilledAccount: varchar96("default_unbilled_account"),
+  defaultUnearnedAccount: varchar96("default_unearned_account"),
+  status: varchar96("status").default("Active"),
+  createdAt: timestamp99("created_at").default(sql91`now()`)
 });
-var insertArTransactionTypeSchema2 = createInsertSchema91(arTransactionTypes2).extend({
-  name: z36.string().min(1),
-  class: z36.string().min(1),
-  creationSign: z36.string().optional(),
-  generateOpenReceivable: z36.boolean().optional(),
-  postToGl: z36.boolean().optional(),
-  defaultReceivableAccount: z36.string().optional().nullable(),
-  defaultRevenueAccount: z36.string().optional().nullable(),
-  defaultTaxAccount: z36.string().optional().nullable(),
-  defaultFreightAccount: z36.string().optional().nullable(),
-  defaultClearingAccount: z36.string().optional().nullable(),
-  defaultUnbilledAccount: z36.string().optional().nullable(),
-  defaultUnearnedAccount: z36.string().optional().nullable(),
-  status: z36.string().optional()
+var insertArTransactionTypeSchema2 = createInsertSchema92(arTransactionTypes2).extend({
+  name: z38.string().min(1),
+  class: z38.string().min(1),
+  creationSign: z38.string().optional(),
+  generateOpenReceivable: z38.boolean().optional(),
+  postToGl: z38.boolean().optional(),
+  defaultReceivableAccount: z38.string().optional().nullable(),
+  defaultRevenueAccount: z38.string().optional().nullable(),
+  defaultTaxAccount: z38.string().optional().nullable(),
+  defaultFreightAccount: z38.string().optional().nullable(),
+  defaultClearingAccount: z38.string().optional().nullable(),
+  defaultUnbilledAccount: z38.string().optional().nullable(),
+  defaultUnearnedAccount: z38.string().optional().nullable(),
+  status: z38.string().optional()
 });
-var arBatchSources2 = pgTable99("ar_batch_sources", {
-  id: varchar95("id").primaryKey().default(sql90`gen_random_uuid()`),
-  name: varchar95("name").notNull().unique(),
+var arBatchSources2 = pgTable100("ar_batch_sources", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  name: varchar96("name").notNull().unique(),
   // e.g. "Manual Invoice", "Order Management Import"
-  description: text83("description"),
-  type: varchar95("type").notNull().default("Manual"),
+  description: text84("description"),
+  type: varchar96("type").notNull().default("Manual"),
   // Manual, Imported
-  activeDate: timestamp98("active_date").default(sql90`now()`),
-  inactiveDate: timestamp98("inactive_date"),
-  autoNumbering: boolean84("auto_numbering").default(true),
+  activeDate: timestamp99("active_date").default(sql91`now()`),
+  inactiveDate: timestamp99("inactive_date"),
+  autoNumbering: boolean85("auto_numbering").default(true),
   lastNumber: integer82("last_number").default(0),
-  standardTransactionType: varchar95("standard_transaction_type"),
+  standardTransactionType: varchar96("standard_transaction_type"),
   // Default trans type for this source
-  copyDocumentNumber: boolean84("copy_document_number").default(false),
-  allowDuplicateDocument: boolean84("allow_duplicate_document").default(false),
-  createdAt: timestamp98("created_at").default(sql90`now()`)
+  copyDocumentNumber: boolean85("copy_document_number").default(false),
+  allowDuplicateDocument: boolean85("allow_duplicate_document").default(false),
+  createdAt: timestamp99("created_at").default(sql91`now()`)
 });
-var insertArBatchSourceSchema2 = createInsertSchema91(arBatchSources2).extend({
-  name: z36.string().min(1),
-  type: z36.string().optional(),
-  activeDate: z36.preprocess((arg) => {
+var insertArBatchSourceSchema2 = createInsertSchema92(arBatchSources2).extend({
+  name: z38.string().min(1),
+  type: z38.string().optional(),
+  activeDate: z38.preprocess((arg) => {
     if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
-  }, z36.date()).optional().nullable(),
-  inactiveDate: z36.preprocess((arg) => {
+  }, z38.date()).optional().nullable(),
+  inactiveDate: z38.preprocess((arg) => {
     if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
-  }, z36.date()).optional().nullable(),
-  autoNumbering: z36.boolean().optional(),
-  lastNumber: z36.number().int().optional(),
-  standardTransactionType: z36.string().optional().nullable(),
-  copyDocumentNumber: z36.boolean().optional(),
-  allowDuplicateDocument: z36.boolean().optional()
+  }, z38.date()).optional().nullable(),
+  autoNumbering: z38.boolean().optional(),
+  lastNumber: z38.number().int().optional(),
+  standardTransactionType: z38.string().optional().nullable(),
+  copyDocumentNumber: z38.boolean().optional(),
+  allowDuplicateDocument: z38.boolean().optional()
 });
-var arReceiptMethods2 = pgTable99("ar_receipt_methods", {
-  id: varchar95("id").primaryKey().default(sql90`gen_random_uuid()`),
-  name: varchar95("name").notNull().unique(),
+var arReceiptMethods2 = pgTable100("ar_receipt_methods", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  name: varchar96("name").notNull().unique(),
   // e.g. "Bank Transfer - USD", "Lockbox"
-  receiptClass: varchar95("receipt_class").notNull(),
+  receiptClass: varchar96("receipt_class").notNull(),
   // Manual, Automatic
-  creationMethod: varchar95("creation_method").default("Manual"),
+  creationMethod: varchar96("creation_method").default("Manual"),
   // Manual, Automatic, Routing
-  remittanceMethod: varchar95("remittance_method").default("Standard"),
+  remittanceMethod: varchar96("remittance_method").default("Standard"),
   // Standard, Factoring, None
-  clearanceMethod: varchar95("clearance_method").default("Directly"),
+  clearanceMethod: varchar96("clearance_method").default("Directly"),
   // By Automatic Clearing, By Matching, Directly
-  remittanceBankAccount: varchar95("remittance_bank_account"),
-  cashAccount: varchar95("cash_account"),
-  unappliedAccount: varchar95("unapplied_account"),
-  unidentifiedAccount: varchar95("unidentified_account"),
-  onAccountAccount: varchar95("on_account_account"),
-  earnedDiscountAccount: varchar95("earned_discount_account"),
-  unearnedDiscountAccount: varchar95("unearned_discount_account"),
-  status: varchar95("status").default("Active"),
-  createdAt: timestamp98("created_at").default(sql90`now()`)
+  remittanceBankAccount: varchar96("remittance_bank_account"),
+  cashAccount: varchar96("cash_account"),
+  unappliedAccount: varchar96("unapplied_account"),
+  unidentifiedAccount: varchar96("unidentified_account"),
+  onAccountAccount: varchar96("on_account_account"),
+  earnedDiscountAccount: varchar96("earned_discount_account"),
+  unearnedDiscountAccount: varchar96("unearned_discount_account"),
+  status: varchar96("status").default("Active"),
+  createdAt: timestamp99("created_at").default(sql91`now()`)
 });
-var insertArReceiptMethodSchema2 = createInsertSchema91(arReceiptMethods2).extend({
-  name: z36.string().min(1),
-  receiptClass: z36.string().min(1),
-  creationMethod: z36.string().optional(),
-  remittanceMethod: z36.string().optional(),
-  clearanceMethod: z36.string().optional(),
-  remittanceBankAccount: z36.string().optional().nullable(),
-  cashAccount: z36.string().optional().nullable(),
-  unappliedAccount: z36.string().optional().nullable(),
-  unidentifiedAccount: z36.string().optional().nullable(),
-  onAccountAccount: z36.string().optional().nullable(),
-  earnedDiscountAccount: z36.string().optional().nullable(),
-  unearnedDiscountAccount: z36.string().optional().nullable(),
-  status: z36.string().optional()
+var insertArReceiptMethodSchema2 = createInsertSchema92(arReceiptMethods2).extend({
+  name: z38.string().min(1),
+  receiptClass: z38.string().min(1),
+  creationMethod: z38.string().optional(),
+  remittanceMethod: z38.string().optional(),
+  clearanceMethod: z38.string().optional(),
+  remittanceBankAccount: z38.string().optional().nullable(),
+  cashAccount: z38.string().optional().nullable(),
+  unappliedAccount: z38.string().optional().nullable(),
+  unidentifiedAccount: z38.string().optional().nullable(),
+  onAccountAccount: z38.string().optional().nullable(),
+  earnedDiscountAccount: z38.string().optional().nullable(),
+  unearnedDiscountAccount: z38.string().optional().nullable(),
+  status: z38.string().optional()
 });
-var arAutoAccountingRules2 = pgTable99("ar_auto_accounting_rules", {
-  id: varchar95("id").primaryKey().default(sql90`gen_random_uuid()`),
-  accountType: varchar95("account_type").notNull(),
+var arAutoAccountingRules2 = pgTable100("ar_auto_accounting_rules", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  accountType: varchar96("account_type").notNull(),
   // Receivable, Revenue, Tax, Freight, Clearing, Unbilled, Unearned
-  segmentName: varchar95("segment_name").notNull(),
+  segmentName: varchar96("segment_name").notNull(),
   // e.g. "Company", "Department", "Account"
-  sourceType: varchar95("source_type").notNull(),
+  sourceType: varchar96("source_type").notNull(),
   // Constant, Transaction Type, Salesperson, Standard Line, Taxes
-  constantValue: varchar95("constant_value"),
+  constantValue: varchar96("constant_value"),
   // Value if sourceType is Constant
-  description: text83("description"),
-  status: varchar95("status").default("Active"),
-  createdAt: timestamp98("created_at").default(sql90`now()`)
+  description: text84("description"),
+  status: varchar96("status").default("Active"),
+  createdAt: timestamp99("created_at").default(sql91`now()`)
 });
-var insertArAutoAccountingRuleSchema2 = createInsertSchema91(arAutoAccountingRules2).extend({
-  accountType: z36.string().min(1),
-  segmentName: z36.string().min(1),
-  sourceType: z36.string().min(1),
-  constantValue: z36.string().optional().nullable(),
-  description: z36.string().optional().nullable(),
-  status: z36.string().optional()
+var insertArAutoAccountingRuleSchema2 = createInsertSchema92(arAutoAccountingRules2).extend({
+  accountType: z38.string().min(1),
+  segmentName: z38.string().min(1),
+  sourceType: z38.string().min(1),
+  constantValue: z38.string().optional().nullable(),
+  description: z38.string().optional().nullable(),
+  status: z38.string().optional()
 });
-var arCustomerProfiles2 = pgTable99("ar_customer_profiles", {
-  id: varchar95("id").primaryKey().default(sql90`gen_random_uuid()`),
-  entityType: varchar95("entity_type").notNull(),
+var arCustomerProfiles2 = pgTable100("ar_customer_profiles", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  entityType: varchar96("entity_type").notNull(),
   // 'CUSTOMER', 'ACCOUNT', 'SITE'
-  entityId: varchar95("entity_id").notNull(),
+  entityId: varchar96("entity_id").notNull(),
   // ID of the Customer, Account, or Site
-  profileClassName: varchar95("profile_class_name").notNull(),
+  profileClassName: varchar96("profile_class_name").notNull(),
   // e.g., 'Corporate Standard'
   creditLimit: numeric61("credit_limit", { precision: 18, scale: 2 }),
   orderLimit: numeric61("order_limit", { precision: 18, scale: 2 }),
-  currency: varchar95("currency").default("USD"),
-  paymentTerms: varchar95("payment_terms"),
-  statementCycle: varchar95("statement_cycle"),
+  currency: varchar96("currency").default("USD"),
+  paymentTerms: varchar96("payment_terms"),
+  statementCycle: varchar96("statement_cycle"),
   // e.g., 'Monthly', 'Weekly'
-  dunningLetters: boolean84("dunning_letters").default(true),
-  sendStatements: boolean84("send_statements").default(true),
-  lateChargeAssessment: boolean84("late_charge_assessment").default(false),
-  creditHold: boolean84("credit_hold").default(false),
-  status: varchar95("status").default("Active"),
-  createdAt: timestamp98("created_at").default(sql90`now()`)
+  dunningLetters: boolean85("dunning_letters").default(true),
+  sendStatements: boolean85("send_statements").default(true),
+  lateChargeAssessment: boolean85("late_charge_assessment").default(false),
+  creditHold: boolean85("credit_hold").default(false),
+  status: varchar96("status").default("Active"),
+  createdAt: timestamp99("created_at").default(sql91`now()`)
 });
-var insertArCustomerProfileSchema2 = createInsertSchema91(arCustomerProfiles2).extend({
-  entityType: z36.string().min(1),
-  entityId: z36.string().min(1),
-  profileClassName: z36.string().min(1),
-  creditLimit: z36.string().optional().nullable(),
-  orderLimit: z36.string().optional().nullable(),
-  currency: z36.string().optional(),
-  paymentTerms: z36.string().optional().nullable(),
-  statementCycle: z36.string().optional().nullable(),
-  dunningLetters: z36.boolean().optional(),
-  sendStatements: z36.boolean().optional(),
-  lateChargeAssessment: z36.boolean().optional(),
-  creditHold: z36.boolean().optional(),
-  status: z36.string().optional()
+var insertArCustomerProfileSchema2 = createInsertSchema92(arCustomerProfiles2).extend({
+  entityType: z38.string().min(1),
+  entityId: z38.string().min(1),
+  profileClassName: z38.string().min(1),
+  creditLimit: z38.string().optional().nullable(),
+  orderLimit: z38.string().optional().nullable(),
+  currency: z38.string().optional(),
+  paymentTerms: z38.string().optional().nullable(),
+  statementCycle: z38.string().optional().nullable(),
+  dunningLetters: z38.boolean().optional(),
+  sendStatements: z38.boolean().optional(),
+  lateChargeAssessment: z38.boolean().optional(),
+  creditHold: z38.boolean().optional(),
+  status: z38.string().optional()
 });
-var arCustomerBankAccounts2 = pgTable99("ar_customer_bank_accounts", {
-  id: varchar95("id").primaryKey().default(sql90`gen_random_uuid()`),
-  customerId: varchar95("customer_id").notNull(),
-  accountId: varchar95("account_id"),
+var arCustomerBankAccounts2 = pgTable100("ar_customer_bank_accounts", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  customerId: varchar96("customer_id").notNull(),
+  accountId: varchar96("account_id"),
   // Optional: link to specific account or site
-  siteId: varchar95("site_id"),
-  bankName: varchar95("bank_name").notNull(),
-  branchName: varchar95("branch_name"),
-  accountNumber: varchar95("account_number").notNull(),
-  routingNumber: varchar95("routing_number"),
-  currency: varchar95("currency").default("USD"),
-  primaryFlag: boolean84("primary_flag").default(false),
-  activeDate: timestamp98("active_date").default(sql90`now()`),
-  inactiveDate: timestamp98("inactive_date"),
-  createdAt: timestamp98("created_at").default(sql90`now()`)
+  siteId: varchar96("site_id"),
+  bankName: varchar96("bank_name").notNull(),
+  branchName: varchar96("branch_name"),
+  accountNumber: varchar96("account_number").notNull(),
+  routingNumber: varchar96("routing_number"),
+  currency: varchar96("currency").default("USD"),
+  primaryFlag: boolean85("primary_flag").default(false),
+  activeDate: timestamp99("active_date").default(sql91`now()`),
+  inactiveDate: timestamp99("inactive_date"),
+  createdAt: timestamp99("created_at").default(sql91`now()`)
 });
-var insertArCustomerBankAccountSchema2 = createInsertSchema91(arCustomerBankAccounts2).extend({
-  customerId: z36.string().min(1),
-  accountId: z36.string().optional().nullable(),
-  siteId: z36.string().optional().nullable(),
-  bankName: z36.string().min(1),
-  branchName: z36.string().optional().nullable(),
-  accountNumber: z36.string().min(1),
-  routingNumber: z36.string().optional().nullable(),
-  currency: z36.string().optional(),
-  primaryFlag: z36.boolean().optional(),
-  activeDate: z36.preprocess((arg) => {
+var insertArCustomerBankAccountSchema2 = createInsertSchema92(arCustomerBankAccounts2).extend({
+  customerId: z38.string().min(1),
+  accountId: z38.string().optional().nullable(),
+  siteId: z38.string().optional().nullable(),
+  bankName: z38.string().min(1),
+  branchName: z38.string().optional().nullable(),
+  accountNumber: z38.string().min(1),
+  routingNumber: z38.string().optional().nullable(),
+  currency: z38.string().optional(),
+  primaryFlag: z38.boolean().optional(),
+  activeDate: z38.preprocess((arg) => {
     if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
-  }, z36.date()).optional().nullable(),
-  inactiveDate: z36.preprocess((arg) => {
+  }, z38.date()).optional().nullable(),
+  inactiveDate: z38.preprocess((arg) => {
     if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
-  }, z36.date()).optional().nullable()
+  }, z38.date()).optional().nullable()
 });
 
 // backend/src/modules/projects/task.service.ts
@@ -18950,7 +19116,7 @@ MetricsController = __decorateClass([
 
 // backend/src/modules/admin/metrics/metrics.service.ts
 import { Injectable as Injectable35, Inject as Inject28 } from "@nestjs/common";
-import { sql as sql91 } from "drizzle-orm";
+import { sql as sql92 } from "drizzle-orm";
 import { tenants as tenants3 } from "@shared/schema";
 import { adminLogs as adminLogs2 } from "@shared/schema/admin";
 import { eq as eq26, gte } from "drizzle-orm";
@@ -18965,9 +19131,9 @@ var MetricsService = class {
       activeTenantsResult,
       recentLogsResult
     ] = await Promise.all([
-      this.db.select({ count: sql91`count(*)::int` }).from(tenants3),
-      this.db.select({ count: sql91`count(*)::int` }).from(tenants3).where(eq26(tenants3.status, "active")),
-      this.db.select({ count: sql91`count(*)::int` }).from(adminLogs2).where(gte(adminLogs2.createdAt, sevenDaysAgo))
+      this.db.select({ count: sql92`count(*)::int` }).from(tenants3),
+      this.db.select({ count: sql92`count(*)::int` }).from(tenants3).where(eq26(tenants3.status, "active")),
+      this.db.select({ count: sql92`count(*)::int` }).from(adminLogs2).where(gte(adminLogs2.createdAt, sevenDaysAgo))
     ]);
     return {
       data: {
@@ -19024,7 +19190,7 @@ AuditLogsController = __decorateClass([
 
 // backend/src/modules/admin/audit-logs/audit-logs.service.ts
 import { Injectable as Injectable36, Inject as Inject29 } from "@nestjs/common";
-import { sql as sql92, and as and14, gte as gte2, lte, eq as eq27, ilike, desc } from "drizzle-orm";
+import { sql as sql93, and as and14, gte as gte2, lte, eq as eq27, ilike, desc } from "drizzle-orm";
 import { adminLogs as adminLogs3 } from "@shared/schema";
 var AuditLogsService = class {
   constructor(db) {
@@ -19042,7 +19208,7 @@ var AuditLogsService = class {
     const where = conditions.length > 0 ? and14(...conditions) : void 0;
     const [logs, countResult] = await Promise.all([
       this.db.select().from(adminLogs3).where(where).orderBy(desc(adminLogs3.createdAt)).limit(limit).offset(offset),
-      this.db.select({ count: sql92`count(*)::int` }).from(adminLogs3).where(where)
+      this.db.select({ count: sql93`count(*)::int` }).from(adminLogs3).where(where)
     ]);
     const total = countResult[0]?.count ?? 0;
     return {
@@ -19368,7 +19534,7 @@ ManufacturingVarianceController = __decorateClass([
 
 // backend/src/modules/manufacturing/manufacturing-variance.service.ts
 import { Injectable as Injectable38, Inject as Inject30 } from "@nestjs/common";
-import { and as and15, desc as desc2, gte as gte3, lte as lte2, sql as sql93 } from "drizzle-orm";
+import { and as and15, desc as desc2, gte as gte3, lte as lte2, sql as sql94 } from "drizzle-orm";
 import { varianceJournals as varianceJournals2 } from "@shared/schema/manufacturing";
 var ManufacturingVarianceService = class {
   constructor(db) {
@@ -19387,7 +19553,7 @@ var ManufacturingVarianceService = class {
     const where = conditions.length > 0 ? and15(...conditions) : void 0;
     const [items, countResult] = await Promise.all([
       this.db.select().from(varianceJournals2).where(where).orderBy(desc2(varianceJournals2.transactionDate)).limit(limit).offset(offset),
-      this.db.select({ count: sql93`count(*)::int` }).from(varianceJournals2).where(where)
+      this.db.select({ count: sql94`count(*)::int` }).from(varianceJournals2).where(where)
     ]);
     return {
       items,
@@ -19405,8 +19571,8 @@ var ManufacturingVarianceService = class {
     const where = conditions.length > 0 ? and15(...conditions) : void 0;
     const summary = await this.db.select({
       varianceType: varianceJournals2.varianceType,
-      total: sql93`sum(${varianceJournals2.amount})::numeric`,
-      count: sql93`count(*)::int`
+      total: sql94`sum(${varianceJournals2.amount})::numeric`,
+      count: sql94`count(*)::int`
     }).from(varianceJournals2).where(where).groupBy(varianceJournals2.varianceType);
     const netVariance = summary.reduce((acc, s) => acc + Number(s.total), 0);
     return {

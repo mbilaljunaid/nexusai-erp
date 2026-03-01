@@ -218,11 +218,13 @@ router.post("/bank-accounts", async (req, res) => {
 router.get("/invoices", async (req, res) => {
     try {
         const { limit, offset } = req.query;
+        const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
         const invoices = await arService.listInvoices(
             limit ? Number(limit) : undefined,
-            offset ? Number(offset) : undefined
+            offset ? Number(offset) : undefined,
+            entBusinessUnitId
         );
-        const total = await arService.getInvoicesCount();
+        const total = await arService.getInvoicesCount(entBusinessUnitId);
         res.json({ data: invoices, total });
     } catch (error) {
         res.status(500).json({ message: "Failed to list invoices" });
@@ -231,7 +233,11 @@ router.get("/invoices", async (req, res) => {
 
 router.post("/invoices", async (req, res) => {
     try {
-        const data = insertArInvoiceSchema.parse(req.body);
+        const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+        const data = insertArInvoiceSchema.parse({
+            ...req.body,
+            entBusinessUnitId
+        });
         const invoice = await arService.createInvoice(data);
         res.status(201).json(invoice);
     } catch (error) {
@@ -493,7 +499,8 @@ router.post("/lockbox/items/:id/match", async (req, res) => {
 // Receipts
 router.get("/receipts", async (req, res) => {
     try {
-        const receipts = await arService.listReceipts();
+        const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+        const receipts = await arService.listReceipts(entBusinessUnitId);
         res.json(receipts);
     } catch (error) {
         res.status(500).json({ message: "Failed to list receipts" });
@@ -502,7 +509,11 @@ router.get("/receipts", async (req, res) => {
 
 router.post("/receipts", async (req, res) => {
     try {
-        const data = insertArReceiptSchema.parse(req.body);
+        const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+        const data = insertArReceiptSchema.parse({
+            ...req.body,
+            entBusinessUnitId
+        });
         const receipt = await arService.createReceipt(data);
         res.status(201).json(receipt);
     } catch (error) {

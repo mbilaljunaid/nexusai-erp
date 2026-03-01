@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,11 +8,19 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Filter } from "lucide-react";
+import { FileText, Download, Filter, Building2 } from "lucide-react";
+
+function useActiveBu() {
+    return useMemo(() => ({
+        id: localStorage.getItem("nexus_active_bu") || null,
+        name: localStorage.getItem("nexus_active_bu_name") || localStorage.getItem("nexus_active_bu") || "All Business Units"
+    }), []);
+}
 
 export default function APReports() {
     const [page, setPage] = useState(1);
     const pageSize = 20;
+    const activeBu = useActiveBu();
     const [auditFilters, setAuditFilters] = useState({
         startDate: "",
         endDate: "",
@@ -129,6 +137,17 @@ export default function APReports() {
                 { label: "Reports" }
             ]}
         >
+            {/* BU Context Banner */}
+            <div className="flex items-center gap-2 px-1 mb-2">
+                <Building2 className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Report scope:</span>
+                <Badge variant="secondary" className="font-mono text-xs">
+                    {activeBu.id ? activeBu.name : "All Business Units"}
+                </Badge>
+                {!activeBu.id && (
+                    <span className="text-xs text-amber-600">(No BU selected — showing all BU data)</span>
+                )}
+            </div>
             <Tabs defaultValue="aging" className="space-y-4">
                 <TabsList>
                     <TabsTrigger value="aging">Aging Report</TabsTrigger>

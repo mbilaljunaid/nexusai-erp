@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { queryClient } from "@/lib/queryClient";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
 import type { ArInvoice } from "@/types/erp-types";
@@ -40,23 +40,19 @@ export default function ARInvoices() {
   const [interestParams, setInterestParams] = useState({ rate: "1.5", minOverdueDays: "30" });
 
   const { data, isLoading } = useQuery<{ data: ArInvoice[], total: number }>({
-    queryKey: ["/api/ar/invoices", page, pageSize],
-    queryFn: () => fetch(`/api/ar/invoices?limit=${pageSize}&offset=${(page - 1) * pageSize}`).then(r => r.json()),
+    queryKey: ["/api/ar/invoices", { limit: pageSize, offset: (page - 1) * pageSize }]
   });
 
   const { data: customers } = useQuery({
-    queryKey: ["/api/ar/customers"],
-    queryFn: () => fetch("/api/ar/customers").then(r => r.json()),
+    queryKey: ["/api/ar/customers"]
   });
 
   const { data: accounts } = useQuery({
-    queryKey: ["/api/ar/accounts"],
-    queryFn: () => fetch("/api/ar/accounts").then(r => r.json()),
+    queryKey: ["/api/ar/accounts"]
   });
 
   const { data: sites } = useQuery({
-    queryKey: ["/api/ar/sites", debitMemoData.accountId],
-    queryFn: () => fetch(`/api/ar/sites?accountId=${debitMemoData.accountId}`).then(r => r.json()),
+    queryKey: ["/api/ar/sites", { accountId: debitMemoData.accountId }],
     enabled: !!debitMemoData.accountId,
   });
 
@@ -66,8 +62,7 @@ export default function ARInvoices() {
   const createMutation = useMutation({
     mutationFn: async (data: any) => {
       const payload = { ...data, amount: data.invoiceAmount, totalAmount: data.invoiceAmount };
-      const r = await fetch("/api/ar/invoices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-      if (!r.ok) throw new Error(await r.text());
+      const r = await apiRequest("POST", "/api/ar/invoices", payload);
       return r.json();
     },
     onSuccess: () => {
@@ -78,7 +73,9 @@ export default function ARInvoices() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/ar/invoices/${id}`, { method: "DELETE" }),
+    mutationFn: async (id: string) => {
+      await apiRequest("DELETE", `/api/ar/invoices/${id}`);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ar/invoices"] });
       toast({ title: "Invoice deleted" });
@@ -86,7 +83,9 @@ export default function ARInvoices() {
   });
 
   const approveMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/billing/invoices/${id}/approve`, { method: "POST" }),
+    mutationFn: async (id: string) => {
+      await apiRequest("POST", `/api/billing/invoices/${id}/approve`);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ar/invoices"] });
       toast({ title: "Invoice Approved" });
@@ -94,7 +93,10 @@ export default function ARInvoices() {
   });
 
   const debitMemoMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/ar/invoices/debit-memo", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: async (data: any) => {
+      const r = await apiRequest("POST", "/api/ar/invoices/debit-memo", data);
+      return r.json();
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ar/invoices"] });
       setDebitMemoData({ accountId: "", siteId: "", amount: "", description: "" });

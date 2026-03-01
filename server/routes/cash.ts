@@ -19,7 +19,8 @@ router.get("/accounts", async (req, res) => {
     try {
         const userId = req.headers['x-user-id'] as string;
         const entLegalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
-        const accounts = await cashService.listBankAccounts(userId, entLegalEntityId);
+        const entBusinessUnitId = req.headers['x-business-unit-id'] as string | undefined;
+        const accounts = await cashService.listBankAccounts(userId, entLegalEntityId, entBusinessUnitId);
         res.json(accounts);
     } catch (error) {
         res.status(500).json({ message: "Failed to list bank accounts" });
@@ -56,7 +57,9 @@ router.post("/accounts/:id/approve", async (req, res) => {
 // Cash Position / Dashboard
 router.get("/position", async (req, res) => {
     try {
-        const position = await cashService.getCashPosition();
+        const entLegalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
+        const entBusinessUnitId = req.headers['x-business-unit-id'] as string | undefined;
+        const position = await cashService.getCashPosition(entLegalEntityId, entBusinessUnitId);
         res.json(position);
     } catch (error) {
         res.status(500).json({ message: "Failed to get cash position" });

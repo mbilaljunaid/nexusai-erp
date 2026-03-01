@@ -19,15 +19,13 @@ export default function ARReceiptDetail() {
 
     const { data: receipts, isLoading } = useQuery<any[]>({
         queryKey: ["/api/ar/receipts"],
-        queryFn: () => fetch("/api/ar/receipts").then(r => r.json()),
     });
 
     const receipt = receipts?.find((r: any) => r.id === Number(receiptId)) || receipts?.find((r: any) => String(r.id) === receiptId);
 
     const { data: apps = [], isLoading: isLoadingApps } = useQuery<any[]>({
-        queryKey: ["/api/ar/receipts", receiptId, "applications"],
+        queryKey: [`/api/ar/receipts/${receiptId}/applications`],
         enabled: !!receiptId,
-        queryFn: () => fetch(`/api/ar/receipts/${receiptId}/applications`).then(r => r.json()),
     });
 
     const unapplyMutation = useMutation({

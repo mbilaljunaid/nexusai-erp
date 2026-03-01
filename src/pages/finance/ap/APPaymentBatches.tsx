@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,10 +9,17 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Play, CheckCircle, Download, Loader2, FileText } from "lucide-react";
+import { Plus, Play, CheckCircle, Download, Loader2, FileText, Building2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { useLocation } from "wouter";
+
+function useActiveBu() {
+    return useMemo(() => ({
+        id: localStorage.getItem("nexus_active_bu") || null,
+        name: localStorage.getItem("nexus_active_bu_name") || localStorage.getItem("nexus_active_bu") || "All Business Units"
+    }), []);
+}
 
 export default function APPaymentBatches() {
     const [page, setPage] = useState(1);
@@ -22,9 +29,10 @@ export default function APPaymentBatches() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [, setLocation] = useLocation();
+    const activeBu = useActiveBu();
 
     const [formData, setFormData] = useState({
-        businessUnitId: "",
+        businessUnitId: activeBu.id || "",
         batchName: "",
         paymentMethodCode: "EFT",
         checkDate: new Date().toISOString().split("T")[0],
@@ -41,7 +49,7 @@ export default function APPaymentBatches() {
         refetchIntervalInBackground: true
     });
 
-    const { data: bankAccounts = [] } = useQuery({
+    const { data: bankAccounts = [] } = useQuery<any[]>({
         queryKey: ["/api/cash/accounts"],
     });
 
@@ -239,6 +247,17 @@ export default function APPaymentBatches() {
             }
         >
             <div className="space-y-6">
+                {/* BU Context Banner */}
+                <div className="flex items-center gap-2 px-1">
+                    <Building2 className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">Active BU:</span>
+                    <Badge variant="secondary" className="font-mono text-xs">
+                        {activeBu.id ? activeBu.name : "All Business Units"}
+                    </Badge>
+                    {!activeBu.id && (
+                        <span className="text-xs text-amber-600">(No BU selected — showing all batches)</span>
+                    )}
+                </div>
                 {/* Summary Cards */}
                 <div className="grid gap-4 md:grid-cols-3">
                     <Card>

@@ -9,6 +9,7 @@ import { z } from "zod";
 export const cashBankAccounts = pgTable("cash_bank_accounts", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     entLegalEntityId: varchar("ent_legal_entity_id"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
     name: varchar("name", { length: 255 }).notNull(),
     accountNumber: varchar("account_number", { length: 100 }).notNull(),
     bankName: varchar("bank_name", { length: 255 }).notNull(),
@@ -38,6 +39,8 @@ export type InsertCashBankAccount = z.infer<typeof insertCashBankAccountSchema>;
 // Bank Statement Headers: The file/import event itself
 export const cashStatementHeaders = pgTable("cash_statement_headers", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
     bankAccountId: varchar("bank_account_id").notNull(),
     statementNumber: varchar("statement_number", { length: 50 }),
     statementDate: timestamp("statement_date").notNull(),
@@ -55,6 +58,8 @@ export type InsertCashStatementHeader = z.infer<typeof insertCashStatementHeader
 // Bank Statement Lines: External transactions from bank feed/CSV
 export const cashStatementLines = pgTable("cash_statement_lines", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
     headerId: varchar("header_id"), // Link to header
     bankAccountId: varchar("bank_account_id").notNull(),
     transactionDate: timestamp("transaction_date").notNull(),
@@ -75,6 +80,8 @@ export type InsertCashStatementLine = z.infer<typeof insertCashStatementLineSche
 // Cash Transactions: Link between internal source (AR/AP) and Cash module
 export const cashTransactions = pgTable("cash_transactions", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
     bankAccountId: varchar("bank_account_id").notNull(),
     sourceModule: varchar("source_module", { length: 20 }).notNull(), // 'AP', 'AR', 'GL'
     sourceId: varchar("source_id").notNull(), // ID of Payment or Receipt
@@ -122,6 +129,8 @@ export type CashMatchingGroup = typeof cashMatchingGroups.$inferSelect;
 // ZBA Hierarchies: Treasury structures for automated sweeping
 export const cashZbaStructures = pgTable("cash_zba_structures", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
     masterAccountId: varchar("master_account_id").notNull(),
     subAccountId: varchar("sub_account_id").notNull(),
     targetBalance: numeric("target_balance", { precision: 20, scale: 2 }).default("0"),
@@ -211,6 +220,8 @@ export type CashRevaluationHistory = typeof cashRevaluationHistory.$inferSelect;
 // Forecast adjustments: Manual entries for cash forecasting
 export const cashForecasts = pgTable("cash_forecasts", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
     bankAccountId: varchar("bank_account_id"), // Optional if global, but usually specific
     forecastDate: timestamp("forecast_date").notNull(),
     amount: numeric("amount", { precision: 20, scale: 2 }).notNull(),

@@ -26,19 +26,17 @@ export default function ARReceipts() {
     const [chargebackData, setChargebackData] = useState({ invoiceId: "", amount: "" });
 
     const { data: receipts = [], isLoading } = useQuery<any[]>({
-        queryKey: ["/api/ar/receipts"],
-        queryFn: () => fetch("/api/ar/receipts").then(r => r.json()),
+        queryKey: ["/api/ar/receipts"]
     });
 
-    const { data: customers } = useQuery({
-        queryKey: ["/api/ar/customers"],
-        queryFn: () => fetch("/api/ar/customers").then(r => r.json()),
+    const { data: customers } = useQuery<any[]>({
+        queryKey: ["/api/ar/customers"]
     });
 
-    const { data: invoices } = useQuery({
-        queryKey: ["/api/ar/invoices"],
-        queryFn: () => fetch("/api/ar/invoices").then(r => r.json()),
+    const { data: invoicesData } = useQuery<{ data: any[], total: number }>({
+        queryKey: ["/api/ar/invoices"]
     });
+    const invoices = invoicesData?.data || [];
 
     const createMutation = useMutation({
         mutationFn: async (data: any) => await apiRequest("POST", "/api/ar/receipts", { ...data, amount: data.amount.toString() }),
@@ -201,8 +199,7 @@ export default function ARReceipts() {
 function ReceiptApplications({ receiptId }: { receiptId: string }) {
     const { toast } = useToast();
     const { data: apps = [], isLoading } = useQuery<any[]>({
-        queryKey: ["/api/ar/receipts", receiptId, "applications"],
-        queryFn: () => fetch(`/api/ar/receipts/${receiptId}/applications`).then(r => r.json()),
+        queryKey: [`/api/ar/receipts/${receiptId}/applications`]
     });
 
     const unapplyMutation = useMutation({

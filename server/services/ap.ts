@@ -153,7 +153,7 @@ export class ApService {
         return await db.select().from(apSupplierSites).where(eq(apSupplierSites.supplierId, supplierId));
     }
 
-    async createInvoice(data: { header: InsertApInvoice; lines: InsertApInvoiceLine[] }) {
+    async createInvoice(data: { header: InsertApInvoice; lines: InsertApInvoiceLine[]; entBusinessUnitId?: string }) {
         const validation = insertApInvoiceSchema.safeParse(data.header);
         if (!validation.success) {
             throw new Error(`Invalid invoice header: ${validation.error.message}`);
@@ -172,13 +172,14 @@ export class ApService {
             const prepayRemaining =
                 data.header.invoiceType === "PREPAYMENT" ? data.header.invoiceAmount : null;
 
-            // 2. Insert Header
+            // 2. Insert Header — inject entBusinessUnitId from the request context
             const [invoice] = await tx.insert(apInvoices).values({
                 ...data.header,
                 prepayAmountRemaining: prepayRemaining,
                 supplierSiteId: siteId,
                 invoiceStatus: "DRAFT",
-                validationStatus: "NEVER VALIDATED"
+                validationStatus: "NEVER VALIDATED",
+                ...(data.entBusinessUnitId ? { entBusinessUnitId: data.entBusinessUnitId } : {})
             }).returning();
 
             // 3. Insert Lines
@@ -504,7 +505,7 @@ export class ApService {
         return hold;
     }
 
-    async applyPayment(invoiceId: string, paymentData: InsertApPayment): Promise<ApPayment | undefined> {
+    async applyPayment(invoiceId: string, paymentData: InsertApPayment & { entBusinessUnitId?: string }): Promise<ApPayment | undefined> {
         return await db.transaction(async (tx) => {
             const [invoice] = await tx.select().from(apInvoices).where(eq(apInvoices.id, parseInt(invoiceId))).limit(1);
             if (!invoice) throw new Error("Invoice not found");
@@ -531,9 +532,13 @@ export class ApService {
                 }
             }
 
-            // Note: The paymentData.amount from the UI might already be the net amount the user intends to pay.
-            // If the user pays the net amount, the discount Amount + payment Amount should equal the invoice amount to clear it.
-            const [payment] = await tx.insert(apPayments).values(paymentData).returning();
+            // Persist payment with BU scoping inherited from the active BU context
+            const { entBusinessUnitId, ...corePaymentData } = paymentData as any;
+            const paymentToInsert = {
+                ...corePaymentData,
+                ...(entBusinessUnitId ? { entBusinessUnitId } : {})
+            };
+            const [payment] = await tx.insert(apPayments).values(paymentToInsert).returning();
 
             await tx.insert(apInvoicePayments).values({
                 paymentId: payment.id,
@@ -561,12 +566,16 @@ export class ApService {
 
     // --- PPR (Payment Process Request) Engine ---
 
-    async listPaymentBatches() {
-        return await db.select().from(apPaymentBatches).orderBy(sql`${apPaymentBatches.createdAt} DESC`);
+    async listPaymentBatches(entBusinessUnitId?: string) {
+        let query = db.select().from(apPaymentBatches);
+        if (entBusinessUnitId) {
+            query = query.where(eq(apPaymentBatches.entBusinessUnitId, entBusinessUnitId)) as any;
+        }
+        return await (query as any).orderBy(sql`${apPaymentBatches.createdAt} DESC`);
     }
 
-    async createPaymentBatch(data: InsertApPaymentBatch) {
-        const [batch] = await db.insert(apPaymentBatches).values(data).returning();
+    async createPaymentBatch(data: InsertApPaymentBatch & { entBusinessUnitId?: string }) {
+        const [batch] = await db.insert(apPaymentBatches).values(data as any).returning();
         return batch;
     }
 
@@ -665,7 +674,12 @@ export class ApService {
 
     // --- Aging Report ---
 
-    async getAgingReport() {
+    async getAgingReport(entBusinessUnitId?: string) {
+        const conditions: any[] = [eq(apInvoices.paymentStatus, "UNPAID")];
+        if (entBusinessUnitId) {
+            conditions.push(eq(apInvoices.entBusinessUnitId, entBusinessUnitId));
+        }
+
         const results = await db.select({
             supplierName: apSuppliers.name,
             current: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} > NOW() THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
@@ -677,7 +691,7 @@ export class ApService {
         })
             .from(apInvoices)
             .innerJoin(apSuppliers, eq(apInvoices.supplierId, apSuppliers.id))
-            .where(eq(apInvoices.paymentStatus, "UNPAID"))
+            .where(and(...conditions))
             .groupBy(apSuppliers.name);
 
         return results;

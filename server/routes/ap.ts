@@ -131,12 +131,20 @@ apRouter.post("/seed", async (req, res) => {
 
 // Supplier CRUD
 apRouter.get("/suppliers", async (req, res) => {
+    const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+    const buCondition = entBusinessUnitId
+        ? eq(apInvoices.entBusinessUnitId, entBusinessUnitId)
+        : undefined;
+
     const list = await db.select({
         ...apSuppliers,
         totalBalance: sql<number>`COALESCE(SUM(CASE WHEN ${apInvoices.paymentStatus} = 'UNPAID' THEN ${apInvoices.invoiceAmount} ELSE 0 END), 0)`
     })
         .from(apSuppliers)
-        .leftJoin(apInvoices, eq(apInvoices.supplierId, apSuppliers.id))
+        .leftJoin(apInvoices, and(
+            eq(apInvoices.supplierId, apSuppliers.id),
+            ...(buCondition ? [buCondition] : [])
+        ))
         .groupBy(apSuppliers.id)
         .orderBy(apSuppliers.createdAt);
 
@@ -248,7 +256,8 @@ apRouter.post("/invoices", async (req, res) => {
     if (!parse.success) return res.status(400).json(parse.error);
 
     try {
-        const created = await apService.createInvoice(parse.data);
+        const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+        const created = await apService.createInvoice({ ...parse.data, entBusinessUnitId });
         res.status(201).json(created);
     } catch (e) {
         res.status(500).json({ error: e instanceof Error ? e.message : "Unknown error" });
@@ -395,15 +404,18 @@ apRouter.delete("/invoices/:id", async (req, res) => {
 apRouter.post("/payments/apply", async (req, res) => {
     const parse = insertApPaymentSchema.safeParse(req.body);
     if (!parse.success) return res.status(400).json(parse.error);
-    const payment = await apService.applyPayment(req.body.invoiceId, parse.data as any);
+    const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+    const paymentData = { ...parse.data, ...(entBusinessUnitId ? { entBusinessUnitId } : {}) } as any;
+    const payment = await apService.applyPayment(req.body.invoiceId, paymentData);
     if (!payment) return res.status(404).json({ error: "Invoice not found for payment" });
     res.status(201).json(payment);
 });
 
 // --- PPR (Payment Process Request) Routes ---
 
-apRouter.get("/payment-batches", async (_req, res) => {
-    const list = await apService.listPaymentBatches();
+apRouter.get("/payment-batches", async (req, res) => {
+    const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+    const list = await apService.listPaymentBatches(entBusinessUnitId);
     res.json(list);
 });
 
@@ -411,7 +423,8 @@ apRouter.post("/payment-batches", async (req, res) => {
     const parse = insertApPaymentBatchSchema.safeParse(req.body);
     if (!parse.success) return res.status(400).json(parse.error);
     try {
-        const batch = await apService.createPaymentBatch(parse.data as any);
+        const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+        const batch = await apService.createPaymentBatch({ ...parse.data as any, ...(entBusinessUnitId ? { entBusinessUnitId } : {}) });
         res.status(201).json(batch);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -472,7 +485,8 @@ apRouter.get("/reports/audit-trail", async (req, res) => {
 
 apRouter.get("/reports/aging", async (_req, res) => {
     try {
-        const aging = await apService.getAgingReport();
+        const entBusinessUnitId = _req.headers["x-business-unit-id"] as string | undefined;
+        const aging = await apService.getAgingReport(entBusinessUnitId);
         res.json(aging);
     } catch (e: any) {
         res.status(500).json({ error: e.message });
@@ -481,6 +495,11 @@ apRouter.get("/reports/aging", async (_req, res) => {
 
 apRouter.get("/reports/1099", async (_req, res) => {
     try {
+        const entBusinessUnitId = _req.headers["x-business-unit-id"] as string | undefined;
+        const buCondition = entBusinessUnitId
+            ? eq(apInvoices.entBusinessUnitId, entBusinessUnitId)
+            : undefined;
+
         const list = await db.select({
             supplierId: apSuppliers.id,
             supplierNumber: apSuppliers.supplierNumber,
@@ -494,7 +513,8 @@ apRouter.get("/reports/1099", async (_req, res) => {
             .where(and(
                 eq(apInvoices.paymentStatus, 'PAID'),
                 sql`${apSuppliers.taxId} IS NOT NULL`,
-                sql`${apSuppliers.taxOrganizationType} != 'Corporation'`
+                sql`${apSuppliers.taxOrganizationType} != 'Corporation'`,
+                ...(buCondition ? [buCondition] : [])
             ))
             .groupBy(apSuppliers.id)
             .orderBy(sql`SUM(${apInvoices.invoiceAmount}) DESC`);

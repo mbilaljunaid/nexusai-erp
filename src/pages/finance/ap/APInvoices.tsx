@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { Badge } from "@/components/ui/badge";
-import { Plus, FileText, CheckCircle, Lock, Unlock, AlertCircle, Paperclip, Upload, Eye } from "lucide-react";
+import { Plus, FileText, CheckCircle, Lock, Unlock, AlertCircle, Paperclip, Upload, Eye, Building2 } from "lucide-react";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -16,9 +16,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/useAuth";
 
+function useActiveBu() {
+  return useMemo(() => ({
+    id: localStorage.getItem("nexus_active_bu") || null,
+    name: localStorage.getItem("nexus_active_bu_name") || localStorage.getItem("nexus_active_bu") || "All Business Units"
+  }), []);
+}
+
 export default function APInvoices() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
+  const activeBu = useActiveBu();
   const [page, setPage] = useState(1);
   const pageSize = 20;
   const [statusFilter, setStatusFilter] = useState("all");
@@ -311,6 +319,17 @@ export default function APInvoices() {
       }
     >
       <div className="space-y-6">
+        {/* BU Context Banner */}
+        <div className="flex items-center gap-2 px-1">
+          <Building2 className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">Active BU:</span>
+          <Badge variant="secondary" className="font-mono text-xs">
+            {activeBu.id ? activeBu.name : "All Business Units"}
+          </Badge>
+          {!activeBu.id && (
+            <span className="text-xs text-amber-600">(No BU selected — showing all data)</span>
+          )}
+        </div>
 
         {/* Enterprise KPI Infolets */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

@@ -57,6 +57,43 @@ export default function DunningConfigManager() {
         },
     });
 
+    const saveMutation = useMutation({
+        mutationFn: async (data: typeof templateForm) => {
+            const res = await fetch("/api/billing/dunning/templates", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: data.name,
+                    subject: data.subject,
+                    content: data.content,
+                    severity: data.severity,
+                    daysOverdueMin: data.daysOverdueMin ? Number(data.daysOverdueMin) : 0,
+                    daysOverdueMax: data.daysOverdueMax ? Number(data.daysOverdueMax) : 1000,
+                }),
+            });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({ message: res.statusText }));
+                throw new Error(err.message || "Failed to save template");
+            }
+            return res.json();
+        },
+        onSuccess: (saved) => {
+            toast({
+                title: "Template Saved",
+                description: `Dunning template "${saved.name}" created successfully`,
+            });
+            setTemplateForm({ name: "", severity: "", subject: "", content: "", daysOverdueMin: "", daysOverdueMax: "" });
+            queryClient.invalidateQueries({ queryKey: ["dunning-templates"] });
+        },
+        onError: (error: Error) => {
+            toast({
+                title: "Save Failed",
+                description: error.message,
+                variant: "destructive",
+            });
+        },
+    });
+
     const handleSaveTemplate = () => {
         // Validate form
         if (!templateForm.name || !templateForm.severity || !templateForm.subject || !templateForm.content) {
@@ -67,25 +104,7 @@ export default function DunningConfigManager() {
             });
             return;
         }
-
-        // TODO: Connect to POST /api/ar/dunning/templates when backend endpoint exists
-        toast({
-            title: "Template Saved",
-            description: `Dunning template "${templateForm.name}" has been created successfully`,
-        });
-
-        // Reset form
-        setTemplateForm({
-            name: "",
-            severity: "",
-            subject: "",
-            content: "",
-            daysOverdueMin: "",
-            daysOverdueMax: "",
-        });
-
-        // Refresh templates
-        queryClient.invalidateQueries({ queryKey: ["dunning-templates"] });
+        saveMutation.mutate(templateForm);
     };
 
     const handlePreview = () => {
@@ -304,9 +323,9 @@ export default function DunningConfigManager() {
                                 <Mail className="mr-2 h-4 w-4" />
                                 Preview Template
                             </Button>
-                            <Button onClick={handleSaveTemplate}>
+                            <Button onClick={handleSaveTemplate} disabled={saveMutation.isPending}>
                                 <Plus className="mr-2 h-4 w-4" />
-                                Save Template
+                                {saveMutation.isPending ? "Saving..." : "Save Template"}
                             </Button>
                         </div>
                     </div>

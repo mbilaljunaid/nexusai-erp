@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,14 +9,23 @@ import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { Plus, Trash2, Save, ArrowLeft, Calculator, Network } from "lucide-react";
+import { Plus, Trash2, Save, ArrowLeft, Calculator, Network, Building2 } from "lucide-react";
 import { APInvoiceDistributions } from "./APInvoiceDistributions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+
+function useActiveBu() {
+    return useMemo(() => ({
+        id: localStorage.getItem("nexus_active_bu") || null,
+        name: localStorage.getItem("nexus_active_bu_name") || localStorage.getItem("nexus_active_bu") || "All Business Units"
+    }), []);
+}
 
 export default function APInvoiceEntry() {
     const [, setLocation] = useLocation();
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const activeBu = useActiveBu();
 
     const [advancedOptionsOpen, setAdvancedOptionsOpen] = useState(false);
     const [selectedLineForDistributions, setSelectedLineForDistributions] = useState<number | null>(null);
@@ -39,7 +48,7 @@ export default function APInvoiceEntry() {
         payGroupId: "",
         description: "",
         paymentTerms: "Net 30",
-        businessUnitId: "",
+        businessUnitId: activeBu.id || "",
         transactionDate: new Date().toISOString().split("T")[0],
         termsDate: new Date().toISOString().split("T")[0],
         controlAmount: ""
@@ -235,6 +244,17 @@ export default function APInvoiceEntry() {
                 </div>
             }
         >
+            {/* BU Context Banner */}
+            <div className="flex items-center gap-2 px-1 mb-4">
+                <Building2 className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Creating invoice under BU:</span>
+                <Badge variant="secondary" className="font-mono text-xs">
+                    {header.businessUnitId || "Not Selected"}
+                </Badge>
+                {!activeBu.id && (
+                    <span className="text-xs text-amber-600">(No global BU active — select below)</span>
+                )}
+            </div>
             <div className="grid gap-6">
                 <Card>
                     <CardHeader>

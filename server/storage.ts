@@ -277,13 +277,13 @@ export interface IStorage {
   deleteArRevenueSchedule(id: string): Promise<boolean>;
 
   // Cash Management
-  listCashBankAccounts(entLegalEntityId?: string): Promise<CashBankAccount[]>;
+  listCashBankAccounts(entLegalEntityId?: string, entBusinessUnitId?: string): Promise<CashBankAccount[]>;
   getCashBankAccount(id: string): Promise<CashBankAccount | undefined>;
   createCashBankAccount(data: InsertCashBankAccount): Promise<CashBankAccount>;
   updateCashBankAccount(id: string, data: Partial<InsertCashBankAccount>): Promise<CashBankAccount | undefined>;
   deleteCashBankAccount(id: string): Promise<boolean>;
 
-  listCashStatementLines(bankAccountId: string): Promise<CashStatementLine[]>;
+  listCashStatementLines(bankAccountId: string, limit?: number, offset?: number, entBusinessUnitId?: string, entLegalEntityId?: string): Promise<CashStatementLine[]>;
   createCashStatementLine(data: InsertCashStatementLine): Promise<CashStatementLine>;
   updateCashStatementLine(id: string, data: Partial<InsertCashStatementLine>): Promise<CashStatementLine>;
 
@@ -292,7 +292,7 @@ export interface IStorage {
   createCashStatementHeader(data: InsertCashStatementHeader): Promise<CashStatementHeader>;
   updateCashStatementHeader(id: string, data: Partial<InsertCashStatementHeader>): Promise<CashStatementHeader>;
 
-  listCashTransactions(bankAccountId: string): Promise<CashTransaction[]>;
+  listCashTransactions(bankAccountId: string, limit?: number, offset?: number, entBusinessUnitId?: string, entLegalEntityId?: string): Promise<CashTransaction[]>;
   createCashTransaction(data: InsertCashTransaction): Promise<CashTransaction>;
   updateCashTransaction(id: string, data: Partial<InsertCashTransaction>): Promise<CashTransaction>;
 
@@ -1221,13 +1221,33 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Enterprise Invoice Methods
-  async listApInvoices(limit?: number, offset?: number, status?: string, validationStatus?: string): Promise<any[]> {
+  async listApInvoices(options?: {
+    limit?: number;
+    offset?: number;
+    status?: string;
+    validationStatus?: string;
+    entBusinessUnitId?: string;
+    filters?: Record<string, any>;
+  }): Promise<any[]> {
+    const { limit, offset, status, validationStatus, entBusinessUnitId, filters } = options || {};
     const conditions = [];
+
     if (status && status !== "all") {
       conditions.push(sql`lower(${apInvoices.invoiceStatus}) = lower(${status})`);
     }
     if (validationStatus && validationStatus !== "all") {
       conditions.push(sql`lower(${apInvoices.validationStatus}) = lower(${validationStatus})`);
+    }
+    // Enterprise BU scoping — only show invoices for the active BU
+    if (entBusinessUnitId) {
+      conditions.push(eq(apInvoices.entBusinessUnitId, entBusinessUnitId));
+    }
+    // Optional per-field filters from the route query string
+    if (filters?.supplierId) {
+      conditions.push(eq(apInvoices.supplierId, filters.supplierId));
+    }
+    if (filters?.invoiceNumber) {
+      conditions.push(sql`lower(${apInvoices.invoiceNumber}) LIKE lower(${'%' + filters.invoiceNumber + '%'})`);
     }
 
     let query = db.select({

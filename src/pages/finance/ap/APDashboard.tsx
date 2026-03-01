@@ -5,9 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
     FileText, Upload, CreditCard, Users, AlertCircle,
-    CheckCircle, Clock, DollarSign, TrendingUp, Settings, Calendar
+    CheckCircle, Clock, DollarSign, TrendingUp, Settings, Calendar, Building2
 } from "lucide-react";
 import { useLocation } from "wouter";
+import { useMemo } from "react";
+
+// -- BU Context Hook (reads from localStorage, set by BU switcher) --
+function useActiveBu() {
+    return useMemo(() => ({
+        id: localStorage.getItem("nexus_active_bu") || null,
+        name: localStorage.getItem("nexus_active_bu_name") || localStorage.getItem("nexus_active_bu") || "All Business Units"
+    }), []);
+}
 
 interface APMetrics {
     openInvoices: number;
@@ -20,6 +29,7 @@ interface APMetrics {
 
 export default function APDashboard() {
     const [, setLocation] = useLocation();
+    const activeBu = useActiveBu();
 
     const { data: metrics, isLoading } = useQuery<APMetrics>({
         queryKey: ["/api/ap/dashboard-metrics"],
@@ -128,6 +138,17 @@ export default function APDashboard() {
             breadcrumbs={[{ label: "Finance", href: "/finance" }, { label: "AP" }]}
         >
             <div className="space-y-6">
+                {/* BU Context Banner */}
+                <div className="flex items-center gap-2 px-1">
+                    <Building2 className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">Viewing data for:</span>
+                    <Badge variant="secondary" className="font-mono text-xs">
+                        {activeBu.id ? activeBu.name : "All Business Units"}
+                    </Badge>
+                    {!activeBu.id && (
+                        <span className="text-xs text-amber-600">(No BU selected — showing all data)</span>
+                    )}
+                </div>
                 {/* Metrics */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <Card>

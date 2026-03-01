@@ -1292,6 +1292,7 @@ export const dbStorage = {
   },
 
   // ========== AR CUSTOMER ACCOUNTS ==========
+
   async listArCustomerAccounts(customerId?: string): Promise<ArCustomerAccount[]> {
     if (customerId) {
       return await db.select().from(arCustomerAccountsTable).where(eq(arCustomerAccountsTable.customerId, customerId));
@@ -1604,8 +1605,18 @@ export const dbStorage = {
   },
 
   // Lines
-  async listCashStatementLines(bankAccountId: string): Promise<CashStatementLine[]> {
-    return await db.select().from(cashStatementLinesTable).where(eq(cashStatementLinesTable.bankAccountId, bankAccountId)).orderBy(desc(cashStatementLinesTable.transactionDate));
+  async listCashStatementLines(bankAccountId: string, limit?: number, offset?: number, entBusinessUnitId?: string, entLegalEntityId?: string): Promise<CashStatementLine[]> {
+    let query = db.select().from(cashStatementLinesTable).where(eq(cashStatementLinesTable.bankAccountId, bankAccountId));
+    if (entLegalEntityId) {
+      query = query.where(eq(cashStatementLinesTable.entLegalEntityId, entLegalEntityId)) as any;
+    }
+    if (entBusinessUnitId) {
+      query = query.where(eq(cashStatementLinesTable.entBusinessUnitId, entBusinessUnitId)) as any;
+    }
+    query = query.orderBy(desc(cashStatementLinesTable.transactionDate)) as any;
+    if (limit !== undefined) query = query.limit(limit) as any;
+    if (offset !== undefined) query = query.offset(offset) as any;
+    return await query;
   },
   async createCashStatementLine(data: InsertCashStatementLine): Promise<CashStatementLine> {
     const [line] = await db.insert(cashStatementLinesTable).values(data).returning();
@@ -1613,8 +1624,18 @@ export const dbStorage = {
   },
 
   // Transactions
-  async listCashTransactions(bankAccountId: string): Promise<CashTransaction[]> {
-    return await db.select().from(cashTransactionsTable).where(eq(cashTransactionsTable.bankAccountId, bankAccountId)).orderBy(desc(cashTransactionsTable.transactionDate));
+  async listCashTransactions(bankAccountId: string, limit?: number, offset?: number, entBusinessUnitId?: string, entLegalEntityId?: string): Promise<CashTransaction[]> {
+    let query = db.select().from(cashTransactionsTable).where(eq(cashTransactionsTable.bankAccountId, bankAccountId));
+    if (entLegalEntityId) {
+      query = query.where(eq(cashTransactionsTable.entLegalEntityId, entLegalEntityId)) as any;
+    }
+    if (entBusinessUnitId) {
+      query = query.where(eq(cashTransactionsTable.entBusinessUnitId, entBusinessUnitId)) as any;
+    }
+    query = query.orderBy(desc(cashTransactionsTable.transactionDate)) as any;
+    if (limit !== undefined) query = query.limit(limit) as any;
+    if (offset !== undefined) query = query.offset(offset) as any;
+    return await query;
   },
   async createCashTransaction(data: InsertCashTransaction): Promise<CashTransaction> {
     const [txn] = await db.insert(cashTransactionsTable).values(data).returning();

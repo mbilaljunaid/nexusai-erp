@@ -35,11 +35,6 @@ export default function ARInvoiceDetail() {
     const { data: invoiceData, isLoading } = useQuery<any>({
         queryKey: [`/api/ar/invoices/${invoiceId}`],
         enabled: !!invoiceId,
-        queryFn: async () => {
-            const res = await fetch(`/api/ar/invoices/${invoiceId}`);
-            if (!res.ok) throw new Error("Failed to fetch invoice");
-            return res.json();
-        }
     });
 
     const approveMutation = useMutation({
@@ -60,12 +55,7 @@ export default function ARInvoiceDetail() {
 
     const createCreditMutation = useMutation({
         mutationFn: async (data: z.infer<typeof salesCreditSchema>) => {
-            const res = await fetch("/api/ar/sales-credits", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...data, invoiceLineId: selectedLineId })
-            });
-            if (!res.ok) throw new Error("Failed to add sales credit");
+            const res = await apiRequest("POST", "/api/ar/sales-credits", { ...data, invoiceLineId: selectedLineId });
             return res.json();
         },
         onSuccess: () => {

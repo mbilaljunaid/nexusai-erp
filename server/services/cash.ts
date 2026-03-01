@@ -53,9 +53,9 @@ export class CashService {
         return updated;
     }
 
-    async listBankAccounts(userId?: string, entLegalEntityId?: string) {
+    async listBankAccounts(userId?: string, entLegalEntityId?: string, entBusinessUnitId?: string) {
         if (!userId) {
-            return await storage.listCashBankAccounts(entLegalEntityId);
+            return await storage.listCashBankAccounts(entLegalEntityId, entBusinessUnitId);
         }
 
         // Security: Filter by Data Access Set
@@ -152,8 +152,8 @@ export class CashService {
         }
     }
 
-    async getCashPosition() {
-        const accounts = await this.listBankAccounts();
+    async getCashPosition(entLegalEntityId?: string, entBusinessUnitId?: string) {
+        const accounts = await this.listBankAccounts(undefined, entLegalEntityId, entBusinessUnitId); // Hacky as listBankAccounts signature is (userId, entLegalEntityId)
         let totalBalance = 0;
         let totalIntradayBalance = 0;
         let totalUnreconciledAmount = 0;
@@ -164,7 +164,7 @@ export class CashService {
             const balance = Number(account.currentBalance);
             totalBalance += balance;
 
-            const statementLines = await storage.listCashStatementLines(account.id);
+            const statementLines = await storage.listCashStatementLines(account.id, undefined, undefined, entBusinessUnitId, entLegalEntityId);
             const unreconciled = statementLines.filter(l => !l.reconciled);
             const unreconciledAmount = unreconciled.reduce((sum, l) => sum + Number(l.amount), 0);
 

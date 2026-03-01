@@ -258,6 +258,9 @@ export const apPaymentBatches = pgTable("ap_payment_batches", {
     // Disbursement Bank
     bankAccountId: varchar("bank_account_id"),
 
+    // Enterprise BU Scoping
+    entBusinessUnitId: varchar("ent_business_unit_id"), // Enterprise Scoping Key
+
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow()
 });
