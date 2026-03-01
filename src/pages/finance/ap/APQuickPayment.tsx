@@ -32,7 +32,6 @@ export default function APQuickPayment() {
     // Lookups
     const { data: bankAccounts = [] } = useQuery({
         queryKey: ["/api/cash/accounts"],
-        queryFn: () => fetch("/api/cash/accounts").then(r => r.json())
     });
 
     const { data: suppliers = [] } = useQuery({

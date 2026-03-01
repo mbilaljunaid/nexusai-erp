@@ -23,12 +23,12 @@ export interface CreateInvoicePayload {
 }
 
 export class ApService {
-    async listInvoices(limit?: number, offset?: number, status?: string, validationStatus?: string) {
-        return storage.listApInvoices(limit, offset, status, validationStatus);
+    async listInvoices(limit?: number, offset?: number, status?: string, validationStatus?: string, entBusinessUnitId?: string) {
+        return storage.listApInvoices({ limit, offset, status, validationStatus, entBusinessUnitId });
     }
 
-    async getInvoicesCount(): Promise<number> {
-        return storage.getApInvoicesCount();
+    async getInvoicesCount(entBusinessUnitId?: string): Promise<number> {
+        return storage.getApInvoicesCount(entBusinessUnitId);
     }
 
     // Placeholder for seed (can be reimplemented fully later)
@@ -622,11 +622,16 @@ export class ApService {
 
         return { success: true, message: "Payment batch submitted for processing. Check status shortly." };
     }
-    async getBatchPayments(batchId: string) {
-        return await db.select()
+    async getBatchPayments(batchId: string, entBusinessUnitId?: string) {
+        let query = db.select()
             .from(apPayments)
-            .where(eq(apPayments.batchId, batchId))
-            .orderBy(desc(apPayments.paymentDate));
+            .where(eq(apPayments.batchId, batchId));
+
+        if (entBusinessUnitId) {
+            query = query.where(and(eq(apPayments.batchId, batchId), eq(apPayments.entBusinessUnitId, entBusinessUnitId))) as any;
+        }
+
+        return await query.orderBy(desc(apPayments.paymentDate));
     }
 
     // --- Audit Trail ---

@@ -5,7 +5,7 @@
 
 import { db } from "./db";
 // duplicate import removed
-import { eq, and, sql, desc } from "drizzle-orm";
+import { eq, and, sql, desc, count } from "drizzle-orm";
 import {
   invoices as invoicesTable,
   leads as leadsTable,
@@ -1031,6 +1031,7 @@ export const dbStorage = {
     offset?: number;
     status?: string | "all";
     validationStatus?: string | "all";
+    entBusinessUnitId?: string;
     filters?: Record<string, any>;
   }): Promise<any[]> {
     const conditions = [];
@@ -1039,6 +1040,9 @@ export const dbStorage = {
     }
     if (options?.validationStatus && options.validationStatus !== "all") {
       conditions.push(sql`lower(${apInvoicesTable.validationStatus}) = lower(${options.validationStatus})`);
+    }
+    if (options?.entBusinessUnitId) {
+      conditions.push(eq(apInvoicesTable.entBusinessUnitId, options.entBusinessUnitId));
     }
 
     if (options?.filters) {
@@ -1087,6 +1091,14 @@ export const dbStorage = {
     const results = await query;
     return results.map(r => ({ ...r.invoice, supplier: r.supplier }));
   },
+  async getApInvoicesCount(entBusinessUnitId?: string): Promise<number> {
+    let query = db.select({ count: count() }).from(apInvoicesTable);
+    if (entBusinessUnitId) {
+      query = query.where(eq(apInvoicesTable.entBusinessUnitId, entBusinessUnitId)) as any;
+    }
+    const [res] = await query;
+    return res.count;
+  },
   async getApInvoice(id: string): Promise<ApInvoice | undefined> {
     const result = await db.select().from(apInvoicesTable).where(eq(apInvoicesTable.id, id)).limit(1);
     return result[0];
@@ -1104,7 +1116,10 @@ export const dbStorage = {
     return result.length > 0;
   },
 
-  async listApPayments(): Promise<ApPayment[]> {
+  async listApPayments(options?: { entBusinessUnitId?: string }): Promise<ApPayment[]> {
+    if (options?.entBusinessUnitId) {
+      return await db.select().from(apPaymentsTable).where(eq(apPaymentsTable.entBusinessUnitId, options.entBusinessUnitId));
+    }
     return await db.select().from(apPaymentsTable);
   },
   async getApPayment(id: string): Promise<ApPayment | undefined> {
@@ -1187,8 +1202,23 @@ export const dbStorage = {
 
   // ========== ACCOUNTS RECEIVABLE ==========
 
-  async listArInvoices(): Promise<ArInvoice[]> {
-    return await db.select().from(arInvoicesTable);
+  async listArInvoices(limit?: number, offset?: number, entBusinessUnitId?: string): Promise<ArInvoice[]> {
+    let query = db.select().from(arInvoicesTable);
+    if (entBusinessUnitId) {
+      query = query.where(eq(arInvoicesTable.entBusinessUnitId, entBusinessUnitId)) as any;
+    }
+    query = query.orderBy(desc(arInvoicesTable.createdAt)) as any;
+    if (limit !== undefined) query = query.limit(limit) as any;
+    if (offset !== undefined) query = query.offset(offset) as any;
+    return await query;
+  },
+  async getArInvoicesCount(entBusinessUnitId?: string): Promise<number> {
+    let query = db.select({ count: count() }).from(arInvoicesTable);
+    if (entBusinessUnitId) {
+      query = query.where(eq(arInvoicesTable.entBusinessUnitId, entBusinessUnitId)) as any;
+    }
+    const [res] = await query;
+    return res.count;
   },
   async getArInvoice(id: string): Promise<ArInvoice | undefined> {
     const result = await db.select().from(arInvoicesTable).where(eq(arInvoicesTable.id, id)).limit(1);
@@ -1219,8 +1249,13 @@ export const dbStorage = {
     return result[0];
   },
 
-  async listArReceipts(): Promise<ArReceipt[]> {
-    return await db.select().from(arReceiptsTable);
+  async listArReceipts(entBusinessUnitId?: string): Promise<ArReceipt[]> {
+    let query = db.select().from(arReceiptsTable);
+    if (entBusinessUnitId) {
+      query = query.where(eq(arReceiptsTable.entBusinessUnitId, entBusinessUnitId)) as any;
+    }
+    query = query.orderBy(desc(arReceiptsTable.createdAt)) as any;
+    return await query;
   },
   async getArReceipt(id: string): Promise<ArReceipt | undefined> {
     const result = await db.select().from(arReceiptsTable).where(eq(arReceiptsTable.id, id)).limit(1);
@@ -1531,8 +1566,12 @@ export const dbStorage = {
   },
 
   // ========== CASH MANAGEMENT (CHUNK 4 & 5) ==========
-  async listCashBankAccounts(): Promise<CashBankAccount[]> {
-    return await db.select().from(cashBankAccountsTable);
+  async listCashBankAccounts(entLegalEntityId?: string): Promise<CashBankAccount[]> {
+    let query = db.select().from(cashBankAccountsTable);
+    if (entLegalEntityId) {
+      query = query.where(eq(cashBankAccountsTable.entLegalEntityId, entLegalEntityId)) as any;
+    }
+    return await query;
   },
   async getCashBankAccount(id: string): Promise<CashBankAccount | undefined> {
     const [account] = await db.select().from(cashBankAccountsTable).where(eq(cashBankAccountsTable.id, id));

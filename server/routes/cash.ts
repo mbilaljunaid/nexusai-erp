@@ -18,7 +18,8 @@ const router = Router();
 router.get("/accounts", async (req, res) => {
     try {
         const userId = req.headers['x-user-id'] as string;
-        const accounts = await cashService.listBankAccounts(userId);
+        const entLegalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
+        const accounts = await cashService.listBankAccounts(userId, entLegalEntityId);
         res.json(accounts);
     } catch (error) {
         res.status(500).json({ message: "Failed to list bank accounts" });

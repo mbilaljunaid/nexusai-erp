@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import { Banknote, Plus, CheckCircle, FileText, Settings, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -40,24 +41,12 @@ export default function TreasuryBankAccounts() {
 
     const { data: accounts, isLoading } = useQuery<BankAccount[]>({
         queryKey: ["/api/cash/accounts"],
-        queryFn: async () => {
-            const res = await fetch("/api/cash/accounts", {
-                headers: { "x-user-id": "1" }
-            });
-            if (!res.ok) throw new Error("Failed to fetch bank accounts");
-            return res.json();
-        }
     });
 
     const createMutation = useMutation({
         mutationFn: async (data: typeof newAccount) => {
             const payload = { ...data, name: data.bankName };
-            const res = await fetch("/api/cash/accounts", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
-            if (!res.ok) throw new Error("Failed to create bank account");
+            const res = await apiRequest("POST", "/api/cash/accounts", payload);
             return res.json();
         },
         onSuccess: () => {

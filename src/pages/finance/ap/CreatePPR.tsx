@@ -43,7 +43,6 @@ export default function CreatePPR() {
 
     const { data: bankAccounts = [] } = useQuery({
         queryKey: ["/api/cash/accounts"],
-        queryFn: () => fetch("/api/cash/accounts").then(r => r.json())
     });
 
     const { data: eligibleInvoices, isLoading: loadingInvoices } = useQuery({

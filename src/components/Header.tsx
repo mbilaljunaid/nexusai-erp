@@ -6,6 +6,7 @@ import { WhatsNew } from "@/components/WhatsNew";
 import { NotificationCenter as NotificationCenterWidget } from "@/components/NotificationCenter";
 import { TipsToggle } from "@/components/QuickTips";
 import { LedgerSelector } from "@/components/LedgerSelector";
+import { EnterpriseContextSwitcher } from "@/components/EnterpriseContextSwitcher";
 
 export function Header() {
     return (
@@ -16,6 +17,7 @@ export function Header() {
             </div>
 
             <div className="flex items-center gap-1">
+                <EnterpriseContextSwitcher />
                 <LedgerSelector />
                 <NotificationCenterWidget />
                 <WhatsNew />

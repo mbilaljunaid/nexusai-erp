@@ -53,9 +53,9 @@ export class CashService {
         return updated;
     }
 
-    async listBankAccounts(userId?: string) {
+    async listBankAccounts(userId?: string, entLegalEntityId?: string) {
         if (!userId) {
-            return await storage.listCashBankAccounts();
+            return await storage.listCashBankAccounts(entLegalEntityId);
         }
 
         // Security: Filter by Data Access Set
@@ -73,10 +73,12 @@ export class CashService {
             return [];
         }
 
-        return await db
-            .select()
-            .from(cashBankAccounts)
-            .where(inArray(cashBankAccounts.ledgerId, allowedLedgers));
+        let query = db.select().from(cashBankAccounts).where(inArray(cashBankAccounts.ledgerId, allowedLedgers));
+        if (entLegalEntityId) {
+            query = query.where(eq(cashBankAccounts.entLegalEntityId, entLegalEntityId)) as any;
+        }
+
+        return await query;
     }
 
     async getBankAccount(id: string) {

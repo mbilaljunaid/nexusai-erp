@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,7 +27,7 @@ export default function APPrepayments() {
         queryKey: ["/api/ap/prepayments"],
         queryFn: async () => {
             // Fetch all invoices and filter for prepayments
-            const response = await fetch("/api/ap/invoices");
+            const response = await apiRequest("GET", "/api/ap/invoices");
             const data = await response.json();
             return data.data?.filter((inv: any) =>
                 inv.invoiceType === "PREPAYMENT" &&
@@ -38,7 +39,7 @@ export default function APPrepayments() {
     const { data: standardInvoices } = useQuery({
         queryKey: ["/api/ap/invoices", "standard"],
         queryFn: async () => {
-            const response = await fetch("/api/ap/invoices");
+            const response = await apiRequest("GET", "/api/ap/invoices");
             const data = await response.json();
             return data.data?.filter((inv: any) =>
                 inv.invoiceType !== "PREPAYMENT" &&

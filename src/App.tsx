@@ -15,6 +15,7 @@ import { QuickTipsProvider } from "@/components/QuickTips";
 // AIChatWidget removed — consolidated into NexusAIPanel
 import { LedgerProvider } from "@/context/LedgerContext";
 import { NexusAIProvider } from "@/contexts/NexusAIContext";
+import { EnterpriseProvider } from "@/contexts/EnterpriseContext";
 import { NexusAIPanel } from "@/components/NexusAIPanel";
 import NotFound from "@/pages/not-found";
 import CrmRoutes from "@/routes/CrmRoutes";
@@ -345,9 +346,11 @@ export default function App() {
             <TooltipProvider>
               <TourProvider>
                 <QuickTipsProvider>
-                  <NexusAIProvider>
-                    <AppInner />
-                  </NexusAIProvider>
+                  <EnterpriseProvider>
+                    <NexusAIProvider>
+                      <AppInner />
+                    </NexusAIProvider>
+                  </EnterpriseProvider>
                 </QuickTipsProvider>
               </TourProvider>
             </TooltipProvider>

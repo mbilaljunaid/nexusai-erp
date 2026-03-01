@@ -81,6 +81,7 @@ export const apInvoices = pgTable("ap_invoices", {
 
     // Multi-Org
     businessUnitId: varchar("business_unit_id"),
+    entBusinessUnitId: varchar("ent_business_unit_id"), // Enterprise Scoping Key
     legalEntityId: varchar("legal_entity_id"),
 
     invoiceNumber: varchar("invoice_number", { length: 100 }).notNull(),
@@ -216,6 +217,24 @@ export const apInvoiceDistributions = pgTable("ap_invoice_distributions", {
 export const insertApInvoiceDistributionSchema = createInsertSchema(apInvoiceDistributions);
 export type ApInvoiceDistribution = typeof apInvoiceDistributions.$inferSelect;
 export type InsertApInvoiceDistribution = typeof apInvoiceDistributions.$inferInsert;
+// 4.5 Payment Schedules (For tracking installments)
+export const apPaymentSchedules = pgTable("ap_payment_schedules", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    invoiceId: varchar("invoice_id").notNull(),
+    paymentNumber: integer("payment_number").notNull().default(1),
+    dueDate: timestamp("due_date").notNull(),
+    amountDue: numeric("amount_due", { precision: 18, scale: 2 }).notNull(),
+    amountPaid: numeric("amount_paid", { precision: 18, scale: 2 }).default("0"),
+    paymentStatus: varchar("payment_status", { length: 50 }).default("UNPAID"), // UNPAID, PARTIAL, PAID
+    entBusinessUnitId: varchar("ent_business_unit_id"), // Enterprise Scoping Key
+    holdFlag: boolean("hold_flag").default(false),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const insertApPaymentScheduleSchema = createInsertSchema(apPaymentSchedules);
+export type ApPaymentSchedule = typeof apPaymentSchedules.$inferSelect;
+export type InsertApPaymentSchedule = typeof apPaymentSchedules.$inferInsert;
 
 // 5. Payment Batches (PPR - Payment Process Request)
 export const apPaymentBatches = pgTable("ap_payment_batches", {
@@ -261,6 +280,7 @@ export const apPayments = pgTable("ap_payments", {
 
     paymentMethodCode: varchar("payment_method_code", { length: 50 }).notNull(), // CHECK, WIRE, CLEARING
     supplierId: varchar("supplier_id").notNull(),
+    entBusinessUnitId: varchar("ent_business_unit_id"), // Enterprise Scoping Key
 
     status: varchar("status", { length: 50 }).default("NEGOTIABLE"), // NEGOTIABLE, CLEARED, VOIDED
     createdAt: timestamp("created_at").defaultNow()

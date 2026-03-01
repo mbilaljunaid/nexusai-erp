@@ -6,11 +6,24 @@ const DEFAULT_USER_ID = "user1";
 const DEFAULT_USER_ROLE = "admin";
 
 function getRBACHeaders() {
-  return {
+  const headers: Record<string, string> = {
     "x-tenant-id": DEFAULT_TENANT_ID,
     "x-user-id": DEFAULT_USER_ID,
     "x-user-role": DEFAULT_USER_ROLE,
   };
+
+  // Inject Enterprise Scoping Contexts
+  const activeBu = localStorage.getItem('nexus_active_bu');
+  const activeLe = localStorage.getItem('nexus_active_le');
+  const activeInvOrg = localStorage.getItem('nexus_active_inv_org');
+  const activeLedger = localStorage.getItem('nexus_active_ledger');
+
+  if (activeBu) headers["x-business-unit-id"] = activeBu;
+  if (activeLe) headers["x-legal-entity-id"] = activeLe;
+  if (activeInvOrg) headers["x-inventory-org-id"] = activeInvOrg;
+  if (activeLedger) headers["x-ledger-id"] = activeLedger;
+
+  return headers;
 }
 
 // ── Global Fetch Interceptor ──
@@ -22,8 +35,24 @@ const API_ERROR_THROTTLE_MS = 3000;
 
 const originalFetch = window.fetch;
 window.fetch = async function (input: RequestInfo | URL, init?: RequestInit) {
-  const response = await originalFetch.call(this, input, init);
   const url = typeof input === "string" ? input : input instanceof URL ? input.toString() : (input as Request).url;
+
+  // Create a copy of init to safely modify it
+  let fetchInit = init ? { ...init } : {};
+
+  if (url.startsWith("/api/")) {
+    const rbacHeaders = getRBACHeaders();
+    const headers = new Headers(fetchInit.headers);
+
+    for (const [key, value] of Object.entries(rbacHeaders)) {
+      if (!headers.has(key)) {
+        headers.set(key, value);
+      }
+    }
+    fetchInit.headers = headers;
+  }
+
+  const response = await originalFetch.call(this, input, fetchInit);
 
   if (url.startsWith("/api/")) {
     const now = Date.now();
@@ -90,36 +119,36 @@ export const getQueryFn: <T>(options: {
   on401: UnauthorizedBehavior;
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
-  async ({ queryKey }) => {
-    let url: string;
-    
-    if (queryKey.length === 1) {
-      url = queryKey[0] as string;
-    } else if (queryKey.length === 2 && typeof queryKey[1] === "object" && queryKey[1] !== null) {
-      url = buildQueryUrl(queryKey[0] as string, queryKey[1] as Record<string, any>);
-    } else {
-      const pathParts = queryKey.filter(part => typeof part === "string");
-      url = pathParts.join("/");
-    }
-    
-    const res = await fetch(url, {
-      headers: getRBACHeaders(),
-      credentials: "include",
-    });
+    async ({ queryKey }) => {
+      let url: string;
 
-    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-      return null;
-    }
+      if (queryKey.length === 1) {
+        url = queryKey[0] as string;
+      } else if (queryKey.length === 2 && typeof queryKey[1] === "object" && queryKey[1] !== null) {
+        url = buildQueryUrl(queryKey[0] as string, queryKey[1] as Record<string, any>);
+      } else {
+        const pathParts = queryKey.filter(part => typeof part === "string");
+        url = pathParts.join("/");
+      }
 
-    await throwIfResNotOk(res);
+      const res = await fetch(url, {
+        headers: getRBACHeaders(),
+        credentials: "include",
+      });
 
-    const contentType = res.headers.get("content-type");
-    if (contentType && !contentType.includes("application/json")) {
-      throw new Error(`Expected JSON response but received ${contentType}`);
-    }
+      if (unauthorizedBehavior === "returnNull" && res.status === 401) {
+        return null;
+      }
 
-    return await res.json();
-  };
+      await throwIfResNotOk(res);
+
+      const contentType = res.headers.get("content-type");
+      if (contentType && !contentType.includes("application/json")) {
+        throw new Error(`Expected JSON response but received ${contentType}`);
+      }
+
+      return await res.json();
+    };
 
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({

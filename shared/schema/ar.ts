@@ -127,7 +127,8 @@ export type ArCustomerContact = typeof arCustomerContacts.$inferSelect;
 // AR Invoices (Sales Invoices)
 export const arInvoices = pgTable("ar_invoices", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-    businessUnitId: varchar("business_unit_id"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
+    businessUnitId: varchar("business_unit_id"), // legacy BU id, might be used for other things
     customerId: varchar("customer_id").notNull(), // Party
     accountId: varchar("account_id"), // Linked Account (Oracle Parity)
     siteId: varchar("site_id"), // Bill-to Site (Oracle Parity)
@@ -237,6 +238,8 @@ export type ArInvoiceLine = typeof arInvoiceLines.$inferSelect;
 // AR Receipts (Incoming Payments)
 export const arReceipts = pgTable("ar_receipts", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
+    businessUnitId: varchar("business_unit_id"),
     customerId: varchar("customer_id"), // Optional for unidentified
     accountId: varchar("account_id"),
     amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
@@ -256,6 +259,7 @@ export const arReceipts = pgTable("ar_receipts", {
 });
 
 export const insertArReceiptSchema = createInsertSchema(arReceipts).extend({
+    businessUnitId: z.string().optional().nullable(),
     customerId: z.string().optional().nullable(),
     accountId: z.string().optional().nullable(),
     amount: z.string().min(1),

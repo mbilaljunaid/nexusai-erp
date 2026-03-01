@@ -418,12 +418,12 @@ export class ArService {
     }
 
     // Invoices
-    async listInvoices(limit?: number, offset?: number): Promise<ArInvoice[]> {
-        return await storage.listArInvoices(limit, offset);
+    async listInvoices(limit?: number, offset?: number, entBusinessUnitId?: string): Promise<ArInvoice[]> {
+        return await storage.listArInvoices(limit, offset, entBusinessUnitId);
     }
 
-    async getInvoicesCount(): Promise<number> {
-        return await storage.getArInvoicesCount();
+    async getInvoicesCount(entBusinessUnitId?: string): Promise<number> {
+        return await storage.getArInvoicesCount(entBusinessUnitId);
     }
 
     async createInvoice(data: InsertArInvoice): Promise<ArInvoice> {
@@ -735,8 +735,8 @@ export class ArService {
     }
 
     // Receipts
-    async listReceipts(): Promise<ArReceipt[]> {
-        return await storage.listArReceipts();
+    async listReceipts(entBusinessUnitId?: string): Promise<ArReceipt[]> {
+        return await storage.listArReceipts(entBusinessUnitId);
     }
 
     async createReceipt(data: InsertArReceipt): Promise<ArReceipt> {

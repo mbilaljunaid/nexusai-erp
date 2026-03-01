@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,31 +39,26 @@ export default function APAICaptureUpload() {
 
     const saveMutation = useMutation({
         mutationFn: async (data: any) => {
-            const response = await fetch("/api/ap/invoices", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    header: {
-                        supplierId: data.supplierId || "temp-supplier",
-                        invoiceNumber: data.invoiceNumber,
-                        invoiceDate: data.invoiceDate,
-                        dueDate: data.dueDate,
-                        invoiceAmount: data.totalAmount,
-                        currency: data.currency || "USD",
-                        invoiceStatus: "Draft",
-                        validationStatus: "Pending"
-                    },
-                    lines: data.lineItems?.map((item: any, idx: number) => ({
-                        lineNumber: idx + 1,
-                        description: item.description,
-                        quantity: item.quantity || 1,
-                        unitPrice: item.unitPrice,
-                        amount: item.amount
-                    })) || []
-                })
+            const response = await apiRequest("POST", "/api/ap/invoices", {
+                header: {
+                    supplierId: data.supplierId || "temp-supplier",
+                    invoiceNumber: data.invoiceNumber,
+                    invoiceDate: data.invoiceDate,
+                    dueDate: data.dueDate,
+                    invoiceAmount: data.totalAmount,
+                    currency: data.currency || "USD",
+                    invoiceStatus: "Draft",
+                    validationStatus: "Pending"
+                },
+                lines: data.lineItems?.map((item: any, idx: number) => ({
+                    lineNumber: idx + 1,
+                    description: item.description,
+                    quantity: item.quantity || 1,
+                    unitPrice: item.unitPrice,
+                    amount: item.amount
+                })) || []
             });
 
-            if (!response.ok) throw new Error("Save failed");
             return response.json();
         },
         onSuccess: () => {

@@ -8,6 +8,7 @@ import { z } from "zod";
 // Bank Accounts: Internal representation of bank accounts
 export const cashBankAccounts = pgTable("cash_bank_accounts", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
     name: varchar("name", { length: 255 }).notNull(),
     accountNumber: varchar("account_number", { length: 100 }).notNull(),
     bankName: varchar("bank_name", { length: 255 }).notNull(),
@@ -26,7 +27,9 @@ export const cashBankAccounts = pgTable("cash_bank_accounts", {
     updatedAt: timestamp("updated_at").default(sql`now()`)
 });
 
-export const insertCashBankAccountSchema = createInsertSchema(cashBankAccounts);
+export const insertCashBankAccountSchema = createInsertSchema(cashBankAccounts).extend({
+    entLegalEntityId: z.string().optional().nullable(),
+});
 export type CashBankAccount = typeof cashBankAccounts.$inferSelect;
 export type InsertCashBankAccount = z.infer<typeof insertCashBankAccountSchema>;
 

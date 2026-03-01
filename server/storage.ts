@@ -277,7 +277,7 @@ export interface IStorage {
   deleteArRevenueSchedule(id: string): Promise<boolean>;
 
   // Cash Management
-  listCashBankAccounts(): Promise<CashBankAccount[]>;
+  listCashBankAccounts(entLegalEntityId?: string): Promise<CashBankAccount[]>;
   getCashBankAccount(id: string): Promise<CashBankAccount | undefined>;
   createCashBankAccount(data: InsertCashBankAccount): Promise<CashBankAccount>;
   updateCashBankAccount(id: string, data: Partial<InsertCashBankAccount>): Promise<CashBankAccount | undefined>;
@@ -638,6 +638,15 @@ export interface IStorage {
   // Legacy Finance
   listInvoices(): Promise<Invoice[]>;
   getApInvoice(id: string): Promise<ApInvoice | undefined>;
+  getApInvoicesCount(entBusinessUnitId?: string): Promise<number>;
+  listApInvoices(options?: {
+    limit?: number;
+    offset?: number;
+    status?: string | "all";
+    validationStatus?: string | "all";
+    entBusinessUnitId?: string;
+    filters?: Record<string, any>;
+  }): Promise<any[]>;
 
   // Enterprise AP Interface
   createApInvoiceHeader(invoice: InsertApInvoice): Promise<ApInvoice>;
@@ -648,7 +657,7 @@ export interface IStorage {
   updateApInvoice(id: string, invoice: Partial<InsertApInvoice>): Promise<ApInvoice | undefined>;
   deleteApInvoice(id: string): Promise<boolean>;
 
-  listApPayments(): Promise<ApPayment[]>;
+  listApPayments(options?: { entBusinessUnitId?: string }): Promise<ApPayment[]>;
   getApPayment(id: string): Promise<ApPayment | undefined>;
   createApPayment(data: InsertApPayment): Promise<ApPayment>;
   updateApPayment(id: string, data: Partial<InsertApPayment>): Promise<ApPayment | undefined>;
@@ -710,8 +719,8 @@ export interface IStorage {
   updateArCustomerContact(id: string, data: Partial<InsertArCustomerContact>): Promise<ArCustomerContact | undefined>;
   deleteArCustomerContact(id: string): Promise<boolean>;
 
-  listArInvoices(limit?: number, offset?: number): Promise<ArInvoice[]>;
-  getArInvoicesCount(): Promise<number>;
+  listArInvoices(limit?: number, offset?: number, entBusinessUnitId?: string): Promise<ArInvoice[]>;
+  getArInvoicesCount(entBusinessUnitId?: string): Promise<number>;
   getArInvoice(id: string): Promise<ArInvoice | undefined>;
   createArInvoice(data: InsertArInvoice): Promise<ArInvoice>;
   createArPaymentSchedulesBulk(data: InsertArPaymentSchedule[]): Promise<ArPaymentSchedule[]>;
@@ -740,7 +749,7 @@ export interface IStorage {
   updateArSalesCredit(id: string, data: Partial<InsertArSalesCredit>): Promise<ArSalesCredit | undefined>;
   deleteArSalesCredit(id: string): Promise<boolean>;
 
-  listArReceipts(): Promise<ArReceipt[]>;
+  listArReceipts(entBusinessUnitId?: string): Promise<ArReceipt[]>;
   getArReceipt(id: string): Promise<ArReceipt | undefined>;
   createArReceipt(data: InsertArReceipt): Promise<ArReceipt>;
   updateArReceipt(id: string, r: Partial<InsertArReceipt>): Promise<ArReceipt | undefined>;
@@ -1247,8 +1256,12 @@ export class DatabaseStorage implements IStorage {
     return results.map(r => ({ ...r.invoice, supplier: r.supplier }));
   }
 
-  async getApInvoicesCount(): Promise<number> {
-    const [res] = await db.select({ count: count() }).from(apInvoices);
+  async getApInvoicesCount(entBusinessUnitId?: string): Promise<number> {
+    let query = db.select({ count: count() }).from(apInvoices);
+    if (entBusinessUnitId) {
+      query = query.where(eq(apInvoices.entBusinessUnitId, entBusinessUnitId)) as any;
+    }
+    const [res] = await query;
     return res.count;
   }
 
@@ -1693,8 +1706,12 @@ export class DatabaseStorage implements IStorage {
     return res;
   }
 
-  async listArInvoices(limit?: number, offset?: number) {
-    let query = db.select().from(arInvoices).orderBy(desc(arInvoices.createdAt));
+  async listArInvoices(limit?: number, offset?: number, entBusinessUnitId?: string) {
+    let query = db.select().from(arInvoices);
+    if (entBusinessUnitId) {
+      query = query.where(eq(arInvoices.businessUnitId, entBusinessUnitId)) as any;
+    }
+    query = query.orderBy(desc(arInvoices.createdAt)) as any;
     if (limit !== undefined) {
       // @ts-ignore
       query = query.limit(limit);
@@ -1706,8 +1723,12 @@ export class DatabaseStorage implements IStorage {
     return await query;
   }
 
-  async getArInvoicesCount(): Promise<number> {
-    const [res] = await db.select({ count: count() }).from(arInvoices);
+  async getArInvoicesCount(entBusinessUnitId?: string): Promise<number> {
+    let query = db.select({ count: count() }).from(arInvoices);
+    if (entBusinessUnitId) {
+      query = query.where(eq(arInvoices.businessUnitId, entBusinessUnitId)) as any;
+    }
+    const [res] = await query;
     return res.count;
   }
   async getArInvoice(id: string) {
@@ -1738,8 +1759,12 @@ export class DatabaseStorage implements IStorage {
     return res;
   }
 
-  async listArReceipts() {
-    return await db.select().from(arReceipts);
+  async listArReceipts(entBusinessUnitId?: string) {
+    let query = db.select().from(arReceipts);
+    if (entBusinessUnitId) {
+      query = query.where(eq(arReceipts.businessUnitId, entBusinessUnitId)) as any;
+    }
+    return await query;
   }
   async getArReceipt(id: string) {
     const [res] = await db.select().from(arReceipts).where(eq(arReceipts.id, id));
@@ -1913,8 +1938,12 @@ export class DatabaseStorage implements IStorage {
 
 
   // Cash Management Implementation (DB-Backed)
-  async listCashBankAccounts() {
-    return await db.select().from(cashBankAccounts);
+  async listCashBankAccounts(entLegalEntityId?: string) {
+    let query = db.select().from(cashBankAccounts);
+    if (entLegalEntityId) {
+      query = query.where(eq(cashBankAccounts.entLegalEntityId, entLegalEntityId)) as any;
+    }
+    return await query;
   }
   async getCashBankAccount(id: string) {
     const [acc] = await db.select().from(cashBankAccounts).where(eq(cashBankAccounts.id, id));

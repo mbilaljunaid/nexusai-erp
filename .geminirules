@@ -1,0 +1,34 @@
+# 🏢 ENTERPRISE DATA ARCHITECTURE & SCOPING POLICY
+enterprise_structure_scoping:
+  enforcement_level: HARD_FAIL
+  description: "All new schemas, UI components, and API routes must conform to Oracle-style enterprise boundaries in addition to standard multi-tenancy."
+
+  fundamental_rule:
+    - "Tenant ID (tenant_id) is the absolute supreme boundary. Cross-tenant access is STRICTLY FORBIDDEN at all layers."
+    - "All enterprise elements (Ledgers, LEs, BUs, Inv Orgs, SetIDs) exist strictly WITHIN a single Tenant."
+
+  scoping_requirements:
+    general_ledger (GL):
+      scope: "Ledger ID"
+      description: "Applies to journals, balances, and financial reporting."
+    human_resources_and_payroll (HR_HCM):
+      scope: "Legal Entity ID"
+      description: "Workers, assignments, payroll runs, and tax reporting belong to a Legal Entity (NOT PSU or Legal Employer)."
+      schema_column: "ent_legal_entity_id"
+    financial_subledgers (AP_AR_PO_OM):
+      scope: "Business Unit ID (BU)"
+      description: "Applies to AP Invoices, AR Receipts, Purchase Orders, Sales Orders, and Expenses. A BU processes transactions and posts to a Ledger."
+      schema_column: "ent_business_unit_id"
+    supply_chain_and_manufacturing (INV_WMS_MFG):
+      scope: "Inventory Organization ID"
+      description: "Applies to physical material, on-hand balances, warehouses, work orders, and quality plans."
+      schema_column: "ent_inventory_org_id"
+    master_data (MDM):
+      scope: "Reference Data Set ID (SetID)"
+      description: "Applies to shared data like Customers, Suppliers, and Global PIM items shared across BUs."
+      schema_column: "ent_set_id"
+
+  ai_development_rules:
+    - "When generating Drizzle schemas for transactional data, ALWAYS include the appropriate scoping column (e.g., ent_business_unit_id)."
+    - "When generating API routes, ALWAYS enforce both the tenantId AND the active organizational context (BU, LE, or Inv Org)."
+    - "When generating UI tables or forms, ALWAYS assume global state provides the user's Active Context, and filter/submit data accordingly."

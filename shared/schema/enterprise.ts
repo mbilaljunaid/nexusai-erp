@@ -110,3 +110,28 @@ export const insertBuLedgerMapSchema = createInsertSchema(entBuLedgerMapping).ex
 
 export type InsertBuLedgerMap = z.infer<typeof insertBuLedgerMapSchema>;
 export type BuLedgerMap = typeof entBuLedgerMapping.$inferSelect;
+
+// ========== ENTERPRISE USER DATA ACCESS ==========
+// Maps users to specific BUs, LEs, Inv Orgs, Ledgers, or SetIDs
+export const entUserDataAccess = pgTable("ent_user_data_access", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").notNull(),
+    userId: varchar("user_id").notNull(),
+    roleId: varchar("role_id").notNull(), // The role granting this access
+    contextType: varchar("context_type").notNull(), // 'BU', 'LE', 'INV_ORG', 'LEDGER', 'SET_ID'
+    contextValue: varchar("context_value").notNull(), // ID of the BU/LE/etc.
+    isDefault: boolean("is_default").default(false), // Is this their default active context?
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertUserDataAccessSchema = createInsertSchema(entUserDataAccess).extend({
+    tenantId: z.string().min(1),
+    userId: z.string().min(1),
+    roleId: z.string().min(1),
+    contextType: z.enum(['BU', 'LE', 'INV_ORG', 'LEDGER', 'SET_ID', 'GLOBAL']),
+    contextValue: z.string().min(1),
+    isDefault: z.boolean().optional(),
+});
+
+export type InsertUserDataAccess = z.infer<typeof insertUserDataAccessSchema>;
+export type UserDataAccess = typeof entUserDataAccess.$inferSelect;

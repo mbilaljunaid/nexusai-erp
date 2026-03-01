@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { db } from "../db";
 import {
-    entLegalGroups, entBusinessUnits, entLegalGroupBuMapping, entBuLedgerMapping,
-    insertLegalGroupSchema, insertBusinessUnitSchema, insertLegalGrpBuMapSchema, insertBuLedgerMapSchema
+    entLegalGroups, entBusinessUnits, entLegalGroupBuMapping, entBuLedgerMapping, entUserDataAccess,
+    insertLegalGroupSchema, insertBusinessUnitSchema, insertLegalGrpBuMapSchema, insertBuLedgerMapSchema, insertUserDataAccessSchema
 } from "@shared/schema/enterprise";
 import { and, eq } from "drizzle-orm";
 import { enforceRBAC } from "../middleware/auth";
@@ -10,7 +10,7 @@ import { enforceRBAC } from "../middleware/auth";
 const router = Router();
 
 // Middleware: all routes need auth
-router.use(requireAuth);
+router.use(enforceRBAC());
 
 // ========== LEGAL GROUPS ==========
 router.get("/legal-groups", async (req, res) => {
@@ -98,6 +98,34 @@ router.post("/mappings/bu-ledger", async (req, res) => {
         const data = insertBuLedgerMapSchema.parse({ ...req.body, tenantId });
         const [mapping] = await db.insert(entBuLedgerMapping).values(data).returning();
         res.json(mapping);
+    } catch (error: any) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// ========== USER DATA ACCESS ==========
+router.get("/user-data-access", async (req, res) => {
+    try {
+        const tenantId = (req.user as any)?.tenantId || 'system';
+        // Get access just for the currently authenticated user
+        const userId = (req.user as any)?.id || '1';
+        const access = await db.select().from(entUserDataAccess)
+            .where(and(
+                eq(entUserDataAccess.tenantId, tenantId),
+                eq(entUserDataAccess.userId, userId)
+            ));
+        res.json(access);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post("/user-data-access", async (req, res) => {
+    try {
+        const tenantId = (req.user as any)?.tenantId || 'system';
+        const data = insertUserDataAccessSchema.parse({ ...req.body, tenantId });
+        const [access] = await db.insert(entUserDataAccess).values(data).returning();
+        res.json(access);
     } catch (error: any) {
         res.status(400).json({ error: error.message });
     }

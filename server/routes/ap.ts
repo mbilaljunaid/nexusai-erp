@@ -210,7 +210,6 @@ apRouter.get("/invoices", async (req, res) => {
     try {
         const { limit, offset, status, validationStatus, invoiceNumber, supplierId, businessUnitId, fromDate, toDate } = req.query;
 
-        // Pass the advanced search filters down to the Data Access Layer
         const filters: Record<string, any> = {};
         if (invoiceNumber) filters.invoiceNumber = invoiceNumber;
         if (supplierId) filters.supplierId = supplierId;
@@ -218,11 +217,14 @@ apRouter.get("/invoices", async (req, res) => {
         if (fromDate) filters.fromDate = fromDate;
         if (toDate) filters.toDate = toDate;
 
+        const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+
         const list = await storage.listApInvoices({ // Updated to use storage direct call with options
             limit: limit ? Number(limit) : undefined,
             offset: offset ? Number(offset) : undefined,
             status: status as string | undefined,
             validationStatus: validationStatus as string | undefined,
+            entBusinessUnitId: entBusinessUnitId,
             filters
         });
         const total = await apService.getInvoicesCount(); // Count could be updated to apply filters later if needed
@@ -436,7 +438,8 @@ apRouter.post("/payment-batches/:id/confirm", async (req, res) => {
 
 apRouter.get("/payment-batches/:id/payments", async (req, res) => {
     try {
-        const payments = await apService.getBatchPayments(req.params.id);
+        const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+        const payments = await apService.getBatchPayments(req.params.id, entBusinessUnitId);
         res.json(payments);
     } catch (e: any) {
         res.status(500).json({ error: e.message });
