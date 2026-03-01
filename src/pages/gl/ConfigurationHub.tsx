@@ -54,7 +54,16 @@ const configTiles = [
         bgColor: "bg-amber-100/50"
     },
     {
+        title: "Rate Types",
+        description: "Manage exchange rate types (Spot, Corporate, User)",
+        icon: Globe,
+        path: "/gl/config/rate-types",
+        color: "text-blue-500",
+        bgColor: "bg-blue-100/50"
+    },
+    {
         title: "Posting Rules",
+
         description: "Auto-post criteria for journals",
         icon: Zap,
         path: "/gl/config/posting-rules",

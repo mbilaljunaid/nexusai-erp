@@ -15,6 +15,10 @@ import { format } from "date-fns";
 import { FormattedValue } from "@/components/FormattedValue";
 import { cn } from "@/lib/utils";
 import { useNexusAI } from "@/contexts/NexusAIContext";
+import { useLedger } from "@/context/LedgerContext";
+import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 
 interface TrialBalanceRow {
     ccid: string;
@@ -29,37 +33,67 @@ interface TrialBalanceRow {
 
 export default function TrialBalance() {
     const { open, sendMessage } = useNexusAI();
+    const { currentLedgerId } = useLedger();
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCCID, setSelectedCCID] = useState<string | null>(null);
     const [selectedPeriod, setSelectedPeriod] = useState("PRIMARY_DEC23"); // Mock selection for now
+    const [accountTypeFilter, setAccountTypeFilter] = useState("All");
     const [page, setPage] = useState(1);
     const pageSize = 25;
 
     const { data: report, isLoading } = useQuery({
-        queryKey: ["/api/gl/reporting/trial-balance", { periodId: selectedPeriod, page, limit: pageSize }],
+        queryKey: ["/api/gl/reporting/trial-balance", { periodId: selectedPeriod, ledgerId: currentLedgerId, page, limit: pageSize, accountType: accountTypeFilter }],
         queryFn: async () => {
             const offset = (page - 1) * pageSize;
-            const res = await fetch(`/api/gl/reporting/trial-balance?periodId=${selectedPeriod}&limit=${pageSize}&offset=${offset}`);
+            const res = await fetch(`/api/gl/reporting/trial-balance?periodId=${selectedPeriod}&ledgerId=${currentLedgerId}&limit=${pageSize}&offset=${offset}&accountType=${accountTypeFilter}`);
             if (!res.ok) throw new Error("Failed to fetch trial balance");
             return res.json();
         }
     });
 
+    const handleExportCSV = async () => {
+        try {
+            // Fetch without limit to get full dataset for export
+            const res = await fetch(`/api/gl/reporting/trial-balance?periodId=${selectedPeriod}&ledgerId=${currentLedgerId}&accountType=${accountTypeFilter}&limit=10000`);
+            if (!res.ok) throw new Error("Failed to export");
+            const data = await res.json();
+
+            const headers = ["Code Combination", "Segment2", "Segment3", "Type", "Debit", "Credit", "Net Balance"];
+            const csvRows = data.rows.map((r: TrialBalanceRow) => {
+                return `"${r.code}","${r.segment2}","${r.segment3}","${r.accountType}",${r.totalDebit},${r.totalCredit},${r.netBalance}`;
+            });
+
+            const csvContent = [headers.join(","), ...csvRows].join("\n");
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `trial_balance_${selectedPeriod}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error("Export failed:", error);
+        }
+    };
+
+
     const { data: insights, isLoading: isLoadingInsights } = useQuery({
-        queryKey: ["/api/gl/reporting/explain-variance", selectedPeriod],
+        queryKey: ["/api/gl/reporting/explain-variance", selectedPeriod, currentLedgerId],
         queryFn: async () => {
-            const benchmark = "PRIMARY_NOV23"; // Logic to find benchmark period could be dynamic
-            const res = await fetch(`/api/gl/reporting/explain-variance?periodId=${selectedPeriod}&benchmarkPeriodId=${benchmark}`);
+            const benchmark = "PRIMARY_NOV23";
+            const res = await fetch(`/api/gl/reporting/explain-variance?periodId=${selectedPeriod}&benchmarkPeriodId=${benchmark}&ledgerId=${currentLedgerId}`);
             if (!res.ok) throw new Error("Failed to fetch AI insights");
             return res.json();
         }
     });
 
     const { data: drillDown, isLoading: isLoadingDrill } = useQuery({
-        queryKey: ["/api/gl/reporting/drill-down", selectedCCID, selectedPeriod],
+        queryKey: ["/api/gl/reporting/drill-down", selectedCCID, selectedPeriod, currentLedgerId],
         queryFn: async () => {
             if (!selectedCCID) return null;
-            const res = await fetch(`/api/gl/reporting/drill-down/${selectedCCID}?periodId=${selectedPeriod}`);
+            const res = await fetch(`/api/gl/reporting/drill-down/${selectedCCID}?periodId=${selectedPeriod}&ledgerId=${currentLedgerId}`);
             if (!res.ok) throw new Error("Failed to fetch drill-down data");
             return res.json();
         },
@@ -76,7 +110,7 @@ export default function TrialBalance() {
                     </p>
                 </div>
                 <div className="flex gap-2">
-                    <Button variant="outline"><Download className="mr-2 h-4 w-4" /> Export CSV</Button>
+                    <Button variant="outline" onClick={handleExportCSV}><Download className="mr-2 h-4 w-4" /> Export CSV</Button>
                     <Button variant="outline"><Download className="mr-2 h-4 w-4" /> Export PDF</Button>
                     <Button><Filter className="mr-2 h-4 w-4" /> Multi-Period</Button>
                 </div>
@@ -179,8 +213,21 @@ export default function TrialBalance() {
                             />
                         </div>
                         <div className="flex items-center gap-4">
+                            <Select value={accountTypeFilter} onValueChange={setAccountTypeFilter}>
+                                <SelectTrigger className="w-[180px]">
+                                    <SelectValue placeholder="Account Type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="All">All Types</SelectItem>
+                                    <SelectItem value="Asset">Asset</SelectItem>
+                                    <SelectItem value="Liability">Liability</SelectItem>
+                                    <SelectItem value="Equity">Equity</SelectItem>
+                                    <SelectItem value="Revenue">Revenue</SelectItem>
+                                    <SelectItem value="Expense">Expense</SelectItem>
+                                </SelectContent>
+                            </Select>
                             <Badge variant="outline" className="px-3 py-1">
-                                Ledger: <FormattedValue value="1" type="ledger" className="ml-1" />
+                                Ledger: <FormattedValue value={currentLedgerId} type="ledger" className="ml-1" />
                             </Badge>
                             <Badge variant="secondary" className="px-3 py-1">
                                 Period: Dec-2023

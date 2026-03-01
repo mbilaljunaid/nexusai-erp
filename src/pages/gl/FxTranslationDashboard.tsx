@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { format } from "date-fns";
+import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
 
 interface FxRate {
     id: string;
@@ -132,7 +133,12 @@ export default function FxTranslationDashboard() {
     return (
         <StandardPage
             title="FX Translation Dashboard"
-            description="Monitor currency translation impact and manage exchange rates for consolidation."
+            description={
+                <div className="flex items-center gap-2">
+                    <span>Monitor currency translation impact and manage exchange rates for consolidation.</span>
+                    <LedgerContextBadge />
+                </div>
+            }
             breadcrumbs={[
                 { label: "General Ledger", href: "/gl" },
                 { label: "Consolidation", href: "/gl/consolidation" },

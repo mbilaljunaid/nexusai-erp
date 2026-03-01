@@ -22,6 +22,8 @@ import { format } from "date-fns";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
+import { useLedger } from "@/context/LedgerContext";
 
 interface PreflightCheck {
     type: "error" | "warning" | "success";
@@ -31,6 +33,7 @@ interface PreflightCheck {
 
 export default function ConsolidationWorkbench() {
     const { toast } = useToast();
+    const { currentLedgerId } = useLedger();
     const queryClient = useQueryClient();
     const [isOpen, setIsOpen] = useState(false);
     const [wizardStep, setWizardStep] = useState(1);
@@ -142,7 +145,12 @@ export default function ConsolidationWorkbench() {
     return (
         <StandardPage
             title="Consolidation Workbench"
-            description="Manage financial consolidation, translations, and intercompany eliminations."
+            description={
+                <div className="flex items-center gap-2">
+                    <span>Manage financial consolidation, translations, and intercompany eliminations.</span>
+                    <LedgerContextBadge />
+                </div>
+            }
             breadcrumbs={[
                 { label: "General Ledger", href: "/gl" },
                 { label: "Consolidation" }

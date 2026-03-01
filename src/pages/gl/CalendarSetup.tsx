@@ -4,38 +4,58 @@ import { queryClient } from "@/lib/queryClient";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/hooks/use-toast";
-import { Calendar as CalendarIcon, Plus, Loader2, CheckCircle2, XCircle, AlertTriangle, Play } from "lucide-react";
-import { format } from "date-fns";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import { Calendar as CalendarIcon, Plus, Loader2, CalendarDays } from "lucide-react";
+import { format } from "date-fns";
 
 export default function CalendarSetup() {
     const { toast } = useToast();
-    const [isGenerating, setIsGenerating] = useState(false);
-
-    const { data: periods, isLoading } = useQuery<any[]>({
-        queryKey: ["/api/gl/periods"],
+    const [isCreating, setIsCreating] = useState(false);
+    const [formData, setFormData] = useState({
+        name: "",
+        description: "",
+        periodType: "Monthly"
     });
 
-    const updatePeriodMutation = useMutation({
-        mutationFn: async ({ id, status }: { id: string, status: string }) => {
-            const res = await fetch(`/api/gl/periods/tasks/${id}`, { // Using generic task update for now if direct period status update isn't ready
-                method: "PATCH",
+    const { data: calendars, isLoading } = useQuery<any[]>({
+        queryKey: ["/api/gl/config/calendars"],
+    });
+
+    const createCalendarMutation = useMutation({
+        mutationFn: async (data: typeof formData) => {
+            const res = await fetch("/api/gl/config/calendars", {
+                method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ status }),
+                body: JSON.stringify(data),
             });
-            if (!res.ok) throw new Error("Failed to update period");
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.error || "Failed to create calendar");
+            }
             return res.json();
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["/api/gl/periods"] });
-            toast({ title: "Period Updated", description: "Calendar status has been successfully modified." });
+            queryClient.invalidateQueries({ queryKey: ["/api/gl/config/calendars"] });
+            toast({ title: "Success", description: "Accounting calendar created successfully." });
+            setIsCreating(false);
+            setFormData({ name: "", description: "", periodType: "Monthly" });
         },
+        onError: (error: any) => {
+            toast({ title: "Error", description: error.message, variant: "destructive" });
+        }
     });
+
+    const handleSubmit = () => {
+        if (!formData.name) {
+            toast({ title: "Validation Error", description: "Name is required", variant: "destructive" });
+            return;
+        }
+        createCalendarMutation.mutate(formData);
+    };
 
     if (isLoading) {
         return (
@@ -44,16 +64,6 @@ export default function CalendarSetup() {
             </div>
         );
     }
-
-    const getStatusColor = (status: string) => {
-        switch (status?.toUpperCase()) {
-            case "OPEN": return "bg-green-100 text-green-800 border-green-200";
-            case "CLOSED": return "bg-gray-100 text-gray-800 border-gray-200";
-            case "FUTURE": return "bg-blue-100 text-blue-800 border-blue-200";
-            case "PERMANENTLY CLOSED": return "bg-red-100 text-red-800 border-red-200";
-            default: return "bg-amber-100 text-amber-800 border-amber-200";
-        }
-    };
 
     return (
         <div className="p-8 space-y-6 animate-in fade-in duration-500">
@@ -64,136 +74,108 @@ export default function CalendarSetup() {
                     </div>
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Accounting Calendars</h1>
-                        <p className="text-muted-foreground italic">Oracle Foundation: Supported Period Statuses (Never Opened, Future, Open, Closed)</p>
+                        <p className="text-muted-foreground italic">Oracle Foundation: Define fiscal years and period typess</p>
                     </div>
                 </div>
-                <div className="flex gap-2">
-                    <Button variant="outline" className="gap-2">
-                        <Play className="h-4 w-4" /> Open Next Period
-                    </Button>
-                    <Button onClick={() => setIsGenerating(true)} className="gap-2 bg-purple-600 hover:bg-purple-700">
-                        <Plus className="h-4 w-4" /> Generate New Year
-                    </Button>
-                </div>
+                <Button onClick={() => setIsCreating(true)} className="gap-2 bg-purple-600 hover:bg-purple-700">
+                    <Plus className="h-4 w-4" /> New Calendar
+                </Button>
             </div>
 
-            <Dialog open={isGenerating} onOpenChange={setIsGenerating}>
+            <Dialog open={isCreating} onOpenChange={setIsCreating}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Generate Accounting Calendar</DialogTitle>
+                        <DialogTitle>Create Accounting Calendar</DialogTitle>
                         <DialogDescription>
-                            Create a new fiscal year or calendar definition.
+                            Define a new accounting calendar to group periods.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
-                            <Label>Fiscal Year</Label>
-                            <Input defaultValue="2027" placeholder="YYYY" />
+                            <Label>Calendar Name</Label>
+                            <Input
+                                value={formData.name}
+                                onChange={(e) => setFormData(f => ({ ...f, name: e.target.value }))}
+                                placeholder="e.g. FY2026 Monthly"
+                            />
                         </div>
                         <div className="grid gap-2">
-                            <Label>Period Frequency</Label>
-                            <Select defaultValue="Monthly">
+                            <Label>Description</Label>
+                            <Input
+                                value={formData.description}
+                                onChange={(e) => setFormData(f => ({ ...f, description: e.target.value }))}
+                                placeholder="Optional description"
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label>Period Type</Label>
+                            <Select
+                                value={formData.periodType}
+                                onValueChange={(val) => setFormData(f => ({ ...f, periodType: val }))}
+                            >
                                 <SelectTrigger><SelectValue /></SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="Monthly">Monthly (12 Periods)</SelectItem>
-                                    <SelectItem value="4-4-5">4-4-5 Retail</SelectItem>
+                                    <SelectItem value="Monthly">Monthly</SelectItem>
                                     <SelectItem value="Weekly">Weekly</SelectItem>
+                                    <SelectItem value="Quarterly">Quarterly</SelectItem>
+                                    <SelectItem value="Yearly">Yearly</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button onClick={() => {
-                            toast({ title: "Calendar Generated", description: "New fiscal year 2027 generated successfully." });
-                            setIsGenerating(false);
-                        }}>Generate Year</Button>
+                        <Button variant="outline" onClick={() => setIsCreating(false)}>Cancel</Button>
+                        <Button
+                            onClick={handleSubmit}
+                            disabled={createCalendarMutation.isPending}
+                            className="bg-purple-600 hover:bg-purple-700"
+                        >
+                            {createCalendarMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Create Calendar
+                        </Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card className="border-l-4 border-l-green-500 shadow-sm">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Active Year</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">FY2026</div>
-                    </CardContent>
-                </Card>
-                <Card className="border-l-4 border-l-purple-500 shadow-sm">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Current Period</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">Jan-26</div>
-                    </CardContent>
-                </Card>
-                <Card className="border-l-4 border-l-blue-500 shadow-sm">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Periods Open</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">1/12</div>
-                    </CardContent>
-                </Card>
-                <Card className="border-l-4 border-l-amber-500 shadow-sm">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Quarter</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">Q1</div>
-                    </CardContent>
-                </Card>
-            </div>
-
             <Card className="border-none shadow-lg">
                 <CardHeader className="bg-muted/30 pb-4">
-                    <CardTitle>Calendar Periods</CardTitle>
-                    <CardDescription>Manage status and fiscal controls for the active ledger calendar.</CardDescription>
+                    <CardTitle className="flex items-center gap-2">
+                        <CalendarDays className="h-5 w-5 text-purple-600" />
+                        Defined Calendars
+                    </CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="hover:bg-transparent">
-                                <TableHead className="pl-6">Period Name</TableHead>
-                                <TableHead>Start Date</TableHead>
-                                <TableHead>End Date</TableHead>
-                                <TableHead>Quarter</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead className="text-right pr-6">Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {periods?.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()).map((period) => (
-                                <TableRow key={period.id} className="hover:bg-muted/20 transition-colors group">
-                                    <TableCell className="pl-6 font-semibold text-primary">{period.periodName}</TableCell>
-                                    <TableCell>{format(new Date(period.startDate), "dd-MMM-yyyy")}</TableCell>
-                                    <TableCell>{format(new Date(period.endDate), "dd-MMM-yyyy")}</TableCell>
-                                    <TableCell className="text-muted-foreground font-mono text-xs">Q{Math.floor(new Date(period.startDate).getMonth() / 3) + 1}</TableCell>
-                                    <TableCell>
-                                        <Badge variant="outline" className={getStatusColor(period.status)}>
-                                            {period.status || "NEVER OPENED"}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell className="text-right pr-6">
-                                        <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                                            {period.status === "OPEN" ? (
-                                                <Button variant="ghost" size="sm" className="text-red-600 hover:bg-red-50 hover:text-red-700">
-                                                    Close Period
-                                                </Button>
-                                            ) : (
-                                                <Button variant="ghost" size="sm" className="text-green-600 hover:bg-green-50 hover:text-green-700">
-                                                    Open Period
-                                                </Button>
-                                            )}
-                                        </div>
-                                    </TableCell>
+                    {calendars?.length === 0 ? (
+                        <div className="p-8 text-center text-muted-foreground flex flex-col items-center gap-3">
+                            <CalendarIcon className="h-10 w-10 opacity-20" />
+                            <p>No accounting calendars defined. Click "New Calendar" to create one.</p>
+                        </div>
+                    ) : (
+                        <Table>
+                            <TableHeader>
+                                <TableRow className="hover:bg-transparent">
+                                    <TableHead className="pl-6">Name</TableHead>
+                                    <TableHead>Description</TableHead>
+                                    <TableHead>Period Type</TableHead>
+                                    <TableHead>Created At</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {calendars?.map((cal) => (
+                                    <TableRow key={cal.id} className="hover:bg-muted/20 transition-colors">
+                                        <TableCell className="pl-6 font-semibold text-primary">{cal.name}</TableCell>
+                                        <TableCell className="text-muted-foreground">{cal.description || "-"}</TableCell>
+                                        <TableCell>{cal.periodType}</TableCell>
+                                        <TableCell className="text-muted-foreground text-sm">
+                                            {format(new Date(cal.createdAt), "MMM d, yyyy")}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    )}
                 </CardContent>
             </Card>
-        </div >
+        </div>
     );
 }

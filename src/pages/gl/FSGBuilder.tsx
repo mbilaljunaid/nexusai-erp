@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
 
 export default function FSGBuilder() {
     const { toast } = useToast();
@@ -143,7 +144,10 @@ export default function FSGBuilder() {
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Financial Report Builder</h1>
-                    <p className="text-muted-foreground mt-1">Configure FSG Row Sets, Column Sets, and Report Definitions.</p>
+                    <div className="flex items-center gap-2 mt-1">
+                        <span className="text-muted-foreground">Configure FSG Row Sets, Column Sets, and Report Definitions.</span>
+                        <LedgerContextBadge />
+                    </div>
                 </div>
             </div>
 

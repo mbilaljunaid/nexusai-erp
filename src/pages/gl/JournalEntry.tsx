@@ -16,6 +16,14 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import {
     Sheet,
     SheetContent,
     SheetDescription,
@@ -32,6 +40,7 @@ import { CodeCombinationPicker } from "@/components/gl/CodeCombinationPicker";
 import { cn } from "@/lib/utils";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { AuditSidebar, AuditEvent } from "@/components/audit/AuditSidebar";
+import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
 
 interface JournalLine {
     id: string; // temp id for UI
@@ -39,6 +48,17 @@ interface JournalLine {
     debit: string;
     credit: string;
     description: string;
+    reference?: string;
+    attribute1?: string;
+    attribute2?: string;
+    attribute3?: string;
+    attribute4?: string;
+    attribute5?: string;
+    attribute6?: string;
+    attribute7?: string;
+    attribute8?: string;
+    attribute9?: string;
+    attribute10?: string;
 }
 
 import { useRoute } from "wouter";
@@ -50,10 +70,14 @@ export default function JournalEntry() {
     const [journalId, setJournalId] = useState<string | null>(match ? (params as any)?.id : null);
 
     const [header, setHeader] = useState({
+        batchName: "",
         description: "",
         currencyCode: "USD",
         periodId: "",
-        category: "Manual"
+        category: "Manual",
+        reversalPeriodId: "",
+        reversalDate: "",
+        autoReverse: false
     });
 
     // Sync Currency with Ledger
@@ -64,8 +88,8 @@ export default function JournalEntry() {
     }, [activeLedger]);
 
     const [lines, setLines] = useState<JournalLine[]>([
-        { id: "1", accountId: "", debit: "0", credit: "0", description: "" },
-        { id: "2", accountId: "", debit: "0", credit: "0", description: "" }
+        { id: "1", accountId: "", debit: "0", credit: "0", description: "", reference: "" },
+        { id: "2", accountId: "", debit: "0", credit: "0", description: "", reference: "" }
     ]);
 
     const [activeLineId, setActiveLineId] = useState<string | null>(null);
@@ -86,10 +110,14 @@ export default function JournalEntry() {
             const data = await res.json();
 
             setHeader({
+                batchName: data.batchName || "",
                 description: data.description || "",
                 currencyCode: data.currencyCode || "USD",
                 periodId: data.periodId || "",
-                category: data.category || data.source || "Manual"
+                category: data.category || data.source || "Manual",
+                reversalPeriodId: data.reversalPeriodId || "",
+                reversalDate: data.reversalDate ? new Date(data.reversalDate).toISOString().split('T')[0] : "",
+                autoReverse: data.autoReverse || false
             });
 
             if (data.lines && data.lines.length > 0) {
@@ -98,7 +126,18 @@ export default function JournalEntry() {
                     accountId: l.accountId || "",
                     debit: l.enteredDebit || l.accountedDebit || l.debit || "0",
                     credit: l.enteredCredit || l.accountedCredit || l.credit || "0",
-                    description: l.description || ""
+                    description: l.description || "",
+                    reference: l.reference || "",
+                    attribute1: l.attribute1 || "",
+                    attribute2: l.attribute2 || "",
+                    attribute3: l.attribute3 || "",
+                    attribute4: l.attribute4 || "",
+                    attribute5: l.attribute5 || "",
+                    attribute6: l.attribute6 || "",
+                    attribute7: l.attribute7 || "",
+                    attribute8: l.attribute8 || "",
+                    attribute9: l.attribute9 || "",
+                    attribute10: l.attribute10 || "",
                 })));
             }
 
@@ -120,6 +159,18 @@ export default function JournalEntry() {
             return await res.json();
         },
         enabled: !!journalId
+    });
+
+    // Fetch GL Periods
+    const { data: periods = [] } = useQuery({
+        queryKey: ["gl-periods", currentLedgerId],
+        queryFn: async () => {
+            const res = await apiRequest("GET", `/api/gl/periods?ledgerId=${currentLedgerId}`);
+            if (!res.ok) throw new Error("Failed to load periods");
+            const data = await res.json();
+            return data.filter((p: any) => p.status === 'Open' || p.status === 'Future-Entry');
+        },
+        enabled: !!currentLedgerId,
     });
 
     // Map to UI Event
@@ -144,7 +195,7 @@ export default function JournalEntry() {
     }, [lines]);
 
     const addLine = () => {
-        const newLine = { id: Math.random().toString(), accountId: "", debit: "0", credit: "0", description: "" };
+        const newLine = { id: Math.random().toString(), accountId: "", debit: "0", credit: "0", description: "", reference: "" };
         setLines([...lines, newLine]);
         // Open sheet for the new line to encourage detail entry
         setActiveLineId(newLine.id);
@@ -168,17 +219,33 @@ export default function JournalEntry() {
     const createMutation = useMutation({
         mutationFn: async (status: 'Draft' | 'Posted') => {
             const res = await apiRequest("POST", "/api/gl/journals", {
+                batchName: header.batchName,
                 description: header.description,
                 currencyCode: header.currencyCode,
                 source: header.category,
                 status,
                 ledgerId: currentLedgerId,
+                periodId: header.periodId,
+                reversalPeriodId: header.reversalPeriodId || null,
+                reversalDate: header.reversalDate || null,
+                autoReverse: header.autoReverse,
                 lines: lines.map(l => ({
                     accountId: l.accountId,
                     enteredDebit: l.debit,
                     enteredCredit: l.credit,
                     description: l.description,
-                    currencyCode: header.currencyCode
+                    reference: l.reference,
+                    currencyCode: header.currencyCode,
+                    attribute1: l.attribute1,
+                    attribute2: l.attribute2,
+                    attribute3: l.attribute3,
+                    attribute4: l.attribute4,
+                    attribute5: l.attribute5,
+                    attribute6: l.attribute6,
+                    attribute7: l.attribute7,
+                    attribute8: l.attribute8,
+                    attribute9: l.attribute9,
+                    attribute10: l.attribute10,
                 }))
             });
             return await res.json();
@@ -236,6 +303,7 @@ export default function JournalEntry() {
                 { label: "Journals", href: "/gl/journals" },
                 { label: journalId ? `Journal: ${journalId.substring(0, 8)}...` : "New Entry" },
             ]}
+            description={<LedgerContextBadge />}
             actions={
                 <>
                     <div className="flex items-center gap-2 mr-4">
@@ -328,13 +396,22 @@ export default function JournalEntry() {
                     <CardTitle className="text-lg">Batch Header</CardTitle>
                     <CardDescription>Enter high-level details for this journal batch.</CardDescription>
                 </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div className="space-y-2">
-                        <Label>Description</Label>
+                        <Label>Batch Name</Label>
+                        <Input
+                            value={header.batchName}
+                            onChange={(e) => setHeader({ ...header, batchName: e.target.value })}
+                            placeholder="e.g. IT Accruals Dec 26"
+                            className="bg-muted/30 focus:bg-background transition-colors"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label>Journal Description</Label>
                         <Input
                             value={header.description}
                             onChange={(e) => setHeader({ ...header, description: e.target.value })}
-                            placeholder="e.g. Monthly Accruals for IT Dept"
+                            placeholder="Detailed description..."
                             className="bg-muted/30 focus:bg-background transition-colors"
                         />
                     </div>
@@ -348,13 +425,56 @@ export default function JournalEntry() {
                     </div>
                     <div className="space-y-2">
                         <Label>Period</Label>
-                        <Input
-                            value={header.periodId}
-                            onChange={(e) => setHeader({ ...header, periodId: e.target.value })}
-                            placeholder="Jan-2026"
-                            className="bg-muted/30"
-                        />
+                        <Select value={header.periodId} onValueChange={(val) => setHeader({ ...header, periodId: val })}>
+                            <SelectTrigger className="bg-muted/30">
+                                <SelectValue placeholder="Select period" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {periods.map((p: any) => (
+                                    <SelectItem key={p.id} value={p.periodName}>{p.periodName}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
+                </CardContent>
+            </Card>
+
+            {/* Reversal Options Block */}
+            <Card className="border shadow-sm mb-6">
+                <CardContent className="p-4 grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
+                    <div className="flex items-center space-x-2">
+                        <Switch
+                            checked={header.autoReverse}
+                            onCheckedChange={(val) => setHeader({ ...header, autoReverse: val })}
+                            id="auto-reverse"
+                        />
+                        <Label htmlFor="auto-reverse" className="cursor-pointer">Auto-Reverse Journal</Label>
+                    </div>
+                    {header.autoReverse && (
+                        <>
+                            <div className="space-y-2">
+                                <Label>Reversal Period</Label>
+                                <Select value={header.reversalPeriodId} onValueChange={(val) => setHeader({ ...header, reversalPeriodId: val })}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Period" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {periods.map((p: any) => (
+                                            <SelectItem key={p.id} value={p.periodName}>{p.periodName}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Reversal Date <span className="text-xs text-muted-foreground">(Optional)</span></Label>
+                                <Input
+                                    type="date"
+                                    value={header.reversalDate}
+                                    onChange={(e) => setHeader({ ...header, reversalDate: e.target.value })}
+                                />
+                            </div>
+                        </>
+                    )}
                 </CardContent>
             </Card>
 
@@ -492,18 +612,43 @@ export default function JournalEntry() {
                             </div>
 
                             {/* Additional Info */}
-                            <div className="space-y-2">
-                                <Label>Line Description</Label>
-                                <Input
-                                    value={activeLine.description}
-                                    onChange={(e) => updateLine(activeLine.id, 'description', e.target.value)}
-                                    placeholder="Explanation for audit trail..."
-                                />
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label>Line Description</Label>
+                                    <Input
+                                        value={activeLine.description}
+                                        onChange={(e) => updateLine(activeLine.id, 'description', e.target.value)}
+                                        placeholder="Explanation for audit trail..."
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Reference</Label>
+                                    <Input
+                                        value={activeLine.reference || ""}
+                                        onChange={(e) => updateLine(activeLine.id, 'reference', e.target.value)}
+                                        placeholder="External system reference or document number..."
+                                    />
+                                </div>
                             </div>
 
-                            {/* Placeholder for Attachments/DFF */}
-                            <div className="p-4 rounded-lg border border-dashed text-center text-sm text-muted-foreground">
-                                No attachments linked to this line.
+                            {/* Descriptive Flexfields (DFF) */}
+                            <div className="space-y-4">
+                                <h4 className="text-sm font-semibold flex items-center gap-2">
+                                    <Badge variant="secondary" className="h-6">DFF</Badge>
+                                    Line-Level Attributes
+                                </h4>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {Array.from({ length: 10 }).map((_, i) => (
+                                        <div key={`dff-${i + 1}`} className="space-y-1">
+                                            <Label className="text-xs text-muted-foreground">Attribute {i + 1}</Label>
+                                            <Input
+                                                value={activeLine[`attribute${i + 1}` as keyof JournalLine] || ""}
+                                                onChange={(e) => updateLine(activeLine.id, `attribute${i + 1}` as keyof JournalLine, e.target.value)}
+                                                className="h-8 text-sm"
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
 
                         </div>

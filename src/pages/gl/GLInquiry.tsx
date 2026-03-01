@@ -1,0 +1,205 @@
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useLedger } from "@/context/LedgerContext";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Search, Calculator, Layers, Loader2, ArrowRight } from "lucide-react";
+import { CodeCombinationPicker } from "@/components/gl/CodeCombinationPicker";
+import { format } from "date-fns";
+import { StandardPage } from "@/components/layout/StandardPage";
+import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
+
+export default function GLInquiry() {
+    const { currentLedgerId, activeLedger } = useLedger();
+
+    const [periodId, setPeriodId] = useState("");
+    const [ccid, setCcid] = useState("");
+    const [hasSearched, setHasSearched] = useState(false);
+
+    const { data: periods } = useQuery<any[]>({
+        queryKey: ["/api/gl/periods", { ledgerId: currentLedgerId }],
+        enabled: !!currentLedgerId
+    });
+
+    const { data: inquiryData, isLoading, refetch } = useQuery<any>({
+        queryKey: ["/api/gl/inquire", { ledgerId: currentLedgerId, periodId, ccid }],
+        enabled: false, // Only manual trigger
+    });
+
+    const handleSearch = () => {
+        if (!periodId || !ccid) return;
+        setHasSearched(true);
+        refetch();
+    };
+
+    const lines = inquiryData?.transactionLines || [];
+    const totalDebit = lines.reduce((acc: number, line: any) => acc + (parseFloat(line.accountedDebit) || 0), 0);
+    const totalCredit = lines.reduce((acc: number, line: any) => acc + (parseFloat(line.accountedCredit) || 0), 0);
+    // Net Balance uses standard GL arithmetic: Debits are positive, Credits are negative for asset/expense, inverted for liability/revenue/equity
+    // For a generic view, we can show Net Change = Debit - Credit
+    const netChange = totalDebit - totalCredit;
+
+    return (
+        <StandardPage
+            title="Account Inquiry"
+            breadcrumbs={[
+                { label: "General Ledger", href: "/gl/journals" },
+                { label: "Account Inquiry" },
+            ]}
+            description={<LedgerContextBadge />}
+            className="animate-in fade-in duration-500"
+        >
+            <Card className="shadow-md border-t-4 border-t-indigo-500 mb-6">
+                <CardHeader className="bg-muted/10 pb-4">
+                    <CardTitle className="text-xl flex items-center gap-2">
+                        <Search className="h-5 w-5 text-indigo-500" />
+                        Inquiry Parameters
+                    </CardTitle>
+                    <CardDescription>Select a period and account combination to view detailed balances and journal lines.</CardDescription>
+                </CardHeader>
+                <CardContent className="pt-6">
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+                        <div className="col-span-1 md:col-span-3 space-y-2">
+                            <Label>Accounting Period</Label>
+                            <Select value={periodId} onValueChange={setPeriodId}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select Period" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {periods?.map((p) => (
+                                        <SelectItem key={p.id} value={p.periodName || p.id}>
+                                            {p.periodName || p.id}
+                                        </SelectItem>
+                                    ))}
+                                    {(!periods || periods.length === 0) && (
+                                        <SelectItem value="Jan-2026">Jan-2026</SelectItem>
+                                    )}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="col-span-1 md:col-span-7 space-y-2">
+                            <Label>Account Combination</Label>
+                            <CodeCombinationPicker value={ccid} onChange={setCcid} />
+                        </div>
+                        <div className="col-span-1 md:col-span-2">
+                            <Button
+                                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+                                onClick={handleSearch}
+                                disabled={!periodId || !ccid || isLoading}
+                            >
+                                {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Search className="w-4 h-4 mr-2" />}
+                                Inquire
+                            </Button>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {hasSearched && (
+                <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <Card className="shadow-sm border-l-4 border-l-blue-500 bg-blue-50/20">
+                            <CardContent className="p-6">
+                                <p className="text-sm font-medium text-slate-500 mb-1">Total Period Debits</p>
+                                <h3 className="text-3xl font-bold text-slate-900 font-mono">
+                                    {totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                </h3>
+                            </CardContent>
+                        </Card>
+                        <Card className="shadow-sm border-l-4 border-l-blue-500 bg-blue-50/20">
+                            <CardContent className="p-6">
+                                <p className="text-sm font-medium text-slate-500 mb-1">Total Period Credits</p>
+                                <h3 className="text-3xl font-bold text-slate-900 font-mono">
+                                    {totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                </h3>
+                            </CardContent>
+                        </Card>
+                        <Card className="shadow-sm border-l-4 border-l-indigo-500 bg-indigo-50/30">
+                            <CardContent className="p-6">
+                                <p className="text-sm font-medium text-indigo-700 mb-1">Net Period Change</p>
+                                <h3 className="text-3xl font-bold text-indigo-900 font-mono">
+                                    {netChange.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                </h3>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    <Card className="shadow-lg border-none">
+                        <CardHeader className="bg-muted/30 pb-4">
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Layers className="h-5 w-5 text-slate-500" />
+                                        Transaction Drilldown
+                                    </CardTitle>
+                                    <CardDescription>Journal lines composing the period balance.</CardDescription>
+                                </div>
+                                <Badge variant="outline" className="font-mono">{inquiryData?.totalCount || 0} Lines</Badge>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="hover:bg-transparent">
+                                        <TableHead className="w-[120px] pl-6">Batch #</TableHead>
+                                        <TableHead className="w-[150px]">Date</TableHead>
+                                        <TableHead>Description</TableHead>
+                                        <TableHead className="w-[120px]">Source</TableHead>
+                                        <TableHead className="text-right w-[150px]">Debit ({activeLedger?.currencyCode || 'USD'})</TableHead>
+                                        <TableHead className="text-right w-[150px] pr-6">Credit ({activeLedger?.currencyCode || 'USD'})</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {isLoading ? (
+                                        <TableRow>
+                                            <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
+                                                <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
+                                                Fetching transactions...
+                                            </TableCell>
+                                        </TableRow>
+                                    ) : lines.length === 0 ? (
+                                        <TableRow>
+                                            <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
+                                                No transactions found for this account in this period.
+                                            </TableCell>
+                                        </TableRow>
+                                    ) : (
+                                        lines.map((line: any, idx: number) => (
+                                            <TableRow key={line.id || idx} className="hover:bg-muted/30 transition-colors">
+                                                <TableCell className="pl-6 font-mono text-xs font-semibold text-indigo-600">
+                                                    <a href={`/finance/gl/journals/${line.journalId}`} className="hover:underline flex items-center gap-1">
+                                                        {line.journal?.journalNumber || "JE-???"}
+                                                    </a>
+                                                </TableCell>
+                                                <TableCell className="text-sm">
+                                                    {line.journal?.accountingDate ? format(new Date(line.journal.accountingDate), 'dd-MMM-yyyy') : '-'}
+                                                </TableCell>
+                                                <TableCell className="text-sm max-w-[300px] truncate">
+                                                    {line.description || line.journal?.description || '-'}
+                                                </TableCell>
+                                                <TableCell className="text-sm">
+                                                    <Badge variant="secondary" className="font-normal text-xs">{line.journal?.source || 'Manual'}</Badge>
+                                                </TableCell>
+                                                <TableCell className="text-right font-mono text-sm">
+                                                    {line.accountedDebit ? parseFloat(line.accountedDebit).toLocaleString(undefined, { minimumFractionDigits: 2 }) : '-'}
+                                                </TableCell>
+                                                <TableCell className="text-right font-mono text-sm pr-6">
+                                                    {line.accountedCredit ? parseFloat(line.accountedCredit).toLocaleString(undefined, { minimumFractionDigits: 2 }) : '-'}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                </div>
+            )}
+        </StandardPage>
+    );
+}

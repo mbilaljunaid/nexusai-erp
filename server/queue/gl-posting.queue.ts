@@ -9,6 +9,8 @@
 
 import { Job } from 'bullmq';
 import { createQueue, createWorker } from './bullmq';
+import { financeService } from '../services/finance';
+import { closeEngine } from '../services/period-close/CloseEngine';
 
 // ---------------------------------------------------------------------------
 // Job Payload Types
@@ -45,17 +47,30 @@ async function processGLJob(job: Job<GLPostingJobData>) {
     switch (type) {
         case 'POST_JOURNAL': {
             if (!journalId) throw new Error('journalId required for POST_JOURNAL');
-            // TODO: integrate with GL journal service when consolidated
-            console.log(`[GLPostingQueue] POST_JOURNAL journalId=${journalId} userId=${job.data.userId}`);
+            console.log(`[GLPostingQueue] Processing POST_JOURNAL journalId=${journalId} userId=${job.data.userId}`);
+
+            // Invoke the internal synchronous posting method (assumes processPostingInBackground contains the direct db logic, 
+            // or we use a dedicated synchronous method). Since finance.ts triggers the queue, the worker must do the actual DB updates.
+            // For now, we will call financeService.processPostingInBackground directly, passing the parameters.
+
+            await financeService.processPostingInBackground(journalId, job.data.userId || 'SYSTEM', {
+                sessionId: 'WORKER_SESSION'
+            });
+
             await job.updateProgress(100);
             return { journalId, status: 'posted' };
         }
 
         case 'PERIOD_CLOSE_SWEEP': {
             if (!ledgerId || !periodName) throw new Error('ledgerId and periodName required');
-            console.log(`[GLPostingQueue] Period close sweep: ledger=${ledgerId} period=${periodName}`);
+            console.log(`[GLPostingQueue] Executing Period close sweep: ledger=${ledgerId} period=${periodName}`);
+
+            // Needs next period name. Ideally passed in data, but we can derive it or sweep to 'Next Open'.
+            // CloseEngine sweepEvents expects (ledgerId, fromPeriodName, toPeriodName)
+            const result = await closeEngine.sweepEvents(ledgerId, periodName, 'NEXT_OPEN');
+
             await job.updateProgress(100);
-            break;
+            return { sweptCount: result.count };
         }
 
         case 'REVALUATION_RUN': {

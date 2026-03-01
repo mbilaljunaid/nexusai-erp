@@ -7,8 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Loader2, Download, TableProperties, Filter } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { useLedger } from "@/context/LedgerContext";
+
 
 type Transaction = {
     glDate: string;
@@ -35,8 +36,8 @@ type ReportData = {
 
 export default function AccountAnalysisReport() {
     const { toast } = useToast();
+    const { currentLedgerId: ledgerId } = useLedger();
     const [periodName, setPeriodName] = useState("");
-    const [ledgerId, setLedgerId] = useState("primary-ledger-001");
     const [segment1, setSegment1] = useState(""); // Company
     const [segment3, setSegment3] = useState(""); // Natural Account
 
@@ -102,18 +103,6 @@ export default function AccountAnalysisReport() {
         >
             <DashboardWidget colSpan={4} title="Report Parameters" icon={Filter}>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium">Ledger</label>
-                        <Select value={ledgerId} onValueChange={setLedgerId}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select Ledger" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="primary-ledger-001">Primary Ledger (US)</SelectItem>
-                                <SelectItem value="secondary-ledger-002">Secondary Ledger (EU)</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
                     <div className="space-y-2">
                         <label className="text-sm font-medium">Period Name *</label>
                         <Input

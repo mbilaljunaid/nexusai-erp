@@ -17,7 +17,7 @@ interface BreadcrumbNavItem {
 
 interface PageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
     title: string;
-    description?: string;
+    description?: React.ReactNode; // Changed to allow ReactNode (badges etc)
     actions?: React.ReactNode;
     breadcrumbs?: BreadcrumbNavItem[];
 }
@@ -66,8 +66,11 @@ export function PageHeader({
                 <div className="space-y-1.5">
                     <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
                     {description && (
-                        <p className="text-sm text-muted-foreground">{description}</p>
+                        <div className="text-sm text-muted-foreground flex items-center gap-2">
+                            {description}
+                        </div>
                     )}
+
                 </div>
                 {actions && <div className="flex items-center gap-2">{actions}</div>}
             </div>

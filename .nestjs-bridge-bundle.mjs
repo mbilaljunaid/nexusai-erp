@@ -371,6 +371,7 @@ __export(schema_exports, {
   formData: () => formData,
   formulaIngredients: () => formulaIngredients,
   formulas: () => formulas,
+  glAccountingCalendars: () => glAccountingCalendars,
   glAccounts: () => glAccounts,
   glAllocations: () => glAllocations,
   glApprovalDelegations: () => glApprovalDelegations,
@@ -403,6 +404,7 @@ __export(schema_exports, {
   glJournalApprovals: () => glJournalApprovals,
   glJournalBatches: () => glJournalBatches,
   glJournalCategories: () => glJournalCategories,
+  glJournalImports: () => glJournalImports,
   glJournalLines: () => glJournalLines,
   glJournalSources: () => glJournalSources,
   glJournals: () => glJournals,
@@ -415,6 +417,7 @@ __export(schema_exports, {
   glPeriodCloseChecklistTemplates: () => glPeriodCloseChecklistTemplates,
   glPeriodCloseStatus: () => glPeriodCloseStatus,
   glPeriods: () => glPeriods,
+  glRateTypes: () => glRateTypes,
   glRecurringJournals: () => glRecurringJournals,
   glReportColumns: () => glReportColumns,
   glReportDefinitions: () => glReportDefinitions,
@@ -786,6 +789,7 @@ __export(schema_exports, {
   insertFormulaIngredientSchema: () => insertFormulaIngredientSchema,
   insertFormulaSchema: () => insertFormulaSchema,
   insertGlAccountSchema: () => insertGlAccountSchema,
+  insertGlAccountingCalendarSchema: () => insertGlAccountingCalendarSchema,
   insertGlAllocationSchema: () => insertGlAllocationSchema,
   insertGlApprovalDelegationSchema: () => insertGlApprovalDelegationSchema,
   insertGlApprovalGroupMemberSchema: () => insertGlApprovalGroupMemberSchema,
@@ -815,6 +819,7 @@ __export(schema_exports, {
   insertGlJournalApprovalSchema: () => insertGlJournalApprovalSchema,
   insertGlJournalBatchSchema: () => insertGlJournalBatchSchema,
   insertGlJournalCategorySchema: () => insertGlJournalCategorySchema,
+  insertGlJournalImportSchema: () => insertGlJournalImportSchema,
   insertGlJournalLineSchema: () => insertGlJournalLineSchema,
   insertGlJournalSchema: () => insertGlJournalSchema,
   insertGlJournalSourceSchema: () => insertGlJournalSourceSchema,
@@ -827,6 +832,7 @@ __export(schema_exports, {
   insertGlPeriodCloseChecklistTemplateSchema: () => insertGlPeriodCloseChecklistTemplateSchema,
   insertGlPeriodCloseStatusSchema: () => insertGlPeriodCloseStatusSchema,
   insertGlPeriodSchema: () => insertGlPeriodSchema,
+  insertGlRateTypeSchema: () => insertGlRateTypeSchema,
   insertGlRecurringJournalSchema: () => insertGlRecurringJournalSchema,
   insertGlReportColumnSchema: () => insertGlReportColumnSchema,
   insertGlReportDefinitionSchema: () => insertGlReportDefinitionSchema,
@@ -1977,6 +1983,9 @@ var apPaymentBatches = pgTable2("ap_payment_batches", {
   paymentCount: integer2("payment_count").default(0),
   // Disbursement Bank
   bankAccountId: varchar2("bank_account_id"),
+  // Enterprise BU Scoping
+  entBusinessUnitId: varchar2("ent_business_unit_id"),
+  // Enterprise Scoping Key
   createdAt: timestamp2("created_at").defaultNow(),
   updatedAt: timestamp2("updated_at").defaultNow()
 });
@@ -3923,17 +3932,36 @@ var insertGlPeriodSchema = createInsertSchema6(glPeriods).extend({
   fiscalYear: z5.number().int(),
   status: z5.enum(["Open", "Closed", "Future-Entry"]).optional()
 });
+var glJournalImports = pgTable6("gl_journal_imports", {
+  id: varchar6("id").primaryKey().default(sql6`gen_random_uuid()`),
+  source: varchar6("source").notNull(),
+  // AP, AR, Payroll, etc.
+  batchName: varchar6("batch_name"),
+  ledgerId: varchar6("ledger_id").notNull(),
+  status: varchar6("status").default("New"),
+  // New, Processing, Error, Imported
+  errorMessage: text6("error_message"),
+  importedLinesCount: integer6("imported_lines_count").default(0),
+  createdAt: timestamp6("created_at").default(sql6`now()`)
+});
+var insertGlJournalImportSchema = createInsertSchema6(glJournalImports);
 var glJournals = pgTable6("gl_journals_v2", {
   id: varchar6("id").primaryKey().default(sql6`gen_random_uuid()`),
   journalNumber: varchar6("journal_number").notNull().unique(),
   ledgerId: varchar6("ledger_id").notNull().default("PRIMARY"),
   // Linked to glLedgers
+  importId: varchar6("import_id"),
+  // FK to glJournalImports
   batchId: varchar6("batch_id"),
   // Link to Batch
+  batchName: varchar6("batch_name"),
+  // Oracle parity: batch name separate from journal description
   createdBy: varchar6("created_by"),
   // User who created the journal
   periodId: varchar6("period_id"),
   // Linked to glPeriods
+  category: varchar6("category").default("Manual"),
+  // Journal Category (Oracle parity)
   description: text6("description"),
   currencyCode: varchar6("currency_code").notNull().default("USD"),
   source: varchar6("source").default("Manual"),
@@ -3944,6 +3972,10 @@ var glJournals = pgTable6("gl_journals_v2", {
   // Not Required, Required, Pending, Approved, Rejected
   reversalJournalId: varchar6("reversal_journal_id"),
   // Link to the reversal entry
+  reversalPeriodId: varchar6("reversal_period_id"),
+  // Period for reversal
+  reversalDate: timestamp6("reversal_date"),
+  // Specific reversal date
   autoReverse: boolean6("auto_reverse").default(false),
   // Auto-reverse in next period
   postedDate: timestamp6("posted_date"),
@@ -3953,12 +3985,13 @@ var insertGlJournalSchema = createInsertSchema6(glJournals).extend({
   journalNumber: z5.string().min(1),
   ledgerId: z5.string().optional(),
   // Optional for now to support legacy calls defaulting to PRIMARY
+  importId: z5.string().optional().nullable(),
   batchId: z5.string().optional().nullable(),
   periodId: z5.string().optional(),
   description: z5.string().optional(),
   currencyCode: z5.string().optional().default("USD"),
   source: z5.string().optional(),
-  status: z5.enum(["Draft", "Processing", "Posted"]).optional(),
+  status: z5.enum(["Draft", "Processing", "Posted", "Error"]).optional(),
   approvalStatus: z5.enum(["Not Required", "Required", "Pending", "Approved", "Rejected"]).optional(),
   reversalJournalId: z5.string().optional().nullable(),
   postedDate: z5.date().optional().nullable()
@@ -3999,7 +4032,20 @@ var glJournalLines = pgTable6("gl_journal_lines_v2", {
   exchangeRate: numeric6("exchange_rate", { precision: 20, scale: 10 }).default("1"),
   // Legacy / Convenience columns mapped to Accounted for backward compat
   debit: numeric6("debit", { precision: 18, scale: 2 }).default("0"),
-  credit: numeric6("credit", { precision: 18, scale: 2 }).default("0")
+  credit: numeric6("credit", { precision: 18, scale: 2 }).default("0"),
+  // Oracle Parity: Tax, Reference, and DFF attributes
+  taxCode: varchar6("tax_code"),
+  reference: varchar6("reference"),
+  attribute1: varchar6("attribute1"),
+  attribute2: varchar6("attribute2"),
+  attribute3: varchar6("attribute3"),
+  attribute4: varchar6("attribute4"),
+  attribute5: varchar6("attribute5"),
+  attribute6: varchar6("attribute6"),
+  attribute7: varchar6("attribute7"),
+  attribute8: varchar6("attribute8"),
+  attribute9: varchar6("attribute9"),
+  attribute10: varchar6("attribute10")
 });
 var insertGlJournalLineSchema = createInsertSchema6(glJournalLines).extend({
   journalId: z5.string().min(1),
@@ -4076,6 +4122,13 @@ var glLedgers = pgTable6("gl_ledgers_v2", {
   description: text6("description"),
   ledgerCategory: varchar6("ledger_category").default("PRIMARY"),
   isActive: boolean6("is_active").default(true),
+  // Oracle Parity additions
+  legalEntityId: varchar6("legal_entity_id"),
+  // Link to glLegalEntities
+  accountingMethod: varchar6("accounting_method").default("Accrual"),
+  // Accrual | Cash | None
+  chartOfAccountsId: varchar6("chart_of_accounts_id"),
+  // COA structure reference
   createdAt: timestamp6("created_at").default(sql6`now()`)
 });
 var insertGlLedgerSchema = createInsertSchema6(glLedgers);
@@ -4323,6 +4376,25 @@ var glCurrencies = pgTable6("gl_currencies", {
   isActive: boolean6("is_active").default(true)
 });
 var insertGlCurrencySchema = createInsertSchema6(glCurrencies);
+var glRateTypes = pgTable6("gl_rate_types", {
+  id: varchar6("id").primaryKey().default(sql6`gen_random_uuid()`),
+  rateType: varchar6("rate_type").notNull().unique(),
+  // Spot, Corporate, User
+  description: text6("description"),
+  isActive: boolean6("is_active").default(true),
+  createdAt: timestamp6("created_at").default(sql6`now()`)
+});
+var insertGlRateTypeSchema = createInsertSchema6(glRateTypes);
+var glAccountingCalendars = pgTable6("gl_accounting_calendars", {
+  id: varchar6("id").primaryKey().default(sql6`gen_random_uuid()`),
+  name: varchar6("name").notNull().unique(),
+  description: text6("description"),
+  periodType: varchar6("period_type").default("Monthly"),
+  // Monthly, 4-4-5, Quarterly
+  isActive: boolean6("is_active").default(true),
+  createdAt: timestamp6("created_at").default(sql6`now()`)
+});
+var insertGlAccountingCalendarSchema = createInsertSchema6(glAccountingCalendars);
 var glDailyRates = pgTable6("gl_daily_rates", {
   id: varchar6("id").primaryKey().default(sql6`gen_random_uuid()`),
   fromCurrency: varchar6("from_currency").notNull(),
@@ -4331,7 +4403,7 @@ var glDailyRates = pgTable6("gl_daily_rates", {
   // GBP
   conversionDate: timestamp6("conversion_date").notNull(),
   conversionType: varchar6("conversion_type").default("Spot"),
-  // Spot, Corporate, User
+  // FK to glRateTypes
   rate: numeric6("rate", { precision: 20, scale: 10 }).notNull(),
   createdAt: timestamp6("created_at").default(sql6`now()`)
 }, (table) => {

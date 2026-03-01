@@ -1,8 +1,8 @@
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { apiRequest } from "@/lib/queryClient";
-interface GlLedger { id: string; name?: string; currency?: string; [key: string]: any; }
-import { useQuery } from "@tanstack/react-query";
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+interface GlLedger { id: string; name?: string; currencyCode?: string;[key: string]: any; }
 
 interface LedgerContextType {
     currentLedgerId: string;
@@ -12,27 +12,55 @@ interface LedgerContextType {
     activeLedger: GlLedger | undefined;
 }
 
+const STORAGE_KEY = "nexusai_selected_ledger_id";
+
+const GL_QUERY_KEYS = [
+    "/api/gl/journals",
+    "/api/gl/reporting/trial-balance",
+    "/api/gl/reporting/drill-down",
+    "/api/gl/reporting/explain-variance",
+    "/api/gl/periods",
+    "/api/gl/revaluations",
+    "/api/gl/allocations",
+    "/api/gl/budget-balances",
+    "/api/gl/stats",
+    "/api/gl/consolidation/variance",
+    "/api/gl/consolidation/history",
+];
+
 const LedgerContext = createContext<LedgerContextType | undefined>(undefined);
 
 export function LedgerProvider({ children }: { children: ReactNode }) {
-    // Default to PRIMARY if no preference saved
-    const [currentLedgerId, setCurrentLedgerId] = useState<string>("PRIMARY");
+    const queryClient = useQueryClient();
 
-    // Fetch available ledgers
-    const { data: ledgers, isLoading } = useQuery<GlLedger[]>({
-        queryKey: ["/api/finance/gl/ledgers"],
-        // If API doesn't exist yet, we might need to mock or ensure it exists.
-        // Assuming listGlLedgers endpoint exists (it was in storage.ts interface)
+    // Restore from localStorage, fallback to PRIMARY
+    const [currentLedgerId, _setCurrentLedgerId] = useState<string>(() => {
+        try { return localStorage.getItem(STORAGE_KEY) || "PRIMARY"; } catch { return "PRIMARY"; }
     });
 
-    const activeLedger = ledgers?.find(l => l.id === currentLedgerId);
+    // Fetch available ledgers from backend
+    const { data: ledgers, isLoading } = useQuery<GlLedger[]>({
+        queryKey: ["/api/finance/gl/ledgers"],
+        staleTime: 5 * 60 * 1000, // ledgers rarely change
+    });
 
-    const value = {
+    const activeLedger = (ledgers || []).find(l => l.id === currentLedgerId);
+
+    const setCurrentLedgerId = useCallback((id: string) => {
+        _setCurrentLedgerId(id);
+        try { localStorage.setItem(STORAGE_KEY, id); } catch { /* ignore */ }
+        // Invalidate all GL queries so they re-fetch with the new ledger
+        GL_QUERY_KEYS.forEach(key => {
+            queryClient.invalidateQueries({ queryKey: [key] });
+        });
+    }, [queryClient]);
+
+    const value: LedgerContextType = {
         currentLedgerId,
         setCurrentLedgerId,
         ledgers: ledgers || [],
         isLoading,
-        activeLedger
+        activeLedger,
     };
 
     return (
@@ -44,8 +72,6 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
 
 export function useLedger() {
     const context = useContext(LedgerContext);
-    if (context === undefined) {
-        throw new Error("useLedger must be used within a LedgerProvider");
-    }
+    if (!context) throw new Error("useLedger must be used within a LedgerProvider");
     return context;
 }

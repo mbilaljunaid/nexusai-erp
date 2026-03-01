@@ -53,19 +53,38 @@ export type GlPeriod = typeof glPeriods.$inferSelect;
 
 
 // 3. Journal Headers
+export const glJournalImports = pgTable("gl_journal_imports", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    source: varchar("source").notNull(), // AP, AR, Payroll, etc.
+    batchName: varchar("batch_name"),
+    ledgerId: varchar("ledger_id").notNull(),
+    status: varchar("status").default("New"), // New, Processing, Error, Imported
+    errorMessage: text("error_message"),
+    importedLinesCount: integer("imported_lines_count").default(0),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+export const insertGlJournalImportSchema = createInsertSchema(glJournalImports);
+export type InsertGlJournalImport = z.infer<typeof insertGlJournalImportSchema>;
+export type GlJournalImport = typeof glJournalImports.$inferSelect;
+
 export const glJournals = pgTable("gl_journals_v2", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     journalNumber: varchar("journal_number").notNull().unique(),
     ledgerId: varchar("ledger_id").notNull().default("PRIMARY"), // Linked to glLedgers
+    importId: varchar("import_id"), // FK to glJournalImports
     batchId: varchar("batch_id"), // Link to Batch
+    batchName: varchar("batch_name"), // Oracle parity: batch name separate from journal description
     createdBy: varchar("created_by"), // User who created the journal
     periodId: varchar("period_id"), // Linked to glPeriods
+    category: varchar("category").default("Manual"), // Journal Category (Oracle parity)
     description: text("description"),
     currencyCode: varchar("currency_code").notNull().default("USD"),
     source: varchar("source").default("Manual"), // Manual, AP, AR, etc.
     status: varchar("status").default("Draft"), // Draft, Processing, Posted
     approvalStatus: varchar("approval_status").default("Not Required"), // Not Required, Required, Pending, Approved, Rejected
     reversalJournalId: varchar("reversal_journal_id"), // Link to the reversal entry
+    reversalPeriodId: varchar("reversal_period_id"), // Period for reversal
+    reversalDate: timestamp("reversal_date"), // Specific reversal date
     autoReverse: boolean("auto_reverse").default(false), // Auto-reverse in next period
     postedDate: timestamp("posted_date"),
     createdAt: timestamp("created_at").default(sql`now()`),
@@ -74,12 +93,13 @@ export const glJournals = pgTable("gl_journals_v2", {
 export const insertGlJournalSchema = createInsertSchema(glJournals).extend({
     journalNumber: z.string().min(1),
     ledgerId: z.string().optional(), // Optional for now to support legacy calls defaulting to PRIMARY
+    importId: z.string().optional().nullable(),
     batchId: z.string().optional().nullable(),
     periodId: z.string().optional(),
     description: z.string().optional(),
     currencyCode: z.string().optional().default("USD"),
     source: z.string().optional(),
-    status: z.enum(["Draft", "Processing", "Posted"]).optional(),
+    status: z.enum(["Draft", "Processing", "Posted", "Error"]).optional(),
     approvalStatus: z.enum(["Not Required", "Required", "Pending", "Approved", "Rejected"]).optional(),
     reversalJournalId: z.string().optional().nullable(),
     postedDate: z.date().optional().nullable(),
@@ -134,6 +154,20 @@ export const glJournalLines = pgTable("gl_journal_lines_v2", {
     // Legacy / Convenience columns mapped to Accounted for backward compat
     debit: numeric("debit", { precision: 18, scale: 2 }).default("0"),
     credit: numeric("credit", { precision: 18, scale: 2 }).default("0"),
+
+    // Oracle Parity: Tax, Reference, and DFF attributes
+    taxCode: varchar("tax_code"),
+    reference: varchar("reference"),
+    attribute1: varchar("attribute1"),
+    attribute2: varchar("attribute2"),
+    attribute3: varchar("attribute3"),
+    attribute4: varchar("attribute4"),
+    attribute5: varchar("attribute5"),
+    attribute6: varchar("attribute6"),
+    attribute7: varchar("attribute7"),
+    attribute8: varchar("attribute8"),
+    attribute9: varchar("attribute9"),
+    attribute10: varchar("attribute10"),
 });
 
 export const insertGlJournalLineSchema = createInsertSchema(glJournalLines).extend({
@@ -236,6 +270,10 @@ export const glLedgers = pgTable("gl_ledgers_v2", {
     description: text("description"),
     ledgerCategory: varchar("ledger_category").default("PRIMARY"),
     isActive: boolean("is_active").default(true),
+    // Oracle Parity additions
+    legalEntityId: varchar("legal_entity_id"), // Link to glLegalEntities
+    accountingMethod: varchar("accounting_method").default("Accrual"), // Accrual | Cash | None
+    chartOfAccountsId: varchar("chart_of_accounts_id"), // COA structure reference
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -544,12 +582,36 @@ export type InsertGlCurrency = z.infer<typeof insertGlCurrencySchema>;
 export type GlCurrency = typeof glCurrencies.$inferSelect;
 
 // 10. Daily Rates (Multi-Currency)
+export const glRateTypes = pgTable("gl_rate_types", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    rateType: varchar("rate_type").notNull().unique(), // Spot, Corporate, User
+    description: text("description"),
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+export const insertGlRateTypeSchema = createInsertSchema(glRateTypes);
+export type InsertGlRateType = z.infer<typeof insertGlRateTypeSchema>;
+export type GlRateType = typeof glRateTypes.$inferSelect;
+
+
+export const glAccountingCalendars = pgTable("gl_accounting_calendars", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull().unique(),
+    description: text("description"),
+    periodType: varchar("period_type").default("Monthly"), // Monthly, 4-4-5, Quarterly
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+export const insertGlAccountingCalendarSchema = createInsertSchema(glAccountingCalendars);
+export type InsertGlAccountingCalendar = z.infer<typeof insertGlAccountingCalendarSchema>;
+export type GlAccountingCalendar = typeof glAccountingCalendars.$inferSelect;
+
 export const glDailyRates = pgTable("gl_daily_rates", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     fromCurrency: varchar("from_currency").notNull(), // USD
     toCurrency: varchar("to_currency").notNull(), // GBP
     conversionDate: timestamp("conversion_date").notNull(),
-    conversionType: varchar("conversion_type").default("Spot"), // Spot, Corporate, User
+    conversionType: varchar("conversion_type").default("Spot"), // FK to glRateTypes
     rate: numeric("rate", { precision: 20, scale: 10 }).notNull(),
     createdAt: timestamp("created_at").default(sql`now()`),
 }, (table) => {

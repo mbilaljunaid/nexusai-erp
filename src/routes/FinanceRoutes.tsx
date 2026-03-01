@@ -98,6 +98,9 @@ import CoaStructureSetup from "@/pages/gl/CoaStructureSetup";
 import HierarchyManager from "@/pages/gl/HierarchyManager";
 import ConfigurationHub from "@/pages/gl/ConfigurationHub";
 import CalendarSetup from "@/pages/gl/CalendarSetup";
+import GLRateTypes from "@/pages/finance/gl/GLRateTypes";
+import JournalImport from "@/pages/gl/JournalImport";
+
 import AccountingHubWorkbench from "@/pages/gl/config/sla/AccountingHubWorkbench";
 import AdrBuilder from "@/pages/sla/AdrBuilder";
 import SlaDashboard from "@/pages/sla/SlaDashboard";
@@ -126,6 +129,8 @@ import RevenueContractDetail from "@/pages/RevenueContractDetail";
 import RevenuePeriodClose from "@/pages/RevenuePeriodClose";
 
 import AccountAnalysisReport from "@/pages/gl/AccountAnalysisReport";
+import GLInquiry from "@/pages/gl/GLInquiry";
+import GLAllocations from "@/pages/gl/GLAllocations";
 
 // Lease & Contracts
 import LeasePortfolioWorkbench from "@/pages/leases/LeasePortfolioWorkbench";
@@ -256,12 +261,15 @@ export default function FinanceRoutes() {
                 <Route path="/finance/gl/config/posting-rules" component={PostingRulesManager} />
                 <Route path="/finance/gl/config/validations" component={ValidationControls} />
                 <Route path="/finance/gl/journals" component={JournalEntries} />
+                <Route path="/finance/gl/imports" component={JournalImport} />
                 <Route path="/finance/gl/reports/builder" component={FSGBuilder} />
                 <Route path="/finance/gl/reports" component={FinancialReports} />
                 <Route path="/finance/gl/reports/account-analysis" component={AccountAnalysisReport} />
+                <Route path="/finance/gl/inquiry" component={GLInquiry} />
                 <Route path="/finance/gl/audit" component={AuditLogsPage} />
                 <Route path="/finance/gl/period-close" component={CloseDashboard} />
                 <Route path="/finance/gl/budgets" component={BudgetManager} />
+                <Route path="/finance/gl/allocations" component={GLAllocations} />
                 <Route path="/finance/gl/cvr" component={CVRManager} />
                 <Route path="/finance/gl/data-access" component={DataAccessManager} />
                 <Route path="/finance/gl/trial-balance" component={TrialBalance} />
@@ -285,6 +293,8 @@ export default function FinanceRoutes() {
                 <Route path="/finance/sla/reconciliation" component={SlaReconciliation} />
                 <Route path="/finance/gl/config/translation" component={TranslationRules} />
                 <Route path="/finance/gl/config/sources" component={SourceCategorySetup} />
+                <Route path="/finance/gl/config/rate-types" component={GLRateTypes} />
+
                 <Route path="/finance/gl/config/controls" component={LedgerControlSetup} />
                 <Route path="/finance/gl/intercompany" component={IntercompanyRules} />
                 <Route path="/finance/gl/revaluation" component={Revaluation} />

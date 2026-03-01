@@ -9,11 +9,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { Loader2, Plus, Settings, Shield, Globe, Landmark } from "lucide-react";
 
 export default function LedgerSetup() {
     const { toast } = useToast();
     const [isCreating, setIsCreating] = useState(false);
+    const [formData, setFormData] = useState({
+        name: "",
+        currency: "USD",
+        ledgerType: "PRIMARY",
+        legalEntityId: "",
+        accountingMethod: "ACCRUAL"
+    });
 
     const { data: ledgers, isLoading } = useQuery<any[]>({
         queryKey: ["/api/finance/gl/ledgers"],
@@ -54,9 +63,77 @@ export default function LedgerSetup() {
                     <h1 className="text-3xl font-bold tracking-tight">Ledger Architecture</h1>
                     <p className="text-muted-foreground italic">Oracle Foundation: Supported Ledger Types (Primary, Secondary, Reporting)</p>
                 </div>
-                <Button onClick={() => setIsCreating(true)} className="gap-2">
-                    <Plus className="h-4 w-4" /> New Ledger
-                </Button>
+                <Dialog open={isCreating} onOpenChange={setIsCreating}>
+                    <DialogTrigger asChild>
+                        <Button className="gap-2">
+                            <Plus className="h-4 w-4" /> New Ledger
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Initialize New Ledger</DialogTitle>
+                            <DialogDescription>Define the core accounting treatment for this ledger.</DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4 py-4">
+                            <div className="space-y-2">
+                                <Label>Ledger Name</Label>
+                                <Input
+                                    placeholder="e.g. US Corporate Primary"
+                                    value={formData.name}
+                                    onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Ledger Type</Label>
+                                    <Select value={formData.ledgerType} onValueChange={(val) => setFormData({ ...formData, ledgerType: val })}>
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="PRIMARY">Primary</SelectItem>
+                                            <SelectItem value="SECONDARY">Secondary</SelectItem>
+                                            <SelectItem value="REPORTING">Reporting</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Currency</Label>
+                                    <Input
+                                        placeholder="e.g. USD, EUR"
+                                        value={formData.currency}
+                                        onChange={e => setFormData({ ...formData, currency: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Accounting Method</Label>
+                                    <Select value={formData.accountingMethod} onValueChange={(val) => setFormData({ ...formData, accountingMethod: val })}>
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="ACCRUAL">Accrual</SelectItem>
+                                            <SelectItem value="CASH">Cash</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Legal Entity ID</Label>
+                                    <Input
+                                        placeholder="Optional (if LE-specific)"
+                                        value={formData.legalEntityId}
+                                        onChange={e => setFormData({ ...formData, legalEntityId: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setIsCreating(false)}>Cancel</Button>
+                            <Button disabled={createLedgerMutation.isPending} onClick={() => createLedgerMutation.mutate(formData)}>
+                                {createLedgerMutation.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+                                Create Ledger
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
 
             <Tabs defaultValue="ledgers" className="space-y-4">

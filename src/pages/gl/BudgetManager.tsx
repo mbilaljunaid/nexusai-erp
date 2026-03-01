@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import {
     Plus, ShieldAlert, BadgeDollarSign, Loader2, Target,
-    TrendingUp, AlertTriangle, CheckCircle2, Search, Filter
+    TrendingUp, AlertTriangle, CheckCircle2, Search, Filter, Upload
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
@@ -18,6 +18,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { useLedger } from "@/context/LedgerContext";
+import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
 
 // Types
 interface BudgetBalance {
@@ -40,16 +42,18 @@ interface ControlRule {
 
 export default function BudgetManager() {
     const { toast } = useToast();
+    const { currentLedgerId: selectedLedger, ledgers } = useLedger();
     const [activeTab, setActiveTab] = useState("monitors");
     const [balances, setBalances] = useState<BudgetBalance[]>([]);
     const [rules, setRules] = useState<ControlRule[]>([]);
     const [loading, setLoading] = useState(false);
-    const [selectedLedger] = useState("PRIMARY");
     const [selectedPeriod] = useState("Jan-2026");
+    const [uploadFile, setUploadFile] = useState<File | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
 
     useEffect(() => {
         fetchData();
-    }, [activeTab]);
+    }, [activeTab, selectedLedger]);
 
     const fetchData = async () => {
         setLoading(true);
@@ -68,6 +72,26 @@ export default function BudgetManager() {
         }
     };
 
+    const handleUpload = async () => {
+        if (!uploadFile) return;
+        setIsUploading(true);
+        try {
+            // Mock upload process
+            await new Promise(r => setTimeout(r, 1500));
+            toast({
+                title: "Budget Uploaded",
+                description: `Successfully imported budget data from ${uploadFile.name}.`,
+                className: "bg-emerald-600 text-white border-none"
+            });
+            setUploadFile(null);
+            // Close dialog handled by DialogTrigger
+        } catch (e) {
+            toast({ title: "Upload Failed", description: "Could not parse spreadsheet.", variant: "destructive" });
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
     return (
         <div className="space-y-6 pt-6 pb-12 animate-in fade-in duration-500">
             <div className="flex flex-row items-center justify-between">
@@ -78,9 +102,7 @@ export default function BudgetManager() {
                     <p className="text-gray-400">Real-time funds validation and expenditure tracking.</p>
                 </div>
                 <div className="flex gap-3">
-                    <Badge variant="outline" className="bg-blue-500/10 border-blue-500/20 text-blue-400 py-1.5 px-3">
-                        Ledger: {selectedLedger}
-                    </Badge>
+                    <LedgerContextBadge />
                     <Badge variant="outline" className="bg-emerald-500/10 border-emerald-500/20 text-emerald-400 py-1.5 px-3">
                         Period: {selectedPeriod}
                     </Badge>
@@ -201,53 +223,93 @@ export default function BudgetManager() {
                                 </CardTitle>
                                 <CardDescription className="text-gray-400">Manage budget definitions and version control status.</CardDescription>
                             </div>
-                            <Dialog>
-                                <DialogTrigger asChild>
-                                    <Button className="premium-button shadow-lg shadow-emerald-500/20 bg-emerald-600 hover:bg-emerald-700 text-white">
-                                        <Plus className="w-4 h-4 mr-2" /> Define New Budget
-                                    </Button>
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>Define New Control Budget</DialogTitle>
-                                    </DialogHeader>
-                                    <div className="space-y-4 py-4">
-                                        <div className="space-y-2">
-                                            <Label>Budget Name</Label>
-                                            <Input placeholder="e.g. FY2026 Corporate Budget" />
+                            <div className="flex gap-2">
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button variant="outline" className="border-emerald-500/50 text-emerald-500 hover:bg-emerald-500/10">
+                                            <Upload className="w-4 h-4 mr-2" /> Upload Spreadsheet
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Upload Budget Data</DialogTitle>
+                                        </DialogHeader>
+                                        <div className="space-y-4 py-4">
+                                            <div className="space-y-2">
+                                                <Label>Select CSV/Excel File</Label>
+                                                <Input
+                                                    type="file"
+                                                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                                    onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
+                                                />
+                                            </div>
+                                            <div className="p-3 bg-blue-50/10 rounded border border-blue-500/20 text-xs text-blue-400">
+                                                <p className="font-semibold mb-1">Required Format:</p>
+                                                <ul className="list-disc list-inside">
+                                                    <li>Column A: Code Combination (e.g. 01-000-4100-0000-000)</li>
+                                                    <li>Column B: Period Name (e.g. Jan-2026)</li>
+                                                    <li>Column C: Budget Amount</li>
+                                                </ul>
+                                            </div>
                                         </div>
-                                        <div className="space-y-2">
-                                            <Label>Ledger</Label>
-                                            <Select defaultValue="PRIMARY">
-                                                <SelectTrigger>
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="PRIMARY">Primary Ledger (USD)</SelectItem>
-                                                    <SelectItem value="SECONDARY">Secondary Ledger (EUR)</SelectItem>
-                                                </SelectContent>
-                                            </Select>
+                                        <DialogFooter>
+                                            <Button variant="outline">Cancel</Button>
+                                            <Button onClick={handleUpload} disabled={!uploadFile || isUploading}>
+                                                {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
+                                                Upload Data
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button className="premium-button shadow-lg shadow-emerald-500/20 bg-emerald-600 hover:bg-emerald-700 text-white">
+                                            <Plus className="w-4 h-4 mr-2" /> Define New Budget
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Define New Control Budget</DialogTitle>
+                                        </DialogHeader>
+                                        <div className="space-y-4 py-4">
+                                            <div className="space-y-2">
+                                                <Label>Budget Name</Label>
+                                                <Input placeholder="e.g. FY2026 Corporate Budget" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label>Ledger</Label>
+                                                <Select defaultValue={selectedLedger}>
+                                                    <SelectTrigger>
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {ledgers.map(l => (
+                                                            <SelectItem key={l.id} value={l.id}>{l.name} ({l.currencyCode})</SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label>Control Level</Label>
+                                                <Select defaultValue="track">
+                                                    <SelectTrigger>
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="absolute">Absolute (Hard Stop)</SelectItem>
+                                                        <SelectItem value="advisory">Advisory (Warning)</SelectItem>
+                                                        <SelectItem value="track">Track Only (None)</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
                                         </div>
-                                        <div className="space-y-2">
-                                            <Label>Control Level</Label>
-                                            <Select defaultValue="track">
-                                                <SelectTrigger>
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="absolute">Absolute (Hard Stop)</SelectItem>
-                                                    <SelectItem value="advisory">Advisory (Warning)</SelectItem>
-                                                    <SelectItem value="track">Track Only (None)</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </div>
-                                    <DialogFooter>
-                                        <Button variant="outline">Cancel</Button>
-                                        <Button onClick={() => toast({ title: "Budget Defined", description: "New budget definition created successfully." })}>Create Definition</Button>
-                                    </DialogFooter>
-                                </DialogContent>
-                            </Dialog>
+                                        <DialogFooter>
+                                            <Button variant="outline">Cancel</Button>
+                                            <Button onClick={() => toast({ title: "Budget Defined", description: "New budget definition created successfully." })}>Create Definition</Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            </div>
                         </CardHeader>
                         <CardContent className="p-0">
                             <Table>

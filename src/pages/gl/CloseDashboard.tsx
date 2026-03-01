@@ -11,10 +11,13 @@ import { useToast } from "@/hooks/use-toast";
 import { CloseDependencyGraph } from "@/components/finance/CloseDependencyGraph";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Link } from "wouter";
+import { useLedger } from "@/context/LedgerContext";
+import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
+
 
 export default function CloseDashboard() {
     const { toast } = useToast();
-    const [selectedLedger, setSelectedLedger] = useState("PRIMARY");
+    const { currentLedgerId: selectedLedger, activeLedger } = useLedger();
     const [selectedPeriod, setSelectedPeriod] = useState("Jan-2026"); // TODO: Dynamic
     const [newTask, setNewTask] = useState({ taskName: "", description: "", dueDate: "" });
 
@@ -150,8 +153,14 @@ export default function CloseDashboard() {
     return (
         <StandardPage
             title="General Ledger Command Center"
-            description="Manage journals, reporting, and AI orchestration."
+            description={
+                <div className="flex items-center gap-2">
+                    <span>Manage journals, reporting, and AI orchestration.</span>
+                    <LedgerContextBadge />
+                </div>
+            }
             breadcrumbs={[{ label: "Finance", href: "/finance" }, { label: "General Ledger" }]}
+
             actions={
                 <div className="flex gap-2">
                     <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>

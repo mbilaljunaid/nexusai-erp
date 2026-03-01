@@ -13,6 +13,9 @@ import { Loader2, Play, RefreshCw, BarChart3 } from "lucide-react";
 import { CodeCombinationPicker } from "@/components/gl/CodeCombinationPicker";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
+import { useLedger } from "@/context/LedgerContext";
+import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
+
 
 type RevaluationRun = {
     id: string;
@@ -35,10 +38,10 @@ type GlPeriod = {
 export default function Revaluation() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const { currentLedgerId: ledgerId, activeLedger } = useLedger();
     const [isCreateOpen, setIsCreateOpen] = useState(false);
 
     // Form State
-    const [ledgerId, setLedgerId] = useState("primary-ledger-001");
     const [periodName, setPeriodName] = useState("");
     const [currencyCode, setCurrencyCode] = useState("");
     const [rateType, setRateType] = useState("Spot");
@@ -56,6 +59,14 @@ export default function Revaluation() {
 
     const { data: periods } = useQuery<GlPeriod[]>({
         queryKey: ["/api/gl/periods"],
+    });
+
+    const { data: currencies } = useQuery<any[]>({
+        queryKey: ["/api/finance/currencies"],
+        queryFn: async () => {
+            const res = await apiRequest("GET", "/api/finance/currencies");
+            return res.json();
+        }
     });
 
     const runMutation = useMutation({
@@ -112,8 +123,12 @@ export default function Revaluation() {
             <div className="flex justify-between items-center">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight">Revaluation</h2>
-                    <p className="text-muted-foreground">Manage foreign currency revaluation runs and unrealized gain/loss.</p>
+                    <div className="text-muted-foreground mt-2 flex items-center gap-2">
+                        <span>Manage foreign currency revaluation runs and unrealized gain/loss.</span>
+                        <LedgerContextBadge />
+                    </div>
                 </div>
+
                 <Button onClick={() => setIsCreateOpen(true)}>
                     <Play className="mr-2 h-4 w-4" /> Run Revaluation
                 </Button>
@@ -122,16 +137,9 @@ export default function Revaluation() {
             <div className="flex items-center gap-4 bg-muted/30 p-4 rounded-lg">
                 <div className="flex-1 max-w-sm">
                     <Label htmlFor="ledger-select">Active Ledger</Label>
-                    <Select value={ledgerId} onValueChange={setLedgerId}>
-                        <SelectTrigger id="ledger-select">
-                            <SelectValue placeholder="Select Ledger" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {ledgers?.map(l => (
-                                <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    <div className="mt-1 px-3 py-2 border rounded-md bg-muted text-sm font-medium">
+                        {activeLedger?.name || ledgerId}
+                    </div>
                 </div>
                 <div className="flex-1 max-w-sm">
                     <p className="text-xs text-muted-foreground mt-6">
@@ -203,16 +211,9 @@ export default function Revaluation() {
                     <div className="grid grid-cols-2 gap-6 py-4">
                         <div className="space-y-2">
                             <Label>Ledger</Label>
-                            <Select value={ledgerId} onValueChange={setLedgerId} disabled>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select Ledger" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {ledgers?.map(l => (
-                                        <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <div className="px-3 py-2 border rounded-md bg-muted text-sm font-medium">
+                                {activeLedger?.name || ledgerId}
+                            </div>
                         </div>
 
                         <div className="space-y-2">
@@ -231,16 +232,16 @@ export default function Revaluation() {
 
                         <div className="space-y-2">
                             <Label>Currency</Label>
-                            {/* In prod, fetch currencies */}
                             <Select value={currencyCode} onValueChange={setCurrencyCode}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select Currency" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="EUR">Euro (EUR)</SelectItem>
-                                    <SelectItem value="GBP">British Pound (GBP)</SelectItem>
-                                    <SelectItem value="CAD">Canadian Dollar (CAD)</SelectItem>
-                                    <SelectItem value="JPY">Japanese Yen (JPY)</SelectItem>
+                                    {currencies?.map((c: any) => (
+                                        <SelectItem key={c.code} value={c.code}>
+                                            {c.name} ({c.code})
+                                        </SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
                         </div>

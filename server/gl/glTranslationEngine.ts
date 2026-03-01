@@ -1,4 +1,4 @@
-import { db } from "../db/index";
+import { db } from "../db";
 import { eq, and } from "drizzle-orm";
 import {
     glBalances, glJournals, glJournalLines, glDailyRates, glLedgers, glCodeCombinations

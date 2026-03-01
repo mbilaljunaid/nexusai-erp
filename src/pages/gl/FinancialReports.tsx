@@ -29,6 +29,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
 
 interface ReportDefinition {
     id: string;
@@ -147,9 +148,10 @@ export default function FinancialReports() {
                     <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-700 to-cyan-600 bg-clip-text text-transparent">
                         Financial Reporting Center
                     </h1>
-                    <p className="text-muted-foreground mt-1 text-sm">
-                        Enterprise Financial Intelligence & Analysis
-                    </p>
+                    <div className="flex items-center gap-2 mt-1">
+                        <span className="text-muted-foreground text-sm">Enterprise Financial Intelligence & Analysis</span>
+                        <LedgerContextBadge />
+                    </div>
                 </div>
                 <div className="flex gap-2">
                     <Button variant="secondary" onClick={() => setIsAnalysisOpen(true)}>

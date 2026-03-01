@@ -3,6 +3,7 @@ import { AuditLogViewer } from "@/components/gl/AuditLogViewer";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import { Link } from "wouter";
+import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
 
 export default function AuditLogsPage() {
     return (
@@ -15,9 +16,10 @@ export default function AuditLogsPage() {
                 </Link>
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Audit & Compliance</h1>
-                    <p className="text-muted-foreground mt-1">
-                        Review immutable logs and manage data access.
-                    </p>
+                    <div className="flex items-center gap-2 mt-1">
+                        <span className="text-muted-foreground">Review immutable logs and manage data access.</span>
+                        <LedgerContextBadge />
+                    </div>
                 </div>
             </div>
 
