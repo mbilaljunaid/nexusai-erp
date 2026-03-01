@@ -146,12 +146,7 @@ export class CloseEngine {
 
         if (!period) throw new Error("Period not found in calendar");
 
-        // Find Pending Events
-        // Filter by Event Class -> Application mapping if possible.
-        // For MVP, we check ALL SLA Headers for this Ledger/Period.
-        // Ideally we filter `slaJournalHeaders` where `eventClassId` belongs to `applicationId`.
-        // Assuming we can check all for now or if appId='GL' we check all.
-
+        // 1. Check pending SLA events
         const conditions = [
             eq(slaJournalHeaders.ledgerId, ledgerId),
             ne(slaJournalHeaders.status, "Final"), // Not accounted
@@ -164,6 +159,32 @@ export class CloseEngine {
 
         if (pendingEvents.length > 0) {
             throw new Error(`Cannot close period ${periodName}. Found ${pendingEvents.length} unaccounted events.`);
+        }
+
+        // 2. Enterprise Parity: Deep Subledger Validation Checks
+        if (applicationId === 'GL' || applicationId === 'AP') {
+            const { apInvoices } = await import("../../../shared/schema/ap");
+            const pendingAp = await db.select({ id: apInvoices.id }).from(apInvoices).where(and(
+                ne(apInvoices.accountingStatus, "ACCOUNTED"),
+                gte(apInvoices.glDate, new Date(period.startDate)),
+                lt(apInvoices.glDate, new Date(period.endDate))
+            ));
+            if (pendingAp.length > 0) {
+                throw new Error(`Cannot close period ${periodName}. Found ${pendingAp.length} unaccounted AP Invoices preventing GL close.`);
+            }
+        }
+
+        if (applicationId === 'GL' || applicationId === 'AR') {
+            const { arInvoices } = await import("../../../shared/schema/ar");
+            const pendingAr = await db.select({ id: arInvoices.id }).from(arInvoices).where(and(
+                ne(arInvoices.glStatus, "Posted"),
+                ne(arInvoices.glStatus, "Created"), // Some implementations use Created vs Posted
+                gte(arInvoices.glDate, new Date(period.startDate)),
+                lt(arInvoices.glDate, new Date(period.endDate))
+            ));
+            if (pendingAr.length > 0) {
+                throw new Error(`Cannot close period ${periodName}. Found ${pendingAr.length} unaccounted AR Invoices preventing GL close.`);
+            }
         }
 
         return true;

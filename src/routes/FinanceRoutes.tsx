@@ -16,6 +16,7 @@ import APInvoices from "@/pages/finance/ap/APInvoices";
 import APInvoiceEntry from "@/pages/finance/ap/APInvoiceEntry";
 import APInvoiceDetail from "@/pages/finance/ap/APInvoiceDetail";
 import APDashboard from "@/pages/finance/ap/APDashboard";
+import GLDashboard from "@/pages/finance/gl/GLDashboard";
 import APSuppliers from "@/pages/finance/ap/APSuppliers";
 import APSupplierDetail from "@/pages/finance/ap/APSupplierDetail";
 import APWithholdingTax from "@/pages/finance/ap/APWithholdingTax";
@@ -248,15 +249,7 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ar/collections" component={CollectionsWorkbench} />
                 <Route path="/finance/ic/disputes" component={ICDisputeWorkbench} />
 
-                <Route path="/finance/gl" component={() => {
-                    const [loc, setLocation] = useLocation();
-                    useEffect(() => {
-                        if (loc === "/finance/gl" || loc === "/finance/gl/") {
-                            setLocation("/finance/gl/journals");
-                        }
-                    }, [loc, setLocation]);
-                    return null;
-                }} />
+                <Route path="/finance/gl" component={GLDashboard} />
                 <Route path="/finance/gl/journals/new" component={JournalEntry} />
                 <Route path="/finance/gl/journals/wizard" component={JournalWizard} />
                 <Route path="/finance/gl/journals/approvals" component={JournalApprovalHub} />

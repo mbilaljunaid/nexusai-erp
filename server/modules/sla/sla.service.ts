@@ -113,7 +113,7 @@ export class SlaEngine {
         }
 
         // 1.1 Validate Period
-        const appId = "AP";
+        const appId = payload.eventClassId.startsWith("AR") ? "AR" : payload.eventClassId.startsWith("AP") ? "AP" : "GL";
         const isPeriodOpen = await closeEngine.isPeriodOpen(payload.ledgerId, appId, payload.glDate);
         if (!isPeriodOpen) {
             if (trace) trace.steps.push({ stepName: "Period Check", details: `Period Closed for ${payload.glDate}`, outcome: "Skipped" });

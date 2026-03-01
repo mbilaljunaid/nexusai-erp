@@ -95,6 +95,16 @@ export const navigationConfig: SidebarNode[] = [
                 ]
             },
             {
+                id: "company-setup", title: "Company Setup", type: "group", icon: Building, path: "/company-setup",
+                children: [
+                    { id: "ent-dashboard", title: "Overview", type: "link", path: "/company-setup" },
+                    { id: "ent-legal-groups", title: "Legal Groups", type: "link", path: "/company-setup/legal-groups" },
+                    { id: "ent-business-units", title: "Business Units", type: "link", path: "/company-setup/business-units" },
+                    { id: "ent-ledgers", title: "Ledgers", type: "link", path: "/company-setup/ledgers" },
+                    { id: "ent-mappings", title: "Mappings", type: "link", path: "/company-setup/mappings" }
+                ]
+            },
+            {
                 id: "finance", title: "Finance & Accounting", type: "group", icon: DollarSign, path: "/finance",
                 children: [
                     { id: "finance-gl", title: "General Ledger", type: "link", path: "/finance/gl" },

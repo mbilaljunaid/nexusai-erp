@@ -193,7 +193,7 @@ export function StandardTable<T>({
                         <div
                             className="min-w-full"
                             role="grid"
-                            aria-rowcount={paginatedData.length}
+                            aria-rowcount={Number(paginatedData.length)}
                         >
                             <div className="bg-muted/50 border-b border-border" role="rowgroup">
                                 <div className="flex w-full" role="row">

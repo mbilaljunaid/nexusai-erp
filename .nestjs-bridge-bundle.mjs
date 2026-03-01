@@ -189,6 +189,7 @@ __export(schema_exports, {
   arAutoInvoiceStaging: () => arAutoInvoiceStaging,
   arBatchSources: () => arBatchSources,
   arCollectorTasks: () => arCollectorTasks,
+  arConsolidatedStatements: () => arConsolidatedStatements,
   arCustomerAccounts: () => arCustomerAccounts,
   arCustomerBankAccounts: () => arCustomerBankAccounts,
   arCustomerContacts: () => arCustomerContacts,
@@ -205,10 +206,14 @@ __export(schema_exports, {
   arInvoices: () => arInvoices,
   arLockboxBatches: () => arLockboxBatches,
   arLockboxItems: () => arLockboxItems,
+  arPaymentSchedules: () => arPaymentSchedules,
   arPeriodStatuses: () => arPeriodStatuses,
+  arPromisesToPay: () => arPromisesToPay,
   arReceiptApplications: () => arReceiptApplications,
   arReceiptMethods: () => arReceiptMethods,
   arReceipts: () => arReceipts,
+  arRecurringInvoices: () => arRecurringInvoices,
+  arRemittanceBatches: () => arRemittanceBatches,
   arRevenueRules: () => arRevenueRules,
   arRevenueSchedules: () => arRevenueSchedules,
   arSalesCredits: () => arSalesCredits,
@@ -362,6 +367,9 @@ __export(schema_exports, {
   formulas: () => formulas,
   glAccounts: () => glAccounts,
   glAllocations: () => glAllocations,
+  glApprovalDelegations: () => glApprovalDelegations,
+  glApprovalGroupMembers: () => glApprovalGroupMembers,
+  glApprovalGroups: () => glApprovalGroups,
   glApprovalHistory: () => glApprovalHistory,
   glApprovalRules: () => glApprovalRules,
   glAuditLogs: () => glAuditLogs,
@@ -600,6 +608,7 @@ __export(schema_exports, {
   insertArAutoInvoiceStagingSchema: () => insertArAutoInvoiceStagingSchema,
   insertArBatchSourceSchema: () => insertArBatchSourceSchema,
   insertArCollectorTaskSchema: () => insertArCollectorTaskSchema,
+  insertArConsolidatedStatementSchema: () => insertArConsolidatedStatementSchema,
   insertArCustomerAccountSchema: () => insertArCustomerAccountSchema,
   insertArCustomerBankAccountSchema: () => insertArCustomerBankAccountSchema,
   insertArCustomerContactSchema: () => insertArCustomerContactSchema,
@@ -616,10 +625,14 @@ __export(schema_exports, {
   insertArInvoiceSchema: () => insertArInvoiceSchema,
   insertArLockboxBatchSchema: () => insertArLockboxBatchSchema,
   insertArLockboxItemSchema: () => insertArLockboxItemSchema,
+  insertArPaymentScheduleSchema: () => insertArPaymentScheduleSchema,
   insertArPeriodStatusSchema: () => insertArPeriodStatusSchema,
+  insertArPromiseToPaySchema: () => insertArPromiseToPaySchema,
   insertArReceiptApplicationSchema: () => insertArReceiptApplicationSchema,
   insertArReceiptMethodSchema: () => insertArReceiptMethodSchema,
   insertArReceiptSchema: () => insertArReceiptSchema,
+  insertArRecurringInvoiceSchema: () => insertArRecurringInvoiceSchema,
+  insertArRemittanceBatchSchema: () => insertArRemittanceBatchSchema,
   insertArRevenueRuleSchema: () => insertArRevenueRuleSchema,
   insertArRevenueScheduleSchema: () => insertArRevenueScheduleSchema,
   insertArSalesCreditSchema: () => insertArSalesCreditSchema,
@@ -765,6 +778,9 @@ __export(schema_exports, {
   insertFormulaSchema: () => insertFormulaSchema,
   insertGlAccountSchema: () => insertGlAccountSchema,
   insertGlAllocationSchema: () => insertGlAllocationSchema,
+  insertGlApprovalDelegationSchema: () => insertGlApprovalDelegationSchema,
+  insertGlApprovalGroupMemberSchema: () => insertGlApprovalGroupMemberSchema,
+  insertGlApprovalGroupSchema: () => insertGlApprovalGroupSchema,
   insertGlApprovalHistorySchema: () => insertGlApprovalHistorySchema,
   insertGlApprovalRuleSchema: () => insertGlApprovalRuleSchema,
   insertGlAutoPostRuleSchema: () => insertGlAutoPostRuleSchema,
@@ -2402,6 +2418,7 @@ var arReceipts = pgTable3("ar_receipts", {
   exchangeRateType: varchar3("exchange_rate_type").default("Corporate"),
   exchangeRateDate: timestamp3("exchange_rate_date"),
   exchangeRate: numeric3("exchange_rate", { precision: 15, scale: 5 }).default("1"),
+  remittanceBatchId: varchar3("remittance_batch_id"),
   createdAt: timestamp3("created_at").default(sql3`now()`)
 });
 var insertArReceiptSchema = createInsertSchema3(arReceipts).extend({
@@ -2422,7 +2439,8 @@ var insertArReceiptSchema = createInsertSchema3(arReceipts).extend({
   exchangeRateDate: z2.preprocess((arg) => {
     if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
   }, z2.date()).optional().nullable(),
-  exchangeRate: z2.string().optional()
+  exchangeRate: z2.string().optional(),
+  remittanceBatchId: z2.string().optional().nullable()
 });
 var arReceiptApplications = pgTable3("ar_receipt_applications", {
   id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
@@ -2438,6 +2456,8 @@ var arReceiptApplications = pgTable3("ar_receipt_applications", {
   // Applied, Reversed
   fxGainLoss: numeric3("fx_gain_loss", { precision: 18, scale: 2 }).default("0"),
   // Realized Gain/Loss
+  earnedDiscountAmount: numeric3("earned_discount_amount", { precision: 18, scale: 2 }).default("0"),
+  unearnedDiscountAmount: numeric3("unearned_discount_amount", { precision: 18, scale: 2 }).default("0"),
   createdAt: timestamp3("created_at").default(sql3`now()`)
 });
 var insertArReceiptApplicationSchema = createInsertSchema3(arReceiptApplications).extend({
@@ -2452,7 +2472,51 @@ var insertArReceiptApplicationSchema = createInsertSchema3(arReceiptApplications
     if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
   }, z2.date()).optional().nullable(),
   status: z2.string().optional(),
-  fxGainLoss: z2.string().optional()
+  fxGainLoss: z2.string().optional(),
+  earnedDiscountAmount: z2.string().optional(),
+  unearnedDiscountAmount: z2.string().optional()
+});
+var arRemittanceBatches = pgTable3("ar_remittance_batches", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  name: varchar3("name").notNull(),
+  bankAccountId: varchar3("bank_account_id"),
+  batchDate: timestamp3("batch_date").notNull(),
+  totalAmount: numeric3("total_amount", { precision: 20, scale: 2 }).notNull(),
+  itemCount: integer3("item_count").notNull(),
+  status: varchar3("status").default("Pending"),
+  // Pending, Cleared
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertArRemittanceBatchSchema = createInsertSchema3(arRemittanceBatches).extend({
+  name: z2.string().min(1),
+  bankAccountId: z2.string().optional().nullable(),
+  batchDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()),
+  totalAmount: z2.string().min(1),
+  itemCount: z2.number().int(),
+  status: z2.string().optional()
+});
+var arPromisesToPay = pgTable3("ar_promises_to_pay", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  customerId: varchar3("customer_id").notNull(),
+  invoiceId: varchar3("invoice_id").notNull(),
+  promisedAmount: numeric3("promised_amount", { precision: 18, scale: 2 }).notNull(),
+  promisedDate: timestamp3("promised_date").notNull(),
+  status: varchar3("status").default("Open"),
+  // Open, Kept, Broken
+  notes: text3("notes"),
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertArPromiseToPaySchema = createInsertSchema3(arPromisesToPay).extend({
+  customerId: z2.string().min(1),
+  invoiceId: z2.string().min(1),
+  promisedAmount: z2.string().min(1),
+  promisedDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()),
+  status: z2.string().optional(),
+  notes: z2.string().optional().nullable()
 });
 var arRevenueRules = pgTable3("ar_revenue_rules", {
   id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
@@ -3028,6 +3092,91 @@ var insertArDocumentSequenceAssignmentSchema = createInsertSchema3(arDocumentSeq
   endDate: z2.preprocess((arg) => {
     if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
   }, z2.date()).optional().nullable()
+});
+var arPaymentSchedules = pgTable3("ar_payment_schedules", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  invoiceId: varchar3("invoice_id").notNull(),
+  installmentNumber: integer3("installment_number").notNull(),
+  dueDate: timestamp3("due_date").notNull(),
+  amountDue: numeric3("amount_due", { precision: 18, scale: 2 }).notNull(),
+  amountApplied: numeric3("amount_applied", { precision: 18, scale: 2 }).default("0"),
+  status: varchar3("status").default("Open"),
+  // Open, Closed
+  createdAt: timestamp3("created_at").default(sql3`now()`),
+  updatedAt: timestamp3("updated_at").default(sql3`now()`)
+});
+var insertArPaymentScheduleSchema = createInsertSchema3(arPaymentSchedules).extend({
+  invoiceId: z2.string().min(1),
+  installmentNumber: z2.number().int(),
+  dueDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()),
+  amountDue: z2.string().min(1),
+  amountApplied: z2.string().optional(),
+  status: z2.string().optional()
+});
+var arRecurringInvoices = pgTable3("ar_recurring_invoices", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  customerId: varchar3("customer_id").notNull(),
+  templateName: varchar3("template_name").notNull(),
+  templateAmount: numeric3("template_amount", { precision: 18, scale: 2 }).notNull(),
+  templateCurrency: varchar3("template_currency").default("USD"),
+  frequency: varchar3("frequency").default("Monthly"),
+  // Weekly, Monthly, Quarterly, Yearly
+  startDate: timestamp3("start_date").notNull(),
+  endDate: timestamp3("end_date"),
+  lastRunDate: timestamp3("last_run_date"),
+  nextRunDate: timestamp3("next_run_date").notNull(),
+  status: varchar3("status").default("Active"),
+  // Active, Paused, Completed, Cancelled
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertArRecurringInvoiceSchema = createInsertSchema3(arRecurringInvoices).extend({
+  customerId: z2.string().min(1),
+  templateName: z2.string().min(1),
+  templateAmount: z2.string().min(1),
+  templateCurrency: z2.string().optional(),
+  frequency: z2.string().optional(),
+  startDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()),
+  endDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()).optional().nullable(),
+  lastRunDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()).optional().nullable(),
+  nextRunDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()),
+  status: z2.string().optional()
+});
+var arConsolidatedStatements = pgTable3("ar_consolidated_statements", {
+  id: varchar3("id").primaryKey().default(sql3`gen_random_uuid()`),
+  customerId: varchar3("customer_id").notNull(),
+  statementDate: timestamp3("statement_date").notNull(),
+  billingCycle: varchar3("billing_cycle").default("Monthly"),
+  balanceForwardAmount: numeric3("balance_forward_amount", { precision: 18, scale: 2 }).default("0"),
+  currentPeriodAmount: numeric3("current_period_amount", { precision: 18, scale: 2 }).default("0"),
+  totalDue: numeric3("total_due", { precision: 18, scale: 2 }).default("0"),
+  dueDate: timestamp3("due_date"),
+  status: varchar3("status").default("Draft"),
+  // Draft, Sent, Paid
+  createdAt: timestamp3("created_at").default(sql3`now()`)
+});
+var insertArConsolidatedStatementSchema = createInsertSchema3(arConsolidatedStatements).extend({
+  customerId: z2.string().min(1),
+  statementDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()),
+  billingCycle: z2.string().optional(),
+  balanceForwardAmount: z2.string().optional(),
+  currentPeriodAmount: z2.string().optional(),
+  totalDue: z2.string().optional(),
+  dueDate: z2.preprocess((arg) => {
+    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+  }, z2.date()).optional().nullable(),
+  status: z2.string().optional()
 });
 
 // shared/schema/crm.ts
@@ -4301,6 +4450,8 @@ var glApprovalRules = pgTable6("gl_approval_rules", {
   approverRole: varchar6("approver_role"),
   // e.g. "Controller"
   approverUserId: varchar6("approver_user_id"),
+  approverGroupId: varchar6("approver_group_id"),
+  // Added for hierarchical groups
   priority: integer6("priority").default(10),
   enabled: boolean6("enabled").default(true),
   createdAt: timestamp6("created_at").default(sql6`now()`),
@@ -4318,6 +4469,35 @@ var glApprovalHistory = pgTable6("gl_approval_history", {
   actionDate: timestamp6("action_date").default(sql6`now()`)
 });
 var insertGlApprovalHistorySchema = createInsertSchema6(glApprovalHistory);
+var glApprovalGroups = pgTable6("gl_approval_groups", {
+  id: varchar6("id").primaryKey().default(sql6`gen_random_uuid()`),
+  name: varchar6("name").notNull().unique(),
+  description: text6("description"),
+  enabled: boolean6("enabled").default(true),
+  createdAt: timestamp6("created_at").default(sql6`now()`)
+});
+var insertGlApprovalGroupSchema = createInsertSchema6(glApprovalGroups);
+var glApprovalGroupMembers = pgTable6("gl_approval_group_members", {
+  id: varchar6("id").primaryKey().default(sql6`gen_random_uuid()`),
+  groupId: varchar6("group_id").notNull(),
+  userId: varchar6("user_id").notNull(),
+  sequence: integer6("sequence").default(1),
+  // Defines sequence if sequential approval needed
+  createdAt: timestamp6("created_at").default(sql6`now()`)
+});
+var insertGlApprovalGroupMemberSchema = createInsertSchema6(glApprovalGroupMembers);
+var glApprovalDelegations = pgTable6("gl_approval_delegations", {
+  id: varchar6("id").primaryKey().default(sql6`gen_random_uuid()`),
+  delegatorId: varchar6("delegator_id").notNull(),
+  // User who is away
+  delegateeId: varchar6("delegatee_id").notNull(),
+  // User who will approve
+  startDate: timestamp6("start_date").notNull(),
+  endDate: timestamp6("end_date").notNull(),
+  enabled: boolean6("enabled").default(true),
+  createdAt: timestamp6("created_at").default(sql6`now()`)
+});
+var insertGlApprovalDelegationSchema = createInsertSchema6(glApprovalDelegations);
 var glDataAccessSets = pgTable6("gl_data_access_sets", {
   id: varchar6("id").primaryKey().default(sql6`gen_random_uuid()`),
   name: varchar6("name").notNull().unique(),

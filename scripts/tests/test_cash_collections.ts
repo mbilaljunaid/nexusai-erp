@@ -1,8 +1,8 @@
 import "dotenv/config";
 import { db } from "../../server/db";
 import { arService } from "../../server/services/ar";
-import { arPromisesToPay, arReceipts, arRemittanceBatches, arInvoices, arReceiptApplications } from "../../shared/schema/ar";
-import { eq } from "drizzle-orm";
+import { arPromisesToPay, arReceipts, arRemittanceBatches, arInvoices, arReceiptApplications, arDisputes } from "../../shared/schema/ar";
+import { eq, sql } from "drizzle-orm";
 
 async function main() {
     console.log("==========================================");
@@ -10,6 +10,34 @@ async function main() {
     console.log("==========================================\n");
 
     try {
+        console.log("📅 0. Ensuring Open GL Period...");
+        const ledgerId = "PRIMARY";
+        const today = new Date();
+        const periodName = `${today.toLocaleString('en-US', { month: 'short' })}-${today.getFullYear()}`;
+        const fiscalYear = today.getFullYear();
+
+        const existingPeriod = await db.execute(sql`SELECT id FROM gl_periods WHERE ledger_id = ${ledgerId} AND period_name = ${periodName}`);
+        if (existingPeriod.length > 0) {
+            await db.execute(sql`UPDATE gl_periods SET status = 'Open' WHERE ledger_id = ${ledgerId} AND period_name = ${periodName}`);
+        } else {
+            await db.execute(sql`
+                INSERT INTO gl_periods (id, ledger_id, period_name, status, start_date, end_date, fiscal_year)
+                VALUES (gen_random_uuid(), ${ledgerId}, ${periodName}, 'Open', date_trunc('month', CURRENT_DATE), (date_trunc('month', CURRENT_DATE) + interval '1 month - 1 day'), ${fiscalYear})
+            `);
+        }
+        // Ensure SLA period statuses are open for AR, AP, GL for tests
+        await db.execute(sql`
+            INSERT INTO sla_period_statuses (id, ledger_id, application_id, period_name, status)
+            VALUES 
+                (gen_random_uuid(), ${ledgerId}, 'AR', ${periodName}, 'Open'),
+                (gen_random_uuid(), ${ledgerId}, 'AP', ${periodName}, 'Open'),
+                (gen_random_uuid(), ${ledgerId}, 'GL', ${periodName}, 'Open')
+            ON CONFLICT (ledger_id, application_id, period_name) 
+            DO UPDATE SET status = 'Open'
+        `);
+
+        console.log(`✅ GL Period '${periodName}' is open.\n`);
+
         console.log("📦 1. Setting up Test Data...");
         const customer = await arService.createCustomer({
             partyType: "ORGANIZATION",
@@ -61,7 +89,7 @@ async function main() {
         // Apply $980 to $1000 invoice, taking $20 earned discount to fully clear it
         const app = await arService.applyReceipt(receipt1.id, inv1.id, 980, { earnedDiscountAmount: 20 });
 
-        if (app.amountApplied !== "980" || app.earnedDiscountAmount !== "20") throw new Error("Discount applied incorrectly");
+        if (Number(app.amountApplied) !== 980 || Number(app.earnedDiscountAmount) !== 20) throw new Error(`Discount applied incorrectly: applied=${app.amountApplied}, earnedDiscount=${app.earnedDiscountAmount}`);
 
         const updatedInv1 = await arService.getInvoice(inv1.id);
         if (updatedInv1?.status !== "Paid") throw new Error(`Invoice status not Paid! Actual: ${updatedInv1?.status}`);
@@ -70,9 +98,10 @@ async function main() {
 
         console.log("🏦 3. Testing Remittance Batches...");
         const batch = await arService.createRemittanceBatch({
-            batchName: `REM-BATCH-${Date.now()}`,
+            name: `REM-BATCH-${Date.now()}`,
             batchDate: new Date(),
-            bankAccountId: "BANK-X"
+            bankAccountId: "BANK-X",
+            totalAmount: "980"
         }, [receipt1.id]);
 
         if (!batch.id) throw new Error("Batch creation failed");
@@ -93,7 +122,7 @@ async function main() {
             customerId: customer.id,
             accountId: account.id,
             invoiceId: inv2.id,
-            amount: "500",
+            promisedAmount: "500",
             promisedDate: pastDate,
             status: "Open"
         });
@@ -121,8 +150,9 @@ async function main() {
         // 5a. Create a dispute (directly simulating DB entry since there's no creation service method yet outside standard inserts)
         const [dispute] = await db.insert(arDisputes).values({
             invoiceId: inv3.id,
+            customerId: customer.id,
             disputeReason: "Incorrect Charge",
-            disputeAmount: "50",
+            disputedAmount: "50",
             status: "Open"
         }).returning();
 
@@ -135,7 +165,7 @@ async function main() {
         // Adjustments are fetched to verify.
         const adjustments = await arService.listAdjustments(inv3.id);
         const cmAdj = adjustments.find(a => a.adjustmentType === "Credit Memo Application");
-        if (!cmAdj || cmAdj.amount !== "-50") throw new Error("Credit Memo not applied to Dispute target invoice correctly");
+        if (!cmAdj || Number(cmAdj.amount) !== -50) throw new Error("Credit Memo not applied to Dispute target invoice correctly");
 
         console.log("✅ Passed Dispute Management\n");
 

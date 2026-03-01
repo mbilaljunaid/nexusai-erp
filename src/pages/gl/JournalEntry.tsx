@@ -72,6 +72,45 @@ export default function JournalEntry() {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [isAuditOpen, setIsAuditOpen] = useState(false);
 
+    const [actionType, setActionType] = useState<'DRAFT' | 'SUBMIT'>('DRAFT');
+    const [journalStatus, setJournalStatus] = useState<string>('Draft');
+    const [approvalStatus, setApprovalStatus] = useState<string>('Not Required');
+
+    // Fetch existing Journal Details if editing
+    useQuery({
+        queryKey: ["journal", journalId],
+        queryFn: async () => {
+            if (!journalId) return null;
+            const res = await apiRequest("GET", `/api/gl/journals/${journalId}`);
+            if (!res.ok) throw new Error("Failed to load journal");
+            const data = await res.json();
+
+            setHeader({
+                description: data.description || "",
+                currencyCode: data.currencyCode || "USD",
+                periodId: data.periodId || "",
+                category: data.category || data.source || "Manual"
+            });
+
+            if (data.lines && data.lines.length > 0) {
+                setLines(data.lines.map((l: any) => ({
+                    id: l.id || Math.random().toString(),
+                    accountId: l.accountId || "",
+                    debit: l.enteredDebit || l.accountedDebit || l.debit || "0",
+                    credit: l.enteredCredit || l.accountedCredit || l.credit || "0",
+                    description: l.description || ""
+                })));
+            }
+
+            setJournalStatus(data.status || 'Draft');
+            setApprovalStatus(data.approvalStatus || 'Not Required');
+
+            return data;
+        },
+        enabled: !!journalId,
+        refetchOnWindowFocus: false
+    });
+
     // Fetch Audit Logs
     const { data: realAuditLogs = [] } = useQuery({
         queryKey: ["journal-audit", journalId],
@@ -125,9 +164,6 @@ export default function JournalEntry() {
         setActiveLineId(line.id);
         setIsSheetOpen(true);
     };
-
-    const [actionType, setActionType] = useState<'DRAFT' | 'SUBMIT'>('DRAFT');
-    const [journalStatus, setJournalStatus] = useState<string>('Draft');
 
     const createMutation = useMutation({
         mutationFn: async (status: 'Draft' | 'Posted') => {
@@ -198,11 +234,27 @@ export default function JournalEntry() {
             breadcrumbs={[
                 { label: "General Ledger", href: "/gl/journals" },
                 { label: "Journals", href: "/gl/journals" },
-                { label: "New Entry" },
-                { label: journalStatus } // Simple string for now
+                { label: journalId ? `Journal: ${journalId.substring(0, 8)}...` : "New Entry" },
             ]}
             actions={
                 <>
+                    <div className="flex items-center gap-2 mr-4">
+                        <Badge variant="outline" className={cn(
+                            "uppercase text-xs",
+                            journalStatus === 'Posted' ? "border-green-500 text-green-600 bg-green-50" :
+                                journalStatus === 'Processing' ? "border-blue-500 text-blue-600 bg-blue-50" : "border-slate-300"
+                        )}>
+                            {journalStatus}
+                        </Badge>
+                        <Badge variant="outline" className={cn(
+                            "uppercase text-xs",
+                            approvalStatus === 'Approved' ? "border-green-500 text-green-600 bg-green-50" :
+                                approvalStatus === 'Pending' ? "border-yellow-500 text-yellow-600 bg-yellow-50" :
+                                    approvalStatus === 'Rejected' ? "border-red-500 text-red-600 bg-red-50" : "border-slate-300"
+                        )}>
+                            Approval: {approvalStatus}
+                        </Badge>
+                    </div>
                     <Button variant="ghost" onClick={() => setIsAuditOpen(true)}>
                         History
                     </Button>
@@ -217,10 +269,10 @@ export default function JournalEntry() {
                             setActionType('SUBMIT');
                             createMutation.mutate('Draft');
                         }}
-                        disabled={!totals.isBalanced || createMutation.isPending || submitMutation.isPending}
-                        className={cn(totals.isBalanced ? "bg-indigo-600 hover:bg-indigo-700" : "opacity-50")}
+                        disabled={!totals.isBalanced || createMutation.isPending || submitMutation.isPending || journalStatus !== 'Draft'}
+                        className={cn(totals.isBalanced && journalStatus === 'Draft' ? "bg-indigo-600 hover:bg-indigo-700" : "opacity-50")}
                     >
-                        <Send className="mr-2 h-4 w-4" /> Submit for Approval
+                        <Send className="mr-2 h-4 w-4" /> {approvalStatus === 'Rejected' ? 'Resubmit for Approval' : 'Submit for Approval'}
                     </Button>
                 </>
             }

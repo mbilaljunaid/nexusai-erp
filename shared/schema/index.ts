@@ -105,3 +105,6 @@ export * from "./data-quality";
 export * from "./pim";
 export * from "./governance";
 export * from "./nexus_ai";
+
+// Enterprise Structure
+export * from "./enterprise";

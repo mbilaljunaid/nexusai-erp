@@ -744,6 +744,7 @@ export const glApprovalRules = pgTable("gl_approval_rules", {
     category: varchar("category"),
     approverRole: varchar("approver_role"), // e.g. "Controller"
     approverUserId: varchar("approver_user_id"),
+    approverGroupId: varchar("approver_group_id"), // Added for hierarchical groups
     priority: integer("priority").default(10),
     enabled: boolean("enabled").default(true),
     createdAt: timestamp("created_at").default(sql`now()`),
@@ -765,6 +766,43 @@ export const glApprovalHistory = pgTable("gl_approval_history", {
 export const insertGlApprovalHistorySchema = createInsertSchema(glApprovalHistory);
 export type InsertGlApprovalHistory = z.infer<typeof insertGlApprovalHistorySchema>;
 export type GlApprovalHistory = typeof glApprovalHistory.$inferSelect;
+
+// 4.5 Approval Groups (Hierarchy/Lists)
+export const glApprovalGroups = pgTable("gl_approval_groups", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull().unique(),
+    description: text("description"),
+    enabled: boolean("enabled").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+export const insertGlApprovalGroupSchema = createInsertSchema(glApprovalGroups);
+export type GlApprovalGroup = typeof glApprovalGroups.$inferSelect;
+export type InsertGlApprovalGroup = typeof glApprovalGroups.$inferInsert;
+
+export const glApprovalGroupMembers = pgTable("gl_approval_group_members", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    groupId: varchar("group_id").notNull(),
+    userId: varchar("user_id").notNull(),
+    sequence: integer("sequence").default(1), // Defines sequence if sequential approval needed
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+export const insertGlApprovalGroupMemberSchema = createInsertSchema(glApprovalGroupMembers);
+export type GlApprovalGroupMember = typeof glApprovalGroupMembers.$inferSelect;
+export type InsertGlApprovalGroupMember = typeof glApprovalGroupMembers.$inferInsert;
+
+// 4.6 Vacation / Delegation Rules
+export const glApprovalDelegations = pgTable("gl_approval_delegations", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    delegatorId: varchar("delegator_id").notNull(), // User who is away
+    delegateeId: varchar("delegatee_id").notNull(), // User who will approve
+    startDate: timestamp("start_date").notNull(),
+    endDate: timestamp("end_date").notNull(),
+    enabled: boolean("enabled").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+export const insertGlApprovalDelegationSchema = createInsertSchema(glApprovalDelegations);
+export type GlApprovalDelegation = typeof glApprovalDelegations.$inferSelect;
+export type InsertGlApprovalDelegation = typeof glApprovalDelegations.$inferInsert;
 
 // 16. Security: Data Access Sets
 export const glDataAccessSets = pgTable("gl_data_access_sets", {

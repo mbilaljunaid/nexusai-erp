@@ -74,6 +74,7 @@ import contractPortalRouter from "./routes/contractPortal";
 import { supplierPortalExternalRouter } from "./routes/supplierPortalExternal";
 import publicCareersRouter from "./routes/public_careers";
 import { mdmRouter } from "./routes/mdm";
+import { enterpriseRoutes } from "./routes/enterprise";
 // // import sourcingRouter from "./routes/sourcing"; // Refactored to modules/scm/routes.ts
 // import { procurementRouter as PROCUREMENT_ROUTER } from "./modules/scm/procurementRoutes"; // Refactored to modules/scm/routes.ts
 
@@ -139,6 +140,9 @@ export async function registerRoutes(
 
   // New Consolidated SCM Route
   app.use("/api/scm", scmRoutes);
+
+  // Enterprise Structure
+  app.use("/api/enterprise", enterpriseRoutes);
 
   // Legacy SCM Routes (Mapped to New Controller)
   const legacyScmRouter = Router();

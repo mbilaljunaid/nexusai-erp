@@ -515,84 +515,28 @@ export class FinanceService {
     }
 
     async submitJournalForApproval(journalId: string, userId: string) {
-        const journal = await storage.getGlJournal(journalId);
-        if (!journal) throw new Error("Journal not found");
-
-        // Recalculate requirement
-        const lines = await storage.listGlJournalLines(journalId);
-        const totalDebit = lines.reduce((sum, line) => sum + parseFloat(line.enteredDebit || line.debit || "0"), 0);
-
-        const required = await this.evaluateApprovalRule(journal, totalDebit);
-
-        if (required === "Not Required") {
-            // Auto-approve? or just leave as Not Required
-            await db.update(glJournals)
-                .set({ approvalStatus: "Not Required" })
-                .where(eq(glJournals.id, journalId));
-            return { status: "Not Required" };
-        }
-
-        // Set to Pending
-        await db.update(glJournals)
-            .set({ approvalStatus: "Pending" })
-            .where(eq(glJournals.id, journalId));
-
-        await this.logAuditAction(userId, "JOURNAL_SUBMIT_APPROVAL", { journalId });
-
-        // Log History
-        await db.insert(glApprovalHistory).values({
-            journalId,
-            action: "SUBMIT",
-            actorId: userId,
-            actionDate: new Date()
-        });
-
-        return { status: "Pending" };
+        const { ApprovalRoutingService } = await import("./journals/ApprovalRoutingService");
+        return await ApprovalRoutingService.routeJournalForApproval(journalId, userId);
     }
 
     async approveJournal(journalId: string, approverId: string, comments?: string) {
+        const { ApprovalRoutingService } = await import("./journals/ApprovalRoutingService");
+
         const journal = await storage.getGlJournal(journalId);
         if (!journal) throw new Error("Journal not found");
         if (journal.approvalStatus !== "Pending") throw new Error("Journal is not pending approval");
 
-        // Verify Approver Authority (Optional: check glApprovalRules again for approverUserId?)
-        // For MVP, anyone with access to this API can approve (UI will restrict).
-
-        await db.update(glJournals)
-            .set({ approvalStatus: "Approved" })
-            .where(eq(glJournals.id, journalId));
-
-        await this.logAuditAction(approverId, "JOURNAL_APPROVE", { journalId, comments });
-
-        await db.insert(glApprovalHistory).values({
-            journalId,
-            action: "APPROVE",
-            actorId: approverId,
-            comments,
-            actionDate: new Date()
-        });
-
+        await ApprovalRoutingService.markApproved(journalId, approverId, comments);
         return { status: "Approved" };
     }
 
     async rejectJournal(journalId: string, approverId: string, comments?: string) {
+        const { ApprovalRoutingService } = await import("./journals/ApprovalRoutingService");
+
         const journal = await storage.getGlJournal(journalId);
         if (!journal) throw new Error("Journal not found");
 
-        await db.update(glJournals)
-            .set({ approvalStatus: "Rejected", status: "Draft" }) // Reset to draft for correction
-            .where(eq(glJournals.id, journalId));
-
-        await this.logAuditAction(approverId, "JOURNAL_REJECT", { journalId, comments });
-
-        await db.insert(glApprovalHistory).values({
-            journalId,
-            action: "REJECT",
-            actorId: approverId,
-            comments,
-            actionDate: new Date()
-        });
-
+        await ApprovalRoutingService.markRejected(journalId, approverId, comments || "Rejected");
         return { status: "Rejected" };
     }
 

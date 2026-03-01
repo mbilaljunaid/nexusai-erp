@@ -44,6 +44,7 @@ import ModuleRoutes from "@/routes/ModuleRoutes";
 
 import ErpRoutes from "@/routes/ErpRoutes";
 import ProcessRoutes from "@/routes/ProcessRoutes";
+import CompanySetupRoutes from "@/routes/CompanySetupRoutes";
 
 // Direct page imports for sidebar links
 const SettingsPage = lazyWithRetry(() => import("@/pages/Settings"));
@@ -173,6 +174,8 @@ function Router() {
         <Route path="/testroute" component={TestRoute} />
 
         {/* Core Modules */}
+        <Route path="/company-setup" component={CompanySetupRoutes} />
+        <Route path="/company-setup/*" component={CompanySetupRoutes} />
         <Route path="/crm" component={CrmRoutes} />
         <Route path="/crm/*" component={CrmRoutes} />
         <Route path="/finance" component={FinanceRoutes} />

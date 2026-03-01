@@ -534,6 +534,17 @@ export function registerFinanceRoutes(app: Express) {
         }
     });
 
+    app.get("/api/gl/journals/:id", async (req, res) => {
+        try {
+            const journal = await storage.getGlJournal(req.params.id);
+            if (!journal) return res.status(404).json({ error: "Journal not found" });
+            const lines = await storage.listGlJournalLines(req.params.id);
+            res.json({ ...journal, lines });
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
     app.post("/api/gl/journals/:id/submit", async (req, res) => {
         try {
             const userId = (req.user as any)?.id || "system";

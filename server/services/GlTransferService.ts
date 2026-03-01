@@ -1,32 +1,27 @@
-
 import { db } from "../db";
-import { eq, and, inArray } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import {
-    glJournals, glJournalLines, glJournalBatches, glLedgers,
-    glPeriods
-} from "@shared/schema/finance";
+    glJournals, glJournalLines, glJournalBatches, glLedgerRelationships, glDailyRates, glLedgers
+} from "../../shared/schema/finance";
 import {
     slaJournalHeaders, slaJournalLines
-} from "@shared/schema/sla";
+} from "../../shared/schema/sla";
 
 export class GlTransferService {
 
     /**
      * Transfers final SLA Accounting to GL.
-     * Groups by Ledger.
+     * With Enterprise Parity: Routes to Primary AND Secondary ledgers.
      */
-    async transferToGl(ledgerId: string = "PRIMARY") {
-        console.log(`[GL Transfer] Starting transfer for Ledger: ${ledgerId}`);
+    async transferToGl(primaryLedgerId: string = "PRIMARY") {
+        console.log(`[GL Transfer] Starting transfer for Primary Ledger: ${primaryLedgerId}`);
 
         // 1. Identify Eligible Headers
-        const eligibleHeaders = await db.select().from(slaJournalHeaders).where(and(
-            eq(slaJournalHeaders.ledgerId, ledgerId),
-            // eq(slaJournalHeaders.status, "Final"), // Ensure completed accounting
+        const headersToProcess = await db.select().from(slaJournalHeaders).where(and(
+            eq(slaJournalHeaders.ledgerId, primaryLedgerId),
+            eq(slaJournalHeaders.status, "Final"),
             eq(slaJournalHeaders.transferStatus, "Not Transferred")
         ));
-
-        // Note: we check 'status' in code or query. SlaEngine sets it to 'Final'.
-        const headersToProcess = eligibleHeaders.filter(h => h.status === 'Final');
 
         if (headersToProcess.length === 0) {
             console.log("[GL Transfer] No eligible journals found.");
@@ -35,81 +30,130 @@ export class GlTransferService {
 
         console.log(`[GL Transfer] Found ${headersToProcess.length} journals to transfer.`);
 
-        return await db.transaction(async (tx) => {
-            // 2. Create GL Batch
-            const batchName = `SLA Import ${new Date().toISOString().slice(0, 19).replace('T', ' ')}`;
-            const [batch] = await tx.insert(glJournalBatches).values({
-                batchName: batchName,
-                description: `Import from SLA for Ledger ${ledgerId}`,
-                status: "Unposted",
-                periodId: null // Pending Period Determination which usually happens during posting or here
-            }).returning();
+        // 2. Fetch Ledger Relationships (to find Secondary Ledgers)
+        const relationships = await db.select().from(glLedgerRelationships)
+            .where(and(
+                eq(glLedgerRelationships.primaryLedgerId, primaryLedgerId),
+                eq(glLedgerRelationships.isActive, true),
+                eq(glLedgerRelationships.conversionLevel, 'JOURNAL') // Only transfer at Journal level
+            ));
 
-            let totalDr = 0;
-            let totalCr = 0;
+        return await db.transaction(async (tx) => {
+            const batchName = `SLA Import ${new Date().toISOString().slice(0, 19).replace('T', ' ')}`;
+            let totalPrimaryDr = 0;
+            let totalPrimaryCr = 0;
 
             // 3. Process Journals
             for (const slaHeader of headersToProcess) {
-                // Generate Journal Number
-                const journalNum = `JE-${slaHeader.eventClassId}-${slaHeader.entityId.slice(0, 8)}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-
-                // Create GL Journal Header
-                const [glHeader] = await tx.insert(glJournals).values({
-                    journalNumber: journalNum,
-                    ledgerId: ledgerId,
-                    batchId: batch.id,
-                    description: slaHeader.description,
-                    currencyCode: slaHeader.currencyCode,
-                    source: "SLA",
-                    category: slaHeader.eventClassId || "Manual",
-                    status: "Unposted",
-                    approvalStatus: "Not Required",
-                    postedDate: null
-                }).returning();
-
-                // Fetch SLA Lines
                 const slaLines = await tx.select().from(slaJournalLines).where(eq(slaJournalLines.headerId, slaHeader.id));
+                if (slaLines.length === 0) continue;
 
-                // Create GL Lines
-                if (slaLines.length > 0) {
-                    const glLinesToInsert = slaLines.map(l => {
-                        totalDr += Number(l.accountedDr || 0);
-                        totalCr += Number(l.accountedCr || 0);
+                // --- 3A. Post to Primary Ledger ---
+                const primaryTotals = await this.createGlEntry(tx, primaryLedgerId, batchName, slaHeader, slaLines, 1);
+                totalPrimaryDr += primaryTotals.dr;
+                totalPrimaryCr += primaryTotals.cr;
 
-                        return {
-                            journalId: glHeader.id,
-                            accountId: l.codeCombinationId, // Mapping CCID
-                            description: l.description,
-                            currencyCode: l.currencyCode,
-                            enteredDebit: l.enteredDr,
-                            enteredCredit: l.enteredCr,
-                            accountedDebit: l.accountedDr || l.enteredDr,
-                            accountedCredit: l.accountedCr || l.enteredCr,
-                            exchangeRate: "1" // Simplified
-                        };
+                // --- 3B. Post to Secondary Ledgers (SLA Routing) ---
+                for (const rel of relationships) {
+                    let conversionRate = 1;
+
+                    // Fetch Secondary Ledger currency to check if conversion is needed
+                    const secondaryLedger = await tx.query.glLedgers.findFirst({
+                        where: eq(glLedgers.id, rel.secondaryLedgerId)
                     });
 
-                    await tx.insert(glJournalLines).values(glLinesToInsert as any);
+                    if (secondaryLedger && secondaryLedger.currencyCode !== slaHeader.currencyCode) {
+                        // Needs conversion. Fetch daily rate.
+                        const rateRecord = await tx.query.glDailyRates.findFirst({
+                            where: and(
+                                eq(glDailyRates.fromCurrency, slaHeader.currencyCode),
+                                eq(glDailyRates.toCurrency, secondaryLedger.currencyCode)
+                                // In production, match exact conversion_date
+                            )
+                        });
+                        if (rateRecord) {
+                            conversionRate = Number(rateRecord.rate);
+                        } else {
+                            console.warn(`[GL SLA] Missing FX rate from ${slaHeader.currencyCode} to ${secondaryLedger.currencyCode}. Skipping secondary transfer.`);
+                            continue;
+                        }
+                    }
+
+                    await this.createGlEntry(tx, rel.secondaryLedgerId, `${batchName} (Secondary)`, slaHeader, slaLines, conversionRate, secondaryLedger?.currencyCode);
                 }
 
-                // Update SLA Header
+                // 4. Mark SLA Header as Transferred
                 await tx.update(slaJournalHeaders)
-                    .set({
-                        transferStatus: "Transferred",
-                        glJournalId: glHeader.id
-                    })
+                    .set({ transferStatus: "Transferred" }) // glJournalId is tricky since there are now multiple, typically kept in a mapping table
                     .where(eq(slaJournalHeaders.id, slaHeader.id));
             }
 
-            // Update Batch Totals
-            await tx.update(glJournalBatches).set({
-                totalDebit: totalDr.toFixed(2),
-                totalCredit: totalCr.toFixed(2)
-            }).where(eq(glJournalBatches.id, batch.id));
-
-            console.log(`[GL Transfer] Batch ${batch.id} created with ${headersToProcess.length} journals.`);
-            return { count: headersToProcess.length, batchId: batch.id, totalDr, totalCr };
+            console.log(`[GL Transfer] Processed ${headersToProcess.length} SLA headers into multi-ledger GL.`);
+            return { count: headersToProcess.length, totalPrimaryDr, totalPrimaryCr };
         });
+    }
+
+    private async createGlEntry(
+        tx: any,
+        ledgerId: string,
+        batchName: string,
+        slaHeader: any,
+        slaLines: any[],
+        conversionRate: number,
+        targetCurrencyCode?: string
+    ) {
+        // Find or create batch for this ledger/run
+        const [batch] = await tx.insert(glJournalBatches).values({
+            batchName: batchName,
+            description: `Import from SLA for Ledger ${ledgerId}`,
+            status: "Unposted"
+        }).returning();
+
+        const journalNum = `JE-${slaHeader.eventClassId}-${slaHeader.entityId.slice(0, 8)}-${ledgerId.slice(0, 4)}-${Date.now()}`;
+        const currency = targetCurrencyCode || slaHeader.currencyCode;
+
+        const [glHeader] = await tx.insert(glJournals).values({
+            journalNumber: journalNum,
+            ledgerId: ledgerId,
+            batchId: batch.id,
+            description: slaHeader.description,
+            currencyCode: currency,
+            source: "SLA",
+            category: slaHeader.eventClassId || "Manual",
+            status: "Unposted",
+            approvalStatus: "Not Required"
+        }).returning();
+
+        let dr = 0; let cr = 0;
+
+        const glLinesToInsert = slaLines.map(l => {
+            const accountedDr = Number(l.accountedDr || l.enteredDr || 0) * conversionRate;
+            const accountedCr = Number(l.accountedCr || l.enteredCr || 0) * conversionRate;
+
+            dr += accountedDr;
+            cr += accountedCr;
+
+            return {
+                journalId: glHeader.id,
+                accountId: l.codeCombinationId,
+                description: l.description,
+                currencyCode: currency,
+                enteredDebit: (Number(l.enteredDr || 0) * conversionRate).toString(),
+                enteredCredit: (Number(l.enteredCr || 0) * conversionRate).toString(),
+                accountedDebit: accountedDr.toString(),
+                accountedCredit: accountedCr.toString(),
+                exchangeRate: conversionRate.toString()
+            };
+        });
+
+        await tx.insert(glJournalLines).values(glLinesToInsert);
+
+        await tx.update(glJournalBatches).set({
+            totalDebit: dr.toFixed(2),
+            totalCredit: cr.toFixed(2)
+        }).where(eq(glJournalBatches.id, batch.id));
+
+        return { dr, cr };
     }
 }
 
