@@ -1442,6 +1442,9 @@ export const dbStorage = {
       and(eq(glDailyRatesTable.fromCurrency, from), eq(glDailyRatesTable.toCurrency, to))
     );
   },
+  async getAllGlDailyRates(): Promise<GlDailyRate[]> {
+    return await db.select().from(glDailyRatesTable).orderBy(desc(glDailyRatesTable.createdAt));
+  },
   async createGlDailyRate(rate: InsertGlDailyRate): Promise<GlDailyRate> {
     const result = await db.insert(glDailyRatesTable).values({
       ...rate,

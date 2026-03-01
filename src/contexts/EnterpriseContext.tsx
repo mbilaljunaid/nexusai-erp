@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export type ContextType = 'BU' | 'LE' | 'INV_ORG' | 'LEDGER' | 'SET_ID' | 'GLOBAL';
 
@@ -34,6 +35,8 @@ export function EnterpriseProvider({ children }: { children: ReactNode }) {
     const [activeLeId, setActiveLeId] = useState<string | null>(null);
     const [activeInvOrgId, setActiveInvOrgId] = useState<string | null>(null);
     const [activeLedgerId, setActiveLedgerId] = useState<string | null>(null);
+
+    const { setLegalEntity, setBusinessUnit } = useEnterpriseStore();
 
     // Fetch the user's data access mapping from the backend
     const { data: accessData, isLoading } = useQuery<UserDataAccess[]>({
@@ -72,6 +75,7 @@ export function EnterpriseProvider({ children }: { children: ReactNode }) {
             case 'BU':
                 if (activeBuId !== id) {
                     setActiveBuId(id);
+                    setBusinessUnit(id);
                     if (id) localStorage.setItem('nexus_active_bu', id);
                     else localStorage.removeItem('nexus_active_bu');
                     changed = true;
@@ -80,6 +84,7 @@ export function EnterpriseProvider({ children }: { children: ReactNode }) {
             case 'LE':
                 if (activeLeId !== id) {
                     setActiveLeId(id);
+                    setLegalEntity(id);
                     if (id) localStorage.setItem('nexus_active_le', id);
                     else localStorage.removeItem('nexus_active_le');
                     changed = true;

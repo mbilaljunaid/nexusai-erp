@@ -5,7 +5,7 @@ import { eq, desc, ilike, and, sql } from "drizzle-orm";
 export class LearningService {
 
     // COURSES (Catalog)
-    static async searchCatalog(tenantId: string, filters: { query?: string, category?: string, provider?: string, page?: number, pageSize?: number } = {}) {
+    static async searchCatalog(tenantId: string, filters: { query?: string, category?: string, provider?: string, page?: number, pageSize?: number, entLegalEntityId?: string } = {}) {
         let conditions = [eq(hrmLearningCourses.tenantId, tenantId)];
 
         if (filters.query) {
@@ -85,7 +85,10 @@ export class LearningService {
 
         if (existing.length > 0) throw new Error("Already enrolled in this offering");
 
-        const [enrollment] = await db.insert(hrmLearningEnrollments).values(data).returning();
+        const [enrollment] = await db.insert(hrmLearningEnrollments).values({
+            ...data,
+            entLegalEntityId: data.entLegalEntityId
+        }).returning();
 
         // Increment offering count
         // await db.update(hrmLearningOfferings).set({ enrolledCount: sql`enrolled_count + 1` })...

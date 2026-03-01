@@ -603,6 +603,7 @@ export interface IStorage {
   getOrCreateCodeCombination(ledgerId: string, segments: string[]): Promise<GlCodeCombination>;
 
   listGlDailyRates(fromCurrency: string, toCurrency: string, date: Date): Promise<GlDailyRate[]>;
+  getAllGlDailyRates(): Promise<GlDailyRate[]>;
   createGlDailyRate(rate: InsertGlDailyRate): Promise<GlDailyRate>;
 
   // Revaluation
@@ -1442,6 +1443,9 @@ export class DatabaseStorage implements IStorage {
   }
   async listGlDailyRates(from: string, to: string, date: Date) {
     return dbStorage.listGlDailyRates(from, to, date);
+  }
+  async getAllGlDailyRates() {
+    return dbStorage.getAllGlDailyRates();
   }
 
   async createGlDailyRate(rate: InsertGlDailyRate) {

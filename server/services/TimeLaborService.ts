@@ -36,7 +36,7 @@ export class TimeLaborService {
     }
 
     // 2. TIMESHEETS
-    static async getOrCreateTimesheet(tenantId: string, personId: string, periodId: string) {
+    static async getOrCreateTimesheet(tenantId: string, personId: string, periodId: string, entLegalEntityId?: string, entBusinessUnitId?: string) {
         // Check existence
         const [existing] = await db.select().from(hrmTimeSheets)
             .where(and(
@@ -51,7 +51,9 @@ export class TimeLaborService {
             tenantId,
             personId,
             periodId,
-            status: "DRAFT"
+            status: "DRAFT",
+            entLegalEntityId,
+            entBusinessUnitId
         }).returning();
 
         return newSheet;
@@ -248,7 +250,7 @@ export class TimeLaborService {
         return updated;
     }
 
-    static async getPendingTimesheets(tenantId: string) {
+    static async getPendingTimesheets(tenantId: string, entLegalEntityId?: string) {
         // In real app, filter by Approver ID matches Manager
         // V1: All SUBMITTED sheets for tenant
         return await db.select({
@@ -261,7 +263,8 @@ export class TimeLaborService {
             .innerJoin(hrmTimePeriods, eq(hrmTimeSheets.periodId, hrmTimePeriods.id))
             .where(and(
                 eq(hrmTimeSheets.tenantId, tenantId),
-                eq(hrmTimeSheets.status, "SUBMITTED")
+                eq(hrmTimeSheets.status, "SUBMITTED"),
+                entLegalEntityId ? eq(hrmTimeSheets.entLegalEntityId, entLegalEntityId) : sql`true`
             ));
     }
 
@@ -393,7 +396,9 @@ export class TimeLaborService {
                         periodId: period.id,
                         status: "DRAFT",
                         totalHours: "0",
-                        totalOvertime: "0"
+                        totalOvertime: "0",
+                        entLegalEntityId: entry.entLegalEntityId,
+                        entBusinessUnitId: entry.entBusinessUnitId
                     }).returning();
                 }
 
@@ -510,14 +515,15 @@ export class TimeLaborService {
     }
 
     // 9. ANALYTICS
-    static async getLaborMetrics(tenantId: string, startDate: string, endDate: string) {
+    static async getLaborMetrics(tenantId: string, startDate: string, endDate: string, entLegalEntityId?: string) {
         // 1. Actual Hours
         const entries = await db.select().from(hrmTimeEntries)
             .innerJoin(hrmTimeSheets, eq(hrmTimeEntries.timesheetId, hrmTimeSheets.id))
             .where(and(
                 eq(hrmTimeSheets.tenantId, tenantId),
                 sql`${hrmTimeEntries.date} >= ${startDate}`,
-                sql`${hrmTimeEntries.date} <= ${endDate}`
+                sql`${hrmTimeEntries.date} <= ${endDate}`,
+                entLegalEntityId ? eq(hrmTimeSheets.entLegalEntityId, entLegalEntityId) : sql`true`
             ));
 
         let totalActualMinutes = 0;

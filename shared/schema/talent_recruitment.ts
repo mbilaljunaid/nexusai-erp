@@ -11,6 +11,8 @@ import { hrWorkRelationships, hrPersons } from "./hr_worker";
 export const hrmRecRequisitions = pgTable("hrm_rec_requisitions", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     tenantId: varchar("tenant_id").notNull(),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
 
     requisitionNumber: varchar("requisition_number").unique().notNull(), // REQ-2024-001
     title: varchar("title").notNull(),

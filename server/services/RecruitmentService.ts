@@ -8,10 +8,13 @@ import { hrmSalaryBases, hrmWorkerSalaries } from "@shared/schema/rewards_compen
 export class RecruitmentService {
 
     // REQUISITIONS
-    static async getRequisitions(tenantId: string, options: { limit?: number; offset?: number } = {}) {
-        const { limit = 50, offset = 0 } = options;
+    static async getRequisitions(tenantId: string, options: { limit?: number; offset?: number; entLegalEntityId?: string } = {}) {
+        const { limit = 50, offset = 0, entLegalEntityId } = options;
         return await db.select().from(hrmRecRequisitions)
-            .where(eq(hrmRecRequisitions.tenantId, tenantId))
+            .where(and(
+                eq(hrmRecRequisitions.tenantId, tenantId),
+                entLegalEntityId ? eq(hrmRecRequisitions.entLegalEntityId, entLegalEntityId) : sql`true`
+            ))
             .orderBy(desc(hrmRecRequisitions.createdAt))
             .limit(limit)
             .offset(offset);
@@ -33,6 +36,9 @@ export class RecruitmentService {
             status: data.stage ? data.stage.toUpperCase() : "OPEN",
             // Use logical OR for description
             description: data.description || "",
+            // Add enterprise scope
+            entLegalEntityId: data.entLegalEntityId,
+            entBusinessUnitId: data.entBusinessUnitId
             // Provide dummy or null for departmentId if just a string name is sent
             // In a real app we would lookup the department ID by name
         };
@@ -51,10 +57,16 @@ export class RecruitmentService {
     }
 
     // CANDIDATES
-    static async getCandidates(tenantId: string, options: { limit?: number; offset?: number; maskPII?: boolean } = {}) {
-        const { limit = 50, offset = 0, maskPII = true } = options;
+    static async getCandidates(tenantId: string, options: { limit?: number; offset?: number; maskPII?: boolean; entLegalEntityId?: string } = {}) {
+        const { limit = 50, offset = 0, maskPII = true, entLegalEntityId } = options;
         const candidates = await db.select().from(hrmRecCandidates)
-            .where(eq(hrmRecCandidates.tenantId, tenantId))
+            .where(and(
+                eq(hrmRecCandidates.tenantId, tenantId),
+                // Candidates are technically global, but if we need to scope them by who they applied for:
+                // We'd join applications. For now, we'll return all tenant candidates unless scoping added to schema.
+                // Assuming candidates remain tenant-global for CRM purposes.
+                sql`true`
+            ))
             .orderBy(desc(hrmRecCandidates.createdAt))
             .limit(limit)
             .offset(offset);

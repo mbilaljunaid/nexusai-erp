@@ -16,8 +16,9 @@ router.get("/learning/courses", async (req, res) => {
         const provider = req.query.provider as string;
         const page = req.query.page ? parseInt(req.query.page as string) : 1;
         const pageSize = req.query.pageSize ? parseInt(req.query.pageSize as string) : 10;
+        const entLegalEntityId = req.headers['x-legal-entity-id'] || req.query.legalEntityId as string;
 
-        const result = await LearningService.searchCatalog(tenantId, { query, category, provider, page, pageSize });
+        const result = await LearningService.searchCatalog(tenantId, { query, category, provider, page, pageSize, entLegalEntityId });
         res.json(result);
     } catch (err: any) {
         res.status(500).json({ error: err.message });
@@ -74,13 +75,15 @@ router.post("/learning/enroll", async (req, res) => {
         const tenantId = (req as any).user?.tenantId || "default_tenant";
         // User enrolls themselves or admin enrolls someone
         const personId = (req as any).user?.id || req.body.personId;
+        const entLegalEntityId = req.headers['x-legal-entity-id'] || req.body.entLegalEntityId as string;
 
         const data = {
             tenantId,
             personId,
             offeringId: req.body.offeringId,
             status: "ENROLLED",
-            progressPercent: 0
+            progressPercent: 0,
+            entLegalEntityId
         };
 
         const enrollment = await LearningService.enroll(data);

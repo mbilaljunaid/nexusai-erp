@@ -28,6 +28,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 interface TimeEntry {
     id?: string;
@@ -65,9 +66,11 @@ export default function MyTimeCard() {
     const queryClient = useQueryClient();
     const [selectedPeriodId, setSelectedPeriodId] = useState<string>("");
 
+    const { legalEntityId } = useEnterpriseStore();
+
     // Queries
     const { data: periods, isLoading: periodsLoading } = useQuery<Period[]>({
-        queryKey: ["/api/hr-self-service/me/time-periods"],
+        queryKey: ["/api/hr-self-service/me/time-periods", legalEntityId],
     });
 
     // Set initial period
@@ -78,16 +81,16 @@ export default function MyTimeCard() {
     }, [periods, selectedPeriodId]);
 
     const { data: timesheet, isLoading: sheetLoading } = useQuery<Timesheet>({
-        queryKey: [`/api/hr-self-service/me/timesheets`, { periodId: selectedPeriodId }],
+        queryKey: [`/api/hr-self-service/me/timesheets`, { periodId: selectedPeriodId }, legalEntityId],
         enabled: !!selectedPeriodId,
     });
 
     const { data: balances } = useQuery<LeaveBalance[]>({
-        queryKey: ["/api/hr-self-service/me/absences/balances"],
+        queryKey: ["/api/hr-self-service/me/absences/balances", legalEntityId],
     });
 
     const { data: history } = useQuery<any[]>({
-        queryKey: ["/api/hr-self-service/me/absences/history"],
+        queryKey: ["/api/hr-self-service/me/absences/history", legalEntityId],
     });
 
     // Mutations
@@ -96,7 +99,7 @@ export default function MyTimeCard() {
             const res = await fetch(`/api/hr-self-service/me/timesheets/${timesheet?.id}/entries`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(entry),
+                body: JSON.stringify({ ...entry, entLegalEntityId: legalEntityId }),
             });
             if (!res.ok) throw new Error("Failed to log time");
             return res.json();

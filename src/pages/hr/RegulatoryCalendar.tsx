@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Calendar, AlertCircle, CheckCircle2, RefreshCw } from 'lucide-react';
+import { useEnterpriseStore } from '@/lib/enterpriseStore';
+import './RegulatoryCalendar.css';
 
 interface RegEvent {
     id: string; title: string; regulation: string; jurisdiction: string;
@@ -25,16 +27,17 @@ export default function RegulatoryCalendar() {
     const [statusFilter, setStatusFilter] = useState('');
     const [form, setForm] = useState({ title: '', regulation: 'GDPR', jurisdiction: 'US', eventType: 'FILING', dueDate: '', recurrence: 'NONE', description: '', reminderDays: '30' });
     const qc = useQueryClient();
+    const { legalEntityId } = useEnterpriseStore();
 
-    const { data: events = [] } = useQuery<RegEvent[]>({ queryKey: ['regcal', regFilter, statusFilter], queryFn: () => fetch(`/api/hr-analytics/regcal/events?${regFilter ? `regulation=${regFilter}&` : ''}${statusFilter ? `status=${statusFilter}` : ''}`).then(r => r.json()) });
-    const { data: dueSoon = [] } = useQuery<RegEvent[]>({ queryKey: ['regcal-soon'], queryFn: () => fetch('/api/hr-analytics/regcal/due-soon?days=60').then(r => r.json()) });
-    const { data: regSummary = [] } = useQuery<RegSummary[]>({ queryKey: ['regcal-by-reg'], queryFn: () => fetch('/api/hr-analytics/regcal/by-regulation').then(r => r.json()) });
-    const { data: fcpaSummary = [] } = useQuery<FCPASummary[]>({ queryKey: ['fcpa-summary'], queryFn: () => fetch('/api/hr-analytics/fcpa/summary').then(r => r.json()) });
+    const { data: events = [] } = useQuery<RegEvent[]>({ queryKey: ['regcal', regFilter, statusFilter, legalEntityId], queryFn: () => fetch(`/api/hr-analytics/regcal/events?${regFilter ? `regulation=${regFilter}&` : ''}${statusFilter ? `status=${statusFilter}` : ''}`, { headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined }).then(r => r.json()) });
+    const { data: dueSoon = [] } = useQuery<RegEvent[]>({ queryKey: ['regcal-soon', legalEntityId], queryFn: () => fetch('/api/hr-analytics/regcal/due-soon?days=60', { headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined }).then(r => r.json()) });
+    const { data: regSummary = [] } = useQuery<RegSummary[]>({ queryKey: ['regcal-by-reg', legalEntityId], queryFn: () => fetch('/api/hr-analytics/regcal/by-regulation', { headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined }).then(r => r.json()) });
+    const { data: fcpaSummary = [] } = useQuery<FCPASummary[]>({ queryKey: ['fcpa-summary', legalEntityId], queryFn: () => fetch('/api/hr-analytics/fcpa/summary', { headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined }).then(r => r.json()) });
 
-    const createMut = useMutation({ mutationFn: (d: any) => fetch('/api/hr-analytics/regcal/events', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }).then(r => r.json()), onSuccess: () => { qc.invalidateQueries({ queryKey: ['regcal', 'regcal-soon', 'regcal-by-reg'] }); setTab('calendar'); } });
-    const statusMut = useMutation({ mutationFn: ({ id, status }: { id: string; status: string }) => fetch(`/api/hr-analytics/regcal/events/${id}/status`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status, completedBy: 'current-user' }) }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['regcal', 'regcal-soon', 'regcal-by-reg'] }) });
-    const sweepMut = useMutation({ mutationFn: () => fetch('/api/hr-analytics/regcal/overdue-sweep', { method: 'POST' }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['regcal', 'regcal-soon'] }) });
-    const fcpaSweepMut = useMutation({ mutationFn: () => fetch('/api/hr-analytics/fcpa/overdue-sweep', { method: 'POST' }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['fcpa-summary'] }) });
+    const createMut = useMutation({ mutationFn: (d: any) => fetch('/api/hr-analytics/regcal/events', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(legalEntityId ? { 'x-legal-entity-id': legalEntityId } : {}) }, body: JSON.stringify({ ...d, entLegalEntityId: legalEntityId }) }).then(r => r.json()), onSuccess: () => { qc.invalidateQueries({ queryKey: ['regcal', 'regcal-soon', 'regcal-by-reg'] }); setTab('calendar'); } });
+    const statusMut = useMutation({ mutationFn: ({ id, status }: { id: string; status: string }) => fetch(`/api/hr-analytics/regcal/events/${id}/status`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(legalEntityId ? { 'x-legal-entity-id': legalEntityId } : {}) }, body: JSON.stringify({ status, completedBy: 'current-user' }) }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['regcal', 'regcal-soon', 'regcal-by-reg'] }) });
+    const sweepMut = useMutation({ mutationFn: () => fetch('/api/hr-analytics/regcal/overdue-sweep', { method: 'POST', headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['regcal', 'regcal-soon'] }) });
+    const fcpaSweepMut = useMutation({ mutationFn: () => fetch('/api/hr-analytics/fcpa/overdue-sweep', { method: 'POST', headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['fcpa-summary'] }) });
 
     const overdueCount = events.filter(e => e.status === 'Overdue').length;
     const upcomingCount = dueSoon.filter(e => e.status !== 'Overdue').length;
@@ -177,17 +180,17 @@ export default function RegulatoryCalendar() {
                             <input value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} style={{ padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12 }} aria-label="Title" />
                         </div>
                         {[['regulation', 'Regulation', REGULATIONS], ['eventType', 'Event Type', EVENT_TYPES], ['recurrence', 'Recurrence', ['NONE', 'MONTHLY', 'QUARTERLY', 'ANNUAL']]].map(([k, l, opts]) => (
-                            <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                <label style={{ fontSize: 10, fontWeight: 700 }}>{l}</label>
-                                <select value={(form as any)[k]} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} style={{ padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12 }} aria-label={l}>
+                            <div key={k as string} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                                <label style={{ fontSize: 10, fontWeight: 700 }}>{l as string}</label>
+                                <select value={(form as any)[k as string]} onChange={e => setForm(p => ({ ...p, [k as string]: e.target.value }))} style={{ padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12 }} aria-label={l as string}>
                                     {(opts as string[]).map(o => <option key={o}>{o}</option>)}
                                 </select>
                             </div>
                         ))}
                         {[['jurisdiction', 'Jurisdiction', 'text'], ['dueDate', 'Due Date', 'date'], ['reminderDays', 'Remind (days before)', 'number']].map(([k, l, t]) => (
-                            <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                <label style={{ fontSize: 10, fontWeight: 700 }}>{l}</label>
-                                <input type={t} value={(form as any)[k]} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} style={{ padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12 }} aria-label={l} />
+                            <div key={k as string} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                                <label style={{ fontSize: 10, fontWeight: 700 }}>{l as string}</label>
+                                <input type={t as string} value={(form as any)[k as string]} onChange={e => setForm(p => ({ ...p, [k as string]: e.target.value }))} style={{ padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12 }} aria-label={l as string} />
                             </div>
                         ))}
                         <div style={{ gridColumn: '1/-1', display: 'flex', flexDirection: 'column', gap: 3 }}>

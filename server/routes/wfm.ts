@@ -18,7 +18,7 @@ router.post("/time-periods", async (req, res) => {
 
 router.get("/time-periods", async (req, res) => {
     try {
-        const tenantId = req.query.tenantId as string;
+        const tenantId = req.user?.tenantId || req.query.tenantId as string || "default_tenant";
         const periods = await TimeLaborService.getOpenPeriods(tenantId);
         res.json(periods);
     } catch (error: any) {
@@ -29,9 +29,12 @@ router.get("/time-periods", async (req, res) => {
 // 2. Timesheets
 router.get("/timesheets", async (req, res) => {
     try {
-        const { tenantId, personId, periodId } = req.query;
+        const tenantId = req.user?.tenantId || req.query.tenantId as string || "default_tenant";
+        const { personId, periodId } = req.query;
+        const legalEntityId = req.headers['x-legal-entity-id'] || req.query.legalEntityId as string;
+
         if (personId && periodId) {
-            const sheet = await TimeLaborService.getOrCreateTimesheet(tenantId as string, personId as string, periodId as string);
+            const sheet = await TimeLaborService.getOrCreateTimesheet(tenantId, personId as string, periodId as string, legalEntityId);
             // Fetch full details
             const fullSheet = await TimeLaborService.getTimesheet(sheet.id);
             res.json(fullSheet);
@@ -147,8 +150,9 @@ router.post("/timesheets/:id/reject", async (req, res) => {
 
 router.get("/approvals/pending", async (req, res) => {
     try {
-        const { tenantId } = req.query;
-        const sheets = await TimeLaborService.getPendingTimesheets(tenantId as string);
+        const tenantId = req.user?.tenantId || req.query.tenantId as string || "default_tenant";
+        const legalEntityId = req.headers['x-legal-entity-id'] || req.query.legalEntityId as string;
+        const sheets = await TimeLaborService.getPendingTimesheets(tenantId, legalEntityId);
         res.json(sheets);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
@@ -211,11 +215,13 @@ router.get("/violations", async (req, res) => {
 // 9. Analytics
 router.get("/analytics", async (req, res) => {
     try {
-        const { tenantId, startDate, endDate } = req.query;
+        const tenantId = req.user?.tenantId || req.query.tenantId as string || "default_tenant";
+        const legalEntityId = req.headers['x-legal-entity-id'] || req.query.legalEntityId as string;
+        const { startDate, endDate } = req.query;
         if (!startDate || !endDate) {
             return res.status(400).json({ error: "Missing date range" });
         }
-        const metrics = await TimeLaborService.getLaborMetrics(tenantId as string, startDate as string, endDate as string);
+        const metrics = await TimeLaborService.getLaborMetrics(tenantId, startDate as string, endDate as string, legalEntityId);
         res.json(metrics);
     } catch (error: any) {
         res.status(500).json({ error: error.message });

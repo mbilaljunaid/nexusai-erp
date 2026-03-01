@@ -1,5 +1,6 @@
 import { QueryClient, QueryFunction, QueryCache } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useEnterpriseStore } from "./enterpriseStore";
 
 const DEFAULT_TENANT_ID = "tenant1";
 const DEFAULT_USER_ID = "user1";
@@ -13,13 +14,16 @@ function getRBACHeaders() {
   };
 
   // Inject Enterprise Scoping Contexts
+  const { legalEntityId, businessUnitId } = useEnterpriseStore.getState();
+
+  // Legacy localStorage variables from prior V1 configs
   const activeBu = localStorage.getItem('nexus_active_bu');
   const activeLe = localStorage.getItem('nexus_active_le');
   const activeInvOrg = localStorage.getItem('nexus_active_inv_org');
   const activeLedger = localStorage.getItem('nexus_active_ledger');
 
-  if (activeBu) headers["x-business-unit-id"] = activeBu;
-  if (activeLe) headers["x-legal-entity-id"] = activeLe;
+  if (businessUnitId || activeBu) headers["x-business-unit-id"] = businessUnitId || activeBu || "";
+  if (legalEntityId || activeLe) headers["x-legal-entity-id"] = legalEntityId || activeLe || "";
   if (activeInvOrg) headers["x-inventory-org-id"] = activeInvOrg;
   if (activeLedger) headers["x-ledger-id"] = activeLedger;
 

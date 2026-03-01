@@ -10,6 +10,7 @@ import { Users2, Plus, Trash2, Calendar, Download } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { InterviewScheduler } from "@/components/recruitment/InterviewScheduler";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function RecruitmentManagement() {
   const { toast } = useToast();
@@ -23,13 +24,24 @@ export default function RecruitmentManagement() {
     jobTitle?: string;
   }>({ isOpen: false });
 
+  const { legalEntityId, businessUnitId } = useEnterpriseStore();
+
   const { data: jobs = [], isLoading } = useQuery({
-    queryKey: ["/api/recruitment/jobs", page],
-    queryFn: () => fetch(`/api/recruitment/jobs?limit=${pageSize}&offset=${page * pageSize}`).then(r => r.json()).catch(() => []),
+    queryKey: ["/api/recruitment/jobs", page, legalEntityId], // Add deps to re-fetch on switch
+    queryFn: () => fetch(`/api/recruitment/jobs?limit=${pageSize}&offset=${page * pageSize}`, {
+      headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined
+    }).then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/recruitment/jobs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/recruitment/jobs", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(legalEntityId ? { "x-legal-entity-id": legalEntityId } : {})
+      },
+      body: JSON.stringify({ ...data, entLegalEntityId: legalEntityId, entBusinessUnitId: businessUnitId })
+    }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/recruitment/jobs"] });
       setNewJob({ title: "", department: "Engineering", stage: "open" });

@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { useNexusAI } from "@/contexts/NexusAIContext";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 import {
   Select,
@@ -31,12 +32,15 @@ export default function LearningManagement() {
   const [categoryFilter, setCategoryFilter] = useState("ALL");
   const [providerFilter, setProviderFilter] = useState("ALL");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const { legalEntityId } = useEnterpriseStore();
 
   // Fetch Catalog
   const { data: courses, isLoading: isCatalogLoading } = useQuery({
-    queryKey: ["learning-courses", searchQuery, categoryFilter, providerFilter],
+    queryKey: ["learning-courses", searchQuery, categoryFilter, providerFilter, legalEntityId],
     queryFn: async () => {
-      const res = await fetch(`/api/learning/courses?q=${searchQuery}&category=${categoryFilter}&provider=${providerFilter}`);
+      const res = await fetch(`/api/learning/courses?q=${searchQuery}&category=${categoryFilter}&provider=${providerFilter}`, {
+        headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined
+      });
       if (!res.ok) throw new Error("Failed to fetch catalog");
       return res.json();
     }
@@ -44,10 +48,12 @@ export default function LearningManagement() {
 
   // Fetch Recommendations
   const { data: recommendations } = useQuery({
-    queryKey: ["learning-recommendations"],
+    queryKey: ["learning-recommendations", legalEntityId],
     queryFn: async () => {
       // Fallback for MVP if user context is missing in strict fetch
-      const res = await fetch("/api/learning/recommendations?personId=current_user");
+      const res = await fetch("/api/learning/recommendations?personId=current_user", {
+        headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined
+      });
       if (!res.ok) return [];
       return res.json();
     }
@@ -119,11 +125,12 @@ export default function LearningManagement() {
       // body: { personId, offeringId, requestApproval: isPaid }
 
       const res = await fetch("/api/learning/enroll", {
-        method: "POST", headers: { "Content-Type": "application/json" },
+        method: "POST", headers: { "Content-Type": "application/json", ...(legalEntityId ? { "x-legal-entity-id": legalEntityId } : {}) },
         body: JSON.stringify({
           personId: "current_user",
           offeringId: offering.id,
-          status: isPaid ? "PENDING_APPROVAL" : "ENROLLED"
+          status: isPaid ? "PENDING_APPROVAL" : "ENROLLED",
+          entLegalEntityId: legalEntityId
         }),
       });
 

@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -38,10 +39,12 @@ export default function PersonalDetails() {
     const [actionDialogOpen, setActionDialogOpen] = useState(false);
     const [actionType, setActionType] = useState<"ADDRESS" | "MARITAL_STATUS">("ADDRESS");
 
+    const { legalEntityId } = useEnterpriseStore();
+
     const { data: activeBenefits, isLoading: loadingBenefits } = useQuery({
-        queryKey: ["active-benefits"],
+        queryKey: ["active-benefits", legalEntityId],
         queryFn: async () => {
-            const res = await fetch("/api/me/benefits/active");
+            const res = await fetch("/api/me/benefits/active", { headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined });
             if (!res.ok) throw new Error("Failed to fetch benefits");
             return res.json();
         }

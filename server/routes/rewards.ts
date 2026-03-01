@@ -105,8 +105,9 @@ router.post("/rewards/elements", async (req, res) => {
 // Payroll Runs
 router.get("/rewards/payroll-runs", async (req, res) => {
     try {
-        const tenantId = (req as any).user?.tenantId || "default_tenant";
-        const runs = await PayrollService.getRuns(tenantId);
+        const tenantId = req.user?.tenantId || req.query.tenantId as string || "default_tenant";
+        const legalEntityId = req.headers['x-legal-entity-id'] || req.query.legalEntityId as string;
+        const runs = await PayrollService.getRuns(tenantId, legalEntityId);
         res.json(runs);
     } catch (err: any) {
         res.status(500).json({ error: err.message });
@@ -115,8 +116,9 @@ router.get("/rewards/payroll-runs", async (req, res) => {
 
 router.post("/rewards/payroll-runs", async (req, res) => {
     try {
-        const tenantId = (req as any).user?.tenantId || "default_tenant";
-        const data = { ...req.body, tenantId };
+        const tenantId = req.user?.tenantId || req.query.tenantId as string || "default_tenant";
+        const legalEntityId = req.headers['x-legal-entity-id'] || req.body.entLegalEntityId as string;
+        const data = { ...req.body, tenantId, entLegalEntityId: legalEntityId };
         const run = await PayrollService.createRun(data);
         res.status(201).json(run);
     } catch (err: any) {

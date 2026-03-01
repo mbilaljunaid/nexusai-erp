@@ -76,6 +76,7 @@ export const hrmLearningOfferings = pgTable("hrm_learning_offerings", {
 export const hrmLearningEnrollments = pgTable("hrm_learning_enrollments", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     tenantId: varchar("tenant_id").notNull(),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
 
     offeringId: varchar("offering_id").notNull().references(() => hrmLearningOfferings.id),
     personId: varchar("person_id").notNull().references(() => hrPersons.id),

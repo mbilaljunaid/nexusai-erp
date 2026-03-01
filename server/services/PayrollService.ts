@@ -33,9 +33,12 @@ export class PayrollService {
         return run;
     }
 
-    static async getRuns(tenantId: string) {
+    static async getRuns(tenantId: string, entLegalEntityId?: string) {
         return await db.select().from(hrmPayrollRuns)
-            .where(eq(hrmPayrollRuns.tenantId, tenantId))
+            .where(and(
+                eq(hrmPayrollRuns.tenantId, tenantId),
+                entLegalEntityId ? eq(hrmPayrollRuns.entLegalEntityId, entLegalEntityId) : sql`true`
+            ))
             .orderBy(desc(hrmPayrollRuns.periodStartDate));
     }
 
@@ -50,11 +53,12 @@ export class PayrollService {
         await db.update(hrmPayrollRuns).set({ status: "CALCULATING" }).where(eq(hrmPayrollRuns.id, runId));
 
         try {
-            // 3. Find Eligible Assignments for this Pay Group
+            // 3. Find Eligible Assignments for this Pay Group & Legal Entity
             const activeAssignments = await db.select().from(hrAssignments)
                 .where(and(
                     eq(hrAssignments.tenantId, tenantId),
-                    eq(hrAssignments.assignmentStatus, "ACTIVE")
+                    eq(hrAssignments.assignmentStatus, "ACTIVE"),
+                    run.entLegalEntityId ? eq(hrAssignments.entLegalEntityId, run.entLegalEntityId) : sql`true`
                 ));
 
             // 4. Clean previous results for this run

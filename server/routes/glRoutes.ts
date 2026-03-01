@@ -639,6 +639,32 @@ router.get("/gl/consolidation/results/:runId/export", async (req, res, next) => 
 });
 
 /**
+ * GET /api/gl/consolidation/fx-rates
+ * Get exchange rates configured for consolidation
+ */
+router.get("/gl/consolidation/fx-rates", async (req, res) => {
+  try {
+    const rates = await storage.getAllGlDailyRates();
+    res.json(rates);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/gl/consolidation/fx-rates
+ * Create a new exchange rate manually
+ */
+router.post("/gl/consolidation/fx-rates", async (req, res) => {
+  try {
+    const rate = await storage.createGlDailyRate(req.body);
+    res.status(201).json(rate);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * POST /api/gl/consolidation/fx-rates/upload
  * Upload FX rates via CSV
  */

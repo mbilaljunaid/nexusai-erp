@@ -44,6 +44,7 @@ export const hrmPayElements = pgTable("hrm_pay_elements", {
 export const hrmPayrollRuns = pgTable("hrm_payroll_runs", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     tenantId: varchar("tenant_id").notNull(),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
 
     payGroupId: varchar("pay_group_id").notNull().references(() => hrmPayGroups.id),
 

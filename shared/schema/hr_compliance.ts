@@ -71,6 +71,7 @@ export const hrSodRules = pgTable("hr_sod_rules", {
 export const hrComplianceEvents = pgTable("hr_compliance_events", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     tenantId: varchar("tenant_id").notNull(),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
     ruleId: varchar("rule_id").references(() => hrComplianceRules.id),
     entityType: varchar("entity_type").notNull(), // PERSON, ASSIGNMENT, LEGAL_EMPLOYER
     entityId: varchar("entity_id").notNull(),
@@ -82,6 +83,7 @@ export const hrComplianceEvents = pgTable("hr_compliance_events", {
 export const hrComplianceViolations = pgTable("hr_compliance_violations", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     tenantId: varchar("tenant_id").notNull(),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
     eventId: varchar("event_id").references(() => hrComplianceEvents.id),
     ruleId: varchar("rule_id").references(() => hrComplianceRules.id),
     status: varchar("status").default("open"), // open, investigation, resolved, dismissed

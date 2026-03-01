@@ -162,7 +162,7 @@
 | Budget drill-down (EPM) | ✅ | ✅ BudgetBalanceDrillDown.tsx | - |
 | Variance analysis (EPM) | ✅ | ✅ VarianceAnalysisWorkbench.tsx | - |
 | Budget workflows | ✅ | ✅ BudgetWorkflow.tsx | - |
-| Upload budget spreadsheet | ✅ | ❌ | Not built |
+| Upload budget spreadsheet | ✅ | ✅ BudgetManager.tsx | - |
 | Scenario comparison (EPM) | ✅ | ✅ ScenarioComparison.tsx | - |
 
 ---
@@ -184,7 +184,7 @@
 
 | Feature | Oracle | NexusAI | Gap |
 |---|---|---|---|
-| Ledger setup (full form) | ✅ | ✅ LedgerSetup.tsx | Missing legalEntityId, accountingMethod fields |
+| Ledger setup (full form) | ✅ | ✅ LedgerSetup.tsx | - |
 | Ledger Set | ✅ | ✅ LedgerSetSetup.tsx | - |
 | Legal Entity setup | ✅ | ✅ LegalEntitySetup.tsx | - |
 | Calendar/Periods setup | ✅ | ✅ CalendarSetup.tsx | - |
@@ -241,7 +241,7 @@
 ### Medium Priority
 6. [x] Journal batch name field + reversal UI fields
 7. [x] Currency dropdown from real currency table (not hardcoded)
-8. [ ] Budget spreadsheet upload
+8. [x] Budget spreadsheet upload
 9. [x] Consolidation run endpoint
 
 ### Low Priority

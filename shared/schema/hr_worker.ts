@@ -48,6 +48,7 @@ export const hrWorkRelationships = pgTable("hr_work_relationships", {
 
     personId: varchar("person_id").notNull().references(() => hrPersons.id),
     legalEmployerId: varchar("legal_employer_id").notNull().references(() => hrOrganizations.id),
+    entLegalEntityId: varchar("ent_legal_entity_id"), // Added for global enterprise scoping
 
     dateStart: date("date_start").notNull(),
     workerType: varchar("worker_type").default("EMPLOYEE"), // EMPLOYEE, CONTINGENT, PENDING_WORKER
@@ -73,6 +74,7 @@ export const hrAssignments = pgTable("hr_assignments", {
 
     workRelationshipId: varchar("work_relationship_id").notNull().references(() => hrWorkRelationships.id),
     personId: varchar("person_id").notNull().references(() => hrPersons.id), // Denormalized for query speeed
+    entLegalEntityId: varchar("ent_legal_entity_id"), // Scoping to specific LE
 
     assignmentNumber: varchar("assignment_number").notNull(), // E10045-1, E10045-2
     assignmentStatus: varchar("assignment_status").default("ACTIVE"), // ACTIVE, SUSPENDED, INACTIVE

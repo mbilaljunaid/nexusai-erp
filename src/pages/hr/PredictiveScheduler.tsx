@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Calendar, Zap, Send, BarChart2, Users } from 'lucide-react';
+import { useEnterpriseStore } from '@/lib/enterpriseStore';
 
 interface Shift {
     id: string;
@@ -41,31 +42,32 @@ export default function PredictiveScheduler() {
     const [coverageDate, setCoverageDate] = useState(new Date().toISOString().slice(0, 10));
     const [genParams, setGenParams] = useState({ weekStartDate: '', employeeIds: 'EMP001,EMP002,EMP003', maxHoursPerEmployee: 40, shiftHours: 8 });
     const qc = useQueryClient();
+    const { legalEntityId } = useEnterpriseStore();
 
     const weekEnd = new Date(new Date(weekStart).getTime() + 6 * 86400_000).toISOString().slice(0, 10);
 
     const { data: shifts = [] } = useQuery<Shift[]>({
-        queryKey: ['shifts', location, weekStart],
-        queryFn: () => fetch(`/api/hr/wfm/schedule?locationId=${location}&startDate=${weekStart}&endDate=${weekEnd}`).then(r => r.json()),
+        queryKey: ['shifts', location, weekStart, legalEntityId],
+        queryFn: () => fetch(`/api/hr/wfm/schedule?locationId=${location}&startDate=${weekStart}&endDate=${weekEnd}`, { headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined }).then(r => r.json()),
     });
 
     const { data: coverage } = useQuery<CoverageData>({
-        queryKey: ['coverage', location, coverageDate],
-        queryFn: () => fetch(`/api/hr/wfm/coverage?locationId=${location}&date=${coverageDate}`).then(r => r.json()),
+        queryKey: ['coverage', location, coverageDate, legalEntityId],
+        queryFn: () => fetch(`/api/hr/wfm/coverage?locationId=${location}&date=${coverageDate}`, { headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined }).then(r => r.json()),
         enabled: activeTab === 'forecast',
     });
 
     const forecastMutation = useMutation({
-        mutationFn: (data: any) => fetch('/api/hr/wfm/forecast', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).then(r => r.json()),
+        mutationFn: (data: any) => fetch('/api/hr/wfm/forecast', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(legalEntityId ? { 'x-legal-entity-id': legalEntityId } : {}) }, body: JSON.stringify({ ...data, entLegalEntityId: legalEntityId }) }).then(r => r.json()),
     });
 
     const generateMutation = useMutation({
-        mutationFn: (data: any) => fetch('/api/hr/wfm/schedule/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).then(r => r.json()),
+        mutationFn: (data: any) => fetch('/api/hr/wfm/schedule/generate', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(legalEntityId ? { 'x-legal-entity-id': legalEntityId } : {}) }, body: JSON.stringify({ ...data, entLegalEntityId: legalEntityId }) }).then(r => r.json()),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['shifts'] }),
     });
 
     const publishMutation = useMutation({
-        mutationFn: () => fetch('/api/hr/wfm/schedule/publish', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ locationId: location, weekStartDate: weekStart }) }).then(r => r.json()),
+        mutationFn: () => fetch('/api/hr/wfm/schedule/publish', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(legalEntityId ? { 'x-legal-entity-id': legalEntityId } : {}) }, body: JSON.stringify({ locationId: location, weekStartDate: weekStart, entLegalEntityId: legalEntityId }) }).then(r => r.json()),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['shifts'] }),
     });
 
