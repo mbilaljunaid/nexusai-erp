@@ -4,6 +4,7 @@ import { esgPlanningService, budgetaryControlService, narrativeReportingService 
 export function registerEPMRoutes(app: any) {
     const r = Router();
     const T = (req: any) => req.headers['x-tenant-id'] || req.query.tenantId || 'default';
+    const L = (req: any) => req.headers['x-ledger-id'] as string | undefined;
 
     // ── ESG Goals ──────────────────────────────────────────────────────────
     r.post('/esg/goals', async (req, res) => {
@@ -11,7 +12,7 @@ export function registerEPMRoutes(app: any) {
         catch (e: any) { res.status(500).json({ error: e.message }); }
     });
     r.get('/esg/goals', async (req, res) => {
-        try { res.json(await esgPlanningService.listGoals(T(req), req.query.category as string, req.query.status as string)); }
+        try { res.json(await esgPlanningService.listGoals(T(req), L(req), req.query.category as string, req.query.status as string)); }
         catch (e: any) { res.status(500).json({ error: e.message }); }
     });
     r.get('/esg/goals/summary', async (req, res) => {
@@ -33,7 +34,7 @@ export function registerEPMRoutes(app: any) {
         catch (e: any) { res.status(500).json({ error: e.message }); }
     });
     r.get('/budget/controls', async (req, res) => {
-        try { res.json(await budgetaryControlService.list(T(req), req.query.period as string, req.query.costCenter as string)); }
+        try { res.json(await budgetaryControlService.list(T(req), L(req), req.query.period as string, req.query.costCenter as string)); }
         catch (e: any) { res.status(500).json({ error: e.message }); }
     });
     r.post('/budget/check', async (req, res) => {
@@ -41,7 +42,7 @@ export function registerEPMRoutes(app: any) {
         catch (e: any) { res.status(500).json({ error: e.message }); }
     });
     r.get('/budget/variance', async (req, res) => {
-        try { res.json(await budgetaryControlService.getVarianceReport(T(req), req.query.period as string, req.query.budgetVersion as string)); }
+        try { res.json(await budgetaryControlService.getVarianceReport(T(req), L(req), req.query.period as string, req.query.budgetVersion as string)); }
         catch (e: any) { res.status(500).json({ error: e.message }); }
     });
     r.post('/budget/controls/:id/post-actual', async (req, res) => {
@@ -55,7 +56,7 @@ export function registerEPMRoutes(app: any) {
         catch (e: any) { res.status(500).json({ error: e.message }); }
     });
     r.get('/narrative/reports', async (req, res) => {
-        try { res.json(await narrativeReportingService.listReports(T(req), req.query.period as string, req.query.status as string, req.query.reportType as string)); }
+        try { res.json(await narrativeReportingService.listReports(T(req), L(req), req.query.period as string, req.query.status as string, req.query.reportType as string)); }
         catch (e: any) { res.status(500).json({ error: e.message }); }
     });
     r.get('/narrative/reports/:id', async (req, res) => {

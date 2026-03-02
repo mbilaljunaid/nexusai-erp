@@ -23,6 +23,7 @@ export class MaintenanceController {
             const { limit, offset, status, assignedToId, page, organizationId } = req.query;
             let finalOffset = Number(offset) || 0;
             const finalLimit = Number(limit) || 20;
+            const invOrgId = req.headers['x-inventory-org-id'] as string | undefined;
 
             if (page) {
                 finalOffset = (Number(page) - 1) * finalLimit;
@@ -34,7 +35,8 @@ export class MaintenanceController {
                 {
                     status: status as string,
                     assignedToId: assignedToId === 'null' ? null : (assignedToId as string),
-                    organizationId: organizationId as string
+                    organizationId: (organizationId as string) || invOrgId,
+                    entInventoryOrgId: invOrgId
                 }
             );
             res.json(result);
@@ -55,7 +57,11 @@ export class MaintenanceController {
 
     async createWorkOrder(req: Request, res: Response) {
         try {
-            const wo = await maintenanceService.createWorkOrder(req.body);
+            const invOrgId = req.headers['x-inventory-org-id'] as string | undefined;
+            const wo = await maintenanceService.createWorkOrder({
+                ...req.body,
+                ...(invOrgId ? { entInventoryOrgId: invOrgId } : {})
+            });
             res.json(wo);
         } catch (error: any) {
             res.status(500).json({ error: error.message });

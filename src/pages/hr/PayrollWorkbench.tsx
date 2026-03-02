@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PlayCircle, CheckCircle2, XCircle, FileText, Download, Globe, DollarSign, Users, RefreshCw } from 'lucide-react';
+import { EnterpriseContextSwitcher, buildScopeHeaders } from '@/components/enterprise/EnterpriseContextSwitcher';
 
 interface PayrollRun {
     id: string;
@@ -33,20 +34,31 @@ const fmt = (n: number, c = 'USD') =>
 
 export default function PayrollWorkbench() {
     const [countryFilter, setCountryFilter] = useState('');
+    const [leId, setLeId] = useState<string | undefined>();
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [createForm, setCreateForm] = useState({
         payrollName: '', periodStart: '', periodEnd: '', payDate: '', countryCode: 'US', currencyCode: 'USD',
     });
 
+    const scopeHeaders = buildScopeHeaders({ 'legal-entity': leId });
+    const leHeader = leId ? { 'x-legal-entity-id': leId } : {};
+
     const qc = useQueryClient();
 
     const { data: runs = [], isLoading } = useQuery<PayrollRun[]>({
-        queryKey: ['payroll-runs', countryFilter],
-        queryFn: () => fetch(`/api/hr/payroll/runs${countryFilter ? `?countryCode=${countryFilter}` : ''}`).then(r => r.json()),
+        queryKey: ['payroll-runs', countryFilter, leId],
+        queryFn: () => fetch(
+            `/api/hr/payroll/runs${countryFilter ? `?countryCode=${countryFilter}` : ''}`,
+            { headers: { ...scopeHeaders } }
+        ).then(r => r.json()),
     });
 
     const createMutation = useMutation({
-        mutationFn: (data: any) => fetch('/api/hr/payroll/runs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).then(r => r.json()),
+        mutationFn: (data: any) => fetch('/api/hr/payroll/runs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...leHeader },
+            body: JSON.stringify({ ...data, entLegalEntityId: leId })
+        }).then(r => r.json()),
         onSuccess: () => { qc.invalidateQueries({ queryKey: ['payroll-runs'] }); setShowCreateForm(false); },
     });
 

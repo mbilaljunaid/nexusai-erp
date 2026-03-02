@@ -47,8 +47,9 @@ export class ESGPlanningService {
         await db.execute(sql`UPDATE esg_goals SET status = ${status} WHERE id = ${goalId}`);
     }
 
-    async listGoals(tenantId: string, category?: string, status?: string) {
+    async listGoals(tenantId: string, ledgerId?: string, category?: string, status?: string) {
         let q = sql`SELECT * FROM esg_goals WHERE tenant_id = ${tenantId}`;
+        if (ledgerId) q = sql`${q} AND ent_ledger_id = ${ledgerId}`;
         if (category) q = sql`${q} AND category = ${category}`;
         if (status) q = sql`${q} AND status = ${status}`;
         return (await db.execute(sql`${q} ORDER BY category, goal_code`) as any).rows;
@@ -132,20 +133,23 @@ export class BudgetaryControlService {
         return { controlId, posted: amount };
     }
 
-    async getVarianceReport(tenantId: string, period: string, budgetVersion = 'Approved') {
+    async getVarianceReport(tenantId: string, ledgerId?: string, period?: string, budgetVersion = 'Approved') {
+        const periodFilter = period ? sql`AND period = ${period}` : sql``;
+        const ledgerFilter = ledgerId ? sql`AND ent_ledger_id = ${ledgerId}` : sql``;
         return (await db.execute(sql`
             SELECT cost_center, gl_account, budget_amount, actual_amount, committed_amount, encumbrance_amount,
                 (budget_amount - actual_amount - committed_amount - encumbrance_amount) AS available,
                 ROUND(100.0 * actual_amount / NULLIF(budget_amount, 0), 2) AS utilization_pct,
                 control_action
             FROM budget_controls
-            WHERE tenant_id = ${tenantId} AND period = ${period} AND budget_version = ${budgetVersion}
+            WHERE tenant_id = ${tenantId} ${ledgerFilter} ${periodFilter} AND budget_version = ${budgetVersion}
             ORDER BY utilization_pct DESC NULLS LAST
         `) as any).rows;
     }
 
-    async list(tenantId: string, period?: string, costCenter?: string) {
+    async list(tenantId: string, ledgerId?: string, period?: string, costCenter?: string) {
         let q = sql`SELECT * FROM budget_controls WHERE tenant_id = ${tenantId}`;
+        if (ledgerId) q = sql`${q} AND ent_ledger_id = ${ledgerId}`;
         if (period) q = sql`${q} AND period = ${period}`;
         if (costCenter) q = sql`${q} AND cost_center = ${costCenter}`;
         return (await db.execute(sql`${q} ORDER BY utilization_pct DESC NULLS LAST`) as any).rows;
@@ -192,8 +196,9 @@ export class NarrativeReportingService {
         return { reportId, status: newStatus };
     }
 
-    async listReports(tenantId: string, period?: string, status?: string, reportType?: string) {
+    async listReports(tenantId: string, ledgerId?: string, period?: string, status?: string, reportType?: string) {
         let q = sql`SELECT id, report_name, report_type, period, status, created_by, approved_by, published_at, created_at FROM narrative_reports WHERE tenant_id = ${tenantId}`;
+        if (ledgerId) q = sql`${q} AND ent_ledger_id = ${ledgerId}`;
         if (period) q = sql`${q} AND period = ${period}`;
         if (status) q = sql`${q} AND status = ${status}`;
         if (reportType) q = sql`${q} AND report_type = ${reportType}`;

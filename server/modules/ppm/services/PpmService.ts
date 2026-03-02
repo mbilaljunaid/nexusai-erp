@@ -28,6 +28,62 @@ export class PpmService {
     }
 
     /**
+     * List all projects, optionally filtered by Business Unit
+     */
+    async getProjects(buId?: string) {
+        const rows = await db
+            .select()
+            .from(ppmProjects)
+            .where(buId ? eq(ppmProjects.entBusinessUnitId, buId) : undefined)
+            .orderBy(desc(ppmProjects.createdAt));
+        return rows;
+    }
+
+    /**
+     * Get a single project by ID, with optional BU guard
+     */
+    async getProjectById(projectId: string, buId?: string) {
+        const conditions = [eq(ppmProjects.id, projectId)];
+        if (buId) conditions.push(eq(ppmProjects.entBusinessUnitId, buId));
+        const [project] = await db
+            .select()
+            .from(ppmProjects)
+            .where(and(...conditions));
+        return project ?? null;
+    }
+
+    /**
+     * Portfolio-level summary, filtered by BU
+     */
+    async getPortfolioSummary(buId?: string) {
+        const whereClause = buId ? eq(ppmProjects.entBusinessUnitId, buId) : undefined;
+
+        const rows = await db
+            .select()
+            .from(ppmProjects)
+            .where(whereClause);
+
+        const total = rows.length;
+        const active = rows.filter(r => r.status === "ACTIVE").length;
+        const draft = rows.filter(r => r.status === "DRAFT").length;
+        const closed = rows.filter(r => r.status === "CLOSED").length;
+        const totalBudget = rows.reduce((sum, r) => sum + Number(r.budget ?? 0), 0);
+        const avgComplete = total > 0
+            ? rows.reduce((sum, r) => sum + Number(r.percentComplete ?? 0), 0) / total
+            : 0;
+
+        return {
+            totalProjects: total,
+            activeProjects: active,
+            draftProjects: draft,
+            closedProjects: closed,
+            totalBudget,
+            avgPercentComplete: Math.round(avgComplete * 100) / 100,
+            projectHealth: active > 0 ? (avgComplete > 75 ? "Good" : avgComplete > 40 ? "Fair" : "At Risk") : "No Active Projects",
+        };
+    }
+
+    /**
      * Create a financial task (WBS)
      */
     async createTask(data: InsertPpmTask) {

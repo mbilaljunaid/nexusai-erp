@@ -17,9 +17,10 @@ router.get("/dashboard", async (req, res) => {
     try {
         const tenantId = (req.query.tenantId as string) || "default";
         const departmentId = req.query.departmentId as string | undefined;
+        const leId = req.headers['x-legal-entity-id'] as string | undefined;
 
         // 1. Get Metrics (with optional filter)
-        const { metrics: metricRows, benchmark } = await HRAnalyticsService.getDashboardMetrics(tenantId, { departmentId });
+        const { metrics: metricRows, benchmark } = await HRAnalyticsService.getDashboardMetrics(tenantId, { departmentId, leId });
 
         // 2. Format for Frontend
         const response: any = {
@@ -50,6 +51,7 @@ router.get("/dashboard", async (req, res) => {
 router.get("/details/:kpiCode", async (req, res) => {
     try {
         const tenantId = (req.query.tenantId as string) || "default";
+        const leId = req.headers['x-legal-entity-id'] as string | undefined;
         const { kpiCode } = req.params;
 
         let data: any[] = [];
@@ -59,11 +61,10 @@ router.get("/details/:kpiCode", async (req, res) => {
 
         switch (kpiCode) {
             case "HR_HEADCOUNT":
-                data = await HRAnalyticsService.getHeadcountDetails(tenantId, { page, limit });
+                data = await HRAnalyticsService.getHeadcountDetails(tenantId, { page, limit, leId });
                 break;
             case "HR_ATTRITION_VOL":
-                // Same pagination pattern for Attrition
-                data = await HRAnalyticsService.getAttritionDetails(tenantId);
+                data = await HRAnalyticsService.getAttritionDetails(tenantId, leId);
                 break;
             default:
                 return res.json({ message: "Drill-down not implemented for this metric" });
@@ -92,17 +93,18 @@ router.post("/snapshot/run", async (req, res) => {
 router.get("/departments", async (req, res) => {
     try {
         const tenantId = (req.query.tenantId as string) || "default";
+        const leId = req.headers['x-legal-entity-id'] as string | undefined;
 
-        // Fetch all organizations used as departments
-        // In real app, filter by classificationCode='DEPARTMENT'
+        const whereConditions: any[] = [
+            eq(hrOrganizations.tenantId, tenantId),
+            eq(hrOrganizations.classificationCode, "DEPARTMENT")
+        ];
+        if (leId) whereConditions.push(eq(hrOrganizations.entLegalEntityId as any, leId));
+
         const departments = await db.select({
             id: hrOrganizations.id,
             name: hrOrganizations.name
-        }).from(hrOrganizations)
-            .where(and(
-                eq(hrOrganizations.tenantId, tenantId),
-                eq(hrOrganizations.classificationCode, "DEPARTMENT")
-            ));
+        }).from(hrOrganizations).where(and(...whereConditions));
 
         res.json(departments);
     } catch (error: any) {

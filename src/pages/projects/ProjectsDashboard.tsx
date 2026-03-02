@@ -1,21 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StandardDashboard, DashboardWidget } from '@/components/layout/StandardDashboard';
 import { FolderKanban, DollarSign, BarChart3, TrendingUp } from 'lucide-react';
 import { AnalyticsChart } from '@/components/AnalyticsChart';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { Badge } from '@/components/ui/badge';
+import { EnterpriseContextSwitcher, buildScopeHeaders } from '@/components/enterprise/EnterpriseContextSwitcher';
 
 export default function ProjectsDashboard() {
+    const [buId, setBuId] = useState<string | undefined>();
+
     const { data: summary, isLoading } = useQuery<any>({
-        queryKey: ['/api/ppm/summary'],
+        queryKey: ['/api/ppm/summary', buId],
+        queryFn: () =>
+            fetch('/api/ppm/summary', { headers: buildScopeHeaders({ 'business-unit': buId }) })
+                .then(r => r.json()),
     });
 
     const metrics = [
-        { label: 'Total Projects', value: summary?.projectCount || '0', change: '+2', icon: FolderKanban, color: "bg-blue-100 text-blue-700" },
+        { label: 'Total Projects', value: summary?.totalProjects ?? summary?.projectCount ?? '0', change: '+2', icon: FolderKanban, color: "bg-blue-100 text-blue-700" },
         { label: 'Total Budgeted', value: `$${parseFloat(summary?.totalBudget || "0").toLocaleString()}`, change: '0', icon: DollarSign, color: "bg-green-100 text-green-700" },
-        { label: 'Actual Cost (Burdened)', value: `$${parseFloat(summary?.totalBurdenedCost || "0").toLocaleString()}`, change: '+15%', icon: BarChart3, color: "bg-purple-100 text-purple-700" },
-        { label: 'Cost Variance', value: `$${(parseFloat(summary?.totalBudget || "0") - parseFloat(summary?.totalBurdenedCost || "0")).toLocaleString()}`, change: 'Real-time', icon: TrendingUp, color: "bg-orange-100 text-orange-700" },
+        { label: 'Active Projects', value: summary?.activeProjects ?? '0', change: 'Real-time', icon: BarChart3, color: "bg-purple-100 text-purple-700" },
+        { label: 'Avg % Complete', value: `${summary?.avgPercentComplete ?? 0}%`, change: 'Real-time', icon: TrendingUp, color: "bg-orange-100 text-orange-700" },
     ];
 
     const burndownData = [
@@ -30,7 +36,12 @@ export default function ProjectsDashboard() {
                 <h1 className="text-3xl font-bold tracking-tight">Project Portfolio Management</h1>
                 <p className="text-muted-foreground">Financial summary and performance metrics across the portfolio</p>
             </div>
-            <div className="space-x-2">
+            <div className="flex items-center gap-3">
+                <EnterpriseContextSwitcher
+                    type="business-unit"
+                    value={buId}
+                    onChange={setBuId}
+                />
                 <Button>Create Project</Button>
             </div>
         </div>

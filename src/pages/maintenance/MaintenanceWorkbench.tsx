@@ -8,18 +8,26 @@ import DispatchConsole from "@/components/maintenance/DispatchConsole";
 import PlanningBoard from "@/components/maintenance/PlanningBoard";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
-
 import CostAnalysisView from "@/components/maintenance/CostAnalysisView";
+import {
+    EnterpriseContextSwitcher,
+    buildScopeHeaders
+} from "@/components/enterprise/EnterpriseContextSwitcher";
 
 export default function MaintenanceWorkbench({ initialTab = "overview" }: { initialTab?: string }) {
     const [activeTab, setActiveTab] = useState(initialTab);
+    const [activeInvOrgId, setActiveInvOrgId] = useState<string | undefined>(undefined);
+
+    const scopeHeaders = buildScopeHeaders({ "inventory-org": activeInvOrgId });
 
     // KPI Queries
     const { data: metrics } = useQuery({
-        queryKey: ["/api/maintenance/metrics"],
+        queryKey: ["/api/maintenance/metrics", activeInvOrgId],
         queryFn: async () => {
-            // Mock metrics for now, replace with real API aggregation if available
-            const res = await fetch("/api/maintenance/work-orders?limit=1000").then(r => r.json());
+            const res = await fetch(
+                "/api/maintenance/work-orders?limit=1000",
+                { headers: { "Content-Type": "application/json", ...scopeHeaders } }
+            ).then(r => r.json());
             const workOrders = res.data || [];
             const critical = workOrders.filter((w: any) => w.priority === "URGENT" && w.status !== "COMPLETED").length;
             const backlog = workOrders.filter((w: any) => w.status === "DRAFT" || w.status === "PENDING").length;
@@ -37,7 +45,12 @@ export default function MaintenanceWorkbench({ initialTab = "overview" }: { init
                     </h1>
                     <p className="text-muted-foreground">Monitor asset health, dispatch work, and schedule maintenance.</p>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex gap-4 items-center">
+                    <EnterpriseContextSwitcher
+                        type="inventory-org"
+                        value={activeInvOrgId}
+                        onChange={setActiveInvOrgId}
+                    />
                     {metrics && (
                         <>
                             <Badge variant="destructive" className="flex gap-1">
@@ -61,7 +74,6 @@ export default function MaintenanceWorkbench({ initialTab = "overview" }: { init
                     </TabsList>
 
                     <TabsContent value="overview" className="flex-1 overflow-auto">
-                        {/* Embed the logic from the old CMMSMaintenance page here basically */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveTab("dispatch")}>
                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -95,7 +107,7 @@ export default function MaintenanceWorkbench({ initialTab = "overview" }: { init
                             </Card>
                         </div>
 
-                        {/* Recent Alerts / Quick Actions */}
+                        {/* Systems Health / Quick Actions */}
                         <div className="mt-6 grid grid-cols-2 gap-6">
                             <Card>
                                 <CardHeader><CardTitle>Systems Health</CardTitle></CardHeader>

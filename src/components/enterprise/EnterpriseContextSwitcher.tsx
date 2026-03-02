@@ -29,7 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-export type ScopeType = "business-unit" | "inventory-org" | "set";
+export type ScopeType = "business-unit" | "inventory-org" | "set" | "legal-entity";
 
 interface Props {
     type: ScopeType;
@@ -59,6 +59,13 @@ const META: Record<ScopeType, { label: string; apiPath: string; icon: React.Elem
         icon: Globe,
         headerKey: "x-set-id",
         color: "bg-violet-500/15 text-violet-700 border-violet-200",
+    },
+    "legal-entity": {
+        label: "Legal Entity",
+        apiPath: "/api/enterprise/legal-entities",
+        icon: Building2,
+        headerKey: "x-legal-entity-id",
+        color: "bg-amber-500/15 text-amber-700 border-amber-200",
     },
 };
 
@@ -139,5 +146,6 @@ export function buildScopeHeaders(scopes: Partial<Record<ScopeType, string | und
     if (scopes["business-unit"]) headers["x-business-unit-id"] = scopes["business-unit"];
     if (scopes["inventory-org"]) headers["x-inventory-org-id"] = scopes["inventory-org"];
     if (scopes["set"]) headers["x-set-id"] = scopes["set"];
+    if (scopes["legal-entity"]) headers["x-legal-entity-id"] = scopes["legal-entity"];
     return headers;
 }

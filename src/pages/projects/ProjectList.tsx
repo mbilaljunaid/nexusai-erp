@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StandardTable } from "@/components/ui/StandardTable";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Eye, TrendingUp } from "lucide-react";
 import { Link } from "wouter";
+import { EnterpriseContextSwitcher, buildScopeHeaders } from '@/components/enterprise/EnterpriseContextSwitcher';
 
 interface Project {
     id: string;
@@ -21,8 +22,13 @@ interface Project {
 }
 
 export default function ProjectList() {
+    const [buId, setBuId] = useState<string | undefined>();
+
     const { data: projects, isLoading } = useQuery<Project[]>({
-        queryKey: ['/api/ppm/projects'],
+        queryKey: ['/api/ppm/projects', buId],
+        queryFn: () =>
+            fetch('/api/ppm/projects', { headers: buildScopeHeaders({ 'business-unit': buId }) })
+                .then(r => r.json()),
     });
 
     const statusConfig: Record<string, { label: string, variant: "default" | "destructive" | "secondary" | "outline" }> = {
@@ -112,13 +118,22 @@ export default function ProjectList() {
     ];
 
     return (
-        <StandardTable
-            data={projects || []}
-            columns={columns}
-            keyExtractor={(p) => p.id}
-            filterColumn="name"
-            filterPlaceholder="Filter projects..."
-            isLoading={isLoading}
-        />
+        <div className="space-y-3">
+            <div className="flex justify-end">
+                <EnterpriseContextSwitcher
+                    type="business-unit"
+                    value={buId}
+                    onChange={setBuId}
+                />
+            </div>
+            <StandardTable
+                data={projects || []}
+                columns={columns}
+                keyExtractor={(p) => p.id}
+                filterColumn="name"
+                filterPlaceholder="Filter projects..."
+                isLoading={isLoading}
+            />
+        </div>
     );
 }

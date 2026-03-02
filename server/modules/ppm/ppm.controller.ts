@@ -9,6 +9,81 @@ export class PpmController {
     private ppmPlanningService = new PpmPlanningService();
 
     // ----------------------------------------------------
+    // PROJECT CRUD (BU-SCOPED)
+    // ----------------------------------------------------
+
+    getProjects = async (req: Request, res: Response) => {
+        try {
+            const buId = req.headers["x-business-unit-id"] as string | undefined;
+            const projects = await this.ppmService.getProjects(buId);
+            res.json(projects);
+        } catch (error: any) {
+            console.error("PPM getProjects Error:", error);
+            res.status(500).json({ error: error.message || "Failed to fetch projects" });
+        }
+    }
+
+    getProjectById = async (req: Request, res: Response) => {
+        try {
+            const buId = req.headers["x-business-unit-id"] as string | undefined;
+            const project = await this.ppmService.getProjectById(req.params.id, buId);
+            if (!project) return res.status(404).json({ error: "Project not found" });
+            res.json(project);
+        } catch (error: any) {
+            console.error("PPM getProjectById Error:", error);
+            res.status(500).json({ error: error.message || "Failed to fetch project" });
+        }
+    }
+
+    createProject = async (req: Request, res: Response) => {
+        try {
+            const buId = req.headers["x-business-unit-id"] as string | undefined;
+            const payload = { ...req.body };
+            if (buId) payload.entBusinessUnitId = buId;
+            const project = await this.ppmService.createProject(payload);
+            res.status(201).json(project);
+        } catch (error: any) {
+            console.error("PPM createProject Error:", error);
+            res.status(500).json({ error: error.message || "Failed to create project" });
+        }
+    }
+
+    getSummary = async (req: Request, res: Response) => {
+        try {
+            const buId = req.headers["x-business-unit-id"] as string | undefined;
+            const summary = await this.ppmService.getPortfolioSummary(buId);
+            res.json(summary);
+        } catch (error: any) {
+            console.error("PPM getSummary Error:", error);
+            res.status(500).json({ error: error.message || "Failed to fetch portfolio summary" });
+        }
+    }
+
+    // ----------------------------------------------------
+    // ALLOCATION RULES (Stub – full impl TBD)
+    // ----------------------------------------------------
+
+    getAllocationRules = async (_req: Request, res: Response) => {
+        res.json([]);
+    }
+
+    createAllocationRule = async (req: Request, res: Response) => {
+        res.status(201).json({ id: `rule-${Date.now()}`, ...req.body, status: "ACTIVE" });
+    }
+
+    updateAllocationRule = async (req: Request, res: Response) => {
+        res.json({ id: req.params.id, ...req.body });
+    }
+
+    runAllocation = async (req: Request, res: Response) => {
+        res.json({ success: true, ruleId: req.params.id, message: "Allocation run queued" });
+    }
+
+    getAllocationPreview = async (_req: Request, res: Response) => {
+        res.json({ transfers: [], totalAmount: 0 });
+    }
+
+    // ----------------------------------------------------
     // PROJECT PERFORMANCE (EVM)
     // ----------------------------------------------------
 

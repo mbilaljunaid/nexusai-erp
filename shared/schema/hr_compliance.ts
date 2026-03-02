@@ -12,6 +12,7 @@ export const hrComplianceFrameworks = pgTable("hr_compliance_frameworks", {
     description: text("description"),
     jurisdiction: varchar("jurisdiction"), // e.g., EU, US, UK, GLOBAL
     isActive: boolean("is_active").default(true),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 

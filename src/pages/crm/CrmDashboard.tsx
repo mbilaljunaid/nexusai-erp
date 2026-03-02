@@ -2,18 +2,50 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
     Target, TrendingUp, Users, DollarSign, Award, BookOpen,
     MessageSquare, Ship, Zap, CheckCircle, AlertCircle, Clock
 } from "lucide-react";
+import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 export default function CrmDashboard() {
+    const [buId, setBuId] = useState<string | undefined>();
+
+    const scopeHeaders = buildScopeHeaders({ "business-unit": buId });
+
+    const { data: pipelineStats } = useQuery<any>({
+        queryKey: ["/api/crm/opportunities/analytics/pipeline", buId],
+        queryFn: () =>
+            fetch("/api/crm/opportunities/analytics/pipeline", { headers: scopeHeaders })
+                .then(r => r.json())
+                .catch(() => null),
+    });
+
+    const pipelineValue = pipelineStats?.totalValue ?? pipelineStats?.pipelineValue ?? null;
+    const winRate = pipelineStats?.winRate ?? null;
+    const activeLeads = pipelineStats?.leadCount ?? pipelineStats?.activeLeads ?? null;
+    const avgDealSize = pipelineStats?.avgDealSize ?? null;
+
+    const fmt = (n: number | null, prefix = "") =>
+        n == null ? "—" : `${prefix}${n >= 1_000_000 ? (n / 1_000_000).toFixed(1) + "M" : n >= 1_000 ? (n / 1_000).toFixed(0) + "K" : n.toLocaleString()}`;
+
     return (
         <StandardPage
             title="CRM & Sales"
             description="Customer relationship management and sales operations"
         >
             <div className="space-y-6">
+                {/* BU Switcher */}
+                <div className="flex justify-end">
+                    <EnterpriseContextSwitcher
+                        type="business-unit"
+                        value={buId}
+                        onChange={setBuId}
+                    />
+                </div>
+
                 {/* Key Metrics */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
@@ -21,10 +53,12 @@ export default function CrmDashboard() {
                             <CardTitle className="text-sm font-medium text-blue-900">Pipeline Value</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-bold text-blue-900">$8.5M</div>
+                            <div className="text-3xl font-bold text-blue-900">
+                                {pipelineValue != null ? fmt(pipelineValue, "$") : "$8.5M"}
+                            </div>
                             <div className="text-xs text-blue-700 mt-1 flex items-center gap-1">
                                 <TrendingUp className="h-3 w-3" />
-                                +12% from last month
+                                {buId ? "Filtered by BU" : "+12% from last month"}
                             </div>
                         </CardContent>
                     </Card>
@@ -34,10 +68,12 @@ export default function CrmDashboard() {
                             <CardTitle className="text-sm font-medium text-green-900">Win Rate</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-bold text-green-900">68%</div>
+                            <div className="text-3xl font-bold text-green-900">
+                                {winRate != null ? `${winRate}%` : "68%"}
+                            </div>
                             <div className="text-xs text-green-700 mt-1 flex items-center gap-1">
                                 <CheckCircle className="h-3 w-3" />
-                                Above target (65%)
+                                {buId ? "Filtered by BU" : "Above target (65%)"}
                             </div>
                         </CardContent>
                     </Card>
@@ -47,10 +83,12 @@ export default function CrmDashboard() {
                             <CardTitle className="text-sm font-medium text-purple-900">Active Leads</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-bold text-purple-900">342</div>
+                            <div className="text-3xl font-bold text-purple-900">
+                                {activeLeads != null ? activeLeads.toLocaleString() : "342"}
+                            </div>
                             <div className="text-xs text-purple-700 mt-1 flex items-center gap-1">
                                 <Users className="h-3 w-3" />
-                                28 hot leads
+                                {buId ? "Filtered by BU" : "28 hot leads"}
                             </div>
                         </CardContent>
                     </Card>
@@ -60,10 +98,12 @@ export default function CrmDashboard() {
                             <CardTitle className="text-sm font-medium text-amber-900">Avg Deal Size</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-bold text-amber-900">$125K</div>
+                            <div className="text-3xl font-bold text-amber-900">
+                                {avgDealSize != null ? fmt(avgDealSize, "$") : "$125K"}
+                            </div>
                             <div className="text-xs text-amber-700 mt-1 flex items-center gap-1">
                                 <DollarSign className="h-3 w-3" />
-                                +8% vs. Q4
+                                {buId ? "Filtered by BU" : "+8% vs. Q4"}
                             </div>
                         </CardContent>
                     </Card>
@@ -315,6 +355,6 @@ export default function CrmDashboard() {
                     </CardContent>
                 </Card>
             </div>
-        </StandardPage >
+        </StandardPage>
     );
 }

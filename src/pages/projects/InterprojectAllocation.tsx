@@ -10,6 +10,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Plus, Save, Play, Trash2, ArrowRight, DollarSign, Calendar } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 interface AllocationRule {
     id?: number;
@@ -36,6 +37,7 @@ interface TargetProject {
 export default function InterprojectAllocation() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const [buId, setBuId] = useState<string | undefined>();
     const [selectedRule, setSelectedRule] = useState<number | null>(null);
     const [ruleName, setRuleName] = useState("");
     const [description, setDescription] = useState("");
@@ -46,24 +48,29 @@ export default function InterprojectAllocation() {
     const [targetProjects, setTargetProjects] = useState<TargetProject[]>([]);
     const [selectedProjectToAdd, setSelectedProjectToAdd] = useState("");
 
+    const scopeHeaders = buildScopeHeaders({ "business-unit": buId });
+
     // Fetch allocation rules
     const { data: rules, isLoading } = useQuery({
-        queryKey: ["/api/ppm/allocation-rules"],
-        queryFn: () => apiRequest("/api/ppm/allocation-rules"),
+        queryKey: ["/api/ppm/allocation-rules", buId],
+        queryFn: () =>
+            fetch("/api/ppm/allocation-rules", { headers: scopeHeaders }).then(r => r.json()),
     });
 
     // Fetch projects
     const { data: projects } = useQuery({
-        queryKey: ["/api/ppm/projects"],
-        queryFn: () => apiRequest("/api/ppm/projects?status=ACTIVE"),
+        queryKey: ["/api/ppm/projects", buId],
+        queryFn: () =>
+            fetch("/api/ppm/projects", { headers: scopeHeaders }).then(r => r.json()),
     });
 
     // Fetch allocation preview
     const { data: preview } = useQuery({
-        queryKey: ["/api/ppm/allocation-preview", sourceProject, targetProjects, allocationBasis],
+        queryKey: ["/api/ppm/allocation-preview", sourceProject, targetProjects, allocationBasis, buId],
         queryFn: () =>
-            apiRequest("/api/ppm/allocation-preview", {
+            fetch("/api/ppm/allocation-preview", {
                 method: "POST",
+                headers: { "Content-Type": "application/json", ...scopeHeaders },
                 body: JSON.stringify({
                     sourceProjectId: parseInt(sourceProject),
                     targetProjects: targetProjects.map((t) => ({
@@ -72,7 +79,7 @@ export default function InterprojectAllocation() {
                     })),
                     allocationBasis,
                 }),
-            }),
+            }).then(r => r.json()),
         enabled: !!sourceProject && targetProjects.length > 0,
     });
 
@@ -80,24 +87,29 @@ export default function InterprojectAllocation() {
     const saveMutation = useMutation({
         mutationFn: (data: AllocationRule) =>
             selectedRule
-                ? apiRequest(`/api/ppm/allocation-rules/${selectedRule}`, {
+                ? fetch(`/api/ppm/allocation-rules/${selectedRule}`, {
                     method: "PUT",
+                    headers: { "Content-Type": "application/json", ...scopeHeaders },
                     body: JSON.stringify(data),
-                })
-                : apiRequest("/api/ppm/allocation-rules", {
+                }).then(r => r.json())
+                : fetch("/api/ppm/allocation-rules", {
                     method: "POST",
+                    headers: { "Content-Type": "application/json", ...scopeHeaders },
                     body: JSON.stringify(data),
-                }),
+                }).then(r => r.json()),
         onSuccess: () => {
             toast({ title: "Success", description: "Allocation rule saved" });
-            queryClient.invalidateQueries({ queryKey: ["/api/ppm/allocation-rules"] });
+            queryClient.invalidateQueries({ queryKey: ["/api/ppm/allocation-rules", buId] });
         },
     });
 
     // Run allocation mutation
     const runMutation = useMutation({
         mutationFn: (ruleId: number) =>
-            apiRequest(`/api/ppm/allocation-rules/${ruleId}/run`, { method: "POST" }),
+            fetch(`/api/ppm/allocation-rules/${ruleId}/run`, {
+                method: "POST",
+                headers: scopeHeaders,
+            }).then(r => r.json()),
         onSuccess: (data) => {
             toast({
                 title: "Allocation Complete",
@@ -172,7 +184,12 @@ export default function InterprojectAllocation() {
                         Allocate costs across projects based on various drivers
                     </p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex items-center gap-3">
+                    <EnterpriseContextSwitcher
+                        type="business-unit"
+                        value={buId}
+                        onChange={setBuId}
+                    />
                     <Button variant="outline" onClick={() => {
                         setSelectedRule(null);
                         setRuleName("");

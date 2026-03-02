@@ -22,6 +22,7 @@ router.get("/types", (req, res) => {
 router.get("/generate", async (req, res) => {
     try {
         const { type, tenantId = "default", startDate, endDate } = req.query;
+        const leId = req.headers['x-legal-entity-id'] as string | undefined;
 
         if (!type) return res.status(400).json({ error: "Report type is required" });
 
@@ -38,7 +39,7 @@ router.get("/generate", async (req, res) => {
                 .leftJoin(hrPersons, eq(hrWorkRelationships.personId, hrPersons.id))
                 .where(and(
                     eq(hrWorkRelationships.tenantId, tenantId as string),
-                    // Basic date filter if provided
+                    leId ? eq(hrWorkRelationships.entLegalEntityId, leId) : undefined as any,
                     startDate ? gte(hrWorkRelationships.terminationDate, startDate as string) : undefined as any,
                     endDate ? lte(hrWorkRelationships.terminationDate, endDate as string) : undefined as any
                 ))
@@ -56,6 +57,7 @@ router.get("/generate", async (req, res) => {
                 .leftJoin(hrPersons, eq(hrWorkRelationships.personId, hrPersons.id))
                 .where(and(
                     eq(hrWorkRelationships.tenantId, tenantId as string),
+                    leId ? eq(hrWorkRelationships.entLegalEntityId, leId) : undefined as any,
                     startDate ? gte(hrWorkRelationships.startDate, startDate as string) : undefined as any
                 ))
                 .orderBy(desc(hrWorkRelationships.startDate))
@@ -75,12 +77,12 @@ router.get("/generate", async (req, res) => {
                 .where(and(
                     eq(hrAssignments.tenantId, tenantId as string),
                     eq(hrAssignments.assignmentStatus, "ACTIVE"),
-                    eq(hrAssignments.primaryAssignmentFlag, true)
+                    eq(hrAssignments.primaryAssignmentFlag, true),
+                    leId ? eq(hrAssignments.entLegalEntityId, leId) : undefined as any
                 ))
                 .limit(1000);
 
             // FIELD LEVEL SECURITY (MASKING)
-            // Check if user has "VIEW_SENSITIVE" permission
             const canViewSensitive = req.user?.permissions.includes("VIEW_SENSITIVE");
 
             if (!canViewSensitive) {

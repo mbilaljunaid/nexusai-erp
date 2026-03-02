@@ -8,66 +8,91 @@ import { Badge } from "@/components/ui/badge";
 import { DollarSign, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 export default function ProjectBudgetManagement() {
   const { toast } = useToast();
+  const [buId, setBuId] = useState<string | undefined>();
   const [newBudget, setNewBudget] = useState({ project: "", category: "Labor", allocated: "", actual: "" });
 
+  const scopeHeaders = buildScopeHeaders({ "business-unit": buId });
+
   const { data: budgets = [], isLoading } = useQuery({
-    queryKey: ["/api/project-budgets"],
-    queryFn: () => fetch("/api/project-budgets").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/project-budgets", buId],
+    queryFn: () =>
+      fetch("/api/project-budgets", { headers: scopeHeaders })
+        .then(r => r.json())
+        .catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/project-budgets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) =>
+      fetch("/api/project-budgets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...scopeHeaders },
+        body: JSON.stringify(data),
+      }).then(r => r.json()),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/project-budgets"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/project-budgets", buId] });
       setNewBudget({ project: "", category: "Labor", allocated: "", actual: "" });
       toast({ title: "Budget created" });
     },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/project-budgets/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) =>
+      fetch(`/api/project-budgets/${id}`, { method: "DELETE", headers: scopeHeaders }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/project-budgets"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/project-budgets", buId] });
       toast({ title: "Budget deleted" });
     },
   });
 
+  const totalAllocated = budgets.reduce((s: number, b: any) => s + Number(b.allocated ?? 0), 0);
+  const totalActual = budgets.reduce((s: number, b: any) => s + Number(b.actual ?? 0), 0);
+  const remaining = totalAllocated - totalActual;
+  const utilization = totalAllocated > 0 ? ((totalActual / totalAllocated) * 100).toFixed(1) : "0.0";
+
   return (
     <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <DollarSign className="h-8 w-8" />
-          Project Budget Management
-        </h1>
-        <p className="text-muted-foreground mt-2">Monitor project budgets and costs</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <DollarSign className="h-8 w-8" />
+            Project Budget Management
+          </h1>
+          <p className="text-muted-foreground mt-2">Monitor project budgets and costs</p>
+        </div>
+        <EnterpriseContextSwitcher
+          type="business-unit"
+          value={buId}
+          onChange={setBuId}
+        />
       </div>
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">
           <CardContent className="pt-0">
             <p className="text-xs text-muted-foreground">Total Allocated</p>
-            <p className="text-2xl font-bold">$275K</p>
+            <p className="text-2xl font-bold">${totalAllocated.toLocaleString()}</p>
           </CardContent>
         </Card>
         <Card className="p-3">
           <CardContent className="pt-0">
             <p className="text-xs text-muted-foreground">Total Spent</p>
-            <p className="text-2xl font-bold">$257.5K</p>
+            <p className="text-2xl font-bold">${totalActual.toLocaleString()}</p>
           </CardContent>
         </Card>
         <Card className="p-3">
           <CardContent className="pt-0">
             <p className="text-xs text-muted-foreground">Remaining</p>
-            <p className="text-2xl font-bold text-green-600">$17.5K</p>
+            <p className={`text-2xl font-bold ${remaining >= 0 ? "text-green-600" : "text-red-600"}`}>${remaining.toLocaleString()}</p>
           </CardContent>
         </Card>
         <Card className="p-3">
           <CardContent className="pt-0">
             <p className="text-xs text-muted-foreground">Budget Utilization</p>
-            <p className="text-2xl font-bold">93.6%</p>
+            <p className="text-2xl font-bold">{utilization}%</p>
           </CardContent>
         </Card>
       </div>
@@ -88,7 +113,12 @@ export default function ProjectBudgetManagement() {
             <Input placeholder="Allocated" type="number" value={newBudget.allocated} onChange={(e) => setNewBudget({ ...newBudget, allocated: e.target.value })} data-testid="input-allocated" />
             <Input placeholder="Actual" type="number" value={newBudget.actual} onChange={(e) => setNewBudget({ ...newBudget, actual: e.target.value })} data-testid="input-actual" />
           </div>
-          <Button disabled={createMutation.isPending || !newBudget.project} className="w-full" data-testid="button-create-budget">
+          <Button
+            disabled={createMutation.isPending || !newBudget.project}
+            className="w-full"
+            data-testid="button-create-budget"
+            onClick={() => createMutation.mutate(newBudget)}
+          >
             <Plus className="w-4 h-4 mr-2" /> Add Budget
           </Button>
         </CardContent>
@@ -113,7 +143,12 @@ export default function ProjectBudgetManagement() {
                   </div>
                   <div className="flex gap-2 items-center">
                     <Badge variant={status === "on-track" ? "default" : "destructive"}>{status}</Badge>
-                    <Button size="icon" variant="ghost" data-testid={`button-delete-${budget.id}`}>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      data-testid={`button-delete-${budget.id}`}
+                      onClick={() => deleteMutation.mutate(budget.id)}
+                    >
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>

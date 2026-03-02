@@ -6,6 +6,8 @@ import { storage } from "./storage";
 import { slaRouter } from "./modules/sla/routes";
 import { db } from "./db";
 import { suppliers } from "@shared/schema/scm";
+import { ppmProjects, ppmBudgetVersions, ppmBudgetLines } from "@shared/schema/ppm";
+import { eq, and } from "drizzle-orm";
 
 // Import modular routes
 import { registerDashboardRoutes } from "./modules/dashboard/routes";
@@ -167,6 +169,134 @@ export async function registerRoutes(
   // Legacy Ledger Stub
   app.get("/api/ledger", (req, res) => res.json({ message: "Use /api/finance/gl/ledgers" }));
 
+  // -----------------------------------------------------------------
+  // PROJECT BUDGETS – backed by ppmBudgetVersions + ppmProjects
+  // -----------------------------------------------------------------
+  app.get("/api/project-budgets", async (req: any, res) => {
+    try {
+      const buId = req.headers["x-business-unit-id"] as string | undefined;
+
+      // Fetch budget versions joined to projects
+      const versions = await db
+        .select({
+          id: ppmBudgetVersions.id,
+          projectId: ppmBudgetVersions.projectId,
+          category: ppmBudgetVersions.versionName,
+          status: ppmBudgetVersions.status,
+          createdAt: ppmBudgetVersions.createdAt,
+          projectName: ppmProjects.name,
+          projectNumber: ppmProjects.projectNumber,
+          entBusinessUnitId: ppmProjects.entBusinessUnitId,
+        })
+        .from(ppmBudgetVersions)
+        .leftJoin(ppmProjects, eq(ppmBudgetVersions.projectId, ppmProjects.id))
+        .where(buId ? eq(ppmProjects.entBusinessUnitId, buId) : undefined);
+
+      // Aggregate budget lines for each version
+      const versionIds = versions.map(v => v.id);
+      const lines = versionIds.length > 0
+        ? await db.select().from(ppmBudgetLines).where(
+          versionIds.length === 1
+            ? eq(ppmBudgetLines.versionId, versionIds[0])
+            : require("drizzle-orm").inArray(ppmBudgetLines.versionId, versionIds)
+        )
+        : [];
+
+      const result = versions.map(v => {
+        const vLines = lines.filter(l => l.versionId === v.id);
+        const allocated = vLines.reduce((s, l) => s + Number(l.amount ?? 0), 0);
+        return {
+          id: v.id,
+          project: v.projectName ?? v.projectId,
+          projectNumber: v.projectNumber,
+          category: v.category,
+          allocated,
+          actual: 0, // actual costs computed separately via expenditure items
+          status: v.status,
+          createdAt: v.createdAt,
+        };
+      });
+
+      res.json(result);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/project-budgets", async (req: any, res) => {
+    try {
+      const buId = req.headers["x-business-unit-id"] as string | undefined;
+      const { project: projectName, category, allocated } = req.body;
+      if (!projectName || !category) {
+        return res.status(400).json({ error: "project and category are required" });
+      }
+
+      // Find or create the project
+      let [proj] = await db
+        .select()
+        .from(ppmProjects)
+        .where(eq(ppmProjects.name, projectName))
+        .limit(1);
+
+      if (!proj) {
+        [proj] = await db
+          .insert(ppmProjects)
+          .values({
+            projectNumber: `PROJ-${Date.now()}`,
+            name: projectName,
+            projectType: "INDIRECT",
+            currencyCode: "USD",
+            startDate: new Date(),
+            entBusinessUnitId: buId ?? null,
+          })
+          .returning();
+      }
+
+      // Create a budget version for this category
+      const [version] = await db
+        .insert(ppmBudgetVersions)
+        .values({
+          projectId: proj.id,
+          versionName: category,
+          versionType: "COST",
+          status: "DRAFT",
+          currentFlag: true,
+        })
+        .returning();
+
+      // Create a budget line with the allocated amount
+      if (allocated != null) {
+        await db.insert(ppmBudgetLines).values({
+          versionId: version.id,
+          amount: String(allocated),
+          currencyCode: proj.currencyCode ?? "USD",
+        });
+      }
+
+      res.status(201).json({
+        id: version.id,
+        project: proj.name,
+        projectNumber: proj.projectNumber,
+        category,
+        allocated: Number(allocated ?? 0),
+        actual: 0,
+        status: version.status,
+      });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.delete("/api/project-budgets/:id", async (req, res) => {
+    try {
+      // Delete child budget lines first, then the version
+      await db.delete(ppmBudgetLines).where(eq(ppmBudgetLines.versionId, req.params.id));
+      await db.delete(ppmBudgetVersions).where(eq(ppmBudgetVersions.id, req.params.id));
+      res.json({ success: true });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
 
   app.use("/api/portal", portalRouter); // Generic Portal (Customer)
   app.use("/api/fa", fixedAssetsRouter);

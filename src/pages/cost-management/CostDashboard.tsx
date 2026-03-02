@@ -5,19 +5,29 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { DollarSign, TrendingUp, Package, Activity } from 'lucide-react';
 import { AnalyticsChart } from '@/components/AnalyticsChart';
-
-
+import {
+    EnterpriseContextSwitcher,
+    buildScopeHeaders
+} from '@/components/enterprise/EnterpriseContextSwitcher';
 
 export default function CostDashboard() {
     const [period, setPeriod] = useState('CY');
+    const [activeBuId, setActiveBuId] = useState<string | undefined>(undefined);
+    const [activeInvOrgId, setActiveInvOrgId] = useState<string | undefined>(undefined);
+
+    const scopeHeaders = buildScopeHeaders({
+        'business-unit': activeBuId,
+        'inventory-org': activeInvOrgId,
+    });
 
     const { data: apiMetrics, isLoading } = useQuery({
-        queryKey: ["/api/manufacturing/costs/metrics", period],
+        queryKey: ["/api/manufacturing/costs/metrics", period, activeBuId, activeInvOrgId],
         queryFn: async () => {
-            // Attempt to fetch real metrics
-            const res = await fetch(`/api/manufacturing/costs/metrics?period=${period}`);
+            const res = await fetch(
+                `/api/manufacturing/costs/metrics?period=${period}`,
+                { headers: { 'Content-Type': 'application/json', ...scopeHeaders } }
+            );
             if (!res.ok) {
-                // Determine if 404 meaning not implemented yet, or other error
                 if (res.status === 404) return null; // Fallback to mock
                 throw new Error("Failed to fetch cost metrics");
             }
@@ -44,10 +54,22 @@ export default function CostDashboard() {
                 <h1 className="text-3xl font-bold tracking-tight">Cost Management Dashboard</h1>
                 <p className="text-muted-foreground">Overview of inventory value and cost variances</p>
             </div>
-            <div className="space-x-2">
-                <Button variant={period === 'CY' ? 'default' : 'outline'} onClick={() => setPeriod('CY')}>CY</Button>
-                <Button variant={period === 'QTD' ? 'default' : 'outline'} onClick={() => setPeriod('QTD')}>QTD</Button>
-                <Button variant={period === 'MTD' ? 'default' : 'outline'} onClick={() => setPeriod('MTD')}>MTD</Button>
+            <div className="flex items-center gap-3">
+                <EnterpriseContextSwitcher
+                    type="business-unit"
+                    value={activeBuId}
+                    onChange={setActiveBuId}
+                />
+                <EnterpriseContextSwitcher
+                    type="inventory-org"
+                    value={activeInvOrgId}
+                    onChange={setActiveInvOrgId}
+                />
+                <div className="flex gap-1">
+                    <Button variant={period === 'CY' ? 'default' : 'outline'} size="sm" onClick={() => setPeriod('CY')}>CY</Button>
+                    <Button variant={period === 'QTD' ? 'default' : 'outline'} size="sm" onClick={() => setPeriod('QTD')}>QTD</Button>
+                    <Button variant={period === 'MTD' ? 'default' : 'outline'} size="sm" onClick={() => setPeriod('MTD')}>MTD</Button>
+                </div>
             </div>
         </div>
     );

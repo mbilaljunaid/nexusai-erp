@@ -4,10 +4,11 @@ import { permitToWorkService, cbmService, meterPMService } from "./eam.service";
 export function registerEAMRoutes(app: any) {
     const r = Router();
     const T = (req: any) => req.headers['x-tenant-id'] || req.query.tenantId || 'default';
+    const INV = (req: any) => (req.headers['x-inventory-org-id'] as string) || undefined;
 
     // ── Permit-to-Work ────────────────────────────────────────────────────
     r.post('/permits', async (req, res) => {
-        try { res.json(await permitToWorkService.create({ tenantId: T(req), ...req.body })); }
+        try { res.json(await permitToWorkService.create({ tenantId: T(req), entInventoryOrgId: INV(req), ...req.body })); }
         catch (e: any) { res.status(500).json({ error: e.message }); }
     });
     r.get('/permits', async (req, res) => {
@@ -33,11 +34,11 @@ export function registerEAMRoutes(app: any) {
 
     // ── CBM ────────────────────────────────────────────────────────────────
     r.post('/cbm/thresholds', async (req, res) => {
-        try { res.json(await cbmService.upsertThreshold({ tenantId: T(req), ...req.body })); }
+        try { res.json(await cbmService.upsertThreshold({ tenantId: T(req), entInventoryOrgId: INV(req), ...req.body })); }
         catch (e: any) { res.status(500).json({ error: e.message }); }
     });
     r.post('/cbm/readings', async (req, res) => {
-        try { res.json(await cbmService.recordReading({ tenantId: T(req), ...req.body })); }
+        try { res.json(await cbmService.recordReading({ tenantId: T(req), entInventoryOrgId: INV(req), ...req.body })); }
         catch (e: any) { res.status(500).json({ error: e.message }); }
     });
     r.get('/cbm/trend', async (req, res) => {
@@ -51,7 +52,7 @@ export function registerEAMRoutes(app: any) {
 
     // ── Meter PM ───────────────────────────────────────────────────────────
     r.post('/meters', async (req, res) => {
-        try { res.json(await meterPMService.createMeter({ tenantId: T(req), ...req.body })); }
+        try { res.json(await meterPMService.createMeter({ tenantId: T(req), entInventoryOrgId: INV(req), ...req.body })); }
         catch (e: any) { res.status(500).json({ error: e.message }); }
     });
     r.get('/meters', async (req, res) => {
@@ -59,11 +60,11 @@ export function registerEAMRoutes(app: any) {
         catch (e: any) { res.status(500).json({ error: e.message }); }
     });
     r.post('/meters/:id/readings', async (req, res) => {
-        try { res.json(await meterPMService.recordReading({ tenantId: T(req), meterId: req.params.id, ...req.body })); }
+        try { res.json(await meterPMService.recordReading({ tenantId: T(req), meterId: req.params.id, entInventoryOrgId: INV(req), ...req.body })); }
         catch (e: any) { res.status(500).json({ error: e.message }); }
     });
     r.post('/meters/schedules', async (req, res) => {
-        try { res.json(await meterPMService.createSchedule({ tenantId: T(req), ...req.body })); }
+        try { res.json(await meterPMService.createSchedule({ tenantId: T(req), entInventoryOrgId: INV(req), ...req.body })); }
         catch (e: any) { res.status(500).json({ error: e.message }); }
     });
     r.get('/meters/schedules/due', async (req, res) => {

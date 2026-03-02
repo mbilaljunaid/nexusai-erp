@@ -19,15 +19,29 @@ router.get("/leases", enforceRBAC("finance_read"), async (req, res) => {
         const page = Number(req.query.page) || 1;
         const limit = Number(req.query.limit) || 10;
         const offset = (page - 1) * limit;
+        const buId = req.headers['x-business-unit-id'] as string | undefined;
 
-        const allLeases = await db.select().from(leaseHeaders).limit(limit).offset(offset);
+        let allLeases;
+        let countResult;
 
-        // Get Total Count
-        const [countResult] = await db.select({ count: sql<number>`count(*)` }).from(leaseHeaders);
-        const total = Number(countResult.count);
+        if (buId) {
+            // Use raw SQL to filter by the new scoping column (migration may still be running)
+            allLeases = await db.execute(
+                sql`SELECT * FROM lease_headers WHERE ent_business_unit_id = ${buId} ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`
+            );
+            [countResult] = await db.execute(
+                sql`SELECT count(*)::int AS count FROM lease_headers WHERE ent_business_unit_id = ${buId}`
+            ) as any;
+        } else {
+            allLeases = await db.select().from(leaseHeaders).limit(limit).offset(offset);
+            [countResult] = await db.select({ count: sql<number>`count(*)` }).from(leaseHeaders);
+        }
+
+        const rows = (allLeases as any).rows ?? allLeases;
+        const total = Number(countResult?.count ?? (countResult as any)?.count ?? rows.length);
 
         res.json({
-            data: allLeases,
+            data: rows,
             pagination: { page, limit, total, totalPages: Math.ceil(total / limit) }
         });
     } catch (e: any) {
@@ -38,15 +52,18 @@ router.get("/leases", enforceRBAC("finance_read"), async (req, res) => {
 // 2. Create Lease Header
 router.post("/leases", enforceRBAC("finance_write"), async (req, res) => {
     try {
+        const buId = req.headers['x-business-unit-id'] as string | undefined;
+        const leId = req.headers['x-legal-entity-id'] as string | undefined;
         const data = insertLeaseHeaderSchema.parse(req.body);
         const [lease] = await db.insert(leaseHeaders).values({
             ...data,
             commencementDate: new Date(data.commencementDate),
             expirationDate: new Date(data.expirationDate),
-            // Numeric fields need to be strings for Drizzle if defined as numeric
             discountRate: data.discountRate.toString(),
             initialDirectCosts: (data.initialDirectCosts || 0).toString(),
-            status: data.status || "DRAFT"
+            status: data.status || "DRAFT",
+            ...(buId ? { entBusinessUnitId: buId } as any : {}),
+            ...(leId ? { entLegalEntityId: leId } as any : {})
         }).returning();
         res.json(lease);
     } catch (e: any) {

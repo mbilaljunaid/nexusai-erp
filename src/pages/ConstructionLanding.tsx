@@ -1,6 +1,8 @@
 
+import { useState } from "react";
 import { ModuleNavigationGrid } from "@/components/nav/ModuleNavigationGrid";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 import {
     FileText,
     DollarSign,
@@ -11,12 +13,12 @@ import {
     Map
 } from "lucide-react";
 
-const constructionMenu = [
+const buildMenu = (buId?: string) => [
     {
         label: "Project Controls",
         items: [
-            { title: "Contracts", url: "/construction/contracts", icon: FileText },
-            { title: "Billing Workbench", url: "/construction/billing", icon: DollarSign },
+            { title: "Contracts", url: `/construction/contracts${buId ? `?buId=${buId}` : ""}`, icon: FileText },
+            { title: "Billing Workbench", url: `/construction/billing${buId ? `?buId=${buId}` : ""}`, icon: DollarSign },
             { title: "Cost Codes", url: "/construction/cost-codes", icon: Wrench },
         ]
     },
@@ -37,15 +39,22 @@ const constructionMenu = [
 ];
 
 export default function ConstructionLanding() {
+    const [activeBuId, setActiveBuId] = useState<string | undefined>(undefined);
+
     return (
         <StandardPage
             title="Construction Management"
             description="Manage contracts, billing, and field operations for construction projects."
             breadcrumbs={[]}
         >
-            <div className="mt-6">
-                <ModuleNavigationGrid menu={constructionMenu} />
+            <div className="flex justify-end mb-4">
+                <EnterpriseContextSwitcher
+                    type="business-unit"
+                    value={activeBuId}
+                    onChange={setActiveBuId}
+                />
             </div>
+            <ModuleNavigationGrid menu={buildMenu(activeBuId)} />
         </StandardPage>
     );
 }

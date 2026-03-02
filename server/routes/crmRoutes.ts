@@ -17,10 +17,12 @@ export const crmRouter = Router();
 crmRouter.get("/opportunities", async (req, res) => {
     try {
         const { stage, owner, minAmount, maxAmount } = req.query;
-        const tenantId = req.user?.tenantId; // Assuming auth middleware adds this
+        const tenantId = req.user?.tenantId;
+        const buId = req.headers["x-business-unit-id"] as string | undefined;
 
         const opportunities = await opportunityService.getAll({
             tenantId,
+            buId,
             stage: stage as string,
             owner: owner as string,
             minAmount: minAmount ? Number(minAmount) : undefined,
@@ -53,7 +55,10 @@ crmRouter.get("/opportunities/:id", async (req, res) => {
 // Create opportunity
 crmRouter.post("/opportunities", async (req, res) => {
     try {
-        const opportunity = await opportunityService.create(req.body);
+        const buId = req.headers["x-business-unit-id"] as string | undefined;
+        const payload = { ...req.body };
+        if (buId) payload.entBusinessUnitId = buId;
+        const opportunity = await opportunityService.create(payload);
         res.status(201).json(opportunity);
     } catch (error) {
         console.error("Error creating opportunity:", error);
@@ -110,10 +115,12 @@ crmRouter.post("/opportunities/:id/close-lost", async (req, res) => {
 crmRouter.get("/opportunities/analytics/pipeline", async (req, res) => {
     try {
         const tenantId = req.user?.tenantId;
+        const buId = req.headers["x-business-unit-id"] as string | undefined;
         const { owner } = req.query;
 
         const stats = await opportunityService.getPipelineStats({
             tenantId,
+            buId,
             owner: owner as string
         });
 
@@ -133,9 +140,11 @@ crmRouter.get("/quotes", async (req, res) => {
     try {
         const { status, opportunityId } = req.query;
         const tenantId = req.user?.tenantId;
+        const buId = req.headers["x-business-unit-id"] as string | undefined;
 
         const quotes = await quoteService.getAll({
             tenantId,
+            buId,
             status: status as string,
             opportunityId: opportunityId as string
         });
@@ -166,7 +175,10 @@ crmRouter.get("/quotes/:id", async (req, res) => {
 // Create quote
 crmRouter.post("/quotes", async (req, res) => {
     try {
-        const quote = await quoteService.create(req.body);
+        const buId = req.headers["x-business-unit-id"] as string | undefined;
+        const payload = { ...req.body };
+        if (buId) payload.entBusinessUnitId = buId;
+        const quote = await quoteService.create(payload);
         res.status(201).json(quote);
     } catch (error) {
         console.error("Error creating quote:", error);
@@ -317,9 +329,11 @@ crmRouter.get("/cases", async (req, res) => {
     try {
         const { status, priority, assignedTo, slaStatus } = req.query;
         const tenantId = req.user?.tenantId;
+        const buId = req.headers["x-business-unit-id"] as string | undefined;
 
         const cases = await caseManagementService.getAll({
             tenantId,
+            buId,
             status: status as string,
             priority: priority as string,
             assignedTo: assignedTo as string,
@@ -352,7 +366,10 @@ crmRouter.get("/cases/:id", async (req, res) => {
 // Create case
 crmRouter.post("/cases", async (req, res) => {
     try {
-        const caseRecord = await caseManagementService.create(req.body);
+        const buId = req.headers["x-business-unit-id"] as string | undefined;
+        const payload = { ...req.body };
+        if (buId) payload.entBusinessUnitId = buId;
+        const caseRecord = await caseManagementService.create(payload);
         res.status(201).json(caseRecord);
     } catch (error) {
         console.error("Error creating case:", error);

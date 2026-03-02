@@ -32,6 +32,7 @@ export const projects2 = pgTable("projects2", {
     status: varchar("status").default("active"),
     startDate: timestamp("start_date"),
     endDate: timestamp("end_date"),
+    entBusinessUnitId: varchar("ent_business_unit_id"), // Enterprise Scoping – Business Unit
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -119,6 +120,7 @@ export const paCostDistributionLines = pgTable("pa_cost_distribution_lines", {
     billableFlag: boolean("billable_flag").default(true),
     billedFlag: boolean("billed_flag").default(false),
 
+    entBusinessUnitId: varchar("ent_business_unit_id"), // Enterprise Scoping – Business Unit
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 

@@ -51,6 +51,7 @@ export const leads = pgTable("leads", {
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
     ownerId: varchar("owner_id"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
 });
 
 export const insertLeadSchema = createInsertSchema(leads).extend({
@@ -98,6 +99,7 @@ export const accounts = pgTable("accounts", {
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
     ownerId: varchar("owner_id"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
 
     // TCA Linkage (Organization Party)
     partyId: varchar("party_id").references(() => hzParties.id),
@@ -139,6 +141,7 @@ export const contacts = pgTable("contacts", {
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
     ownerId: varchar("owner_id"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
 
     // TCA Linkage (Person Party)
     partyId: varchar("party_id").references(() => hzParties.id),
@@ -166,6 +169,7 @@ export const campaigns = pgTable("campaigns", {
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
     ownerId: varchar("owner_id"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
 });
 
 export const insertCampaignSchema = createInsertSchema(campaigns).extend({
@@ -216,6 +220,7 @@ export const opportunities = pgTable("opportunities", {
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
     ownerId: varchar("owner_id"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
 });
 
 export const insertOpportunitySchema = createInsertSchema(opportunities).extend({
@@ -326,6 +331,7 @@ export const quotes = pgTable('crm_quotes', {
 
     updatedAt: timestamp('updated_at').default(sql`now()`),
     priceBookId: varchar('price_book_id'), // CPQ Support
+    entBusinessUnitId: varchar('ent_business_unit_id'),
 });
 
 export const quoteLineItems = pgTable('crm_quote_line_items', {
@@ -353,6 +359,7 @@ export const orders = pgTable('crm_orders', {
     shippingAddress: text('shipping_address'),
     createdAt: timestamp('created_at').default(sql`now()`),
     updatedAt: timestamp('updated_at').default(sql`now()`),
+    entBusinessUnitId: varchar('ent_business_unit_id'),
 });
 
 // Cases (Service Cloud)
@@ -368,6 +375,7 @@ export const cases = pgTable('crm_cases', {
     userId: text('user_id'), // Assigned User (legacy text id for now)
     createdAt: timestamp('created_at').default(sql`now()`),
     updatedAt: timestamp('updated_at').default(sql`now()`),
+    entBusinessUnitId: varchar('ent_business_unit_id'),
 });
 
 export const caseComments = pgTable('crm_case_comments', {
@@ -664,6 +672,7 @@ export const commissions = pgTable("crm_commissions", {
     status: varchar("status").default("pending"), // pending, approved, paid
     generatedAt: timestamp("generated_at").default(sql`now()`),
     paidAt: timestamp("paid_at"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
 });
 
 export const insertCommissionPlanSchema = createInsertSchema(commissionPlans).extend({

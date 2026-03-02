@@ -12,30 +12,31 @@ import { Plus, Search, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { LeaseDetailView } from "./LeaseDetailView";
 import { LeaseExtractionWizard } from "@/components/lease/LeaseExtractionWizard";
+import {
+    EnterpriseContextSwitcher,
+    buildScopeHeaders
+} from "@/components/enterprise/EnterpriseContextSwitcher";
 
 export default function LeasePortfolioWorkbench() {
     const [search, setSearch] = useState("");
     const [selectedLeaseId, setSelectedLeaseId] = useState<string | null>(null);
     const [isAiWizardOpen, setIsAiWizardOpen] = useState(false);
+    const [activeBuId, setActiveBuId] = useState<string | undefined>(undefined);
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    // Fetch Leases (Mock for now until endpoint is robust, using existing route)
-    // Actually we implemented the route, let's use it. Need a list endpoint though.
-    // Ideally we'd have a server-side paginated standard table, but building custom for now.
-    // Since we only implemented GET /leases/:id, let's create a LIST endpoint quickly or mock the fetch for the workbench.
-    // Wait, we didn't implement GET /leases (list). I should fix that. 
-    // For now I will assume the list endpoint exists or implementation plan meant for me to make it.
-    // I'll add the list endpoint to the backend in the next step. For now UI code:
-
-    // Preliminary Fetch Hook
     const [page, setPage] = useState(1);
     const limit = 10;
 
+    const scopeHeaders = buildScopeHeaders({ "business-unit": activeBuId });
+
     const { data: fetchResult, isLoading } = useQuery({
-        queryKey: ["leases", search, page],
+        queryKey: ["leases", search, page, activeBuId],
         queryFn: async () => {
-            const res = await fetch(`/api/lease/leases?search=${search}&page=${page}&limit=${limit}`);
+            const res = await fetch(
+                `/api/lease/leases?search=${search}&page=${page}&limit=${limit}`,
+                { headers: { "Content-Type": "application/json", ...scopeHeaders } }
+            );
             if (!res.ok) throw new Error("Failed to fetch leases");
             return res.json();
         },
@@ -49,7 +50,7 @@ export default function LeasePortfolioWorkbench() {
         mutationFn: async (data: any) => {
             const res = await fetch("/api/lease/leases", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...scopeHeaders },
                 body: JSON.stringify(data)
             });
             if (!res.ok) throw new Error("Failed to create lease");
@@ -70,18 +71,22 @@ export default function LeasePortfolioWorkbench() {
                     </h1>
                     <p className="text-muted-foreground">Manage IFRS 16 / ASC 842 Lease Contracts</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
+                    <EnterpriseContextSwitcher
+                        type="business-unit"
+                        value={activeBuId}
+                        onChange={setActiveBuId}
+                    />
                     <Button onClick={() => {
-                        // Quick Mock Creation for verification
                         createMutation.mutate({
                             leaseNumber: `L-${Date.now()}`,
                             description: "New Office Lease",
                             vendorId: "V-MOCK-123",
                             commencementDate: new Date().toISOString(),
-                            expirationDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000 * 5).toISOString(), // 5 years
+                            expirationDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000 * 5).toISOString(),
                             discountRate: 0.05,
                             termMonths: 60
-                        })
+                        });
                     }}>
                         <Plus className="mr-2 h-4 w-4" /> New Lease
                     </Button>

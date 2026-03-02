@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StandardDashboard, DashboardWidget } from '@/components/layout/StandardDashboard';
 import { Card, CardContent } from '@/components/ui/card';
 import { Users, Briefcase, Clock, TrendingUp, AlertTriangle, Trello } from 'lucide-react';
@@ -7,12 +7,15 @@ import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { Skeleton } from '@/components/ui/skeleton';
+import { EnterpriseContextSwitcher, buildScopeHeaders } from '@/components/enterprise/EnterpriseContextSwitcher';
 
 export default function HrDashboard() {
+    const [leId, setLeId] = useState<string | undefined>();
+    const scopeHeaders = buildScopeHeaders({ 'legal-entity': leId });
 
     const { data: analytics, isLoading } = useQuery({
-        queryKey: ['hr-analytics'],
-        queryFn: () => api.hr.persons.getAnalytics(),
+        queryKey: ['hr-analytics', leId],
+        queryFn: () => fetch('/api/hr/analytics', { headers: scopeHeaders, credentials: 'include' }).then(r => r.json()),
     });
 
     if (isLoading) {
@@ -73,7 +76,12 @@ export default function HrDashboard() {
                 <h1 className="text-3xl font-bold tracking-tight">HR Dashboard</h1>
                 <p className="text-muted-foreground">Workforce overview and key performance indicators</p>
             </div>
-            <div className="space-x-2">
+            <div className="flex items-center gap-3">
+                <EnterpriseContextSwitcher
+                    type="legal-entity"
+                    value={leId}
+                    onChange={setLeId}
+                />
                 <Button variant="outline" onClick={() => window.location.href = '/hr/recruitment/pipeline'}>
                     <Trello className="h-4 w-4 mr-2" />
                     Recruitment Pipeline

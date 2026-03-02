@@ -3,17 +3,50 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from "recharts";
 import { Plus, TrendingUp, Zap, AlertCircle, DollarSign, PieChart } from "lucide-react";
+import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 export default function EPMPage() {
   const [activeNav, setActiveNav] = useState("budget");
+  const [ledgerId, setLedgerId] = useState<string | undefined>();
 
-  const budgetData = [
-    { month: "Jan", budgeted: 100000, actual: 98000, variance: -2000 },
-    { month: "Feb", budgeted: 105000, actual: 107500, variance: 2500 },
-    { month: "Mar", budgeted: 110000, actual: 109000, variance: -1000 },
-  ];
+  const scopeHeaders = buildScopeHeaders({ "set": ledgerId });
+
+  // Live budget controls (budget tab)
+  const { data: budgetControls } = useQuery<any[]>({
+    queryKey: ["/api/epm/budget/controls", ledgerId],
+    queryFn: () =>
+      fetch("/api/epm/budget/controls", { headers: { ...scopeHeaders, "x-ledger-id": ledgerId ?? "" } })
+        .then(r => r.json())
+        .catch(() => []),
+    select: (data) => Array.isArray(data) ? data : [],
+  });
+
+  // Live variance report (budget tab chart)
+  const { data: varianceRows } = useQuery<any[]>({
+    queryKey: ["/api/epm/budget/variance", ledgerId],
+    queryFn: () =>
+      fetch("/api/epm/budget/variance", { headers: { ...scopeHeaders, "x-ledger-id": ledgerId ?? "" } })
+        .then(r => r.json())
+        .catch(() => []),
+    select: (data) => Array.isArray(data) ? data : [],
+  });
+
+  // Build chart data from variance rows or fall back to static sample
+  const budgetChartData = (varianceRows && varianceRows.length > 0)
+    ? varianceRows.slice(0, 6).map(r => ({
+      name: r.cost_center ?? r.gl_account ?? "—",
+      budgeted: Number(r.budget_amount ?? 0),
+      actual: Number(r.actual_amount ?? 0),
+      variance: Number(r.available ?? 0),
+    }))
+    : [
+      { name: "Jan", budgeted: 100000, actual: 98000, variance: -2000 },
+      { name: "Feb", budgeted: 105000, actual: 107500, variance: 2500 },
+      { name: "Mar", budgeted: 110000, actual: 109000, variance: -1000 },
+    ];
 
   const forecastData = [
     { period: "Q1", revenue: 450000, expenses: 320000, profit: 130000 },
@@ -40,35 +73,72 @@ export default function EPMPage() {
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-3xl font-bold">Enterprise Performance Management</h1>
-          <p className="text-muted-foreground mt-2">Budget planning, forecasting & scenario modeling</p>
+          <p className="text-muted-foreground mt-2">Budget planning, forecasting &amp; scenario modeling</p>
         </div>
-        <Button data-testid="button-new-budget">
-          <Plus className="h-4 w-4 mr-2" />
-          New Budget
-        </Button>
+        <div className="flex items-center gap-3">
+          <EnterpriseContextSwitcher
+            type="set"
+            value={ledgerId}
+            onChange={setLedgerId}
+          />
+          <Button data-testid="button-new-budget">
+            <Plus className="h-4 w-4 mr-2" />
+            New Budget
+          </Button>
+        </div>
       </div>
 
       <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
       {activeNav === "budget" && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Budget vs Actual</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={budgetData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="budgeted" stroke="#3b82f6" />
-                <Line type="monotone" dataKey="actual" stroke="#ef4444" />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Budget vs Actual{ledgerId ? " — Ledger Filtered" : ""}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={budgetChartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="budgeted" stroke="#3b82f6" name="Budgeted" />
+                  <Line type="monotone" dataKey="actual" stroke="#ef4444" name="Actual" />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          {/* Live budget controls table */}
+          {budgetControls && budgetControls.length > 0 && (
+            <Card>
+              <CardHeader><CardTitle>Budget Controls</CardTitle></CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {budgetControls.slice(0, 8).map((ctrl: any, i: number) => {
+                    const util = Number(ctrl.utilization_pct ?? 0);
+                    return (
+                      <div key={i} className="flex justify-between items-center p-2 border rounded">
+                        <div>
+                          <p className="text-sm font-medium">{ctrl.cost_center} / {ctrl.gl_account}</p>
+                          <p className="text-xs text-muted-foreground">{ctrl.period} · {ctrl.budget_version}</p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <p className="text-sm">${Number(ctrl.actual_amount ?? 0).toLocaleString()} / ${Number(ctrl.budget_amount ?? 0).toLocaleString()}</p>
+                          <Badge variant={util > 100 ? "destructive" : util > 80 ? "secondary" : "default"}>
+                            {util.toFixed(1)}%
+                          </Badge>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       )}
 
       {activeNav === "forecast" && (
@@ -113,15 +183,22 @@ export default function EPMPage() {
       {activeNav === "allocation" && (
         <Card>
           <CardHeader>
-            <CardTitle>Department Allocation</CardTitle>
+            <CardTitle>Department Allocation{ledgerId ? " — Ledger Filtered" : ""}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {[
-                { dept: "Sales", allocated: 250000, utilized: 235000 },
-                { dept: "Engineering", allocated: 300000, utilized: 298000 },
-                { dept: "Marketing", allocated: 150000, utilized: 142000 },
-              ].map((item) => (
+              {(budgetControls && budgetControls.length > 0
+                ? budgetControls.slice(0, 5).map((ctrl: any) => ({
+                  dept: ctrl.cost_center ?? "—",
+                  allocated: Number(ctrl.budget_amount ?? 0),
+                  utilized: Number(ctrl.actual_amount ?? 0),
+                }))
+                : [
+                  { dept: "Sales", allocated: 250000, utilized: 235000 },
+                  { dept: "Engineering", allocated: 300000, utilized: 298000 },
+                  { dept: "Marketing", allocated: 150000, utilized: 142000 },
+                ]
+              ).map((item) => (
                 <div key={item.dept} className="flex justify-between items-center p-2 border rounded">
                   <p className="text-sm font-medium">{item.dept}</p>
                   <p className="text-sm">${(item.utilized / 1000).toFixed(0)}K / ${(item.allocated / 1000).toFixed(0)}K</p>

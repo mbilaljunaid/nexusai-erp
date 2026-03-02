@@ -40,6 +40,7 @@ export const hrAnalyticsSnapshots = pgTable("hr_analytics_snapshots", {
     dimensions: jsonb("dimensions").default(sql`'{}'::jsonb`),
 
     tenantId: varchar("tenant_id").notNull(),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -88,6 +89,7 @@ export const hrReportSchedules = pgTable("hr_report_schedules", {
     isActive: boolean("is_active").default(true),
 
     tenantId: varchar("tenant_id").notNull(),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
     lastRunAt: timestamp("last_run_at"),
     createdAt: timestamp("created_at").default(sql`now()`),
 });

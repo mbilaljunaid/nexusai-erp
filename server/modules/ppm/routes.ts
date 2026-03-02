@@ -4,6 +4,27 @@ import { ppmController } from "./ppm.controller";
 export const ppmRouter = Router();
 
 // ----------------------------------------------------
+// PROJECT CRUD (BU-SCOPED)
+// ----------------------------------------------------
+ppmRouter.get("/projects", ppmController.getProjects);
+ppmRouter.post("/projects", ppmController.createProject);
+ppmRouter.get("/projects/:id", ppmController.getProjectById);
+
+// ----------------------------------------------------
+// PORTFOLIO SUMMARY (BU-SCOPED)
+// ----------------------------------------------------
+ppmRouter.get("/summary", ppmController.getSummary);
+
+// ----------------------------------------------------
+// ALLOCATION RULES
+// ----------------------------------------------------
+ppmRouter.get("/allocation-rules", ppmController.getAllocationRules);
+ppmRouter.post("/allocation-rules", ppmController.createAllocationRule);
+ppmRouter.put("/allocation-rules/:id", ppmController.updateAllocationRule);
+ppmRouter.post("/allocation-rules/:id/run", ppmController.runAllocation);
+ppmRouter.post("/allocation-preview", ppmController.getAllocationPreview);
+
+// ----------------------------------------------------
 // PROJECT PERFORMANCE (EVM)
 // ----------------------------------------------------
 ppmRouter.get("/projects/:id/performance", ppmController.getProjectPerformance);

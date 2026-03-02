@@ -21,6 +21,7 @@ export const budgets = pgTable("budgets", {
     notes: text("notes"),
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
+    entLedgerId: varchar("ent_ledger_id"),
 });
 
 // 2. Plan Scenarios (Existing)
@@ -32,6 +33,7 @@ export const planScenarios = pgTable("plan_scenarios", {
     isSystem: boolean("is_system").default(false),
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
+    entLedgerId: varchar("ent_ledger_id"),
 });
 
 // 3. Plan Versions (Existing)
@@ -44,6 +46,7 @@ export const planVersions = pgTable("plan_versions", {
     isFinal: boolean("is_final").default(false),
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
+    entLedgerId: varchar("ent_ledger_id"),
 });
 
 // 4. Plan Dimensions
@@ -76,6 +79,7 @@ export const planUnits = pgTable("plan_units", {
     status: varchar("status").default("draft"),
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
+    entLedgerId: varchar("ent_ledger_id"),
 });
 
 // 6. Plan Drivers
