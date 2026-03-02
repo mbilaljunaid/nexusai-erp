@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Ship, Calendar, DollarSign, ExternalLink, Filter, Search, MoreHorizontal } from 'lucide-react';
+import { Plus, Ship, Calendar, DollarSign, ExternalLink, Filter, Search, MoreHorizontal, Building2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import {
@@ -25,18 +25,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function LcmWorkbench() {
     const { toast } = useToast();
     const [, setLocation] = useLocation();
     const queryClient = useQueryClient();
     const [page, setPage] = useState(1);
+    const { inventoryOrgId } = useEnterpriseStore();
+
+    const invOrgHeaders: Record<string, string> = inventoryOrgId
+        ? { 'x-inventory-org-id': inventoryOrgId }
+        : {};
 
     // Fetch Trade Operations
     const { data: operationsData, isLoading } = useQuery({
-        queryKey: ["/api/lcm/trade-operations", page],
+        queryKey: ["/api/lcm/trade-operations", page, inventoryOrgId],
         queryFn: async () => {
-            const res = await fetch(`/api/lcm/trade-operations?page=${page}&limit=20`);
+            const res = await fetch(`/api/lcm/trade-operations?page=${page}&limit=20`, { headers: invOrgHeaders });
             if (!res.ok) throw new Error("Failed to fetch trade operations");
             return res.json();
         }
@@ -54,7 +60,7 @@ export default function LcmWorkbench() {
         mutationFn: async (data: any) => {
             const res = await fetch("/api/lcm/trade-operations", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...invOrgHeaders },
                 body: JSON.stringify(data)
             });
             if (!res.ok) throw new Error("Failed to create operation");
@@ -88,6 +94,12 @@ export default function LcmWorkbench() {
 
     return (
         <div className="space-y-6">
+            {inventoryOrgId && (
+                <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-teal-50 border border-teal-200 text-teal-800 text-sm">
+                    <Building2 className="h-4 w-4 flex-shrink-0" />
+                    <span>LCM scoped to Inventory Org: <strong>{inventoryOrgId}</strong></span>
+                </div>
+            )}
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Landed Cost Workbench</h1>

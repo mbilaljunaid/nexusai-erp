@@ -29,7 +29,8 @@ export class LcmController {
         try {
             const page = parseInt(req.query.page as string) || 1;
             const limit = parseInt(req.query.limit as string) || 20;
-            const results = await lcmService.listTradeOperations(page, limit);
+            const inventoryOrgId = req.headers['x-inventory-org-id'] as string | undefined;
+            const results = await lcmService.listTradeOperations(page, limit, inventoryOrgId);
             res.json(results);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
@@ -48,9 +49,10 @@ export class LcmController {
 
     createTradeOperation = async (req: Request, res: Response) => {
         try {
+            const inventoryOrgId = req.headers['x-inventory-org-id'] as string | undefined;
             // Supports partial creation or full creation
             const result = await lcmService.createTradeOperationWithLines({
-                header: req.body,
+                header: { ...req.body, ...(inventoryOrgId ? { entInventoryOrgId: inventoryOrgId } : {}) },
                 shipmentLines: [] // Logic to pull lines can be added here or separate endpoint
             });
             res.json(result);

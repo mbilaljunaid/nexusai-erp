@@ -11,18 +11,28 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SupplierOnboardingWorkbench from "@/components/procurement/SupplierOnboardingWorkbench";
 import ContractWorkbench from "@/components/procurement/ContractWorkbench";
+import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 export default function SupplierCollaborationPortal() {
   const { toast } = useToast();
+  const [activeBuId, setActiveBuId] = useState<string | undefined>();
   const [newInteraction, setNewInteraction] = useState({ supplier: "", type: "po-confirm", referenceId: "", status: "pending" });
 
+  const scopeHeaders = activeBuId
+    ? { "x-business-unit-id": activeBuId }
+    : {};
+
   const { data: interactions = [], isLoading } = useQuery({
-    queryKey: ["/api/supplier-collab"],
-    queryFn: () => fetch("/api/supplier-collab").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/supplier-collab", activeBuId],
+    queryFn: () => fetch("/api/supplier-collab", { headers: scopeHeaders }).then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/supplier-collab", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/supplier-collab", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...scopeHeaders },
+      body: JSON.stringify({ ...data, entBusinessUnitId: activeBuId || null }),
+    }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/supplier-collab"] });
       setNewInteraction({ supplier: "", type: "po-confirm", referenceId: "", status: "pending" });
@@ -51,6 +61,11 @@ export default function SupplierCollaborationPortal() {
           </h1>
           <p className="text-muted-foreground mt-1">Holistic management of supplier lifecycle and transactional performance.</p>
         </div>
+        <EnterpriseContextSwitcher
+          type="business-unit"
+          value={activeBuId}
+          onChange={setActiveBuId}
+        />
       </div>
 
       <Tabs defaultValue="dashboard" className="space-y-6">

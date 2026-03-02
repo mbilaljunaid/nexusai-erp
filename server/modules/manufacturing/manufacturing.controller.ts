@@ -22,7 +22,8 @@ export class ManufacturingController {
             const offset = parseInt(req.query.offset as string) || 0;
             const startDate = req.query.startDate as string;
             const endDate = req.query.endDate as string;
-            const result = await manufacturingService.listWorkOrders(limit, offset, { startDate, endDate });
+            const inventoryOrgId = req.headers['x-inventory-org-id'] as string | undefined;
+            const result = await manufacturingService.listWorkOrders(limit, offset, { startDate, endDate, inventoryOrgId });
             res.json(result);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
@@ -37,7 +38,9 @@ export class ManufacturingController {
             if (!parseResult.success) {
                 return res.status(400).json({ error: parseResult.error });
             }
-            const order = await manufacturingService.createWorkOrder(parseResult.data as any);
+            const inventoryOrgId = req.headers['x-inventory-org-id'] as string | undefined;
+            const orderData = { ...parseResult.data, ...(inventoryOrgId ? { entInventoryOrgId: inventoryOrgId } : {}) };
+            const order = await manufacturingService.createWorkOrder(orderData as any);
             res.status(201).json(order);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
@@ -327,7 +330,8 @@ export class ManufacturingController {
         try {
             const limit = parseInt(req.query.limit as string) || 50;
             const offset = parseInt(req.query.offset as string) || 0;
-            const balances = await manufacturingService.getWipBalances(limit, offset);
+            const inventoryOrgId = req.headers['x-inventory-org-id'] as string | undefined;
+            const balances = await manufacturingService.getWipBalances(limit, offset, inventoryOrgId);
             res.json(balances);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
@@ -482,6 +486,11 @@ export class ManufacturingController {
         try {
             const limit = parseInt(req.query.limit as string) || 50;
             const offset = parseInt(req.query.offset as string) || 0;
+            const inventoryOrgId = req.headers['x-inventory-org-id'] as string | undefined;
+
+            const whereClause = inventoryOrgId
+                ? eq(manufacturingBatches.entInventoryOrgId, inventoryOrgId)
+                : undefined;
 
             const items = await db.query.manufacturingBatches.findMany({
                 limit,

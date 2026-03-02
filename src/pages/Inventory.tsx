@@ -6,36 +6,42 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { IconNavigation } from "@/components/IconNavigation";
 import { AutoRequisitionForm } from "@/components/forms/AutoRequisitionForm";
-import { Package, Plus, Search, AlertTriangle, Warehouse, Trash2, LayoutDashboard } from "lucide-react";
+import { Package, Plus, Search, AlertTriangle, Warehouse, Trash2, LayoutDashboard, Building2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import InventoryDashboardView from "./InventoryDashboardView";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function Inventory() {
   const { toast } = useToast();
+  const { inventoryOrgId } = useEnterpriseStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeNav, setActiveNav] = useState("dashboard");
   const [newItem, setNewItem] = useState({ itemName: "", sku: "", quantity: "", category: "Raw Materials" });
 
+  const invOrgHeaders = inventoryOrgId
+    ? { "x-inventory-org-id": inventoryOrgId }
+    : {};
+
   const { data: inventory = [], isLoading } = useQuery<any[]>({
-    queryKey: ["/api/inventory/items"],
-    queryFn: () => fetch("/api/inventory/items").then(r => r.json()).catch(() => [])
+    queryKey: ["/api/inventory/items", inventoryOrgId],
+    queryFn: () => fetch("/api/inventory/items", { headers: invOrgHeaders }).then(r => r.json()).catch(() => [])
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/inventory/items", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/inventory/items", { method: "POST", headers: { "Content-Type": "application/json", ...invOrgHeaders }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/inventory/items"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/inventory/items", inventoryOrgId] });
       setNewItem({ itemName: "", sku: "", quantity: "", category: "Raw Materials" });
       toast({ title: "Item added to inventory" });
     },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/inventory/items/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/inventory/items/${id}`, { method: "DELETE", headers: invOrgHeaders }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/inventory/items"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/inventory/items", inventoryOrgId] });
       toast({ title: "Item removed" });
     },
   });
@@ -53,6 +59,12 @@ export default function Inventory() {
       title="Inventory Management"
       description="Monitor stock levels, reorder points, and warehouse allocation"
     >
+      {inventoryOrgId && (
+        <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-md bg-amber-50 border border-amber-200 text-amber-800 text-sm">
+          <Building2 className="h-4 w-4 flex-shrink-0" />
+          <span>Inventory scoped to Org: <strong>{inventoryOrgId}</strong></span>
+        </div>
+      )}
       <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
       <div className="mt-6">

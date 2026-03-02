@@ -3,12 +3,16 @@ import { Express } from "express";
 
 export function registerWMSRoutes(app: Express) {
 
+    const getInvOrgId = (req: any): string =>
+        (req.headers["x-inventory-org-id"] as string) || (req.query.warehouseId as string) || "W01";
+
     // ─── Directed Putaway ─────────────────────────────────────────────────────
     app.post("/api/wms/zones", async (req, res) => {
         try {
             const { directedPutawayService } = await import("./directed-putaway.service");
             const tenantId = (req as any).user?.tenantId || "default-tenant";
-            res.status(201).json(await directedPutawayService.createZone({ ...req.body, tenantId }));
+            const invOrgId = getInvOrgId(req);
+            res.status(201).json(await directedPutawayService.createZone({ ...req.body, tenantId, entInventoryOrgId: invOrgId }));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -16,7 +20,8 @@ export function registerWMSRoutes(app: Express) {
         try {
             const { directedPutawayService } = await import("./directed-putaway.service");
             const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
-            res.json(await directedPutawayService.listZones(tenantId, req.query.warehouseId as string || "W01"));
+            const invOrgId = getInvOrgId(req);
+            res.json(await directedPutawayService.listZones(tenantId, invOrgId));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -24,7 +29,8 @@ export function registerWMSRoutes(app: Express) {
         try {
             const { directedPutawayService } = await import("./directed-putaway.service");
             const tenantId = (req as any).user?.tenantId || "default-tenant";
-            res.status(201).json(await directedPutawayService.createBin({ ...req.body, tenantId }));
+            const invOrgId = getInvOrgId(req);
+            res.status(201).json(await directedPutawayService.createBin({ ...req.body, tenantId, entInventoryOrgId: invOrgId }));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -32,7 +38,8 @@ export function registerWMSRoutes(app: Express) {
         try {
             const { directedPutawayService } = await import("./directed-putaway.service");
             const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
-            res.json(await directedPutawayService.listBins(tenantId, req.query.warehouseId as string || "W01", req.query.zoneId as string, req.query.availableOnly === 'true'));
+            const invOrgId = getInvOrgId(req);
+            res.json(await directedPutawayService.listBins(tenantId, invOrgId, req.query.zoneId as string, req.query.availableOnly === 'true'));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -40,7 +47,8 @@ export function registerWMSRoutes(app: Express) {
         try {
             const { directedPutawayService } = await import("./directed-putaway.service");
             const tenantId = (req as any).user?.tenantId || "default-tenant";
-            res.status(201).json(await directedPutawayService.createRule({ ...req.body, tenantId }));
+            const invOrgId = getInvOrgId(req);
+            res.status(201).json(await directedPutawayService.createRule({ ...req.body, tenantId, entInventoryOrgId: invOrgId }));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -48,7 +56,8 @@ export function registerWMSRoutes(app: Express) {
         try {
             const { directedPutawayService } = await import("./directed-putaway.service");
             const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
-            res.json(await directedPutawayService.listRules(tenantId, req.query.warehouseId as string || "W01"));
+            const invOrgId = getInvOrgId(req);
+            res.json(await directedPutawayService.listRules(tenantId, invOrgId));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -56,7 +65,8 @@ export function registerWMSRoutes(app: Express) {
         try {
             const { directedPutawayService } = await import("./directed-putaway.service");
             const tenantId = (req as any).user?.tenantId || "default-tenant";
-            res.status(201).json(await directedPutawayService.createPutawayTask({ ...req.body, tenantId }));
+            const invOrgId = getInvOrgId(req);
+            res.status(201).json(await directedPutawayService.createPutawayTask({ ...req.body, tenantId, entInventoryOrgId: invOrgId }));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -64,7 +74,8 @@ export function registerWMSRoutes(app: Express) {
         try {
             const { directedPutawayService } = await import("./directed-putaway.service");
             const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
-            res.json(await directedPutawayService.getPendingTasks(tenantId, req.query.warehouseId as string || "W01"));
+            const invOrgId = getInvOrgId(req);
+            res.json(await directedPutawayService.getPendingTasks(tenantId, invOrgId));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -79,7 +90,8 @@ export function registerWMSRoutes(app: Express) {
         try {
             const { directedPutawayService } = await import("./directed-putaway.service");
             const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
-            res.json(await directedPutawayService.getUtilizationReport(tenantId, req.query.warehouseId as string || "W01"));
+            const invOrgId = getInvOrgId(req);
+            res.json(await directedPutawayService.getUtilizationReport(tenantId, invOrgId));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -88,7 +100,8 @@ export function registerWMSRoutes(app: Express) {
         try {
             const { yardManagementService } = await import("./yard-management.service");
             const tenantId = (req as any).user?.tenantId || "default-tenant";
-            res.status(201).json(await yardManagementService.createDock({ ...req.body, tenantId }));
+            const invOrgId = getInvOrgId(req);
+            res.status(201).json(await yardManagementService.createDock({ ...req.body, tenantId, entInventoryOrgId: invOrgId }));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -96,7 +109,8 @@ export function registerWMSRoutes(app: Express) {
         try {
             const { yardManagementService } = await import("./yard-management.service");
             const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
-            res.json(await yardManagementService.listDocks(tenantId, req.query.warehouseId as string || "W01"));
+            const invOrgId = getInvOrgId(req);
+            res.json(await yardManagementService.listDocks(tenantId, invOrgId));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -104,7 +118,8 @@ export function registerWMSRoutes(app: Express) {
         try {
             const { yardManagementService } = await import("./yard-management.service");
             const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
-            res.json(await yardManagementService.getDockStatus(tenantId, req.query.warehouseId as string || "W01"));
+            const invOrgId = getInvOrgId(req);
+            res.json(await yardManagementService.getDockStatus(tenantId, invOrgId));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -112,7 +127,8 @@ export function registerWMSRoutes(app: Express) {
         try {
             const { yardManagementService } = await import("./yard-management.service");
             const tenantId = (req as any).user?.tenantId || "default-tenant";
-            res.status(201).json(await yardManagementService.scheduleAppointment({ ...req.body, tenantId }));
+            const invOrgId = getInvOrgId(req);
+            res.status(201).json(await yardManagementService.scheduleAppointment({ ...req.body, tenantId, entInventoryOrgId: invOrgId }));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -120,7 +136,8 @@ export function registerWMSRoutes(app: Express) {
         try {
             const { yardManagementService } = await import("./yard-management.service");
             const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
-            res.json(await yardManagementService.listAppointments(tenantId, req.query.warehouseId as string || "W01", req.query.date as string, req.query.status as string));
+            const invOrgId = getInvOrgId(req);
+            res.json(await yardManagementService.listAppointments(tenantId, invOrgId, req.query.date as string, req.query.status as string));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -156,7 +173,8 @@ export function registerWMSRoutes(app: Express) {
         try {
             const { yardManagementService } = await import("./yard-management.service");
             const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
-            res.json(await yardManagementService.getUtilizationReport(tenantId, req.query.warehouseId as string || "W01", req.query.from as string, req.query.to as string));
+            const invOrgId = getInvOrgId(req);
+            res.json(await yardManagementService.getUtilizationReport(tenantId, invOrgId, req.query.from as string, req.query.to as string));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -165,7 +183,8 @@ export function registerWMSRoutes(app: Express) {
         try {
             const { carrierManifestService } = await import("./carrier-manifest.service");
             const tenantId = (req as any).user?.tenantId || "default-tenant";
-            res.status(201).json(await carrierManifestService.createManifest({ ...req.body, tenantId }));
+            const invOrgId = getInvOrgId(req);
+            res.status(201).json(await carrierManifestService.createManifest({ ...req.body, tenantId, entInventoryOrgId: invOrgId }));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -173,7 +192,8 @@ export function registerWMSRoutes(app: Express) {
         try {
             const { carrierManifestService } = await import("./carrier-manifest.service");
             const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
-            res.json(await carrierManifestService.listManifests(tenantId, req.query.status as string));
+            const invOrgId = getInvOrgId(req);
+            res.json(await carrierManifestService.listManifests(tenantId, req.query.status as string, invOrgId));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -181,7 +201,8 @@ export function registerWMSRoutes(app: Express) {
         try {
             const { carrierManifestService } = await import("./carrier-manifest.service");
             const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string);
-            res.json(await carrierManifestService.getManifestSummary(tenantId));
+            const invOrgId = getInvOrgId(req);
+            res.json(await carrierManifestService.getManifestSummary(tenantId, invOrgId));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 

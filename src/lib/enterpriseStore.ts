@@ -4,8 +4,10 @@ import { persist } from 'zustand/middleware';
 interface EnterpriseState {
     legalEntityId: string | null;
     businessUnitId: string | null;
+    inventoryOrgId: string | null;
     setLegalEntity: (id: string | null) => void;
     setBusinessUnit: (id: string | null) => void;
+    setInventoryOrg: (id: string | null) => void;
     clearEnterpriseContext: () => void;
 }
 
@@ -14,9 +16,11 @@ export const useEnterpriseStore = create<EnterpriseState>()(
         (set) => ({
             legalEntityId: null,
             businessUnitId: null,
+            inventoryOrgId: null,
             setLegalEntity: (id) => set({ legalEntityId: id }),
             setBusinessUnit: (id) => set({ businessUnitId: id }),
-            clearEnterpriseContext: () => set({ legalEntityId: null, businessUnitId: null }),
+            setInventoryOrg: (id) => set({ inventoryOrgId: id }),
+            clearEnterpriseContext: () => set({ legalEntityId: null, businessUnitId: null, inventoryOrgId: null }),
         }),
         {
             name: 'nexus-enterprise-context',

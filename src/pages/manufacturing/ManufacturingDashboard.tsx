@@ -5,10 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
     Factory, ClipboardList, CheckCircle2, AlertOctagon,
-    BarChart3, Activity, Users, Settings2
+    BarChart3, Activity, Users, Settings2, Building2
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Skeleton } from "@/components/ui/skeleton";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 interface Stats {
     activeWorkOrders: number;
@@ -31,10 +32,16 @@ interface QualityInspection {
 }
 
 export default function ManufacturingDashboard() {
+    const { inventoryOrgId } = useEnterpriseStore();
+
+    const invOrgHeaders: Record<string, string> = inventoryOrgId
+        ? { 'x-inventory-org-id': inventoryOrgId }
+        : {};
+
     const { data: woData, isLoading: woLoading } = useQuery<{ items: WorkOrder[] }>({
-        queryKey: ["/api/manufacturing/work-orders"],
+        queryKey: ["/api/manufacturing/work-orders", inventoryOrgId],
         queryFn: async () => {
-            const res = await fetch("/api/manufacturing/work-orders?limit=100");
+            const res = await fetch("/api/manufacturing/work-orders?limit=100", { headers: invOrgHeaders });
             if (!res.ok) {
                 throw new Error("Failed to fetch work orders");
             }
@@ -43,9 +50,9 @@ export default function ManufacturingDashboard() {
     });
 
     const { data: qData, isLoading: qLoading } = useQuery<QualityInspection[]>({
-        queryKey: ["/api/manufacturing/quality-inspections"],
+        queryKey: ["/api/manufacturing/quality-inspections", inventoryOrgId],
         queryFn: async () => {
-            const res = await fetch("/api/manufacturing/quality-inspections");
+            const res = await fetch("/api/manufacturing/quality-inspections", { headers: invOrgHeaders });
             if (!res.ok) {
                 throw new Error("Failed to fetch quality inspections");
             }
@@ -54,9 +61,9 @@ export default function ManufacturingDashboard() {
     });
 
     const { data: eventsData = [], isLoading: eventsLoading } = useQuery({
-        queryKey: ["/api/manufacturing/events"],
+        queryKey: ["/api/manufacturing/events", inventoryOrgId],
         queryFn: async () => {
-            const res = await fetch("/api/manufacturing/events");
+            const res = await fetch("/api/manufacturing/events", { headers: invOrgHeaders });
             if (!res.ok) return [];
             return res.json();
         }
@@ -99,6 +106,12 @@ export default function ManufacturingDashboard() {
             title="Manufacturing Performance Oversight"
             breadcrumbs={[{ label: "Manufacturing", href: "/manufacturing" }, { label: "Overview" }]}
         >
+            {inventoryOrgId && (
+                <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-md bg-violet-50 border border-violet-200 text-violet-800 text-sm">
+                    <Building2 className="h-4 w-4 flex-shrink-0" />
+                    <span>Manufacturing scoped to Inventory Org: <strong>{inventoryOrgId}</strong></span>
+                </div>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <Card className="ai-card bg-blue-50/30">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">

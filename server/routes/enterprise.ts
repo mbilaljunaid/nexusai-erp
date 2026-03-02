@@ -4,8 +4,10 @@ import {
     entLegalGroups, entBusinessUnits, entLegalGroupBuMapping, entBuLedgerMapping, entUserDataAccess,
     insertLegalGroupSchema, insertBusinessUnitSchema, insertLegalGrpBuMapSchema, insertBuLedgerMapSchema, insertUserDataAccessSchema
 } from "@shared/schema/enterprise";
+import { inventoryOrganizations } from "@shared/schema/scm";
 import { and, eq } from "drizzle-orm";
 import { enforceRBAC } from "../middleware/auth";
+import { Pool } from "pg";
 
 const router = Router();
 
@@ -129,6 +131,29 @@ router.post("/user-data-access", async (req, res) => {
     } catch (error: any) {
         res.status(400).json({ error: error.message });
     }
+});
+
+// ========== INVENTORY ORGANIZATIONS (for WMS / TMS scoping) ==========
+router.get("/inventory-orgs", async (req, res) => {
+    try {
+        const orgs = await db.select().from(inventoryOrganizations);
+        res.json(orgs);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ========== REFERENCE DATA SETS (for MDM SetID scoping) ==========
+// Static seed — extend to a DB table when volumes grow
+router.get("/reference-sets", async (req, res) => {
+    const sets = [
+        { id: "GLOBAL", code: "GLOBAL", name: "Global Set" },
+        { id: "US", code: "US", name: "United States" },
+        { id: "EU", code: "EU", name: "European Union" },
+        { id: "APAC", code: "APAC", name: "Asia Pacific" },
+        { id: "LATAM", code: "LATAM", name: "Latin America" },
+    ];
+    res.json(sets);
 });
 
 export { router as enterpriseRoutes };

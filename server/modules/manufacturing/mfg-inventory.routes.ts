@@ -4,6 +4,57 @@ import { Express } from "express";
 export function registerMfgInventoryRoutes(app: Express) {
     const tid = (req: any) => req.user?.tenantId || req.query?.tenantId || "default-tenant";
 
+    // ─── Inventory Items (Module 18) ──────────────────────────────────────────
+    app.get("/api/inventory/items", async (req: any, res: any) => {
+        try {
+            const inventoryOrgId = req.headers['x-inventory-org-id'] as string | undefined;
+            const { Pool } = require('pg');
+            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+            let query = `SELECT * FROM inv_items`;
+            const params: any[] = [];
+            if (inventoryOrgId) {
+                query += ` WHERE ent_inventory_org_id = $1 OR "organizationId" = $1`;
+                params.push(inventoryOrgId);
+            }
+            query += ` ORDER BY "createdAt" DESC LIMIT 200`;
+            const r = await pool.query(query, params);
+            await pool.end();
+            res.json(r.rows);
+        } catch (e: any) {
+            res.status(500).json({ error: e.message });
+        }
+    });
+
+    app.post("/api/inventory/items", async (req: any, res: any) => {
+        try {
+            const inventoryOrgId = req.headers['x-inventory-org-id'] as string | undefined;
+            const { itemNumber, description, primaryUomCode, quantityOnHand, minQuantity, maxQuantity } = req.body;
+            const { Pool } = require('pg');
+            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+            const r = await pool.query(
+                `INSERT INTO inv_items("itemNumber", description, "primaryUomCode", "quantityOnHand", min_quantity, max_quantity, "organizationId", ent_inventory_org_id)
+                 VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+                [itemNumber, description, primaryUomCode, quantityOnHand || 0, minQuantity || 0, maxQuantity || 0, inventoryOrgId || null, inventoryOrgId || null]
+            );
+            await pool.end();
+            res.status(201).json(r.rows[0]);
+        } catch (e: any) {
+            res.status(500).json({ error: e.message });
+        }
+    });
+
+    app.delete("/api/inventory/items/:id", async (req: any, res: any) => {
+        try {
+            const { Pool } = require('pg');
+            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+            await pool.query(`DELETE FROM inv_items WHERE id = $1`, [req.params.id]);
+            await pool.end();
+            res.json({ success: true });
+        } catch (e: any) {
+            res.status(500).json({ error: e.message });
+        }
+    });
+
     // ─── ECO ─────────────────────────────────────────────────────────────────
     app.post("/api/mfg/eco", async (req, res) => { try { const { ecoService: s } = await import("./eco-and-ops.service"); res.status(201).json(await s.createECO({ ...req.body, tenantId: tid(req) })); } catch (e: any) { res.status(500).json({ error: e.message }); } });
     app.post("/api/mfg/eco/:id/action", async (req, res) => { try { const { ecoService: s } = await import("./eco-and-ops.service"); res.json(await s.advance(req.params.id, req.body.action, req.body.actor, req.body.comments)); } catch (e: any) { res.status(500).json({ error: e.message }); } });

@@ -4,34 +4,52 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Truck, Plus, Trash2, TrendingUp, Navigation, Boxes, CheckCircle2, Activity } from "lucide-react";
+import { Truck, Plus, Trash2, TrendingUp, Navigation, Boxes, CheckCircle2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { StandardDashboard, DashboardWidget } from "@/components/layout/StandardDashboard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 export default function TransportationManagementSystem() {
   const { toast } = useToast();
+  const [activeBuId, setActiveBuId] = useState<string | undefined>();
+  const [activeInvOrgId, setActiveInvOrgId] = useState<string | undefined>();
   const [newShip, setNewShip] = useState({ shipmentId: "", carrier: "FedEx", loadType: "FTL", distance: "500", status: "planned" });
 
+  const buildHeaders = () => {
+    const h: Record<string, string> = {};
+    if (activeBuId) h["x-business-unit-id"] = activeBuId;
+    if (activeInvOrgId) h["x-inventory-org-id"] = activeInvOrgId;
+    return h;
+  };
+
   const { data: shipments = [], isLoading } = useQuery({
-    queryKey: ["/api/tms"],
-    queryFn: () => fetch("/api/tms").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/transportation/shipments", activeBuId, activeInvOrgId],
+    queryFn: () => fetch("/api/transportation/shipments", { headers: buildHeaders() }).then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/tms", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/transportation/shipments/plan", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...buildHeaders() },
+      body: JSON.stringify({
+        ...data,
+        entBusinessUnitId: activeBuId || null,
+        entInventoryOrgId: activeInvOrgId || null,
+      }),
+    }).then(r => r.json()),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/tms"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/transportation/shipments"] });
       setNewShip({ shipmentId: "", carrier: "FedEx", loadType: "FTL", distance: "500", status: "planned" });
       toast({ title: "TMS shipment created" });
     },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/tms/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/transportation/shipments/${id}`, { method: "DELETE" }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/tms"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/transportation/shipments"] });
       toast({ title: "Shipment deleted" });
     },
   });
@@ -42,9 +60,15 @@ export default function TransportationManagementSystem() {
   return (
     <StandardDashboard
       header={
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight font-heading">Transportation Management (TMS)</h1>
-          <p className="text-muted-foreground mt-1">Global logistics orchestration, freight booking, and route optimization</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight font-heading">Transportation Management (TMS)</h1>
+            <p className="text-muted-foreground mt-1">Global logistics orchestration, freight booking, and route optimization</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <EnterpriseContextSwitcher type="business-unit" value={activeBuId} onChange={setActiveBuId} />
+            <EnterpriseContextSwitcher type="inventory-org" value={activeInvOrgId} onChange={setActiveInvOrgId} />
+          </div>
         </div>
       }
     >

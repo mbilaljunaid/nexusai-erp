@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
     BarChart,
@@ -13,42 +13,51 @@ import {
     Pie,
     Cell
 } from 'recharts';
-import { ShoppingCart, Truck, DollarSign, BarChart3, TrendingUp, AlertCircle } from "lucide-react";
+import { ShoppingCart, Truck, DollarSign, AlertCircle } from "lucide-react";
 import { StandardDashboard, DashboardWidget } from "@/components/layout/StandardDashboard";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 export default function ProcurementDashboard() {
+    const [activeBuId, setActiveBuId] = useState<string | undefined>();
+
+    const scopeHeaders = activeBuId ? { "x-business-unit-id": activeBuId } : {};
+
     const { data: pos = [] } = useQuery<any[]>({
-        queryKey: ["/api/procurement/purchase-orders"],
+        queryKey: ["/api/procurement/purchase-orders", activeBuId],
+        queryFn: async () => {
+            const res = await fetch("/api/procurement/purchase-orders", { headers: scopeHeaders });
+            return res.json();
+        },
     });
 
     const { data: suppliers = [] } = useQuery<any[]>({
-        queryKey: ["/api/procurement/suppliers"],
+        queryKey: ["/api/procurement/suppliers", activeBuId],
+        queryFn: async () => {
+            const res = await fetch("/api/procurement/suppliers", { headers: scopeHeaders });
+            return res.json();
+        },
     });
 
     const { data: invoices = [] } = useQuery<any[]>({
         queryKey: ["/api/procurement/ap/invoices"],
     });
 
-    // API Data normalization
-    const safePos = (Array.isArray(pos) ? pos : []);
-    const safeSuppliers = (Array.isArray(suppliers) ? suppliers : []);
-    const safeInvoices = (Array.isArray(invoices) ? invoices : []);
+    const safePos = Array.isArray(pos) ? pos : [];
+    const safeSuppliers = Array.isArray(suppliers) ? suppliers : [];
+    const safeInvoices = Array.isArray(invoices) ? invoices : [];
 
-    // KPI Calculations
     const openOrdersCount = safePos.filter(p => p.status === 'Open').length;
     const pendingReceiptsCount = safePos.filter(p => p.status === 'Open' && p.lines?.some((l: any) => Number(l.quantityReceived) < Number(l.quantity))).length;
     const draftInvoicesCount = safeInvoices.filter(i => i.status === 'Draft').length;
 
-    // Chart Data Preparation
     const spendBySupplier = safeSuppliers.map((s: any) => {
         const spend = safePos
             .filter((p: any) => (p.supplierId === s.id || p.supplier?.id === s.id) && p.status !== 'Cancelled')
             .reduce((sum: number, p: any) => sum + Number(p.totalAmount || p.amount || 0), 0);
-        return { name: s.supplierName, amount: spend };
-    }).filter((s: any) => s.amount > 0).slice(0, 10); // Top 10
+        return { name: s.supplierName || s.name, amount: spend };
+    }).filter((s: any) => s.amount > 0).slice(0, 10);
 
     const poStatusData = [
         { name: 'Draft', value: safePos.filter(p => p.status === 'Draft').length, color: '#94a3b8' },
@@ -66,7 +75,12 @@ export default function ProcurementDashboard() {
                             Monitor metrics, analyze spend, and manage supply chain operations.
                         </p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 items-center">
+                        <EnterpriseContextSwitcher
+                            type="business-unit"
+                            value={activeBuId}
+                            onChange={setActiveBuId}
+                        />
                         <Link href="/procurement/orders/new">
                             <Button>
                                 <ShoppingCart className="mr-2 h-4 w-4" /> Create Order
@@ -76,7 +90,6 @@ export default function ProcurementDashboard() {
                 </div>
             }
         >
-            {/* KPI Widgets */}
             <DashboardWidget title="Open Orders" action={<ShoppingCart className="h-4 w-4 text-muted-foreground" />}>
                 <div className="flex flex-col gap-1">
                     <span className="text-2xl font-bold">{openOrdersCount}</span>
@@ -105,37 +118,21 @@ export default function ProcurementDashboard() {
                 </div>
             </DashboardWidget>
 
-            {/* Charts */}
             <DashboardWidget colSpan={2} title="Spend by Supplier">
                 <div className="h-[300px] w-full">
                     {spendBySupplier.length > 0 ? (
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={spendBySupplier}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                <XAxis
-                                    dataKey="name"
-                                    fontSize={12}
-                                    tickLine={false}
-                                    axisLine={false}
-                                    tickFormatter={(value) => value.length > 10 ? `${value.substring(0, 10)}...` : value}
-                                />
-                                <YAxis
-                                    fontSize={12}
-                                    tickLine={false}
-                                    axisLine={false}
-                                    tickFormatter={(value: any) => `$${value}`}
-                                />
-                                <Tooltip
-                                    formatter={(value: number) => [`$${value.toLocaleString()}`, 'Spend']}
-                                    cursor={{ fill: 'transparent' }}
-                                />
+                                <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false}
+                                    tickFormatter={(v) => v.length > 10 ? `${v.substring(0, 10)}...` : v} />
+                                <YAxis fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v: any) => `$${v}`} />
+                                <Tooltip formatter={(value: number) => [`$${value.toLocaleString()}`, 'Spend']} cursor={{ fill: 'transparent' }} />
                                 <Bar dataKey="amount" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={40} />
                             </BarChart>
                         </ResponsiveContainer>
                     ) : (
-                        <div className="h-full flex items-center justify-center text-muted-foreground">
-                            No spend data available
-                        </div>
+                        <div className="h-full flex items-center justify-center text-muted-foreground">No spend data available</div>
                     )}
                 </div>
             </DashboardWidget>
@@ -145,27 +142,15 @@ export default function ProcurementDashboard() {
                     {poStatusData.length > 0 ? (
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
-                                <Pie
-                                    data={poStatusData}
-                                    cx="50%"
-                                    cy="50%"
-                                    innerRadius={60}
-                                    outerRadius={80}
-                                    paddingAngle={5}
-                                    dataKey="value"
-                                >
-                                    {poStatusData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.color} />
-                                    ))}
+                                <Pie data={poStatusData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">
+                                    {poStatusData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
                                 </Pie>
                                 <Tooltip />
                                 <Legend verticalAlign="bottom" height={36} />
                             </PieChart>
                         </ResponsiveContainer>
                     ) : (
-                        <div className="h-full flex items-center justify-center text-muted-foreground">
-                            No order data available
-                        </div>
+                        <div className="h-full flex items-center justify-center text-muted-foreground">No order data available</div>
                     )}
                 </div>
             </DashboardWidget>

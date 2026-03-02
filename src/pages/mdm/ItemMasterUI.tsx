@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Search, Plus, Package, Tag, Image as ImageIcon } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 interface Item {
     id: string;
@@ -23,6 +24,7 @@ export default function ItemMasterUI() {
     const [searchQuery, setSearchQuery] = useState("");
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+    const [activeSetId, setActiveSetId] = useState<string | undefined>();
 
     const [formData, setFormData] = useState({
         itemNumber: "",
@@ -34,12 +36,14 @@ export default function ItemMasterUI() {
 
     const queryClient = useQueryClient();
 
+    const setHeaders = activeSetId ? { "x-set-id": activeSetId } : {};
+
     // Fetch items
     const { data: items = [], isLoading } = useQuery({
-        queryKey: ["/api/mdm/items", searchQuery],
+        queryKey: ["/api/mdm/items", searchQuery, activeSetId],
         queryFn: async () => {
             const params = searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : "";
-            const res = await fetch(`/api/mdm/items${params}`);
+            const res = await fetch(`/api/mdm/items${params}`, { headers: setHeaders });
             return res.json();
         },
     });
@@ -49,7 +53,7 @@ export default function ItemMasterUI() {
         mutationFn: async (data: typeof formData) => {
             const res = await fetch("/api/mdm/items", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...setHeaders },
                 body: JSON.stringify(data),
             });
             return res.json();
@@ -81,74 +85,81 @@ export default function ItemMasterUI() {
                         Product Information Management
                     </p>
                 </div>
-                <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                    <DialogTrigger asChild>
-                        <Button>
-                            <Plus className="w-4 h-4 mr-2" />
-                            New Item
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-2xl">
-                        <DialogHeader>
-                            <DialogTitle>Create New Item</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                            <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center gap-3">
+                    <EnterpriseContextSwitcher
+                        type="set"
+                        value={activeSetId}
+                        onChange={setActiveSetId}
+                    />
+                    <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+                        <DialogTrigger asChild>
+                            <Button>
+                                <Plus className="w-4 h-4 mr-2" />
+                                New Item
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-2xl">
+                            <DialogHeader>
+                                <DialogTitle>Create New Item</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4 py-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <Label htmlFor="itemNumber">Item Number</Label>
+                                        <Input
+                                            id="itemNumber"
+                                            value={formData.itemNumber}
+                                            onChange={(e) => setFormData({ ...formData, itemNumber: e.target.value })}
+                                            placeholder="SKU-001"
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="uom">Unit of Measure</Label>
+                                        <Input
+                                            id="uom"
+                                            value={formData.uom}
+                                            onChange={(e) => setFormData({ ...formData, uom: e.target.value })}
+                                            placeholder="EA, KG, LB"
+                                        />
+                                    </div>
+                                </div>
+
                                 <div>
-                                    <Label htmlFor="itemNumber">Item Number</Label>
+                                    <Label htmlFor="description">Description</Label>
                                     <Input
-                                        id="itemNumber"
-                                        value={formData.itemNumber}
-                                        onChange={(e) => setFormData({ ...formData, itemNumber: e.target.value })}
-                                        placeholder="SKU-001"
+                                        id="description"
+                                        value={formData.description}
+                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                        placeholder="Product description"
                                     />
                                 </div>
+
                                 <div>
-                                    <Label htmlFor="uom">Unit of Measure</Label>
+                                    <Label htmlFor="category">Category</Label>
                                     <Input
-                                        id="uom"
-                                        value={formData.uom}
-                                        onChange={(e) => setFormData({ ...formData, uom: e.target.value })}
-                                        placeholder="EA, KG, LB"
+                                        id="category"
+                                        value={formData.category}
+                                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                        placeholder="Electronics, Furniture, etc."
                                     />
                                 </div>
-                            </div>
 
-                            <div>
-                                <Label htmlFor="description">Description</Label>
-                                <Input
-                                    id="description"
-                                    value={formData.description}
-                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    placeholder="Product description"
-                                />
+                                <div className="flex gap-2">
+                                    <Button
+                                        onClick={() => createMutation.mutate(formData)}
+                                        disabled={!formData.itemNumber || !formData.description || createMutation.isPending}
+                                        className="flex-1"
+                                    >
+                                        Create Item
+                                    </Button>
+                                    <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
+                                        Cancel
+                                    </Button>
+                                </div>
                             </div>
-
-                            <div>
-                                <Label htmlFor="category">Category</Label>
-                                <Input
-                                    id="category"
-                                    value={formData.category}
-                                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                    placeholder="Electronics, Furniture, etc."
-                                />
-                            </div>
-
-                            <div className="flex gap-2">
-                                <Button
-                                    onClick={() => createMutation.mutate(formData)}
-                                    disabled={!formData.itemNumber || !formData.description || createMutation.isPending}
-                                    className="flex-1"
-                                >
-                                    Create Item
-                                </Button>
-                                <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
-                                    Cancel
-                                </Button>
-                            </div>
-                        </div>
-                    </DialogContent>
-                </Dialog>
+                        </DialogContent>
+                    </Dialog>
+                </div>
             </div>
 
             {/* Search */}

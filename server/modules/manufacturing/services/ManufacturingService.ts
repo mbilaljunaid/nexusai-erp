@@ -115,16 +115,20 @@ export class ManufacturingService {
 
     // ========== EXECUTION (L3/L6/L10) ==========
 
-    async listWorkOrders(limit = 50, offset = 0, filters?: { startDate?: string; endDate?: string }) {
+    async listWorkOrders(limit = 50, offset = 0, filters?: { startDate?: string; endDate?: string; inventoryOrgId?: string }) {
         const { inventory } = await import("@shared/schema");
 
-        let whereClause = undefined;
+        const conditions: any[] = [];
         if (filters?.startDate && filters?.endDate) {
-            whereClause = and(
+            conditions.push(
                 sql`${productionOrders.scheduledDate} >= ${filters.startDate}::date`,
                 sql`${productionOrders.scheduledDate} <= ${filters.endDate}::date`
             );
         }
+        if (filters?.inventoryOrgId) {
+            conditions.push(eq(productionOrders.entInventoryOrgId, filters.inventoryOrgId));
+        }
+        const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
         const items = await db.select({
             id: productionOrders.id,
@@ -143,7 +147,7 @@ export class ManufacturingService {
             .limit(limit)
             .offset(offset);
 
-        const [countResult] = await db.select({ count: sql<number>`count(*)` }).from(productionOrders);
+        const [countResult] = await db.select({ count: sql<number>`count(*)` }).from(productionOrders).where(whereClause);
         return { items, total: Number(countResult.count) };
     }
 
@@ -241,9 +245,10 @@ export class ManufacturingService {
         return await db.select().from(standardCosts).orderBy(desc(standardCosts.effectiveDate));
     }
 
-    async getWipBalances(limit = 50, offset = 0) {
-        const items = await db.select().from(wipBalances).orderBy(desc(wipBalances.lastUpdated)).limit(limit).offset(offset);
-        const [countResult] = await db.select({ count: sql<number>`count(*)` }).from(wipBalances);
+    async getWipBalances(limit = 50, offset = 0, inventoryOrgId?: string) {
+        const whereClause = inventoryOrgId ? eq(wipBalances.entInventoryOrgId, inventoryOrgId) : undefined;
+        const items = await db.select().from(wipBalances).where(whereClause).orderBy(desc(wipBalances.lastUpdated)).limit(limit).offset(offset);
+        const [countResult] = await db.select({ count: sql<number>`count(*)` }).from(wipBalances).where(whereClause);
         return { items, total: Number(countResult.count) };
     }
 

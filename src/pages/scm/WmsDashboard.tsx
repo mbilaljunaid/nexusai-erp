@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { DashboardWidget } from "@/components/layout/StandardDashboard";
 import { Badge } from "@/components/ui/badge";
+import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 const taskData = [
     { time: '08:00', picks: 120, putaway: 80 },
@@ -30,6 +31,8 @@ const zoneUtilization = [
 ];
 
 export default function WmsDashboard() {
+    const [activeInvOrgId, setActiveInvOrgId] = useState<string | undefined>();
+
     return (
         <div className="p-8 max-w-[1600px] mx-auto space-y-8 bg-slate-950 text-slate-200 min-h-screen">
             {/* Header */}
@@ -40,10 +43,16 @@ export default function WmsDashboard() {
                     </div>
                     <div>
                         <h1 className="text-2xl font-bold text-white">WMS Executive Insight</h1>
-                        <p className="text-slate-400 text-sm">Real-time Warehouse Operations & Efficiency</p>
+                        <p className="text-slate-400 text-sm">Real-time Warehouse Operations &amp; Efficiency</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-6">
+                    <EnterpriseContextSwitcher
+                        type="inventory-org"
+                        value={activeInvOrgId}
+                        onChange={setActiveInvOrgId}
+                    />
+                    <div className="w-px h-8 bg-slate-800" />
                     <div className="text-right">
                         <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Active Workers</p>
                         <p className="text-xl font-bold text-white">24</p>

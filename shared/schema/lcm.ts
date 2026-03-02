@@ -39,6 +39,9 @@ export const lcmTradeOperations = pgTable("lcm_trade_operations", {
     approvedBy: varchar("approved_by"),
     approvedAt: timestamp("approved_at"),
 
+    // LE Scoping (Module 19)
+    entInventoryOrgId: varchar("ent_inventory_org_id"),
+
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 

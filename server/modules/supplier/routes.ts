@@ -3,12 +3,15 @@ import { Express } from "express";
 
 export function registerSupplierRoutes(app: Express) {
 
+    const getBuId = (req: any) => req.headers['x-business-unit-id'] as string | undefined;
+
     // ─── Contract Obligations ─────────────────────────────────────────────────
     app.post("/api/supplier/obligations", async (req, res) => {
         try {
             const { contractObligationService } = await import("./contract-obligation.service");
             const tenantId = (req as any).user?.tenantId || "default-tenant";
-            res.status(201).json(await contractObligationService.createObligation({ ...req.body, tenantId }));
+            const buId = getBuId(req);
+            res.status(201).json(await contractObligationService.createObligation({ ...req.body, tenantId, entBusinessUnitId: buId || null }));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -16,7 +19,8 @@ export function registerSupplierRoutes(app: Express) {
         try {
             const { contractObligationService } = await import("./contract-obligation.service");
             const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string) || "default-tenant";
-            res.json(await contractObligationService.listObligations(tenantId, req.query.supplierId as string, req.query.status as string, req.query.contractId as string));
+            const buId = getBuId(req) || req.query.buId as string | undefined;
+            res.json(await contractObligationService.listObligations(tenantId, req.query.supplierId as string, req.query.status as string, req.query.contractId as string, buId));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -70,7 +74,8 @@ export function registerSupplierRoutes(app: Express) {
         try {
             const { supplierCertificationService } = await import("./supplier-certification.service");
             const tenantId = (req as any).user?.tenantId || "default-tenant";
-            res.status(201).json(await supplierCertificationService.addCertification({ ...req.body, tenantId }));
+            const buId = getBuId(req);
+            res.status(201).json(await supplierCertificationService.addCertification({ ...req.body, tenantId, entBusinessUnitId: buId || null }));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -78,7 +83,8 @@ export function registerSupplierRoutes(app: Express) {
         try {
             const { supplierCertificationService } = await import("./supplier-certification.service");
             const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string) || "default-tenant";
-            res.json(await supplierCertificationService.listCertifications(tenantId, req.query.supplierId as string, req.query.status as string, req.query.certType as string));
+            const buId = getBuId(req) || req.query.buId as string | undefined;
+            res.json(await supplierCertificationService.listCertifications(tenantId, req.query.supplierId as string, req.query.status as string, req.query.certType as string, buId));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -117,7 +123,8 @@ export function registerSupplierRoutes(app: Express) {
         try {
             const { supplierQualificationService } = await import("./supplier-qualification.service");
             const tenantId = (req as any).user?.tenantId || "default-tenant";
-            res.status(201).json(await supplierQualificationService.createTemplate({ ...req.body, tenantId }));
+            const buId = getBuId(req);
+            res.status(201).json(await supplierQualificationService.createTemplate({ ...req.body, tenantId, entBusinessUnitId: buId || null }));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -125,7 +132,8 @@ export function registerSupplierRoutes(app: Express) {
         try {
             const { supplierQualificationService } = await import("./supplier-qualification.service");
             const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string) || "default-tenant";
-            res.json(await supplierQualificationService.listTemplates(tenantId));
+            const buId = getBuId(req) || req.query.buId as string | undefined;
+            res.json(await supplierQualificationService.listTemplates(tenantId, buId));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -133,7 +141,8 @@ export function registerSupplierRoutes(app: Express) {
         try {
             const { supplierQualificationService } = await import("./supplier-qualification.service");
             const tenantId = (req as any).user?.tenantId || "default-tenant";
-            res.status(201).json(await supplierQualificationService.startQualification({ ...req.body, tenantId }));
+            const buId = getBuId(req);
+            res.status(201).json(await supplierQualificationService.startQualification({ ...req.body, tenantId, entBusinessUnitId: buId || null }));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 
@@ -141,7 +150,8 @@ export function registerSupplierRoutes(app: Express) {
         try {
             const { supplierQualificationService } = await import("./supplier-qualification.service");
             const tenantId = (req as any).user?.tenantId || (req.query.tenantId as string) || "default-tenant";
-            res.json(await supplierQualificationService.listQualifications(tenantId, req.query.supplierId as string, req.query.status as string));
+            const buId = getBuId(req) || req.query.buId as string | undefined;
+            res.json(await supplierQualificationService.listQualifications(tenantId, req.query.supplierId as string, req.query.status as string, buId));
         } catch (e: any) { res.status(500).json({ error: e.message }); }
     });
 

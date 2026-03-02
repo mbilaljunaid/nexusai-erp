@@ -16,15 +16,21 @@ export class LcmService {
     }
 
     // --- Trade Operations ---
-    async listTradeOperations(page: number = 1, limit: number = 20) {
+    async listTradeOperations(page: number = 1, limit: number = 20, inventoryOrgId?: string) {
         const offset = (page - 1) * limit;
 
+        const whereClause = inventoryOrgId
+            ? eq(lcmTradeOperations.entInventoryOrgId, inventoryOrgId)
+            : undefined;
+
         const data = await db.select().from(lcmTradeOperations)
+            .where(whereClause)
             .limit(limit)
             .offset(offset)
             .orderBy(sql`${lcmTradeOperations.createdAt} DESC`);
 
-        const [countResult] = await db.select({ count: sql<number>`count(*)` }).from(lcmTradeOperations);
+        const [countResult] = await db.select({ count: sql<number>`count(*)` }).from(lcmTradeOperations)
+            .where(whereClause);
 
         return {
             data,
