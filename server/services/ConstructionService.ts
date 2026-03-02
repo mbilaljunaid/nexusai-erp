@@ -71,10 +71,12 @@ export class ConstructionService {
         return contract;
     }
 
-    async getContracts(projectId: string) {
+    async getContracts(projectId: string, entBusinessUnitId?: string) {
+        const conditions = [eq(constructionContracts.projectId, projectId)];
+        if (entBusinessUnitId) conditions.push(eq(constructionContracts.entBusinessUnitId, entBusinessUnitId));
         return await db.select()
             .from(constructionContracts)
-            .where(eq(constructionContracts.projectId, projectId))
+            .where(and(...conditions))
             .orderBy(desc(constructionContracts.createdAt));
     }
 

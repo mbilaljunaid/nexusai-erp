@@ -61,7 +61,12 @@ export class RevenueController {
             const limit = parseInt(req.query.limit as string) || 50;
             const offset = (page - 1) * limit;
 
-            const [{ count }] = await db.select({ count: sql<number>`count(*)` }).from(revenueContracts);
+            const entBusinessUnitId = req.headers["x-business-unit-id"] as string;
+            const baseConditions = entBusinessUnitId ? [eq(revenueContracts.entBusinessUnitId, entBusinessUnitId)] : [];
+
+            const [{ count }] = await db.select({ count: sql<number>`count(*)` })
+                .from(revenueContracts)
+                .where(and(...baseConditions));
             const contracts = await db.select({
                 ...revenueContracts,
                 customerName: accounts.name,
@@ -70,6 +75,7 @@ export class RevenueController {
                 .from(revenueContracts)
                 .leftJoin(accounts, eq(revenueContracts.customerId, accounts.id))
                 .leftJoin(glLedgers, eq(revenueContracts.ledgerId, glLedgers.id))
+                .where(and(...baseConditions))
                 .orderBy(desc(revenueContracts.createdAt))
                 .limit(limit)
                 .offset(offset);
@@ -143,7 +149,10 @@ export class RevenueController {
 
     async getEvents(req: Request, res: Response) {
         try {
+            const entBusinessUnitId = req.headers["x-business-unit-id"] as string;
+            const baseConditions = entBusinessUnitId ? [eq(revenueSourceEvents.entBusinessUnitId, entBusinessUnitId)] : [];
             const events = await db.select().from(revenueSourceEvents)
+                .where(and(...baseConditions))
                 .orderBy(desc(revenueSourceEvents.eventDate))
                 .limit(100);
             res.json(events);
@@ -170,6 +179,7 @@ export class RevenueController {
                 referenceNumber: req.body.referenceNumber,
                 legalEntityId: req.body.legalEntityId || "CORE",
                 orgId: req.body.orgId || "OU-01",
+                entBusinessUnitId: req.headers["x-business-unit-id"] as string || undefined,
                 processingStatus: "Pending"
             }).returning();
             res.status(201).json(event);
@@ -180,8 +190,13 @@ export class RevenueController {
 
     async processEventsJob(req: Request, res: Response) {
         try {
+            const entBusinessUnitId = req.headers["x-business-unit-id"] as string;
+            const baseConditions: any[] = [eq(revenueSourceEvents.processingStatus, "Pending")];
+            if (entBusinessUnitId) {
+                baseConditions.push(eq(revenueSourceEvents.entBusinessUnitId, entBusinessUnitId));
+            }
             const pendingEvents = await db.select().from(revenueSourceEvents)
-                .where(eq(revenueSourceEvents.processingStatus, "Pending"))
+                .where(and(...baseConditions))
                 .orderBy(revenueSourceEvents.eventDate); // FIFO
 
             const results = [];

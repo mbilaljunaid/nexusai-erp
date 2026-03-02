@@ -37,7 +37,7 @@ interface RevenueContract {
 }
 import { useToast } from "@/hooks/use-toast";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
-
+import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 export default function RevenueContractWorkbench() {
     const [page, setPage] = useState(1);
     const LIMIT = 10;
@@ -183,7 +183,12 @@ export default function RevenueContractWorkbench() {
                     <h1 className="text-3xl font-bold tracking-tight">Revenue Contracts</h1>
                     <p className="text-muted-foreground mt-1">Asc 606 / IFRS 15 Management Workbench</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-4 items-center">
+                    <EnterpriseContextSwitcher
+                        type="business-unit"
+                        value={businessUnitId || undefined}
+                        onChange={(val) => useEnterpriseStore.getState().setBusinessUnit(val || null)}
+                    />
                     <Button
                         variant="outline"
                         onClick={() => processMutation.mutate()}

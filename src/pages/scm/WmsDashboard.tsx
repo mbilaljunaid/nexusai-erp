@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { DashboardWidget } from "@/components/layout/StandardDashboard";
 import { Badge } from "@/components/ui/badge";
-import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { EnterpriseContextSwitcher } from "@/components/EnterpriseContextSwitcher";
 
 const taskData = [
     { time: '08:00', picks: 120, putaway: 80 },

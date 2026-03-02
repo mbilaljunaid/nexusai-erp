@@ -103,7 +103,8 @@ router.post("/shipment-tracking/alerts/:alertId/resolve", async (req, res) => {
 // GET /api/shipment-tracking/active - Get active shipments
 router.get("/shipment-tracking/active", async (req, res) => {
     try {
-        const activeShipments = await ShipmentTrackingService.getActiveShipments();
+        const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+        const activeShipments = await ShipmentTrackingService.getActiveShipments(entBusinessUnitId);
         res.json(activeShipments);
     } catch (err: any) {
         res.status(500).json({ error: err.message });

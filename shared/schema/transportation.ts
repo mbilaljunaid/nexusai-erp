@@ -74,6 +74,7 @@ export const tlShipments = pgTable("tl_shipments", {
     sourceLocationId: varchar("source_location_id"), // Linked location
     destinationLocationId: varchar("destination_location_id"), // Linked location
     status: varchar("status").default("PLANNED"), // PLANNED, DISPATCHED, IN_TRANSIT, DELIVERED, CANCELLED
+    entInventoryOrgId: varchar("ent_inventory_org_id"),
     carrierId: varchar("carrier_id"),
     laneId: varchar("lane_id"),
     plannedDeparture: timestamp("planned_departure"),
@@ -109,6 +110,7 @@ export const tlFreightCharges = pgTable("tl_freight_charges", {
     chargeType: varchar("charge_type").notNull(), // BASE_FREIGHT, FUEL_SURCHARGE, ACCESSORIAL, TAX
     description: varchar("description"),
     plannedAmount: numeric("planned_amount", { precision: 18, scale: 2 }).notNull(),
+    entInventoryOrgId: varchar("ent_inventory_org_id"),
     actualAmount: numeric("actual_amount", { precision: 18, scale: 2 }),
     varianceAmount: numeric("variance_amount", { precision: 18, scale: 2 }),
     currency: varchar("currency").default("USD"),
@@ -127,6 +129,7 @@ export const tlStops = pgTable("tl_stops", {
     locationId: varchar("location_id").notNull(),
     stopSequence: integer("stop_sequence").notNull(), // 1, 2, 3...
     stopType: varchar("stop_type").notNull(), // PICKUP, DROPOFF
+    entInventoryOrgId: varchar("ent_inventory_org_id"),
     plannedArrival: timestamp("planned_arrival"),
     actualArrival: timestamp("actual_arrival"),
     notes: text("notes"),

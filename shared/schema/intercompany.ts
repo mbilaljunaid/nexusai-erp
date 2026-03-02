@@ -40,6 +40,7 @@ export const icBatches = pgTable("ic_batches", {
     currencyCode: text("currency_code").notNull(),
     totalAmount: numeric("total_amount", { precision: 20, scale: 2 }),
     totalTransactions: integer("total_transactions").default(0),
+    entLegalEntityId: text("ent_legal_entity_id"),
     createdAt: timestamp("created_at").defaultNow(),
     createdBy: text("created_by")
 });
@@ -61,6 +62,7 @@ export const icHeaders = pgTable("ic_headers", {
     invoiceStatus: text("invoice_status").default("Not Required"),
     settlementStatus: text("settlement_status").default("Unsettled"), // Unsettled, Selected, Settled
     settlementBatchId: varchar("settlement_batch_id"), // Link to ic_netting_batches
+    entLegalEntityId: text("ent_legal_entity_id"),
     createdAt: timestamp("created_at").defaultNow()
 });
 
@@ -153,6 +155,7 @@ export const icNettingSessions = pgTable("ic_netting_sessions", {
     runBy: text("run_by"),
     settledBy: text("settled_by"),
     settlementInstructions: jsonb("settlement_instructions"),
+    entLegalEntityId: text("ent_legal_entity_id"),
     createdAt: timestamp("created_at").defaultNow()
 });
 

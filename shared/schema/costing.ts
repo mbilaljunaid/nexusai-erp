@@ -12,6 +12,7 @@ export const cstItemCosts = pgTable("cst_item_costs", {
     costBookId: text("costBookId"),
     unitCost: decimal("unitCost", { precision: 18, scale: 4 }).default("0"),
     currencyCode: text("currencyCode").notNull(),
+    entInventoryOrgId: text("ent_inventory_org_id"),
     createdAt: timestamp("createdAt").defaultNow(),
     updatedAt: timestamp("updatedAt").defaultNow(),
 });
@@ -29,6 +30,7 @@ export const cstCostDistributions = pgTable("cst_cost_distributions", {
     status: text("status").default("Draft"), // Draft, Final, Posted
     accounted: boolean("accounted").default(false),
     glAccountId: text("glAccountId"),
+    entInventoryOrgId: text("ent_inventory_org_id"),
     createdAt: timestamp("createdAt").defaultNow(),
 });
 
@@ -43,6 +45,7 @@ export const cmrReceiptDistributions = pgTable("cmr_receipt_distributions", {
     accountedAmount: decimal("accountedAmount", { precision: 18, scale: 4 }),
     glAccountId: text("glAccountId"),
     status: text("status").default("Draft"),
+    entInventoryOrgId: text("ent_inventory_org_id"),
     createdAt: timestamp("createdAt").defaultNow(),
 });
 
@@ -175,6 +178,7 @@ export const cstTransactions = pgTable("cst_transactions", {
     unitCost: decimal("unit_cost", { precision: 16, scale: 4 }).default("0"),
     totalCost: decimal("total_cost", { precision: 16, scale: 2 }).default("0"),
     orgId: text("org_id").notNull(),
+    entInventoryOrgId: text("ent_inventory_org_id"),
     transactionDate: timestamp("transaction_date").defaultNow(),
     glStatus: text("gl_status").default("PENDING")
 });

@@ -23,7 +23,8 @@ billingRouter.post("/events", async (req, res) => {
 // List unbilled events (Workbench)
 billingRouter.get("/events/pending", async (req, res) => {
     try {
-        const events = await billingService.getUnbilledEvents();
+        const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+        const events = await billingService.getUnbilledEvents(entBusinessUnitId);
         res.json(events);
     } catch (error: any) {
         res.status(500).json({ message: error.message });

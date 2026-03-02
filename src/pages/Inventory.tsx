@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import InventoryDashboardView from "./InventoryDashboardView";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { EnterpriseContextSwitcher } from "@/components/EnterpriseContextSwitcher";
 
 export default function Inventory() {
   const { toast } = useToast();
@@ -59,12 +60,9 @@ export default function Inventory() {
       title="Inventory Management"
       description="Monitor stock levels, reorder points, and warehouse allocation"
     >
-      {inventoryOrgId && (
-        <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-md bg-amber-50 border border-amber-200 text-amber-800 text-sm">
-          <Building2 className="h-4 w-4 flex-shrink-0" />
-          <span>Inventory scoped to Org: <strong>{inventoryOrgId}</strong></span>
-        </div>
-      )}
+      <div className="mb-4">
+        <EnterpriseContextSwitcher />
+      </div>
       <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
       <div className="mt-6">

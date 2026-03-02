@@ -230,8 +230,10 @@ export class BillingService {
         }
     }
 
-    async getUnbilledEvents() {
-        return await db.select().from(billingEvents).where(eq(billingEvents.status, "Pending"));
+    async getUnbilledEvents(entBusinessUnitId?: string) {
+        const conditions = [eq(billingEvents.status, "Pending")];
+        if (entBusinessUnitId) conditions.push(eq(billingEvents.entBusinessUnitId, entBusinessUnitId));
+        return await db.select().from(billingEvents).where(and(...conditions));
     }
 
     async getAnomalies() {

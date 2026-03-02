@@ -17,6 +17,7 @@ export const contracts = pgTable("contracts", {
     // Classification
     contractType: varchar("contract_type").default("MSA"), // MSA, SOW, LEASE, NDA, PURCHASE, SALES
     status: varchar("status").default("DRAFT"), // DRAFT, IN_REVIEW, APPROVED, ACTIVE, ON_HOLD, EXPIRED, TERMINATED, CLOSED
+    entBusinessUnitId: varchar("ent_business_unit_id"),
 
     // Parties
     vendorId: varchar("vendor_id"), // Link to scm_suppliers (optional if customer contract)
@@ -47,6 +48,7 @@ export const contractLines = pgTable("contract_lines", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     contractId: varchar("contract_id").notNull(), //.references(() => contracts.id),
     lineNumber: integer("line_number").notNull(),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
 
     itemDescription: varchar("item_description").notNull(),
     quantity: numeric("quantity", { precision: 15, scale: 2 }),

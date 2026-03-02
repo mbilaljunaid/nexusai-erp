@@ -27,6 +27,7 @@ export const constructionContracts = pgTable("construction_contracts", {
     vendorId: varchar("vendor_id"), // Link to Supplier (for Subcontracts) or Client (for Prime)
     type: varchar("type").default("PRIME"), // PRIME, SUBCONTRACT
     status: varchar("status").default("DRAFT"), // DRAFT, ACTIVE, CLOSED
+    entBusinessUnitId: varchar("ent_business_unit_id"),
     subject: varchar("subject").notNull(),
     description: text("description"),
     awardedDate: timestamp("awarded_date"),
@@ -50,6 +51,7 @@ export const constructionContractLines = pgTable("construction_contract_lines", 
     lineNumber: integer("line_number").notNull(),
     taskId: varchar("task_id"), // Link to PPM Task
     description: varchar("description").notNull(),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
     uom: varchar("uom").default("LS"), // Lump Sum, Each, etc.
     quantity: numeric("quantity", { precision: 18, scale: 4 }).default("1"),
     unitRate: numeric("unit_rate", { precision: 18, scale: 2 }).default("0.00"),
@@ -89,6 +91,7 @@ export const constructionPayApps = pgTable("construction_pay_apps", {
     applicationNumber: integer("application_number").notNull(),
     periodStart: timestamp("period_start").notNull(),
     periodEnd: timestamp("period_end").notNull(),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
     status: varchar("status").default("DRAFT"), // DRAFT, SUBMITTED, ARCHITECT_APPROVED, ENGINEER_APPROVED, CERTIFIED, PAID
     isLocked: boolean("is_locked").default(false), // Locked for audit once certified
 

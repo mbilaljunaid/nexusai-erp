@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { BillingEventDetailSheet } from "./components/BillingEventDetailSheet";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 export default function BillingWorkbench() {
     const { toast } = useToast();
@@ -141,23 +142,30 @@ export default function BillingWorkbench() {
                     <h1 className="text-3xl font-bold tracking-tight">Billing Workbench</h1>
                     <p className="text-muted-foreground">Manage unbilled events and generate invoices.</p>
                 </div>
-                <Button
-                    onClick={() => autoInvoiceMutation.mutate()}
-                    disabled={autoInvoiceMutation.isPending || events.length === 0}
-                    className="gap-2"
-                >
-                    {autoInvoiceMutation.isPending ? <div className="animate-spin text-xl">◌</div> : <PlayCircle className="w-4 h-4" />}
-                    Run Auto-Invoice
-                </Button>
-                <Button
-                    variant="secondary"
-                    onClick={() => aiScanMutation.mutate()}
-                    disabled={aiScanMutation.isPending}
-                    className="gap-2"
-                >
-                    <ScanEye className="w-4 h-4" />
-                    AI Scan
-                </Button>
+                <div className="flex gap-4 items-center">
+                    <EnterpriseContextSwitcher
+                        type="business-unit"
+                        value={businessUnitId || undefined}
+                        onChange={(val) => useEnterpriseStore.getState().setBusinessUnit(val || null)}
+                    />
+                    <Button
+                        onClick={() => autoInvoiceMutation.mutate()}
+                        disabled={autoInvoiceMutation.isPending || events.length === 0}
+                        className="gap-2"
+                    >
+                        {autoInvoiceMutation.isPending ? <div className="animate-spin text-xl">◌</div> : <PlayCircle className="w-4 h-4" />}
+                        Run Auto-Invoice
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        onClick={() => aiScanMutation.mutate()}
+                        disabled={aiScanMutation.isPending}
+                        className="gap-2"
+                    >
+                        <ScanEye className="w-4 h-4" />
+                        AI Scan
+                    </Button>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

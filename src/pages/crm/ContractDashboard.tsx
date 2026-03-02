@@ -12,16 +12,24 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
-
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 export default function ContractDashboard() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [newItem, setNewItem] = useState({ title: "", type: "MSA", totalValue: 0, startDate: "", endDate: "" });
+    const { businessUnitId } = useEnterpriseStore();
 
-    const { data: contractsData } = useQuery({ queryKey: ["/api/crm/contracts"], queryFn: () => fetch("/api/crm/contracts").then(r => r.json()) });
+    const { data: contractsData } = useQuery({
+        queryKey: ["/api/crm/contracts", businessUnitId],
+        queryFn: () => fetch("/api/crm/contracts", { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json())
+    });
     const contracts = contractsData?.data || [];
-    const { data: expiring = [] } = useQuery({ queryKey: ["/api/crm/contracts/expiring"], queryFn: () => fetch("/api/crm/contracts/expiring").then(r => r.json()) });
+    const { data: expiring = [] } = useQuery({
+        queryKey: ["/api/crm/contracts/expiring", businessUnitId],
+        queryFn: () => fetch("/api/crm/contracts/expiring", { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json())
+    });
 
     const createMutation = useMutation({
         mutationFn: async (data: any) => {
@@ -45,9 +53,16 @@ export default function ContractDashboard() {
                     <h1 className="text-3xl font-bold tracking-tight">Contract Management</h1>
                     <p className="text-muted-foreground mt-2">Manage MSAs, SOWs, and Renewals.</p>
                 </div>
-                <Button onClick={() => setIsCreateOpen(true)}>
-                    <Plus className="mr-2 h-4 w-4" /> New Contract
-                </Button>
+                <div className="flex gap-4 items-center">
+                    <EnterpriseContextSwitcher
+                        type="business-unit"
+                        value={businessUnitId || undefined}
+                        onChange={(val) => useEnterpriseStore.getState().setBusinessUnit(val || null)}
+                    />
+                    <Button onClick={() => setIsCreateOpen(true)}>
+                        <Plus className="mr-2 h-4 w-4" /> New Contract
+                    </Button>
+                </div>
             </div>
 
             {/* Expiring Alert */}

@@ -175,11 +175,16 @@ export class ShipmentTrackingService {
 
     // ========== ACTIVE SHIPMENTS ==========
 
-    static async getActiveShipments() {
+    static async getActiveShipments(entBusinessUnitId?: string) {
+        const conditions = [eq(tlShipmentTracking.status, "IN_TRANSIT")];
+        if (entBusinessUnitId) {
+            conditions.push(eq(tlShipmentTracking.entBusinessUnitId, entBusinessUnitId));
+        }
+
         return await db
             .select()
             .from(tlShipmentTracking)
-            .where(eq(tlShipmentTracking.status, "IN_TRANSIT"));
+            .where(and(...conditions));
     }
 
     // ========== ETA CALCULATION ==========

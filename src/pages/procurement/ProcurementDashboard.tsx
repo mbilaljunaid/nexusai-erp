@@ -17,7 +17,7 @@ import { ShoppingCart, Truck, DollarSign, AlertCircle } from "lucide-react";
 import { StandardDashboard, DashboardWidget } from "@/components/layout/StandardDashboard";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { EnterpriseContextSwitcher } from "@/components/EnterpriseContextSwitcher";
 
 export default function ProcurementDashboard() {
     const [activeBuId, setActiveBuId] = useState<string | undefined>();
