@@ -15,8 +15,10 @@ import { HedgeAccountingWorkbench } from "@/components/treasury/HedgeAccountingW
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Wallet, ArrowRightLeft, ShieldCheck, Settings2, Lock, Landmark, LayoutDashboard, AlertCircle, RefreshCcw, ShieldAlert, Globe, TrendingUp, BarChart3, Shield } from "lucide-react";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function TreasuryCommandCenter() {
+  const { legalEntityId } = useEnterpriseStore();
   return (
     <div className="p-8 space-y-8">
       <div className="flex justify-between items-start">
@@ -28,6 +30,13 @@ export default function TreasuryCommandCenter() {
           <p className="text-muted-foreground mt-2">
             The mission control for global liquidity, risk management, and in-house banking.
           </p>
+          <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
+            <Landmark className="w-4 h-4" />
+            {legalEntityId
+              ? <span className="font-medium text-foreground">Legal Entity: <span className="font-bold text-primary">{legalEntityId}</span></span>
+              : <span className="italic">No Legal Entity selected — showing all entities</span>
+            }
+          </div>
         </div>
       </div>
 

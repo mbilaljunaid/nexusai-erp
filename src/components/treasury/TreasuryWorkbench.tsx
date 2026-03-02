@@ -24,6 +24,7 @@ import { format } from "date-fns";
 import type { TreasuryDeal } from "@/types/erp-types";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export function TreasuryWorkbench() {
     const [isEntryOpen, setIsEntryOpen] = useState(false);
@@ -31,9 +32,16 @@ export function TreasuryWorkbench() {
     const [activeTab, setActiveTab] = useState("deals");
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const { legalEntityId } = useEnterpriseStore();
+    const leHeaders: Record<string, string> = legalEntityId ? { 'x-legal-entity-id': legalEntityId } : {};
 
     const { data: deals = [], isLoading } = useQuery<TreasuryDeal[]>({
-        queryKey: ["/api/treasury/deals"],
+        queryKey: ["/api/treasury/deals", legalEntityId ?? 'all'],
+        queryFn: async () => {
+            const res = await fetch('/api/treasury/deals', { headers: leHeaders });
+            if (!res.ok) throw new Error('Failed to fetch treasury deals');
+            return res.json();
+        },
     });
 
     const approveMutation = useMutation({

@@ -143,7 +143,9 @@ export class TreasuryService {
 
   // --- Counterparty Management ---
 
-  async listCounterparties(): Promise<TreasuryCounterparty[]> {
+  async listCounterparties(legalEntityId?: string): Promise<TreasuryCounterparty[]> {
+    // treasuryCounterparties is a master-data table with no LE column;
+    // filter is effectively a no-op until the migration adds the column.
     return await db.select()
       .from(treasuryCounterparties)
       .where(eq(treasuryCounterparties.active, true))
@@ -159,12 +161,13 @@ export class TreasuryService {
 
   // --- Deal Management ---
 
-  async listDeals(filters?: { type?: string, status?: string }): Promise<TreasuryDeal[]> {
+  async listDeals(filters?: { type?: string, status?: string, legalEntityId?: string }): Promise<TreasuryDeal[]> {
     let query = db.select().from(treasuryDeals);
 
     const conditions = [];
     if (filters?.type) conditions.push(eq(treasuryDeals.type, filters.type));
     if (filters?.status) conditions.push(eq(treasuryDeals.status, filters.status));
+    if (filters?.legalEntityId) conditions.push(eq(treasuryDeals.legalEntityId, filters.legalEntityId));
 
     if (conditions.length > 0) {
       // @ts-ignore - Dynamic and/eq type issues with Drizzle
@@ -325,10 +328,13 @@ export class TreasuryService {
     return deal;
   }
 
-  async listFxDeals(): Promise<TreasuryFxDeal[]> {
-    return await db.select()
+  async listFxDeals(legalEntityId?: string): Promise<TreasuryFxDeal[]> {
+    const all = await db.select()
       .from(treasuryFxDeals)
       .orderBy(desc(treasuryFxDeals.tradeDate));
+    // treasuryFxDeals has no legal_entity_id column yet (migration pending);
+    // filtering is a no-op placeholder — the column migration below will enable real filtering.
+    return all;
   }
 
   async updateMarketRates(rates: InsertTreasuryMarketRate[]): Promise<void> {
@@ -422,13 +428,15 @@ export class TreasuryService {
     return hedge;
   }
 
-  async listHedgeRelationships(dealId?: string) {
+  async listHedgeRelationships(dealId?: string, legalEntityId?: string) {
     let query = db.select().from(treasuryHedgeRelationships);
     if (dealId) {
       // @ts-ignore
       query = query.where(eq(treasuryHedgeRelationships.dealId, dealId));
     }
-    return await query.orderBy(desc(treasuryHedgeRelationships.createdAt));
+    const results = await query.orderBy(desc(treasuryHedgeRelationships.createdAt));
+    // No LE column on hedges yet — placeholder filter; migration will add it.
+    return results;
   }
 
   // --- Phase 5: Risk Intelligence ---

@@ -28,6 +28,7 @@ import { format } from "date-fns";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { TreasuryDeal, TreasuryFxDeal } from "@/types/erp-types";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 type UnifiedDeal = (TreasuryDeal | TreasuryFxDeal) & {
     _dealCategory: "MONEY_MARKET" | "FX";
@@ -39,22 +40,39 @@ export function DealBlotter() {
     const [searchTerm, setSearchTerm] = useState("");
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const { legalEntityId } = useEnterpriseStore();
+    const leHeaders: Record<string, string> = legalEntityId ? { 'x-legal-entity-id': legalEntityId } : {};
 
     // Fetch Money Market Deals
     const { data: mmDeals = [], isLoading: isLoadingMM } = useQuery<TreasuryDeal[]>({
-        queryKey: ["/api/treasury/deals"],
-        refetchInterval: 30000, // Real-time updates every 30s
+        queryKey: ["/api/treasury/deals", legalEntityId ?? 'all'],
+        refetchInterval: 30000,
+        queryFn: async () => {
+            const res = await fetch('/api/treasury/deals', { headers: leHeaders });
+            if (!res.ok) throw new Error('Failed to fetch MM deals');
+            return res.json();
+        },
     });
 
     // Fetch FX Deals
     const { data: fxDeals = [], isLoading: isLoadingFX } = useQuery<TreasuryFxDeal[]>({
-        queryKey: ["/api/treasury/fx-deals"],
+        queryKey: ["/api/treasury/fx-deals", legalEntityId ?? 'all'],
         refetchInterval: 30000,
+        queryFn: async () => {
+            const res = await fetch('/api/treasury/fx-deals', { headers: leHeaders });
+            if (!res.ok) throw new Error('Failed to fetch FX deals');
+            return res.json();
+        },
     });
 
     // Fetch Counterparties for name lookup
     const { data: counterparties = [] } = useQuery<any[]>({
-        queryKey: ["/api/treasury/counterparties"],
+        queryKey: ["/api/treasury/counterparties", legalEntityId ?? 'all'],
+        queryFn: async () => {
+            const res = await fetch('/api/treasury/counterparties', { headers: leHeaders });
+            if (!res.ok) throw new Error('Failed to fetch counterparties');
+            return res.json();
+        },
     });
 
     // Confirm Deal Mutation

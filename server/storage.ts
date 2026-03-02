@@ -931,13 +931,13 @@ export interface IStorage {
   updateArPeriodStatus(name: string, status: string, auditId: string): Promise<ArPeriodStatus | undefined>;
 
   // Tax
-  listTaxCodes(): Promise<TaxCode[]>;
+  listTaxCodes(entLegalEntityId?: string): Promise<TaxCode[]>;
   getTaxCode(id: string): Promise<TaxCode | undefined>;
   createTaxCode(data: InsertTaxCode): Promise<TaxCode>;
-  listTaxJurisdictions(): Promise<TaxJurisdiction[]>;
+  listTaxJurisdictions(entLegalEntityId?: string): Promise<TaxJurisdiction[]>;
   getTaxJurisdiction(id: string): Promise<TaxJurisdiction | undefined>;
   createTaxJurisdiction(data: InsertTaxJurisdiction): Promise<TaxJurisdiction>;
-  listTaxExemptions(): Promise<TaxExemption[]>;
+  listTaxExemptions(entLegalEntityId?: string): Promise<TaxExemption[]>;
   getTaxExemption(id: string): Promise<TaxExemption | undefined>;
   createTaxExemption(data: InsertTaxExemption): Promise<TaxExemption>;
   getApplicableTaxRate(invoiceId: string): Promise<number>;
@@ -1986,10 +1986,16 @@ export class DatabaseStorage implements IStorage {
     return true;
   }
 
-  async listCashStatementLines(bankAccountId: string, limit?: number, offset?: number) {
+  async listCashStatementLines(bankAccountId: string, limit?: number, offset?: number, entBusinessUnitId?: string, entLegalEntityId?: string) {
     let query = db.select().from(cashStatementLines)
       .where(eq(cashStatementLines.bankAccountId, bankAccountId))
-      .orderBy(desc(cashStatementLines.transactionDate));
+      .orderBy(desc(cashStatementLines.transactionDate)) as any;
+
+    if (entLegalEntityId) {
+      query = db.select().from(cashStatementLines)
+        .where(and(eq(cashStatementLines.bankAccountId, bankAccountId), eq(cashStatementLines.entLegalEntityId, entLegalEntityId)))
+        .orderBy(desc(cashStatementLines.transactionDate)) as any;
+    }
 
     if (limit !== undefined && offset !== undefined) {
       return await query.limit(limit).offset(offset);
@@ -2022,10 +2028,14 @@ export class DatabaseStorage implements IStorage {
     return header;
   }
 
-  async listCashTransactions(bankAccountId: string, limit?: number, offset?: number) {
+  async listCashTransactions(bankAccountId: string, limit?: number, offset?: number, entBusinessUnitId?: string, entLegalEntityId?: string) {
+    let baseWhere = entLegalEntityId
+      ? and(eq(cashTransactions.bankAccountId, bankAccountId), eq(cashTransactions.entLegalEntityId, entLegalEntityId))
+      : eq(cashTransactions.bankAccountId, bankAccountId);
+
     let query = db.select().from(cashTransactions)
-      .where(eq(cashTransactions.bankAccountId, bankAccountId))
-      .orderBy(desc(cashTransactions.transactionDate));
+      .where(baseWhere)
+      .orderBy(desc(cashTransactions.transactionDate)) as any;
 
     if (limit !== undefined && offset !== undefined) {
       return await query.limit(limit).offset(offset);
@@ -2104,7 +2114,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   // ZBA
-  async listCashZbaStructures() {
+  async listCashZbaStructures(entLegalEntityId?: string) {
+    if (entLegalEntityId) {
+      return await db.select().from(cashZbaStructures).where(eq(cashZbaStructures.entLegalEntityId, entLegalEntityId));
+    }
     return await db.select().from(cashZbaStructures);
   }
   async createCashZbaStructure(data: InsertCashZbaStructure) {
@@ -3155,7 +3168,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Tax CRUD methods
-  async listTaxCodes(): Promise<TaxCode[]> {
+  async listTaxCodes(entLegalEntityId?: string): Promise<TaxCode[]> {
+    if (entLegalEntityId) {
+      return await db.select().from(taxCodes).where(eq(taxCodes.entLegalEntityId, entLegalEntityId));
+    }
     return await db.select().from(taxCodes);
   }
 
@@ -3169,7 +3185,10 @@ export class DatabaseStorage implements IStorage {
     return res;
   }
 
-  async listTaxJurisdictions(): Promise<TaxJurisdiction[]> {
+  async listTaxJurisdictions(entLegalEntityId?: string): Promise<TaxJurisdiction[]> {
+    if (entLegalEntityId) {
+      return await db.select().from(taxJurisdictions).where(eq(taxJurisdictions.entLegalEntityId, entLegalEntityId));
+    }
     return await db.select().from(taxJurisdictions);
   }
 
@@ -3183,7 +3202,10 @@ export class DatabaseStorage implements IStorage {
     return res;
   }
 
-  async listTaxExemptions(): Promise<TaxExemption[]> {
+  async listTaxExemptions(entLegalEntityId?: string): Promise<TaxExemption[]> {
+    if (entLegalEntityId) {
+      return await db.select().from(taxExemptions).where(eq(taxExemptions.entLegalEntityId, entLegalEntityId));
+    }
     return await db.select().from(taxExemptions);
   }
 

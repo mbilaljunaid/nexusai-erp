@@ -5,21 +5,26 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Link2, Plus, Trash2, CheckCircle } from "lucide-react";
+import { Link2, Plus, Trash2, CheckCircle, Building2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function IntercompanyReconciliation() {
   const { toast } = useToast();
+  const { legalEntityId } = useEnterpriseStore();
+  const icHeaders: Record<string, string> = {};
+  if (legalEntityId) icHeaders['x-legal-entity-id'] = legalEntityId;
+
   const [newMatch, setNewMatch] = useState({ entity: "Entity A", partner: "Entity B", amount: "", status: "unmatched" });
 
   const { data: matches = [], isLoading } = useQuery({
-    queryKey: ["/api/intercompany-reconciliation"],
-    queryFn: () => fetch("/api/intercompany-reconciliation").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/intercompany-reconciliation", legalEntityId],
+    queryFn: () => fetch("/api/intercompany-reconciliation", { headers: icHeaders }).then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/intercompany-reconciliation", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/intercompany-reconciliation", { method: "POST", headers: { "Content-Type": "application/json", ...icHeaders }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/intercompany-reconciliation"] });
       setNewMatch({ entity: "Entity A", partner: "Entity B", amount: "", status: "unmatched" });
@@ -28,7 +33,7 @@ export default function IntercompanyReconciliation() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/intercompany-reconciliation/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/intercompany-reconciliation/${id}`, { method: "DELETE", headers: icHeaders }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/intercompany-reconciliation"] });
       toast({ title: "Entry deleted" });
@@ -47,6 +52,17 @@ export default function IntercompanyReconciliation() {
         </h1>
         <p className="text-muted-foreground mt-2">Reconcile intercompany transactions and verify matching</p>
       </div>
+
+      {/* LE Context Banner */}
+      {legalEntityId && (
+        <div className="flex items-center gap-2 px-4 py-2 bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-800 rounded-lg text-sm">
+          <Building2 className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+          <span className="text-violet-700 dark:text-violet-300 font-medium">
+            IC Scope: Legal Entity {legalEntityId}
+          </span>
+          <span className="text-violet-500 text-xs">— Transactions filtered by Legal Entity</span>
+        </div>
+      )}
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

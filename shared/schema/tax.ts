@@ -6,6 +6,7 @@ import { z } from "zod";
 
 export const taxJurisdictions = pgTable("tax_jurisdictions", {
     id: serial("id").primaryKey(),
+    entLegalEntityId: varchar("ent_legal_entity_id", { length: 255 }),
     name: varchar("name", { length: 255 }).notNull(),
     type: varchar("type", { length: 50 }).notNull(), // Country, State, City
     parentId: integer("parent_id"),
@@ -17,6 +18,7 @@ export const insertTaxJurisdictionSchema = createInsertSchema(taxJurisdictions);
 
 export const taxCodes = pgTable("tax_codes", {
     id: serial("id").primaryKey(),
+    entLegalEntityId: varchar("ent_legal_entity_id", { length: 255 }),
     name: varchar("name", { length: 255 }).notNull(),
     rate: numeric("rate", { precision: 5, scale: 4 }).notNull(), // e.g., 0.0750 for 7.5%
     jurisdictionId: integer("jurisdiction_id").notNull(),
@@ -31,6 +33,7 @@ export const insertTaxCodeSchema = createInsertSchema(taxCodes).extend({
 
 export const taxExemptions = pgTable("tax_exemptions", {
     id: serial("id").primaryKey(),
+    entLegalEntityId: varchar("ent_legal_entity_id", { length: 255 }),
     customerId: varchar("customer_id"),
     siteId: varchar("site_id"),
     taxCodeId: integer("tax_code_id").notNull(),

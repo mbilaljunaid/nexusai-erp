@@ -11,22 +11,35 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Play, ArrowRight, History, Settings2, Building2, ShieldCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export function ZbaManager() {
     const queryClient = useQueryClient();
     const { toast } = useToast();
+    const { legalEntityId } = useEnterpriseStore();
+    const leHeaders: Record<string, string> = legalEntityId ? { 'x-legal-entity-id': legalEntityId } : {};
 
     const { data: structures, isLoading: loadingStructures } = useQuery<any[]>({
-        queryKey: ["/api/cash/zba/structures"]
+        queryKey: ["/api/cash/zba/structures", legalEntityId ?? 'all'],
+        queryFn: async () => {
+            const res = await fetch('/api/cash/zba/structures', { headers: leHeaders });
+            if (!res.ok) throw new Error('Failed to fetch ZBA structures');
+            return res.json();
+        },
     });
 
     const { data: sweeps, isLoading: loadingSweeps } = useQuery<any[]>({
-        queryKey: ["/api/cash/zba/sweeps"]
+        queryKey: ["/api/cash/zba/sweeps", legalEntityId ?? 'all'],
+        queryFn: async () => {
+            const res = await fetch('/api/cash/zba/sweeps', { headers: leHeaders });
+            if (!res.ok) throw new Error('Failed to fetch ZBA sweeps');
+            return res.json();
+        },
     });
 
     const executeMutation = useMutation({
         mutationFn: async () => {
-            const res = await fetch("/api/cash/zba/execute-sweeps", { method: "POST" });
+            const res = await fetch("/api/cash/zba/execute-sweeps", { method: "POST", headers: leHeaders });
             if (!res.ok) throw new Error("Failed to execute sweeps");
             return res.json();
         },
@@ -49,7 +62,7 @@ export function ZbaManager() {
 
     const approveMutation = useMutation({
         mutationFn: async (id: string) => {
-            const res = await fetch(`/api/cash/zba/structures/${id}/approve`, { method: "POST" });
+            const res = await fetch(`/api/cash/zba/structures/${id}/approve`, { method: "POST", headers: leHeaders });
             if (!res.ok) throw new Error("Failed to approve");
             return res.json();
         },
@@ -61,7 +74,7 @@ export function ZbaManager() {
 
     const rejectMutation = useMutation({
         mutationFn: async (id: string) => {
-            const res = await fetch(`/api/cash/zba/structures/${id}/reject`, { method: "POST" });
+            const res = await fetch(`/api/cash/zba/structures/${id}/reject`, { method: "POST", headers: leHeaders });
             if (!res.ok) throw new Error("Failed to reject");
             return res.json();
         },

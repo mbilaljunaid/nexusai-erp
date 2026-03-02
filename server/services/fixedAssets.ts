@@ -14,8 +14,15 @@ export class FaService {
     /**
      * List all Assets (Joined with Corporate Book details by default)
      */
-    async listAssets(limit?: number, offset?: number) {
-        const query = db.select({
+    async listAssets(limit?: number, offset?: number, ledgerId?: string) {
+        // Join through faBooks so we can scope by ledger when provided
+        const conditions = [eq(faAssets.id, faAssetBooks.assetId)];
+        if (!ledgerId) {
+            // Fallback: default corporate book for unscoped views
+            conditions.push(eq(faAssetBooks.bookId, "CORP-BOOK-1"));
+        }
+
+        let query = db.select({
             id: faAssets.id,
             assetNumber: faAssets.assetNumber,
             tagNumber: faAssets.tagNumber,
@@ -31,10 +38,20 @@ export class FaService {
             bookId: faAssetBooks.bookId
         })
             .from(faAssets)
-            .leftJoin(faAssetBooks, and(
-                eq(faAssets.id, faAssetBooks.assetId),
-                eq(faAssetBooks.bookId, "CORP-BOOK-1") // Default for consolidated list view
-            ));
+            .leftJoin(faAssetBooks, and(...conditions));
+
+        if (ledgerId) {
+            // Scope to books belonging to the selected ledger
+            const leQuery = query
+                .innerJoin(faBooks, and(
+                    eq(faAssetBooks.bookId, faBooks.id),
+                    eq(faBooks.ledgerId, ledgerId)
+                )) as any;
+            if (limit !== undefined && offset !== undefined) {
+                return await leQuery.limit(limit).offset(offset);
+            }
+            return await leQuery;
+        }
 
         if (limit !== undefined && offset !== undefined) {
             return await query.limit(limit).offset(offset);
@@ -47,15 +64,31 @@ export class FaService {
         return count.value;
     }
 
-    async getAssetsStats() {
-        // Query for counts and sums
-        const [stats] = await db.select({
-            totalCost: sql<string>`COALESCE(SUM(original_cost), 0)`,
-            totalRecoverable: sql<string>`COALESCE(SUM(recoverable_cost), 0)`,
-            activeCount: sql<number>`COUNT(*) FILTER (WHERE status = 'ACTIVE')`,
-            retiredCount: sql<number>`COUNT(*) FILTER (WHERE status = 'RETIRED')`
-        }).from(faAssetBooks).where(eq(faAssetBooks.bookId, "CORP-BOOK-1"));
+    async getAssetsStats(ledgerId?: string) {
+        // Filter by ledger when provided — join through faBooks
+        let statsQuery: any;
+        if (ledgerId) {
+            statsQuery = db.select({
+                totalCost: sql<string>`COALESCE(SUM(fab.original_cost), 0)`,
+                totalRecoverable: sql<string>`COALESCE(SUM(fab.recoverable_cost), 0)`,
+                activeCount: sql<number>`COUNT(*) FILTER (WHERE fab.status = 'ACTIVE')`,
+                retiredCount: sql<number>`COUNT(*) FILTER (WHERE fab.status = 'RETIRED')`
+            })
+                .from(faAssetBooks)
+                .innerJoin(faBooks, and(
+                    eq(faAssetBooks.bookId, faBooks.id),
+                    eq(faBooks.ledgerId, ledgerId)
+                ));
+        } else {
+            statsQuery = db.select({
+                totalCost: sql<string>`COALESCE(SUM(original_cost), 0)`,
+                totalRecoverable: sql<string>`COALESCE(SUM(recoverable_cost), 0)`,
+                activeCount: sql<number>`COUNT(*) FILTER (WHERE status = 'ACTIVE')`,
+                retiredCount: sql<number>`COUNT(*) FILTER (WHERE status = 'RETIRED')`
+            }).from(faAssetBooks).where(eq(faAssetBooks.bookId, "CORP-BOOK-1"));
+        }
 
+        const [stats] = await statsQuery;
         return {
             totalCost: stats.totalCost,
             totalRecoverable: stats.totalRecoverable,

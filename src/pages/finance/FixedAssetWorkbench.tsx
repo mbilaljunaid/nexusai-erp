@@ -14,13 +14,14 @@ import {
 import {
     Briefcase, TrendingUp, AlertCircle, History,
     Plus, Calculator, ArrowRightLeft, Trash2, Search,
-    Filter, Download, Calendar
+    Filter, Download, Calendar, Building2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { StandardTable, type Column } from "@/components/ui/StandardTable";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 interface Asset {
     id: string;
@@ -37,19 +38,26 @@ export default function FixedAssetWorkbench() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [activeTab, setActiveTab] = useState("dashboard");
+    const { selectedLegalEntity, legalEntityId } = useEnterpriseStore() as any;
+    const activeLedgerId = (selectedLegalEntity as any)?.ledgerId || legalEntityId;
+    const faHeaders: Record<string, string> = {};
+    if (activeLedgerId) {
+        faHeaders['x-ledger-id'] = activeLedgerId;
+        faHeaders['x-legal-entity-id'] = activeLedgerId;
+    }
 
     // Queries
     const { data: assetResponse = { data: [], total: 0 }, isLoading: loadingAssets } = useQuery<any>({
-        queryKey: ["/api/fa/assets"],
+        queryKey: ["/api/fa/assets", activeLedgerId],
     });
     const assets = (assetResponse as any).data || [];
 
     const { data: stats = { totalCost: "0", activeCount: 0, retiredCount: 0 } } = useQuery<any>({
-        queryKey: ["/api/fa/stats"],
+        queryKey: ["/api/fa/stats", activeLedgerId],
     });
 
     const { data: massAdditions = [] } = useQuery<any>({
-        queryKey: ["/api/fa/mass-additions"],
+        queryKey: ["/api/fa/mass-additions", activeLedgerId],
     });
 
     // Mutations
@@ -57,7 +65,7 @@ export default function FixedAssetWorkbench() {
         mutationFn: async (vars: { bookId: string, periodName: string, periodEndDate: string }) => {
             const res = await fetch("/api/fa/depreciation/run", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...faHeaders },
                 body: JSON.stringify(vars)
             });
             if (!res.ok) throw new Error("Failed to run depreciation");
@@ -109,6 +117,16 @@ export default function FixedAssetWorkbench() {
             }
         >
             <div className="space-y-6">
+                {/* Ledger Context Banner */}
+                {activeLedgerId && (
+                    <div className="flex items-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 rounded-lg text-sm">
+                        <Building2 className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                        <span className="text-indigo-700 dark:text-indigo-300 font-medium">
+                            Scoped to Ledger: {activeLedgerId}
+                        </span>
+                        <span className="text-indigo-500 dark:text-indigo-500 text-xs">— Asset Book Ledger Filter Active</span>
+                    </div>
+                )}
                 {/* Metrics */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <Card>

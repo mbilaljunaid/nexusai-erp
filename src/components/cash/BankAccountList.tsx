@@ -15,14 +15,28 @@ import { Link } from "wouter";
 import { RevaluationDialog } from "./RevaluationDialog";
 import { BankAccountDialog } from "./BankAccountDialog";
 import { StatementDrilldownSheet } from "./StatementDrilldownSheet";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export function BankAccountList() {
+    const { legalEntityId } = useEnterpriseStore();
+    const leHeaders = legalEntityId ? { 'x-legal-entity-id': legalEntityId } : undefined;
+
     const { data: accounts, isLoading } = useQuery<CashBankAccount[]>({
-        queryKey: ["/api/cash/accounts"]
+        queryKey: ["/api/cash/accounts", legalEntityId ?? 'all'],
+        queryFn: async () => {
+            const res = await fetch('/api/cash/accounts', { headers: leHeaders });
+            if (!res.ok) throw new Error('Failed to fetch bank accounts');
+            return res.json();
+        },
     });
 
     const { data: position } = useQuery<{ totalBalance: number }>({
-        queryKey: ["/api/cash/position"]
+        queryKey: ["/api/cash/position", legalEntityId ?? 'all'],
+        queryFn: async () => {
+            const res = await fetch('/api/cash/position', { headers: leHeaders });
+            if (!res.ok) throw new Error('Failed to fetch cash position');
+            return res.json();
+        },
     });
 
     const [selectedRevalAccount, setSelectedRevalAccount] = useState<{ id: string, name: string, currency: string } | null>(null);

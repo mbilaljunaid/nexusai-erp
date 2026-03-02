@@ -6,10 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { FileText, Plus, MapPin, ShieldOff, LayoutDashboard, Calculator, Eye, Edit, Trash2 } from "lucide-react";
+import { FileText, Plus, MapPin, ShieldOff, LayoutDashboard, Calculator, Eye, Edit, Trash2, Landmark } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/lib/api";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 import { TaxDashboardTab } from "./tax/TaxDashboardTab";
 import { TaxCalculator } from "./tax/TaxCalculator";
@@ -21,6 +22,7 @@ import { ExemptionModal } from "@/components/tax/ExemptionModal";
 export default function TaxManagement() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("dashboard");
+  const { legalEntityId } = useEnterpriseStore();
 
   return (
     <div className="space-y-6 p-4">
@@ -30,6 +32,13 @@ export default function TaxManagement() {
           Tax Management
         </h1>
         <p className="text-muted-foreground mt-2">Monitor tax status and configure jurisdictions, codes, and exemptions.</p>
+        <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
+          <Landmark className="w-4 h-4" />
+          {legalEntityId
+            ? <span className="font-medium text-foreground">Legal Entity: <span className="font-bold text-primary">{legalEntityId}</span></span>
+            : <span className="italic">No Legal Entity selected — showing all entities</span>
+          }
+        </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -52,21 +61,22 @@ export default function TaxManagement() {
           <TaxCalculationPreview />
         </TabsContent>
         <TabsContent value="codes" className="py-4">
-          <TaxCodesTab />
+          <TaxCodesTab legalEntityId={legalEntityId} />
         </TabsContent>
         <TabsContent value="jurisdictions" className="py-4">
-          <TaxJurisdictionsTab />
+          <TaxJurisdictionsTab legalEntityId={legalEntityId} />
         </TabsContent>
         <TabsContent value="exemptions" className="py-4">
-          <TaxExemptionsTab />
+          <TaxExemptionsTab legalEntityId={legalEntityId} />
         </TabsContent>
       </Tabs>
     </div>
   );
 }
 
-function TaxCodesTab() {
+function TaxCodesTab({ legalEntityId }: { legalEntityId: string | null }) {
   const { toast } = useToast();
+  const leHeaders: Record<string, string> = legalEntityId ? { 'x-legal-entity-id': legalEntityId } : {};
   const [modalState, setModalState] = useState<{ isOpen: boolean; mode: 'view' | 'edit' | 'create'; taxCode?: any }>({
     isOpen: false,
     mode: 'create',
@@ -77,18 +87,18 @@ function TaxCodesTab() {
   const [filterStatus, setFilterStatus] = useState('ALL');
 
   const { data: codes = [], isLoading } = useQuery({
-    queryKey: ['/api/tax/codes'],
+    queryKey: ['/api/tax/codes', legalEntityId ?? 'all'],
     queryFn: async () => {
-      const res = await fetch('/api/tax/codes');
+      const res = await fetch('/api/tax/codes', { headers: leHeaders });
       if (!res.ok) throw new Error('Failed to fetch tax codes');
       return res.json();
     }
   });
 
   const { data: jurisdictions = [] } = useQuery({
-    queryKey: ['/api/tax/jurisdictions'],
+    queryKey: ['/api/tax/jurisdictions', legalEntityId ?? 'all'],
     queryFn: async () => {
-      const res = await fetch('/api/tax/jurisdictions');
+      const res = await fetch('/api/tax/jurisdictions', { headers: leHeaders });
       if (!res.ok) throw new Error('Failed to fetch jurisdictions');
       return res.json();
     }
@@ -271,8 +281,9 @@ function TaxCodesTab() {
   );
 }
 
-function TaxJurisdictionsTab() {
+function TaxJurisdictionsTab({ legalEntityId }: { legalEntityId: string | null }) {
   const { toast } = useToast();
+  const leHeaders: Record<string, string> = legalEntityId ? { 'x-legal-entity-id': legalEntityId } : {};
   const [modalState, setModalState] = useState<{ isOpen: boolean; mode: 'view' | 'edit' | 'create'; jurisdiction?: any }>({
     isOpen: false,
     mode: 'create',
@@ -282,9 +293,9 @@ function TaxJurisdictionsTab() {
   const [filterType, setFilterType] = useState('ALL');
 
   const { data: jurisdictions = [], isLoading } = useQuery({
-    queryKey: ['/api/tax/jurisdictions'],
+    queryKey: ['/api/tax/jurisdictions', legalEntityId ?? 'all'],
     queryFn: async () => {
-      const res = await fetch('/api/tax/jurisdictions');
+      const res = await fetch('/api/tax/jurisdictions', { headers: leHeaders });
       if (!res.ok) throw new Error('Failed to fetch jurisdictions');
       return res.json();
     }
@@ -293,7 +304,8 @@ function TaxJurisdictionsTab() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const res = await fetch(`/api/tax/jurisdictions/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: leHeaders
       });
       if (!res.ok) throw new Error('Failed to delete jurisdiction');
       return res.json();
@@ -455,18 +467,27 @@ function TaxJurisdictionsTab() {
   );
 }
 
-function TaxExemptionsTab() {
+function TaxExemptionsTab({ legalEntityId }: { legalEntityId: string | null }) {
   const { toast } = useToast();
+  const leHeaders: Record<string, string> = legalEntityId ? { 'x-legal-entity-id': legalEntityId } : {};
   const [newItem, setNewItem] = useState({ customerId: "", siteId: "", taxCodeId: "", exemptionType: "Full", exemptionValue: "0" });
 
   const { data: exemptions = [], isLoading } = useQuery({
-    queryKey: ["/api/tax/exemptions"],
-    queryFn: api.tax.exemptions.list
+    queryKey: ["/api/tax/exemptions", legalEntityId ?? 'all'],
+    queryFn: async () => {
+      const res = await fetch('/api/tax/exemptions', { headers: leHeaders });
+      if (!res.ok) throw new Error('Failed to fetch exemptions');
+      return res.json();
+    }
   });
 
   const { data: codes = [] } = useQuery({
-    queryKey: ["/api/tax/codes"],
-    queryFn: api.tax.codes.list
+    queryKey: ["/api/tax/codes", legalEntityId ?? 'all'],
+    queryFn: async () => {
+      const res = await fetch('/api/tax/codes', { headers: leHeaders });
+      if (!res.ok) throw new Error('Failed to fetch tax codes');
+      return res.json();
+    }
   });
 
   const createMutation = useMutation({

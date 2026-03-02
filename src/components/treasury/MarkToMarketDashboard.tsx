@@ -33,16 +33,24 @@ import { format } from "date-fns";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { TreasuryFxDeal } from "@/types/erp-types";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export function MarkToMarketDashboard() {
     const [revaluationMode, setRevaluationMode] = useState<"BULK" | "SINGLE">("BULK");
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const { legalEntityId } = useEnterpriseStore();
+    const leHeaders: Record<string, string> = legalEntityId ? { 'x-legal-entity-id': legalEntityId } : {};
 
     // Fetch FX Deals with MTM
     const { data: fxDeals = [], isLoading } = useQuery<TreasuryFxDeal[]>({
-        queryKey: ["/api/treasury/fx-deals"],
+        queryKey: ["/api/treasury/fx-deals", legalEntityId ?? 'all'],
         refetchInterval: 60000, // Refresh every minute for MTM tracking
+        queryFn: async () => {
+            const res = await fetch('/api/treasury/fx-deals', { headers: leHeaders });
+            if (!res.ok) throw new Error('Failed to fetch FX deals');
+            return res.json();
+        },
     });
 
     // Bulk Revaluation Mutation

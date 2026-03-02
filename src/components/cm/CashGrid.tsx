@@ -17,15 +17,23 @@ interface CashTransaction {
 
 interface Props {
     accountId: string;
+    legalEntityId?: string | null;
     onAddTransaction?: () => void;
     onEditTransaction?: (transaction: CashTransaction) => void;
     onImportStatement?: () => void;
 }
 
-export default function CashGrid({ accountId, onAddTransaction, onEditTransaction, onImportStatement }: Props) {
+export default function CashGrid({ accountId, legalEntityId, onAddTransaction, onEditTransaction, onImportStatement }: Props) {
     const { data: transactions, isLoading } = useQuery<CashTransaction[]>({
-        queryKey: ['/api/cm/accounts', accountId, 'transactions'],
+        queryKey: ['/api/cm/accounts', accountId, 'transactions', legalEntityId ?? 'all'],
         enabled: !!accountId,
+        queryFn: async () => {
+            const headers: Record<string, string> = {};
+            if (legalEntityId) headers['x-legal-entity-id'] = legalEntityId;
+            const res = await fetch(`/api/cm/accounts/${accountId}/transactions`, { headers });
+            if (!res.ok) throw new Error('Failed to fetch transactions');
+            return res.json();
+        },
     });
 
     if (isLoading) {

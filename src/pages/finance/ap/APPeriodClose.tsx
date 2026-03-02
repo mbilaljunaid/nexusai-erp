@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertCircle, CheckCircle, Lock, Calendar, AlertTriangle } from "lucide-react";
+import { AlertCircle, CheckCircle, Lock, Calendar, AlertTriangle, Building2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
     Table,
@@ -16,14 +16,16 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function APPeriodClose() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [activeTab, setActiveTab] = useState("control");
+    const { legalEntityId } = useEnterpriseStore();
 
     const { data: periods, isLoading } = useQuery({
-        queryKey: ["ap-periods"],
+        queryKey: ["ap-periods", legalEntityId],
         queryFn: api.ap.periods.list,
     });
 
@@ -80,6 +82,15 @@ export default function APPeriodClose() {
 
     return (
         <StandardPage title="AP Period Close" description="Manage Accounts Payable accounting periods and validate subledger readiness.">
+            {/* Ledger Context Banner */}
+            {legalEntityId && (
+                <div className="flex items-center gap-2 px-4 py-2 mb-4 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-lg text-sm">
+                    <Building2 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    <span className="text-blue-700 dark:text-blue-300 font-medium">
+                        Period close scoped to Legal Entity: {legalEntityId}
+                    </span>
+                </div>
+            )}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
                 <TabsList>
                     <TabsTrigger value="control">Period Control</TabsTrigger>

@@ -37,6 +37,7 @@ import { format } from "date-fns";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { TreasuryFxDeal } from "@/types/erp-types";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 interface HedgeRelationship {
     id: string;
@@ -63,15 +64,27 @@ export function HedgeAccountingWorkbench() {
     });
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const { legalEntityId } = useEnterpriseStore();
+    const leHeaders: Record<string, string> = legalEntityId ? { 'x-legal-entity-id': legalEntityId } : {};
 
     // Fetch Hedge Relationships
     const { data: hedges = [], isLoading: isLoadingHedges } = useQuery<HedgeRelationship[]>({
-        queryKey: ["/api/treasury/hedges"],
+        queryKey: ["/api/treasury/hedges", legalEntityId ?? 'all'],
+        queryFn: async () => {
+            const res = await fetch('/api/treasury/hedges', { headers: leHeaders });
+            if (!res.ok) throw new Error('Failed to fetch hedges');
+            return res.json();
+        },
     });
 
     // Fetch FX Deals for selection
     const { data: fxDeals = [] } = useQuery<TreasuryFxDeal[]>({
-        queryKey: ["/api/treasury/fx-deals"],
+        queryKey: ["/api/treasury/fx-deals", legalEntityId ?? 'all'],
+        queryFn: async () => {
+            const res = await fetch('/api/treasury/fx-deals', { headers: leHeaders });
+            if (!res.ok) throw new Error('Failed to fetch FX deals');
+            return res.json();
+        },
     });
 
     // Create Hedge Mutation

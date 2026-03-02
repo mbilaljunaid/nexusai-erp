@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 import { AlertTriangle, Mail, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
@@ -23,20 +22,28 @@ export default function DunningConfiguration() {
 
     const { data: campaigns } = useQuery({
         queryKey: ["/api/billing/dunning-campaigns", businessUnitId],
-        queryFn: () => apiRequest("/api/billing/dunning-campaigns", {
-            headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
-        }),
+        queryFn: async () => {
+            const res = await fetch("/api/billing/dunning-campaigns", {
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined,
+            });
+            if (!res.ok) throw new Error("Failed to fetch campaigns");
+            return res.json();
+        },
     });
 
     const saveMutation = useMutation({
-        mutationFn: (data: any) =>
-            apiRequest("/api/billing/dunning-campaigns", {
+        mutationFn: async (data: any) => {
+            const res = await fetch("/api/billing/dunning-campaigns", {
                 method: "POST",
                 headers: {
-                    ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {})
+                    "Content-Type": "application/json",
+                    ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {}),
                 },
                 body: JSON.stringify({ ...data, entBusinessUnitId: businessUnitId }),
-            }),
+            });
+            if (!res.ok) throw new Error("Failed to save strategy");
+            return res.json();
+        },
         onSuccess: () => {
             toast({ title: "Success", description: "Dunning strategy saved" });
             queryClient.invalidateQueries({ queryKey: ["/api/billing/dunning-campaigns"] });

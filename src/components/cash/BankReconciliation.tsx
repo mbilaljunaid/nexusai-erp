@@ -26,10 +26,13 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function BankReconciliation() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const { legalEntityId } = useEnterpriseStore();
+    const leHeaders: Record<string, string> = legalEntityId ? { 'x-legal-entity-id': legalEntityId } : {};
 
     // State 
     const [selectedStatementLine, setSelectedStatementLine] = useState<number | null>(null);
@@ -37,23 +40,28 @@ export default function BankReconciliation() {
 
     // Queries
     const { data: bankAccounts } = useQuery<any[]>({
-        queryKey: ["/api/cash/accounts"]
+        queryKey: ["/api/cash/accounts", legalEntityId ?? 'all'],
+        queryFn: async () => {
+            const res = await fetch('/api/cash/accounts', { headers: leHeaders });
+            if (!res.ok) throw new Error('Failed to fetch accounts');
+            return res.json();
+        },
     });
 
     const activeAccountId = bankAccounts?.[0]?.id || "01-bank-01";
 
     const { data: statementLines, isLoading: loadingLines } = useQuery({
-        queryKey: ["/api/cash/accounts", activeAccountId, "statement-lines"],
+        queryKey: ["/api/cash/accounts", activeAccountId, "statement-lines", legalEntityId ?? 'all'],
         queryFn: async () => {
-            const res = await fetch(`/api/cash/accounts/${activeAccountId}/statement-lines`);
+            const res = await fetch(`/api/cash/accounts/${activeAccountId}/statement-lines`, { headers: leHeaders });
             return res.json();
         }
     });
 
     const { data: internalTransactions, isLoading: loadingTrx } = useQuery({
-        queryKey: ["/api/cash/accounts", activeAccountId, "transactions"],
+        queryKey: ["/api/cash/accounts", activeAccountId, "transactions", legalEntityId ?? 'all'],
         queryFn: async () => {
-            const res = await fetch(`/api/cash/accounts/${activeAccountId}/transactions`);
+            const res = await fetch(`/api/cash/accounts/${activeAccountId}/transactions`, { headers: leHeaders });
             return res.json();
         }
     });

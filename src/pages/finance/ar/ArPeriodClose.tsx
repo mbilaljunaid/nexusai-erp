@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertCircle, CheckCircle, Lock, Calendar, AlertTriangle } from "lucide-react";
+import { AlertCircle, CheckCircle, Lock, Calendar, AlertTriangle, Building2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
     Table,
@@ -18,19 +18,21 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function ArPeriodClose() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [activeTab, setActiveTab] = useState("control");
+    const { legalEntityId } = useEnterpriseStore();
 
     const { data: periods, isLoading } = useQuery({
-        queryKey: ["ar-periods"],
+        queryKey: ["ar-periods", legalEntityId],
         queryFn: api.ar.periods.list,
     });
 
     const { data: reconciliation } = useQuery({
-        queryKey: ["ar-reconciliation"],
+        queryKey: ["ar-reconciliation", legalEntityId],
         queryFn: api.ar.periods.getReconciliation,
     });
 
@@ -89,6 +91,16 @@ export default function ArPeriodClose() {
                     <p className="text-muted-foreground">Manage AR accounting periods and validate subledger integrity.</p>
                 </div>
             </div>
+
+            {/* LE Context Banner */}
+            {legalEntityId && (
+                <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-lg text-sm">
+                    <Building2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                    <span className="text-emerald-700 dark:text-emerald-300 font-medium">
+                        AR Period Close scoped to Legal Entity: {legalEntityId}
+                    </span>
+                </div>
+            )}
 
             <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList>

@@ -15,7 +15,8 @@ const router = Router();
 // --- Counterparties ---
 router.get("/counterparties", async (req, res) => {
     try {
-        const counterparties = await treasuryService.listCounterparties();
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
+        const counterparties = await treasuryService.listCounterparties(legalEntityId);
         res.json(counterparties);
     } catch (error) {
         res.status(500).json({ message: "Failed to list counterparties" });
@@ -39,9 +40,11 @@ router.post("/counterparties", async (req, res) => {
 // --- Deals ---
 router.get("/deals", async (req, res) => {
     try {
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
         const filters = {
             type: req.query.type as string,
-            status: req.query.status as string
+            status: req.query.status as string,
+            legalEntityId,
         };
         const deals = await treasuryService.listDeals(filters);
         res.json(deals);
@@ -88,7 +91,8 @@ router.patch("/deals/:id/status", async (req, res) => {
 // --- FX & Risk Routes ---
 router.get("/fx-deals", async (req, res) => {
     try {
-        const deals = await treasuryService.listFxDeals();
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
+        const deals = await treasuryService.listFxDeals(legalEntityId);
         res.json(deals);
     } catch (error) {
         res.status(500).json({ message: "Failed to list FX deals" });
@@ -199,8 +203,9 @@ router.post("/fx-deals/:id/settle", async (req, res) => {
 
 router.get("/hedges", async (req, res) => {
     try {
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
         const dealId = req.query.dealId as string;
-        const hedges = await treasuryService.listHedgeRelationships(dealId);
+        const hedges = await treasuryService.listHedgeRelationships(dealId, legalEntityId);
         res.json(hedges);
     } catch (error) {
         res.status(500).json({ message: "Failed to list hedge relationships" });

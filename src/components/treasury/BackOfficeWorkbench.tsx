@@ -8,18 +8,31 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle2, ShieldAlert, CreditCard } from "lucide-react";
 import type { TreasuryDeal, TreasuryFxDeal } from "@/types/erp-types";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export function BackOfficeWorkbench() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const { legalEntityId } = useEnterpriseStore();
+    const leHeaders: Record<string, string> = legalEntityId ? { 'x-legal-entity-id': legalEntityId } : {};
 
     // Fetch PENDING deals
     const { data: pendingDeals, isLoading: loadingDeals } = useQuery<TreasuryDeal[]>({
-        queryKey: ["/api/treasury/deals", { status: "DRAFT" }],
+        queryKey: ["/api/treasury/deals", { status: "DRAFT" }, legalEntityId ?? 'all'],
+        queryFn: async () => {
+            const res = await fetch('/api/treasury/deals?status=DRAFT', { headers: leHeaders });
+            if (!res.ok) throw new Error('Failed to fetch deals');
+            return res.json();
+        },
     });
 
     const { data: pendingFxDeals, isLoading: loadingFxDeals } = useQuery<TreasuryFxDeal[]>({
-        queryKey: ["/api/treasury/fx-deals"],
+        queryKey: ["/api/treasury/fx-deals", legalEntityId ?? 'all'],
+        queryFn: async () => {
+            const res = await fetch('/api/treasury/fx-deals', { headers: leHeaders });
+            if (!res.ok) throw new Error('Failed to fetch FX deals');
+            return res.json();
+        },
     });
 
     const confirmMutation = useMutation({

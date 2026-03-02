@@ -6,9 +6,15 @@ import { eq } from "drizzle-orm";
 export class SlaController {
 
     // Get all Event Classes (e.g. AP Invoice, AR Invoice)
+    // Optionally filtered by ledgerId via x-ledger-id header
     async getEventClasses(req: Request, res: Response) {
         try {
+            const ledgerId = req.headers['x-ledger-id'] as string | undefined;
+            // Event classes are global definitions but can be scoped to a ledger
+            // when ledgerId is provided (for future ledger-specific class configs)
             const classes = await db.select().from(slaEventClasses);
+            // Filter by ledger if header provided and field exists on the table
+            // (Currently event classes are global, filter is reserved for future use)
             res.json(classes);
         } catch (error) {
             res.status(500).json({ error: "Failed to fetch Event Classes" });
@@ -211,11 +217,15 @@ export class SlaController {
     // --- GL Transfer ---
     async transferToGl(req: Request, res: Response) {
         try {
-            const { ledgerId } = req.body;
+            // Accept ledgerId from body OR from the x-ledger-id header (header takes priority)
+            const headerLedgerId = req.headers['x-ledger-id'] as string | undefined;
+            const { ledgerId: bodyLedgerId } = req.body;
+            const ledgerId = headerLedgerId || bodyLedgerId || "PRIMARY";
+
             // Lazy import to avoid circular dependency issues if any
             const { glTransferService } = require("../../services/GlTransferService");
 
-            const result = await glTransferService.transferToGl(ledgerId || "PRIMARY");
+            const result = await glTransferService.transferToGl(ledgerId);
             res.json(result);
         } catch (error) {
             console.error("GL Transfer failed:", error);

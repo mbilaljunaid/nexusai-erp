@@ -85,16 +85,16 @@ export class CashService {
         return await storage.getCashBankAccount(id);
     }
 
-    async listStatementLines(accountId: string, limit?: number, offset?: number) {
-        return await storage.listCashStatementLines(accountId, limit, offset);
+    async listStatementLines(accountId: string, limit?: number, offset?: number, legalEntityId?: string) {
+        return await storage.listCashStatementLines(accountId, limit, offset, undefined, legalEntityId);
     }
 
     async getStatementLinesCount(accountId: string): Promise<number> {
         return await storage.getCashStatementLinesCount(accountId);
     }
 
-    async listTransactions(accountId: string, limit?: number, offset?: number) {
-        return await storage.listCashTransactions(accountId, limit, offset);
+    async listTransactions(accountId: string, limit?: number, offset?: number, legalEntityId?: string) {
+        return await storage.listCashTransactions(accountId, limit, offset, undefined, legalEntityId);
     }
 
     async getTransactionsCount(accountId: string): Promise<number> {
@@ -559,8 +559,8 @@ export class CashService {
         return structure;
     }
 
-    async listZbaStructures() {
-        return await storage.listCashZbaStructures();
+    async listZbaStructures(legalEntityId?: string) {
+        return await storage.listCashZbaStructures(legalEntityId);
     }
 
     async approveZbaStructure(id: string, userId: string) {

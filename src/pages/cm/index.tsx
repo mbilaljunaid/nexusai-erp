@@ -1,4 +1,4 @@
-import { Wallet, AlertCircle, TrendingUp, FileWarning } from 'lucide-react';
+import { Wallet, AlertCircle, TrendingUp, FileWarning, Landmark } from 'lucide-react';
 import React, { useState } from 'react';
 import { MetricCard } from '@/components/MetricCard';
 import CashGrid from '@/components/cm/CashGrid';
@@ -8,8 +8,10 @@ import ReconciliationDetailSideSheet from '@/components/cm/ReconciliationDetailS
 import CashTransactionSideSheet from '@/components/cm/CashTransactionSideSheet';
 import ImportStatementDialog from '@/components/cm/ImportStatementDialog';
 import { CashForecastWidget } from '@/components/cash/CashForecastWidget';
+import { useEnterpriseStore } from '@/lib/enterpriseStore';
 
 export default function CashManagementDashboard() {
+    const { legalEntityId } = useEnterpriseStore();
     const [bankAccountOpen, setBankAccountOpen] = useState(false);
     const [statementOpen, setStatementOpen] = useState(false);
     const [reconciliationOpen, setReconciliationOpen] = useState(false);
@@ -41,6 +43,14 @@ export default function CashManagementDashboard() {
 
     return (
         <div className="p-6 space-y-6">
+            {/* Legal Entity Context Banner */}
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Landmark className="w-4 h-4" />
+                {legalEntityId
+                    ? <span className="font-medium text-foreground">Legal Entity: <span className="font-bold text-primary">{legalEntityId}</span></span>
+                    : <span className="italic">No Legal Entity selected — showing all accounts</span>
+                }
+            </div>
             {/* Metric Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <MetricCard title="Bank Balances" value="$1,250,000" icon={Wallet} />
@@ -56,6 +66,7 @@ export default function CashManagementDashboard() {
             {/* Premium Grid for cash transactions */}
             <CashGrid
                 accountId={sampleAccount.id}
+                legalEntityId={legalEntityId}
                 onAddTransaction={() => {
                     setSelectedTransaction(null);
                     setTransactionOpen(true);

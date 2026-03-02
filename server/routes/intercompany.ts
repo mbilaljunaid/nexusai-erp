@@ -55,7 +55,12 @@ router.get("/users/search", async (req, res) => {
 // 1. Get Setup Data
 router.get("/orgs", async (req, res) => {
     try {
-        const orgs = await db.select({ id: icOrgs.id, org_name: icOrgs.orgName }).from(icOrgs);
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
+        let orgsQuery = db.select({ id: icOrgs.id, org_name: icOrgs.orgName }).from(icOrgs);
+        if (legalEntityId) {
+            orgsQuery = orgsQuery.where(eq(icOrgs.legalEntityId, legalEntityId)) as any;
+        }
+        const orgs = await orgsQuery;
         res.json(orgs);
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch IC Orgs" });
@@ -84,13 +89,21 @@ router.get("/setup/transaction-types", async (req, res) => {
 router.get("/batches", async (req, res) => {
     try {
         const { initiatorOrgId, role, page, limit } = req.query;
-        // Default to "INITIATOR" role if orgId is provided as initiator
-        // For simplicity, assume query param 'role'
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
 
-        // If mocked/test environment
-        const orgId = (initiatorOrgId as string) || "ICO-101"; // Default
+        // If legalEntityId header provided, resolve the initiatorOrgId from icOrgs
+        let orgId = (initiatorOrgId as string) || "ICO-101"; // Default fallback
+        if (legalEntityId) {
+            const [leOrg] = await db.select({ id: icOrgs.id })
+                .from(icOrgs)
+                .where(eq(icOrgs.legalEntityId, legalEntityId))
+                .limit(1);
+            if (leOrg) {
+                orgId = leOrg.id;
+            }
+        }
+
         const userRole = (role as "INITIATOR" | "RECEIVER") || "INITIATOR";
-
         const result = await intercompanyService.getBatches(orgId, userRole, Number(page) || 1, Number(limit) || 20);
         res.json(result);
     } catch (error: any) {
@@ -122,8 +135,20 @@ router.post("/batches/:id/submit", async (req, res) => {
 router.get("/transactions/inbound", async (req, res) => {
     try {
         const { receiverOrgId } = req.query;
-        if (!receiverOrgId) return res.status(400).json({ error: "receiverOrgId required" });
-        const txns = await intercompanyService.getInboundTransactions(receiverOrgId as string);
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
+
+        // Resolve receiverOrgId from LE if not explicitly provided
+        let orgId = receiverOrgId as string | undefined;
+        if (!orgId && legalEntityId) {
+            const [leOrg] = await db.select({ id: icOrgs.id })
+                .from(icOrgs)
+                .where(eq(icOrgs.legalEntityId, legalEntityId))
+                .limit(1);
+            if (leOrg) orgId = leOrg.id;
+        }
+
+        if (!orgId) return res.status(400).json({ error: "receiverOrgId required (or provide x-legal-entity-id header)" });
+        const txns = await intercompanyService.getInboundTransactions(orgId);
         res.json(txns);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
