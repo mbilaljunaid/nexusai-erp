@@ -4974,6 +4974,8 @@ var hrWorkRelationships = pgTable9("hr_work_relationships", {
   tenantId: varchar9("tenant_id").notNull(),
   personId: varchar9("person_id").notNull().references(() => hrPersons.id),
   legalEmployerId: varchar9("legal_employer_id").notNull().references(() => hrOrganizations.id),
+  entLegalEntityId: varchar9("ent_legal_entity_id"),
+  // Added for global enterprise scoping
   dateStart: date3("date_start").notNull(),
   workerType: varchar9("worker_type").default("EMPLOYEE"),
   // EMPLOYEE, CONTINGENT, PENDING_WORKER
@@ -4992,6 +4994,8 @@ var hrAssignments = pgTable9("hr_assignments", {
   workRelationshipId: varchar9("work_relationship_id").notNull().references(() => hrWorkRelationships.id),
   personId: varchar9("person_id").notNull().references(() => hrPersons.id),
   // Denormalized for query speeed
+  entLegalEntityId: varchar9("ent_legal_entity_id"),
+  // Scoping to specific LE
   assignmentNumber: varchar9("assignment_number").notNull(),
   // E10045-1, E10045-2
   assignmentStatus: varchar9("assignment_status").default("ACTIVE"),
@@ -5388,6 +5392,7 @@ var hrSodRules = pgTable17("hr_sod_rules", {
 var hrComplianceEvents = pgTable17("hr_compliance_events", {
   id: varchar17("id").primaryKey().default(sql17`gen_random_uuid()`),
   tenantId: varchar17("tenant_id").notNull(),
+  entLegalEntityId: varchar17("ent_legal_entity_id"),
   ruleId: varchar17("rule_id").references(() => hrComplianceRules.id),
   entityType: varchar17("entity_type").notNull(),
   // PERSON, ASSIGNMENT, LEGAL_EMPLOYER
@@ -5401,6 +5406,7 @@ var hrComplianceEvents = pgTable17("hr_compliance_events", {
 var hrComplianceViolations = pgTable17("hr_compliance_violations", {
   id: varchar17("id").primaryKey().default(sql17`gen_random_uuid()`),
   tenantId: varchar17("tenant_id").notNull(),
+  entLegalEntityId: varchar17("ent_legal_entity_id"),
   eventId: varchar17("event_id").references(() => hrComplianceEvents.id),
   ruleId: varchar17("rule_id").references(() => hrComplianceRules.id),
   status: varchar17("status").default("open"),
@@ -13655,6 +13661,8 @@ import { createInsertSchema as createInsertSchema75 } from "drizzle-zod";
 var hrmRecRequisitions = pgTable82("hrm_rec_requisitions", {
   id: varchar79("id").primaryKey().default(sql74`gen_random_uuid()`),
   tenantId: varchar79("tenant_id").notNull(),
+  entLegalEntityId: varchar79("ent_legal_entity_id"),
+  entBusinessUnitId: varchar79("ent_business_unit_id"),
   requisitionNumber: varchar79("requisition_number").unique().notNull(),
   // REQ-2024-001
   title: varchar79("title").notNull(),
@@ -13947,6 +13955,7 @@ var hrmLearningOfferings = pgTable84("hrm_learning_offerings", {
 var hrmLearningEnrollments = pgTable84("hrm_learning_enrollments", {
   id: varchar81("id").primaryKey().default(sql76`gen_random_uuid()`),
   tenantId: varchar81("tenant_id").notNull(),
+  entLegalEntityId: varchar81("ent_legal_entity_id"),
   offeringId: varchar81("offering_id").notNull().references(() => hrmLearningOfferings.id),
   personId: varchar81("person_id").notNull().references(() => hrPersons.id),
   status: varchar81("status").default("ENROLLED"),
@@ -14143,6 +14152,7 @@ var hrmPayElements = pgTable86("hrm_pay_elements", {
 var hrmPayrollRuns = pgTable86("hrm_payroll_runs", {
   id: varchar83("id").primaryKey().default(sql78`gen_random_uuid()`),
   tenantId: varchar83("tenant_id").notNull(),
+  entLegalEntityId: varchar83("ent_legal_entity_id"),
   payGroupId: varchar83("pay_group_id").notNull().references(() => hrmPayGroups.id),
   periodName: varchar83("period_name").notNull(),
   // "2026-01"
@@ -14214,6 +14224,8 @@ var hrmTimeSheets = pgTable88("hrm_time_sheets", {
   tenantId: varchar85("tenant_id").notNull(),
   personId: varchar85("person_id").notNull().references(() => hrPersons.id),
   periodId: varchar85("period_id").notNull().references(() => hrmTimePeriods.id),
+  entLegalEntityId: varchar85("ent_legal_entity_id"),
+  entBusinessUnitId: varchar85("ent_business_unit_id"),
   status: varchar85("status").default("DRAFT"),
   // DRAFT, SUBMITTED, APPROVED, REJECTED
   totalHours: numeric54("total_hours", { precision: 5, scale: 2 }).default("0.0"),

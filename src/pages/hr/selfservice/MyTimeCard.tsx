@@ -37,6 +37,8 @@ interface TimeEntry {
     endTime?: string;
     durationMinutes: number;
     timeType: string;
+    projectCode?: string;
+    costCenter?: string;
     notes?: string;
 }
 
@@ -141,6 +143,16 @@ export default function MyTimeCard() {
             cell: (item) => item.endTime ? new Date(item.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--"
         },
         {
+            header: "Project",
+            accessorKey: "projectCode",
+            cell: (item) => item.projectCode ? <Badge variant="outline" className="font-mono text-[10px] uppercase">{item.projectCode}</Badge> : <span className="text-muted-foreground">-</span>
+        },
+        {
+            header: "Cost Center",
+            accessorKey: "costCenter",
+            cell: (item) => item.costCenter ? <Badge variant="outline" className="font-mono text-[10px] text-zinc-500">{item.costCenter}</Badge> : <span className="text-muted-foreground">-</span>
+        },
+        {
             header: "Hours",
             cell: (item) => (
                 <div className="font-semibold text-primary">
@@ -202,6 +214,7 @@ export default function MyTimeCard() {
                                         <span className="font-semibold">{bal.balanceHours}h</span>
                                     </div>
                                     <div className="w-full bg-muted rounded-full h-2 relative overflow-hidden">
+                                        {/* eslint-disable-next-line */}
                                         <div
                                             className="bg-primary h-full rounded-full transition-all duration-500"
                                             style={{ width: "var(--tw-progress-width)", "--tw-progress-width": `${Math.min(100, (Number(bal.balanceHours) / 160) * 100)}%` } as React.CSSProperties}
@@ -261,7 +274,9 @@ export default function MyTimeCard() {
                                     <Button size="sm" variant="outline" onClick={() => logTimeMutation.mutate({
                                         date: new Date().toISOString().split('T')[0],
                                         durationMinutes: 480, // 8 hours default
-                                        timeType: 'REGULAR'
+                                        timeType: 'REGULAR',
+                                        projectCode: 'INT-DEV',
+                                        costCenter: 'CC-400-ENG'
                                     })}>
                                         Quick Log (8h)
                                     </Button>

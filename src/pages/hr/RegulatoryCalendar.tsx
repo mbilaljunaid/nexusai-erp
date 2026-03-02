@@ -43,128 +43,129 @@ export default function RegulatoryCalendar() {
     const upcomingCount = dueSoon.filter(e => e.status !== 'Overdue').length;
 
     return (
-        <div style={{ padding: 24, maxWidth: 1400, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+        <div className="regulatory-calendar">
+            <div className="regulatory-calendar-header">
                 <div>
-                    <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>Regulatory Calendar &amp; Compliance</h1>
-                    <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Filing deadlines · FCPA training compliance · Audit schedules</p>
+                    <h1 className="regulatory-calendar-title">Regulatory Calendar &amp; Compliance</h1>
+                    <p className="regulatory-calendar-subtitle">Filing deadlines · FCPA training compliance · Audit schedules</p>
                 </div>
-                <div style={{ display: 'flex', gap: 6 }}>
-                    <button onClick={() => sweepMut.mutate()} style={{ padding: '7px 12px', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: 8, fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}><RefreshCw size={11} /> Sweep Overdue</button>
-                    <button onClick={() => setTab('new')} style={{ padding: '7px 14px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>+ Add Event</button>
+                <div className="regulatory-calendar-actions">
+                    <button onClick={() => sweepMut.mutate()} className="btn-sweep"><RefreshCw size={11} /> Sweep Overdue</button>
+                    <button onClick={() => setTab('new')} className="btn-add">+ Add Event</button>
                 </div>
             </div>
 
             {/* Summary cards by regulation */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 8, marginBottom: 14 }}>
+            <div className="summary-grid">
                 {regSummary.map((r, i) => (
-                    <div key={r.regulation} onClick={() => setRegFilter(regFilter === r.regulation ? '' : r.regulation)} style={{ background: '#fff', border: `1px solid ${REG_COLORS[i % REG_COLORS.length]}30`, borderLeft: `4px solid ${REG_COLORS[i % REG_COLORS.length]}`, borderRadius: 10, padding: '10px 12px', cursor: 'pointer', opacity: regFilter && regFilter !== r.regulation ? 0.5 : 1 }}>
-                        <div style={{ fontSize: 13, fontWeight: 800, color: REG_COLORS[i % REG_COLORS.length] }}>{r.regulation ?? 'Other'}</div>
-                        <div style={{ fontSize: 10, color: '#6b7280' }}>{r.total} events</div>
-                        {Number(r.overdue) > 0 && <div style={{ fontSize: 10, color: '#dc2626', fontWeight: 700 }}>⚑ {r.overdue} overdue</div>}
-                        {r.next_due && <div style={{ fontSize: 9, color: '#9ca3af', marginTop: 2 }}>Next: {fmtDate(r.next_due)}</div>}
+                    <div key={r.regulation} onClick={() => setRegFilter(regFilter === r.regulation ? '' : r.regulation)} className={`summary-card summary-card-color reg-color-${i % REG_COLORS.length} ${regFilter && regFilter !== r.regulation ? 'summary-card-dim' : 'summary-card-active'}`}>
+                        <div className={`summary-card-title summary-card-title-color reg-color-${i % REG_COLORS.length}`}>{r.regulation ?? 'Other'}</div>
+                        <div className="summary-card-count">{r.total} events</div>
+                        {Number(r.overdue) > 0 && <div className="summary-card-overdue">⚑ {r.overdue} overdue</div>}
+                        {r.next_due && <div className="summary-card-next">Next: {fmtDate(r.next_due)}</div>}
                     </div>
                 ))}
             </div>
 
             {/* Alert banner */}
             {overdueCount > 0 && (
-                <div style={{ background: '#fee2e2', border: '1px solid #fca5a5', borderRadius: 8, padding: '10px 14px', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div className="alert-overdue">
                     <AlertCircle size={14} color="#dc2626" />
-                    <span style={{ fontSize: 12, fontWeight: 700, color: '#dc2626' }}>{overdueCount} overdue regulatory event{overdueCount > 1 ? 's' : ''} require immediate attention</span>
+                    <span className="alert-overdue-text">{overdueCount} overdue regulatory event{overdueCount > 1 ? 's' : ''} require immediate attention</span>
                 </div>
             )}
             {upcomingCount > 0 && (
-                <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '8px 14px', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div className="alert-upcoming">
                     <Calendar size={12} color="#1d4ed8" />
-                    <span style={{ fontSize: 12, color: '#1d4ed8' }}>{upcomingCount} event{upcomingCount > 1 ? 's' : ''} due within 60 days</span>
+                    <span className="alert-upcoming-text">{upcomingCount} event{upcomingCount > 1 ? 's' : ''} due within 60 days</span>
                 </div>
             )}
 
             {/* Tabs */}
-            <div style={{ display: 'flex', gap: 4, marginBottom: 12 }}>
+            <div className="tabs-container">
                 {(['calendar', 'fcpa', 'new'] as const).map(t => (
-                    <button key={t} onClick={() => setTab(t)} style={{ padding: '7px 18px', border: '1px solid #e5e7eb', borderRadius: 8, background: tab === t ? '#111827' : '#fff', color: tab === t ? '#fff' : '#6b7280', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                    <button key={t} onClick={() => setTab(t)} className={`btn-tab ${tab === t ? 'btn-tab-active' : 'btn-tab-inactive'}`}>
                         {t === 'calendar' ? `Events (${events.length})` : t === 'fcpa' ? 'FCPA Training' : '+ New Event'}
                     </button>
                 ))}
                 {tab === 'calendar' && (
                     <>
                         {['', 'Upcoming', 'In_Progress', 'Completed', 'Overdue'].map(s => (
-                            <button key={s} onClick={() => setStatusFilter(s)} style={{ padding: '5px 10px', border: '1px solid #e5e7eb', borderRadius: 6, background: statusFilter === s ? '#374151' : '#fff', color: statusFilter === s ? '#fff' : '#6b7280', fontSize: 10, fontWeight: 600, cursor: 'pointer', marginLeft: s === '' ? 6 : 0 }}>{s || 'All'}</button>
+                            <button key={s} onClick={() => setStatusFilter(s)} className={`btn-filter ${statusFilter === s ? 'btn-filter-active' : 'btn-filter-inactive'} ${s === '' ? 'btn-filter-first' : ''}`}>{s || 'All'}</button>
                         ))}
-                        {regFilter && <button onClick={() => setRegFilter('')} style={{ padding: '5px 10px', border: '1px solid #1d4ed8', borderRadius: 6, background: '#eff6ff', color: '#1d4ed8', fontSize: 10, fontWeight: 600, cursor: 'pointer', marginLeft: 4 }}>✕ {regFilter}</button>}
+                        {regFilter && <button onClick={() => setRegFilter('')} className="btn-filter-clear">✕ {regFilter}</button>}
                     </>
                 )}
             </div>
 
             {/* Calendar events */}
             {tab === 'calendar' && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <div className="events-list">
                     {events.map(e => {
                         const days = daysUntil(e.due_date);
-                        const clr = STATUS_CLR[e.status] ?? '#6b7280';
+                        const clrClass = `status-clr-${e.status in STATUS_CLR ? e.status : 'Unknown'}`;
                         return (
-                            <div key={e.id} style={{ background: '#fff', border: `1px solid ${e.status === 'Overdue' ? '#fca5a5' : '#e5e7eb'}`, borderLeft: `4px solid ${clr}`, borderRadius: 10, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div key={e.id} className={`event-card event-card-${e.status === 'Overdue' ? 'Overdue' : 'Normal'} ${clrClass}`}>
                                 <div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
-                                        <span style={{ fontSize: 13, fontWeight: 700 }}>{e.title}</span>
-                                        <span style={{ fontSize: 10, padding: '1px 6px', borderRadius: 4, background: clr + '18', color: clr, fontWeight: 700 }}>{e.status}</span>
-                                        {e.regulation && <span style={{ fontSize: 10, background: '#f3f4f6', borderRadius: 4, padding: '1px 5px', fontWeight: 600 }}>{e.regulation}</span>}
-                                        <span style={{ fontSize: 10, color: '#9ca3af' }}>{e.event_type}</span>
+                                    <div className="event-header">
+                                        <span className="event-title">{e.title}</span>
+                                        <span className={`event-status event-status-color ${clrClass}`}>{e.status}</span>
+                                        {e.regulation && <span className="event-regulation">{e.regulation}</span>}
+                                        <span className="event-type">{e.event_type}</span>
                                     </div>
-                                    <div style={{ fontSize: 11, color: '#6b7280' }}>Due: <strong>{fmtDate(e.due_date)}</strong> {e.status !== 'Completed' && <span style={{ color: days < 0 ? '#dc2626' : days < 14 ? '#d97706' : '#059669', fontWeight: 700 }}>({days < 0 ? Math.abs(days) + 'd overdue' : days + 'd remaining'})</span>}</div>
-                                    {e.description && <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 2 }}>{e.description}</div>}
+                                    <div className="event-due">Due: <strong>{fmtDate(e.due_date)}</strong> {e.status !== 'Completed' && <span className={`${days < 0 ? 'event-due-overdue' : days < 14 ? 'event-due-soon' : 'event-due-safe'}`}>({days < 0 ? Math.abs(days) + 'd overdue' : days + 'd remaining'})</span>}</div>
+                                    {e.description && <div className="event-desc">{e.description}</div>}
                                 </div>
-                                <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
+                                <div className="event-actions">
                                     {e.status !== 'Completed' && e.status !== 'Waived' && (
                                         <>
-                                            {e.status === 'Upcoming' && <button onClick={() => statusMut.mutate({ id: e.id, status: 'In_Progress' })} style={{ padding: '3px 8px', background: '#fef3c7', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer', color: '#d97706', fontWeight: 600 }}>Start</button>}
-                                            <button onClick={() => statusMut.mutate({ id: e.id, status: 'Completed' })} style={{ padding: '3px 8px', background: '#d1fae5', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer', color: '#059669', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 2 }}><CheckCircle2 size={9} />Complete</button>
-                                            <button onClick={() => statusMut.mutate({ id: e.id, status: 'Waived' })} style={{ padding: '3px 8px', background: '#f3f4f6', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer', color: '#6b7280' }}>Waive</button>
+                                            {e.status === 'Upcoming' && <button onClick={() => statusMut.mutate({ id: e.id, status: 'In_Progress' })} className="btn-action-start">Start</button>}
+                                            <button onClick={() => statusMut.mutate({ id: e.id, status: 'Completed' })} className="btn-action-complete"><CheckCircle2 size={9} />Complete</button>
+                                            <button onClick={() => statusMut.mutate({ id: e.id, status: 'Waived' })} className="btn-action-waive">Waive</button>
                                         </>
                                     )}
                                 </div>
                             </div>
                         );
                     })}
-                    {events.length === 0 && <div style={{ textAlign: 'center', color: '#9ca3af', padding: 32 }}>No events — add regulatory filing deadlines or training events</div>}
+                    {events.length === 0 && <div className="no-events">No events — add regulatory filing deadlines or training events</div>}
                 </div>
             )}
 
             {/* FCPA Training */}
             {tab === 'fcpa' && (
-                <div>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10 }}>
-                        <button onClick={() => fcpaSweepMut.mutate()} style={{ padding: '6px 12px', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: 7, fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}><RefreshCw size={11} /> Sweep Overdue</button>
+                <div className="fcpa-container">
+                    <div className="fcpa-header">
+                        <button onClick={() => fcpaSweepMut.mutate()} className="btn-sweep"><RefreshCw size={11} /> Sweep Overdue</button>
                     </div>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)' }}>
-                        <thead><tr style={{ background: '#f9fafb' }}>
-                            {['Module', 'Total', 'Passed', 'In Progress', 'Overdue', 'Pending', 'Completion %'].map(h => <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 700, color: '#374151', borderBottom: '2px solid #e5e7eb' }}>{h}</th>)}
+                    <table className="fcpa-table">
+                        <thead><tr className="fcpa-tr">
+                            {['Module', 'Total', 'Passed', 'In Progress', 'Overdue', 'Pending', 'Completion %'].map(h => <th key={h} className="fcpa-th">{h}</th>)}
                         </tr></thead>
                         <tbody>
                             {fcpaSummary.map(s => {
                                 const pct = Number(s.completion_rate_pct ?? 0);
                                 return (
-                                    <tr key={s.training_module} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                                        <td style={{ padding: '10px 12px', fontWeight: 700, fontSize: 11 }}>{s.training_module.replace(/_/g, ' ')}</td>
-                                        <td style={{ padding: '10px 12px', fontFamily: 'monospace' }}>{s.total}</td>
-                                        <td style={{ padding: '10px 12px', fontFamily: 'monospace', color: '#059669', fontWeight: 700 }}>{s.completed_passed}</td>
-                                        <td style={{ padding: '10px 12px', fontFamily: 'monospace', color: '#d97706' }}>{s.in_progress}</td>
-                                        <td style={{ padding: '10px 12px', fontFamily: 'monospace', color: Number(s.overdue) > 0 ? '#dc2626' : '#374151', fontWeight: Number(s.overdue) > 0 ? 700 : 400 }}>{s.overdue}</td>
-                                        <td style={{ padding: '10px 12px', fontFamily: 'monospace', color: '#6b7280' }}>{s.pending}</td>
-                                        <td style={{ padding: '10px 12px' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                                                <div style={{ flex: 1, background: '#f3f4f6', borderRadius: 999, height: 6 }}>
-                                                    <div style={{ width: pct + '%', background: pct >= 90 ? '#059669' : pct >= 70 ? '#d97706' : '#dc2626', height: '100%', borderRadius: 999 }} />
+                                    <tr key={s.training_module} className="fcpa-tr">
+                                        <td className="fcpa-td fcpa-td-bold">{s.training_module.replace(/_/g, ' ')}</td>
+                                        <td className="fcpa-td fcpa-td-mono">{s.total}</td>
+                                        <td className="fcpa-td fcpa-td-mono fcpa-td-passed">{s.completed_passed}</td>
+                                        <td className="fcpa-td fcpa-td-mono fcpa-td-progress">{s.in_progress}</td>
+                                        <td className={`fcpa-td fcpa-td-mono ${Number(s.overdue) > 0 ? 'fcpa-td-overdue' : 'fcpa-td-pending'}`}>{s.overdue}</td>
+                                        <td className="fcpa-td fcpa-td-mono fcpa-td-pending">{s.pending}</td>
+                                        <td className="fcpa-td">
+                                            <div className="progress-bar-container">
+                                                <div className="progress-bar-bg">
+                                                    {/* eslint-disable-next-line react/forbid-dom-props */}
+                                                    <div className={`progress-bar-fill ${pct >= 90 ? 'progress-safe' : pct >= 70 ? 'progress-warn' : 'progress-danger'}`} style={{ width: pct + '%' }} />
                                                 </div>
-                                                <span style={{ fontFamily: 'monospace', fontSize: 11, fontWeight: 700 }}>{pct}%</span>
+                                                <span className="progress-bar-text">{pct}%</span>
                                             </div>
                                         </td>
                                     </tr>
                                 );
                             })}
-                            {fcpaSummary.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: 20 }}>No FCPA assignments yet</td></tr>}
+                            {fcpaSummary.length === 0 && <tr><td colSpan={7} className="no-events">No FCPA assignments yet</td></tr>}
                         </tbody>
                     </table>
                 </div>
@@ -172,35 +173,35 @@ export default function RegulatoryCalendar() {
 
             {/* New Event form */}
             {tab === 'new' && (
-                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: 20, maxWidth: 680 }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 14 }}>New Regulatory Event</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                        <div style={{ gridColumn: '1/-1', display: 'flex', flexDirection: 'column', gap: 3 }}>
-                            <label style={{ fontSize: 10, fontWeight: 700 }}>Title</label>
-                            <input value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} style={{ padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12 }} aria-label="Title" />
+                <div className="form-container">
+                    <div className="form-title">New Regulatory Event</div>
+                    <div className="form-grid">
+                        <div className="form-group-full">
+                            <label className="form-label">Title</label>
+                            <input value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} className="form-input" aria-label="Title" />
                         </div>
                         {[['regulation', 'Regulation', REGULATIONS], ['eventType', 'Event Type', EVENT_TYPES], ['recurrence', 'Recurrence', ['NONE', 'MONTHLY', 'QUARTERLY', 'ANNUAL']]].map(([k, l, opts]) => (
-                            <div key={k as string} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                <label style={{ fontSize: 10, fontWeight: 700 }}>{l as string}</label>
-                                <select value={(form as any)[k as string]} onChange={e => setForm(p => ({ ...p, [k as string]: e.target.value }))} style={{ padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12 }} aria-label={l as string}>
+                            <div key={k as string} className="form-group">
+                                <label className="form-label">{l as string}</label>
+                                <select value={(form as any)[k as string]} onChange={e => setForm(p => ({ ...p, [k as string]: e.target.value }))} className="form-input" aria-label={l as string}>
                                     {(opts as string[]).map(o => <option key={o}>{o}</option>)}
                                 </select>
                             </div>
                         ))}
                         {[['jurisdiction', 'Jurisdiction', 'text'], ['dueDate', 'Due Date', 'date'], ['reminderDays', 'Remind (days before)', 'number']].map(([k, l, t]) => (
-                            <div key={k as string} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                <label style={{ fontSize: 10, fontWeight: 700 }}>{l as string}</label>
-                                <input type={t as string} value={(form as any)[k as string]} onChange={e => setForm(p => ({ ...p, [k as string]: e.target.value }))} style={{ padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12 }} aria-label={l as string} />
+                            <div key={k as string} className="form-group">
+                                <label className="form-label">{l as string}</label>
+                                <input type={t as string} value={(form as any)[k as string]} onChange={e => setForm(p => ({ ...p, [k as string]: e.target.value }))} className="form-input" aria-label={l as string} />
                             </div>
                         ))}
-                        <div style={{ gridColumn: '1/-1', display: 'flex', flexDirection: 'column', gap: 3 }}>
-                            <label style={{ fontSize: 10, fontWeight: 700 }}>Description</label>
-                            <textarea rows={2} value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} style={{ padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12, resize: 'vertical' }} aria-label="Description" />
+                        <div className="form-group-full">
+                            <label className="form-label">Description</label>
+                            <textarea rows={2} value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} className="form-textarea" aria-label="Description" />
                         </div>
                     </div>
-                    <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 14 }}>
-                        <button onClick={() => setTab('calendar')} style={{ padding: '7px 16px', background: '#f3f4f6', border: 'none', borderRadius: 7, fontSize: 12, cursor: 'pointer' }}>Cancel</button>
-                        <button disabled={!form.title || !form.dueDate || createMut.isPending} onClick={() => createMut.mutate(form)} style={{ padding: '7px 16px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 7, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>Create Event</button>
+                    <div className="form-actions">
+                        <button onClick={() => setTab('calendar')} className="btn-cancel">Cancel</button>
+                        <button disabled={!form.title || !form.dueDate || createMut.isPending} onClick={() => createMut.mutate(form)} className="btn-submit">Create Event</button>
                     </div>
                 </div>
             )}

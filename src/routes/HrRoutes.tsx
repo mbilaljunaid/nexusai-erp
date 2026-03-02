@@ -33,6 +33,11 @@ import PayslipView from "../pages/rewards/PayslipView";
 import PayrollDetail from "@/pages/PayrollDetail";
 import PayrollEngine from "@/pages/PayrollEngine";
 import PayrollProcessing from "@/pages/PayrollProcessing";
+import ElementConfiguration from "@/pages/hr/payroll/ElementConfiguration";
+import PayrollCostingSetup from "../pages/hr/payroll/PayrollCostingSetup";
+import RetroactivePayEngine from "../pages/hr/payroll/RetroactivePayEngine";
+import PayslipGrossToNet from "../pages/hr/payroll/PayslipGrossToNet";
+import YTDBalanceUpload from "../pages/hr/payroll/YTDBalanceUpload";
 
 // Self-Service Imports
 import ESSDashboard from "../pages/hr/selfservice/ESSDashboard";
@@ -43,6 +48,8 @@ import BenefitsEnrollment from "../pages/hr/selfservice/BenefitsEnrollment";
 import StatutoryForms from "../pages/hr/selfservice/StatutoryForms";
 import VoluntaryDeductions from "../pages/hr/selfservice/VoluntaryDeductions";
 import DelegationWorkbench from "../pages/hr/selfservice/DelegationWorkbench";
+import AssignmentHistory from "../pages/hr/AssignmentHistory";
+import LifeEvents from "../pages/hr/selfservice/LifeEvents";
 
 // Learning Management (LMS) Imports
 import LearningDashboard from "../pages/hr/learning/LearningDashboard";
@@ -54,7 +61,13 @@ import AssessmentBuilder from "../pages/hr/learning/admin/AssessmentBuilder";
 import CurriculumBuilder from "../pages/hr/learning/admin/CurriculumBuilder";
 import CommunityBrowser from "../pages/hr/learning/admin/CommunityBrowser";
 
+// Core HR configuration
+import WorkforceStructureSetup from "../pages/hr/WorkforceStructureSetup";
+
 // Workforce Management (WFM) Imports
+import TimeRuleBuilder from "../pages/hr/TimeRuleBuilder";
+import PredictiveScheduler from "../pages/hr/PredictiveScheduler";
+import AbsencePlanSetup from "../pages/hr/absence/AbsencePlanSetup";
 import MyTime from "../pages/wfm/MyTime";
 import ManagerApprovals from "../pages/wfm/ManagerApprovals";
 import TeamSchedule from "../pages/wfm/TeamSchedule";
@@ -63,10 +76,13 @@ import TimekeeperConsole from "../pages/wfm/TimekeeperConsole";
 import PayrollTransfer from "../pages/wfm/PayrollTransfer";
 import ViolationsDashboard from "../pages/wfm/ViolationsDashboard";
 import ShiftConfiguration from "../pages/wfm/ShiftConfiguration";
-import AccrualTesting from "../pages/wfm/AccrualTesting";
+import AccrualTesting from "../pages/hr/AccrualTesting"; // Updated path for AccrualTesting
+import PerformanceTemplateBuilder from "../pages/hr/PerformanceTemplateBuilder";
+import QuestionnaireBuilder from "../pages/hr/QuestionnaireBuilder";
+import OfferLetterTemplateBuilder from "../pages/hr/OfferLetterTemplateBuilder";
 import AIWorkforceInsights from "../pages/wfm/AIWorkforceInsights";
 import HolidayCalendar from "../pages/wfm/HolidayCalendar";
-import TimeRuleBuilder from "../pages/hr/TimeRuleBuilder";
+import RegulatoryCalendar from "../pages/hr/RegulatoryCalendar"; // New import
 
 // HR Analytics
 import HRAnalyticsDashboard from "@/pages/HRAnalyticsDashboard";
@@ -102,6 +118,9 @@ export default function HrRoutes() {
 
                 <Route path="/hr/succession" component={SuccessionPlanning} />
                 <Route path="/hr/talent/competencies" component={CompetencyManagement} />
+                <Route path="/hr/talent/performance/templates" component={PerformanceTemplateBuilder} />
+                <Route path="/hr/talent/questionnaires" component={QuestionnaireBuilder} />
+                <Route path="/hr/talent/offers/templates" component={OfferLetterTemplateBuilder} />
                 <Route path="/hr/talent-pool" component={TalentPool} />
                 <Route path="/hr/performance" component={PerformanceManagement} />
                 <Route path="/hr/employees" component={EmployeeDirectory} />
@@ -109,13 +128,26 @@ export default function HrRoutes() {
                 {/* Payroll & Rewards */}
                 <Route path="/hr/payroll" component={PayrollRuns} />
                 <Route path="/hr/payroll/workbench" component={PayrollWorkbench} />
+                <Route path="/hr/payroll/setup/elements" component={ElementConfiguration} />
+                <Route path="/hr/payroll/setup/costing" component={PayrollCostingSetup} />
+                <Route path="/hr/payroll/setup/balances" component={YTDBalanceUpload} />
                 <Route path="/hr/payroll/processing" component={PayrollProcessing} />
+                <Route path="/hr/payroll/retro" component={RetroactivePayEngine} />
                 <Route path="/hr/payroll/engine" component={PayrollEngine} />
-                <Route path="/hr/payroll/runs/:id" component={PayrollRunDetails} />
+                <Route path="/hr/payroll/runs/:id">
+                    {(params: any) => params ? <PayrollRunDetails runId={params.id} isOpen={true} onClose={() => { }} /> : null}
+                </Route>
                 <Route path="/hr/payroll/detail/:id" component={PayrollDetail} />
+                <Route path="/hr/payroll/payslip/:id">
+                    {(params: any) => params ? <PayslipView isOpen={true} onClose={() => { }} runId="demo" assignmentId="demo" data={[]} /> : null}
+                </Route>
+
+                {/* ESS & MSS Routes */}
                 <Route path="/hr/rewards/compensation" component={CompensationDashboard} />
                 <Route path="/hr/rewards/payslips" component={MyPayslips} />
-                <Route path="/hr/rewards/payslips/:id" component={PayslipView} />
+                <Route path="/hr/rewards/payslips/:id">
+                    {(params: any) => params ? <PayslipView isOpen={true} onClose={() => { }} runId="demo" assignmentId="demo" data={[]} /> : null}
+                </Route>
 
                 {/* Self-Service Routes */}
                 <Route path="/hr/self-service/me" component={ESSDashboard} />
@@ -123,9 +155,19 @@ export default function HrRoutes() {
                 <Route path="/hr/self-service/profile" component={PersonalDetails} />
                 <Route path="/hr/self-service/time" component={MyTimeCard} />
                 <Route path="/hr/self-service/benefits" component={BenefitsEnrollment} />
+                <Route path="/hr/self-service/life-events" component={LifeEvents} />
                 <Route path="/hr/self-service/tax-forms" component={StatutoryForms} />
                 <Route path="/hr/self-service/deductions" component={VoluntaryDeductions} />
                 <Route path="/hr/self-service/delegation" component={DelegationWorkbench} />
+                <Route path="/hr/self-service/history" component={AssignmentHistory} />
+
+                {/* Workforce Management (WFM) Routes - New additions */}
+                <Route path="/hr/wfm/time-rules" component={TimeRuleBuilder} />
+                <Route path="/hr/wfm/scheduler" component={PredictiveScheduler} />
+                <Route path="/hr/wfm/absence/setup" component={AbsencePlanSetup} />
+
+                {/* Configuration / Setup */}
+                <Route path="/hr/setup/workforce-structures" component={WorkforceStructureSetup} />
 
                 {/* Learning Management (LMS) Routes */}
                 <Route path="/hr/learning/me" component={LearningDashboard} />
@@ -159,6 +201,10 @@ export default function HrRoutes() {
                 <Route path="/hr/analytics/predictive" component={HRPredictiveAnalytics} />
                 <Route path="/hr/reports" component={HRReports} />
                 <Route path="/hr/wfm/analytics" component={WfmAnalytics} />
+                <Route path="/hr/wfm/schedules/:deptId" component={PredictiveScheduler} />
+                <Route path="/hr/wfm/time-entries" component={MyTimeCard} /> {/* Reusing for admin view */}
+                <Route path="/hr/wfm/setup/rules" component={TimeRuleBuilder} />
+                <Route path="/hr/wfm/setup/accruals/test" component={AccrualTesting} />
                 <Route path="/hr/wfm/violations" component={ViolationsDashboard} />
                 <Route path="/hr/wfm/insights" component={AIWorkforceInsights} />
 

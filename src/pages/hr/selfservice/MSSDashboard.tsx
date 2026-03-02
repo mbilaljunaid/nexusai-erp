@@ -27,8 +27,8 @@ import {
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { OrgChart } from "@/components/hr/OrgChart";
-import { ManagerActionDialog } from "@/components/hr/ManagerActionDialog";
 import { WorkforceAnalyticsCard } from "@/components/hr/WorkforceAnalyticsCard";
+import ActionWizard from "@/components/hr/ActionWizard";
 import {
    DropdownMenu,
    DropdownMenuContent,
@@ -38,7 +38,8 @@ import {
 
 export default function MSSDashboard() {
    const [isActionOpen, setIsActionOpen] = React.useState(false);
-   const [actionType, setActionType] = React.useState<"PROMOTE" | "TRANSFER">("PROMOTE");
+   const [actionType, setActionType] = React.useState<"TRANSFER" | "PROMOTE" | "TERMINATE" | "SALARY_CHANGE" | null>(null);
+   const [selectedEmployeeName, setSelectedEmployeeName] = React.useState("Direct Report");
 
    const { data: orgData } = useQuery<any[]>({
       queryKey: ["/api/hr-self-service/organization/chart"],
@@ -79,19 +80,25 @@ export default function MSSDashboard() {
                <Button
                   className="bg-teal-600 hover:bg-teal-700"
                   onClick={() => {
-                     setActionType("PROMOTE");
+                     setSelectedEmployeeName("Team Member");
+                     setActionType("TRANSFER");
                      setIsActionOpen(true);
                   }}
                >
-                  <ArrowUpRight className="h-4 w-4 mr-2" /> Transfer/Promote
+                  <ArrowUpRight className="h-4 w-4 mr-2" /> Quick Transfer
                </Button>
             </div>
          </div>
 
-         <ManagerActionDialog
+         <ActionWizard
             isOpen={isActionOpen}
             onClose={() => setIsActionOpen(false)}
-            type={actionType}
+            actionType={actionType}
+            employeeName={selectedEmployeeName}
+            onComplete={(data) => {
+               console.log("Action Wizard Completed:", data);
+               // Here you would typically invalidate queries or show a success toast
+            }}
          />
 
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -160,15 +167,45 @@ export default function MSSDashboard() {
                                                 <MoreHorizontal className="h-5 w-5 text-zinc-400" />
                                              </Button>
                                           </DropdownMenuTrigger>
-                                          <DropdownMenuContent align="end" className="w-48">
-                                             <DropdownMenuItem className="gap-2">
-                                                <ExternalLink className="h-4 w-4" /> View Profile
+                                          <DropdownMenuContent align="end" className="w-56">
+                                             <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider bg-muted/50 rounded-t-sm">
+                                                Quick Actions
+                                             </div>
+                                             <DropdownMenuItem
+                                                className="gap-2 cursor-pointer"
+                                                onClick={() => {
+                                                   setSelectedEmployeeName(member.name);
+                                                   setActionType("PROMOTE");
+                                                   setIsActionOpen(true);
+                                                }}
+                                             >
+                                                <TrendingUp className="h-4 w-4 text-teal-600" /> Promote
                                              </DropdownMenuItem>
-                                             <DropdownMenuItem className="gap-2">
-                                                <Banknote className="h-4 w-4" /> Payroll History
+                                             <DropdownMenuItem
+                                                className="gap-2 cursor-pointer"
+                                                onClick={() => {
+                                                   setSelectedEmployeeName(member.name);
+                                                   setActionType("TRANSFER");
+                                                   setIsActionOpen(true);
+                                                }}
+                                             >
+                                                <ArrowUpRight className="h-4 w-4 text-blue-600" /> Transfer
                                              </DropdownMenuItem>
+                                             <DropdownMenuItem
+                                                className="gap-2 cursor-pointer"
+                                                onClick={() => {
+                                                   setSelectedEmployeeName(member.name);
+                                                   setActionType("SALARY_CHANGE");
+                                                   setIsActionOpen(true);
+                                                }}
+                                             >
+                                                <Banknote className="h-4 w-4 text-green-600" /> Change Salary
+                                             </DropdownMenuItem>
+
+                                             <div className="my-1 border-t border-muted" />
+
                                              <DropdownMenuItem className="gap-2">
-                                                <TrendingUp className="h-4 w-4" /> Talent Review
+                                                <ExternalLink className="h-4 w-4" /> View Full Profile
                                              </DropdownMenuItem>
                                              <DropdownMenuItem className="gap-2 text-primary" onClick={() => window.open(`/api/hr-self-service/me/documents/verification/pdf`, '_blank')}>
                                                 <ShieldCheck className="h-4 w-4" /> Verify Employment
