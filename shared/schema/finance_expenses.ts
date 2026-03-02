@@ -12,6 +12,8 @@ export const expenseReports = pgTable("expense_reports", {
     status: varchar("status").notNull().default("DRAFT"), // DRAFT, SUBMITTED, APPROVED, PAID, REJECTED
     totalAmount: decimal("total_amount", { precision: 20, scale: 2 }).notNull().default("0"),
     currency: varchar("currency").notNull().default("USD"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
     submittedAt: timestamp("submitted_at"),
     approvedAt: timestamp("approved_at"),
     approvedBy: varchar("approved_by"),
@@ -30,6 +32,8 @@ export const expenseLines = pgTable("expense_lines", {
     amount: decimal("amount", { precision: 20, scale: 2 }).notNull(),
     taxAmount: decimal("tax_amount", { precision: 20, scale: 2 }).default("0"),
     currency: varchar("currency").notNull().default("USD"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
     description: text("description"),
     receiptUrl: text("receipt_url"),
     status: varchar("status").notNull().default("PENDING"), // PENDING, VALIDATED, FLAGGED

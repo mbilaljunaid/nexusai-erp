@@ -64,8 +64,9 @@ router.get("/deals/:id", async (req, res) => {
 
 router.post("/deals", async (req, res) => {
     try {
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
         const data = insertTreasuryDealSchema.parse(req.body);
-        const deal = await treasuryService.createDeal(data);
+        const deal = await treasuryService.createDeal(data, undefined, legalEntityId);
         res.status(201).json(deal);
     } catch (error) {
         if (error instanceof ZodError) {
@@ -101,8 +102,9 @@ router.get("/fx-deals", async (req, res) => {
 
 router.post("/fx-deals", async (req, res) => {
     try {
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
         const data = insertTreasuryFxDealSchema.parse(req.body);
-        const deal = await treasuryService.createFxDeal(data);
+        const deal = await treasuryService.createFxDeal(data, undefined, legalEntityId);
         res.status(201).json(deal);
     } catch (error) {
         if (error instanceof ZodError) {

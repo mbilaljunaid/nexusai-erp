@@ -255,6 +255,9 @@ export default function PayrollWorkbench() {
                 .mcancel { padding: 8px 16px; border: 1px solid #d1d5db; background: #fff; border-radius: 8px; cursor: pointer; }
                 .msubmit { padding: 8px 20px; background: #1d4ed8; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
                 .msubmit:disabled { background: #9ca3af; }
+                .pw-kpi-card { background: #fff; border: 1px solid #e5e7eb; border-left-width: 4px; border-left-style: solid; border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; min-width: 160px; }
+                .pw-kpi-val { font-size: 20px; font-weight: 800; }
+                .pw-kpi-lbl { font-size: 11px; color: #6b7280; margin-top: 2px; }
             `}</style>
         </div>
     );
@@ -262,11 +265,11 @@ export default function PayrollWorkbench() {
 
 function PWKpi({ label, value, icon, color }: { label: string; value: string; icon: React.ReactNode; color: string }) {
     return (
-        <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderLeft: `4px solid ${color}`, borderRadius: 12, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 12, minWidth: 160 }}>
+        <div className="pw-kpi-card" style={{ borderLeftColor: color }}>
             <div style={{ color }}>{icon}</div>
             <div>
-                <div style={{ fontSize: 20, fontWeight: 800, color }}>{value}</div>
-                <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2 }}>{label}</div>
+                <div className="pw-kpi-val" style={{ color }}>{value}</div>
+                <div className="pw-kpi-lbl">{label}</div>
             </div>
         </div>
     );

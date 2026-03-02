@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Wrench, Calendar, Users, Activity } from "lucide-react";
+import { Wrench, Calendar, Users, Activity, Building2 } from "lucide-react";
 import DispatchConsole from "@/components/maintenance/DispatchConsole";
 import PlanningBoard from "@/components/maintenance/PlanningBoard";
 import { useQuery } from "@tanstack/react-query";
@@ -37,31 +37,39 @@ export default function MaintenanceWorkbench({ initialTab = "overview" }: { init
 
     return (
         <div className="flex flex-col h-[calc(100vh-4rem)] bg-muted/10">
-            <div className="border-b bg-background p-4 flex justify-between items-center">
-                <div>
-                    <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-                        <Wrench className="h-6 w-6 text-primary" />
-                        Maintenance Command Center
-                    </h1>
-                    <p className="text-muted-foreground">Monitor asset health, dispatch work, and schedule maintenance.</p>
+            <div className="border-b bg-background p-4 flex flex-col gap-4">
+                <div className="flex justify-between items-center">
+                    <div>
+                        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+                            <Wrench className="h-6 w-6 text-primary" />
+                            Maintenance Command Center
+                        </h1>
+                        <p className="text-muted-foreground">Monitor asset health, dispatch work, and schedule maintenance.</p>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                        <EnterpriseContextSwitcher
+                            type="inventory-org"
+                            value={activeInvOrgId}
+                            onChange={setActiveInvOrgId}
+                        />
+                        {metrics && (
+                            <>
+                                <Badge variant="destructive" className="flex gap-1">
+                                    <Activity className="h-3 w-3" /> {metrics.critical} Critical
+                                </Badge>
+                                <Badge variant="outline" className="flex gap-1">
+                                    {metrics.backlog} Backlog
+                                </Badge>
+                            </>
+                        )}
+                    </div>
                 </div>
-                <div className="flex gap-4 items-center">
-                    <EnterpriseContextSwitcher
-                        type="inventory-org"
-                        value={activeInvOrgId}
-                        onChange={setActiveInvOrgId}
-                    />
-                    {metrics && (
-                        <>
-                            <Badge variant="destructive" className="flex gap-1">
-                                <Activity className="h-3 w-3" /> {metrics.critical} Critical
-                            </Badge>
-                            <Badge variant="outline" className="flex gap-1">
-                                {metrics.backlog} Backlog
-                            </Badge>
-                        </>
-                    )}
-                </div>
+                {activeInvOrgId && (
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-violet-50 border border-violet-200 text-violet-800 text-sm w-fit">
+                        <Building2 className="h-4 w-4 flex-shrink-0" />
+                        <span>Maintenance Execution scoped to Inventory Org: <strong>{activeInvOrgId}</strong></span>
+                    </div>
+                )}
             </div>
 
             <div className="flex-1 p-6 overflow-hidden">

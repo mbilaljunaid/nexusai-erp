@@ -103,12 +103,14 @@ export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
+  customHeaders?: Record<string, string>
 ): Promise<Response> {
   const res = await fetch(url, {
     method,
     headers: {
       ...getRBACHeaders(),
       ...(data ? { "Content-Type": "application/json" } : {}),
+      ...(customHeaders || {})
     },
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",

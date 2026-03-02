@@ -6,14 +6,17 @@ import { apiRequest } from "@/lib/queryClient";
 import { FileText, Download, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 export default function TaxReportingDashboard() {
     const [period, setPeriod] = useState("2026-02");
+    const [leId, setLeId] = useState<string>();
+    const scopeHeaders = buildScopeHeaders({ "legal-entity": leId });
 
     const { data: reporting } = useQuery({
-        queryKey: ["/api/tax/reporting", period],
-        queryFn: () => apiRequest(`/api/tax/reporting?period=${period}`),
+        queryKey: ["/api/tax/reporting", period, leId],
+        queryFn: () => fetch(`/api/tax/reporting?period=${period}`, { headers: scopeHeaders }).then(r => r.json()),
     });
 
     return (
@@ -23,7 +26,8 @@ export default function TaxReportingDashboard() {
                     <h1 className="text-3xl font-bold">Tax Reporting Dashboard</h1>
                     <p className="text-muted-foreground">Liability reports, reconciliation, and filing prep</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
+                    <EnterpriseContextSwitcher type="legal-entity" value={leId} onChange={setLeId} className="mr-2" />
                     <Button variant="outline">
                         <Download className="h-4 w-4 mr-2" />
                         Export Report

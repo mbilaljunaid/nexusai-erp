@@ -58,6 +58,7 @@ export type SupplierSite = typeof supplierSites.$inferSelect;
 
 export const purchaseOrders = pgTable("purchase_orders", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entBusinessUnitId: varchar("ent_business_unit_id"), // Operating Unit/BU Scope
     orderNumber: varchar("order_number").notNull().unique(),
     supplierId: varchar("supplier_id"),
     totalAmount: numeric("total_amount", { precision: 18, scale: 2 }),
@@ -70,6 +71,7 @@ export const purchaseOrders = pgTable("purchase_orders", {
 
 export const purchaseOrderLines = pgTable("purchase_order_lines", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entBusinessUnitId: varchar("ent_business_unit_id"), // Operating Unit/BU Scope
     poHeaderId: varchar("po_header_id").notNull(), // FK to purchaseOrders
     lineNumber: integer("line_number").notNull(),
     itemId: varchar("item_id"), // FK to inventory optional
@@ -117,6 +119,7 @@ export const inventoryOrganizations = pgTable("inv_organizations", {
 
 export const inventory = pgTable("inv_items", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entInventoryOrgId: varchar("ent_inventory_org_id"), // Inventory Org Scope
     itemNumber: varchar("itemNumber").notNull(),
     description: varchar("description"),
     primaryUomCode: varchar("primaryUomCode"),
@@ -129,6 +132,7 @@ export const inventory = pgTable("inv_items", {
 
 export const inventorySubinventories = pgTable("inv_subinventories", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entInventoryOrgId: varchar("ent_inventory_org_id"), // Inventory Org Scope
     organizationId: varchar("organizationId"),
     code: varchar("code").notNull(),
     name: varchar("name").notNull(),
@@ -138,6 +142,7 @@ export const inventorySubinventories = pgTable("inv_subinventories", {
 
 export const inventoryLocators = pgTable("inv_locators", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entInventoryOrgId: varchar("ent_inventory_org_id"), // Inventory Org Scope
     subinventoryId: varchar("subinventoryId"),
     code: varchar("code").notNull(),
     zoneId: varchar("zone_id"), // Added for WMS
@@ -158,6 +163,7 @@ export type Inventory = typeof inventory.$inferSelect;
 
 export const inventoryTransactions = pgTable("inv_material_transactions", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entInventoryOrgId: varchar("ent_inventory_org_id"), // Inventory Org Scope
     // organizationId: varchar("organizationId"), 
     itemId: varchar("itemId").notNull(),
     transactionType: varchar("transactionType").notNull(),
@@ -191,6 +197,7 @@ export type InventoryTransaction = typeof inventoryTransactions.$inferSelect;
 
 export const inventoryOnHandQuantities = pgTable("inv_on_hand_quantities", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entInventoryOrgId: varchar("ent_inventory_org_id"), // Inventory Org Scope
     organizationId: varchar("organizationId").notNull(),
     itemId: varchar("itemId").notNull(),
     subinventoryId: varchar("subinventoryId").notNull(),
@@ -229,6 +236,7 @@ export type InventoryLotSerial = typeof inventoryLotSerial.$inferSelect;
 
 export const purchaseRequisitions = pgTable("purchase_requisitions", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entBusinessUnitId: varchar("ent_business_unit_id"), // Operating Unit/BU Scope
     requisitionNumber: varchar("requisition_number").notNull().unique(),
     requesterId: varchar("requester_id"),
     description: text("description"),
@@ -240,6 +248,7 @@ export const purchaseRequisitions = pgTable("purchase_requisitions", {
 
 export const purchaseRequisitionLines = pgTable("purchase_requisition_lines", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entBusinessUnitId: varchar("ent_business_unit_id"), // Operating Unit/BU Scope
     requisitionId: varchar("requisition_id").notNull(),
     lineNumber: integer("line_number").notNull(),
     itemId: varchar("item_id"), // NULL for non-catalog items
@@ -429,6 +438,7 @@ export type SupplierQualityEvent = typeof supplierQualityEvents.$inferSelect;
 // ========== NEGOTIATION & SOURCING (RFQ & BIDS) ==========
 export const sourcingRfqs = pgTable("scm_sourcing_rfqs", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entBusinessUnitId: varchar("ent_business_unit_id"), // Operating Unit/BU Scope
     rfqNumber: varchar("rfq_number").notNull().unique(),
     title: varchar("title").notNull(),
     description: text("description"),
@@ -484,6 +494,7 @@ export type InsertSourcingBid = z.infer<typeof insertSourcingBidSchema>;
 // 1. Zones (Logical Grouping of Locators)
 export const wmsZones = pgTable("wms_zones", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entInventoryOrgId: varchar("ent_inventory_org_id"), // Inventory Org Scope
     warehouseId: varchar("warehouse_id").notNull(), // Inventory Organization ID
     zoneCode: varchar("zone_code").notNull(),
     zoneName: varchar("zone_name").notNull(),
@@ -496,6 +507,7 @@ export const wmsZones = pgTable("wms_zones", {
 // 2. Handling Units (LPNs / Containers)
 export const wmsHandlingUnits = pgTable("wms_handling_units", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entInventoryOrgId: varchar("ent_inventory_org_id"), // Inventory Org Scope
     lpnNumber: varchar("lpn_number").notNull().unique(), // License Plate Number
     warehouseId: varchar("warehouse_id").notNull(),
     parentLpnId: varchar("parent_lpn_id"), // Nested LPNs (Box on Pallet)
@@ -521,6 +533,7 @@ export const wmsLpnContents = pgTable("wms_lpn_contents", {
 // 3. WMS Waves (Outbound Release Groups)
 export const wmsWaves = pgTable("wms_waves", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entInventoryOrgId: varchar("ent_inventory_org_id"), // Inventory Org Scope
     waveNumber: varchar("wave_number").notNull().unique(),
     warehouseId: varchar("warehouse_id").notNull(),
     status: varchar("status").default("PLANNED"), // PLANNED, RELEASED, PICKING, COMPLETED
@@ -532,6 +545,7 @@ export const wmsWaves = pgTable("wms_waves", {
 // 4. WMS Tasks (Execution Unit)
 export const wmsTasks = pgTable("wms_tasks", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entInventoryOrgId: varchar("ent_inventory_org_id"), // Inventory Org Scope
     taskNumber: varchar("task_number").unique(), // Auto-generated
     warehouseId: varchar("warehouse_id").notNull(),
     taskType: varchar("task_type").notNull(), // PICK, PUTAWAY, REPLENISH, COUNT, MOVE

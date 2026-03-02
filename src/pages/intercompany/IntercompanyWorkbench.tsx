@@ -11,21 +11,24 @@ import { useToast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import TransferPricingRules from "./TransferPricingRules";
+import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 export default function IntercompanyWorkbench() {
     const [activeTab, setActiveTab] = useState("outbound");
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const [leId, setLeId] = useState<string>();
+    const scopeHeaders = buildScopeHeaders({ "legal-entity": leId });
 
     // Mock User Org (In real app, get from Context)
-    const currentOrgId = "ICO-101";
+    const currentOrgId = leId || "ICO-101";
 
     // --- Outbound: My Batches ---
     const [page, setPage] = useState(1);
     const { data: batchData, isLoading } = useQuery({
         queryKey: ["ic-batches-outbound", currentOrgId, page],
         queryFn: async () => {
-            const res = await fetch(`/api/intercompany/batches?initiatorOrgId=${currentOrgId}&role=INITIATOR&page=${page}&limit=10`);
+            const res = await fetch(`/api/intercompany/batches?initiatorOrgId=${currentOrgId}&role=INITIATOR&page=${page}&limit=10`, { headers: scopeHeaders });
             if (!res.ok) throw new Error("Failed");
             return res.json();
         }
@@ -60,7 +63,7 @@ export default function IntercompanyWorkbench() {
     const { data: inboundTransactions, isLoading: inboundLoading } = useQuery({
         queryKey: ["ic-inbound", currentOrgId],
         queryFn: async () => {
-            const res = await fetch(`/api/intercompany/transactions/inbound?receiverOrgId=${currentOrgId}`);
+            const res = await fetch(`/api/intercompany/transactions/inbound?receiverOrgId=${currentOrgId}`, { headers: scopeHeaders });
             if (!res.ok) throw new Error("Failed to fetch inbound");
             return res.json();
         }
@@ -93,9 +96,12 @@ export default function IntercompanyWorkbench() {
                     <h1 className="text-3xl font-bold tracking-tight">Intercompany Workbench</h1>
                     <p className="text-muted-foreground">Manage outbound charges and inbound approvals.</p>
                 </div>
-                <Button>
-                    <Plus className="mr-2 h-4 w-4" /> New Batch
-                </Button>
+                <div className="flex gap-2 items-center">
+                    <EnterpriseContextSwitcher type="legal-entity" value={leId} onChange={setLeId} className="mr-2" />
+                    <Button>
+                        <Plus className="mr-2 h-4 w-4" /> New Batch
+                    </Button>
+                </div>
             </div>
 
             <Tabs value={activeTab} onValueChange={setActiveTab}>

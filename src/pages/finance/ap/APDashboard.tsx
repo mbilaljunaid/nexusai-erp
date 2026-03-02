@@ -8,15 +8,8 @@ import {
     CheckCircle, Clock, DollarSign, TrendingUp, Settings, Calendar, Building2
 } from "lucide-react";
 import { useLocation } from "wouter";
-import { useMemo } from "react";
-
-// -- BU Context Hook (reads from localStorage, set by BU switcher) --
-function useActiveBu() {
-    return useMemo(() => ({
-        id: localStorage.getItem("nexus_active_bu") || null,
-        name: localStorage.getItem("nexus_active_bu_name") || localStorage.getItem("nexus_active_bu") || "All Business Units"
-    }), []);
-}
+import { useState } from "react";
+import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 interface APMetrics {
     openInvoices: number;
@@ -29,16 +22,17 @@ interface APMetrics {
 
 export default function APDashboard() {
     const [, setLocation] = useLocation();
-    const activeBu = useActiveBu();
+    const [buId, setBuId] = useState<string>();
+    const scopeHeaders = buildScopeHeaders({ "business-unit": buId });
 
     const { data: metrics, isLoading } = useQuery<APMetrics>({
-        queryKey: ["/api/ap/dashboard-metrics"],
+        queryKey: ["/api/ap/dashboard-metrics", buId],
         queryFn: async () => {
             // Fetch metrics from multiple endpoints
             const [invoices, aging, batches] = await Promise.all([
-                fetch("/api/ap/invoices?limit=1000").then(r => r.json()),
-                fetch("/api/ap/reports/aging").then(r => r.json()),
-                fetch("/api/ap/payment-batches").then(r => r.json())
+                fetch("/api/ap/invoices?limit=1000", { headers: scopeHeaders }).then(r => r.json()),
+                fetch("/api/ap/reports/aging", { headers: scopeHeaders }).then(r => r.json()),
+                fetch("/api/ap/payment-batches", { headers: scopeHeaders }).then(r => r.json())
             ]);
 
             const openInvoices = invoices.data?.filter((i: any) =>
@@ -67,8 +61,8 @@ export default function APDashboard() {
     });
 
     const { data: recentInvoices } = useQuery({
-        queryKey: ["/api/ap/invoices", 1, 10],
-        queryFn: () => fetch("/api/ap/invoices?limit=10&offset=0").then(r => r.json())
+        queryKey: ["/api/ap/invoices", 1, 10, buId],
+        queryFn: () => fetch("/api/ap/invoices?limit=10&offset=0", { headers: scopeHeaders }).then(r => r.json())
     });
 
     const navigationCards = [
@@ -136,19 +130,11 @@ export default function APDashboard() {
             title="Accounts Payable"
             description="Comprehensive AP management and automation"
             breadcrumbs={[{ label: "Finance", href: "/finance" }, { label: "AP" }]}
+            actions={
+                <EnterpriseContextSwitcher type="business-unit" value={buId} onChange={setBuId} />
+            }
         >
             <div className="space-y-6">
-                {/* BU Context Banner */}
-                <div className="flex items-center gap-2 px-1">
-                    <Building2 className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">Viewing data for:</span>
-                    <Badge variant="secondary" className="font-mono text-xs">
-                        {activeBu.id ? activeBu.name : "All Business Units"}
-                    </Badge>
-                    {!activeBu.id && (
-                        <span className="text-xs text-amber-600">(No BU selected — showing all data)</span>
-                    )}
-                </div>
                 {/* Metrics */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <Card>

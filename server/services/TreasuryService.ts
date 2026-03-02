@@ -167,7 +167,7 @@ export class TreasuryService {
     const conditions = [];
     if (filters?.type) conditions.push(eq(treasuryDeals.type, filters.type));
     if (filters?.status) conditions.push(eq(treasuryDeals.status, filters.status));
-    if (filters?.legalEntityId) conditions.push(eq(treasuryDeals.legalEntityId, filters.legalEntityId));
+    if (filters?.legalEntityId) conditions.push(eq(treasuryDeals.entLegalEntityId, filters.legalEntityId));
 
     if (conditions.length > 0) {
       // @ts-ignore - Dynamic and/eq type issues with Drizzle
@@ -193,10 +193,11 @@ export class TreasuryService {
     return { ...deal, installments };
   }
 
-  async createDeal(data: InsertTreasuryDeal, traderId?: string): Promise<TreasuryDeal> {
+  async createDeal(data: InsertTreasuryDeal, traderId?: string, entLegalEntityId?: string): Promise<TreasuryDeal> {
     const [deal] = await db.insert(treasuryDeals)
       .values({
         ...data,
+        entLegalEntityId: entLegalEntityId || data.entLegalEntityId,
         status: data.status || 'DRAFT',
         traderId: traderId || data.traderId,
         confirmationStatus: 'PENDING'
@@ -310,7 +311,7 @@ export class TreasuryService {
 
   // --- FX & Risk Management ---
 
-  async createFxDeal(data: InsertTreasuryFxDeal, traderId?: string): Promise<TreasuryFxDeal> {
+  async createFxDeal(data: InsertTreasuryFxDeal, traderId?: string, entLegalEntityId?: string): Promise<TreasuryFxDeal> {
     // 1. Check Risk Limits
     await this.checkLimitBreach(data.counterpartyId, Number(data.buyAmount), data.buyCurrency);
 
@@ -318,6 +319,7 @@ export class TreasuryService {
     const [deal] = await db.insert(treasuryFxDeals)
       .values({
         ...data,
+        entLegalEntityId: entLegalEntityId || data.entLegalEntityId,
         status: data.status || 'DRAFT',
         traderId: traderId || data.traderId,
         confirmationStatus: 'PENDING',
@@ -329,11 +331,12 @@ export class TreasuryService {
   }
 
   async listFxDeals(legalEntityId?: string): Promise<TreasuryFxDeal[]> {
-    const all = await db.select()
-      .from(treasuryFxDeals)
-      .orderBy(desc(treasuryFxDeals.tradeDate));
-    // treasuryFxDeals has no legal_entity_id column yet (migration pending);
-    // filtering is a no-op placeholder — the column migration below will enable real filtering.
+    let query = db.select().from(treasuryFxDeals);
+    if (legalEntityId) {
+      // @ts-ignore
+      query = query.where(eq(treasuryFxDeals.entLegalEntityId, legalEntityId));
+    }
+    const all = await query.orderBy(desc(treasuryFxDeals.tradeDate));
     return all;
   }
 

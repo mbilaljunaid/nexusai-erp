@@ -15,7 +15,7 @@ export class WmsController {
     // --- MASTER DATA (ZONES) ---
     getZones = async (req: Request, res: Response) => {
         try {
-            const warehouseId = req.query.warehouseId as string;
+            const warehouseId = (req.headers["x-inventory-org-id"] || req.query.warehouseId) as string;
             if (!warehouseId) return res.status(400).json({ error: "Warehouse ID required" });
             const zones = await wmsMasterDataService.listZones(warehouseId);
             res.json(zones);
@@ -54,7 +54,7 @@ export class WmsController {
     // --- YARD / DOCKS ---
     getDockAppointments = async (req: Request, res: Response) => {
         try {
-            const warehouseId = req.query.warehouseId as string;
+            const warehouseId = (req.headers["x-inventory-org-id"] || req.query.warehouseId) as string;
             const dateStr = req.query.date as string;
             if (!warehouseId || !dateStr) return res.status(400).json({ error: "Warehouse ID & Date required" });
 
@@ -77,7 +77,7 @@ export class WmsController {
     // --- STRATEGIES ---
     getStrategies = async (req: Request, res: Response) => {
         try {
-            const warehouseId = req.query.warehouseId as string;
+            const warehouseId = (req.headers["x-inventory-org-id"] || req.query.warehouseId) as string;
             if (!warehouseId) return res.status(400).json({ error: "Warehouse ID required" });
             const strats = await wmsStrategyService.listStrategies(warehouseId);
             res.json(strats);
@@ -98,7 +98,7 @@ export class WmsController {
     // --- LABOR ---
     getLaborMetrics = async (req: Request, res: Response) => {
         try {
-            const warehouseId = req.query.warehouseId as string;
+            const warehouseId = (req.headers["x-inventory-org-id"] || req.query.warehouseId) as string;
             if (!warehouseId) return res.status(400).json({ error: "Warehouse ID required" });
             const metrics = await wmsLaborService.getProductivityMetrics(warehouseId);
             res.json(metrics);
@@ -110,7 +110,7 @@ export class WmsController {
     // --- UNIT TYPES ---
     getUnitTypes = async (req: Request, res: Response) => {
         try {
-            const warehouseId = req.query.warehouseId as string;
+            const warehouseId = (req.headers["x-inventory-org-id"] || req.query.warehouseId) as string;
             if (!warehouseId) return res.status(400).json({ error: "Warehouse ID required" });
             const result = await wmsUnitTypeService.list(warehouseId);
             res.json(result);
@@ -140,7 +140,7 @@ export class WmsController {
     // --- WAVES & TEMPLATES ---
     getWaveTemplates = async (req: Request, res: Response) => {
         try {
-            const warehouseId = req.query.warehouseId as string;
+            const warehouseId = (req.headers["x-inventory-org-id"] || req.query.warehouseId) as string;
             if (!warehouseId) return res.status(400).json({ error: "Warehouse ID required" });
             const results = await wmsWaveService.listTemplates(warehouseId);
             res.json(results);
@@ -160,7 +160,7 @@ export class WmsController {
 
     getWaves = async (req: Request, res: Response) => {
         try {
-            const warehouseId = req.query.warehouseId as string;
+            const warehouseId = (req.headers["x-inventory-org-id"] || req.query.warehouseId) as string;
             if (!warehouseId) return res.status(400).json({ error: "Warehouse ID required" });
             const waves = await wmsWaveService.listWaves(warehouseId);
             res.json(waves);
@@ -192,7 +192,7 @@ export class WmsController {
     getTasks = async (req: Request, res: Response) => {
         try {
             const filters = {
-                warehouseId: req.query.warehouseId as string,
+                warehouseId: (req.headers["x-inventory-org-id"] || req.query.warehouseId) as string,
                 taskType: req.query.taskType as string,
                 status: req.query.status as string,
                 page: req.query.page ? Number(req.query.page) : 1,
@@ -270,7 +270,7 @@ export class WmsController {
     // --- OPTIMIZATION ---
     getSlottingSuggestions = async (req: Request, res: Response) => {
         try {
-            const warehouseId = req.query.warehouseId as string;
+            const warehouseId = (req.headers["x-inventory-org-id"] || req.query.warehouseId) as string;
             if (!warehouseId) return res.status(400).json({ error: "Warehouse ID required" });
 
             const suggestions = await wmsSlottingService.generateMoveSuggestions(warehouseId);

@@ -3,8 +3,11 @@ import { AssetList } from "@/components/fixed-assets/AssetList";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { useState } from "react";
+import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 export default function FixedAssetsPage() {
+    const [leId, setLeId] = useState<string>();
     return (
         <div className="p-8 space-y-8">
             <div className="flex items-center justify-between">
@@ -14,7 +17,8 @@ export default function FixedAssetsPage() {
                         Manage asset lifecycle, additions, retirements, and depreciation.
                     </p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
+                    <EnterpriseContextSwitcher type="legal-entity" value={leId} onChange={setLeId} className="mr-2" />
                     <Button>
                         <Plus className="mr-2 h-4 w-4" /> Add Asset
                     </Button>

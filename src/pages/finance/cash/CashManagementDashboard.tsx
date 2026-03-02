@@ -22,6 +22,8 @@ import {
     Legend
 } from "recharts";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { useState } from "react";
+import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 interface CashPosition {
     totalCash: number;
@@ -38,11 +40,14 @@ interface CashFlowData {
 }
 
 export default function CashManagementDashboard() {
+    const [leId, setLeId] = useState<string>();
+    const scopeHeaders = buildScopeHeaders({ "legal-entity": leId });
+
     // Fetch cash position
     const { data: cashPosition, isLoading: positionLoading } = useQuery<CashPosition>({
-        queryKey: ["/api/finance/cash/position"],
+        queryKey: ["/api/finance/cash/position", leId],
         queryFn: async () => {
-            const res = await fetch("/api/finance/cash/position");
+            const res = await fetch("/api/finance/cash/position", { headers: scopeHeaders });
             if (!res.ok) throw new Error("Failed to fetch cash position");
             return res.json();
         }
@@ -50,9 +55,9 @@ export default function CashManagementDashboard() {
 
     // Fetch cash flow forecast
     const { data: cashFlow, isLoading: flowLoading } = useQuery<CashFlowData[]>({
-        queryKey: ["/api/finance/cash/forecast"],
+        queryKey: ["/api/finance/cash/forecast", leId],
         queryFn: async () => {
-            const res = await fetch("/api/finance/cash/forecast");
+            const res = await fetch("/api/finance/cash/forecast", { headers: scopeHeaders });
             if (!res.ok) throw new Error("Failed to fetch cash forecast");
             return res.json();
         }
@@ -60,9 +65,9 @@ export default function CashManagementDashboard() {
 
     // Fetch recent reconciliation activity
     const { data: recentActivity = [] } = useQuery({
-        queryKey: ["/api/finance/cash/accounts"],
+        queryKey: ["/api/finance/cash/accounts", leId],
         queryFn: async () => {
-            const res = await fetch("/api/finance/cash/accounts");
+            const res = await fetch("/api/finance/cash/accounts", { headers: scopeHeaders });
             if (!res.ok) throw new Error("Failed to fetch accounts");
             const accounts = await res.json();
             return accounts.slice(0, 5); // Show only 5 most recent
@@ -120,7 +125,8 @@ export default function CashManagementDashboard() {
             description="Treasury operations and cash position monitoring"
             breadcrumbs={[{ label: "Finance", href: "/finance" }, { label: "Cash Management" }]}
             actions={
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
+                    <EnterpriseContextSwitcher type="legal-entity" value={leId} onChange={setLeId} className="mr-2" />
                     <Link href="/finance/cash/reconciliation">
                         <Button variant="outline">
                             <Upload className="mr-2 h-4 w-4" />

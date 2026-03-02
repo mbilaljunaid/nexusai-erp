@@ -10,10 +10,13 @@ import {
     FileText, Users, Receipt, PieChart,
     BarChart, Activity, RefreshCw, Briefcase, Settings
 } from "lucide-react";
+import { useState } from "react";
+import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 export default function AccountsReceivable() {
     const [, setLocation] = useLocation();
     const { toast } = useToast();
+    const [buId, setBuId] = useState<string>();
 
     const handleSeedData = async () => {
         try {
@@ -90,7 +93,8 @@ export default function AccountsReceivable() {
             description="Comprehensive AR management, billing, collections, and AI predictions."
             breadcrumbs={[{ label: "Finance", href: "/finance" }, { label: "Accounts Receivable" }]}
             actions={
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
+                    <EnterpriseContextSwitcher type="business-unit" value={buId} onChange={setBuId} className="mr-2" />
                     <Button variant="outline" onClick={handleSeedData}>
                         Seed Demo Data
                     </Button>
@@ -99,7 +103,7 @@ export default function AccountsReceivable() {
         >
             <div className="space-y-6">
                 {/* Metric Cards */}
-                <ArMetricCards />
+                <ArMetricCards buId={buId} />
 
                 {/* Navigation Cards */}
                 <div>

@@ -82,6 +82,8 @@ export const maintWorkOrders = pgTable("maint_work_orders", {
     failureCauseId: varchar("failure_cause_id"),
     failureRemedyId: varchar("failure_remedy_id"),
 
+    entInventoryOrgId: varchar("ent_inventory_org_id"), // LE Scoping (EAM)
+
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });

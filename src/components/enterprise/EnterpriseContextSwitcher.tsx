@@ -141,7 +141,7 @@ export function EnterpriseContextSwitcher({ type, value, onChange, className }: 
 }
 
 /** Build fetch headers from active scoping context */
-export function buildScopeHeaders(scopes: Partial<Record<ScopeType, string | undefined>>): HeadersInit {
+export function buildScopeHeaders(scopes: Partial<Record<ScopeType, string | undefined>>): Record<string, string> {
     const headers: Record<string, string> = {};
     if (scopes["business-unit"]) headers["x-business-unit-id"] = scopes["business-unit"];
     if (scopes["inventory-org"]) headers["x-inventory-org-id"] = scopes["inventory-org"];

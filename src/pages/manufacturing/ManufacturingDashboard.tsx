@@ -9,7 +9,8 @@ import {
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Skeleton } from "@/components/ui/skeleton";
-import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { useState } from 'react';
 
 interface Stats {
     activeWorkOrders: number;
@@ -32,11 +33,9 @@ interface QualityInspection {
 }
 
 export default function ManufacturingDashboard() {
-    const { inventoryOrgId } = useEnterpriseStore();
+    const [inventoryOrgId, setInventoryOrgId] = useState<string>();
 
-    const invOrgHeaders: Record<string, string> = inventoryOrgId
-        ? { 'x-inventory-org-id': inventoryOrgId }
-        : {};
+    const invOrgHeaders = buildScopeHeaders({ "inventory-org": inventoryOrgId });
 
     const { data: woData, isLoading: woLoading } = useQuery<{ items: WorkOrder[] }>({
         queryKey: ["/api/manufacturing/work-orders", inventoryOrgId],
@@ -106,12 +105,18 @@ export default function ManufacturingDashboard() {
             title="Manufacturing Performance Oversight"
             breadcrumbs={[{ label: "Manufacturing", href: "/manufacturing" }, { label: "Overview" }]}
         >
-            {inventoryOrgId && (
-                <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-md bg-violet-50 border border-violet-200 text-violet-800 text-sm">
-                    <Building2 className="h-4 w-4 flex-shrink-0" />
-                    <span>Manufacturing scoped to Inventory Org: <strong>{inventoryOrgId}</strong></span>
+            <div className="flex justify-between items-center mb-4">
+                {inventoryOrgId && (
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-violet-50 border border-violet-200 text-violet-800 text-sm">
+                        <Building2 className="h-4 w-4 flex-shrink-0" />
+                        <span>Manufacturing scoped to Inventory Org: <strong>{inventoryOrgId}</strong></span>
+                    </div>
+                )}
+                {!inventoryOrgId && <div />}
+                <div className="flex items-center gap-2">
+                    <EnterpriseContextSwitcher type="inventory-org" value={inventoryOrgId} onChange={setInventoryOrgId} />
                 </div>
-            )}
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <Card className="ai-card bg-blue-50/30">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">

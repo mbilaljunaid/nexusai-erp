@@ -21,6 +21,7 @@ import {
 import { MetricCard } from "@/components/MetricCard";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 import {
   Sheet,
   SheetContent,
@@ -36,39 +37,42 @@ export default function ExpenseManagement() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const [buId, setBuId] = useState<string>();
+
+  const scopeHeaders = buildScopeHeaders({ "business-unit": buId });
 
   // Fetch expense reports
   const { data: reports = [], isLoading: reportsLoading } = useQuery<any[]>({
-    queryKey: ["/api/expenses"],
+    queryKey: ["/api/expenses", buId],
     queryFn: async () => {
-      const res = await apiRequest("GET", "/api/expenses");
+      const res = await apiRequest("GET", "/api/expenses", undefined, scopeHeaders);
       return res.json();
     }
   });
 
   // Fetch analytics summary
   const { data: analytics } = useQuery<any>({
-    queryKey: ["/api/expenses/analytics/summary"],
+    queryKey: ["/api/expenses/analytics/summary", buId],
     queryFn: async () => {
-      const res = await apiRequest("GET", "/api/expenses/analytics/summary");
+      const res = await apiRequest("GET", "/api/expenses/analytics/summary", undefined, scopeHeaders);
       return res.json();
     }
   });
 
   // Fetch category breakdown
   const { data: categoryBreakdown = [] } = useQuery<any[]>({
-    queryKey: ["/api/expenses/analytics/by-category"],
+    queryKey: ["/api/expenses/analytics/by-category", buId],
     queryFn: async () => {
-      const res = await apiRequest("GET", "/api/expenses/analytics/by-category");
+      const res = await apiRequest("GET", "/api/expenses/analytics/by-category", undefined, scopeHeaders);
       return res.json();
     }
   });
 
   // Fetch policy violations
   const { data: violations } = useQuery<any>({
-    queryKey: ["/api/expenses/analytics/violations"],
+    queryKey: ["/api/expenses/analytics/violations", buId],
     queryFn: async () => {
-      const res = await apiRequest("GET", "/api/expenses/analytics/violations");
+      const res = await apiRequest("GET", "/api/expenses/analytics/violations", undefined, scopeHeaders);
       return res.json();
     }
   });
@@ -76,12 +80,12 @@ export default function ExpenseManagement() {
   // Create expense report mutation
   const createReportMutation = useMutation({
     mutationFn: async (data: any) => {
-      const res = await apiRequest("POST", "/api/expenses", data);
+      const res = await apiRequest("POST", "/api/expenses", data, scopeHeaders);
       return res.json();
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/expenses"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/expenses/analytics/summary"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/expenses", buId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/expenses/analytics/summary", buId] });
       toast({
         title: "Expense Report Created",
         description: `Report ${data.reportNumber} has been created successfully.`,
@@ -102,12 +106,12 @@ export default function ExpenseManagement() {
   // Submit report mutation
   const submitReportMutation = useMutation({
     mutationFn: async (reportId: string) => {
-      const res = await apiRequest("POST", `/api/expenses/${reportId}/submit`, {});
+      const res = await apiRequest("POST", `/api/expenses/${reportId}/submit`, {}, scopeHeaders);
       return res.json();
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/expenses"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/expenses/analytics/summary"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/expenses", buId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/expenses/analytics/summary", buId] });
       toast({
         title: "Report Submitted",
         description: `Report ${data.reportNumber} submitted for approval.`,
@@ -125,12 +129,12 @@ export default function ExpenseManagement() {
   // Approve report mutation
   const approveReportMutation = useMutation({
     mutationFn: async ({ reportId, comments }: { reportId: string; comments?: string }) => {
-      const res = await apiRequest("POST", `/api/expenses/${reportId}/approve`, { comments });
+      const res = await apiRequest("POST", `/api/expenses/${reportId}/approve`, { comments }, scopeHeaders);
       return res.json();
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/expenses"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/expenses/analytics/summary"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/expenses", buId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/expenses/analytics/summary", buId] });
       toast({
         title: "Report Approved",
         description: `Report ${data.reportNumber} has been approved.`,
@@ -161,14 +165,14 @@ export default function ExpenseManagement() {
       header: "Status",
       accessorKey: "status",
       cell: (r) => {
-        const statusColors = {
+        const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline" | "success" | "warning" | "premium"> = {
           DRAFT: 'outline',
           SUBMITTED: 'default',
           APPROVED: 'secondary',
           REJECTED: 'destructive',
         };
         return (
-          <Badge variant={statusColors[r.status as keyof typeof statusColors] || 'outline'}>
+          <Badge variant={statusColors[r.status] || 'outline'}>
             {r.status}
           </Badge>
         );
@@ -202,7 +206,8 @@ export default function ExpenseManagement() {
             End-to-end expense tracking with policy validation & analytics
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          <EnterpriseContextSwitcher type="business-unit" value={buId} onChange={setBuId} className="mr-2" />
           <Button variant="outline" onClick={() => setIsCreateOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             New Report

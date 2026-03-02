@@ -25,18 +25,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
-import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 export default function LcmWorkbench() {
     const { toast } = useToast();
     const [, setLocation] = useLocation();
     const queryClient = useQueryClient();
     const [page, setPage] = useState(1);
-    const { inventoryOrgId } = useEnterpriseStore();
+    const [inventoryOrgId, setInventoryOrgId] = useState<string>();
 
-    const invOrgHeaders: Record<string, string> = inventoryOrgId
-        ? { 'x-inventory-org-id': inventoryOrgId }
-        : {};
+    const invOrgHeaders = buildScopeHeaders({ "inventory-org": inventoryOrgId });
 
     // Fetch Trade Operations
     const { data: operationsData, isLoading } = useQuery({
@@ -105,7 +103,8 @@ export default function LcmWorkbench() {
                     <h1 className="text-3xl font-bold tracking-tight">Landed Cost Workbench</h1>
                     <p className="text-muted-foreground">Orchestrate global trade operations and monitor landed cost accruals.</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
+                    <EnterpriseContextSwitcher type="inventory-org" value={inventoryOrgId} onChange={setInventoryOrgId} className="mr-2" />
                     <Button variant="outline">
                         <Filter className="mr-2 h-4 w-4" /> Filter
                     </Button>

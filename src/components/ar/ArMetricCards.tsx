@@ -1,12 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, AlertCircle, CheckCircle2, TrendingUp } from "lucide-react";
-import { api } from "@/lib/api";
+import { buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 
-export function ArMetricCards() {
+export function ArMetricCards({ buId }: { buId?: string }) {
+    const scopeHeaders = buildScopeHeaders({ "business-unit": buId });
+
     const { data: invoices } = useQuery({
-        queryKey: ["/api/ar/invoices"],
-        queryFn: () => api.ar.invoices.list()
+        queryKey: ["/api/ar/invoices", buId],
+        queryFn: () => fetch("/api/ar/invoices", { headers: scopeHeaders }).then(r => r.json())
     });
 
     const metrics = {

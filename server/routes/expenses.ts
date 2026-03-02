@@ -18,7 +18,7 @@ const router = Router();
 router.post("/", async (req, res) => {
   try {
     const { userId, tenantId } = req.auth!;
-    const { title, description, employeeId } = req.body;
+    const buId = req.headers["x-business-unit-id"] as string | undefined;
 
     const report = await storage.createExpenseReport(tenantId, {
       employeeId: employeeId || userId,
@@ -27,6 +27,7 @@ router.post("/", async (req, res) => {
       status: "DRAFT",
       totalAmount: "0",
       createdBy: userId,
+      entBusinessUnitId: buId || null,
     });
 
     res.json(report);
@@ -53,6 +54,12 @@ router.get("/", async (req, res) => {
     } else {
       // TODO: Check if user is manager, if not, filter to own reports
       reports = reports.filter((r) => r.employeeId === userId);
+    }
+
+    // Filter by BU if provided
+    const buId = req.headers["x-business-unit-id"] as string | undefined;
+    if (buId) {
+      reports = reports.filter((r) => r.entBusinessUnitId === buId);
     }
 
     // Filter by status

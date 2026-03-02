@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Wallet, ArrowRightLeft, ShieldCheck, Settings2, Lock, Landmark, LayoutDashboard, AlertCircle, RefreshCcw, ShieldAlert, Globe, TrendingUp, BarChart3, Shield } from "lucide-react";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { EnterpriseContextSwitcher } from "@/components/EnterpriseContextSwitcher";
 
 export default function TreasuryCommandCenter() {
   const { legalEntityId } = useEnterpriseStore();
@@ -37,6 +38,9 @@ export default function TreasuryCommandCenter() {
               : <span className="italic">No Legal Entity selected — showing all entities</span>
             }
           </div>
+        </div>
+        <div>
+          <EnterpriseContextSwitcher />
         </div>
       </div>
 
