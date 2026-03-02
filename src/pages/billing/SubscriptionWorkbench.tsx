@@ -21,8 +21,10 @@ import {
 import { SubscriptionDetailSheet } from "./components/SubscriptionDetailSheet";
 
 import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export function SubscriptionWorkbench() {
+    const { businessUnitId } = useEnterpriseStore();
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [selectedSub, setSelectedSub] = useState<any>(null);
@@ -31,8 +33,10 @@ export function SubscriptionWorkbench() {
 
     // Fetch Customers for Lookup
     const { data: customers = [] } = useQuery({
-        queryKey: ["customers"],
-        queryFn: async () => fetch("/api/ar/customers").then(res => res.json())
+        queryKey: ["customers", businessUnitId],
+        queryFn: async () => fetch("/api/ar/customers", {
+            headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+        }).then(res => res.json())
     });
 
     const getCustomerName = (id: string) => {
@@ -41,9 +45,11 @@ export function SubscriptionWorkbench() {
     };
 
     const { data: subscriptions, isLoading } = useQuery({
-        queryKey: ["subscriptions"],
+        queryKey: ["subscriptions", businessUnitId],
         queryFn: async () => {
-            const res = await fetch("/api/billing/subscriptions");
+            const res = await fetch("/api/billing/subscriptions", {
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             if (!res.ok) return [];
             return res.json();
         }
@@ -53,8 +59,11 @@ export function SubscriptionWorkbench() {
         mutationFn: async (data: any) => {
             const res = await fetch("/api/billing/subscriptions", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {})
+                },
+                body: JSON.stringify({ ...data, entBusinessUnitId: businessUnitId }),
             });
             if (!res.ok) throw new Error("Failed to create");
             return res.json();
@@ -66,7 +75,10 @@ export function SubscriptionWorkbench() {
     });
 
     const billingCycleMutation = useMutation({
-        mutationFn: async () => fetch("/api/billing/subscriptions/process-billing", { method: "POST" }).then(res => res.json()),
+        mutationFn: async () => fetch("/api/billing/subscriptions/process-billing", {
+            method: "POST",
+            headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+        }).then(res => res.json()),
         onSuccess: (data: any) => {
             toast({ title: "Billing Cycle Complete", description: `Generated ${data.count} billing events.` });
         }

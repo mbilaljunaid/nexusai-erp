@@ -35,8 +35,10 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function CreditMemoWorkbench() {
+    const { businessUnitId } = useEnterpriseStore();
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -44,13 +46,18 @@ export default function CreditMemoWorkbench() {
 
     // Fetch credit memos
     const { data: creditMemosResult, isLoading } = useQuery({
-        queryKey: ["credit-memos", statusFilter],
+        queryKey: ["credit-memos", statusFilter, businessUnitId],
         queryFn: async () => {
             const params = new URLSearchParams();
             if (statusFilter && statusFilter !== "all") {
                 params.append("status", statusFilter);
             }
-            const res = await fetch(`/api/billing/credit-memos?${params}`);
+            if (businessUnitId) {
+                params.append("businessUnitId", businessUnitId);
+            }
+            const res = await fetch(`/api/billing/credit-memos?${params}`, {
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             if (!res.ok) throw new Error("Failed to fetch credit memos");
             return res.json();
         },
@@ -58,9 +65,11 @@ export default function CreditMemoWorkbench() {
 
     // Fetch invoices for credit memo creation
     const { data: invoices = [] } = useQuery({
-        queryKey: ["invoices"],
+        queryKey: ["invoices", businessUnitId],
         queryFn: async () => {
-            const res = await fetch("/api/ar/invoices?status=Issued");
+            const res = await fetch("/api/ar/invoices?status=Issued", {
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             return res.json();
         },
     });
@@ -70,8 +79,11 @@ export default function CreditMemoWorkbench() {
         mutationFn: async (data: any) => {
             const res = await fetch("/api/billing/credit-memo", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {})
+                },
+                body: JSON.stringify({ ...data, entBusinessUnitId: businessUnitId }),
             });
             if (!res.ok) throw new Error("Failed to create credit memo");
             return res.json();
@@ -86,7 +98,10 @@ export default function CreditMemoWorkbench() {
     // Approve mutation
     const approveMutation = useMutation({
         mutationFn: async (id: string) => {
-            const res = await fetch(`/api/billing/credit-memos/${id}/approve`, { method: "POST" });
+            const res = await fetch(`/api/billing/credit-memos/${id}/approve`, {
+                method: "POST",
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             if (!res.ok) throw new Error("Failed to approve");
             return res.json();
         },
@@ -101,7 +116,10 @@ export default function CreditMemoWorkbench() {
         mutationFn: async ({ id, reason }: { id: string; reason: string }) => {
             const res = await fetch(`/api/billing/credit-memos/${id}/reject`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {})
+                },
                 body: JSON.stringify({ reason }),
             });
             if (!res.ok) throw new Error("Failed to reject");

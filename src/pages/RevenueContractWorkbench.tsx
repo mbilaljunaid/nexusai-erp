@@ -27,6 +27,7 @@ interface RevenueContract {
     ledgerId?: string;
     ledgerName?: string;
     legalEntityId?: string;
+    businessUnitId?: string;
     orgId?: string;
     versionNumber?: number;
     status?: string;
@@ -35,16 +36,18 @@ interface RevenueContract {
     createdAt?: string;
 }
 import { useToast } from "@/hooks/use-toast";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function RevenueContractWorkbench() {
     const [page, setPage] = useState(1);
     const LIMIT = 10;
     const { toast } = useToast();
+    const { businessUnitId } = useEnterpriseStore();
 
     const { data: result, isLoading } = useQuery({
-        queryKey: ["revenueContracts", page],
+        queryKey: ["revenueContracts", page, businessUnitId],
         queryFn: async () => {
-            const res = await fetch(`/api/revenue/contracts?page=${page}&limit=${LIMIT}`);
+            const res = await fetch(`/api/revenue/contracts?page=${page}&limit=${LIMIT}`, { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined });
             if (!res.ok) {
                 const error = await res.json();
                 toast({
@@ -87,6 +90,11 @@ export default function RevenueContractWorkbench() {
             header: "Entity",
             accessorKey: "legalEntityId",
             cell: (item) => <Badge variant="outline">{item.legalEntityId || "PRIMARY"}</Badge>
+        },
+        {
+            header: "BU",
+            accessorKey: "businessUnitId",
+            cell: (item) => <span className="text-xs font-mono text-muted-foreground">{item.orgId || "Default"}</span>
         },
         {
             header: "Org",

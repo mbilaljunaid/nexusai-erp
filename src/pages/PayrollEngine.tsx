@@ -5,6 +5,7 @@ import { IconNavigation } from "@/components/IconNavigation";
 import { useState } from "react";
 import { DollarSign, Calculator, TrendingUp, AlertCircle, Settings } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 interface PayrollRun {
   id: string;
@@ -16,8 +17,10 @@ interface PayrollRun {
 
 export default function PayrollEngine() {
   const [activeNav, setActiveNav] = useState("runs");
+  const { legalEntityId } = useEnterpriseStore();
   const { data: payrolls = [] } = useQuery<PayrollRun[]>({
-    queryKey: ["/api/payroll/runs"],
+    queryKey: ["/api/payroll/runs", legalEntityId],
+    queryFn: () => fetch("/api/payroll/runs", { headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined }).then(r => r.json()),
     retry: false,
   });
 

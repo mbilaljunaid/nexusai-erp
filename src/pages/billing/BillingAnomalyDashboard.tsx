@@ -30,17 +30,21 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function BillingAnomalyDashboard() {
+    const { businessUnitId } = useEnterpriseStore();
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const { open, sendMessage } = useNexusAI();
 
     // Fetch Anomalies
     const { data: anomalies = [], isLoading } = useQuery({
-        queryKey: ["billing-anomalies"],
+        queryKey: ["billing-anomalies", businessUnitId],
         queryFn: async () => {
-            const res = await fetch("/api/billing/anomalies");
+            const res = await fetch("/api/billing/anomalies", {
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             if (!res.ok) throw new Error("Failed to fetch anomalies");
             return res.json();
         }
@@ -49,7 +53,10 @@ export default function BillingAnomalyDashboard() {
     // Scan Mutation (Deterministic fallback)
     const scanMutation = useMutation({
         mutationFn: async () => {
-            const res = await fetch("/api/billing/anomalies/scan", { method: "POST" });
+            const res = await fetch("/api/billing/anomalies/scan", {
+                method: "POST",
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             if (!res.ok) throw new Error("Scan failed");
             return res.json();
         },

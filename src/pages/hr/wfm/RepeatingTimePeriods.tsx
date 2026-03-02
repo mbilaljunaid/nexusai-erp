@@ -1,0 +1,293 @@
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
+import { useToast } from "@/hooks/use-toast";
+import {
+    CalendarDays,
+    Save,
+    Play,
+    Plus,
+    Trash2,
+    Calendar,
+    Settings2,
+    Clock,
+    AlignLeft
+} from "lucide-react";
+import { format, addDays, addMonths, addWeeks, addYears, startOfWeek, endOfMonth } from "date-fns";
+
+type PeriodType = "PAYROLL" | "ACCRUAL" | "TIME_CARD" | "PERFORMANCE";
+type Frequency = "DAILY" | "WEEKLY" | "BI_WEEKLY" | "SEMI_MONTHLY" | "MONTHLY" | "QUARTERLY" | "YEARLY" | "CUSTOM_DAYS";
+
+type GeneratedPeriod = {
+    id: string;
+    name: string;
+    startDate: string;
+    endDate: string;
+    status: "OPEN" | "CLOSED" | "FUTURE";
+};
+
+export default function RepeatingTimePeriods() {
+    const { toast } = useToast();
+
+    const [name, setName] = useState("Bi-Weekly US Payroll");
+    const [description, setDescription] = useState("Standard 14-day payroll cycle starting on Mondays");
+    const [periodType, setPeriodType] = useState<PeriodType>("PAYROLL");
+    const [frequency, setFrequency] = useState<Frequency>("BI_WEEKLY");
+
+    const [firstPeriodStart, setFirstPeriodStart] = useState("2026-01-05"); // First Monday of 2026
+    const [lengthInDays, setLengthInDays] = useState("14");
+
+    const [generatedPeriods, setGeneratedPeriods] = useState<GeneratedPeriod[]>([]);
+    const [isGenerating, setIsGenerating] = useState(false);
+
+    const generatePreview = () => {
+        setIsGenerating(true);
+        setTimeout(() => {
+            const periods: GeneratedPeriod[] = [];
+            let currentStart = new Date(firstPeriodStart);
+            const numPeriodsToGenerate = 10; // Preview next 10
+
+            for (let i = 0; i < numPeriodsToGenerate; i++) {
+                let currentEnd;
+                let nextStart;
+
+                switch (frequency) {
+                    case "WEEKLY":
+                        currentEnd = addDays(currentStart, 6);
+                        nextStart = addDays(currentStart, 7);
+                        break;
+                    case "BI_WEEKLY":
+                        currentEnd = addDays(currentStart, 13);
+                        nextStart = addDays(currentStart, 14);
+                        break;
+                    case "SEMI_MONTHLY":
+                        // Simple 1st-15th, 16th-End approximation for demo
+                        if (currentStart.getDate() === 1) {
+                            currentEnd = new Date(currentStart.getFullYear(), currentStart.getMonth(), 15);
+                            nextStart = new Date(currentStart.getFullYear(), currentStart.getMonth(), 16);
+                        } else {
+                            currentEnd = endOfMonth(currentStart);
+                            nextStart = addDays(currentEnd, 1);
+                        }
+                        break;
+                    case "MONTHLY":
+                        currentEnd = endOfMonth(currentStart);
+                        nextStart = addDays(currentEnd, 1);
+                        break;
+                    case "CUSTOM_DAYS":
+                        const days = parseInt(lengthInDays) || 1;
+                        currentEnd = addDays(currentStart, days - 1);
+                        nextStart = addDays(currentStart, days);
+                        break;
+                    default:
+                        currentEnd = addDays(currentStart, 30);
+                        nextStart = addDays(currentStart, 31);
+                }
+
+                periods.push({
+                    id: `p_${i}`,
+                    name: `${i + 1} ${format(currentStart, 'MMM yyyy')}`,
+                    startDate: format(currentStart, "yyyy-MM-dd"),
+                    endDate: format(currentEnd, "yyyy-MM-dd"),
+                    status: i === 0 ? "OPEN" : "FUTURE"
+                });
+
+                currentStart = nextStart;
+            }
+
+            setGeneratedPeriods(periods);
+            setIsGenerating(false);
+
+            toast({
+                title: "Preview Generated",
+                description: `Successfully simulated ${periods.length} time periods based on pattern.`,
+            });
+        }, 600);
+    };
+
+    const handleSave = () => {
+        toast({
+            title: "Time Period Matrix Saved",
+            description: "Future periods will be automatically generated by the scheduled process."
+        });
+    };
+
+    return (
+        <StandardPage
+            title="Repeating Time Periods"
+            description="Define global, complex frequency matrices used by Payroll, Time & Labor, and Benefit Accruals."
+            breadcrumbs={[
+                { label: 'HR Admin', href: '/hr/dashboard' },
+                { label: 'Global Rules Setup', href: '/hr/wfm/time-rules' },
+                { label: 'Time Periods' }
+            ]}
+        >
+            <div className="max-w-6xl mx-auto pb-12 space-y-6">
+
+                {/* Header Actions */}
+                <div className="flex justify-between items-center bg-white dark:bg-zinc-950 p-4 rounded-xl border shadow-sm">
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 rounded-lg">
+                            <CalendarDays className="h-6 w-6" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold">Time Period Definition</h2>
+                            <p className="text-sm text-muted-foreground mt-1">Create recursive date patterns for enterprise processing.</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <Button variant="outline" onClick={generatePreview} disabled={isGenerating}>
+                            <Play className="h-4 w-4 mr-2" /> {isGenerating ? 'Computing...' : 'Generate Preview'}
+                        </Button>
+                        <Button onClick={handleSave} className="bg-indigo-600 hover:bg-indigo-700">
+                            <Save className="h-4 w-4 mr-2" /> Save Pattern
+                        </Button>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    {/* Left Setup Panel */}
+                    <div className="col-span-12 md:col-span-4 space-y-6">
+                        <Card>
+                            <CardHeader className="pb-3 border-b">
+                                <CardTitle className="text-base flex items-center gap-2">
+                                    <AlignLeft className="h-4 w-4" /> Pattern Details
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="pt-4 space-y-4">
+                                <div className="space-y-2">
+                                    <Label>Name</Label>
+                                    <Input value={name} onChange={(e) => setName(e.target.value)} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Description</Label>
+                                    <Input value={description} onChange={(e) => setDescription(e.target.value)} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Usage Type</Label>
+                                    <Select value={periodType} onValueChange={(v) => setPeriodType(v as PeriodType)}>
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="PAYROLL">Payroll Run Cycle</SelectItem>
+                                            <SelectItem value="ACCRUAL">Absence Accrual Rate</SelectItem>
+                                            <SelectItem value="TIME_CARD">WFM Time Card Entry</SelectItem>
+                                            <SelectItem value="PERFORMANCE">Performance Review Cycle</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader className="pb-3 border-b">
+                                <CardTitle className="text-base flex items-center gap-2">
+                                    <Settings2 className="h-4 w-4" /> Period Frequency
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="pt-4 space-y-4">
+                                <div className="space-y-2">
+                                    <Label>Frequency Type</Label>
+                                    <Select value={frequency} onValueChange={(v) => setFrequency(v as Frequency)}>
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="WEEKLY">Weekly</SelectItem>
+                                            <SelectItem value="BI_WEEKLY">Bi-Weekly (14 Days)</SelectItem>
+                                            <SelectItem value="SEMI_MONTHLY">Semi-Monthly (1st, 15th)</SelectItem>
+                                            <SelectItem value="MONTHLY">Monthly</SelectItem>
+                                            <SelectItem value="CUSTOM_DAYS">Custom Day Length</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                                {frequency === "CUSTOM_DAYS" && (
+                                    <div className="space-y-2">
+                                        <Label>Period Length (Days)</Label>
+                                        <Input type="number" value={lengthInDays} onChange={(e) => setLengthInDays(e.target.value)} />
+                                    </div>
+                                )}
+
+                                <div className="space-y-2 pt-2 border-t mt-4">
+                                    <Label>First Period Start Date</Label>
+                                    <div className="relative">
+                                        <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                        <Input
+                                            type="date"
+                                            className="pl-9"
+                                            value={firstPeriodStart}
+                                            onChange={(e) => setFirstPeriodStart(e.target.value)}
+                                        />
+                                    </div>
+                                    <p className="text-[10px] text-muted-foreground mt-1">All subsequent periods will chain consecutively from this anchor date.</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    {/* Right Preview Panel */}
+                    <div className="col-span-12 md:col-span-8">
+                        <Card className="h-full flex flex-col shadow-sm border-zinc-200 dark:border-zinc-800">
+                            <CardHeader className="border-b bg-zinc-50/50 dark:bg-zinc-900/20 pb-4">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <CardTitle className="text-base flex items-center gap-2">
+                                            <Clock className="h-4 w-4" /> Period Schedule Preview
+                                        </CardTitle>
+                                        <CardDescription className="mt-1">Generated forecast based on current anchor date and frequency.</CardDescription>
+                                    </div>
+                                    {generatedPeriods.length > 0 && (
+                                        <Badge variant="outline" className="bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800">
+                                            {generatedPeriods.length} Periods Generated
+                                        </Badge>
+                                    )}
+                                </div>
+                            </CardHeader>
+                            <CardContent className="p-0 flex-1 overflow-auto bg-white dark:bg-zinc-950">
+                                {generatedPeriods.length === 0 ? (
+                                    <div className="text-center py-20 text-muted-foreground">
+                                        <CalendarDays className="h-12 w-12 mx-auto mb-4 opacity-20" />
+                                        <p className="text-sm font-medium">No periods computed yet.</p>
+                                        <p className="text-xs mt-1">Click "Generate Preview" to visualize the repeating cycle.</p>
+                                    </div>
+                                ) : (
+                                    <Table>
+                                        <TableHeader className="bg-zinc-50 dark:bg-zinc-900/50 sticky top-0 z-10 shadow-sm">
+                                            <TableRow>
+                                                <TableHead className="w-[80px]">Seq #</TableHead>
+                                                <TableHead>Period Name</TableHead>
+                                                <TableHead>Start Date</TableHead>
+                                                <TableHead>End Date</TableHead>
+                                                <TableHead className="text-right">System Status</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {generatedPeriods.map((period, index) => (
+                                                <TableRow key={period.id}>
+                                                    <TableCell className="font-mono text-xs text-muted-foreground">{index + 1}</TableCell>
+                                                    <TableCell className="font-medium">{period.name}</TableCell>
+                                                    <TableCell>{format(new Date(period.startDate), 'MMM dd, yyyy')}</TableCell>
+                                                    <TableCell>{format(new Date(period.endDate), 'MMM dd, yyyy')}</TableCell>
+                                                    <TableCell className="text-right">
+                                                        <Badge variant={period.status === "OPEN" ? "default" : "secondary"} className={period.status === "OPEN" ? "bg-emerald-500" : ""}>
+                                                            {period.status}
+                                                        </Badge>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+
+            </div>
+        </StandardPage>
+    );
+}

@@ -3,8 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TrendingDown, DollarSign, Download, TrendingUp, Clock } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function RevenueWaterfall() {
+    const { businessUnitId } = useEnterpriseStore();
     const { data: waterfall } = useQuery<{
         booked?: number;
         billed?: number;
@@ -14,7 +16,10 @@ export default function RevenueWaterfall() {
         unbilled?: number;
         monthlyFlow?: Array<{ month: string; booked: number; recognized: number; deferred: number }>;
     }>({
-        queryKey: ["/api/billing/revenue/waterfall"],
+        queryKey: ["/api/billing/revenue/waterfall", businessUnitId],
+        queryFn: () => fetch("/api/billing/revenue/waterfall", {
+            headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+        }).then(r => r.json()).catch(() => ({}))
     });
 
     return (

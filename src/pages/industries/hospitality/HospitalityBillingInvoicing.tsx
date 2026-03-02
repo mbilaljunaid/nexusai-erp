@@ -3,9 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function HospitalityPage() {
-  const { data = [] } = useQuery<any[]>({ queryKey: ['/api/hospitality-default'] });
+  const { businessUnitId } = useEnterpriseStore();
+  const { data = [] } = useQuery<any[]>({
+    queryKey: ['/api/hospitality-default', businessUnitId],
+    queryFn: () => fetch("/api/hospitality-default", {
+      headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+    }).then(r => r.json()).catch(() => [])
+  });
 
   return (
     <div className="space-y-6 p-6">

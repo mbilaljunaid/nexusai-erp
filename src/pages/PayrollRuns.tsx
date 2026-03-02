@@ -2,9 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign } from "lucide-react";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function PayrollRuns() {
-  const { data: payrollRuns = [] } = useQuery<any[]>({ queryKey: ["/api/hr/payroll-runs"] });
+  const { legalEntityId } = useEnterpriseStore();
+  const { data: payrollRuns = [] } = useQuery<any[]>({
+    queryKey: ["/api/hr/payroll-runs", legalEntityId],
+    queryFn: () => fetch("/api/hr/payroll-runs", { headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined }).then(r => r.json())
+  });
 
   const totalAmount = payrollRuns.reduce((sum, r: any) => sum + parseFloat(r.totalAmount || 0), 0);
   const processedCount = payrollRuns.filter((r: any) => r.status === "processed").length;

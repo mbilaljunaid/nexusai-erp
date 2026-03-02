@@ -6,12 +6,16 @@ import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { CreateBillingEventSheet } from "./components/CreateBillingEventSheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function BillingDashboard() {
+    const { businessUnitId } = useEnterpriseStore();
     const { data: metrics, isLoading } = useQuery({
-        queryKey: ["billing-metrics"],
+        queryKey: ["billing-metrics", businessUnitId],
         queryFn: async () => {
-            const res = await fetch("/api/billing/metrics");
+            const res = await fetch("/api/billing/metrics", {
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             if (!res.ok) throw new Error("Failed to fetch metrics");
             return res.json();
         }

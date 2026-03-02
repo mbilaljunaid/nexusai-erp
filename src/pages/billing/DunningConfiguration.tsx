@@ -8,8 +8,10 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { AlertTriangle, Mail, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function DunningConfiguration() {
+    const { businessUnitId } = useEnterpriseStore();
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [strategyName, setStrategyName] = useState("");
@@ -20,15 +22,20 @@ export default function DunningConfiguration() {
     ]);
 
     const { data: campaigns } = useQuery({
-        queryKey: ["/api/billing/dunning-campaigns"],
-        queryFn: () => apiRequest("/api/billing/dunning-campaigns"),
+        queryKey: ["/api/billing/dunning-campaigns", businessUnitId],
+        queryFn: () => apiRequest("/api/billing/dunning-campaigns", {
+            headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+        }),
     });
 
     const saveMutation = useMutation({
         mutationFn: (data: any) =>
             apiRequest("/api/billing/dunning-campaigns", {
                 method: "POST",
-                body: JSON.stringify(data),
+                headers: {
+                    ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {})
+                },
+                body: JSON.stringify({ ...data, entBusinessUnitId: businessUnitId }),
             }),
         onSuccess: () => {
             toast({ title: "Success", description: "Dunning strategy saved" });

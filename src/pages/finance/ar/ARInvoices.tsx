@@ -16,6 +16,7 @@ import { CreditCard, Plus, Trash2, CheckCircle, AlertTriangle, FileText, Sparkle
 import { Label } from "@/components/ui/label";
 import { useNexusAI } from "@/contexts/NexusAIContext";
 import { useLocation } from "wouter";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function ARInvoices() {
   const { toast } = useToast();
@@ -39,20 +40,26 @@ export default function ARInvoices() {
   const [isInterestModalOpen, setIsInterestModalOpen] = useState(false);
   const [interestParams, setInterestParams] = useState({ rate: "1.5", minOverdueDays: "30" });
 
+  const { businessUnitId } = useEnterpriseStore();
+
   const { data, isLoading } = useQuery<{ data: ArInvoice[], total: number }>({
-    queryKey: ["/api/ar/invoices", { limit: pageSize, offset: (page - 1) * pageSize }]
+    queryKey: ["/api/ar/invoices", { limit: pageSize, offset: (page - 1) * pageSize, businessUnitId }],
+    queryFn: () => fetch(`/api/ar/invoices?limit=${pageSize}&offset=${(page - 1) * pageSize}`, { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json())
   });
 
   const { data: customers } = useQuery({
-    queryKey: ["/api/ar/customers"]
+    queryKey: ["/api/ar/customers", businessUnitId],
+    queryFn: () => fetch("/api/ar/customers", { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json())
   });
 
   const { data: accounts } = useQuery({
-    queryKey: ["/api/ar/accounts"]
+    queryKey: ["/api/ar/accounts", businessUnitId],
+    queryFn: () => fetch("/api/ar/accounts", { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json())
   });
 
   const { data: sites } = useQuery({
-    queryKey: ["/api/ar/sites", { accountId: debitMemoData.accountId }],
+    queryKey: ["/api/ar/sites", { accountId: debitMemoData.accountId }, businessUnitId],
+    queryFn: () => fetch(`/api/ar/sites?accountId=${debitMemoData.accountId}`, { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json()),
     enabled: !!debitMemoData.accountId,
   });
 
@@ -61,8 +68,15 @@ export default function ARInvoices() {
 
   const createMutation = useMutation({
     mutationFn: async (data: any) => {
-      const payload = { ...data, amount: data.invoiceAmount, totalAmount: data.invoiceAmount };
-      const r = await apiRequest("POST", "/api/ar/invoices", payload);
+      const payload = { ...data, amount: data.invoiceAmount, totalAmount: data.invoiceAmount, entBusinessUnitId: businessUnitId };
+      const r = await fetch("/api/ar/invoices", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {})
+        },
+        body: JSON.stringify(payload)
+      });
       return r.json();
     },
     onSuccess: () => {

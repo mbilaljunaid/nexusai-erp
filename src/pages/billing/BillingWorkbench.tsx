@@ -18,6 +18,7 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { BillingEventDetailSheet } from "./components/BillingEventDetailSheet";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function BillingWorkbench() {
     const { toast } = useToast();
@@ -25,23 +26,25 @@ export default function BillingWorkbench() {
     const [selectedEvent, setSelectedEvent] = useState<BillingEvent | null>(null);
     const pageSize = 50; // Server-side pagination supported by StandardTable
 
+    const { businessUnitId } = useEnterpriseStore();
+
     // Fetch Pending Events
     const { data: events = [], isLoading } = useQuery<BillingEvent[]>({
-        queryKey: ["/api/billing/events/pending"],
-        queryFn: () => fetch("/api/billing/events/pending").then(r => r.json()),
+        queryKey: ["/api/billing/events/pending", businessUnitId],
+        queryFn: () => fetch("/api/billing/events/pending", { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json()),
     });
 
     // Fetch Customers for Name Resolution
     const { data: customers = [] } = useQuery({
-        queryKey: ["/api/customers"], // Assuming this exists or using profiles
-        queryFn: () => fetch("/api/billing/profiles").then(r => r.json()) // Fallback to profiles if customers API not direct
+        queryKey: ["/api/customers", businessUnitId], // Assuming this exists or using profiles
+        queryFn: () => fetch("/api/billing/profiles", { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json()) // Fallback to profiles if customers API not direct
     });
 
     const customerMap = new Map<string, string>(customers.map((c: any) => [c.customerId, c.customerName || "Unknown"]));
 
     // Run Auto-Invoice Mutation
     const autoInvoiceMutation = useMutation({
-        mutationFn: () => fetch("/api/billing/process-batch", { method: "POST" }).then(r => r.json()),
+        mutationFn: () => fetch("/api/billing/process-batch", { method: "POST", headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json()),
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["/api/billing/events/pending"] });
             toast({

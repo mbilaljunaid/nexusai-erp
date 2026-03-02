@@ -15,24 +15,30 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function RevenueWaterfallDashboard() {
+    const { businessUnitId } = useEnterpriseStore();
     const [selectedCustomer, setSelectedCustomer] = React.useState<string>("");
 
     const { data, isLoading } = useQuery({
-        queryKey: ["/api/billing/revenue/waterfall", selectedCustomer],
+        queryKey: ["/api/billing/revenue/waterfall", selectedCustomer, businessUnitId],
         queryFn: async () => {
             const url = selectedCustomer ? `/api/billing/revenue/waterfall?customerId=${selectedCustomer}` : `/api/billing/revenue/waterfall`;
-            const res = await fetch(url);
+            const res = await fetch(url, {
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             if (!res.ok) throw new Error("Failed to fetch waterfall data");
             return res.json();
         }
     });
 
     const { data: schedules = [], isLoading: isSchedulesLoading } = useQuery({
-        queryKey: ["/api/ar/revenue/schedules"],
+        queryKey: ["/api/ar/revenue/schedules", businessUnitId],
         queryFn: async () => {
-            const res = await fetch("/api/ar/revenue/schedules");
+            const res = await fetch("/api/ar/revenue/schedules", {
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             if (!res.ok) return [];
             return res.json();
         }

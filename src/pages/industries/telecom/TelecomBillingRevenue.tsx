@@ -8,18 +8,29 @@ import { Badge } from "@/components/ui/badge";
 import { DollarSign, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function TelecomBillingRevenue() {
+  const { businessUnitId } = useEnterpriseStore();
   const { toast } = useToast();
   const [newInvoice, setNewInvoice] = useState({ invoiceId: "", subscriberId: "", amount: "50.00", usageType: "data", status: "pending" });
 
   const { data: invoices = [], isLoading } = useQuery({
-    queryKey: ["/api/telecom-invoices"],
-    queryFn: () => fetch("/api/telecom-invoices").then(r => r.json()).catch(() => []),
+    queryKey: ["/api/telecom-invoices", businessUnitId],
+    queryFn: () => fetch("/api/telecom-invoices", {
+      headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+    }).then(r => r.json()).catch(() => []),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/telecom-invoices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/telecom-invoices", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {})
+      },
+      body: JSON.stringify({ ...data, entBusinessUnitId: businessUnitId })
+    }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/telecom-invoices"] });
       setNewInvoice({ invoiceId: "", subscriberId: "", amount: "50.00", usageType: "data", status: "pending" });
@@ -28,7 +39,10 @@ export default function TelecomBillingRevenue() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/telecom-invoices/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/telecom-invoices/${id}`, {
+      method: "DELETE",
+      headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+    }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/telecom-invoices"] });
       toast({ title: "Invoice deleted" });

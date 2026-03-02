@@ -48,8 +48,10 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function BillingProfileManager() {
+    const { businessUnitId } = useEnterpriseStore();
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -58,8 +60,10 @@ export default function BillingProfileManager() {
     // --- Fetch Data ---
     // 1. Fetch Customers to map names
     const { data: customers = [] } = useQuery({
-        queryKey: ["customers"],
-        queryFn: async () => fetch("/api/ar/customers").then(res => res.json())
+        queryKey: ["customers", businessUnitId],
+        queryFn: async () => fetch("/api/ar/customers", {
+            headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+        }).then(res => res.json())
     });
 
     // 2. Fetch Profiles (We need to add this endpoint or just query billing_profiles directly depending on backend setup)
@@ -68,9 +72,11 @@ export default function BillingProfileManager() {
     // Actually, I should probably implement a quick fetch for this.
     // For safety, I will rely on standard patterns.
     const { data: profiles = [], isLoading } = useQuery({
-        queryKey: ["billing-profiles"],
+        queryKey: ["billing-profiles", businessUnitId],
         queryFn: async () => {
-            const res = await fetch("/api/billing/profiles");
+            const res = await fetch("/api/billing/profiles", {
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             if (!res.ok) throw new Error("Failed to fetch billing profiles");
             return res.json();
         }
@@ -129,8 +135,11 @@ export default function BillingProfileManager() {
 
             const res = await fetch(url, {
                 method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {})
+                },
+                body: JSON.stringify({ ...data, entBusinessUnitId: businessUnitId })
             });
 
             if (!res.ok) throw new Error("Failed to save profile");

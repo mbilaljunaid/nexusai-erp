@@ -45,6 +45,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { SubscriptionDetailSheet } from "./components/SubscriptionDetailSheet";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 interface SubscriptionFormData {
     contractNumber: string;
@@ -61,6 +62,7 @@ interface SubscriptionFormData {
 }
 
 export default function SubscriptionLifecycleManager() {
+    const { businessUnitId } = useEnterpriseStore();
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [selectedSub, setSelectedSub] = useState<any>(null);
@@ -69,13 +71,18 @@ export default function SubscriptionLifecycleManager() {
 
     // Fetch subscriptions
     const { data: subscriptionsResult, isLoading } = useQuery({
-        queryKey: ["subscriptions", statusFilter],
+        queryKey: ["subscriptions", statusFilter, businessUnitId],
         queryFn: async () => {
             const params = new URLSearchParams();
             if (statusFilter && statusFilter !== "all") {
                 params.append("status", statusFilter);
             }
-            const res = await fetch(`/api/billing/subscriptions?${params}`);
+            if (businessUnitId) {
+                params.append("businessUnitId", businessUnitId);
+            }
+            const res = await fetch(`/api/billing/subscriptions?${params}`, {
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             if (!res.ok) throw new Error("Failed to fetch subscriptions");
             return res.json();
         },
@@ -83,9 +90,11 @@ export default function SubscriptionLifecycleManager() {
 
     // Fetch customers for picker
     const { data: customers = [] } = useQuery({
-        queryKey: ["customers"],
+        queryKey: ["customers", businessUnitId],
         queryFn: async () => {
-            const res = await fetch("/api/ar/customers");
+            const res = await fetch("/api/ar/customers", {
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             return res.json();
         },
     });
@@ -95,11 +104,15 @@ export default function SubscriptionLifecycleManager() {
         mutationFn: async (data: SubscriptionFormData) => {
             const res = await fetch("/api/billing/subscriptions", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {})
+                },
                 body: JSON.stringify({
                     ...data,
                     totalTcv: data.products.reduce((sum, p) => sum + parseFloat(p.amount), 0).toString(),
                     totalMrr: (data.products.reduce((sum, p) => sum + parseFloat(p.amount), 0) / 12).toFixed(2),
+                    entBusinessUnitId: businessUnitId,
                 }),
             });
             if (!res.ok) throw new Error("Failed to create subscription");
@@ -115,7 +128,10 @@ export default function SubscriptionLifecycleManager() {
     // Renew mutation
     const renewMutation = useMutation({
         mutationFn: async (id: string) => {
-            const res = await fetch(`/api/billing/subscriptions/${id}/renew`, { method: "POST" });
+            const res = await fetch(`/api/billing/subscriptions/${id}/renew`, {
+                method: "POST",
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             if (!res.ok) throw new Error("Failed to renew");
             return res.json();
         },
@@ -130,7 +146,10 @@ export default function SubscriptionLifecycleManager() {
         mutationFn: async ({ id, reason }: { id: string; reason: string }) => {
             const res = await fetch(`/api/billing/subscriptions/${id}/terminate`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {})
+                },
                 body: JSON.stringify({ reason }),
             });
             if (!res.ok) throw new Error("Failed to cancel");

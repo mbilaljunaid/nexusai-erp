@@ -24,8 +24,10 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import type { BillingRule } from "@/types/erp-types";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function BillingRulesManager() {
+    const { businessUnitId } = useEnterpriseStore();
     const { toast } = useToast();
     const [page, setPage] = useState(1);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -42,8 +44,10 @@ export default function BillingRulesManager() {
 
     // Fetch Rules
     const { data: rules = [], isLoading } = useQuery<BillingRule[]>({
-        queryKey: ["/api/billing/rules"],
-        queryFn: () => fetch("/api/billing/rules").then(r => r.json()),
+        queryKey: ["/api/billing/rules", businessUnitId],
+        queryFn: () => fetch("/api/billing/rules", {
+            headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+        }).then(r => r.json()),
         initialData: []
     });
 
@@ -52,8 +56,11 @@ export default function BillingRulesManager() {
         mutationFn: (rule: Partial<BillingRule>) =>
             fetch("/api/billing/rules", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(rule)
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {})
+                },
+                body: JSON.stringify({ ...rule, entBusinessUnitId: businessUnitId })
             }).then(r => r.json()),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/billing/rules"] });

@@ -43,8 +43,10 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function UsageMeteringDashboard() {
+    const { businessUnitId } = useEnterpriseStore();
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [selectedCustomer, setSelectedCustomer] = useState<string>("");
@@ -52,9 +54,11 @@ export default function UsageMeteringDashboard() {
 
     // Fetch meters
     const { data: meters = [], isLoading: metersLoading } = useQuery({
-        queryKey: ["usage-meters"],
+        queryKey: ["usage-meters", businessUnitId],
         queryFn: async () => {
-            const res = await fetch("/api/billing/usage/meters");
+            const res = await fetch("/api/billing/usage/meters", {
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             if (!res.ok) throw new Error("Failed to fetch meters");
             return res.json();
         },
@@ -62,10 +66,14 @@ export default function UsageMeteringDashboard() {
 
     // Fetch usage metrics
     const { data: metrics } = useQuery({
-        queryKey: ["usage-metrics", selectedCustomer],
+        queryKey: ["usage-metrics", selectedCustomer, businessUnitId],
         queryFn: async () => {
-            const params = selectedCustomer ? `?customerId=${selectedCustomer}` : "";
-            const res = await fetch(`/api/billing/usage/metrics${params}`);
+            const params = new URLSearchParams();
+            if (selectedCustomer) params.append("customerId", selectedCustomer);
+            if (businessUnitId) params.append("businessUnitId", businessUnitId);
+            const res = await fetch(`/api/billing/usage/metrics?${params}`, {
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             if (!res.ok) throw new Error("Failed to fetch metrics");
             return res.json();
         },
@@ -73,19 +81,25 @@ export default function UsageMeteringDashboard() {
 
     // Fetch customers
     const { data: customers = [] } = useQuery({
-        queryKey: ["customers"],
+        queryKey: ["customers", businessUnitId],
         queryFn: async () => {
-            const res = await fetch("/api/ar/customers");
+            const res = await fetch("/api/ar/customers", {
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             return res.json();
         },
     });
 
     // Usage summary query (for selected customer)
     const { data: usageSummary = [] } = useQuery({
-        queryKey: ["usage-summary", selectedCustomer],
+        queryKey: ["usage-summary", selectedCustomer, businessUnitId],
         queryFn: async () => {
             if (!selectedCustomer) return [];
-            const res = await fetch(`/api/billing/usage/summary/${selectedCustomer}?period=current`);
+            const params = new URLSearchParams([["period", "current"]]);
+            if (businessUnitId) params.append("businessUnitId", businessUnitId);
+            const res = await fetch(`/api/billing/usage/summary/${selectedCustomer}?${params}`, {
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             if (!res.ok) return [];
             return res.json();
         },
@@ -97,8 +111,11 @@ export default function UsageMeteringDashboard() {
         mutationFn: async (data: any) => {
             const res = await fetch("/api/billing/usage/meters", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {})
+                },
+                body: JSON.stringify({ ...data, entBusinessUnitId: businessUnitId }),
             });
             if (!res.ok) throw new Error("Failed to create meter");
             return res.json();

@@ -11,29 +11,35 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Users, Building, MapPin, Contact2 } from "lucide-react";
 import type { ArCustomer, ArCustomerAccount, ArCustomerSite, ArCustomerContact } from "@shared/schema";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function ARCustomers() {
   const { toast } = useToast();
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
+  const { businessUnitId } = useEnterpriseStore();
 
   // Queries
   const { data: customers = [], isLoading: loadingCustomers } = useQuery<ArCustomer[]>({
-    queryKey: ["/api/ar/customers"],
+    queryKey: ["/api/ar/customers", businessUnitId],
+    queryFn: () => fetch("/api/ar/customers", { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json())
   });
 
   const { data: accounts = [], isLoading: loadingAccounts } = useQuery<ArCustomerAccount[]>({
-    queryKey: ["/api/ar/accounts", { customerId: selectedCustomerId }],
+    queryKey: ["/api/ar/accounts", { customerId: selectedCustomerId }, businessUnitId],
+    queryFn: () => fetch(`/api/ar/accounts?customerId=${selectedCustomerId}`, { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json()),
     enabled: !!selectedCustomerId,
   });
 
   const { data: sites = [], isLoading: loadingSites } = useQuery<ArCustomerSite[]>({
-    queryKey: ["/api/ar/sites", { accountId: selectedAccountId }],
+    queryKey: ["/api/ar/sites", { accountId: selectedAccountId }, businessUnitId],
+    queryFn: () => fetch(`/api/ar/sites?accountId=${selectedAccountId}`, { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json()),
     enabled: !!selectedAccountId,
   });
 
   const { data: contacts = [], isLoading: loadingContacts } = useQuery<ArCustomerContact[]>({
-    queryKey: ["/api/ar/contacts", { customerId: selectedCustomerId }],
+    queryKey: ["/api/ar/contacts", { customerId: selectedCustomerId }, businessUnitId],
+    queryFn: () => fetch(`/api/ar/contacts?customerId=${selectedCustomerId}`, { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json()),
     enabled: !!selectedCustomerId,
   });
 
@@ -56,7 +62,14 @@ export default function ARCustomers() {
 
   // Mutations
   const createCustomer = useMutation({
-    mutationFn: async (data: any) => await apiRequest("POST", "/api/ar/customers", data),
+    mutationFn: async (data: any) => {
+      const payload = { ...data, entBusinessUnitId: businessUnitId };
+      return await fetch("/api/ar/customers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {}) },
+        body: JSON.stringify(payload)
+      }).then(r => r.json());
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ar/customers"] });
       toast({ title: "Customer Created" });

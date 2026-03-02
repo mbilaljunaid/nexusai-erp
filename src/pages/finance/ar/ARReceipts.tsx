@@ -12,6 +12,7 @@ import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { Plus, Link, Unlink, RotateCcw } from "lucide-react";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { useLocation } from "wouter";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function ARReceipts() {
     const { toast } = useToast();
@@ -25,21 +26,33 @@ export default function ARReceipts() {
     const [applyData, setApplyData] = useState({ invoiceId: "", amount: "" });
     const [chargebackData, setChargebackData] = useState({ invoiceId: "", amount: "" });
 
+    const { businessUnitId } = useEnterpriseStore();
+
     const { data: receipts = [], isLoading } = useQuery<any[]>({
-        queryKey: ["/api/ar/receipts"]
+        queryKey: ["/api/ar/receipts", businessUnitId],
+        queryFn: () => fetch("/api/ar/receipts", { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json())
     });
 
     const { data: customers } = useQuery<any[]>({
-        queryKey: ["/api/ar/customers"]
+        queryKey: ["/api/ar/customers", businessUnitId],
+        queryFn: () => fetch("/api/ar/customers", { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json())
     });
 
     const { data: invoicesData } = useQuery<{ data: any[], total: number }>({
-        queryKey: ["/api/ar/invoices"]
+        queryKey: ["/api/ar/invoices", businessUnitId],
+        queryFn: () => fetch("/api/ar/invoices", { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json())
     });
     const invoices = invoicesData?.data || [];
 
     const createMutation = useMutation({
-        mutationFn: async (data: any) => await apiRequest("POST", "/api/ar/receipts", { ...data, amount: data.amount.toString() }),
+        mutationFn: async (data: any) => {
+            const payload = { ...data, amount: data.amount.toString(), entBusinessUnitId: businessUnitId };
+            return await fetch("/api/ar/receipts", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {}) },
+                body: JSON.stringify(payload)
+            }).then(r => r.json());
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/ar/receipts"] });
             setNewReceipt({ transactionId: "", amount: "", paymentMethod: "EFT", status: "Unapplied", customerId: "" });

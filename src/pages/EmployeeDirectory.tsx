@@ -8,17 +8,22 @@ import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 import { Mail, Phone } from "lucide-react";
 import { IconNavigation } from "@/components/IconNavigation";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function EmployeeDirectory() {
+  const { legalEntityId } = useEnterpriseStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [filtered, setFiltered] = useState<any[]>([]);
-  const { data: employees = [] } = useQuery<any[]>({ queryKey: ["/api/hr/employees"] });
+  const { data: employees = [] } = useQuery<any[]>({
+    queryKey: ["/api/hr/employees", legalEntityId],
+    queryFn: () => fetch("/api/hr/employees", { headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined }).then(r => r.json())
+  });
   const formMetadata = getFormMetadata("employee");
 
   return (
     <div className="space-y-6">
       <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      
+
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Employee Directory</h1>
