@@ -7,6 +7,7 @@ import { TrendingUp, TrendingDown, AlertTriangle, Download } from "lucide-react"
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function BudgetVariance() {
     const [period, setPeriod] = useState("2026-02");
@@ -24,17 +25,17 @@ export default function BudgetVariance() {
     };
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold">Budget Variance Analysis</h1>
-                    <p className="text-muted-foreground">Budget vs. Actual performance tracking</p>
-                </div>
+        <StandardPage
+            title="Budget Variance Analysis"
+            description="Budget vs. Actual performance tracking"
+            actions={
                 <Button variant="outline">
                     <Download className="h-4 w-4 mr-2" />
                     Export Report
                 </Button>
-            </div>
+            }
+            className="space-y-6"
+        >
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -145,6 +146,6 @@ export default function BudgetVariance() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

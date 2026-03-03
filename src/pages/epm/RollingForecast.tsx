@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/queryClient";
 import { Calendar, TrendingUp, Download } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function RollingForecast() {
     const { data: forecast } = useQuery({
@@ -12,17 +13,17 @@ export default function RollingForecast() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold">Rolling Forecast</h1>
-                    <p className="text-muted-foreground">Continuous 12-month planning horizon</p>
-                </div>
+        <StandardPage
+            title="Rolling Forecast"
+            description="Continuous 12-month planning horizon"
+            actions={
                 <Button variant="outline">
                     <Download className="h-4 w-4 mr-2" />
                     Export
                 </Button>
-            </div>
+            }
+            className="space-y-6"
+        >
 
             <Card>
                 <CardHeader>
@@ -41,6 +42,6 @@ export default function RollingForecast() {
                     </ResponsiveContainer>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

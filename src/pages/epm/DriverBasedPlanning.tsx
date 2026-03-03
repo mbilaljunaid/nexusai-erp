@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Save } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function DriverBasedPlanning() {
     const { toast } = useToast();
@@ -29,17 +30,17 @@ export default function DriverBasedPlanning() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold">Driver-Based Planning</h1>
-                    <p className="text-muted-foreground">Define business drivers and formulas</p>
-                </div>
+        <StandardPage
+            title="Driver-Based Planning"
+            description="Define business drivers and formulas"
+            actions={
                 <Button onClick={() => saveMutation.mutate({ drivers })}>
                     <Save className="h-4 w-4 mr-2" />
                     Save Drivers
                 </Button>
-            </div>
+            }
+            className="space-y-6"
+        >
 
             <Card>
                 <CardHeader>
@@ -74,6 +75,6 @@ export default function DriverBasedPlanning() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

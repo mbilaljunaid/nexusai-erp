@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Leaf, TrendingUp, AlertTriangle, CheckCircle2, BarChart3 } from 'lucide-react';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface ESGGoal { id: string; goal_code: string; goal_name: string; category: string; subcategory: string; unit: string; baseline_value: number; target_value: number; target_year: number; status: string; owner: string; }
 interface Actual { actual_value: number; period: string; data_source: string; }
@@ -33,16 +34,15 @@ export default function ESGPlanning() {
     const onTrack = goals.filter(g => g.status === 'On_Track' || g.status === 'Achieved').length;
 
     return (
-        <div style={{ padding: 24, maxWidth: 1400, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, alignItems: 'flex-end' }}>
-                <div>
-                    <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>ESG & Performance Planning</h1>
-                    <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>ESG goal tracking · Budgetary control · Variance analysis</p>
-                </div>
+        <StandardPage
+            title="ESG & Performance Planning"
+            description="ESG goal tracking · Budgetary control · Variance analysis"
+            actions={
                 <div style={{ display: 'flex', gap: 6 }}>
                     {['goals', 'budget'].map(t => <button key={t} onClick={() => setTab(t as any)} style={{ padding: '7px 14px', border: 'none', borderRadius: 8, fontWeight: 700, fontSize: 11, cursor: 'pointer', background: tab === t ? '#111827' : '#f3f4f6', color: tab === t ? '#fff' : '#6b7280' }}>{t === 'goals' ? 'ESG Goals' : 'Budget Control'}</button>)}
                 </div>
-            </div>
+            }
+        >
 
             {tab === 'goals' && (
                 <>
@@ -190,6 +190,6 @@ export default function ESGPlanning() {
                     </table>
                 </div>
             )}
-        </div>
+        </StandardPage>
     );
 }
