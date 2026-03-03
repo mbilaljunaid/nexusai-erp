@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 
 export default function PermissionMatrix() {
@@ -13,9 +14,8 @@ export default function PermissionMatrix() {
   };
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold">Permission Matrix</h1>
+    <StandardPage
+      title="Permission >
         <p className="text-muted-foreground mt-1">CRUD + Actions (Create/Read/Update/Delete/Approve/Export)</p>
       </div>
 
@@ -55,6 +55,6 @@ export default function PermissionMatrix() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

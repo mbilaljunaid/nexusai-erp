@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,12 +36,8 @@ export default function StoreOutletManagement() {
   });
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <MapPin className="h-8 w-8" />
-          Store & Outlet Management
-        </h1>
+    <StandardPage
+      title="Store & Out    </h1>
         <p className="text-muted-foreground mt-2">Multi-location management, store hierarchy, and operational controls</p>
       </div>
 
@@ -105,6 +102,6 @@ export default function StoreOutletManagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

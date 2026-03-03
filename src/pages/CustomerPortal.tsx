@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 export default function CustomerPortal() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Customer Portal</h1>
+    <StandardPage
+      title="Customeh1>
         <p className="text-muted-foreground mt-1">Customer self-service access</p>
       </div>
 
@@ -46,6 +46,6 @@ export default function CustomerPortal() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

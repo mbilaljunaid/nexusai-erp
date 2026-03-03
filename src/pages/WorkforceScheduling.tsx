@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,11 +40,8 @@ export default function WorkforceScheduling() {
   const completed = schedules.filter((s: any) => s.status === "completed").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Users className="h-8 w-8" />
-          Workforce Scheduling & Management
+    <StandardPage
+      title="Workforce Sent
         </h1>
         <p className="text-muted-foreground mt-2">Employee scheduling, shift management, and labor optimization</p>
       </div>
@@ -116,6 +114,6 @@ export default function WorkforceScheduling() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,13 +39,8 @@ export default function StockTransfer() {
   const completedCount = transfers.filter((t: any) => t.status === "completed").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <ArrowRight className="h-8 w-8" />
-          Stock Transfers
-        </h1>
-        <p className="text-muted-foreground mt-2">Move inventory between locations</p>
+    <StandardPage
+      title="Stock Trans        <p className="text-muted-foreground mt-2">Move inventory between locations</p>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
@@ -116,6 +112,6 @@ export default function StockTransfer() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

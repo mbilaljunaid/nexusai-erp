@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -58,14 +59,10 @@ export default function RecruitmentManagement() {
   });
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Users2 className="h-8 w-8" />
-          Recruitment Management
-        </h1>
-        <p className="text-muted-foreground mt-2">Manage job openings and candidates</p>
-      </div>
+    <StandardPage
+      title="Recruitment"
+      description="Manage job openings and candidates"
+    >
 
       <Card data-testid="card-post-job">
         <CardHeader><CardTitle className="text-base">Post New Job</CardTitle></CardHeader>
@@ -166,6 +163,6 @@ export default function RecruitmentManagement() {
         candidateName={schedulerModal.candidateName}
         jobTitle={schedulerModal.jobTitle}
       />
-    </div>
+    </StandardPage>
   );
 }

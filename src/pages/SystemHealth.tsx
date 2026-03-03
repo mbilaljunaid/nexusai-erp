@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { getFormMetadata } from "@/lib/formMetadata";
 
@@ -6,11 +7,10 @@ export default function SystemHealth() {
   const formMetadata = getFormMetadata("system-health");
 
   return (
-    <div className="space-y-6">
-      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      
-      <div>
-        <h1 className="text-3xl font-bold">System Health</h1>
+    <StandardPage
+      title="System Health"
+      description="Monitor system status and performance"
+      classN>
         <p className="text-muted-foreground mt-1">Monitor system status and performance</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -33,6 +33,6 @@ export default function SystemHealth() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </StandardPage>
   );
 }

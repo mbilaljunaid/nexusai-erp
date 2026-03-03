@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, AlertCircle } from "lucide-react";
 
@@ -10,13 +11,8 @@ export default function GoodsReceiptPage() {
   ];
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <CheckCircle className="h-8 w-8" />
-          Goods Receipt
-        </h1>
-        <p className="text-muted-foreground mt-2">Receive and inspect delivered goods</p>
+    <StandardPage
+      title="Goods Recei      <p className="text-muted-foreground mt-2">Receive and inspect delivered goods</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
@@ -63,6 +59,6 @@ export default function GoodsReceiptPage() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

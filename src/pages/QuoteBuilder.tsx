@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -39,11 +40,10 @@ export default function QuoteBuilder() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-semibold">Quote Builder</h1>
-          <p className="text-muted-foreground text-sm">Create and manage sales quotes</p>
+    <StandardPage
+      title="Quote Builder"
+      description="Create and manage sales quotes"
+      className="     <p className="text-muted-foreground text-sm">Create and manage sales quotes</p>
         </div>
         <Button><Plus className="h-4 w-4 mr-2" />New Quote</Button>
       </div>
@@ -66,6 +66,6 @@ export default function QuoteBuilder() {
       )}
       {activeNav === "accepted" && <Card><CardContent className="p-4"><p className="text-muted-foreground">{stats.accepted} quotes accepted</p></CardContent></Card>}
       {activeNav === "value" && <Card><CardContent className="p-4"><p className="text-muted-foreground">Total quote value: ${(stats.totalValue / 1000000).toFixed(1)}M</p></CardContent></Card>}
-    </div>
+    </StandardPage>
   );
 }

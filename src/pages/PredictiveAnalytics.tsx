@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Breadcrumb } from "@/components/Breadcrumb";
 import { Brain, TrendingUp, AlertTriangle, RefreshCw } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
@@ -34,16 +36,23 @@ export default function PredictiveAnalytics() {
 
   const { currentRate, predictedRate, riskLevel, topdrivers } = forecast || {};
 
+  // Placeholder for formMetadata, as it's used by Breadcrumb but not defined in the original snippet.
+  // In a real application, this would likely come from a hook or prop.
+  const formMetadata = {
+    breadcrumbs: [
+      { label: "Home", href: "/" },
+      { label: "HR", href: "/hr" },
+      { label: "Predictive Analytics", href: "/hr/predictive" },
+    ]
+  };
+
   return (
-    <div className="space-y-6 p-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold flex items-center gap-2">
-            <Brain className="w-8 h-8 text-purple-600" />
-            Workforce Predictions
-          </h1>
-          <p className="text-muted-foreground text-sm mt-1">AI-driven insights for attrition and headcount planning (Tier-1)</p>
-        </div>
+    <StandardPage
+      title="Workforce Predictions"
+      description="AI-driven insights for attrition and headcount planning (Tier-1)"
+    >
+      <div className="flex items-center justify-between mb-6">
+        <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
         <Button onClick={() => trainMutation.mutate()} disabled={trainMutation.isPending}>
           {trainMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
           Retrain Model
@@ -105,6 +114,6 @@ export default function PredictiveAnalytics() {
           </p>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

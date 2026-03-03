@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,14 +19,14 @@ export default function OpportunityDetail() {
   ];
 
   return (
-    <div className="space-y-6">
+    <StandardPage
+      title="Acme Corp - Enterprise Suite"
+      description="$250,000 deal"
+      className="space-y-6"
+    >
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" data-testid="button-back">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">Acme Corp - Enterprise Suite</h1>
+          <Button variant="ghost" size="icon" data-tse Suite</h1>
             <p className="text-muted-foreground">$250,000 deal</p>
           </div>
         </div>
@@ -73,6 +74,6 @@ export default function OpportunityDetail() {
       {activeNav === "notes" && (
         <Card><CardHeader><CardTitle className="text-base">Notes</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Internal notes and communications</p></CardContent></Card>
       )}
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,11 +53,10 @@ export default function InvoiceGenerator() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-semibold flex items-center gap-2"><FileText className="h-8 w-8" />Invoice Generator</h1>
-          <p className="text-muted-foreground text-sm">Create, send, and track customer invoices</p>
+    <StandardPage
+      title="Invoice Generator"
+      description="Create, send, and track customer invoices"
+           <p className="text-muted-foreground text-sm">Create, send, and track customer invoices</p>
         </div>
         <Button onClick={() => createMutation.mutate({ invoiceNumber: `INV-${Date.now()}`, amount: "0" })}>
           <Plus className="w-4 h-4 mr-2" />
@@ -147,6 +147,6 @@ export default function InvoiceGenerator() {
       {activeNav === "settings" && (
         <Card><CardHeader><CardTitle className="text-base">Invoice Settings</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Configure invoice numbering and payment terms</p></CardContent></Card>
       )}
-    </div>
+    </StandardPage>
   );
 }

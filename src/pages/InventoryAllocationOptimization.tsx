@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Lightbulb } from "lucide-react";
@@ -13,11 +14,8 @@ export default function InventoryAllocationOptimization() {
   const avgUtilization = allocations.length > 0 ? (allocations.reduce((sum: number, a: any) => sum + (parseFloat(a.utilization) || 0), 0) / allocations.length).toFixed(1) : 0;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Lightbulb className="h-8 w-8" />
-          Inventory Allocation & Optimization
+    <StandardPage
+      title="Inventory Aation
         </h1>
         <p className="text-muted-foreground mt-2">Allocation across warehouses, stock balancing, and optimization recommendations</p>
       </div>
@@ -63,6 +61,6 @@ export default function InventoryAllocationOptimization() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

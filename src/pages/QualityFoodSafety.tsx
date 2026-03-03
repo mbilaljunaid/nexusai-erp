@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,12 +39,8 @@ export default function QualityFoodSafety() {
   const failed = tests.filter((t: any) => t.result === "fail").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <CheckCircle className="h-8 w-8" />
-          Quality, LIMS & Food Safety
-        </h1>
+    <StandardPage
+      title="Quality, LI      </h1>
         <p className="text-muted-foreground mt-2">HACCP plans, CCP, QC testing, LIMS integration, NCR, and compliance audits</p>
       </div>
 
@@ -108,6 +105,6 @@ export default function QualityFoodSafety() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

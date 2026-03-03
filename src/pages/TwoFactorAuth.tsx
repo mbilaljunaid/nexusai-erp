@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 
 export default function TwoFactorAuth() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Two-Factor Authentication</h1>
+    <StandardPage
+      title="Two-Factication</h1>
         <p className="text-muted-foreground mt-1">Manage 2FA settings and enforcement</p>
       </div>
       <Card>
@@ -17,6 +17,6 @@ export default function TwoFactorAuth() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

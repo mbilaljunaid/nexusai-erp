@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Shield, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { MetricCard } from "@/components/MetricCard";
 import { ComplianceAnalytics } from "@/components/compliance/ComplianceAnalytics";
@@ -13,7 +14,11 @@ export default function ComplianceDashboardNew() {
   const metrics = analyticsData?.metrics || { totalRules: 0, openViolations: 0, criticalIssues: 0 };
 
   return (
-    <div className="space-y-6 container mx-auto">
+    <StandardPage
+      title="ComplianceDashboardNew"
+      description=""
+      className="space-y-6 container mx-auto"
+    >
       <div>
         <Breadcrumb items={[{ label: "HR", path: "/hr" }, { label: "Compliance & Risk", path: "/compliance/dashboard" }]} />
         <h1 className="text-3xl font-bold tracking-tight mt-2 flex items-center gap-2">
@@ -52,6 +57,6 @@ export default function ComplianceDashboardNew() {
       {analyticsData && (
         <ComplianceAnalytics data={analyticsData} />
       )}
-    </div>
+    </StandardPage>
   );
 }

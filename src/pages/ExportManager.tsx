@@ -1,12 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 
 export default function ExportManager() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Export Manager</h1>
+    <StandardPage
+      title="Export 1>
         <p className="text-muted-foreground mt-1">Manage data exports to PDF, Excel, CSV</p>
       </div>
 
@@ -27,6 +27,6 @@ export default function ExportManager() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

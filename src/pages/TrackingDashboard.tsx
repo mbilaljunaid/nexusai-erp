@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Map, Truck, CheckCircle, Clock } from "lucide-react";
@@ -14,12 +15,8 @@ export default function TrackingDashboard() {
   const planning = shipments.filter((s: any) => s.status === "planning").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Map className="h-8 w-8" />
-          Tracking Dashboard
-        </h1>
+    <StandardPage
+      title="Tracking Da1>
         <p className="text-muted-foreground mt-2">Track all active shipments and deliveries</p>
       </div>
 
@@ -85,6 +82,6 @@ export default function TrackingDashboard() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

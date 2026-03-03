@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3, Download } from "lucide-react";
 
@@ -10,12 +11,8 @@ export default function FinancialReportsDashboard() {
   ];
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <BarChart3 className="h-8 w-8" />
-          Financial Reports
-        </h1>
+    <StandardPage
+      title="Financial R>
         <p className="text-muted-foreground mt-2">View and manage financial statements</p>
       </div>
 
@@ -63,6 +60,6 @@ export default function FinancialReportsDashboard() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

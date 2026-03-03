@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 import { Lock, AlertTriangle } from "lucide-react";
 
@@ -17,12 +18,8 @@ export default function PasswordPolicies() {
   };
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Lock className="h-8 w-8" />
-          Password Policies
-        </h1>
+    <StandardPage
+      title="Password Po>
         <p className="text-muted-foreground mt-2">Configure organization-wide password requirements</p>
       </div>
 
@@ -91,6 +88,6 @@ export default function PasswordPolicies() {
           <p>Password policy changes are applied to all new passwords. Existing passwords remain valid until expiry.</p>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

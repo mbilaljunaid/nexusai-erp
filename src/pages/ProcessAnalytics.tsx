@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -36,11 +37,8 @@ export default function ProcessAnalytics() {
   });
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <TrendingUp className="h-8 w-8" />
-          Process Analytics & Optimization
+    <StandardPage
+      title="Process Anaon
         </h1>
         <p className="text-muted-foreground mt-2">Track process performance and identify optimization opportunities</p>
       </div>
@@ -113,6 +111,6 @@ export default function ProcessAnalytics() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

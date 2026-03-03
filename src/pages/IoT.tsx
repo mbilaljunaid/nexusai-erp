@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,9 +20,8 @@ export default function IoT() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">IoT & Field Service</h1>
+    <StandardPage
+      title="IoT & Fce</h1>
         <p className="text-muted-foreground mt-2">Manage IoT devices, sensor data, and field service jobs</p>
       </div>
 
@@ -108,6 +108,6 @@ export default function IoT() {
           ))}
         </div>
       )}
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -40,12 +41,8 @@ export default function ToolingManagement() {
   const totalUsage = tools.reduce((sum: number, t: any) => sum + (parseFloat(t.usageCount) || 0), 0);
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Hammer className="h-8 w-8" />
-          Tooling & Fixture Management
-        </h1>
+    <StandardPage
+      title="Tooling & F       </h1>
         <p className="text-muted-foreground mt-2">Tool tracking, calibration, certification, and lifecycle management</p>
       </div>
 
@@ -125,6 +122,6 @@ export default function ToolingManagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

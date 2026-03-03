@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -38,11 +39,10 @@ export default function WorkflowDesigner() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-semibold">Workflow Designer</h1>
-          <p className="text-muted-foreground text-sm">Create custom states and automation rules</p>
+    <StandardPage
+      title="Workflow Designer"
+      description="Create custom states and automation rules"
+           <p className="text-muted-foreground text-sm">Create custom states and automation rules</p>
         </div>
         <Button>
           <Plus className="w-4 h-4 mr-2" />
@@ -69,6 +69,6 @@ export default function WorkflowDesigner() {
       {activeNav === "active" && <Card><CardContent className="p-4"><p className="text-muted-foreground">{stats.active} active workflows</p></CardContent></Card>}
       {activeNav === "rules" && <Card><CardContent className="p-4"><p className="text-muted-foreground">{stats.totalRules} automation rules configured</p></CardContent></Card>}
       {activeNav === "analytics" && <Card><CardContent className="p-4"><p className="text-muted-foreground">Workflow performance analytics</p></CardContent></Card>}
-    </div>
+    </StandardPage>
   );
 }

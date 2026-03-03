@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
@@ -36,14 +37,13 @@ export default function PerformanceConfiguration() {
     };
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-semibold">Performance Configuration</h1>
-                    <p className="text-muted-foreground">Manage appraisal templates and periods.</p>
-                </div>
+        <StandardPage
+            title="Performance Configuration"
+            description="Manage appraisal templates and periods."
+            actions={
                 <Button onClick={createTemplate}><Plus className="w-4 h-4 mr-2" /> New Template</Button>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-1 gap-4">
                 {templates.map(t => (
@@ -60,6 +60,6 @@ export default function PerformanceConfiguration() {
                     </Card>
                 ))}
             </div>
-        </div>
+        </StandardPage>
     );
 }

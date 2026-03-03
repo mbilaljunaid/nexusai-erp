@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     Card,
@@ -161,11 +162,10 @@ export default function SSPManager() {
     if (booksLoading) return <div className="p-8"><Skeleton className="h-64 w-full" /></div>;
 
     return (
-        <div className="p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">SSP Manager</h1>
-                    <p className="text-muted-foreground mt-1">Manage Standalone Selling Prices for Allocations.</p>
+        <StandardPage
+      title="SSP Manager"
+      description="Manage Standalone Selling Prices for Allocations."
+   className="text-muted-foreground mt-1">Manage Standalone Selling Prices for Allocations.</p>
                 </div>
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
@@ -272,6 +272,6 @@ export default function SSPManager() {
                     </Card>
                 </div>
             </div>
-        </div>
-    );
+        </StandardPage>
+  );
 }

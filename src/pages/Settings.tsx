@@ -14,16 +14,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { 
-  User, 
-  Bell, 
-  Shield, 
-  Sparkles, 
+import {
+  User,
+  Bell,
+  Shield,
+  Sparkles,
   Palette,
   Save,
   Mail
 } from "lucide-react";
 import { useTheme, ACCENT_COLORS } from "@/components/ThemeProvider";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function Settings() {
   const { theme, setTheme, accentColor, setAccentColor } = useTheme();
@@ -51,12 +52,11 @@ export default function Settings() {
   ];
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      <div>
-        <h1 className="text-2xl font-semibold">Settings</h1>
-        <p className="text-muted-foreground text-sm">Manage your account and preferences</p>
-      </div>
-
+    <StandardPage
+      title="Settings"
+      description="Manage your account and preferences"
+      className="space-y-6 max-w-4xl"
+    >
       <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
       {activeNav === "profile" && (
@@ -155,9 +155,9 @@ export default function Settings() {
                   </div>
                   <p className="text-xs text-muted-foreground">Receive email updates</p>
                 </div>
-                <Switch 
+                <Switch
                   checked={notifications.email}
-                  onCheckedChange={(checked) => setNotifications({...notifications, email: checked})}
+                  onCheckedChange={(checked) => setNotifications({ ...notifications, email: checked })}
                   data-testid="switch-email-notifications"
                 />
               </div>
@@ -169,9 +169,9 @@ export default function Settings() {
                   </div>
                   <p className="text-xs text-muted-foreground">Browser push notifications</p>
                 </div>
-                <Switch 
+                <Switch
                   checked={notifications.push}
-                  onCheckedChange={(checked) => setNotifications({...notifications, push: checked})}
+                  onCheckedChange={(checked) => setNotifications({ ...notifications, push: checked })}
                   data-testid="switch-push-notifications"
                 />
               </div>
@@ -183,9 +183,9 @@ export default function Settings() {
                   </div>
                   <p className="text-xs text-muted-foreground">Get notified about AI recommendations</p>
                 </div>
-                <Switch 
+                <Switch
                   checked={notifications.aiInsights}
-                  onCheckedChange={(checked) => setNotifications({...notifications, aiInsights: checked})}
+                  onCheckedChange={(checked) => setNotifications({ ...notifications, aiInsights: checked })}
                   data-testid="switch-ai-insights"
                 />
               </div>
@@ -194,9 +194,9 @@ export default function Settings() {
                   <Label>Task Reminders</Label>
                   <p className="text-xs text-muted-foreground">Reminders for upcoming tasks</p>
                 </div>
-                <Switch 
+                <Switch
                   checked={notifications.taskReminders}
-                  onCheckedChange={(checked) => setNotifications({...notifications, taskReminders: checked})}
+                  onCheckedChange={(checked) => setNotifications({ ...notifications, taskReminders: checked })}
                   data-testid="switch-task-reminders"
                 />
               </div>
@@ -205,9 +205,9 @@ export default function Settings() {
                   <Label>Lead Alerts</Label>
                   <p className="text-xs text-muted-foreground">Alerts for hot leads and important updates</p>
                 </div>
-                <Switch 
+                <Switch
                   checked={notifications.leadAlerts}
-                  onCheckedChange={(checked) => setNotifications({...notifications, leadAlerts: checked})}
+                  onCheckedChange={(checked) => setNotifications({ ...notifications, leadAlerts: checked })}
                   data-testid="switch-lead-alerts"
                 />
               </div>
@@ -232,9 +232,9 @@ export default function Settings() {
                   <Label>Automatic Lead Scoring</Label>
                   <p className="text-xs text-muted-foreground">AI automatically scores new leads</p>
                 </div>
-                <Switch 
+                <Switch
                   checked={aiSettings.autoScoring}
-                  onCheckedChange={(checked) => setAiSettings({...aiSettings, autoScoring: checked})}
+                  onCheckedChange={(checked) => setAiSettings({ ...aiSettings, autoScoring: checked })}
                   data-testid="switch-auto-scoring"
                 />
               </div>
@@ -243,9 +243,9 @@ export default function Settings() {
                   <Label>Task Suggestions</Label>
                   <p className="text-xs text-muted-foreground">AI suggests tasks based on your activity</p>
                 </div>
-                <Switch 
+                <Switch
                   checked={aiSettings.taskSuggestions}
-                  onCheckedChange={(checked) => setAiSettings({...aiSettings, taskSuggestions: checked})}
+                  onCheckedChange={(checked) => setAiSettings({ ...aiSettings, taskSuggestions: checked })}
                   data-testid="switch-task-suggestions"
                 />
               </div>
@@ -254,9 +254,9 @@ export default function Settings() {
                   <Label>Email Draft Generation</Label>
                   <p className="text-xs text-muted-foreground">AI helps draft follow-up emails</p>
                 </div>
-                <Switch 
+                <Switch
                   checked={aiSettings.emailDrafts}
-                  onCheckedChange={(checked) => setAiSettings({...aiSettings, emailDrafts: checked})}
+                  onCheckedChange={(checked) => setAiSettings({ ...aiSettings, emailDrafts: checked })}
                   data-testid="switch-email-drafts"
                 />
               </div>
@@ -265,9 +265,9 @@ export default function Settings() {
                   <Label>Analytics Insights</Label>
                   <p className="text-xs text-muted-foreground">AI-powered analytics and predictions</p>
                 </div>
-                <Switch 
+                <Switch
                   checked={aiSettings.analyticsInsights}
-                  onCheckedChange={(checked) => setAiSettings({...aiSettings, analyticsInsights: checked})}
+                  onCheckedChange={(checked) => setAiSettings({ ...aiSettings, analyticsInsights: checked })}
                   data-testid="switch-analytics-insights"
                 />
               </div>
@@ -306,7 +306,7 @@ export default function Settings() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-3 gap-4">
-                <div 
+                <div
                   className={`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'light' ? 'border-primary' : 'border-transparent'}`}
                   onClick={() => setTheme('light')}
                   data-testid="button-theme-light"
@@ -314,7 +314,7 @@ export default function Settings() {
                   <div className="h-20 rounded bg-white border mb-2" />
                   <p className="text-sm font-medium text-center">Light</p>
                 </div>
-                <div 
+                <div
                   className={`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'dark' ? 'border-primary' : 'border-transparent'}`}
                   onClick={() => setTheme('dark')}
                   data-testid="button-theme-dark"
@@ -322,7 +322,7 @@ export default function Settings() {
                   <div className="h-20 rounded bg-gray-900 border border-gray-700 mb-2" />
                   <p className="text-sm font-medium text-center">Dark</p>
                 </div>
-                <div 
+                <div
                   className={`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'system' ? 'border-primary' : 'border-transparent'}`}
                   onClick={() => setTheme('system')}
                   data-testid="button-theme-system"
@@ -345,18 +345,16 @@ export default function Settings() {
                   <button
                     key={color.name}
                     onClick={() => setAccentColor(color)}
-                    className={`group relative flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all hover-elevate ${
-                      accentColor.name === color.name 
-                        ? 'border-foreground/50 bg-muted/50' 
+                    className={`group relative flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all hover-elevate ${accentColor.name === color.name
+                        ? 'border-foreground/50 bg-muted/50'
                         : 'border-transparent'
-                    }`}
+                      }`}
                     data-testid={`button-accent-${color.name.toLowerCase()}`}
                   >
-                    <div 
-                      className={`w-8 h-8 rounded-full transition-transform group-hover:scale-110 ${
-                        accentColor.name === color.name ? 'ring-2 ring-offset-2 ring-offset-background' : ''
-                      }`}
-                      style={{ 
+                    <div
+                      className={`w-8 h-8 rounded-full transition-transform group-hover:scale-110 ${accentColor.name === color.name ? 'ring-2 ring-offset-2 ring-offset-background' : ''
+                        }`}
+                      style={{
                         backgroundColor: color.value,
                         boxShadow: accentColor.name === color.name ? `0 0 0 2px var(--background), 0 0 0 4px ${color.value}` : 'none'
                       }}
@@ -382,6 +380,6 @@ export default function Settings() {
           </Card>
         </div>
       )}
-    </div>
+    </StandardPage>
   );
 }

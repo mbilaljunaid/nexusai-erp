@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 export default function PerformanceMonitoring() {
   const data = [{ time: "10:00", latency: 45 }, { time: "11:00", latency: 38 }];
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Performance Monitoring</h1>
+    <StandardPage
+      title="Performoring</h1>
         <p className="text-muted-foreground mt-1">Track system performance metrics</p>
       </div>
       <Card>
@@ -23,6 +23,6 @@ export default function PerformanceMonitoring() {
           </ResponsiveContainer>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

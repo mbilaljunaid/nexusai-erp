@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Boxes, AlertCircle } from "lucide-react";
@@ -14,11 +15,8 @@ export default function InventoryOptimization() {
   const optimized = inventory.filter((i: any) => i.daysOfSupply >= 14 && i.daysOfSupply <= 90).length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Boxes className="h-8 w-8" />
-          Inventory Optimization (Multi-Warehouse)
+    <StandardPage
+      title="Inventory OWarehouse)
         </h1>
         <p className="text-muted-foreground mt-2">Stock levels across DCs, inventory turns, and safety stock recommendations</p>
       </div>
@@ -86,6 +84,6 @@ export default function InventoryOptimization() {
           })}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

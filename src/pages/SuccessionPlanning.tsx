@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -333,10 +334,10 @@ export default function SuccessionPlanning() {
   if (isPlansLoading || isPoolsLoading) return <div className="p-8">Loading Succession Data...</div>;
 
   return (
-    <div className="p-8 space-y-6 bg-slate-50 min-h-screen">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">Succession Planning</h1>
+    <StandardPage
+      title="Succession Planning"
+      description="Identify and develop future leaders"
+      className="p-h1>
           <p className="text-muted-foreground mt-1">Identify and develop future leaders</p>
         </div>
         <div className="flex gap-2">
@@ -700,6 +701,6 @@ export default function SuccessionPlanning() {
         onSubmit={(assessment) => assessCandidateMutation.mutate(assessment)}
         isLoading={assessCandidateMutation.isPending}
       />
-    </div>
+    </StandardPage>
   );
 }

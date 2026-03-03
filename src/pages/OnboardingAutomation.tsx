@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
@@ -36,8 +37,8 @@ export default function OnboardingAutomation() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div><h1 className="text-3xl font-semibold">Onboarding Automation</h1>
+    <StandardPage
+      title="Onboardn</h1>
         <p className="text-muted-foreground text-sm">Document management and workflow automation</p>
       </div>
 
@@ -60,6 +61,6 @@ export default function OnboardingAutomation() {
       {activeNav === "documents" && <Card><CardContent className="p-4"><p className="text-muted-foreground">{stats.docs} onboarding documents</p></CardContent></Card>}
       {activeNav === "templates" && <Card><CardContent className="p-4"><p className="text-muted-foreground">Onboarding templates and workflows</p></CardContent></Card>}
       {activeNav === "analytics" && <Card><CardContent className="p-4"><p className="text-muted-foreground">Onboarding metrics and completion rates</p></CardContent></Card>}
-    </div>
+    </StandardPage>
   );
 }

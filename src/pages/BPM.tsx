@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,9 +17,8 @@ export default function BPM() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-semibold flex items-center gap-2"><Workflow className="w-8 h-8" />Business Process Mapping</h1>
+    <StandardPage
+      title="Businesping</h1>
         <p className="text-muted-foreground text-sm">Design, optimize, and automate business workflows</p>
       </div>
 
@@ -72,6 +72,6 @@ export default function BPM() {
           <Card><CardHeader><CardTitle className="text-base">Process Analytics</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Efficiency metrics and performance data</p></CardContent></Card>
         </div>
       )}
-    </div>
+    </StandardPage>
   );
 }

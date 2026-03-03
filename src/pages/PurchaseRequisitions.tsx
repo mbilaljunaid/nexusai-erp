@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Plus } from "lucide-react";
@@ -11,12 +12,8 @@ export default function PurchaseRequisitions() {
   ];
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <FileText className="h-8 w-8" />
-          Purchase Requisitions
-        </h1>
+    <StandardPage
+      title="Purchase Re</h1>
         <p className="text-muted-foreground mt-2">Manage purchase requests and approvals</p>
       </div>
 
@@ -64,6 +61,6 @@ export default function PurchaseRequisitions() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,10 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function CustomerSuccessPanel() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Customer Success Panel</h1>
+    <StandardPage
+      title="CustomePanel</h1>
         <p className="text-muted-foreground mt-1">Customer health and success tracking</p>
       </div>
       <div className="grid gap-4">
@@ -20,6 +20,6 @@ export default function CustomerSuccessPanel() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

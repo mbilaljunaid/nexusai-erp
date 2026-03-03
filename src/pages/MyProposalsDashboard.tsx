@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -88,14 +89,10 @@ export default function MyProposalsDashboard() {
     Math.round((acceptedProposals.length / proposals.length) * 100) : 0;
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2" data-testid="text-my-proposals-title">
-            <FileText className="w-8 h-8" />
-            My Proposals
-          </h1>
-          <p className="text-muted-foreground mt-1">Track and manage your submitted proposals</p>
+    <StandardPage
+      title="My Proposals"
+      description="Track and manage your submitted proposals"
+      class       <p className="text-muted-foreground mt-1">Track and manage your submitted proposals</p>
         </div>
         <Link to="/marketplace/jobs">
           <Button variant="outline" data-testid="button-browse-jobs">
@@ -253,6 +250,6 @@ export default function MyProposalsDashboard() {
           )}
         </TabsContent>
       </Tabs>
-    </div>
+    </StandardPage>
   );
 }

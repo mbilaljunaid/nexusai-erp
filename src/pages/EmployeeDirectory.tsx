@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,12 +22,12 @@ export default function EmployeeDirectory() {
   const formMetadata = getFormMetadata("employee");
 
   return (
-    <div className="space-y-6">
-      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Employee Directory</h1>
+    <StandardPage
+      title="Employee Directory"
+      description="Find and manage employee information"
+      className="space-y-6"
+    >
+      <Breadcrumb items={formMetad1>
           <p className="text-muted-foreground mt-1">Find and manage employee information</p>
         </div>
         <SmartAddButton formId="employee" formMetadata={formMetadata} />
@@ -50,6 +51,6 @@ export default function EmployeeDirectory() {
           </Card>
         )) : <Card><CardContent className="p-4"><p className="text-muted-foreground">No employees found</p></CardContent></Card>}
       </div>
-    </div>
+    </StandardPage>
   );
 }

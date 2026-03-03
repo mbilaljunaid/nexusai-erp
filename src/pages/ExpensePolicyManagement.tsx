@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -229,11 +230,10 @@ export default function ExpensePolicyManagement() {
     const categoriesWithPolicies = new Set(policies.map(p => p.category)).size;
 
     return (
-        <div className="space-y-6 pb-20">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Expense Policy Management</h1>
-                    <p className="text-muted-foreground mt-1 text-lg">
+        <StandardPage
+      title="Expense Policy Management"
+      description="Configure expense approval rules and spending limits"
+      className="ext-lg">
                         Configure expense approval rules and spending limits
                     </p>
                 </div>
@@ -464,6 +464,6 @@ export default function ExpensePolicyManagement() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
-    );
+        </StandardPage>
+  );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IconNavigation } from "@/components/IconNavigation";
 import { Button } from "@/components/ui/button";
@@ -16,9 +17,8 @@ export default function Compliance() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-semibold">Compliance & Audit</h1>
+    <StandardPage
+      title="Compliah1>
         <p className="text-muted-foreground text-sm">Monitor regulatory compliance and audit activities</p>
       </div>
 
@@ -174,6 +174,6 @@ export default function Compliance() {
             </CardContent>
           </Card>
       )}
-    </div>
+    </StandardPage>
   );
 }

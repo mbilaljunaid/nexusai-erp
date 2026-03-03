@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Breadcrumb } from "@/components/Breadcrumb";
@@ -12,12 +13,13 @@ export default function AlertsAndNotifications() {
   const formMetadata = getFormMetadata("alertsNotifications");
 
   return (
-    <div className="space-y-6">
+    <StandardPage
+      title="Alerts & Notifications"
+      description="Configure system alerts and notifications"
+      className="space-y-6"
+    >
       <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={alerts} onFilter={setFiltered} />
-      
-      <div>
-        <h1 className="text-3xl font-bold">Alerts & Notifications</h1>
+      <FormSearchWithMetadata formMetations</h1>
         <p className="text-muted-foreground mt-1">Configure system alerts and notifications</p>
       </div>
       <div className="grid gap-4">
@@ -33,6 +35,6 @@ export default function AlertsAndNotifications() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 import { Activity, AlertCircle, CheckCircle, Lock } from "lucide-react";
 
@@ -26,12 +27,8 @@ export default function SecurityEventLog() {
   };
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Activity className="h-8 w-8" />
-          Security Event Log
-        </h1>
+    <StandardPage
+      title="Security Ev1>
         <p className="text-muted-foreground mt-2">Monitor security events and access logs</p>
       </div>
 
@@ -80,6 +77,6 @@ export default function SecurityEventLog() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

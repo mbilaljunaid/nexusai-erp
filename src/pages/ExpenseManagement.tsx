@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -198,11 +199,10 @@ export default function ExpenseManagement() {
   ];
 
   return (
-    <div className="space-y-6 pb-20">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Expense Management</h1>
-          <p className="text-muted-foreground mt-1 text-lg">
+    <StandardPage
+      title="Expense Management"
+      description="End-to-end expense tracking with policy validation & analytics"
+muted-foreground mt-1 text-lg">
             End-to-end expense tracking with policy validation & analytics
           </p>
         </div>
@@ -414,6 +414,6 @@ export default function ExpenseManagement() {
           </SheetFooter>
         </SheetContent>
       </Sheet>
-    </div>
+    </StandardPage>
   );
 }

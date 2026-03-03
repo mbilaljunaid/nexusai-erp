@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -40,11 +41,10 @@ export default function ServiceRequestQueue() {
     if (isLoading) return <div className="p-8">Loading...</div>;
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Service Request Triage</h1>
-                    <p className="text-muted-foreground">Review and convert incoming breakdown requests.</p>
+        <StandardPage
+      title="Service Request Triage"
+      description="Review and convert incoming breakdown requests."
+      class              <p className="text-muted-foreground">Review and convert incoming breakdown requests.</p>
                 </div>
             </div>
 
@@ -102,6 +102,6 @@ export default function ServiceRequestQueue() {
                     </Table>
                 </CardContent>
             </Card>
-        </div>
-    );
+        </StandardPage>
+  );
 }

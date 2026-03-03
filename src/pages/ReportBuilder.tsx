@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,11 +36,10 @@ export default function ReportBuilder() {
   });
 
   return (
-    <div className="space-y-6 p-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2"><FileText className="w-8 h-8" />Report Builder</h1>
-          <p className="text-muted-foreground mt-1">Create and schedule custom reports</p>
+    <StandardPage
+      title="Report Builder"
+      description="Create and schedule custom reports"
+     <p className="text-muted-foreground mt-1">Create and schedule custom reports</p>
         </div>
       </div>
 
@@ -88,6 +88,6 @@ export default function ReportBuilder() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

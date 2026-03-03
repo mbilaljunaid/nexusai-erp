@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 
 export default function NotificationSettings() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Notification Settings</h1>
+    <StandardPage
+      title="Notificings</h1>
         <p className="text-muted-foreground mt-1">Configure system notifications</p>
       </div>
       <div className="grid gap-4">
@@ -22,6 +22,6 @@ export default function NotificationSettings() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

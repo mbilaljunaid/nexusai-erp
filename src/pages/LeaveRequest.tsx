@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,13 +15,12 @@ export default function LeaveRequest() {
   const formMetadata = getFormMetadata("leaveRequest");
 
   return (
-    <div className="space-y-6">
-      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Leave Requests</h1>
-          <p className="text-muted-foreground mt-1">Manage and track employee leave requests</p>
+    <StandardPage
+      title="Leave Requests"
+      description="Manage and track employee leave requests"
+      className="space-y-6"
+    >
+      <Breadcrumb items={formMetadata?.b         <p className="text-muted-foreground mt-1">Manage and track employee leave requests</p>
         </div>
         <SmartAddButton formId="leaveRequest" formMetadata={formMetadata} />
       </div>
@@ -50,6 +50,6 @@ export default function LeaveRequest() {
           )) : <p className="text-muted-foreground text-center py-4">No leave requests found</p>}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckSquare, Plus } from "lucide-react";
@@ -11,12 +12,8 @@ export default function SalesActivities() {
   ];
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <CheckSquare className="h-8 w-8" />
-          Sales Activities
-        </h1>
+    <StandardPage
+      title="Sales Activ
         <p className="text-muted-foreground mt-2">Track calls, emails, and meetings</p>
       </div>
 
@@ -53,6 +50,6 @@ export default function SalesActivities() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

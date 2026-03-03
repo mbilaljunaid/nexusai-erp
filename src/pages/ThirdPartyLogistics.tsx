@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Building2, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function ThirdPartyLogistics() {
   const { toast } = useToast();
@@ -39,14 +40,11 @@ export default function ThirdPartyLogistics() {
   const avgRate = partners.length > 0 ? (partners.reduce((sum: number, p: any) => sum + (parseFloat(p.storageRate) || 0), 0) / partners.length).toFixed(2) : "0";
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Building2 className="h-8 w-8" />
-          3PL & Vendor Managed Inventory (VMI)
-        </h1>
-        <p className="text-muted-foreground mt-2">Manage third-party logistics and VMI agreements</p>
-      </div>
+    <StandardPage
+      title="3PL & Vendor Managed Inventory (VMI)"
+      description="Manage third-party logistics and VMI agreements"
+      className="space-y-6"
+    >
 
       <div className="grid grid-cols-3 gap-3">
         <Card className="p-3">
@@ -108,6 +106,6 @@ export default function ThirdPartyLogistics() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

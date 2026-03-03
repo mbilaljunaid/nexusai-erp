@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,10 +44,9 @@ export default function WebsiteManagement() {
   };
 
   return (
-    <div className="space-y-6 p-4" data-testid="website-management">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2"><Globe className="h-8 w-8" />Website Management</h1>
-        <p className="text-muted-foreground mt-2">Manage website pages and content</p>
+    <StandardPage
+      title="Website Management"
+      description="Managed-foreground mt-2">Manage website pages and content</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
@@ -127,6 +127,6 @@ export default function WebsiteManagement() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

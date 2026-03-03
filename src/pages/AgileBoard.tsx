@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +10,7 @@ import { getFormMetadata } from "@/lib/formMetadata";
 import { Plus, Zap, TrendingUp, Users, Calendar } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { KanbanBoard } from "@/components/ui/KanbanBoard";
 
 interface Task {
   id: string;
@@ -54,10 +56,19 @@ export default function AgileBoard() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
+    <StandardPage
+      title="Agile Board"
+      description="Sprint planning and kanban board"
+      className="space-y-6"
+    >
+      <div className="flex items-center justify-between">
+        <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+        <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={sprints} onFilter={setFiltered} />
+      </div>
+
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-semibold">Agile Board</h1>
+          <h1 className="text-3xl font-bold">Agile Board</h1>
           <p className="text-muted-foreground text-sm">Sprint planning and kanban board</p>
         </div>
         <Button>
@@ -124,30 +135,30 @@ export default function AgileBoard() {
         </Card>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {["todo", "in_progress", "done"].map((status) => (
-          <div key={status} className="space-y-3">
-            <h3 className="font-semibold text-sm uppercase">
-              {status === "todo" ? "To Do" : status === "in_progress" ? "In Progress" : "Done"} ({status === "todo" ? todo.length : status === "in_progress" ? inProgress.length : done.length})
-            </h3>
-            <div className="space-y-2">
-              {tasks
-                .filter(t => t.status === status)
-                .map((task) => (
-                  <Card key={task.id} className="hover-elevate cursor-grab">
-                    <CardContent className="p-3">
-                      <p className="font-medium text-sm">{task.title}</p>
-                      <div className="flex items-center justify-between mt-2">
-                        <Badge variant="secondary" className="text-xs">{task.assignee}</Badge>
-                        <Badge className="text-xs">{task.points}pt</Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+      <KanbanBoard<Task>
+        columns={[
+          { id: "todo", title: "To Do", bgColor: "bg-gray-50 dark:bg-gray-900" },
+          { id: "in_progress", title: "In Progress", bgColor: "bg-blue-50 dark:bg-blue-950" },
+          { id: "done", title: "Done", bgColor: "bg-green-50 dark:bg-green-950" },
+        ]}
+        items={tasks}
+        getColumnId={(t) => t.status}
+        onDragEnd={(taskId, newStatus) => {
+          // Optimistic update or call API here
+          // e.g. updateTaskMutation.mutate({ id: taskId, status: newStatus as any })
+        }}
+        renderCard={(task) => (
+          <Card className="cursor-grab active:cursor-grabbing hover-elevate">
+            <CardContent className="p-3">
+              <p className="font-medium text-sm">{task.title}</p>
+              <div className="flex items-center justify-between mt-2">
+                <Badge variant="secondary" className="text-xs">{task.assignee}</Badge>
+                <Badge className="text-xs">{task.points}pt</Badge>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      />
+    </StandardPage>
   );
 }

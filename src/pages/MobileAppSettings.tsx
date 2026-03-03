@@ -1,10 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function MobileAppSettings() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Mobile App Settings</h1>
+    <StandardPage
+      title="Mobile gs</h1>
         <p className="text-muted-foreground mt-1">Configure mobile app and offline functionality</p>
       </div>
       <Card>
@@ -13,6 +13,6 @@ export default function MobileAppSettings() {
           <p className="font-semibold text-lg mt-2">Enabled</p>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

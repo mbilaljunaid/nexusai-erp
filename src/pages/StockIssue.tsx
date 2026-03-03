@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,13 +39,8 @@ export default function StockIssue() {
   const totalIssued = issues.reduce((sum: number, i: any) => sum + (parseFloat(i.quantity) || 0), 0);
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <ArrowUp className="h-8 w-8" />
-          Stock Issues
-        </h1>
-        <p className="text-muted-foreground mt-2">Record inventory withdrawals and issues</p>
+    <StandardPage
+      title="Stock Issue     <p className="text-muted-foreground mt-2">Record inventory withdrawals and issues</p>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
@@ -116,6 +112,6 @@ export default function StockIssue() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

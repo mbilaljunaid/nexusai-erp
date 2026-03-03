@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,12 +40,8 @@ export default function EDIMarketplaceConnectors() {
   const ediCount = connections.filter((c: any) => c.type === "edi").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Network className="h-8 w-8" />
-          EDI & Marketplace Connectors
-        </h1>
+    <StandardPage
+      title="EDI & Marke       </h1>
         <p className="text-muted-foreground mt-2">EDI 850/855/856/810, ASN tracking, API connectors, and marketplace integrations</p>
       </div>
 
@@ -123,6 +120,6 @@ export default function EDIMarketplaceConnectors() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

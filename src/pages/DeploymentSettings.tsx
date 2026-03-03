@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 
 export default function DeploymentSettings() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Deployment Settings</h1>
+    <StandardPage
+      title="Deploymgs</h1>
         <p className="text-muted-foreground mt-1">Manage deployment configurations</p>
       </div>
       <Card>
@@ -21,6 +21,6 @@ export default function DeploymentSettings() {
           <Button data-testid="button-view-logs">View Deployment Logs</Button>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

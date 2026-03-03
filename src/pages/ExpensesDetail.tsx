@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useRoute, useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -342,7 +343,11 @@ export default function ExpensesDetail() {
 
   if (reportLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <StandardPage
+      title="{report.title || `Expense Report ${report.reportNumber || report.id.slice(0, 8)}`}"
+      description="{report.description || "No description provided"}"
+      className="flex items-center justify-center h-64"
+    >
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
@@ -360,13 +365,7 @@ export default function ExpensesDetail() {
     <div className="space-y-6 pb-20">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={() => setLocation("/finance/expenses")}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold">
-              {report.title || `Expense Report ${report.reportNumber || report.id.slice(0, 8)}`}
+        <div className="flex items- 8)}`}
             </h1>
             <p className="text-sm text-muted-foreground mt-0.5">
               {report.description || "No description provided"}
@@ -702,6 +701,6 @@ export default function ExpensesDetail() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </StandardPage>
   );
 }

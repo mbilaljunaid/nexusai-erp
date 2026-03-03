@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,11 +36,10 @@ export default function AccountDirectory() {
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Accounts</h1>
-          <p className="text-muted-foreground mt-1">Manage customer accounts and relationships</p>
+    <StandardPage
+      title="Accounts"
+      description="Manage customer accounts and relationships"
+   <p className="text-muted-foreground mt-1">Manage customer accounts and relationships</p>
         </div>
       </div>
 
@@ -86,6 +86,6 @@ export default function AccountDirectory() {
           </Card>
         )))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

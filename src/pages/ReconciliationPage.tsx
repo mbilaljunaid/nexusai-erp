@@ -1,4 +1,5 @@
 import { ReconciliationWorkbench } from "@/components/cash/ReconciliationWorkbench";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useRoute } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -12,7 +13,11 @@ export default function ReconciliationPage() {
     if (!accountId) return <div>Invalid Account</div>;
 
     return (
-        <div className="p-4 flex flex-col h-screen overflow-hidden">
+        <StandardPage
+      title="ReconciliationPage"
+      description=""
+      className="flex flex-col h-screen overflow-hidden"
+    >
             <div className="flex items-center gap-4 mb-4">
                 <Link href="/finance/cash-management">
                     <Button variant="ghost" size="icon">
@@ -22,6 +27,6 @@ export default function ReconciliationPage() {
                 <h1 className="text-xl font-bold">Bank Reconciliation</h1>
             </div>
             <ReconciliationWorkbench accountId={accountId} />
-        </div>
-    );
+        </StandardPage>
+  );
 }

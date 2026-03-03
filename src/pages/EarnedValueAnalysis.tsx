@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp } from "lucide-react";
@@ -13,12 +14,8 @@ export default function EarnedValueAnalysis() {
   const avgCPI = evas.length > 0 ? (evas.reduce((sum: number, e: any) => sum + (parseFloat(e.cpi) || 0), 0) / evas.length).toFixed(2) : "0";
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <TrendingUp className="h-8 w-8" />
-          Earned Value Analysis (EVM)
-        </h1>
+    <StandardPage
+      title="Earned Valu      </h1>
         <p className="text-muted-foreground mt-2">Schedule Performance Index (SPI), Cost Performance (CPI), and forecasting</p>
       </div>
 
@@ -60,6 +57,6 @@ export default function EarnedValueAnalysis() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

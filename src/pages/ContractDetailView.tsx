@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Link, useRoute } from "wouter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -45,7 +46,11 @@ export default function ContractDetailView() {
     if (!contract) return <div className="p-6">Contract not found</div>;
 
     return (
-        <div className="p-6 space-y-6 bg-slate-50 min-h-screen">
+        <StandardPage
+      title="ContractDetailView"
+      description=""
+      className="p-6 space-y-6 bg-slate-50 min-h-screen"
+    >
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
@@ -283,6 +288,6 @@ export default function ContractDetailView() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
-    );
+        </StandardPage>
+  );
 }

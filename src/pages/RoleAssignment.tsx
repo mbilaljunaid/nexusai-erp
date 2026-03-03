@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,13 +14,8 @@ export default function RoleAssignment() {
   ]);
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Users className="h-8 w-8" />
-          Role Assignment
-        </h1>
-        <p className="text-muted-foreground mt-2">Assign roles to users and manage assignments</p>
+    <StandardPage
+      title="Role Assign        <p className="text-muted-foreground mt-2">Assign roles to users and manage assignments</p>
       </div>
 
       <Card className="p-4 bg-muted/50">
@@ -59,6 +55,6 @@ export default function RoleAssignment() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

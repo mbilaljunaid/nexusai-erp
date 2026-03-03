@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Smartphone, Wifi, Cloud } from "lucide-react";
@@ -8,12 +9,8 @@ export default function MobileSync() {
   const { data: syncQueue = [] } = useQuery<any[]>({ queryKey: ["/api/mobile/sync"] }) as { data: any[] };
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Smartphone className="h-8 w-8" />
-          Mobile Synchronization
-        </h1>
+    <StandardPage
+      title="Mobile Sync </h1>
         <p className="text-muted-foreground mt-2">Offline-first mobile app sync with iOS & Android</p>
       </div>
 
@@ -85,6 +82,6 @@ export default function MobileSync() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

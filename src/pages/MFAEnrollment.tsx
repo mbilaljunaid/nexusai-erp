@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,11 +14,8 @@ export default function MFAEnrollment() {
   });
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Key className="h-8 w-8" />
-          Multi-Factor Authentication Enrollment
+    <StandardPage
+      title="Multi-Factorollment
         </h1>
         <p className="text-muted-foreground mt-2">Set up additional security methods for your account</p>
       </div>
@@ -87,6 +85,6 @@ export default function MFAEnrollment() {
           <Button variant="secondary" data-testid="button-backup-codes">Generate Backup Codes</Button>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

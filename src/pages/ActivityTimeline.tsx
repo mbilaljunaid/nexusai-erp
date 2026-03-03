@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,11 +18,9 @@ export default function ActivityTimeline() {
   const formMetadata = getFormMetadata("activity");
 
   return (
-    <div className="space-y-6">
-      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      
-      <div>
-        <h1 className="text-3xl font-bold">Activity Timeline</h1>
+    <StandardPage
+      title="Activity Timeline"
+      description="All interactions and activities across your org</h1>
         <p className="text-muted-foreground mt-1">All interactions and activities across your organization</p>
       </div>
 
@@ -49,6 +48,6 @@ export default function ActivityTimeline() {
           )) : <p className="text-muted-foreground text-center py-4">No activities found</p>}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

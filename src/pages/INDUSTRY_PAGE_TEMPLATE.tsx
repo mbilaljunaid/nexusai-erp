@@ -2,6 +2,7 @@
 // Example: Create file client/src/pages/IndustryTemplate.tsx and duplicate for each industry
 
 import { Button } from "@/components/ui/button";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card } from "@/components/ui/card";
 import { useState } from "react";
 import { ArrowRight, Check, Globe, Zap, Shield } from "lucide-react";
@@ -42,7 +43,11 @@ export default function IndustryPage({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
+    <StandardPage
+      title="INDUSTRY_PAGE_TEMPLATE"
+      description=""
+      className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900"
+    >
       {/* SEO Meta */}
       <head>
         <title>{industry} ERP Solutions | NexusAIFirst</title>
@@ -179,6 +184,6 @@ export default function IndustryPage({
           </div>
         </div>
       </section>
-    </div>
+    </StandardPage>
   );
 }

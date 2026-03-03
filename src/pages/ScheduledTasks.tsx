@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -36,10 +37,8 @@ export default function ScheduledTasks() {
   });
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2"><Clock className="h-8 w-8" />Scheduled Tasks</h1>
-        <p className="text-muted-foreground mt-1">Configure automated scheduled jobs</p>
+    <StandardPage
+      title="Scheduled T        <p className="text-muted-foreground mt-1">Configure automated scheduled jobs</p>
       </div>
 
       <Card data-testid="card-new-scheduled-task">
@@ -90,6 +89,6 @@ export default function ScheduledTasks() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

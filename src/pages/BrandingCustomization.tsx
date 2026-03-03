@@ -1,12 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export default function BrandingCustomization() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Branding Customization</h1>
+    <StandardPage
+      title="Brandination</h1>
         <p className="text-muted-foreground mt-1">Customize platform branding and appearance</p>
       </div>
       <Card>
@@ -22,6 +22,6 @@ export default function BrandingCustomization() {
           <Button data-testid="button-save-branding">Save Branding</Button>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

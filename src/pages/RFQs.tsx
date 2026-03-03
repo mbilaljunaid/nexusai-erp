@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,9 +37,8 @@ export default function RFQs() {
   };
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Request for Quotation (RFQ)</h1>
+    <StandardPage
+      title="RequestQuotation (RFQ)</h1>
         <p className="text-muted-foreground">Manage RFQs, send quotes to vendors, and track responses</p>
       </div>
 
@@ -138,6 +138,6 @@ export default function RFQs() {
           </CardContent>
         </Card>
       )}
-    </div>
+    </StandardPage>
   );
 }

@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,17 +30,10 @@ export default function RecruitmentConfiguration() {
     });
 
     return (
-        <div className="space-y-6 p-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold flex items-center gap-2">
-                        <Settings className="h-8 w-8" />
-                        Recruitment Configuration
-                    </h1>
-                    <p className="text-muted-foreground mt-2">Manage pipelines, stages, and communication templates.</p>
-                </div>
-            </div>
-
+        <StandardPage
+            title="Recruitment Configuration"
+            description="Manage pipelines, stages, and communication templates."
+        >
             <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList>
                     <TabsTrigger value="pipelines"><ListOrdered className="w-4 h-4 mr-2" /> Pipelines</TabsTrigger>
@@ -85,7 +79,7 @@ export default function RecruitmentConfiguration() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }
 

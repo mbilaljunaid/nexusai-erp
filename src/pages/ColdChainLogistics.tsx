@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Truck } from "lucide-react";
@@ -13,11 +14,8 @@ export default function ColdChainLogistics() {
   const breaches = shipments.filter((s: any) => s.tempBreach === true).length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Truck className="h-8 w-8" />
-          Cold Chain Logistics & Last Mile
+    <StandardPage
+      title="Cold Chain le
         </h1>
         <p className="text-muted-foreground mt-2">Temperature-controlled TMS, cold chain checkpoints, custody transfer, and delivery POD</p>
       </div>
@@ -63,6 +61,6 @@ export default function ColdChainLogistics() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

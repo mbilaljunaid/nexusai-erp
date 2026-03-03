@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, AlertTriangle } from "lucide-react";
@@ -13,11 +14,8 @@ export default function ProductionSchedulingGantt() {
   const bottlenecks = schedules.filter((s: any) => s.isBottleneck).length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Calendar className="h-8 w-8" />
-          Production Scheduling & APS (Gantt)
+    <StandardPage
+      title="Production antt)
         </h1>
         <p className="text-muted-foreground mt-2">Finite capacity scheduling, bottleneck analysis, and what-if scenarios</p>
       </div>
@@ -71,6 +69,6 @@ export default function ProductionSchedulingGantt() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,10 +46,9 @@ export default function BudgetPlanning() {
   };
 
   return (
-    <div className="space-y-6 p-4" data-testid="budget-planning">
-      <div>
-        <h1 className="text-3xl font-semibold">Budget Planning</h1>
-        <p className="text-muted-foreground text-sm">Driver-based planning and scenario modeling</p>
+    <StandardPage
+      title="Budget Planning"
+      description="Driveforeground text-sm">Driver-based planning and scenario modeling</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -144,6 +144,6 @@ export default function BudgetPlanning() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

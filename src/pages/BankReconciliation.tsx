@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Building2 } from "lucide-react";
@@ -11,12 +12,8 @@ export default function BankReconciliation() {
   const reconciledCount = reconciliations.filter((r: any) => r.status === "reconciled").length;
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-          <Building2 className="w-8 h-8" />
-          Bank Reconciliation
-        </h1>
+    <StandardPage
+      title="Bank Re       </h1>
         <p className="text-muted-foreground">Reconcile bank statements with your records</p>
       </div>
 
@@ -85,6 +82,6 @@ export default function BankReconciliation() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

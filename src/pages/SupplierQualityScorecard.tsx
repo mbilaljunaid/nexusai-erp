@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Award } from "lucide-react";
@@ -13,11 +14,8 @@ export default function SupplierQualityScorecard() {
   const avgScore = scorecards.length > 0 ? (scorecards.reduce((sum: number, s: any) => sum + (parseFloat(s.score) || 0), 0) / scorecards.length).toFixed(1) : 0;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Award className="h-8 w-8" />
-          Supplier Quality & Performance Scorecard
+    <StandardPage
+      title="Supplier Qu Scorecard
         </h1>
         <p className="text-muted-foreground mt-2">On-time delivery, defect rates, responsiveness, and vendor ratings</p>
       </div>
@@ -66,6 +64,6 @@ export default function SupplierQualityScorecard() {
           })}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

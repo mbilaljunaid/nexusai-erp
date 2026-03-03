@@ -1,4 +1,5 @@
 import { useRoute } from "wouter";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -189,25 +190,18 @@ export default function IndustryDashboard() {
     const Icon = industry.icon;
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            {/* Header */}
-            <div className="flex items-center gap-4">
+        <StandardPage
+            title={industry.name}
+            description={industry.tagline}
+            actions={
                 <Link to="/industries">
-                    <Button variant="ghost" size="icon">
-                        <ArrowLeft className="w-5 h-5" />
+                    <Button variant="outline">
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Back to Industries
                     </Button>
                 </Link>
-                <div className="flex items-center gap-3">
-                    <div className="p-3 rounded-lg bg-primary/10">
-                        <Icon className="w-8 h-8 text-primary" />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-bold">{industry.name}</h1>
-                        <p className="text-muted-foreground">{industry.tagline}</p>
-                    </div>
-                </div>
-            </div>
-
+            }
+        >
             {/* Overview Card */}
             <Card>
                 <CardHeader>
@@ -312,6 +306,6 @@ export default function IndustryDashboard() {
                     <Button size="lg">Get Started</Button>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

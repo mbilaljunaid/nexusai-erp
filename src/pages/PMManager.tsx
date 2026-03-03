@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -47,11 +48,9 @@ export default function PMManager() {
     });
 
     return (
-        <div className="space-y-6 p-4">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold flex items-center gap-2"><Calendar className="h-8 w-8" /> Preventive Maintenance</h1>
-                    <p className="text-muted-foreground">Manage recurring schedules and auto-generate work orders</p>
+        <StandardPage
+      title="Preventive Maintenance"
+      description="Manage recurring schedules and auto-genera          <p className="text-muted-foreground">Manage recurring schedules and auto-generate work orders</p>
                 </div>
                 <Button onClick={() => generateMutation.mutate()} disabled={generateMutation.isPending}>
                     <Play className="mr-2 h-4 w-4" /> Run Forecast
@@ -112,6 +111,6 @@ export default function PMManager() {
                     </Card>
                 ))}
             </div>
-        </div>
-    );
+        </StandardPage>
+  );
 }

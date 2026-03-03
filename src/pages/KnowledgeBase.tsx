@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
 
 export default function KnowledgeBase() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Knowledge Base</h1>
+    <StandardPage
+      title="Knowled1>
         <p className="text-muted-foreground mt-1">Searchable documentation and FAQs</p>
       </div>
       <Card>
@@ -17,6 +17,6 @@ export default function KnowledgeBase() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

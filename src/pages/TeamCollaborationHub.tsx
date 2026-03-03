@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageSquare, Plus, Paperclip } from "lucide-react";
@@ -11,12 +12,8 @@ export default function TeamCollaborationHub() {
   ];
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <MessageSquare className="h-8 w-8" />
-          Team Collaboration Hub
-        </h1>
+    <StandardPage
+      title="Team Collab </h1>
         <p className="text-muted-foreground mt-2">Collaborate with your team on projects and tasks</p>
       </div>
 
@@ -67,6 +64,6 @@ export default function TeamCollaborationHub() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

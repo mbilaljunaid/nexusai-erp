@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -49,12 +50,8 @@ export default function ChartOfAccounts() {
   };
 
   return (
-    <div className="space-y-4 p-4">
-      <div>
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-          <BookOpen className="w-8 h-8" />
-          Chart of Accounts
-        </h1>
+    <StandardPage
+      title="Chart of Ac </h1>
         <p className="text-muted-foreground">Manage your general ledger account structure</p>
       </div>
 
@@ -112,6 +109,6 @@ export default function ChartOfAccounts() {
           </div>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

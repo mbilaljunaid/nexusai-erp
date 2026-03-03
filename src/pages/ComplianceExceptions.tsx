@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
 import {
@@ -122,7 +123,11 @@ export default function ComplianceExceptions() {
   ];
 
   return (
-    <div className="space-y-6 container mx-auto">
+    <StandardPage
+      title="ComplianceExceptions"
+      description=""
+      className="space-y-6 container mx-auto"
+    >
       <div>
         <Breadcrumb items={[{ label: "HR", path: "/hr" }, { label: "Compliance", path: "/compliance" }, { label: "Exceptions", path: "/compliance/exceptions" }]} />
         <h1 className="text-3xl font-bold tracking-tight mt-2 flex items-center gap-2">
@@ -190,6 +195,6 @@ export default function ComplianceExceptions() {
         violation={selectedViolation}
         onOpenChange={(open) => !open && setSelectedViolation(null)}
       />
-    </div>
+    </StandardPage>
   );
 }

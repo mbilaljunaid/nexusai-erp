@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { TestTubes, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function LIMSLabIntegration() {
   const { toast } = useToast();
@@ -39,14 +40,11 @@ export default function LIMSLabIntegration() {
   const pending = tests.filter((t: any) => t.result === "pending").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <TestTubes className="h-8 w-8" />
-          LIMS & Lab Information Management
-        </h1>
-        <p className="text-muted-foreground mt-2">Sample tracking, test result capture, and QC integration</p>
-      </div>
+    <StandardPage
+      title="LIMS & Lab Information Management"
+      description="Sample tracking, test result capture, and QC integration"
+      className="space-y-6"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">
@@ -123,6 +121,6 @@ export default function LIMSLabIntegration() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

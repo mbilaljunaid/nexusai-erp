@@ -317,6 +317,7 @@ export default function MSSDashboard() {
                   </Card>
                </div>
             </div>
+         </div>
       </StandardPage>
    );
 }

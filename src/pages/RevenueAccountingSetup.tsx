@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import {
@@ -151,11 +152,9 @@ export default function RevenueAccountingSetup() {
     }
 
     return (
-        <div className="p-8 space-y-8 bg-slate-50 min-h-screen">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Revenue Policy Center</h1>
-                    <p className="text-muted-foreground mt-1">Configure ASC 606 identification, allocation, and recognition rules.</p>
+        <StandardPage
+      title="Revenue Policy Center"
+      description="Configure ASC 606 identification, allocation, and recognition rules.        <p className="text-muted-foreground mt-1">Configure ASC 606 identification, allocation, and recognition rules.</p>
                 </div>
                 <div className="bg-white p-1 rounded-lg border shadow-sm flex items-center gap-2">
                     <span className="text-xs font-bold text-slate-500 px-2 uppercase">Ledger context</span>
@@ -330,6 +329,6 @@ export default function RevenueAccountingSetup() {
                     </div>
                 </TabsContent>
             </Tabs>
-        </div>
-    );
+        </StandardPage>
+  );
 }

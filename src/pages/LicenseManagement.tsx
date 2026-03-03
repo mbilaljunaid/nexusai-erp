@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 
 export default function LicenseManagement() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">License Management</h1>
+    <StandardPage
+      title="Licenset</h1>
         <p className="text-muted-foreground mt-1">Manage product licenses and activations</p>
       </div>
       <Card>
@@ -21,6 +21,6 @@ export default function LicenseManagement() {
           <Badge className="bg-green-100 text-green-800">Active</Badge>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

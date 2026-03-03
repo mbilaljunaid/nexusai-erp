@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -22,9 +23,8 @@ export default function Sprints() {
   }[activeNav] || sprints;
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Sprints</h1>
+    <StandardPage
+      title="Sprints
         <p className="text-muted-foreground">Plan and execute sprints with your team</p>
       </div>
 
@@ -58,6 +58,6 @@ export default function Sprints() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

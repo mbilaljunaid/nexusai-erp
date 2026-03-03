@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,12 +38,8 @@ export default function PartsInventory() {
   const lowStock = parts.filter((p: any) => (parseInt(p.quantity) || 0) < (parseInt(p.reorder) || 50)).length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Package className="h-8 w-8" />
-          Parts Warehouse & Inventory
-        </h1>
+    <StandardPage
+      title="Parts Wareh      </h1>
         <p className="text-muted-foreground mt-2">Parts inventory, kitting, POS, replenishment, and warranty returns</p>
       </div>
 
@@ -107,6 +104,6 @@ export default function PartsInventory() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

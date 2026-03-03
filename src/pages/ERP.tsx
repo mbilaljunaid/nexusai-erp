@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -55,10 +56,8 @@ export default function ERP() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-semibold flex items-center gap-2"><Warehouse className="w-8 h-8" />ERP & Finance</h1>
-        <p className="text-muted-foreground text-sm">Manage financials, inventory, procurement, and supply chain</p>
+    <StandardPage
+      title="ERP & F       <p className="text-muted-foreground text-sm">Manage financials, inventory, procurement, and supply chain</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -295,6 +294,6 @@ export default function ERP() {
           </Card>
         </div>
       )}
-    </div>
+    </StandardPage>
   );
 }

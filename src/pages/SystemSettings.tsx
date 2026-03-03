@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export default function SystemSettings() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">System Settings</h1>
+    <StandardPage
+      title="System h1>
         <p className="text-muted-foreground mt-1">Configure core system parameters</p>
       </div>
       <Card>
@@ -23,6 +23,6 @@ export default function SystemSettings() {
           <Button data-testid="button-save">Save Settings</Button>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

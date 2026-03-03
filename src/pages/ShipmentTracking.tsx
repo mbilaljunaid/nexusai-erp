@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin } from "lucide-react";
@@ -13,11 +14,8 @@ export default function ShipmentTracking() {
   const onTime = events.filter((e: any) => e.etaStatus === "on-time").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <MapPin className="h-8 w-8" />
-          Visibility & Tracking (Real-Time)
+    <StandardPage
+      title="Visibility me)
         </h1>
         <p className="text-muted-foreground mt-2">Real-time tracker, ETA predictions, events, POD capture, and geo-fencing alerts</p>
       </div>
@@ -65,6 +63,6 @@ export default function ShipmentTracking() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

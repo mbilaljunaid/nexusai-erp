@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
@@ -37,8 +38,8 @@ export default function PerformanceTuning() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div><h1 className="text-3xl font-semibold">Performance Tuning</h1>
+    <StandardPage
+      title="Performh1>
         <p className="text-muted-foreground text-sm">Code splitting, lazy loading, and optimization</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -58,6 +59,6 @@ export default function PerformanceTuning() {
       {activeNav === "bundle" && <Card><CardContent className="p-4"><p className="text-muted-foreground">Bundle size analysis and optimization</p></CardContent></Card>}
       {activeNav === "improvements" && <Card><CardContent className="p-4"><p className="text-muted-foreground">{stats.improved} metrics improved</p></CardContent></Card>}
       {activeNav === "uptime" && <Card><CardContent className="p-4"><p className="text-muted-foreground">System uptime and reliability</p></CardContent></Card>}
-    </div>
+    </StandardPage>
   );
 }

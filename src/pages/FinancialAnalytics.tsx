@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
 
@@ -13,9 +14,8 @@ export default function FinancialAnalytics() {
   const costs = analytics.costs || 1600000;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2"><TrendingUp className="w-8 h-8" />Financial Analytics</h1>
+    <StandardPage
+      title="Financial Ah1>
         <p className="text-muted-foreground mt-1">Financial performance and metrics</p>
       </div>
 
@@ -39,6 +39,6 @@ export default function FinancialAnalytics() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </StandardPage>
   );
 }

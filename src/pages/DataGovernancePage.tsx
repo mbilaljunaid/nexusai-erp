@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Database, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -57,12 +58,9 @@ export default function DataGovernancePage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-            <Database className="w-8 h-8" />Data Governance
-          </h1>
+    <StandardPage
+      title="Data Governance"
+      description="Manage data quality, compliance/h1>
           <p className="text-muted-foreground">Manage data quality, compliance, and lineage</p>
         </div>
         <div className="flex gap-2">
@@ -100,6 +98,6 @@ export default function DataGovernancePage() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </StandardPage>
   );
 }

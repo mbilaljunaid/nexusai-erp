@@ -1,10 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function AccessControl() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Access Control</h1>
+    <StandardPage
+      title="Access 1>
         <p className="text-muted-foreground mt-1">Manage attribute-based access control (ABAC)</p>
       </div>
       <div className="grid gap-4">
@@ -20,6 +20,6 @@ export default function AccessControl() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

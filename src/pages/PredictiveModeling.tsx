@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,12 +40,8 @@ export default function PredictiveModeling() {
   const avgAccuracy = models.length > 0 ? (models.reduce((sum: number, m: any) => sum + (m.accuracy || 0), 0) / models.length).toFixed(1) : "0";
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Brain className="h-8 w-8" />
-          Predictive Modeling
-        </h1>
+    <StandardPage
+      title="Predictive h1>
         <p className="text-muted-foreground mt-2">Create and manage AI predictive models</p>
       </div>
 
@@ -132,6 +129,6 @@ export default function PredictiveModeling() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

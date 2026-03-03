@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -76,7 +77,11 @@ function AccountEntryForm({ onSuccess }: { onSuccess?: () => void }) {
     };
 
     return (
-        <div className="space-y-6 pt-4">
+        <StandardPage
+      title="Accounts"
+      description="Manage customer accounts and professional partners."
+      className="space-y-6 pt-4"
+    >
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid grid-cols-1 gap-4">
                     {/* Core Info */}
@@ -247,12 +252,7 @@ export default function AccountsDetail() {
                 <div className="flex items-center gap-4">
                     <Link href="/crm">
                         <Button variant="outline" size="icon" className="rounded-full">
-                            <ArrowLeft className="h-4 w-4" />
-                        </Button>
-                    </Link>
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Accounts</h1>
-                        <p className="text-muted-foreground">Manage customer accounts and professional partners.</p>
+                            <lassName="text-muted-foreground">Manage customer accounts and professional partners.</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -372,6 +372,6 @@ export default function AccountsDetail() {
                 open={!!selectedAccount}
                 onOpenChange={(open) => !open && setSelectedAccount(null)}
             />
-        </div>
-    );
+        </StandardPage>
+  );
 }

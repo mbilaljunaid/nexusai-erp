@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,12 +14,13 @@ export default function TalentPool() {
   const formMetadata = getFormMetadata("talentPool");
 
   return (
-    <div className="space-y-6">
+    <StandardPage
+      title="Talent Pool & Succession Planning"
+      description="Identify and develop future leaders"
+      className="space-y-6"
+    >
       <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={talents} onFilter={setFiltered} />
-      
-      <div>
-        <h1 className="text-3xl font-bold">Talent Pool & Succession Planning</h1>
+      <FormSearchWithMetadata formcession Planning</h1>
         <p className="text-muted-foreground mt-1">Identify and develop future leaders</p>
       </div>
 
@@ -38,6 +40,6 @@ export default function TalentPool() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

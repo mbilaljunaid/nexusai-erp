@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,11 +36,9 @@ export default function PayrollProcessing() {
   });
 
   return (
-    <div className="space-y-6 p-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Payroll Processing</h1>
-          <p className="text-muted-foreground mt-1">Manage salary processing and payments</p>
+    <StandardPage
+      title="Payroll Processing"
+      description="Manage salary processing and pay         <p className="text-muted-foreground mt-1">Manage salary processing and payments</p>
         </div>
       </div>
 
@@ -97,6 +96,6 @@ export default function PayrollProcessing() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

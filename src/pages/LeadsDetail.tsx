@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,25 +13,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 const leadFormSchema = z.object({
-    name: z.string().min(1),
-    firstName: z.string().optional(),
-    lastName: z.string().optional(),
-    email: z.string().optional(),
-    phone: z.string().optional(),
-    company: z.string().optional(),
-    title: z.string().optional(),
-    status: z.string().optional(),
-    leadSource: z.string().optional(),
+  name: z.string().min(1),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
+  company: z.string().optional(),
+  title: z.string().optional(),
+  status: z.string().optional(),
+  leadSource: z.string().optional(),
 });
 type InsertLead = z.infer<typeof leadFormSchema>;
 interface Lead extends InsertLead {
-    id: string;
-    street?: string;
-    city?: string;
-    state?: string;
-    postalCode?: string;
-    country?: string;
-    createdAt?: string;
+  id: string;
+  street?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+  createdAt?: string;
 }
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -284,41 +285,33 @@ export default function LeadsDetail() {
   ];
 
   return (
-    <div className="space-y-8 pb-10">
-      {/* Premium Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <Link href="/crm">
-            <Button variant="outline" size="icon" className="rounded-full">
-              <ArrowLeft className="h-4 w-4" />
+    <StandardPage
+      title="Leads"
+      description="Manage and qualify your potential customers."
+      breadcrumbs={[
+        { label: 'CRM Dashboard', href: '/crm' },
+        { label: 'Leads' }
+      ]}
+      actions={
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button className="shadcn-button-premium">
+              <UserPlus className="mr-2 h-4 w-4" />
+              Add New Lead
             </Button>
-          </Link>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Leads</h1>
-            <p className="text-muted-foreground">Manage and qualify your potential customers.</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button className="shadcn-button-premium">
-                <UserPlus className="mr-2 h-4 w-4" />
-                Add New Lead
-              </Button>
-            </SheetTrigger>
-            <SheetContent className="sm:max-w-md">
-              <SheetHeader>
-                <SheetTitle>Create New Lead</SheetTitle>
-                <SheetDescription>
-                  Enter the details for the new prospect.
-                </SheetDescription>
-              </SheetHeader>
-              <LeadEntryForm />
-            </SheetContent>
-          </Sheet>
-        </div>
-      </div>
-
+          </SheetTrigger>
+          <SheetContent className="sm:max-w-md">
+            <SheetHeader>
+              <SheetTitle>Create New Lead</SheetTitle>
+              <SheetDescription>
+                Enter the details for the new prospect.
+              </SheetDescription>
+            </SheetHeader>
+            <LeadEntryForm />
+          </SheetContent>
+        </Sheet>
+      }
+    >
       {/* Metric Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {metrics.map((m, i) => (
@@ -419,6 +412,6 @@ export default function LeadsDetail() {
           </div>
         </SheetContent>
       </Sheet>
-    </div>
+    </StandardPage >
   );
 }

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign } from "lucide-react";
@@ -15,12 +16,8 @@ export default function PayrollRuns() {
   const processedCount = payrollRuns.filter((r: any) => r.status === "processed").length;
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-          <DollarSign className="w-8 h-8" />
-          Payroll Processing
-        </h1>
+    <StandardPage
+      title="Payroll      </h1>
         <p className="text-muted-foreground">Process salary and compensation</p>
       </div>
 
@@ -66,6 +63,6 @@ export default function PayrollRuns() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

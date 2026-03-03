@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
@@ -61,11 +62,9 @@ export default function ComplianceDashboard() {
   };
 
   return (
-    <div className="space-y-6">
-      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      
-      <div>
-        <h1 className="text-3xl font-bold">Compliance Dashboard</h1>
+    <StandardPage
+      title="Compliance Dashboard"
+      description="Monitor regulatory compliance across your orard</h1>
         <p className="text-muted-foreground mt-2">Monitor regulatory compliance across your organization</p>
       </div>
 
@@ -167,6 +166,6 @@ export default function ComplianceDashboard() {
           </CardContent>
         </Card>
       )}
-    </div>
+    </StandardPage>
   );
 }

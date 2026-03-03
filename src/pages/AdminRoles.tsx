@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,9 +53,8 @@ export default function AdminRoles() {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Role Management</h1>
+    <StandardPage
+      title="Role Manage Management</h1>
         <p className="text-gray-600">Create and manage user roles with permissions</p>
       </div>
 
@@ -126,6 +126,6 @@ export default function AdminRoles() {
           )}
         </div>
       </div>
-    </div>
+    </StandardPage>
   );
 }

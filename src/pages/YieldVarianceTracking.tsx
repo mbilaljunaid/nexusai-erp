@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3, AlertTriangle } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function YieldVarianceTracking() {
   const { data: records = [], isLoading } = useQuery({
@@ -13,14 +14,11 @@ export default function YieldVarianceTracking() {
   const outliers = records.filter((r: any) => Math.abs((parseFloat(r.yieldPct) || 0) - (avgYield as any)) > 5).length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <BarChart3 className="h-8 w-8" />
-          Yield & Variance Tracking
-        </h1>
-        <p className="text-muted-foreground mt-2">Actual vs planned yields, cost variance analysis, and scrap tracking</p>
-      </div>
+    <StandardPage
+      title="Yield & Variance Tracking"
+      description="Actual vs planned yields, cost variance analysis, and scrap tracking"
+      className="space-y-6"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">
@@ -71,6 +69,6 @@ export default function YieldVarianceTracking() {
           })}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

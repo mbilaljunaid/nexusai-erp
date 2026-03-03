@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,11 +10,10 @@ export default function ServiceTicket() {
   const { data: tickets = [] } = useQuery<any[]>({ queryKey: ["/api/service-tickets"] });
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Service Tickets</h1>
-          <p className="text-muted-foreground mt-1">Manage customer support requests</p>
+    <StandardPage
+      title="Service Tickets"
+      description="Manage customer support requests"
+             <p className="text-muted-foreground mt-1">Manage customer support requests</p>
         </div>
         <Button data-testid="button-new-ticket"><Plus className="h-4 w-4 mr-2" />New Ticket</Button>
       </div>
@@ -47,6 +47,6 @@ export default function ServiceTicket() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

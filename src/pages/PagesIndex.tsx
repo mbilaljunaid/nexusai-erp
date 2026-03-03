@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react"; import { Input } from "@/components/ui/input"; import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; import { Badge } from "@/components/ui/badge"; import { Search, Grid3x3, List } from "lucide-react"; import { Link } from "wouter";
+import { useState, useMemo } from "react";
+import { StandardPage } from "@/components/layout/StandardPage"; import { Input } from "@/components/ui/input"; import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; import { Badge } from "@/components/ui/badge"; import { Search, Grid3x3, List } from "lucide-react"; import { Link } from "wouter";
 
 const PAGES_BY_PACK = [
   { pack: "Core Modules", pages: ["Dashboard", "UserProfile", "Settings", "Notifications"] },
@@ -41,11 +42,9 @@ export default function PagesIndex() {
   };
 
   return (
-    <div className="space-y-6 p-4 max-w-7xl mx-auto">
-      <div className="space-y-4">
-        <div>
-          <h1 className="text-4xl font-bold">Pages Explorer</h1>
-          <p className="text-muted-foreground mt-1">Browse all {PAGES_BY_PACK.reduce((sum, p) => sum + p.pages.length, 0)} pages across {PAGES_BY_PACK.length} industry packs</p>
+    <StandardPage
+      title="Pages Explorer"
+      description="Browse all {PAGES_BY_PACK.redu      <p className="text-muted-foreground mt-1">Browse all {PAGES_BY_PACK.reduce((sum, p) => sum + p.pages.length, 0)} pages across {PAGES_BY_PACK.length} industry packs</p>
         </div>
 
         <div className="flex gap-2 items-center">
@@ -103,6 +102,6 @@ export default function PagesIndex() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

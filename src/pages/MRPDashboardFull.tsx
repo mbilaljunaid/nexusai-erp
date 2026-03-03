@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, TrendingDown, TrendingUp, Clock } from "lucide-react";
@@ -14,12 +15,8 @@ export default function MRPDashboardFull() {
   const exceptionCount = recommendations.filter((r: any) => r.exception).length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <TrendingDown className="h-8 w-8" />
-          MRP Planning Dashboard
-        </h1>
+    <StandardPage
+      title="MRP Plannin </h1>
         <p className="text-muted-foreground mt-2">Material Requirements Planning analysis and recommendations</p>
       </div>
 
@@ -84,6 +81,6 @@ export default function MRPDashboardFull() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

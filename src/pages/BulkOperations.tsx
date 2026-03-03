@@ -1,10 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function BulkOperations() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Bulk Operations</h1>
+    <StandardPage
+      title="Bulk Oph1>
         <p className="text-muted-foreground mt-1">Mass update and bulk processing</p>
       </div>
       <div className="grid gap-4">
@@ -20,6 +20,6 @@ export default function BulkOperations() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

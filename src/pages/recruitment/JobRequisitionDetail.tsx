@@ -4,8 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { CandidateProfileDrawer } from "./CandidateProfileDrawer";
 import { User, MoreHorizontal, Briefcase } from "lucide-react";
+import { KanbanBoard } from "@/components/ui/KanbanBoard";
+import { CandidateProfileDrawer } from "./CandidateProfileDrawer";
 
 const STAGES = ["NEW", "SCREENING", "INTERVIEW", "OFFER", "HIRED"];
 
@@ -39,38 +40,36 @@ export default function JobRequisitionDetail() {
             </div>
 
             {/* Kanban Board */}
-            <div className="flex-1 overflow-x-auto">
-                <div className="flex gap-4 h-full min-w-[1000px]">
-                    {STAGES.map(stage => {
-                        const candidates = pipeline[stage] || [];
-                        return (
-                            <div key={stage} className="w-72 bg-muted/30 rounded-lg p-3 flex flex-col h-full">
-                                <div className="flex justify-between items-center mb-4">
-                                    <h3 className="font-semibold text-sm">{stage}</h3>
-                                    <Badge variant="secondary">{candidates.length}</Badge>
+            <div className="flex-1 min-h-0 bg-background/50 rounded-lg">
+                <KanbanBoard<any>
+                    className="h-full"
+                    columns={STAGES.map(s => ({
+                        id: s,
+                        title: s,
+                        bgColor: "bg-muted/30"
+                    }))}
+                    items={Object.entries(pipeline || {}).flatMap(([stage, candidates]: [string, any]) =>
+                        candidates.map((c: any) => ({ ...c, stage }))
+                    )}
+                    getColumnId={(item) => item.stage}
+                    onCardClick={(item) => onCandidateClick(item)}
+                    renderCard={(app) => (
+                        <Card className="cursor-pointer hover-elevate">
+                            <CardContent className="p-3">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <p className="font-semibold text-sm">{app.candidate.firstName} {app.candidate.lastName}</p>
+                                        <p className="text-xs text-muted-foreground">{app.candidate.email}</p>
+                                    </div>
+                                    {app.score && <Badge variant="outline" className="text-[10px]">{app.score}%</Badge>}
                                 </div>
-                                <div className="space-y-3 overflow-y-auto flex-1">
-                                    {candidates.map((app: any) => (
-                                        <Card key={app.id} className="cursor-pointer hover:shadow-md transition-all" onClick={() => onCandidateClick(app)}>
-                                            <CardContent className="p-3">
-                                                <div className="flex justify-between items-start">
-                                                    <div>
-                                                        <p className="font-semibold text-sm">{app.candidate.firstName} {app.candidate.lastName}</p>
-                                                        <p className="text-xs text-muted-foreground">{app.candidate.email}</p>
-                                                    </div>
-                                                    {app.score && <Badge variant="outline" className="text-[10px]">{app.score}%</Badge>}
-                                                </div>
-                                                <div className="mt-2 text-xs text-muted-foreground flex gap-2">
-                                                    <span>{new Date(app.createdAt).toLocaleDateString()}</span>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    ))}
+                                <div className="mt-2 text-xs text-muted-foreground flex gap-2">
+                                    <span>{new Date(app.createdAt).toLocaleDateString()}</span>
                                 </div>
-                            </div>
-                        );
-                    })}
-                </div>
+                            </CardContent>
+                        </Card>
+                    )}
+                />
             </div>
 
             {selectedCandidate && (

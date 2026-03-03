@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function CaseDetail() {
     const params = useParams() as { id?: string };
@@ -60,18 +61,18 @@ export default function CaseDetail() {
     const comments = data?.comments || [];
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-6 h-[calc(100vh-2rem)] flex flex-col">
-            {/* Header */}
-            <div className="flex justify-between items-start">
-                <div>
-                    <div className="flex items-center gap-3">
-                        <h1 className="text-2xl font-bold tracking-tight">Case #{ticket?.id?.slice(0, 8)}</h1>
-                        <Badge variant={ticket?.status === 'Closed' ? 'secondary' : 'default'}>{ticket?.status}</Badge>
-                        <Badge variant="outline">{ticket?.priority}</Badge>
-                    </div>
-                    <p className="text-xl mt-2 font-medium">{ticket?.subject}</p>
-                </div>
-                <div className="flex gap-2">
+        <StandardPage
+            title={`Case #${ticket?.id?.slice(0, 8) || ''}`}
+            description={ticket?.subject}
+            breadcrumbs={[
+                { label: "CRM", href: "/crm" },
+                { label: "Cases", href: "/crm/cases" },
+                { label: `Case #${ticket?.id?.slice(0, 8) || ''}` }
+            ]}
+            actions={
+                <div className="flex items-center gap-3">
+                    <Badge variant={ticket?.status === 'Closed' ? 'secondary' : 'default'}>{ticket?.status}</Badge>
+                    <Badge variant="outline">{ticket?.priority}</Badge>
                     {ticket?.status !== 'Closed' && (
                         <Button
                             variant="default"
@@ -90,9 +91,10 @@ export default function CaseDetail() {
                         </Button>
                     )}
                 </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-6 flex-1 min-h-0">
+            }
+            className="flex flex-col h-[calc(100vh-2rem)]"
+        >
+            <div className="grid grid-cols-3 gap-6 flex-1 min-h-0 mt-6">
                 {/* Left: Details */}
                 <Card className="col-span-1 h-full overflow-auto">
                     <CardHeader>
@@ -192,7 +194,7 @@ export default function CaseDetail() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }
 

@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
@@ -38,11 +39,10 @@ export default function PayrollEngine() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-semibold flex items-center gap-2"><Calculator className="h-8 w-8" />Payroll Engine</h1>
-          <p className="text-muted-foreground text-sm">Tax calculations and compliance</p>
+    <StandardPage
+      title="Payroll Engine"
+      description="Tax calculations and compliance"
+      className      <p className="text-muted-foreground text-sm">Tax calculations and compliance</p>
         </div>
         <Button><Calculator className="w-4 h-4 mr-2" />Run Payroll</Button>
       </div>
@@ -111,6 +111,6 @@ export default function PayrollEngine() {
       )}
       {activeNav === "taxes" && (<Card><CardContent className="p-4"><p className="text-muted-foreground">Tax configuration settings</p><Button size="sm" className="mt-4">Configure Tax Rules</Button></CardContent></Card>)}
       {activeNav === "deductions" && (<Card><CardContent className="p-4"><p className="text-muted-foreground">Employee deductions and withholdings</p><Button size="sm" className="mt-4">Manage Deductions</Button></CardContent></Card>)}
-    </div>
+    </StandardPage>
   );
 }

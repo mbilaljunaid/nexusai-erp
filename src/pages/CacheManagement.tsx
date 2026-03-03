@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 
 export default function CacheManagement() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Cache Management</h1>
+    <StandardPage
+      title="Cache M/h1>
         <p className="text-muted-foreground mt-1">Manage application caching</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -29,6 +29,6 @@ export default function CacheManagement() {
         </Card>
       </div>
       <Button className="w-full" data-testid="button-clear-cache">Clear Cache</Button>
-    </div>
+    </StandardPage>
   );
 }

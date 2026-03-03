@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Download, Eye } from "lucide-react";
 
 export default function FinancialReports() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Financial Reports</h1>
+    <StandardPage
+      title="Financi</h1>
         <p className="text-muted-foreground mt-1">Access financial statements and reports</p>
       </div>
 
@@ -35,6 +35,6 @@ export default function FinancialReports() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

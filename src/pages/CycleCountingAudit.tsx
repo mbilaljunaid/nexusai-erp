@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,11 +39,8 @@ export default function CycleCountingAudit() {
   const avgVariance = counts.length > 0 ? Math.abs(counts.reduce((sum: number, c: any) => sum + (parseFloat(c.variance) || 0), 0) / counts.length).toFixed(1) : 0;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <BarChart3 className="h-8 w-8" />
-          Cycle Counting & Inventory Audit
+    <StandardPage
+      title="Cycle Countit
         </h1>
         <p className="text-muted-foreground mt-2">Physical inventory counts, variance analysis, and audit trails</p>
       </div>
@@ -112,6 +110,6 @@ export default function CycleCountingAudit() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

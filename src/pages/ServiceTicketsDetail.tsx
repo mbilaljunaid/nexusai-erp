@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,14 +14,14 @@ export default function ServiceTicketsDetail() {
   const { data: tickets = [] } = useQuery<any[]>({ queryKey: ["/api/service-tickets"], retry: false });
 
   return (
-    <div className="space-y-6">
+    <StandardPage
+      title="Service Tickets"
+      description="Search, view, and create support tickets"
+      className="space-y-6"
+    >
       <div className="flex items-center gap-2">
         <Link to="/service">
-          <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
-        </Link>
-        <div>
-          <h1 className="text-3xl font-semibold">Service Tickets</h1>
-          <p className="text-muted-foreground text-sm">Search, view, and create support tickets</p>
+         <p className="text-muted-foreground text-sm">Search, view, and create support tickets</p>
         </div>
       </div>
 
@@ -41,6 +42,6 @@ export default function ServiceTicketsDetail() {
           <ServiceTicketForm />
         </div>
       </div>
-    </div>
+    </StandardPage>
   );
 }

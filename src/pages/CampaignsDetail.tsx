@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,16 +38,16 @@ export default function CampaignsDetail() {
   const activeCount = campaigns.filter(c => c.status === 'In Progress').length;
 
   return (
-    <div className="space-y-6 flex flex-col flex-1 overflow-y-auto pb-10">
+    <StandardPage
+      title="Marketing Campaigns"
+      description="Execute and monitor multi-channel marketing initiatives"
+      className="space-y-6 flex flex-col flex-1 overflow-y-auto pb-10"
+    >
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 pb-4 border-b">
         <div className="flex items-center gap-2">
           <Link href="/crm">
-            <Button variant="ghost" size="icon" className="hover:bg-primary/10 transition-colors"><ArrowLeft className="h-4 w-4" /></Button>
-          </Link>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Marketing Campaigns</h1>
-            <p className="text-muted-foreground text-sm flex items-center gap-2 italic">
+            <Button variant="ghost" siztems-center gap-2 italic">
               Execute and monitor multi-channel marketing initiatives
             </p>
           </div>
@@ -260,6 +261,6 @@ export default function CampaignsDetail() {
           )}
         </SheetContent>
       </Sheet>
-    </div>
+    </StandardPage>
   );
 }

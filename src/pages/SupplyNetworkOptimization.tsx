@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Network, TrendingDown, BarChart3 } from "lucide-react";
@@ -13,12 +14,8 @@ export default function SupplyNetworkOptimization() {
   const routes = plans.filter((p: any) => p.type === "route").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Network className="h-8 w-8" />
-          Supply Network Optimization
-        </h1>
+    <StandardPage
+      title="Supply Netw      </h1>
         <p className="text-muted-foreground mt-2">Multi-echelon planning and network optimization</p>
       </div>
 
@@ -69,6 +66,6 @@ export default function SupplyNetworkOptimization() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

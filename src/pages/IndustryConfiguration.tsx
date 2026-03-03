@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -66,9 +67,8 @@ export default function IndustryConfiguration() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Industry Configuration</h1>
+    <StandardPage
+      title="Industration</h1>
         <p className="text-muted-foreground mt-2">Configure your enterprise for a specific industry</p>
       </div>
 
@@ -239,6 +239,6 @@ export default function IndustryConfiguration() {
           </div>
         </div>
       )}
-    </div>
+    </StandardPage>
   );
 }

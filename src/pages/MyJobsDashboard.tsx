@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
@@ -159,14 +160,10 @@ export default function MyJobsDashboard() {
   const completedJobs = myJobs?.filter(j => j.status === "completed" || j.status === "cancelled") || [];
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2" data-testid="text-my-jobs-title">
-            <Briefcase className="w-8 h-8" />
-            My Jobs
-          </h1>
-          <p className="text-muted-foreground mt-1">Manage your job postings and review proposals</p>
+    <StandardPage
+      title="My Jobs"
+      description="Manage your job postings and review proposals"
+      classN  <p className="text-muted-foreground mt-1">Manage your job postings and review proposals</p>
         </div>
         <Button onClick={() => setIsCreateOpen(true)} data-testid="button-create-job">
           <Plus className="w-4 h-4 mr-2" />
@@ -464,6 +461,6 @@ export default function MyJobsDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </StandardPage>
   );
 }

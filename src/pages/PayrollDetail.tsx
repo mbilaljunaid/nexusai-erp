@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,14 +13,14 @@ export default function PayrollDetail() {
   const payrolls = [{id: 1, name: "Dec 2024 Payroll", employees: 245, amount: 875000}, {id: 2, name: "Nov 2024 Payroll", employees: 243, amount: 850000}];
 
   return (
-    <div className="space-y-6">
+    <StandardPage
+      title="Payroll"
+      description="Process and manage payroll runs"
+      className="space-y-6"
+    >
       <div className="flex items-center gap-2">
         <Link to="/hr">
-          <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
-        </Link>
-        <div>
-          <h1 className="text-3xl font-semibold">Payroll</h1>
-          <p className="text-muted-foreground text-sm">Process and manage payroll runs</p>
+          <Button vp className="text-muted-foreground text-sm">Process and manage payroll runs</p>
         </div>
       </div>
 
@@ -40,6 +41,6 @@ export default function PayrollDetail() {
           <PayrollForm />
         </div>
       </div>
-    </div>
+    </StandardPage>
   );
 }

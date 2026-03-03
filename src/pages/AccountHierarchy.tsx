@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 import { ChevronRight } from "lucide-react";
 
 export default function AccountHierarchy() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Account Hierarchy</h1>
+    <StandardPage
+      title="Account</h1>
         <p className="text-muted-foreground mt-1">View parent/child account relationships</p>
       </div>
 
@@ -28,6 +28,6 @@ export default function AccountHierarchy() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

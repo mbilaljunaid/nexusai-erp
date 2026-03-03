@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 
 export default function ShopFloor() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Shop Floor Execution</h1>
+    <StandardPage
+      title="Shop Flion</h1>
         <p className="text-muted-foreground mt-1">Real-time shop floor status and equipment monitoring</p>
       </div>
 
@@ -28,6 +28,6 @@ export default function ShopFloor() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

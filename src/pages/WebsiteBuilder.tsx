@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -45,11 +46,10 @@ export default function WebsiteBuilder() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-bold">Website Builder</h1>
-          <p className="text-muted-foreground mt-2">Drag-and-drop website creation</p>
+    <StandardPage
+      title="Website Builder"
+      description="Drag-and-drop website creation"
+      className          <p className="text-muted-foreground mt-2">Drag-and-drop website creation</p>
         </div>
         <Button data-testid="button-create-page">
           <Plus className="h-4 w-4 mr-2" />
@@ -118,6 +118,6 @@ export default function WebsiteBuilder() {
       {activeNav === "templates" && <Card><CardHeader><CardTitle className="text-base">Templates</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Professional templates for various industries</p></CardContent></Card>}
       {activeNav === "design" && <Card><CardHeader><CardTitle className="text-base">Design Tools</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Advanced design and customization tools</p></CardContent></Card>}
       {activeNav === "publish" && <Card><CardHeader><CardTitle className="text-base">Publish</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Publish and deploy your website</p><Button size="sm" className="mt-4">Deploy Now</Button></CardContent></Card>}
-    </div>
+    </StandardPage>
   );
 }

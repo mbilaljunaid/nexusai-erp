@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Activity } from "lucide-react";
@@ -13,11 +14,8 @@ export default function TelematicsVehicleData() {
   const healthyVehicles = telemetry.filter((t: any) => !t.dtcCode).length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Activity className="h-8 w-8" />
-          Telematics, Connectivity & Vehicle Data
+    <StandardPage
+      title="Telematics,icle Data
         </h1>
         <p className="text-muted-foreground mt-2">Device registry, OBD data, remote diagnostics, and predictive alerts</p>
       </div>
@@ -63,6 +61,6 @@ export default function TelematicsVehicleData() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 export default function WorkflowExecution() {
   const execData = [{ month: "Jan", executions: 120 }, { month: "Feb", executions: 145 }];
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Workflow Execution History</h1>
+    <StandardPage
+      title="Workflon History</h1>
         <p className="text-muted-foreground mt-1">Monitor workflow performance and logs</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -28,6 +28,6 @@ export default function WorkflowExecution() {
           </ResponsiveContainer>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,9 +40,8 @@ export default function CampaignsDashboard() {
   const completed = campaigns.filter((c: any) => c.status === "completed").length;
 
   return (
-    <div className="space-y-4 p-4">
-      <div>
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2"><Megaphone className="w-8 h-8" />Marketing Campaigns</h1>
+    <StandardPage
+      title="Marketing Cgns</h1>
         <p className="text-muted-foreground">Manage marketing initiatives</p>
       </div>
       <div className="grid grid-cols-3 gap-4">
@@ -80,6 +80,6 @@ export default function CampaignsDashboard() {
       </Card>
 
       <Card><CardHeader><CardTitle>Campaigns</CardTitle></CardHeader><CardContent><div className="space-y-2">{isLoading ? <p>Loading...</p> : campaigns.length === 0 ? <p className="text-muted-foreground text-center py-4">No campaigns</p> : campaigns.map((c: any) => (<div key={c.id} className="flex justify-between items-center p-3 border rounded hover-elevate" data-testid={`campaign-${c.id}`}><div><p className="font-semibold">{c.name}</p><p className="text-sm text-muted-foreground">Budget: ${c.budget} • Type: {c.type}</p></div><div className="flex gap-2 items-center"><Badge variant={c.status === "active" ? "default" : "secondary"}>{c.status}</Badge><Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(c.id)} data-testid={`button-delete-${c.id}`}><Trash2 className="w-4 h-4" /></Button></div></div>))}</div></CardContent></Card>
-    </div>
+    </StandardPage>
   );
 }

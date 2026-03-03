@@ -1,12 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
 
 export default function SystemLogs() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">System Logs</h1>
-        <p className="text-muted-foreground mt-1">View system event logs and errors</p>
+    <StandardPage
+      title="System         <p className="text-muted-foreground mt-1">View system event logs and errors</p>
       </div>
       <div className="flex gap-2 mb-4">
         <Input placeholder="Search logs..." data-testid="input-search-logs" className="flex-1" />
@@ -25,6 +24,6 @@ export default function SystemLogs() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

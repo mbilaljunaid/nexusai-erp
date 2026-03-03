@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -36,9 +37,8 @@ export default function RecommendationEngine() {
   });
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2"><Lightbulb className="w-8 h-8" />AI Recommendation Engine</h1>
+    <StandardPage
+      title="AI Recommenine</h1>
         <p className="text-muted-foreground mt-1">Intelligent suggestions and insights</p>
       </div>
 
@@ -90,6 +90,6 @@ export default function RecommendationEngine() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

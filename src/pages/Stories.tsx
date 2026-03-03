@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,9 +26,8 @@ export default function Stories() {
   }[activeNav] || stories;
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">User Stories</h1>
+    <StandardPage
+      title="User St</h1>
         <p className="text-muted-foreground">Manage sprint stories and track progress</p>
       </div>
 
@@ -61,6 +61,6 @@ export default function Stories() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

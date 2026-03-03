@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -134,14 +135,10 @@ export default function RevenueSourceEvents() {
     };
 
     return (
-        <div className="p-8 space-y-6 bg-slate-50 min-h-screen">
-            {/* Header */}
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-                        Revenue Source Events
-                    </h1>
-                    <p className="text-muted-foreground mt-1">
+        <StandardPage
+      title="Revenue Source Events"
+      description="Ingest and process revenue events from operational systems"
+      className="p-8 space-y-6 bg-s-1">
                         Ingest and process revenue events from operational systems
                     </p>
                 </div>
@@ -472,6 +469,6 @@ export default function RevenueSourceEvents() {
                     </form>
                 </DialogContent>
             </Dialog>
-        </div>
-    );
+        </StandardPage>
+  );
 }

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { CashPositionMetrics } from "@/components/cash/CashPositionMetrics";
 import { CashForecastChart } from "@/components/cash/CashForecastChart";
 import { BankAccountList } from "@/components/cash/BankAccountList";
@@ -21,7 +22,11 @@ import { EnterpriseContextSwitcher } from "@/components/EnterpriseContextSwitche
 export default function TreasuryCommandCenter() {
   const { legalEntityId } = useEnterpriseStore();
   return (
-    <div className="p-8 space-y-8">
+    <StandardPage
+      title="TreasuryCommandCenter"
+      description=""
+      className="p-8 space-y-8"
+    >
       <div className="flex justify-between items-start">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-3">
@@ -198,6 +203,6 @@ export default function TreasuryCommandCenter() {
           </div>
         </TabsContent>
       </Tabs>
-    </div>
+    </StandardPage>
   );
 }

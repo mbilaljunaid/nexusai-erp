@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -60,14 +61,10 @@ export default function RevenueAuditConsole() {
     };
 
     return (
-        <div className="p-8 space-y-8 bg-slate-50 min-h-screen">
-            <div className="flex justify-between items-end">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-                        <ShieldCheck className="h-8 w-8 text-indigo-600" />
-                        Revenue Audit & Compliance
-                    </h1>
-                    <p className="text-muted-foreground mt-1">Trace lifecycle and monitor ASC 606 rule adherence.</p>
+        <StandardPage
+      title="Revenue Audit & Compliance"
+      description="Trace lifecycle and monitor ASC 606 rule adherence."
+      c             <p className="text-muted-foreground mt-1">Trace lifecycle and monitor ASC 606 rule adherence.</p>
                 </div>
                 <div className="flex gap-4">
                     <Card className="px-6 py-3 shadow-sm border-none bg-white">
@@ -323,6 +320,6 @@ function StepNode({ icon: Icon, label, sublabel, status }: { icon: any, label: s
                 <p className={`text-[11px] font-bold uppercase tracking-wider ${status === "success" ? "text-indigo-900" : "text-slate-400"}`}>{label}</p>
                 <p className="text-[10px] text-muted-foreground font-mono truncate max-w-[100px]">{sublabel || "..."}</p>
             </div>
-        </div>
-    );
+        </StandardPage>
+  );
 }

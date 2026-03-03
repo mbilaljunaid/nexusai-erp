@@ -1,10 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function FieldValidation() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Field Validation Rules</h1>
+    <StandardPage
+      title="Field VRules</h1>
         <p className="text-muted-foreground mt-1">Configure validation for custom fields</p>
       </div>
       <div className="grid gap-4">
@@ -20,6 +20,6 @@ export default function FieldValidation() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

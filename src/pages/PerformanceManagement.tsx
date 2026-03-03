@@ -9,6 +9,7 @@ import GoalManagementPanel from "@/components/performance/GoalManagementPanel";
 
 import { Plus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface Review {
   id: string;
@@ -39,10 +40,11 @@ export default function PerformanceManagement() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div><h1 className="text-3xl font-semibold">Performance Management</h1>
-        <p className="text-muted-foreground text-sm">Reviews, goals, and feedback</p>
-      </div>
+    <StandardPage
+      title="Performance Management"
+      description="Reviews, goals, and feedback"
+      className="space-y-6"
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="hover-elevate"><CardContent className="p-4"><div className="flex items-center gap-3"><Target className="h-5 w-5 text-blue-500" /><div><p className="text-2xl font-semibold">{stats.total}</p><p className="text-xs text-muted-foreground">Reviews</p></div></div></CardContent></Card>
@@ -90,6 +92,6 @@ export default function PerformanceManagement() {
       {activeNav === "analytics" && (
         <div className="text-muted-foreground text-center py-8">Performance Analytics (Mock)</div>
       )}
-    </div>
+    </StandardPage>
   );
 }

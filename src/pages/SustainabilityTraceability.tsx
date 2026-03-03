@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Leaf } from "lucide-react";
@@ -14,11 +15,8 @@ export default function SustainabilityTraceability() {
   const avgDiversionRate = metrics.length > 0 ? (metrics.reduce((sum: number, m: any) => sum + (parseFloat(m.diversionRate) || 0), 0) / metrics.length).toFixed(1) : 0;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Leaf className="h-8 w-8" />
-          Sustainability, Traceability & CSR
+    <StandardPage
+      title="Sustainabil CSR
         </h1>
         <p className="text-muted-foreground mt-2">Farm/supplier trace, CO2 tracking, waste management, and sustainability reporting</p>
       </div>
@@ -61,6 +59,6 @@ export default function SustainabilityTraceability() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

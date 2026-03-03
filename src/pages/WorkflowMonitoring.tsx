@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Activity, TrendingUp, AlertCircle } from "lucide-react";
@@ -14,12 +15,8 @@ export default function WorkflowMonitoring() {
   });
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Activity className="h-8 w-8" />
-          Workflow Monitoring
-        </h1>
+    <StandardPage
+      title="Workflow Moh1>
         <p className="text-muted-foreground mt-2">Monitor workflow executions and performance</p>
       </div>
 
@@ -69,6 +66,6 @@ export default function WorkflowMonitoring() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

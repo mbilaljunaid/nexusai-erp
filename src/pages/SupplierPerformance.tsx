@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3 } from "lucide-react";
 
@@ -10,12 +11,8 @@ export default function SupplierPerformance() {
   ];
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <BarChart3 className="h-8 w-8" />
-          Supplier Performance
-        </h1>
+    <StandardPage
+      title="Supplier Pe/h1>
         <p className="text-muted-foreground mt-2">Monitor supplier metrics and ratings</p>
       </div>
 
@@ -56,6 +53,6 @@ export default function SupplierPerformance() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

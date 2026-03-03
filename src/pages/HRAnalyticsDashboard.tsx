@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
@@ -100,19 +101,19 @@ export default function HRAnalyticsDashboard() {
   ];
 
   return (
-    <div className="space-y-6">
-      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={[]} onFilter={setFiltered} />
+    <StandardPage
+      title="HR Analytics Dashboard"
+      description="Real-time workforce insights (Tier-1)"
+      className="space-y-6"
+    >
+      <div className="flex items-center justify-between">
+        <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+        <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={Object.values(metrics)} onFilter={setFiltered} />
+      </div>
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">
-            {(() => {
-              const hour = new Date().getHours();
-              const greeting = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
-              return `${greeting}, User`;
-            })()}
-          </h1>
+          <h1 className="text-3xl font-bold">HR Analytics Dashboard</h1>
           <p className="text-muted-foreground mt-1">Real-time workforce insights (Tier-1)</p>
         </div>
         <div className="w-[200px]">
@@ -226,6 +227,6 @@ export default function HRAnalyticsDashboard() {
           </div>
         </SheetContent>
       </Sheet>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,9 +24,8 @@ export default function TenantAdmin() {
   });
 
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Tenant Management</h1>
+    <StandardPage
+      title="Tenant Manant Management</h1>
         <p className="text-gray-600">Manage organizational tenants and accounts</p>
       </div>
       
@@ -80,6 +80,6 @@ export default function TenantAdmin() {
           )}
         </div>
       </div>
-    </div>
+    </StandardPage>
   );
 }

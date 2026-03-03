@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -36,17 +37,16 @@ export default function QuotesDetail() {
     const pendingQuotes = quotes.filter(q => q.status !== 'Accepted');
 
     return (
-        <div className="space-y-6 flex flex-col flex-1 overflow-y-auto pb-10">
+        <StandardPage
+      title="Sales Quotes"
+      description="Manage and track active sales proposals"
+      className="space-y-6 flex flex-col flex-1 overflow-y-auto pb-10"
+    >
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 pb-4 border-b">
                 <div className="flex items-center gap-2">
                     <Link href="/crm">
-                        <Button variant="ghost" size="icon" className="hover:bg-primary/10 transition-colors"><ArrowLeft className="h-4 w-4" /></Button>
-                    </Link>
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Sales Quotes</h1>
-                        <p className="text-muted-foreground text-sm flex items-center gap-2 italic">
-                            Manage and track active sales proposals
+                        <Button variant="ghost" size="icon" className="hover:bg-primary/10 tra            Manage and track active sales proposals
                         </p>
                     </div>
                 </div>
@@ -288,6 +288,6 @@ export default function QuotesDetail() {
                     )}
                 </SheetContent>
             </Sheet>
-        </div>
-    );
+        </StandardPage>
+  );
 }

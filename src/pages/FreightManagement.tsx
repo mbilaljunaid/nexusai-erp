@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,12 +40,8 @@ export default function FreightManagement() {
   const totalCost = shipments.reduce((sum: number, s: any) => sum + (parseFloat(s.cost) || 0), 0);
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Truck className="h-8 w-8" />
-          Freight & Carrier Management
-        </h1>
+    <StandardPage
+      title="Freight & C       </h1>
         <p className="text-muted-foreground mt-2">Shipment planning, carrier rates, tracking, and landed cost</p>
       </div>
 
@@ -117,6 +114,6 @@ export default function FreightManagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

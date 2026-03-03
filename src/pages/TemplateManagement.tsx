@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -149,14 +150,10 @@ export default function TemplateManagement() {
     }
 
     return (
-        <div className="min-h-screen p-6 space-y-6">
-            {/* Header */}
-            <div>
-                <h1 className="text-3xl font-bold mb-2">Template Management</h1>
-                <p className="text-muted-foreground">
-                    Manage configuration templates for industry-specific onboarding
-                </p>
-            </div>
+        <StandardPage
+            title="Template Management"
+            description="Manage configuration templates for industry-specific onboarding"
+        >
 
             {/* Stats Cards */}
             <div className="grid gap-4 md:grid-cols-4">
@@ -441,6 +438,6 @@ export default function TemplateManagement() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

@@ -1,4 +1,5 @@
 import { useRoute } from "wouter";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,7 +26,11 @@ export default function CustomerDetails() {
     if (!customer) return <div className="p-8">Customer not found</div>;
 
     return (
-        <div className="space-y-6">
+        <StandardPage
+      title="CustomerDetails"
+      description=""
+      className="space-y-6"
+    >
             <div className="flex items-center gap-4">
                 <Link href="/finance/accounts-receivable">
                     <Button variant="ghost" size="icon">
@@ -82,6 +87,6 @@ export default function CustomerDetails() {
                 {/* Reuse Invoice List but filtered - Passing customerId prop would be ideal if supported */}
                 <ArInvoiceList />
             </div>
-        </div>
-    );
+        </StandardPage>
+  );
 }

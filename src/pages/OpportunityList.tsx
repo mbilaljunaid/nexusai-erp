@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -80,11 +81,10 @@ export default function OpportunityList() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-bold">Opportunities</h1>
-          <p className="text-muted-foreground mt-1">Manage your sales pipeline and forecast revenue</p>
+    <StandardPage
+      title="Opportunities"
+      description="Manage your sales pipeline and forecast revenue"
+        <p className="text-muted-foreground mt-1">Manage your sales pipeline and forecast revenue</p>
         </div>
       </div>
 
@@ -119,6 +119,6 @@ export default function OpportunityList() {
         filterColumn="name"
         filterPlaceholder="Search opportunities..."
       />
-    </div>
+    </StandardPage>
   );
 }

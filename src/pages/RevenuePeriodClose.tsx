@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import {
@@ -126,7 +127,11 @@ export default function RevenuePeriodClose() {
             id: "actions",
             cell: (period) => {
                 return (
-                    <div className="flex gap-2">
+                    <StandardPage
+      title="Revenue Period Close"
+      description="Manage fiscal period status for Revenue Management."
+      className="flex gap-2"
+    >
                         <Button
                             variant="outline"
                             size="sm"
@@ -147,16 +152,7 @@ export default function RevenuePeriodClose() {
                             Close
                         </Button>
                     </div>
-                );
-            }
-        }
-    ];
-
-    return (
-        <div className="p-6 space-y-6 bg-slate-50/50 min-h-screen">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900">Revenue Period Close</h1>
-                <p className="text-muted-foreground">Manage fiscal period status for Revenue Management.</p>
+                )                <p className="text-muted-foreground">Manage fiscal period status for Revenue Management.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -210,6 +206,6 @@ export default function RevenuePeriodClose() {
                     </ul>
                 </div>
             </div>
-        </div>
-    );
+        </StandardPage>
+  );
 }

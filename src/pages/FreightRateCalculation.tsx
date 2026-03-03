@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,12 +40,8 @@ export default function FreightRateCalculation() {
   const avgRate = rates.length > 0 ? (totalRevenue / rates.length).toFixed(2) : 0;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <DollarSign className="h-8 w-8" />
-          Freight Rate Calculation
-        </h1>
+    <StandardPage
+      title="Freight Rat   </h1>
         <p className="text-muted-foreground mt-2">Carrier rates, tariff tables, weight-based pricing, and cost optimization</p>
       </div>
 
@@ -114,6 +111,6 @@ export default function FreightRateCalculation() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

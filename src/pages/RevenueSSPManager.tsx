@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -168,13 +169,10 @@ export default function RevenueSSPManager() {
     };
 
     return (
-        <div className="p-8 space-y-6 bg-slate-50 min-h-screen">
-            {/* Header */}
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">SSP Manager</h1>
-                    <p className="text-muted-foreground mt-1">
-                        Manage Standalone Selling Prices for ASC 606 price allocation
+        <StandardPage
+      title="SSP Manager"
+      description="Manage Standalone Selling Prices for ASC 606 price allocation"
+      className="p-8 space-y-6 bg-slate-50                   Manage Standalone Selling Prices for ASC 606 price allocation
                     </p>
                 </div>
                 <Button onClick={() => setIsBookDialogOpen(true)}>
@@ -522,6 +520,6 @@ export default function RevenueSSPManager() {
                     </form>
                 </DialogContent>
             </Dialog>
-        </div>
-    );
+        </StandardPage>
+  );
 }

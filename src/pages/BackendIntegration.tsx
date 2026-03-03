@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, AlertCircle } from "lucide-react";
@@ -24,9 +25,8 @@ export default function BackendIntegration() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Backend Integration Status</h1>
+    <StandardPage
+      title="Backendon Status</h1>
         <p className="text-muted-foreground mt-2">All 180+ API endpoints operational and connected to frontend</p>
       </div>
 

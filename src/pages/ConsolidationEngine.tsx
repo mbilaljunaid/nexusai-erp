@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,8 +60,8 @@ export default function ConsolidationEngine() {
   ];
 
   return (
-    <div className="space-y-6 p-4">
-      <div><h1 className="text-3xl font-semibold flex items-center gap-2"><GitMerge className="w-8 h-8" />Consolidation Engine</h1>
+    <StandardPage
+      title="Consolidati>
         <p className="text-muted-foreground text-sm">Multi-entity consolidation and eliminations</p>
       </div>
 
@@ -116,6 +117,6 @@ export default function ConsolidationEngine() {
       )}
       {activeNav === "eliminations" && <Card><CardContent className="p-6"><p className="text-muted-foreground">Inter-company eliminations and adjustments</p></CardContent></Card>}
       {activeNav === "mappings" && <Card><CardContent className="p-6"><p className="text-muted-foreground">Entity and account mappings</p></CardContent></Card>}
-    </div>
+    </StandardPage>
   );
 }

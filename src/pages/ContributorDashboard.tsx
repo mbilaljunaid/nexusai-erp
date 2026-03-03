@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -134,13 +135,10 @@ export default function ContributorDashboard() {
   const acceptedProposals = myProposals?.filter(p => p.status === "accepted").length || 0;
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2" data-testid="text-contributor-dashboard-title">
-            <User className="w-8 h-8" />
-            Contributor Dashboard
-          </h1>
+    <StandardPage
+      title="Contributor Dashboard"
+      description="Your unified marketplace activity center"
+   </h1>
           <p className="text-muted-foreground mt-1">Your unified marketplace activity center</p>
         </div>
       </div>
@@ -561,6 +559,6 @@ export default function ContributorDashboard() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 
 export default function ScheduledReports() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Scheduled Reports</h1>
+    <StandardPage
+      title="Schedul</h1>
         <p className="text-muted-foreground mt-1">Automated report scheduling and delivery</p>
       </div>
 
@@ -29,6 +29,6 @@ export default function ScheduledReports() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

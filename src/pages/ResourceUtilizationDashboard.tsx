@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3 } from "lucide-react";
 
@@ -11,11 +12,8 @@ export default function ResourceUtilizationDashboard() {
   ];
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <BarChart3 className="h-8 w-8" />
-          Resource Utilization Dashboard
+    <StandardPage
+      title="Resource Ut
         </h1>
         <p className="text-muted-foreground mt-2">Monitor resource capacity and allocation</p>
       </div>
@@ -61,6 +59,6 @@ export default function ResourceUtilizationDashboard() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

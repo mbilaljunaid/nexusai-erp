@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,8 +40,8 @@ export default function AIAutomation() {
   const metrics = { total: workflows.length, active, executions: "1.2K", timeSaved: "48h" };
 
   return (
-    <div className="space-y-6 p-4">
-      <div><h1 className="text-3xl font-bold flex items-center gap-2"><Zap className="h-8 w-8" />AI & Automation</h1><p className="text-muted-foreground mt-2">Manage intelligent workflows and automations</p></div>
+    <StandardPage
+      title="AI & AutomaAutomation</h1><p className="text-muted-foreground mt-2">Manage intelligent workflows and automations</p></div>
 
       <Card data-testid="card-new-workflow">
         <CardHeader><CardTitle className="text-base">Create AI Workflow</CardTitle></CardHeader>
@@ -77,6 +78,6 @@ export default function AIAutomation() {
       </div>
 
       <Card><CardHeader><CardTitle className="text-base">Active Workflows</CardTitle></CardHeader><CardContent className="space-y-3">{isLoading ? <p>Loading...</p> : workflows.length === 0 ? <p className="text-muted-foreground text-center py-4">No workflows</p> : workflows.map((w: any) => (<div key={w.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`workflow-${w.id}`}><div><h3 className="font-semibold">{w.name}</h3><p className="text-sm text-muted-foreground">Trigger: {w.trigger}</p></div><div className="flex gap-2 items-center"><Badge variant={w.status === "active" ? "default" : "secondary"}>{w.status}</Badge><Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(w.id)} data-testid={`button-delete-${w.id}`}><Trash2 className="w-4 h-4" /></Button></div></div>))}</CardContent></Card>
-    </div>
+    </StandardPage>
   );
 }

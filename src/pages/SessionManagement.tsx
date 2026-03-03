@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LogOut, Clock, Smartphone } from "lucide-react";
@@ -11,12 +12,8 @@ export default function SessionManagement() {
   ];
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Smartphone className="h-8 w-8" />
-          Session Management
-        </h1>
+    <StandardPage
+      title="Session Man1>
         <p className="text-muted-foreground mt-2">Manage your active sessions and device access</p>
       </div>
 
@@ -70,6 +67,6 @@ export default function SessionManagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

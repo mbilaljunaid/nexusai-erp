@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Globe, FileText, BarChart3, Layers } from "lucide-react";
 import { IconNavigation } from "@/components/IconNavigation";
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function Website() {
   const [activeNav, setActiveNav] = useState("overview");
@@ -15,18 +16,17 @@ export default function Website() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-semibold flex items-center gap-2"><Globe className="h-8 w-8" />Website Builder</h1>
-          <p className="text-muted-foreground text-sm">Create and manage websites, landing pages, and digital presence</p>
-        </div>
+    <StandardPage
+      title="Website Builder"
+      description="Create and manage websites, landing pages, and digital presence"
+      actions={
         <Button data-testid="button-create-website">
           <Plus className="h-4 w-4 mr-2" />
           Create Website
         </Button>
-      </div>
-
+      }
+      className="space-y-6"
+    >
       <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
       {activeNav === "overview" && (
@@ -71,6 +71,6 @@ export default function Website() {
       {activeNav === "analytics" && (
         <Card><CardHeader><CardTitle className="text-base">Website Analytics</CardTitle></CardHeader><CardContent><p className="text-muted-foreground text-sm">Analytics module loading. Track visitors, conversions, and user behavior.</p></CardContent></Card>
       )}
-    </div>
+    </StandardPage>
   );
 }

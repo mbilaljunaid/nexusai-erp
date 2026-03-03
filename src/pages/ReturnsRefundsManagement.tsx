@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,12 +40,8 @@ export default function ReturnsRefundsManagement() {
   const totalRefunded = returns.reduce((sum: number, r: any) => sum + (parseFloat(r.refundAmount) || 0), 0);
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <RotateCcw className="h-8 w-8" />
-          Returns & Refunds Management
-        </h1>
+    <StandardPage
+      title="Returns & R       </h1>
         <p className="text-muted-foreground mt-2">Return requests, RMA processing, refund tracking, and reverse logistics</p>
       </div>
 
@@ -123,6 +120,6 @@ export default function ReturnsRefundsManagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

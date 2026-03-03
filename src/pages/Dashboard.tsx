@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useRBAC } from "@/components/RBACContext";

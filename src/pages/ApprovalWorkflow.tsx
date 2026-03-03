@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -60,9 +61,8 @@ export default function ApprovalWorkflow() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-semibold">Approval Workflow</h1>
+    <StandardPage
+      title="Approva1>
         <p className="text-muted-foreground text-sm">Review and approve quotes, orders, invoices, and expenses</p>
       </div>
 
@@ -163,6 +163,6 @@ export default function ApprovalWorkflow() {
           </Card>
         )}
       </div>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
@@ -69,12 +70,10 @@ export default function EPMPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-bold">Enterprise Performance Management</h1>
-          <p className="text-muted-foreground mt-2">Budget planning, forecasting &amp; scenario modeling</p>
-        </div>
+    <StandardPage
+      title="Enterprise Performance Management"
+      description="Budget planning, forecasting & scenario modeling"
+      actions={
         <div className="flex items-center gap-3">
           <EnterpriseContextSwitcher
             type="set"
@@ -86,7 +85,8 @@ export default function EPMPage() {
             New Budget
           </Button>
         </div>
-      </div>
+      }
+    >
 
       <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 
@@ -208,6 +208,6 @@ export default function EPMPage() {
           </CardContent>
         </Card>
       )}
-    </div>
+    </StandardPage>
   );
 }

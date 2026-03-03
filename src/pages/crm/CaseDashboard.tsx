@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function CaseDashboard() {
     const { toast } = useToast();
@@ -51,17 +52,16 @@ export default function CaseDashboard() {
     const highPriorityCount = cases?.filter((c: any) => c.priority === 'High' && c.status !== 'Closed').length || 0;
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-8">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Service Console</h1>
-                    <p className="text-muted-foreground mt-2">Manage customer support tickets.</p>
-                </div>
+        <StandardPage
+            title="Service Console"
+            description="Manage customer support tickets."
+            actions={
                 <Button onClick={() => setIsCreateOpen(true)}>
                     <Plus className="mr-2 h-4 w-4" /> New Ticket
                 </Button>
-            </div>
-
+            }
+            className="space-y-8"
+        >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -184,6 +184,6 @@ export default function CaseDashboard() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

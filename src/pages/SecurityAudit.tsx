@@ -1,10 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function SecurityAudit() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Security Audit</h1>
+    <StandardPage
+      title="Securit1>
         <p className="text-muted-foreground mt-1">View security audit findings</p>
       </div>
       <div className="grid gap-4">
@@ -20,6 +20,6 @@ export default function SecurityAudit() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

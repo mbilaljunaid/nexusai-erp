@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -67,15 +68,13 @@ export default function ExternalSupplierRegistration() {
 
     if (submitted) {
         return (
-            <div className="min-h-screen bg-muted/30 flex items-center justify-center p-4">
+            <StandardPage
+      title="Successfully Submitted"
+      description="Thank you for your interest in becoming a supplier. Our team will review your information and contact you via email."
+      className="min-h-screen bg-muted/30 flex items-center justify-center"
+    >
                 <Card className="max-w-md w-full text-center p-8 space-y-6">
-                    <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                        <CheckCircle2 className="w-10 h-10 text-primary" />
-                    </div>
-                    <div className="space-y-2">
-                        <h1 className="text-2xl font-bold">Successfully Submitted</h1>
-                        <p className="text-muted-foreground text-sm">
-                            Thank you for your interest in becoming a supplier. Our team will review your information and contact you via email.
+                    <div className="mx-auto w-16                   Thank you for your interest in becoming a supplier. Our team will review your information and contact you via email.
                         </p>
                     </div>
                     <Button variant="outline" onClick={() => window.location.href = "/"} className="w-full">
@@ -288,6 +287,6 @@ export default function ExternalSupplierRegistration() {
                     </form>
                 </Form>
             </div>
-        </div>
-    );
+        </StandardPage>
+  );
 }

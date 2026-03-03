@@ -150,6 +150,7 @@ export default function CommunityBrowser() {
                         )}
                     </div>
                 </div>
+            </div>
         </StandardPage>
     );
 }

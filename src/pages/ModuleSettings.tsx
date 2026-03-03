@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 
 export default function ModuleSettings() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Module Settings</h1>
+    <StandardPage
+      title="Module h1>
         <p className="text-muted-foreground mt-1">Enable or disable modules</p>
       </div>
       <div className="grid gap-4">
@@ -23,6 +23,6 @@ export default function ModuleSettings() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

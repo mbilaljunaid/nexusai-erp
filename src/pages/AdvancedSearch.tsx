@@ -1,12 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export default function AdvancedSearch() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Advanced Search</h1>
+    <StandardPage
+      title="Advanceh1>
         <p className="text-muted-foreground mt-1">Full-text and faceted search capabilities</p>
       </div>
       <Card>
@@ -18,6 +18,6 @@ export default function AdvancedSearch() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

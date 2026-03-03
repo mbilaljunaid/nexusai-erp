@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,9 +28,8 @@ export default function SupplierInvoices() {
   };
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Supplier Invoices (AP)</h1>
+    <StandardPage
+      title="Supplieoices (AP)</h1>
         <p className="text-muted-foreground">Manage vendor invoices, match with POs/GRNs, and process payments</p>
       </div>
 
@@ -121,6 +121,6 @@ export default function SupplierInvoices() {
           </CardContent>
         </Card>
       )}
-    </div>
+    </StandardPage>
   );
 }

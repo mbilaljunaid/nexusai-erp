@@ -1,10 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function AdvancedReporting() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Advanced Reporting</h1>
+    <StandardPage
+      title="Advanceg</h1>
         <p className="text-muted-foreground mt-1">Custom reports and business intelligence</p>
       </div>
       <div className="grid gap-4">
@@ -20,6 +20,6 @@ export default function AdvancedReporting() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

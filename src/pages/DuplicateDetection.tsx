@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -51,9 +52,8 @@ export default function DuplicateDetection() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Duplicate Resolution Console</h1>
+    <StandardPage
+      title="Duplicaion Console</h1>
         <p className="text-muted-foreground mt-1">Review and merge duplicate party records</p>
       </div>
 
@@ -135,7 +135,6 @@ export default function DuplicateDetection() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </StandardPage>
   );
 }
-

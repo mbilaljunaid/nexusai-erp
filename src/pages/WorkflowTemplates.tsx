@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,9 +36,8 @@ export default function WorkflowTemplates() {
   });
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2"><Copy className="w-8 h-8" />Workflow Templates</h1>
+    <StandardPage
+      title="Workflow Te1>
         <p className="text-muted-foreground mt-1">Pre-built workflow templates</p>
       </div>
 
@@ -79,6 +79,6 @@ export default function WorkflowTemplates() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

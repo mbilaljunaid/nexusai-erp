@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function SalesCommissionManagement() {
   const { toast } = useToast();
@@ -39,14 +40,11 @@ export default function SalesCommissionManagement() {
   const avgRate = commissions.length > 0 ? (commissions.reduce((sum: number, c: any) => sum + (parseFloat(c.commissionRate) || 0), 0) / commissions.length).toFixed(1) : 0;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <TrendingUp className="h-8 w-8" />
-          Sales Territory & Commission Management
-        </h1>
-        <p className="text-muted-foreground mt-2">Territory allocation, quotas, commission rules, and payouts</p>
-      </div>
+    <StandardPage
+      title="Sales Territory & Commission Management"
+      description="Territory allocation, quotas, commission rules, and payouts"
+      className="space-y-6"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">
@@ -123,6 +121,6 @@ export default function SalesCommissionManagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

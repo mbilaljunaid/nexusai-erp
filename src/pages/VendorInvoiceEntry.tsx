@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -39,11 +40,9 @@ export default function VendorInvoiceEntry() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-semibold">AP Invoice Entry</h1>
-          <p className="text-muted-foreground text-sm">Match vendor invoices to POs (3-way matching)</p>
+    <StandardPage
+      title="AP Invoice Entry"
+      description="Match vendor invoices to POs (3-way matching)"        <p className="text-muted-foreground text-sm">Match vendor invoices to POs (3-way matching)</p>
         </div>
         <Button>
           <Plus className="w-4 h-4 mr-2" />
@@ -70,6 +69,6 @@ export default function VendorInvoiceEntry() {
       {activeNav === "unmatched" && <Card><CardContent className="p-4"><p className="text-muted-foreground">{stats.unmatched} unmatched invoices awaiting matching</p></CardContent></Card>}
       {activeNav === "matched" && <Card><CardContent className="p-4"><p className="text-muted-foreground">{stats.matched} invoices successfully 3-way matched</p></CardContent></Card>}
       {activeNav === "analytics" && <Card><CardContent className="p-4"><p className="text-muted-foreground">AP invoice analytics and trends</p></CardContent></Card>}
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -40,10 +41,8 @@ export default function PaymentFlow() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-semibold">Payment Flow</h1>
-        <p className="text-muted-foreground text-sm">Process and track customer and vendor payments</p>
+    <StandardPage
+      title="Payment      <p className="text-muted-foreground text-sm">Process and track customer and vendor payments</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -64,6 +63,6 @@ export default function PaymentFlow() {
       )}
       {activeNav === "completed" && <Card><CardContent className="p-4"><p className="text-muted-foreground">{stats.completed} payments completed</p></CardContent></Card>}
       {activeNav === "failed" && <Card><CardContent className="p-4"><p className="text-muted-foreground">{stats.failed} failed payments</p></CardContent></Card>}
-    </div>
+    </StandardPage>
   );
 }

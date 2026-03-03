@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { IconNavigation } from "@/components/IconNavigation";
 import { useState } from "react";
@@ -7,7 +8,11 @@ import { Link } from "wouter";
 
 function CampaignEntryForm() {
   return (
-    <div className="p-4 border rounded bg-muted/50 border-dashed text-center">
+    <StandardPage
+      title="Marketing Automation"
+      description="Create campaigns, nurture leads, and track engagement"
+      className="border rounded bg-muted/50 border-dashed text-center"
+    >
       <p className="text-muted-foreground">Campaign Entry Form Placeholder</p>
     </div>
   );
@@ -26,13 +31,7 @@ export default function Marketing() {
     { id: "analytics", label: "Analytics", icon: TrendingUp, color: "text-indigo-500" },
     { id: "automation", label: "Automation", icon: Zap, color: "text-yellow-500" },
     { id: "budget", label: "Budget", icon: PieChart, color: "text-red-500" },
-    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" },
-  ];
-
-  return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-semibold flex items-center gap-2"><TrendingUp className="h-8 w-8" />Marketing Automation</h1>
+    { id: "set>
         <p className="text-muted-foreground text-sm">Create campaigns, nurture leads, and track engagement</p>
       </div>
 
@@ -102,6 +101,6 @@ export default function Marketing() {
           <Card><CardHeader><CardTitle>Marketing Settings</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Configure integrations and preferences</p></CardContent></Card>
         </div>
       )}
-    </div>
+    </StandardPage>
   );
 }

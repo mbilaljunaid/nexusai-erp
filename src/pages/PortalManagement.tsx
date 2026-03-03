@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Users, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function PortalManagement() {
   const { toast } = useToast();
@@ -39,11 +40,11 @@ export default function PortalManagement() {
   const activeSessions = Math.round(totalUsers * 0.23);
 
   return (
-    <div className="space-y-6 p-4" data-testid="portal-management">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2"><Users className="h-8 w-8" />Portal Management</h1>
-        <p className="text-muted-foreground mt-2">Manage customer, vendor, and employee portals</p>
-      </div>
+    <StandardPage
+      title="Portal Management"
+      description="Manage customer, vendor, and employee portals"
+      className="space-y-6"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3" data-testid="card-total-portals">
@@ -123,6 +124,6 @@ export default function PortalManagement() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

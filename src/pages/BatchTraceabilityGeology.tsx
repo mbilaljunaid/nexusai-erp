@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { GitBranch } from "lucide-react";
@@ -12,11 +13,8 @@ export default function BatchTraceabilityGeology() {
   const recalled = traces.filter((t: any) => t.recallFlag).length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <GitBranch className="h-8 w-8" />
-          Batch Traceability & Genealogy
+    <StandardPage
+      title="Batch Trace
         </h1>
         <p className="text-muted-foreground mt-2">Parent/child batch links, raw material sourcing, and recall management</p>
       </div>
@@ -65,6 +63,6 @@ export default function BatchTraceabilityGeology() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,12 +40,8 @@ export default function BulkInventoryManagement() {
   const reserved = items.filter((i: any) => i.status === "reserved").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Droplet className="h-8 w-8" />
-          Bulk Inventory Management
-        </h1>
+    <StandardPage
+      title="Bulk Invent    </h1>
         <p className="text-muted-foreground mt-2">Tanks, silos, drums, batch tracking, and shelf life management</p>
       </div>
 
@@ -124,6 +121,6 @@ export default function BulkInventoryManagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

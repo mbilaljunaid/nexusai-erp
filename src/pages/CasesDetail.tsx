@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import {
@@ -85,7 +86,11 @@ export default function CasesDetail() {
     };
 
     return (
-        <div className="space-y-6">
+        <StandardPage
+      title="CasesDetail"
+      description=""
+      className="space-y-6"
+    >
             {/* Header Actions */}
             <div className="flex justify-between items-center">
                 <div>
@@ -226,6 +231,6 @@ export default function CasesDetail() {
                     ))}
                 </div>
             )}
-        </div>
-    );
+        </StandardPage>
+  );
 }

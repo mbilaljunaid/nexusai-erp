@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -84,7 +85,11 @@ export default function Planning() {
   }));
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage
+      title="Planning"
+      description=""
+      className="space-y-6"
+    >
       <div className="flex gap-4 border-b">
         <button
           onClick={() => setActiveTab("revenue")}
@@ -256,6 +261,6 @@ export default function Planning() {
           </CardContent>
         </Card>
       )}
-    </div>
+    </StandardPage>
   );
 }

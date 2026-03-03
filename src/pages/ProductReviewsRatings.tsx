@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,12 +40,8 @@ export default function ProductReviewsRatings() {
   const avgRating = reviews.length > 0 ? (reviews.reduce((sum: number, r: any) => sum + (parseFloat(r.rating) || 0), 0) / reviews.length).toFixed(1) : 0;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Star className="h-8 w-8" />
-          Product Reviews & Ratings
-        </h1>
+    <StandardPage
+      title="Product Rev    </h1>
         <p className="text-muted-foreground mt-2">Customer feedback, ratings, moderation, and publishing</p>
       </div>
 
@@ -124,6 +121,6 @@ export default function ProductReviewsRatings() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

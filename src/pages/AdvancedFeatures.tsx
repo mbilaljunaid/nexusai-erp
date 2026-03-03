@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -46,9 +47,8 @@ export default function AdvancedFeatures() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Advanced Features</h1>
+    <StandardPage
+      title="Advance</h1>
         <p className="text-muted-foreground mt-2">Enterprise-grade capabilities for complex business operations</p>
       </div>
 
@@ -119,6 +119,6 @@ export default function AdvancedFeatures() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,12 +15,8 @@ export default function SecuritySettings() {
   const [newIp, setNewIp] = useState("");
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Shield className="h-8 w-8" />
-          Authentication & Security
-        </h1>
+    <StandardPage
+      title="Authenticat    </h1>
         <p className="text-muted-foreground mt-2">Configure security policies and access control</p>
       </div>
 
@@ -135,6 +132,6 @@ export default function SecuritySettings() {
       </Card>
 
       <Button className="w-full" size="lg" data-testid="button-save-security">Save Security Settings</Button>
-    </div>
+    </StandardPage>
   );
 }

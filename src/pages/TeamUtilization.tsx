@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 
 export default function TeamUtilization() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Team Utilization</h1>
+    <StandardPage
+      title="Team Ut/h1>
         <p className="text-muted-foreground mt-1">Support team capacity and workload</p>
       </div>
 
@@ -28,6 +28,6 @@ export default function TeamUtilization() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

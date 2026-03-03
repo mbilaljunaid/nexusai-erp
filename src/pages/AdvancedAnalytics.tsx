@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -51,9 +52,8 @@ export default function AdvancedAnalytics() {
   });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Advanced Analytics</h1>
+    <StandardPage
+      title="Advances</h1>
         <p className="text-muted-foreground mt-2">AI-powered dashboards, predictive models, and forecasting</p>
       </div>
 
@@ -202,6 +202,6 @@ export default function AdvancedAnalytics() {
           ))}
         </div>
       )}
-    </div>
+    </StandardPage>
   );
 }

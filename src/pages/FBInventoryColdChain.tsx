@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,12 +39,8 @@ export default function FBInventoryColdChain() {
   const frozen = items.filter((i: any) => i.tempZone === "frozen").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Thermometer className="h-8 w-8" />
-          Inventory, Cold Chain & WMS
-        </h1>
+    <StandardPage
+      title="Inventory,       </h1>
         <p className="text-muted-foreground mt-2">FEFO/FIFO, temperature logging, batch traceability, and cold storage management</p>
       </div>
 
@@ -108,6 +105,6 @@ export default function FBInventoryColdChain() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

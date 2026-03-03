@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -662,11 +663,10 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
   const publishedApps = myApps.filter(app => app.status === "approved").length;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-bold" data-testid="text-developer-portal-title">Developer Portal</h1>
-          <p className="text-muted-foreground mt-1">
+    <StandardPage
+      title="Developer Portal"
+      description="Manage your apps and track performance"
+      "text-muted-foreground mt-1">
             Manage your apps and track performance
           </p>
         </div>

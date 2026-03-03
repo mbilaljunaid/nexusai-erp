@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,12 +40,8 @@ export default function StockPickingPacking() {
   const pending = tasks.filter((t: any) => t.status === "pending").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <CheckSquare className="h-8 w-8" />
-          Stock Picking & Packing
-        </h1>
+    <StandardPage
+      title="Stock Picki  </h1>
         <p className="text-muted-foreground mt-2">Order picking, packing, quality verification, and dispatch preparation</p>
       </div>
 
@@ -116,6 +113,6 @@ export default function StockPickingPacking() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

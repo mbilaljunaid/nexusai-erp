@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams } from "wouter";
 import { queryClient } from "@/lib/queryClient";
@@ -128,7 +129,11 @@ export default function RevenueContractDetail() {
     ];
 
     return (
-        <div className="p-6 space-y-6 bg-slate-50/50 min-h-screen">
+        <StandardPage
+      title="RevenueContractDetail"
+      description=""
+      className="p-6 space-y-6 bg-slate-50/50 min-h-screen"
+    >
             <div className="flex justify-between items-start">
                 <div>
                     <div className="flex items-center gap-2 mb-1">
@@ -266,6 +271,6 @@ export default function RevenueContractDetail() {
                     </div>
                 </TabsContent>
             </Tabs>
-        </div>
-    );
+        </StandardPage>
+  );
 }

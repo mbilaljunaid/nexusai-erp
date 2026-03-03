@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -48,11 +49,10 @@ export default function TeamCollaboration() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-semibold">Team Collaboration</h1>
-          <p className="text-muted-foreground text-sm">Comments, mentions, and activity tracking</p>
+    <StandardPage
+      title="Team Collaboration"
+      description="Comments, mentions, and activity tracking"
+           <p className="text-muted-foreground text-sm">Comments, mentions, and activity tracking</p>
         </div>
       </div>
 
@@ -76,6 +76,6 @@ export default function TeamCollaboration() {
       {activeNav === "activity" && <Card><CardContent className="p-4"><p className="text-muted-foreground">{stats.activities} activity entries</p></CardContent></Card>}
       {activeNav === "team" && <Card><CardContent className="p-4"><p className="text-muted-foreground">{stats.members} team members participating</p></CardContent></Card>}
       {activeNav === "timeline" && <Card><CardContent className="p-4"><p className="text-muted-foreground">Activity timeline view</p></CardContent></Card>}
-    </div>
+    </StandardPage>
   );
 }

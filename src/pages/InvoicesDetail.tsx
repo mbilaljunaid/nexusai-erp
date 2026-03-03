@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,7 +10,11 @@ import { Link } from "wouter";
 
 function InvoiceEntryForm() {
   return (
-    <div className="p-4 border rounded bg-muted/50 border-dashed text-center">
+    <StandardPage
+      title="Invoices"
+      description="Search, view, and create invoices"
+      className="border rounded bg-muted/50 border-dashed text-center"
+    >
       <p className="text-muted-foreground">Invoice Entry Form Placeholder</p>
     </div>
   );
@@ -23,11 +28,7 @@ export default function InvoicesDetail() {
     <div className="space-y-6">
       <div className="flex items-center gap-2">
         <Link to="/finance">
-          <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
-        </Link>
-        <div>
-          <h1 className="text-3xl font-semibold">Invoices</h1>
-          <p className="text-muted-foreground text-sm">Search, view, and create invoices</p>
+          <Button valassName="text-muted-foreground text-sm">Search, view, and create invoices</p>
         </div>
       </div>
 
@@ -48,6 +49,6 @@ export default function InvoicesDetail() {
           <InvoiceEntryForm />
         </div>
       </div>
-    </div>
+    </StandardPage>
   );
 }

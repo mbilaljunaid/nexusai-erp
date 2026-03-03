@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
@@ -44,9 +45,8 @@ export default function IntegrationHub() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2"><Plug className="h-8 w-8" />Integration Hub</h1>
+    <StandardPage
+      title="Integrah1>
         <p className="text-muted-foreground mt-2">Connect your business systems and automate workflows</p>
       </div>
 
@@ -119,6 +119,6 @@ export default function IntegrationHub() {
           <Card><CardHeader><CardTitle className="text-base">App Marketplace</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Browse and install 500+ enterprise applications</p><Button className="mt-4" size="sm">Browse Apps</Button></CardContent></Card>
         </div>
       )}
-    </div>
+    </StandardPage>
   );
 }

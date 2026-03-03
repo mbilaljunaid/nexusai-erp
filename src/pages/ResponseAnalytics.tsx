@@ -1,10 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function ResponseAnalytics() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Response Time Analytics</h1>
+    <StandardPage
+      title="Responslytics</h1>
         <p className="text-muted-foreground mt-1">Support response and resolution metrics</p>
       </div>
 
@@ -28,6 +28,6 @@ export default function ResponseAnalytics() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </StandardPage>
   );
 }

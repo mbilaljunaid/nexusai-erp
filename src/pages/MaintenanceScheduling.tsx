@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,12 +40,8 @@ export default function MaintenanceScheduling() {
   const overdue = maintenance.filter((m: any) => m.status === "overdue").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Wrench className="h-8 w-8" />
-          Maintenance Scheduling
-        </h1>
+    <StandardPage
+      title="Maintenance </h1>
         <p className="text-muted-foreground mt-2">Fleet maintenance planning, work orders, and preventive maintenance tracking</p>
       </div>
 
@@ -123,6 +120,6 @@ export default function MaintenanceScheduling() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,7 +9,11 @@ import { Link } from "wouter";
 
 function TaskEntryForm() {
   return (
-    <div className="p-4 border rounded bg-muted/50 border-dashed text-center">
+    <StandardPage
+      title="Tasks"
+      description="Manage project tasks and assignments"
+      className="border rounded bg-muted/50 border-dashed text-center"
+    >
       <p className="text-muted-foreground">Task Entry Form Placeholder</p>
     </div>
   );
@@ -22,11 +27,7 @@ export default function TasksDetail() {
     <div className="space-y-6">
       <div className="flex items-center gap-2">
         <Link to="/projects">
-          <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
-        </Link>
-        <div>
-          <h1 className="text-3xl font-semibold">Tasks</h1>
-          <p className="text-muted-foreground text-sm">Manage project tasks and assignments</p>
+          <Button vasName="text-muted-foreground text-sm">Manage project tasks and assignments</p>
         </div>
       </div>
 
@@ -47,6 +48,6 @@ export default function TasksDetail() {
           <TaskEntryForm />
         </div>
       </div>
-    </div>
+    </StandardPage>
   );
 }

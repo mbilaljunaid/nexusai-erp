@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -44,12 +45,8 @@ export default function StandardCosting() {
   }, 0) / costs.length : 0;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <DollarSign className="h-8 w-8" />
-          Standard Costing
-        </h1>
+    <StandardPage
+      title="Standard Co
         <p className="text-muted-foreground mt-2">Manage standard costs and cost variances</p>
       </div>
 
@@ -125,6 +122,6 @@ export default function StandardCosting() {
           })}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

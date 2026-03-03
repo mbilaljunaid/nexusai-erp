@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -355,10 +356,8 @@ export default function MarketplaceAdmin() {
   const installCount = approvedApps.reduce((sum, app) => sum + (app.installCount || 0), 0);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold" data-testid="text-marketplace-admin-title">Marketplace Administration</h1>
-        <p className="text-muted-foreground mt-1">
+    <StandardPage
+      title="Marketp   <p className="text-muted-foreground mt-1">
           Review submissions, manage apps, and configure marketplace settings
         </p>
       </div>
@@ -927,6 +926,6 @@ export default function MarketplaceAdmin() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </StandardPage>
   );
 }

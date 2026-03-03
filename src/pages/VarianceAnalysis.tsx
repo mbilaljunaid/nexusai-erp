@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, TrendingDown, Target, LineChart, TrendingUpIcon, Lightbulb } from "lucide-react";
@@ -34,8 +35,8 @@ export default function VarianceAnalysis() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div><h1 className="text-3xl font-semibold">Variance Analysis</h1>
+    <StandardPage
+      title="Varianc1>
         <p className="text-muted-foreground text-sm">Actual vs forecast trending and analysis</p>
       </div>
 
@@ -87,6 +88,6 @@ export default function VarianceAnalysis() {
       )}
       {activeNav === "trending" && <Card><CardContent className="p-6"><p className="text-muted-foreground">Historical variance trends and patterns</p></CardContent></Card>}
       {activeNav === "root-cause" && <Card><CardContent className="p-6"><p className="text-muted-foreground">Root cause analysis and drill-down</p></CardContent></Card>}
-    </div>
+    </StandardPage>
   );
 }

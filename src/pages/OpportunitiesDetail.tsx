@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -47,7 +48,11 @@ function AiInsightsTab({ opportunityId }: { opportunityId: string }) {
   const { open, sendMessage } = useNexusAI();
 
   return (
-    <div className="flex flex-col items-center justify-center p-8 text-center space-y-4 h-full">
+    <StandardPage
+      title="Opportunities"
+      description="Manage your sales pipeline and track deal progress."
+      className="flex flex-col items-center justify-center p-8 text-center space-y-4 h-full"
+    >
       <div className="bg-primary/10 p-4 rounded-full">
         <Sparkles className="h-8 w-8 text-primary" />
       </div>
@@ -201,13 +206,7 @@ export default function OpportunitiesDetail() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
         <div className="flex items-center gap-4">
           <Link href="/crm">
-            <Button variant="outline" size="icon" className="rounded-full">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Opportunities</h1>
-            <p className="text-muted-foreground">Manage your sales pipeline and track deal progress.</p>
+            <Button variant="outline" size="icon" clas           <p className="text-muted-foreground">Manage your sales pipeline and track deal progress.</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -484,6 +483,6 @@ export default function OpportunitiesDetail() {
           )}
         </SheetContent>
       </Sheet>
-    </div>
+    </StandardPage>
   );
 }

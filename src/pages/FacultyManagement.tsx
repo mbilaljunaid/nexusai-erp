@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,8 +11,10 @@ export default function FacultyManagement() {
     { id: "FAC002", name: "Prof. Gupta", dept: "Electronics", courses: 2, status: "ACTIVE" },
   ];
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex justify-between items-center"><div><h1 className="text-3xl font-bold">Faculty Management</h1></div><Button data-testid="button-add-faculty"><Plus className="h-4 w-4 mr-2" /> Add Faculty</Button></div>
+    <StandardPage
+      title="Faculty Management"
+      description=""
+      className="spacter"><div><h1 className="text-3xl font-bold">Faculty Management</h1></div><Button data-testid="button-add-faculty"><Plus className="h-4 w-4 mr-2" /> Add Faculty</Button></div>
       <div className="grid gap-4">
         {faculty.map(f => (
           <Card key={f.id} className="hover-elevate" data-testid={`card-faculty-${f.id}`}>
@@ -19,6 +22,6 @@ export default function FacultyManagement() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

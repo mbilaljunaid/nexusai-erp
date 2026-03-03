@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tag } from "lucide-react";
@@ -10,11 +11,8 @@ export default function PackagingTraceability() {
   });
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Tag className="h-8 w-8" />
-          Packaging, Labeling & Traceability
+    <StandardPage
+      title="Packaging, lity
         </h1>
         <p className="text-muted-foreground mt-2">Label templates, batch serialization, shelf life calculation, and batch tracking</p>
       </div>
@@ -57,6 +55,6 @@ export default function PackagingTraceability() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

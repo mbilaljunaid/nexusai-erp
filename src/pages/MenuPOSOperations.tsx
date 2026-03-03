@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,12 +39,8 @@ export default function MenuPOSOperations() {
   const totalRevenue = items.reduce((sum: number, i: any) => sum + (parseFloat(i.price) || 0), 0);
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <UtensilsCrossed className="h-8 w-8" />
-          Menu & POS Operations
-        </h1>
+    <StandardPage
+      title="Menu & POS </h1>
         <p className="text-muted-foreground mt-2">Menu management, POS integration, portion costing, allergen management, and KDS routing</p>
       </div>
 
@@ -108,6 +105,6 @@ export default function MenuPOSOperations() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

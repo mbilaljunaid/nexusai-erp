@@ -1,5 +1,6 @@
 
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import {
     Card,
     CardContent,
@@ -63,14 +64,10 @@ export default function CostInsights() {
     ];
 
     return (
-        <div className="p-6 space-y-6 bg-slate-50/50 min-h-screen">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-                        <BrainCircuit className="h-8 w-8 text-indigo-600" />
-                        Cost Management AI
-                    </h1>
-                    <p className="text-muted-foreground">Proactive financial surveillance and predictive costing insights.</p>
+        <StandardPage
+      title="Cost Management AI"
+      description="Proactive financial surveillance and predictive costing insights."
+      c          <p className="text-muted-foreground">Proactive financial surveillance and predictive costing insights.</p>
                 </div>
                 <Badge variant="outline" className="px-3 py-1 bg-white">
                     <Sparkles className="h-3 w-3 mr-2 text-amber-500 fill-amber-500" />
@@ -129,6 +126,6 @@ export default function CostInsights() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
-    );
+        </StandardPage>
+  );
 }

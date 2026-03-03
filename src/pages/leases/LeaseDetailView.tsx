@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface LeaseDetailProps {
     leaseId: string;
@@ -73,14 +74,16 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
     if (isLoading) return <Skeleton className="h-[400px] w-full" />;
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h2 className="text-2xl font-bold">{lease.leaseNumber}</h2>
-                    <p className="text-gray-500">{lease.description}</p>
-                    {lease.isModified && <Badge variant="secondary" className="mt-1">Modified: {new Date(lease.modificationDate).toLocaleDateString()}</Badge>}
-                </div>
-                <div className="space-x-2">
+        <StandardPage
+            title={lease.leaseNumber || "Lease Details"}
+            description={lease.description}
+            breadcrumbs={[
+                { label: "Leases", href: "/finance/leases" },
+                { label: lease.leaseNumber }
+            ]}
+            actions={
+                <div className="flex items-center gap-2">
+                    {lease.isModified && <Badge variant="secondary">Modified: {new Date(lease.modificationDate).toLocaleDateString()}</Badge>}
                     <Button variant="outline" size="sm" onClick={() => addPaymentMutation.mutate()}>
                         Add Payment Term
                     </Button>
@@ -99,8 +102,9 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
                         Capitalize ROU
                     </Button>
                 </div>
-            </div>
-
+            }
+            className="space-y-6"
+        >
             <ApprovalTimeline leaseId={leaseId} status={lease.status || "DRAFT"} />
 
             <Tabs defaultValue="overview">
@@ -256,6 +260,6 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
                     onSuccess={() => queryClient.invalidateQueries({ queryKey: ["lease", leaseId] })}
                 />
             )}
-        </div>
+        </StandardPage>
     );
 }

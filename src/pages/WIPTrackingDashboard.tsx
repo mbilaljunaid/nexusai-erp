@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Clock } from "lucide-react";
@@ -14,11 +15,8 @@ export default function WIPTrackingDashboard() {
   const avgAge = wipData.length > 0 ? (wipData.reduce((sum: number, w: any) => sum + (parseFloat(w.daysInWIP) || 0), 0) / wipData.length).toFixed(1) : 0;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <TrendingUp className="h-8 w-8" />
-          WIP Tracking & Bottleneck Analysis
+    <StandardPage
+      title="WIP Trackinysis
         </h1>
         <p className="text-muted-foreground mt-2">Work-in-progress visibility, aging analysis, and constraint management</p>
       </div>
@@ -69,6 +67,6 @@ export default function WIPTrackingDashboard() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

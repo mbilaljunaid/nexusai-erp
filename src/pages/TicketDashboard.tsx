@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
@@ -13,12 +14,13 @@ export default function TicketDashboard() {
   const formMetadata = getFormMetadata("ticketDashboard");
 
   return (
-    <div className="space-y-6">
+    <StandardPage
+      title="Service Ticket Dashboard"
+      description="Overview of support ticket metrics"
+      className="space-y-6"
+    >
       <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={ticketData} onFilter={setFiltered} />
-      
-      <div>
-        <h1 className="text-3xl font-bold">Service Ticket Dashboard</h1>
+      <FormSearchWithMetadata formMetadata={forshboard</h1>
         <p className="text-muted-foreground mt-1">Overview of support ticket metrics</p>
       </div>
 
@@ -63,6 +65,6 @@ export default function TicketDashboard() {
           </ResponsiveContainer>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
@@ -40,8 +41,8 @@ export default function SemanticSearch() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div><h1 className="text-3xl font-semibold">Semantic Search</h1>
+    <StandardPage
+      title="Semanti
         <p className="text-muted-foreground text-sm">Vector-based search and retrieval</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -61,6 +62,6 @@ export default function SemanticSearch() {
       {activeNav === "performance" && <Card><CardContent className="p-4"><p className="text-muted-foreground">Search performance metrics</p></CardContent></Card>}
       {activeNav === "analytics" && <Card><CardContent className="p-4"><p className="text-muted-foreground">Search analytics and trends</p></CardContent></Card>}
       {activeNav === "config" && <Card><CardContent className="p-4"><p className="text-muted-foreground">Search configuration settings</p><Button size="sm" className="mt-4">Configure</Button></CardContent></Card>}
-    </div>
+    </StandardPage>
   );
 }

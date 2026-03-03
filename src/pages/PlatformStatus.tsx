@@ -1,10 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function PlatformStatus() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Platform Status</h1>
+    <StandardPage
+      title="Platforh1>
         <p className="text-muted-foreground mt-1">Current system status and incidents</p>
       </div>
       <div className="grid gap-4">
@@ -15,6 +15,6 @@ export default function PlatformStatus() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </StandardPage>
   );
 }

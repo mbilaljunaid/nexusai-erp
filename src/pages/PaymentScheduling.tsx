@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -39,11 +40,10 @@ export default function PaymentScheduling() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-semibold">Payment Scheduling</h1>
-          <p className="text-muted-foreground text-sm">Plan and manage vendor payment dates</p>
+    <StandardPage
+      title="Payment Scheduling"
+      description="Plan and manage vendor payment dates"
+                <p className="text-muted-foreground text-sm">Plan and manage vendor payment dates</p>
         </div>
       </div>
 
@@ -65,6 +65,6 @@ export default function PaymentScheduling() {
       )}
       {activeNav === "processed" && <Card><CardContent className="p-4"><p className="text-muted-foreground">{stats.processed} payments processed</p></CardContent></Card>}
       {activeNav === "amount" && <Card><CardContent className="p-4"><p className="text-muted-foreground">Total scheduled: ${(stats.totalAmount / 1000000).toFixed(1)}M</p></CardContent></Card>}
-    </div>
+    </StandardPage>
   );
 }

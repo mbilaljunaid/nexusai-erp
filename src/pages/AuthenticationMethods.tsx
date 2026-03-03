@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 import { Key, Globe } from "lucide-react";
 
@@ -11,12 +12,8 @@ export default function AuthenticationMethods() {
   ];
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Key className="h-8 w-8" />
-          Authentication Methods
-        </h1>
+    <StandardPage
+      title="Authenticat </h1>
         <p className="text-muted-foreground mt-2">Configure supported authentication mechanisms</p>
       </div>
 
@@ -46,6 +43,6 @@ export default function AuthenticationMethods() {
           <p className="text-sm text-muted-foreground">Current default: Password (fallback: SSO)</p>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

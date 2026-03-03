@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,9 +36,8 @@ export default function CustomerJourneyMap() {
   });
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold">Customer Journey Map</h1>
+    <StandardPage
+      title="Customer Jo/h1>
         <p className="text-muted-foreground mt-1">Track customer interactions across channels</p>
       </div>
 
@@ -72,6 +72,6 @@ export default function CustomerJourneyMap() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

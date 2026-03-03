@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, CheckCircle } from "lucide-react";
 
@@ -13,7 +14,11 @@ export default function ComplianceMonitoring() {
   ];
 
   return (
-    <div className="space-y-6 container mx-auto py-6">
+    <StandardPage
+      title="ComplianceMonitoring"
+      description=""
+      className="space-y-6 container mx-auto py-6"
+    >
       <div>
         <Breadcrumb items={[{ label: "HR", path: "/hr" }, { label: "Compliance & Risk", path: "/compliance/dashboard" }, { label: "Monitoring", path: "/compliance/monitoring" }]} />
         <h1 className="text-3xl font-bold flex items-center gap-2">
@@ -63,6 +68,6 @@ export default function ComplianceMonitoring() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

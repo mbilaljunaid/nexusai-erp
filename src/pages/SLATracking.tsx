@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 
 export default function SLATracking() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">SLA Tracking & Escalation</h1>
+    <StandardPage
+      title="SLA Tracalation</h1>
         <p className="text-muted-foreground mt-1">Monitor service level agreements</p>
       </div>
 
@@ -26,6 +26,6 @@ export default function SLATracking() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

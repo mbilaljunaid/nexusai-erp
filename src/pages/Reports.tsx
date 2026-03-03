@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -89,20 +90,10 @@ export default function Reports() {
   };
 
   return (
-    <div className="space-y-8">
-      <Breadcrumb
-        items={[
-          { label: "Home", path: "/" },
-          { label: "Reports", path: "/reports" },
-        ]}
-      />
-
-      <div className="space-y-2">
-        <h1 className="text-4xl font-bold flex items-center gap-3">
-          <BarChart3 className="w-10 h-10 text-primary" />
-          Reports & Analytics Hub
-        </h1>
-        <p className="text-muted-foreground text-lg">
+    <StandardPage
+      title="Reports & Analytics Hub"
+      description="Build custom reports, create smart views, import/export data, and visualize insights"
+      className="space-className="text-muted-foreground text-lg">
           Build custom reports, create smart views, import/export data, and visualize insights
         </p>
       </div>
@@ -337,6 +328,6 @@ export default function Reports() {
           </ul>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

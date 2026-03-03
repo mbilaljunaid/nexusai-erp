@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,11 +38,8 @@ export default function CustomsCompliance() {
   const pending = declarations.filter((d: any) => d.status === "pending").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Shield className="h-8 w-8" />
-          Customs, Trade & Global Compliance
+    <StandardPage
+      title="Customs, Trance
         </h1>
         <p className="text-muted-foreground mt-2">Export/import declarations, customs docs, trade screening, and duties calculation</p>
       </div>
@@ -107,6 +105,6 @@ export default function CustomsCompliance() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

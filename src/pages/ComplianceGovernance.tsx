@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   Tabs,
@@ -272,7 +273,11 @@ export default function ComplianceGovernance() {
   ];
 
   return (
-    <div className="space-y-6 container mx-auto" data-testid="compliance-governance">
+    <StandardPage
+      title="ComplianceGovernance"
+      description=""
+      className="space-y-6 container mx-auto"
+    >
       <div className="flex justify-between items-start">
         <div>
           <Breadcrumb items={[{ label: "HR", path: "/hr" }, { label: "Compliance & Governance", path: "/compliance/governance" }]} />

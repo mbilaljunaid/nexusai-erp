@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,9 +12,8 @@ export default function TravelManagement() {
   const { data: expenses = [] } = useQuery<any[]>({ queryKey: ["/api/travel/expenses"] });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Travel Management</h1>
+    <StandardPage
+      title="Travel </h1>
         <p className="text-muted-foreground mt-2">Manage travel requests and expenses</p>
       </div>
 
@@ -77,6 +77,6 @@ export default function TravelManagement() {
           ))}
         </div>
       )}
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -36,9 +37,8 @@ export default function LeadConversion() {
   });
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold">Lead Management & Conversion</h1>
+    <StandardPage
+      title="Lead Manageversion</h1>
         <p className="text-muted-foreground mt-1">Manage leads and convert them to opportunities</p>
       </div>
 
@@ -91,6 +91,6 @@ export default function LeadConversion() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

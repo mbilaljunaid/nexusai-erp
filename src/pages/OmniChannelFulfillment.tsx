@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Zap } from "lucide-react";
@@ -14,12 +15,8 @@ export default function OmniChannelFulfillment() {
   const avgTime = orders.length > 0 ? (orders.reduce((sum: number, o: any) => sum + (parseFloat(o.fulfillmentTime) || 0), 0) / orders.length).toFixed(1) : 0;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Zap className="h-8 w-8" />
-          Omni-Channel Fulfillment
-        </h1>
+    <StandardPage
+      title="Omni-Channe   </h1>
         <p className="text-muted-foreground mt-2">Order fulfillment, store pickup, ship-from-store, and cross-channel allocation</p>
       </div>
 
@@ -64,6 +61,6 @@ export default function OmniChannelFulfillment() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

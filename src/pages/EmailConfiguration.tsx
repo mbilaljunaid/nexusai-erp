@@ -1,12 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export default function EmailConfiguration() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Email Configuration</h1>
+    <StandardPage
+      title="Email Con</h1>
         <p className="text-muted-foreground mt-1">Configure SMTP and email settings</p>
       </div>
       <Card>
@@ -22,6 +22,6 @@ export default function EmailConfiguration() {
           <Button data-testid="button-save-email">Save Configuration</Button>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

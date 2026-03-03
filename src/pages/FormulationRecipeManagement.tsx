@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,11 +40,8 @@ export default function FormulationRecipeManagement() {
   const avgYield = formulas.length > 0 ? (formulas.reduce((sum: number, f: any) => sum + (parseFloat(f.yieldPct) || 0), 0) / formulas.length).toFixed(1) : 0;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <FlaskConical className="h-8 w-8" />
-          Formulation & Recipe Management
+    <StandardPage
+      title="Formulationt
         </h1>
         <p className="text-muted-foreground mt-2">Recipe editor, ingredient substitutions, batch instructions, and version control</p>
       </div>
@@ -109,6 +107,6 @@ export default function FormulationRecipeManagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

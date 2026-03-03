@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
@@ -37,8 +38,8 @@ export default function KnowledgeGraph() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div><h1 className="text-3xl font-semibold">Knowledge Graph</h1>
+    <StandardPage
+      title="Knowled
         <p className="text-muted-foreground text-sm">Entity relationships and semantic connections</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -58,6 +59,6 @@ export default function KnowledgeGraph() {
       {activeNav === "graph" && <Card><CardContent className="p-4"><p className="text-muted-foreground">Knowledge graph visualization</p></CardContent></Card>}
       {activeNav === "relationships" && <Card><CardContent className="p-4"><p className="text-muted-foreground">{stats.relationships} relationships mapped</p></CardContent></Card>}
       {activeNav === "config" && <Card><CardContent className="p-4"><p className="text-muted-foreground">Configure entity types and relationships</p><Button size="sm" className="mt-4">Configure</Button></CardContent></Card>}
-    </div>
+    </StandardPage>
   );
 }

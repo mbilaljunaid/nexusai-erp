@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, TrendingDown, Sparkles } from "lucide-react";
@@ -11,14 +12,9 @@ export default function ChurnPrediction() {
   const { data: predictions = [] } = useQuery<any[]>({ queryKey: ["/api/analytics/churn-prediction"], queryFn: () => fetch("/api/analytics/churn-prediction").then(r => r.json()).catch(() => []) });
 
   return (
-    <div className="space-y-6 p-4">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <TrendingDown className="h-8 w-8" />
-            Churn Prediction
-          </h1>
-          <p className="text-muted-foreground mt-2">Identify at-risk customers and take preventive action (Converged)</p>
+    <StandardPage
+      title="Churn Prediction"
+      description="Identify at-risk customers and tak       <p className="text-muted-foreground mt-2">Identify at-risk customers and take preventive action (Converged)</p>
         </div>
         <Button
           onClick={() => {
@@ -94,6 +90,6 @@ export default function ChurnPrediction() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

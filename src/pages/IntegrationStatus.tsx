@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 import { GitBranch, CheckCircle, AlertCircle } from "lucide-react";
 
@@ -11,12 +12,8 @@ export default function IntegrationStatus() {
   ];
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <GitBranch className="h-8 w-8" />
-          Integration Status
-        </h1>
+    <StandardPage
+      title="Integration1>
         <p className="text-muted-foreground mt-2">Monitor external system integrations</p>
       </div>
 
@@ -68,6 +65,6 @@ export default function IntegrationStatus() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

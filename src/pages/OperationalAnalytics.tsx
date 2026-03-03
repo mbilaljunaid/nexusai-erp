@@ -1,10 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function OperationalAnalytics() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Operational Analytics</h1>
+    <StandardPage
+      title="Operatitics</h1>
         <p className="text-muted-foreground mt-1">Operations efficiency and productivity</p>
       </div>
 
@@ -28,6 +28,6 @@ export default function OperationalAnalytics() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -83,14 +84,10 @@ export default function DeferredRevenueMatrix() {
     };
 
     return (
-        <div className="p-8 space-y-6 bg-slate-50 min-h-screen">
-            {/* Header */}
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-                        Deferred Revenue Matrix
-                    </h1>
-                    <p className="text-muted-foreground mt-1">
+        <StandardPage
+      title="Deferred Revenue Matrix"
+      description="Track contract liabilities and release schedules"
+      className="p-8 space-y-6 bg-slate-50 mt-1">
                         Track contract liabilities and release schedules
                     </p>
                 </div>
@@ -342,6 +339,6 @@ export default function DeferredRevenueMatrix() {
                     </Tabs>
                 </CardContent>
             </Card>
-        </div>
-    );
+        </StandardPage>
+  );
 }

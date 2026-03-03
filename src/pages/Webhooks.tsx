@@ -1,17 +1,20 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function Webhooks() {
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Webhooks</h1>
-          <p className="text-muted-foreground mt-1">Configure event webhooks</p>
-        </div>
-        <Button data-testid="button-new-webhook"><Plus className="h-4 w-4 mr-2" />New Webhook</Button>
-      </div>
+    <StandardPage
+      title="Webhooks"
+      description="Configure event webhooks"
+      actions={
+        <Button data-testid="button-new-webhook">
+          <Plus className="h-4 w-4 mr-2" />New Webhook
+        </Button>
+      }
+      className="space-y-6"
+    >
       <div className="grid gap-4">
         {[
           { url: "https://example.com/api", events: "lead.*", status: "Active" },
@@ -25,6 +28,6 @@ export default function Webhooks() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

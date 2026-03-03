@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Button } from "@/components/ui/button";
@@ -59,11 +60,10 @@ export default function Analytics() {
   const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-bold">Analytics & BI</h1>
-          <p className="text-muted-foreground mt-2">Dashboards, reports, and business intelligence</p>
+    <StandardPage
+      title="Analytics & BI"
+      description="Dashboards, reports, and business intelligence"
+         <p className="text-muted-foreground mt-2">Dashboards, reports, and business intelligence</p>
         </div>
         <Button data-testid="button-new-dashboard">
           <Plus className="h-4 w-4 mr-2" />
@@ -287,6 +287,6 @@ export default function Analytics() {
           </Card>
         </div>
       )}
-    </div>
+    </StandardPage>
   );
 }

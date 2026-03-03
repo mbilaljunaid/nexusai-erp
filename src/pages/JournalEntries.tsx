@@ -1,5 +1,6 @@
 
 import React, { useState, useMemo } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -132,15 +133,10 @@ export default function JournalEntries() {
   ];
 
   return (
-    <div className="container mx-auto p-6 space-y-8 animate-in fade-in duration-700">
-      {/* Action-centric Header */}
-      <div className="flex justify-between items-end">
-        <div>
-          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 flex items-center gap-3">
-            <BookOpen className="h-10 w-10 text-indigo-600" />
-            Journal Batches
-          </h1>
-          <p className="text-slate-500 mt-2 font-medium">Create, monitor, and audit general ledger transactions.</p>
+    <StandardPage
+      title="Journal Batches"
+      description="Create, monitor, and audit general ledger transactions."
+      className="container mx-auto p-6 space-y-8 animate-in f     <p className="text-slate-500 mt-2 font-medium">Create, monitor, and audit general ledger transactions.</p>
         </div>
         <div className="flex gap-3">
           <ExcelImportModal
@@ -264,6 +260,6 @@ export default function JournalEntries() {
           </div>
         </div>
       </SideSheet>
-    </div>
+    </StandardPage>
   );
 }

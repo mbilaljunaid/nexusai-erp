@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,12 +39,8 @@ export default function FleetDriverManagement() {
   const inactive = drivers.filter((d: any) => d.status === "inactive").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Users className="h-8 w-8" />
-          Fleet & Driver Management
-        </h1>
+    <StandardPage
+      title="Fleet & Dri    </h1>
         <p className="text-muted-foreground mt-2">Vehicle maintenance, driver rosters, HOS tracking, fuel logging, and safety dashboards</p>
       </div>
 
@@ -108,6 +105,6 @@ export default function FleetDriverManagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

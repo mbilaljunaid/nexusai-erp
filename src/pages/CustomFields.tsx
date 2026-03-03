@@ -1,14 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
 export default function CustomFields() {
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Custom Fields</h1>
-          <p className="text-muted-foreground mt-1">Manage custom fields and data types</p>
+    <StandardPage
+      title="Custom Fields"
+      description="Manage custom fields and data typ        <p className="text-muted-foreground mt-1">Manage custom fields and data types</p>
         </div>
         <Button data-testid="button-new-field"><Plus className="h-4 w-4 mr-2" />New Field</Button>
       </div>
@@ -25,6 +24,6 @@ export default function CustomFields() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

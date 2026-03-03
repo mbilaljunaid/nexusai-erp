@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
@@ -35,8 +36,8 @@ export default function ErrorHandling() {
   };
 
   return (
-    <div className="space-y-6">
-      <div><h1 className="text-3xl font-semibold flex items-center gap-2"><AlertTriangle className="h-8 w-8" />Error Handling & Resilience</h1>
+    <StandardPage
+      title="Error Hilience</h1>
         <p className="text-muted-foreground text-sm">Error tracking, alerting, and recovery</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -85,6 +86,6 @@ export default function ErrorHandling() {
       )}
       {activeNav === "alerts" && (<Card><CardContent className="p-4"><p className="text-muted-foreground">Real-time alerting and notifications</p></CardContent></Card>)}
       {activeNav === "recovery" && (<Card><CardContent className="p-4"><p className="text-muted-foreground">Automatic recovery and failover mechanisms</p></CardContent></Card>)}
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -33,9 +34,8 @@ export default function ThreeWayMatch() {
   }[activeNav] || [];
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Three-Way Match</h1>
+    <StandardPage
+      title="Three-Wtch</h1>
         <p className="text-muted-foreground">Match Purchase Orders, Goods Receipts, and Supplier Invoices</p>
       </div>
 
@@ -125,6 +125,6 @@ export default function ThreeWayMatch() {
           </CardContent>
         </Card>
       )}
-    </div>
+    </StandardPage>
   );
 }

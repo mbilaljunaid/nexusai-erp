@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
@@ -13,12 +14,13 @@ export default function SalesAnalytics() {
   const formMetadata = getFormMetadata("salesAnalytics");
 
   return (
-    <div className="space-y-6">
+    <StandardPage
+      title="Sales Analytics"
+      description="Revenue and sales pipeline metrics"
+      className="space-y-6"
+    >
       <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={data} onFilter={setFiltered} />
-      
-      <div>
-        <h1 className="text-3xl font-bold">Sales Analytics</h1>
+      <FormSearchWithMetadata formMetadata={formMeh1>
         <p className="text-muted-foreground mt-1">Revenue and sales pipeline metrics</p>
       </div>
 
@@ -36,6 +38,6 @@ export default function SalesAnalytics() {
           </ResponsiveContainer>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

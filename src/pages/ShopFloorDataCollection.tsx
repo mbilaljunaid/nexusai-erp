@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,11 +40,8 @@ export default function ShopFloorDataCollection() {
   const inProcess = events.filter((e: any) => e.eventType === "start" && !events.some((c: any) => c.woId === e.woId && c.eventType === "complete")).length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Zap className="h-8 w-8" />
-          Shop Floor Data Collection & MES
+    <StandardPage
+      title="Shop Floor ES
         </h1>
         <p className="text-muted-foreground mt-2">Operator terminal, work order tracking, scrap/yield, and real-time WIP</p>
       </div>
@@ -116,6 +114,6 @@ export default function ShopFloorDataCollection() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

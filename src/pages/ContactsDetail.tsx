@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -96,7 +97,11 @@ function ContactEntryForm({ onSuccess }: { onSuccess?: () => void }) {
     };
 
     return (
-        <div className="space-y-6 pt-4">
+        <StandardPage
+      title="Contacts"
+      description="Manage your business relationships and network."
+      className="space-y-6 pt-4"
+    >
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid grid-cols-1 gap-4">
                     <div className="grid grid-cols-2 gap-4">
@@ -247,12 +252,7 @@ export default function ContactsDetail() {
                 <div className="flex items-center gap-4">
                     <Link href="/crm">
                         <Button variant="outline" size="icon" className="rounded-full">
-                            <ArrowLeft className="h-4 w-4" />
-                        </Button>
-                    </Link>
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Contacts</h1>
-                        <p className="text-muted-foreground">Manage your business relationships and network.</p>
+                            <ArrolassName="text-muted-foreground">Manage your business relationships and network.</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -370,6 +370,6 @@ export default function ContactsDetail() {
                 open={!!selectedContact}
                 onOpenChange={(open) => !open && setSelectedContact(null)}
             />
-        </div>
-    );
+        </StandardPage>
+  );
 }

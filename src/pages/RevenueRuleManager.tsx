@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     Card,
@@ -126,11 +127,9 @@ export default function RevenueRuleManager() {
     ];
 
     return (
-        <div className="p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Revenue Rules</h1>
-                    <p className="text-muted-foreground mt-1">Configure Contract Identification and Performance Obligation rules.</p>
+        <StandardPage
+      title="Revenue Rules"
+      description="Configure Contract Identification and Performance O<p className="text-muted-foreground mt-1">Configure Contract Identification and Performance Obligation rules.</p>
                 </div>
             </div>
 
@@ -240,6 +239,6 @@ export default function RevenueRuleManager() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
-    );
+        </StandardPage>
+  );
 }

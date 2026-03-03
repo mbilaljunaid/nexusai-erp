@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,11 +40,8 @@ export default function InspectionPlansITP() {
   const avgSampleSize = plans.length > 0 ? (plans.reduce((sum: number, p: any) => sum + (parseFloat(p.sampleSize) || 0), 0) / plans.length).toFixed(0) : 0;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Eye className="h-8 w-8" />
-          Inspection Plans & ITP Management
+    <StandardPage
+      title="Inspection ent
         </h1>
         <p className="text-muted-foreground mt-2">Incoming, in-process, final inspections, and SPC monitoring</p>
       </div>
@@ -122,6 +120,6 @@ export default function InspectionPlansITP() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

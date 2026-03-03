@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,9 +12,8 @@ export default function DocumentManagement() {
   const { data: approvals = [] } = useQuery<any[]>({ queryKey: ["/api/documents/approvals"] });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Document Management</h1>
+    <StandardPage
+      title="Documennt</h1>
         <p className="text-muted-foreground mt-2">Manage documents and approvals</p>
       </div>
 
@@ -69,6 +69,6 @@ export default function DocumentManagement() {
           ))}
         </div>
       )}
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, BookMarked } from "lucide-react";
@@ -9,8 +10,10 @@ export default function LMSContent() {
     { id: "MOD002", name: "HTML & CSS Basics", course: "CSE102", lessons: 8, status: "DRAFT" },
   ];
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex justify-between items-center"><div><h1 className="text-3xl font-bold">LMS & Content Delivery</h1></div><Button data-testid="button-upload-content"><Plus className="h-4 w-4 mr-2" /> Upload Content</Button></div>
+    <StandardPage
+      title="LMS & Content Delivery"
+      description=""
+      className="ter"><div><h1 className="text-3xl font-bold">LMS & Content Delivery</h1></div><Button data-testid="button-upload-content"><Plus className="h-4 w-4 mr-2" /> Upload Content</Button></div>
       <div className="grid gap-4">
         {modules.map(m => (
           <Card key={m.id} className="hover-elevate" data-testid={`card-module-${m.id}`}>
@@ -18,6 +21,6 @@ export default function LMSContent() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

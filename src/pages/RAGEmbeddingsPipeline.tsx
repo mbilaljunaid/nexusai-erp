@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Database, Zap, BarChart3, Activity, Settings, Grid3x3 } from "lucide-react";
@@ -34,8 +35,8 @@ export default function RAGEmbeddingsPipeline() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div><h1 className="text-3xl font-semibold">RAG Embeddings Pipeline</h1>
+    <StandardPage
+      title="RAG Embine</h1>
         <p className="text-muted-foreground text-sm">Vector DB and semantic search infrastructure</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -85,6 +86,6 @@ export default function RAGEmbeddingsPipeline() {
       )}
       {activeNav === "vectors" && <Card><CardContent className="p-6"><p className="text-muted-foreground">Vector index management and optimization</p></CardContent></Card>}
       {activeNav === "config" && <Card><CardContent className="p-6"><p className="text-muted-foreground">Embedding model and pipeline configuration</p></CardContent></Card>}
-    </div>
+    </StandardPage>
   );
 }

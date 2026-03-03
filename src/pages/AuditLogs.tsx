@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { StandardTable } from "@/components/ui/StandardTable";
@@ -46,7 +47,11 @@ export default function AuditLogs() {
   ];
 
   return (
-    <div className="space-y-6 container mx-auto">
+    <StandardPage
+      title="AuditLogs"
+      description=""
+      className="space-y-6 container mx-auto"
+    >
       <div className="flex justify-between items-start">
         <div>
           <Breadcrumb items={[{ label: "HR", path: "/hr" }, { label: "Audit Logs", path: "/hr/audit-logs" }]} />
@@ -84,6 +89,6 @@ export default function AuditLogs() {
         filterColumn="personName"
         filterPlaceholder="Search logs..."
       />
-    </div>
+    </StandardPage>
   );
 }

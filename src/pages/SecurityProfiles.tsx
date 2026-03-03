@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
     Sheet,
@@ -160,7 +161,11 @@ export default function SecurityProfiles() {
     ];
 
     return (
-        <div className="space-y-6 container mx-auto py-6">
+        <StandardPage
+      title="SecurityProfiles"
+      description=""
+      className="space-y-6 container mx-auto py-6"
+    >
             <div>
                 <Breadcrumb items={[{ label: "HR", path: "/hr" }, { label: "Compliance", path: "/compliance/dashboard" }, { label: "Security Profiles", path: "/compliance/security" }]} />
                 <h1 className="text-3xl font-bold tracking-tight mt-2 flex items-center gap-2">
@@ -280,6 +285,6 @@ export default function SecurityProfiles() {
                     filterColumn="name"
                 />
             </div>
-        </div>
-    );
+        </StandardPage>
+  );
 }

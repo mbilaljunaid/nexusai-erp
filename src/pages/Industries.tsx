@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -143,10 +144,9 @@ const industries: IndustryCard[] = [
 
 export default function Industries() {
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold">Industry Solutions</h1>
-        <p className="text-muted-foreground">
+    <StandardPage
+      title="Industry Solutions"
+      des<p className="text-muted-foreground">
           Specialized modules tailored for industry-specific workflows and compliance requirements
         </p>
       </div>
@@ -233,6 +233,6 @@ export default function Industries() {
           </CardHeader>
         </Card>
       </div>
-    </div>
+    </StandardPage>
   );
 }

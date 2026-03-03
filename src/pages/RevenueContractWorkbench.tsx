@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { queryClient } from "@/lib/queryClient";
@@ -180,11 +181,10 @@ export default function RevenueContractWorkbench() {
     });
 
     return (
-        <div className="p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Revenue Contracts</h1>
-                    <p className="text-muted-foreground mt-1">Asc 606 / IFRS 15 Management Workbench</p>
+        <StandardPage
+      title="Revenue Contracts"
+      description="Asc 606 / IFRS 15 Management Workbench"
+      c    <p className="text-muted-foreground mt-1">Asc 606 / IFRS 15 Management Workbench</p>
                 </div>
                 <div className="flex gap-4 items-center">
                     <EnterpriseContextSwitcher
@@ -278,6 +278,6 @@ export default function RevenueContractWorkbench() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
-    );
+        </StandardPage>
+  );
 }

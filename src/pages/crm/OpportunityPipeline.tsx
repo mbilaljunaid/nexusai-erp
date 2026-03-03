@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { KanbanBoard } from "@/components/ui/KanbanBoard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -114,16 +114,8 @@ export default function OpportunityPipeline() {
         return { count, totalValue, avgProbability };
     };
 
-    const handleDragEnd = (result: DropResult) => {
-        const { destination, source, draggableId } = result;
-
-        if (!destination) return;
-        if (destination.droppableId === source.droppableId && destination.index === source.index) return;
-
-        const opportunityId = draggableId;
-        const newStage = destination.droppableId as OpportunityStage;
-
-        updateStageMutation.mutate({ id: opportunityId, stage: newStage });
+    const handleDragEnd = (opportunityId: string, newStage: string) => {
+        updateStageMutation.mutate({ id: opportunityId, stage: newStage as OpportunityStage });
     };
 
     return (
@@ -173,101 +165,74 @@ export default function OpportunityPipeline() {
                 </div>
 
                 {/* Kanban Board */}
-                <DragDropContext onDragEnd={handleDragEnd}>
-                    <div className="grid grid-cols-6 gap-4">
-                        {STAGES.map((stage) => {
-                            const metrics = getStageMetrics(stage.id);
-                            const opps = opportunitiesByStage[stage.id] || [];
-
-                            return (
-                                <div key={stage.id} className="flex flex-col min-h-[600px]">
-                                    {/* Stage Header */}
-                                    <Card className={`${stage.bgColor} border-2 mb-3`}>
-                                        <CardHeader className="pb-3">
-                                            <CardTitle className={`text-sm ${stage.color}`}>
-                                                {stage.label}
-                                            </CardTitle>
-                                        </CardHeader>
-                                        <CardContent className="space-y-1">
-                                            <div className="text-xs text-muted-foreground">
-                                                <div className="flex justify-between">
-                                                    <span>Count:</span>
-                                                    <span className="font-semibold">{metrics.count}</span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span>Value:</span>
-                                                    <span className="font-semibold">${(metrics.totalValue / 1000).toFixed(0)}K</span>
-                                                </div>
-                                                {stage.id !== "CLOSED_WON" && stage.id !== "CLOSED_LOST" && (
-                                                    <div className="flex justify-between">
-                                                        <span>Avg %:</span>
-                                                        <span className="font-semibold">{metrics.avgProbability.toFixed(0)}%</span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-
-                                    {/* Droppable Column */}
-                                    <Droppable droppableId={stage.id}>
-                                        {(provided, snapshot) => (
-                                            <div
-                                                ref={provided.innerRef}
-                                                {...provided.droppableProps}
-                                                className={`flex-1 space-y-2 p-2 rounded-lg transition-colors ${snapshot.isDraggingOver ? "bg-muted" : "bg-transparent"
-                                                    }`}
-                                            >
-                                                {opps.map((opp, index) => (
-                                                    <Draggable key={opp.id} draggableId={opp.id} index={index}>
-                                                        {(provided, snapshot) => (
-                                                            <Card
-                                                                ref={provided.innerRef}
-                                                                {...provided.draggableProps}
-                                                                {...provided.dragHandleProps}
-                                                                className={`cursor-grab active:cursor-grabbing transition-shadow ${snapshot.isDragging ? "shadow-lg" : "shadow-sm"
-                                                                    }`}
-                                                                onClick={() => setSelectedOpportunity(opp)}
-                                                            >
-                                                                <CardContent className="p-3 space-y-2">
-                                                                    <div className="font-semibold text-sm line-clamp-2">
-                                                                        {opp.name}
-                                                                    </div>
-                                                                    <div className="text-xs text-muted-foreground">
-                                                                        {opp.accountName}
-                                                                    </div>
-                                                                    <div className="flex items-center gap-1 text-sm font-bold text-green-700">
-                                                                        <DollarSign className="h-3 w-3" />
-                                                                        ${(opp.amount / 1000).toFixed(0)}K
-                                                                    </div>
-                                                                    <div className="flex items-center justify-between text-xs">
-                                                                        <div className="flex items-center gap-1 text-muted-foreground">
-                                                                            <Calendar className="h-3 w-3" />
-                                                                            {new Date(opp.closeDate).toLocaleDateString()}
-                                                                        </div>
-                                                                        <Badge variant="outline" className="text-xs">
-                                                                            {opp.probability}%
-                                                                        </Badge>
-                                                                    </div>
-                                                                    {opp.aiWinProbability && (
-                                                                        <div className="flex items-center gap-1 text-xs text-purple-700">
-                                                                            <Sparkles className="h-3 w-3" />
-                                                                            AI: {opp.aiWinProbability}% win
-                                                                        </div>
-                                                                    )}
-                                                                </CardContent>
-                                                            </Card>
-                                                        )}
-                                                    </Draggable>
-                                                ))}
-                                                {provided.placeholder}
+                <KanbanBoard<Opportunity>
+                    columns={STAGES.map(s => ({ id: s.id, title: s.label, color: s.color, bgColor: s.bgColor }))}
+                    items={opportunities || []}
+                    getColumnId={(opp) => opp.stage}
+                    onDragEnd={handleDragEnd}
+                    onCardClick={setSelectedOpportunity}
+                    renderColumnHeader={(column) => {
+                        const metrics = getStageMetrics(column.id as OpportunityStage);
+                        return (
+                            <Card className={`${column.bgColor} border-2 mb-3`}>
+                                <CardHeader className="pb-3">
+                                    <CardTitle className={`text-sm ${column.color}`}>
+                                        {column.title}
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-1">
+                                    <div className="text-xs text-muted-foreground">
+                                        <div className="flex justify-between">
+                                            <span>Count:</span>
+                                            <span className="font-semibold">{metrics.count}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span>Value:</span>
+                                            <span className="font-semibold">${(metrics.totalValue / 1000).toFixed(0)}K</span>
+                                        </div>
+                                        {column.id !== "CLOSED_WON" && column.id !== "CLOSED_LOST" && (
+                                            <div className="flex justify-between">
+                                                <span>Avg %:</span>
+                                                <span className="font-semibold">{metrics.avgProbability.toFixed(0)}%</span>
                                             </div>
                                         )}
-                                    </Droppable>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        );
+                    }}
+                    renderCard={(opp) => (
+                        <Card className="cursor-grab active:cursor-grabbing border-none">
+                            <CardContent className="p-3 space-y-2">
+                                <div className="font-semibold text-sm line-clamp-2">
+                                    {opp.name}
                                 </div>
-                            );
-                        })}
-                    </div>
-                </DragDropContext>
+                                <div className="text-xs text-muted-foreground">
+                                    {opp.accountName}
+                                </div>
+                                <div className="flex items-center gap-1 text-sm font-bold text-green-700">
+                                    <DollarSign className="h-3 w-3" />
+                                    ${(opp.amount / 1000).toFixed(0)}K
+                                </div>
+                                <div className="flex items-center justify-between text-xs">
+                                    <div className="flex items-center gap-1 text-muted-foreground">
+                                        <Calendar className="h-3 w-3" />
+                                        {new Date(opp.closeDate).toLocaleDateString()}
+                                    </div>
+                                    <Badge variant="outline" className="text-xs">
+                                        {opp.probability}%
+                                    </Badge>
+                                </div>
+                                {opp.aiWinProbability && (
+                                    <div className="flex items-center gap-1 text-xs text-purple-700">
+                                        <Sparkles className="h-3 w-3" />
+                                        AI: {opp.aiWinProbability}% win
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    )}
+                />
 
                 {/* Opportunity Detail Dialog */}
                 {selectedOpportunity && (

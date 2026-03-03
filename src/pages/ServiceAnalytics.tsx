@@ -5,6 +5,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function ServiceAnalytics() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -13,14 +14,13 @@ export default function ServiceAnalytics() {
   const formMetadata = getFormMetadata("serviceAnalytics");
 
   return (
-    <div className="space-y-6">
+    <StandardPage
+      title="Service Analytics"
+      description="Service performance metrics and trends"
+      className="space-y-6"
+    >
       <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
       <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={resolvedData} onFilter={setFiltered} />
-      
-      <div>
-        <h1 className="text-3xl font-bold">Service Analytics</h1>
-        <p className="text-muted-foreground mt-1">Service performance metrics and trends</p>
-      </div>
 
       <Card>
         <CardHeader><CardTitle className="text-base">Weekly Resolutions</CardTitle></CardHeader>
@@ -36,6 +36,6 @@ export default function ServiceAnalytics() {
           </ResponsiveContainer>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -48,14 +49,10 @@ export default function FinancialConsolidation() {
   };
 
   return (
-    <div className="space-y-6 p-4" data-testid="financial-consolidation">
-      <div className="flex justify-between items-start mb-6">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Building2 className="h-8 w-8" />
-            Financial Consolidation
-          </h1>
-          <p className="text-muted-foreground mt-2">Manage multi-entity consolidation and intercompany eliminations</p>
+    <StandardPage
+      title="Financial Consolidation"
+      description="Manage multi-entity consolidation and intercompany eliminations"
+    -foreground mt-2">Manage multi-entity consolidation and intercompany eliminations</p>
         </div>
         <EnterpriseContextSwitcher type="set" />
       </div>
@@ -150,6 +147,6 @@ export default function FinancialConsolidation() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen } from "lucide-react";
@@ -8,13 +9,9 @@ export default function Epics() {
   const epics = issues.filter((i: any) => i.issueType === "epic");
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-          <BookOpen className="w-8 h-8" />
-          Epics
-        </h1>
-        <p className="text-muted-foreground">Large-scale initiatives spanning multiple sprints</p>
+    <StandardPage
+      title="Epics"
+       <p className="text-muted-foreground">Large-scale initiatives spanning multiple sprints</p>
       </div>
 
       <div className="grid gap-4">
@@ -52,6 +49,6 @@ export default function Epics() {
           </Card>
         )}
       </div>
-    </div>
+    </StandardPage>
   );
 }

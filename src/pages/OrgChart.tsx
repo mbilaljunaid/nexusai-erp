@@ -1,10 +1,15 @@
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Network } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function OrgChart() {
   return (
-    <div className="p-6 space-y-6">
+    <StandardPage
+      title="OrgChart"
+      description=""
+      className="p-6 space-y-6"
+    >
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Org Chart</h1>
         <Badge variant="outline">Enterprise module</Badge>
@@ -21,6 +26,6 @@ export default function OrgChart() {
           <p className="text-sm text-muted-foreground mt-2">Module active and operational</p>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

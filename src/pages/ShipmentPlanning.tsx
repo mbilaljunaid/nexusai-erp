@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Package, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function ShipmentPlanning() {
   const { toast } = useToast();
@@ -38,14 +39,11 @@ export default function ShipmentPlanning() {
   const shippedCount = shipments.filter((s: any) => s.status === "shipped").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Package className="h-8 w-8" />
-          Shipment Planning
-        </h1>
-        <p className="text-muted-foreground mt-2">Plan and coordinate outbound shipments</p>
-      </div>
+    <StandardPage
+      title="Shipment Planning"
+      description="Plan and coordinate outbound shipments"
+      className="space-y-6"
+    >
 
       <div className="grid grid-cols-3 gap-3">
         <Card className="p-3">
@@ -117,6 +115,6 @@ export default function ShipmentPlanning() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -187,11 +188,10 @@ export default function ExpenseTracking() {
   const myTotal = myExpenses.reduce((sum, e) => sum + Number(e.totalAmount || 0), 0);
 
   return (
-    <div className="space-y-6 pb-20">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Expense Tracking</h1>
-          <p className="text-muted-foreground mt-1 text-lg">
+    <StandardPage
+      title="Expense Tracking"
+      description="Track your expenses and manage approvals"
+      className="space-yted-foreground mt-1 text-lg">
             Track your expenses and manage approvals
           </p>
         </div>
@@ -380,6 +380,6 @@ export default function ExpenseTracking() {
           </Card>
         </>
       )}
-    </div>
+    </StandardPage>
   );
 }

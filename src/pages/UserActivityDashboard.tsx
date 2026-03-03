@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 import { Activity, TrendingUp } from "lucide-react";
 
@@ -11,12 +12,8 @@ export default function UserActivityDashboard() {
   ];
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Activity className="h-8 w-8" />
-          User Activity Dashboard
-        </h1>
+    <StandardPage
+      title="User Activi  </h1>
         <p className="text-muted-foreground mt-2">Monitor all user actions across modules</p>
       </div>
 
@@ -67,6 +64,6 @@ export default function UserActivityDashboard() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

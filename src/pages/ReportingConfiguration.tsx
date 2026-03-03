@@ -1,10 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function ReportingConfiguration() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Reporting Configuration</h1>
+    <StandardPage
+      title="Reportiration</h1>
         <p className="text-muted-foreground mt-1">Configure reporting and BI settings</p>
       </div>
       <Card>
@@ -13,6 +13,6 @@ export default function ReportingConfiguration() {
           <p className="font-semibold text-lg mt-2">PDF</p>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

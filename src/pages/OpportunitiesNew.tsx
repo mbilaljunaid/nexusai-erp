@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp } from "lucide-react";
@@ -18,12 +19,8 @@ export default function OpportunitiesNew() {
   };
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-          <TrendingUp className="w-8 h-8" />
-          Sales Opportunities
-        </h1>
+    <StandardPage
+      title="Sales O       </h1>
         <p className="text-muted-foreground">Manage your sales pipeline</p>
       </div>
 
@@ -69,6 +66,6 @@ export default function OpportunitiesNew() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

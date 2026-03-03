@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -90,10 +91,8 @@ export default function CorporateCardReconciliation() {
     const summary = transactionsData?.summary || { pending: 0, matched: 0, reconciled: 0 };
 
     return (
-        <div className="space-y-6 pb-20">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight">Corporate Card Reconciliation</h1>
-                <p className="text-muted-foreground mt-1 text-lg">
+        <StandardPage
+      title="Corporate Card Recooreground mt-1 text-lg">
                     Import and match corporate card transactions to expense reports
                 </p>
             </div>
@@ -277,6 +276,6 @@ export default function CorporateCardReconciliation() {
                     <p><strong>Reconciliation:</strong> Once matched, transactions are marked as reconciled for audit purposes.</p>
                 </CardContent>
             </Card>
-        </div>
-    );
+        </StandardPage>
+  );
 }

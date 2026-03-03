@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -41,11 +42,8 @@ export default function MarketingEngagement() {
   const completed = campaigns.filter((c: any) => c.status === "completed").length;
 
   return (
-    <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Megaphone className="h-8 w-8" />
-          Marketing & Customer Engagement
+    <StandardPage
+      title="Marketing &t
         </h1>
         <p className="text-muted-foreground mt-2">Campaigns, promotions, churn prediction, and retention strategies</p>
       </div>
@@ -144,6 +142,6 @@ export default function MarketingEngagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }
