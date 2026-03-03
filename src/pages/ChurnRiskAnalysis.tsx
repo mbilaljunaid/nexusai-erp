@@ -38,9 +38,9 @@ export default function ChurnRiskAnalysis() {
 
   return (
     <StandardPage
-      title="Churn Risk h1>
-        <p className="text-muted-foreground mt-1">Customer churn prediction and prevention</p>
-      </div>
+      title="Churn Risk Analysis"
+      description="Customer churn prediction and prevention"
+    >
 
       <Card data-testid="card-new-risk">
         <CardHeader><CardTitle className="text-base">Add Churn Risk</CardTitle></CardHeader>

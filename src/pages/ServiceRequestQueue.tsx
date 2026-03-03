@@ -42,11 +42,9 @@ export default function ServiceRequestQueue() {
 
     return (
         <StandardPage
-      title="Service Request Triage"
-      description="Review and convert incoming breakdown requests."
-      class              <p className="text-muted-foreground">Review and convert incoming breakdown requests.</p>
-                </div>
-            </div>
+            title="Service Request Triage"
+            description="Review and convert incoming breakdown requests."
+        >
 
             <Card>
                 <CardContent className="p-0">
@@ -103,5 +101,5 @@ export default function ServiceRequestQueue() {
                 </CardContent>
             </Card>
         </StandardPage>
-  );
+    );
 }

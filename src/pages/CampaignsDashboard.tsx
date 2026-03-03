@@ -14,7 +14,7 @@ export default function CampaignsDashboard() {
   const { toast } = useToast();
   const [newCampaign, setNewCampaign] = useState({ name: "", type: "Email", budget: "", status: "active" });
 
-  const { data: campaigns = [], isLoading } = useQuery<any[]>({ 
+  const { data: campaigns = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/marketing/campaigns"],
     queryFn: () => fetch("/api/marketing/campaigns").then(r => r.json()).catch(() => []),
   });
@@ -41,9 +41,9 @@ export default function CampaignsDashboard() {
 
   return (
     <StandardPage
-      title="Marketing Cgns</h1>
-        <p className="text-muted-foreground">Manage marketing initiatives</p>
-      </div>
+      title="Marketing Campaigns"
+      description="Manage marketing initiatives"
+    >
       <div className="grid grid-cols-3 gap-4">
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Total Campaigns</p><p className="text-2xl font-bold">{campaigns.length}</p></CardContent></Card>
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Active</p><p className="text-2xl font-bold text-blue-600">{active}</p></CardContent></Card>

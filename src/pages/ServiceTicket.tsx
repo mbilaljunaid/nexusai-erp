@@ -13,8 +13,8 @@ export default function ServiceTicket() {
     <StandardPage
       title="Service Tickets"
       description="Manage customer support requests"
-             <p className="text-muted-foreground mt-1">Manage customer support requests</p>
-        </div>
+    >
+      <div className="flex justify-end mb-4">
         <Button data-testid="button-new-ticket"><Plus className="h-4 w-4 mr-2" />New Ticket</Button>
       </div>
 

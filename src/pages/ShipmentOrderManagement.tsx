@@ -41,7 +41,6 @@ export default function ShipmentOrderManagement() {
   const pending = shipments.filter((s: any) => s.status === "pending").length;
 
   return (
-  return (
     <StandardPage
       title="Shipment Order Management"
       description="Global logistics execution, order consolidation, and multi-modal shipment orchestration"
@@ -134,51 +133,49 @@ export default function ShipmentOrderManagement() {
                 {createMutation.isPending ? <Activity className="h-4 w-4 animate-spin" /> : "Dispatch Order"}
               </Button>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <Truck className="h-4 w-4" />
-            Global Logistics Registry
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {isLoading ? (
-              Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)
-            ) : shipments.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8 font-medium">No shipment orders active in the current window</p>
-            ) : (
-              shipments.map((s: any) => (
-                <div key={s.id} className="p-4 border rounded-lg hover:bg-accent/50 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4" data-testid={`shipment-${s.id}`}>
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <p className="font-semibold">{s.shipmentId}</p>
-                      <Badge variant="outline" className="text-[10px] uppercase font-mono tracking-tighter">
-                        {s.origin} → {s.destination}
-                      </Badge>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <Truck className="h-4 w-4" />
+              Global Logistics Registry
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {isLoading ? (
+                Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)
+              ) : shipments.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8 font-medium">No shipment orders active in the current window</p>
+              ) : (
+                shipments.map((s: any) => (
+                  <div key={s.id} className="p-4 border rounded-lg hover:bg-accent/50 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4" data-testid={`shipment-${s.id}`}>
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <p className="font-semibold">{s.shipmentId}</p>
+                        <Badge variant="outline" className="text-[10px] uppercase font-mono tracking-tighter">
+                          {s.origin} → {s.destination}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground">Payload: {s.weight} kg • Priority: Standard</p>
                     </div>
-                    <p className="text-xs text-muted-foreground">Payload: {s.weight} kg • Priority: Standard</p>
+                    <div className="flex flex-row items-center gap-3">
+                      <Badge variant={s.status === "delivered" ? "default" : "secondary"} className="text-[10px] uppercase font-mono">
+                        {s.status}
+                      </Badge>
+                      <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => deleteMutation.mutate(s.id)} data-testid={`button-delete-${s.id}`}>
+                        <Trash2 className="w-3 h-3" />
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex flex-row items-center gap-3">
-                    <Badge variant={s.status === "delivered" ? "default" : "secondary"} className="text-[10px] uppercase font-mono">
-                      {s.status}
-                    </Badge>
-                    <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => deleteMutation.mutate(s.id)} data-testid={`button-delete-${s.id}`}>
-                      <Trash2 className="w-3 h-3" />
-                    </Button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-            </div >
-    </StandardPage >
+                ))
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </StandardPage>
   );
 }

@@ -17,9 +17,9 @@ export default function PayrollRuns() {
 
   return (
     <StandardPage
-      title="Payroll      </h1>
-        <p className="text-muted-foreground">Process salary and compensation</p>
-      </div>
+      title="Payroll Runs"
+      description="Process salary and compensation"
+    >
 
       <div className="grid grid-cols-3 gap-4">
         <Card>

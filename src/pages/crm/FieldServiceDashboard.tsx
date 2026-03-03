@@ -43,7 +43,6 @@ export default function FieldServiceDashboard() {
     });
 
     return (
-    return (
         <StandardPage
             title="Dispatcher Console"
             description="Manage field technicians and work orders."

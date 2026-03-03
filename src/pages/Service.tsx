@@ -23,9 +23,9 @@ export default function Service() {
 
   return (
     <StandardPage
-      title="Custome>
-        <p className="text-muted-foreground text-sm">Manage support tickets, SLAs, and customer satisfaction</p>
-      </div>
+      title="Customer Service"
+      description="Manage support tickets, SLAs, and customer satisfaction"
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card><CardContent className="p-4"><p className="text-2xl font-semibold">342</p><p className="text-xs text-muted-foreground">Open Tickets</p></CardContent></Card>

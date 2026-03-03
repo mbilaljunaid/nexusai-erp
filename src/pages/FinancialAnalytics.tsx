@@ -15,9 +15,9 @@ export default function FinancialAnalytics() {
 
   return (
     <StandardPage
-      title="Financial Ah1>
-        <p className="text-muted-foreground mt-1">Financial performance and metrics</p>
-      </div>
+      title="Financial Analytics"
+      description="Financial performance and metrics"
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card data-testid="card-revenue">

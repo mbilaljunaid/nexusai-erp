@@ -182,10 +182,9 @@ export default function RevenueContractWorkbench() {
 
     return (
         <StandardPage
-      title="Revenue Contracts"
-      description="Asc 606 / IFRS 15 Management Workbench"
-      c    <p className="text-muted-foreground mt-1">Asc 606 / IFRS 15 Management Workbench</p>
-                </div>
+            title="Revenue Contracts"
+            description="Asc 606 / IFRS 15 Management Workbench"
+            actions={
                 <div className="flex gap-4 items-center">
                     <EnterpriseContextSwitcher
                         type="business-unit"
@@ -201,7 +200,8 @@ export default function RevenueContractWorkbench() {
                     </Button>
                     <Button>+ New Contract</Button>
                 </div>
-            </div>
+            }
+        >
 
             <div className="grid gap-4 md:grid-cols-4">
                 <Card>
@@ -279,5 +279,5 @@ export default function RevenueContractWorkbench() {
                 </CardContent>
             </Card>
         </StandardPage>
-  );
+    );
 }

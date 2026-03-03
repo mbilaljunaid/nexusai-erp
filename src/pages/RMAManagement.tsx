@@ -41,9 +41,9 @@ export default function RMAManagement() {
 
   return (
     <StandardPage
-      title="Returns Man   </h1>
-        <p className="text-muted-foreground mt-2">Manage returns, refunds, and replacements</p>
-      </div>
+      title="Returns Management"
+      description="Manage returns, refunds, and replacements"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

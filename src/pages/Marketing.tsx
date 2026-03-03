@@ -8,11 +8,7 @@ import { Link } from "wouter";
 
 function CampaignEntryForm() {
   return (
-    <StandardPage
-      title="Marketing Automation"
-      description="Create campaigns, nurture leads, and track engagement"
-      className="border rounded bg-muted/50 border-dashed text-center"
-    >
+    <div className="border-2 rounded-xl bg-muted/10 border-dashed text-center p-8">
       <p className="text-muted-foreground">Campaign Entry Form Placeholder</p>
     </div>
   );
@@ -31,9 +27,18 @@ export default function Marketing() {
     { id: "analytics", label: "Analytics", icon: TrendingUp, color: "text-indigo-500" },
     { id: "automation", label: "Automation", icon: Zap, color: "text-yellow-500" },
     { id: "budget", label: "Budget", icon: PieChart, color: "text-red-500" },
-    { id: "set>
-        <p className="text-muted-foreground text-sm">Create campaigns, nurture leads, and track engagement</p>
-      </div>
+    { id: "settings", label: "Settings", icon: Settings, color: "text-gray-500" },
+  ];
+
+  return (
+    <StandardPage
+      title="Marketing Automation"
+      description="Create campaigns, nurture leads, and track engagement"
+      breadcrumbs={[
+        { label: 'CRM Dashboard', href: '/crm' },
+        { label: 'Marketing' }
+      ]}
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card><CardContent className="p-4"><p className="text-2xl font-semibold">18</p><p className="text-xs text-muted-foreground">Active Campaigns</p></CardContent></Card>

@@ -136,12 +136,9 @@ export default function RevenueSourceEvents() {
 
     return (
         <StandardPage
-      title="Revenue Source Events"
-      description="Ingest and process revenue events from operational systems"
-      className="p-8 space-y-6 bg-s-1">
-                        Ingest and process revenue events from operational systems
-                    </p>
-                </div>
+            title="Revenue Source Events"
+            description="Ingest and process revenue events from operational systems"
+            actions={
                 <div className="flex gap-2">
                     <Button
                         variant="outline"
@@ -156,7 +153,8 @@ export default function RevenueSourceEvents() {
                         Manual Event
                     </Button>
                 </div>
-            </div>
+            }
+        >
 
             {/* Summary Metrics */}
             <div className="grid gap-4 md:grid-cols-4">
@@ -470,5 +468,5 @@ export default function RevenueSourceEvents() {
                 </DialogContent>
             </Dialog>
         </StandardPage>
-  );
+    );
 }

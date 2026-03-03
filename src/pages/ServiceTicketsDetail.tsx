@@ -17,14 +17,11 @@ export default function ServiceTicketsDetail() {
     <StandardPage
       title="Service Tickets"
       description="Search, view, and create support tickets"
-      className="space-y-6"
+      breadcrumbs={[
+        { label: 'Service Dashboard', href: '/service' },
+        { label: 'Service Tickets' }
+      ]}
     >
-      <div className="flex items-center gap-2">
-        <Link to="/service">
-         <p className="text-muted-foreground text-sm">Search, view, and create support tickets</p>
-        </div>
-      </div>
-
       <div className="space-y-4">
         <div className="flex gap-2 items-center">
           <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search tickets..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>

@@ -102,61 +102,60 @@ export function APHoldRules() {
                         filterColumn="name"
                     />
                 </CardContent>
+            </Card>
 
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Add Hold Rule</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="name">Rule Name</Label>
-                                <Input
-                                    id="name"
-                                    value={form.name}
-                                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                    placeholder="e.g., Price Variance Hold"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="description">Description</Label>
-                                <Input
-                                    id="description"
-                                    value={form.description}
-                                    onChange={(e) => setForm({ ...form, description: e.target.value })}
-                                    placeholder="Triggers when unit price variance exceeds 5%"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="holdType">Hold Type</Label>
-                                <Select value={form.holdType} onValueChange={(v) => setForm({ ...form, holdType: v })}>
-                                    <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="Variance">Variance</SelectItem>
-                                        <SelectItem value="Matching">Matching</SelectItem>
-                                        <SelectItem value="Tax">Tax</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="active">Status</Label>
-                                <Select value={form.active} onValueChange={(v) => setForm({ ...form, active: v })}>
-                                    <SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="true">Active</SelectItem>
-                                        <SelectItem value="false">Inactive</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Add Hold Rule</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="name">Rule Name</Label>
+                            <Input
+                                id="name"
+                                value={form.name}
+                                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                                placeholder="e.g., Price Variance Hold"
+                            />
                         </div>
-                        <DialogFooter>
-                            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-                            <Button onClick={() => createMutation.mutate(form)}>Save Rule</Button>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
+                        <div className="space-y-2">
+                            <Label htmlFor="description">Description</Label>
+                            <Input
+                                id="description"
+                                value={form.description}
+                                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                                placeholder="Triggers when unit price variance exceeds 5%"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="holdType">Hold Type</Label>
+                            <Select value={form.holdType} onValueChange={(v) => setForm({ ...form, holdType: v })}>
+                                <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Variance">Variance</SelectItem>
+                                    <SelectItem value="Matching">Matching</SelectItem>
+                                    <SelectItem value="Tax">Tax</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="active">Status</Label>
+                            <Select value={form.active} onValueChange={(v) => setForm({ ...form, active: v })}>
+                                <SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="true">Active</SelectItem>
+                                    <SelectItem value="false">Inactive</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                        <Button onClick={() => createMutation.mutate(form)}>Save Rule</Button>
+                    </DialogFooter>
+                </DialogContent>
             </Dialog>
-        </Card>
-        </StandardPage >
+        </StandardPage>
     );
 }

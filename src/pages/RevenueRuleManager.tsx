@@ -128,10 +128,9 @@ export default function RevenueRuleManager() {
 
     return (
         <StandardPage
-      title="Revenue Rules"
-      description="Configure Contract Identification and Performance O<p className="text-muted-foreground mt-1">Configure Contract Identification and Performance Obligation rules.</p>
-                </div>
-            </div>
+            title="Revenue Rules"
+            description="Configure Contract Identification and Performance Obligation rules."
+        >
 
             <Tabs defaultValue="pob" className="w-full">
                 <TabsList>
@@ -240,5 +239,5 @@ export default function RevenueRuleManager() {
                 </TabsContent>
             </Tabs>
         </StandardPage>
-  );
+    );
 }

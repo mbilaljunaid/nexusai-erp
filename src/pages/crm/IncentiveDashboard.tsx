@@ -42,7 +42,6 @@ export default function IncentiveDashboard() {
     const closedDeals = commissions?.length || 0;
 
     return (
-    return (
         <StandardPage
             title="Incentive Compensation"
             description="Track your commission earnings and payouts."

@@ -62,10 +62,9 @@ export default function RevenueAuditConsole() {
 
     return (
         <StandardPage
-      title="Revenue Audit & Compliance"
-      description="Trace lifecycle and monitor ASC 606 rule adherence."
-      c             <p className="text-muted-foreground mt-1">Trace lifecycle and monitor ASC 606 rule adherence.</p>
-                </div>
+            title="Revenue Audit & Compliance"
+            description="Trace lifecycle and monitor ASC 606 rule adherence."
+            actions={
                 <div className="flex gap-4">
                     <Card className="px-6 py-3 shadow-sm border-none bg-white">
                         <div className="flex items-center gap-4">
@@ -73,13 +72,14 @@ export default function RevenueAuditConsole() {
                                 <p className="text-xs font-semibold text-slate-500 uppercase">Compliance Score</p>
                                 <p className="text-2xl font-bold text-indigo-600">{complianceHealth?.score || 100}%</p>
                             </div>
-                            <div className={`h-10 w-10 rounded-full border-4 flex items-center justify-center text-[10px] font-bold ${ (complianceHealth?.score || 100) > 90 ? 'border-green-500 text-green-600' : 'border-yellow-500 text-yellow-600' }`}>
+                            <div className={`h-10 w-10 rounded-full border-4 flex items-center justify-center text-[10px] font-bold ${(complianceHealth?.score || 100) > 90 ? 'border-green-500 text-green-600' : 'border-yellow-500 text-yellow-600'}`}>
                                 OK
                             </div>
                         </div>
                     </Card>
                 </div>
-            </div>
+            }
+        >
 
             <Tabs defaultValue="trace" className="space-y-6">
                 <TabsList className="bg-white border p-1 shadow-sm">
@@ -205,11 +205,13 @@ export default function RevenueAuditConsole() {
                                                 { header: "Type", accessorKey: "eventType", cell: (info: any) => <Badge variant="outline">{info.getValue()}</Badge> },
                                                 { header: "Account", accessorKey: "accountType" },
                                                 { header: "Amount", accessorKey: "amount", cell: (info: any) => <span className="font-mono">${parseFloat(info.getValue()).toLocaleString()}</span> },
-                                                { header: "Status", accessorKey: "status", cell: (info: any) => (
-                                                    <Badge className={info.getValue() === "Posted" ? "bg-green-100 text-green-700 hover:bg-green-100 border-none" : "bg-blue-100 text-blue-700 hover:bg-blue-100 border-none"}>
-                                                        {info.getValue()}
-                                                    </Badge>
-                                                ) },
+                                                {
+                                                    header: "Status", accessorKey: "status", cell: (info: any) => (
+                                                        <Badge className={info.getValue() === "Posted" ? "bg-green-100 text-green-700 hover:bg-green-100 border-none" : "bg-blue-100 text-blue-700 hover:bg-blue-100 border-none"}>
+                                                            {info.getValue()}
+                                                        </Badge>
+                                                    )
+                                                },
                                                 { header: "GL Journal", accessorKey: "glJournalId", cell: (info: any) => info.getValue() ? <span className="font-mono text-xs">{info.getValue()}</span> : "-" }
                                             ]}
                                         />
@@ -297,18 +299,17 @@ export default function RevenueAuditConsole() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage >
     );
 }
 
 function StepNode({ icon: Icon, label, sublabel, status }: { icon: any, label: string, sublabel?: string, status: "success" | "pending" | "error" }) {
     return (
         <div className="flex flex-col items-center gap-2 relative bg-slate-50 p-2 rounded-lg min-w-[120px]">
-            <div className={`h-14 w-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
-                status === "success" ? 'bg-white text-indigo-600 border-2 border-indigo-500 scale-110' :
+            <div className={`h-14 w-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${status === "success" ? 'bg-white text-indigo-600 border-2 border-indigo-500 scale-110' :
                 status === "error" ? 'bg-red-50 text-red-600 border-2 border-red-500' :
-                'bg-slate-100 text-slate-400 border border-slate-200'
-            }`}>
+                    'bg-slate-100 text-slate-400 border border-slate-200'
+                }`}>
                 <Icon className="h-6 w-6" />
                 {status === "success" && (
                     <div className="absolute -top-1 -right-1 bg-green-500 text-white rounded-full p-0.5 border-2 border-white">
@@ -320,6 +321,6 @@ function StepNode({ icon: Icon, label, sublabel, status }: { icon: any, label: s
                 <p className={`text-[11px] font-bold uppercase tracking-wider ${status === "success" ? "text-indigo-900" : "text-slate-400"}`}>{label}</p>
                 <p className="text-[10px] text-muted-foreground font-mono truncate max-w-[100px]">{sublabel || "..."}</p>
             </div>
-        </StandardPage>
-  );
+        </div>
+    );
 }

@@ -21,15 +21,15 @@ export default function AdvancedAnalytics() {
   const [viewType, setViewType] = useState("dashboards");
   const [newDash, setNewDash] = useState({ name: "", owner: "" });
 
-  const { data: dashboards = [], isLoading: dashLoading } = useQuery<any[]>({ 
+  const { data: dashboards = [], isLoading: dashLoading } = useQuery<any[]>({
     queryKey: ["/api/analytics/advanced-dashboards"],
     queryFn: () => fetch("/api/analytics/advanced-dashboards").then(r => r.json()).catch(() => []),
   });
-  const { data: models = [], isLoading: modelsLoading } = useQuery<any[]>({ 
+  const { data: models = [], isLoading: modelsLoading } = useQuery<any[]>({
     queryKey: ["/api/analytics/models"],
     queryFn: () => fetch("/api/analytics/models").then(r => r.json()).catch(() => []),
   });
-  const { data: forecasts = [], isLoading: forecastsLoading } = useQuery<any[]>({ 
+  const { data: forecasts = [], isLoading: forecastsLoading } = useQuery<any[]>({
     queryKey: ["/api/analytics/forecast"],
     queryFn: () => fetch("/api/analytics/forecast").then(r => r.json()).catch(() => []),
   });
@@ -53,9 +53,9 @@ export default function AdvancedAnalytics() {
 
   return (
     <StandardPage
-      title="Advances</h1>
-        <p className="text-muted-foreground mt-2">AI-powered dashboards, predictive models, and forecasting</p>
-      </div>
+      title="Advanced Analytics"
+      description="AI-powered dashboards, predictive models, and forecasting"
+    >
 
       <div className="flex gap-2">
         <Button

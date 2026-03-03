@@ -130,7 +130,6 @@ export function APInvoiceDistributions({ invoiceId, invoiceLineId, lineAmount, o
     const isBalanced = Math.abs(totalCalculated - lineAmount) <= 0.01;
 
     return (
-    return (
         <StandardPage
             title={<><Network className="h-5 w-5 text-blue-600 inline-block mr-2" /> Line Distributions</>}
             description="Manage accounting splits for this invoice line."

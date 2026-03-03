@@ -136,8 +136,8 @@ export default function JournalEntries() {
     <StandardPage
       title="Journal Batches"
       description="Create, monitor, and audit general ledger transactions."
-      className="container mx-auto p-6 space-y-8 animate-in f     <p className="text-slate-500 mt-2 font-medium">Create, monitor, and audit general ledger transactions.</p>
-        </div>
+      className="container mx-auto p-6 space-y-8 animate-in"
+      actions={
         <div className="flex gap-3">
           <ExcelImportModal
             formId="gl/journals/import"
@@ -150,7 +150,8 @@ export default function JournalEntries() {
             <Plus className="h-4 w-4 mr-2" /> Create Journal
           </Button>
         </div>
-      </div>
+      }
+    >
 
       {/* Premium Metrics Summary */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

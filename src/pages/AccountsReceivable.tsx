@@ -85,35 +85,39 @@ export default function AccountsReceivable() {
     ];
 
     return (
+        <StandardPage
+            title="Accounts Receivable"
+            description="Manage invoices, receipts, and customer accounts"
+            actions={<Button onClick={handleSeedData} variant="outline" size="sm">Seed Data</Button>}
         >
-        <div className="space-y-6">
-            {/* Metric Cards */}
-            <ArMetricCards buId={buId} />
+            <div className="space-y-6">
+                {/* Metric Cards */}
+                <ArMetricCards buId={buId} />
 
-            {/* Navigation Cards */}
-            <div>
-                <h3 className="text-lg font-semibold mb-4">Quick Access</h3>
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                    {navigationCards.map((card) => (
-                        <Card
-                            key={card.href}
-                            className="cursor-pointer hover:shadow-md transition-shadow group"
-                            onClick={() => setLocation(card.href)}
-                        >
-                            <CardHeader>
-                                <div className="flex items-center gap-3">
-                                    <div className={`p-2 rounded-lg bg-opacity-10 group-hover:bg-opacity-20 transition-colors ${card.color.replace('text-', 'bg-')}`}>
-                                        <card.icon className={`h-6 w-6 ${card.color}`} />
+                {/* Navigation Cards */}
+                <div>
+                    <h3 className="text-lg font-semibold mb-4">Quick Access</h3>
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                        {navigationCards.map((card) => (
+                            <Card
+                                key={card.href}
+                                className="cursor-pointer hover:shadow-md transition-shadow group"
+                                onClick={() => setLocation(card.href)}
+                            >
+                                <CardHeader>
+                                    <div className="flex items-center gap-3">
+                                        <div className={`p-2 rounded-lg bg-opacity-10 group-hover:bg-opacity-20 transition-colors ${card.color.replace('text-', 'bg-')}`}>
+                                            <card.icon className={`h-6 w-6 ${card.color}`} />
+                                        </div>
+                                        <CardTitle className="text-base">{card.title}</CardTitle>
                                     </div>
-                                    <CardTitle className="text-base">{card.title}</CardTitle>
-                                </div>
-                                <CardDescription className="mt-2">{card.description}</CardDescription>
-                            </CardHeader>
-                        </Card>
-                    ))}
+                                    <CardDescription className="mt-2">{card.description}</CardDescription>
+                                </CardHeader>
+                            </Card>
+                        ))}
+                    </div>
                 </div>
             </div>
-        </div>
         </StandardPage >
     );
 }

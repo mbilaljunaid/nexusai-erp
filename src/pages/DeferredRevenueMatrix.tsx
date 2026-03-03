@@ -85,19 +85,15 @@ export default function DeferredRevenueMatrix() {
 
     return (
         <StandardPage
-      title="Deferred Revenue Matrix"
-      description="Track contract liabilities and release schedules"
-      className="p-8 space-y-6 bg-slate-50 mt-1">
-                        Track contract liabilities and release schedules
-                    </p>
-                </div>
-                <div className="flex gap-2">
-                    <Button variant="outline" onClick={handleExport}>
-                        <Download className="h-4 w-4 mr-2" />
-                        Export
-                    </Button>
-                </div>
-            </div>
+            title="Deferred Revenue Matrix"
+            description="Track contract liabilities and release schedules"
+            actions={
+                <Button variant="outline" onClick={handleExport}>
+                    <Download className="h-4 w-4 mr-2" />
+                    Export
+                </Button>
+            }
+        >
 
             {/* Summary Metrics */}
             <div className="grid gap-4 md:grid-cols-5">
@@ -340,5 +336,5 @@ export default function DeferredRevenueMatrix() {
                 </CardContent>
             </Card>
         </StandardPage>
-  );
+    );
 }

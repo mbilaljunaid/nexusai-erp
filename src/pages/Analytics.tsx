@@ -14,7 +14,7 @@ export default function Analytics() {
     { id: "reports", label: "Reports", icon: FileText, color: "text-green-500" },
     { id: "excel", label: "Data", icon: Table2, color: "text-purple-500" },
   ];
-  
+
   const kpiIcons = [
     { name: "Revenue", icon: TrendingUp, color: "text-blue-500" },
     { name: "Profit Margin", icon: Percent, color: "text-green-500" },
@@ -63,8 +63,8 @@ export default function Analytics() {
     <StandardPage
       title="Analytics & BI"
       description="Dashboards, reports, and business intelligence"
-         <p className="text-muted-foreground mt-2">Dashboards, reports, and business intelligence</p>
-        </div>
+    >
+      <div className="flex justify-end mb-4">
         <Button data-testid="button-new-dashboard">
           <Plus className="h-4 w-4 mr-2" />
           New Dashboard

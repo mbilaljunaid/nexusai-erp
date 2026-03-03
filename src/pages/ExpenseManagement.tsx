@@ -202,10 +202,7 @@ export default function ExpenseManagement() {
     <StandardPage
       title="Expense Management"
       description="End-to-end expense tracking with policy validation & analytics"
-muted-foreground mt-1 text-lg">
-            End-to-end expense tracking with policy validation & analytics
-          </p>
-        </div>
+      actions={
         <div className="flex gap-2 items-center">
           <EnterpriseContextSwitcher type="business-unit" value={buId} onChange={setBuId} className="mr-2" />
           <Button variant="outline" onClick={() => setIsCreateOpen(true)}>
@@ -213,7 +210,8 @@ muted-foreground mt-1 text-lg">
             New Report
           </Button>
         </div>
-      </div>
+      }
+    >
 
       {/* Analytics Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

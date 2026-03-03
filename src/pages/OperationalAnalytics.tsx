@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function OperationalAnalytics() {
   return (
     <StandardPage
-      title="Operatitics</h1>
-        <p className="text-muted-foreground mt-1">Operations efficiency and productivity</p>
-      </div>
+      title="Operational Analytics"
+      description="Operations efficiency and productivity"
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>

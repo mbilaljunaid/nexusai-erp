@@ -42,11 +42,10 @@ export default function PayrollEngine() {
     <StandardPage
       title="Payroll Engine"
       description="Tax calculations and compliance"
-      className      <p className="text-muted-foreground text-sm">Tax calculations and compliance</p>
-        </div>
+      actions={
         <Button><Calculator className="w-4 h-4 mr-2" />Run Payroll</Button>
-      </div>
-
+      }
+    >
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="hover-elevate">
           <CardContent className="p-4">

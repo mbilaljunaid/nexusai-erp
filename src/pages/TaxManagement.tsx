@@ -75,7 +75,7 @@ export default function TaxManagement() {
           <TaxExemptionsTab legalEntityId={legalEntityId} />
         </TabsContent>
       </Tabs>
-    </div>
+    </StandardPage>
   );
 }
 
@@ -545,6 +545,6 @@ function TaxExemptionsTab({ legalEntityId }: { legalEntityId: string | null }) {
           </div>
         ))}
       </div>
-    </StandardPage>
+    </div>
   );
 }

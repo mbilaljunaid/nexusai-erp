@@ -106,7 +106,6 @@ export default function ArDocumentSequencingSetup() {
     });
 
     return (
-    return (
         <StandardPage
             title="Document Sequencing"
             description="Configure Gapless and Automatic document numbering sequences, and assign them by Ledger or Legal Entity."

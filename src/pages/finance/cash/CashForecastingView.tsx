@@ -21,6 +21,7 @@ import {
     Legend,
     LineChart,
     Line
+} from "recharts";
 import { TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 import { StandardPage } from '@/components/layout/StandardPage';
 

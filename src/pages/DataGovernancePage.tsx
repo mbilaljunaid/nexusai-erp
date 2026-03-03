@@ -60,16 +60,16 @@ export default function DataGovernancePage() {
   return (
     <StandardPage
       title="Data Governance"
-      description="Manage data quality, compliance/h1>
-          <p className="text-muted-foreground">Manage data quality, compliance, and lineage</p>
-        </div>
+      description="Manage data quality, compliance, and lineage"
+      actions={
         <div className="flex gap-2">
           <Button onClick={runBatch}>
             <Play className="w-4 h-4 mr-2" />
             Run Deduplication
           </Button>
         </div>
-      </div>
+      }
+    >
 
       <div className="grid grid-cols-4 gap-4">
         <Card>

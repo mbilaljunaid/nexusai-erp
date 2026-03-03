@@ -69,29 +69,29 @@ export default function ExternalSupplierRegistration() {
     if (submitted) {
         return (
             <StandardPage
-      title="Successfully Submitted"
-      description="Thank you for your interest in becoming a supplier. Our team will review your information and contact you via email."
-      className="min-h-screen bg-muted/30 flex items-center justify-center"
-    >
+                title="Successfully Submitted"
+                description="Thank you for your interest in becoming a supplier. Our team will review your information and contact you via email."
+                className="min-h-screen bg-muted/30 flex items-center justify-center"
+            >
                 <Card className="max-w-md w-full text-center p-8 space-y-6">
-                    <div className="mx-auto w-16                   Thank you for your interest in becoming a supplier. Our team will review your information and contact you via email.
-                        </p>
+                    <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                        <CheckCircle2 className="w-8 h-8 text-green-600" />
                     </div>
                     <Button variant="outline" onClick={() => window.location.href = "/"} className="w-full">
                         Return to Homepage
                     </Button>
                 </Card>
-            </div>
+            </StandardPage>
         );
     }
 
     return (
-        <div className="min-h-screen bg-muted/30 flex items-center justify-center p-4 py-12">
-            <div className="max-w-2xl w-full space-y-8">
-                <div className="text-center space-y-2">
-                    <h1 className="text-3xl font-bold tracking-tight">Supplier Registration</h1>
-                    <p className="text-muted-foreground">Join our global network of strategic partners.</p>
-                </div>
+        <StandardPage
+            title="Supplier Registration"
+            description="Join our global network of strategic partners."
+            className="min-h-screen bg-muted/30"
+        >
+            <div className="max-w-2xl mx-auto w-full space-y-8 py-12">
 
                 <div className="flex justify-between items-center px-4">
                     {[1, 2, 3].map((s) => (
@@ -288,5 +288,5 @@ export default function ExternalSupplierRegistration() {
                 </Form>
             </div>
         </StandardPage>
-  );
+    );
 }

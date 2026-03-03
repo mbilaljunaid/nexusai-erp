@@ -57,8 +57,9 @@ export default function ERP() {
 
   return (
     <StandardPage
-      title="ERP & F       <p className="text-muted-foreground text-sm">Manage financials, inventory, procurement, and supply chain</p>
-      </div>
+      title="ERP & Financials"
+      description="Manage financials, inventory, procurement, and supply chain"
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card><CardContent className="p-4"><p className="text-2xl font-semibold">$2.4M</p><p className="text-xs text-muted-foreground">Total Assets</p></CardContent></Card>

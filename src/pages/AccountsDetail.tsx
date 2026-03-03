@@ -77,11 +77,7 @@ function AccountEntryForm({ onSuccess }: { onSuccess?: () => void }) {
     };
 
     return (
-        <StandardPage
-      title="Accounts"
-      description="Manage customer accounts and professional partners."
-      className="space-y-6 pt-4"
-    >
+        <div className="space-y-6 pt-4">
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid grid-cols-1 gap-4">
                     {/* Core Info */}
@@ -246,36 +242,33 @@ export default function AccountsDetail() {
     ];
 
     return (
-        <div className="space-y-8 pb-10">
-            {/* Premium Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                    <Link href="/crm">
-                        <Button variant="outline" size="icon" className="rounded-full">
-                            <lassName="text-muted-foreground">Manage customer accounts and professional partners.</p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Sheet>
-                        <SheetTrigger asChild>
-                            <Button className="shadcn-button-premium">
-                                <Plus className="mr-2 h-4 w-4" />
-                                Add Account
-                            </Button>
-                        </SheetTrigger>
-                        <SheetContent className="sm:max-w-md">
-                            <SheetHeader>
-                                <SheetTitle>Create New Account</SheetTitle>
-                                <SheetDescription>
-                                    Enter detailed information for the new account.
-                                </SheetDescription>
-                            </SheetHeader>
-                            <AccountEntryForm />
-                        </SheetContent>
-                    </Sheet>
-                </div>
-            </div>
-
+        <StandardPage
+            title="Accounts"
+            description="Manage customer accounts and professional partners."
+            breadcrumbs={[
+                { label: 'CRM Dashboard', href: '/crm' },
+                { label: 'Accounts' }
+            ]}
+            actions={
+                <Sheet>
+                    <SheetTrigger asChild>
+                        <Button className="shadcn-button-premium">
+                            <Plus className="mr-2 h-4 w-4" />
+                            Add Account
+                        </Button>
+                    </SheetTrigger>
+                    <SheetContent className="sm:max-w-md">
+                        <SheetHeader>
+                            <SheetTitle>Create New Account</SheetTitle>
+                            <SheetDescription>
+                                Enter detailed information for the new account.
+                            </SheetDescription>
+                        </SheetHeader>
+                        <AccountEntryForm />
+                    </SheetContent>
+                </Sheet>
+            }
+        >
             {/* Metric Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {metrics.map((m, i) => (
@@ -372,6 +365,6 @@ export default function AccountsDetail() {
                 open={!!selectedAccount}
                 onOpenChange={(open) => !open && setSelectedAccount(null)}
             />
-        </StandardPage>
-  );
+        </StandardPage >
+    );
 }

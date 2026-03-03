@@ -15,10 +15,9 @@ export default function ColdChainLogistics() {
 
   return (
     <StandardPage
-      title="Cold Chain le
-        </h1>
-        <p className="text-muted-foreground mt-2">Temperature-controlled TMS, cold chain checkpoints, custody transfer, and delivery POD</p>
-      </div>
+      title="Cold Chain Logistics"
+      description="Temperature-controlled TMS, cold chain checkpoints, custody transfer, and delivery POD"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

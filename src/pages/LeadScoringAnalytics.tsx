@@ -39,9 +39,9 @@ export default function LeadScoringAnalytics() {
 
   return (
     <StandardPage
-      title="Lead Scorins</h1>
-        <p className="text-muted-foreground mt-1">AI lead scoring insights and performance</p>
-      </div>
+      title="Lead Scoring Analytics"
+      description="AI lead scoring insights and performance"
+    >
 
       <Card data-testid="card-new-insight">
         <CardHeader><CardTitle className="text-base">Add Insight</CardTitle></CardHeader>

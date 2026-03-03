@@ -27,9 +27,8 @@ export default function EmployeeDirectory() {
       description="Find and manage employee information"
       className="space-y-6"
     >
-      <Breadcrumb items={formMetad1>
-          <p className="text-muted-foreground mt-1">Find and manage employee information</p>
-        </div>
+      <div className="flex justify-between items-center mb-4">
+        <Breadcrumb items={formMetadata?.breadcrumbs || []} />
         <SmartAddButton formId="employee" formMetadata={formMetadata} />
       </div>
 

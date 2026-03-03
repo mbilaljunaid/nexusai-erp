@@ -1,5 +1,71 @@
 import { useQuery } from "@tanstack/react-query";
-import { StandardPage } from "@/components/layout/StandardPage"; import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; import { Badge } from "@/components/ui/badge"; import { Box } from "lucide-react"; export default function WarehouseInventoryLogistics() { const { data: inventory = [], isLoading } = useQuery<any[]>({ queryKey: ["/api/logistics-inventory"], queryFn: () => fetch("/api/logistics-inventory").then(r => r.json()).catch(() => []), }); const inStock = inventory.filter((i: any) => parseInt(i.quantity) > 0).length; const totalQty = inventory.reduce((sum: number, i: any) => sum + (parseInt(i.quantity) || 0), 0); return ( <StandardPage
-      title="Warehe & Inventory </h1> <p className="text-muted-foreground mt-2">Warehouses, locations, picking, packing, reconciliation, batches</p> </div> <div className="grid grid-cols-4 gap-3"> <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">SKUs</p><p className="text-2xl font-bold">{inventory.length}</p></CardContent></Card> <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">In Stock</p><p className="text-2xl font-bold text-green-600">{inStock}</p></CardContent></Card> <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Total Qty</p><p className="text-2xl font-bold text-blue-600">{totalQty}</p></CardContent></Card> <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Stock %</p><p className="text-2xl font-bold">{inventory.length > 0 ? ((inStock / inventory.length) * 100).toFixed(0) : 0}%</p></CardContent></Card> </div> <Card> <CardHeader><CardTitle className="text-base">Inventory</CardTitle></CardHeader> <CardContent className="space-y-2"> {isLoading ? <p>Loading...</p> : inventory.length === 0 ? <p className="text-muted-foreground text-center py-4">No inventory</p> : inventory.slice(0, 10).map((i: any) => ( <div key={i.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`inv-${i.id}`}> <div className="flex-1"><p className="font-semibold">{i.productId}</p><p className="text-xs text-muted-foreground">{i.warehouseId}</p></div> <Badge variant={parseInt(i.quantity) > 0 ? "default" : "secondary"} className="text-xs">{i.quantity}</Badge> </div> ))} </CardContent> </Card> </StandardPage>
+import { StandardPage } from "@/components/layout/StandardPage";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Box } from "lucide-react";
+
+export default function WarehouseInventoryLogistics() {
+  const { data: inventory = [], isLoading } = useQuery<any[]>({
+    queryKey: ["/api/logistics-inventory"],
+    queryFn: () => fetch("/api/logistics-inventory").then(r => r.json()).catch(() => []),
+  });
+
+  const inStock = inventory.filter((i: any) => parseInt(i.quantity) > 0).length;
+  const totalQty = inventory.reduce((sum: number, i: any) => sum + (parseInt(i.quantity) || 0), 0);
+
+  return (
+    <StandardPage
+      title="Warehouse & Inventory"
+      description="Warehouses, locations, picking, packing, reconciliation, batches"
+    >
+      <div className="grid grid-cols-4 gap-3">
+        <Card className="p-3">
+          <CardContent className="pt-0">
+            <p className="text-xs text-muted-foreground">SKUs</p>
+            <p className="text-2xl font-bold">{inventory.length}</p>
+          </CardContent>
+        </Card>
+        <Card className="p-3">
+          <CardContent className="pt-0">
+            <p className="text-xs text-muted-foreground">In Stock</p>
+            <p className="text-2xl font-bold text-green-600">{inStock}</p>
+          </CardContent>
+        </Card>
+        <Card className="p-3">
+          <CardContent className="pt-0">
+            <p className="text-xs text-muted-foreground">Total Qty</p>
+            <p className="text-2xl font-bold text-blue-600">{totalQty}</p>
+          </CardContent>
+        </Card>
+        <Card className="p-3">
+          <CardContent className="pt-0">
+            <p className="text-xs text-muted-foreground">Stock %</p>
+            <p className="text-2xl font-bold">{inventory.length > 0 ? ((inStock / inventory.length) * 100).toFixed(0) : 0}%</p>
+          </CardContent>
+        </Card>
+      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Inventory</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : inventory.length === 0 ? (
+            <p className="text-muted-foreground text-center py-4">No inventory</p>
+          ) : (
+            inventory.slice(0, 10).map((i: any) => (
+              <div key={i.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`inv-${i.id}`}>
+                <div className="flex-1">
+                  <p className="font-semibold">{i.productId}</p>
+                  <p className="text-xs text-muted-foreground">{i.warehouseId}</p>
+                </div>
+                <Badge variant={parseInt(i.quantity) > 0 ? "default" : "secondary"} className="text-xs">{i.quantity}</Badge>
+              </div>
+            ))
+          )}
+        </CardContent>
+      </Card>
+    </StandardPage>
   );
 }

@@ -100,7 +100,6 @@ export default function CrmSettings() {
     if (isLoading) return <div className="flex justify-center p-10"><Loader2 className="animate-spin" /></div>;
 
     return (
-    return (
         <StandardPage
             title="CRM Settings"
             description="Configure sales stages, workflows, and scoring rules."

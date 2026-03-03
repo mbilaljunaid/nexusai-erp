@@ -10,7 +10,7 @@ import PayrollForm from "@/components/forms/PayrollForm";
 
 export default function PayrollDetail() {
   const [searchQuery, setSearchQuery] = useState("");
-  const payrolls = [{id: 1, name: "Dec 2024 Payroll", employees: 245, amount: 875000}, {id: 2, name: "Nov 2024 Payroll", employees: 243, amount: 850000}];
+  const payrolls = [{ id: 1, name: "Dec 2024 Payroll", employees: 245, amount: 875000 }, { id: 2, name: "Nov 2024 Payroll", employees: 243, amount: 850000 }];
 
   return (
     <StandardPage
@@ -18,10 +18,10 @@ export default function PayrollDetail() {
       description="Process and manage payroll runs"
       className="space-y-6"
     >
-      <div className="flex items-center gap-2">
+      <div className="mb-4">
         <Link to="/hr">
-          <Button vp className="text-muted-foreground text-sm">Process and manage payroll runs</p>
-        </div>
+          <Button variant="ghost" size="sm"><ArrowLeft className="h-4 w-4 mr-2" /> Back to HR</Button>
+        </Link>
       </div>
 
       <div className="space-y-4">

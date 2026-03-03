@@ -38,9 +38,8 @@ export default function PayrollProcessing() {
   return (
     <StandardPage
       title="Payroll Processing"
-      description="Manage salary processing and pay         <p className="text-muted-foreground mt-1">Manage salary processing and payments</p>
-        </div>
-      </div>
+      description="Manage salary processing and payments"
+    >
 
       <Card data-testid="card-process-payroll">
         <CardHeader><CardTitle className="text-base">Process Payroll</CardTitle></CardHeader>

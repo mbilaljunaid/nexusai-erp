@@ -49,13 +49,18 @@ export default function PMManager() {
 
     return (
         <StandardPage
-      title="Preventive Maintenance"
-      description="Manage recurring schedules and auto-genera          <p className="text-muted-foreground">Manage recurring schedules and auto-generate work orders</p>
-                </div>
+            title="Preventive Maintenance"
+            description="Manage recurring schedules and auto-generate work orders."
+            breadcrumbs={[
+                { label: 'EAM Dashboard', href: '/eam' },
+                { label: 'Preventive Maintenance' }
+            ]}
+            actions={
                 <Button onClick={() => generateMutation.mutate()} disabled={generateMutation.isPending}>
                     <Play className="mr-2 h-4 w-4" /> Run Forecast
                 </Button>
-            </div>
+            }
+        >
 
             {/* Create Form */}
             <Card>
@@ -112,5 +117,5 @@ export default function PMManager() {
                 ))}
             </div>
         </StandardPage>
-  );
+    );
 }

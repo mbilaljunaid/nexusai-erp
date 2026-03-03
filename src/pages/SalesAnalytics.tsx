@@ -20,9 +20,7 @@ export default function SalesAnalytics() {
       className="space-y-6"
     >
       <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      <FormSearchWithMetadata formMetadata={formMeh1>
-        <p className="text-muted-foreground mt-1">Revenue and sales pipeline metrics</p>
-      </div>
+      <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={data} onFilter={setFiltered} />
 
       <Card>
         <CardHeader><CardTitle className="text-base">Revenue Trend</CardTitle></CardHeader>

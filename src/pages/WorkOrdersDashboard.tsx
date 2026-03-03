@@ -11,9 +11,9 @@ export default function WorkOrdersDashboard() {
 
   return (
     <StandardPage
-      title="Manufacg Orders</h1>
-        <p className="text-muted-foreground">Manage work orders and production</p>
-      </div>
+      title="Manufacturing Work Orders"
+      description="Manage work orders and production"
+    >
       <div className="grid grid-cols-3 gap-4">
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Total Orders</p><p className="text-2xl font-bold">{workOrders.length}</p></CardContent></Card>
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">In Progress</p><p className="text-2xl font-bold text-blue-600">{inProgress}</p></CardContent></Card>

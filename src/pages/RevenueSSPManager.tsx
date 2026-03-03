@@ -170,16 +170,15 @@ export default function RevenueSSPManager() {
 
     return (
         <StandardPage
-      title="SSP Manager"
-      description="Manage Standalone Selling Prices for ASC 606 price allocation"
-      className="p-8 space-y-6 bg-slate-50                   Manage Standalone Selling Prices for ASC 606 price allocation
-                    </p>
-                </div>
+            title="SSP Manager"
+            description="Manage Standalone Selling Prices for ASC 606 price allocation"
+            actions={
                 <Button onClick={() => setIsBookDialogOpen(true)}>
                     <Plus className="h-4 w-4 mr-2" />
                     New SSP Book
                 </Button>
-            </div>
+            }
+        >
 
             {/* Summary Metrics */}
             <div className="grid gap-4 md:grid-cols-3">
@@ -246,8 +245,8 @@ export default function RevenueSSPManager() {
                                     <div
                                         key={book.id}
                                         className={`p-3 border rounded-lg cursor-pointer transition-colors ${selectedBook?.id === book.id
-                                                ? "bg-blue-50 border-blue-300"
-                                                : "hover:bg-slate-50"
+                                            ? "bg-blue-50 border-blue-300"
+                                            : "hover:bg-slate-50"
                                             }`}
                                         onClick={() => setSelectedBook(book)}
                                     >
@@ -521,5 +520,5 @@ export default function RevenueSSPManager() {
                 </DialogContent>
             </Dialog>
         </StandardPage>
-  );
+    );
 }

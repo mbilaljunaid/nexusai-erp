@@ -153,9 +153,9 @@ export default function RevenueAccountingSetup() {
 
     return (
         <StandardPage
-      title="Revenue Policy Center"
-      description="Configure ASC 606 identification, allocation, and recognition rules.        <p className="text-muted-foreground mt-1">Configure ASC 606 identification, allocation, and recognition rules.</p>
-                </div>
+            title="Revenue Policy Center"
+            description="Configure ASC 606 identification, allocation, and recognition rules."
+            actions={
                 <div className="bg-white p-1 rounded-lg border shadow-sm flex items-center gap-2">
                     <span className="text-xs font-bold text-slate-500 px-2 uppercase">Ledger context</span>
                     <Select value={ledgerId} onValueChange={setLedgerId}>
@@ -169,8 +169,8 @@ export default function RevenueAccountingSetup() {
                         </SelectContent>
                     </Select>
                 </div>
-            </div>
-
+            }
+        >
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
                 <TabsList className="bg-white border p-1 shadow-sm h-12">
                     <TabsTrigger value="accounts" className="gap-2 h-10 px-6">
@@ -330,5 +330,5 @@ export default function RevenueAccountingSetup() {
                 </TabsContent>
             </Tabs>
         </StandardPage>
-  );
+    );
 }

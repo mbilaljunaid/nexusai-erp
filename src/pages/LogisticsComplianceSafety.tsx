@@ -41,10 +41,9 @@ export default function LogisticsComplianceSafety() {
 
   return (
     <StandardPage
-      title="Compliance,y
-        </h1>
-        <p className="text-muted-foreground mt-2">Hazmat handling, safety audits, incident reporting, and compliance tracking</p>
-      </div>
+      title="Compliance, Safety & ESG"
+      description="Hazmat handling, safety audits, incident reporting, and compliance tracking"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

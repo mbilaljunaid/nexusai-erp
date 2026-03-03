@@ -127,11 +127,7 @@ export default function RevenuePeriodClose() {
             id: "actions",
             cell: (period) => {
                 return (
-                    <StandardPage
-      title="Revenue Period Close"
-      description="Manage fiscal period status for Revenue Management."
-      className="flex gap-2"
-    >
+                    <div className="flex gap-2">
                         <Button
                             variant="outline"
                             size="sm"
@@ -152,9 +148,16 @@ export default function RevenuePeriodClose() {
                             Close
                         </Button>
                     </div>
-                )                <p className="text-muted-foreground">Manage fiscal period status for Revenue Management.</p>
-            </div>
+                );
+            }
+        }
+    ];
 
+    return (
+        <StandardPage
+            title="Revenue Period Close"
+            description="Manage fiscal period status for Revenue Management."
+        >
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card className="bg-white border-none shadow-sm">
                     <CardHeader className="pb-2">
@@ -207,5 +210,5 @@ export default function RevenuePeriodClose() {
                 </div>
             </div>
         </StandardPage>
-  );
+    );
 }

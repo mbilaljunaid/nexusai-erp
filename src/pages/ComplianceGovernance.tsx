@@ -524,6 +524,6 @@ export default function ComplianceGovernance() {
         violation={selectedViolation}
         onOpenChange={(open) => !open && setSelectedViolation(null)}
       />
-    </div >
+    </StandardPage>
   );
 }

@@ -17,12 +17,9 @@ export default function TicketDashboard() {
     <StandardPage
       title="Service Ticket Dashboard"
       description="Overview of support ticket metrics"
-      className="space-y-6"
+      breadcrumbs={formMetadata?.breadcrumbs?.slice(1) || []}
     >
-      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      <FormSearchWithMetadata formMetadata={forshboard</h1>
-        <p className="text-muted-foreground mt-1">Overview of support ticket metrics</p>
-      </div>
+      <FormSearchWithMetadata formMetadata={formMetadata} onSearch={setSearchQuery} />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>

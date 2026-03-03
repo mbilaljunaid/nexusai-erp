@@ -41,7 +41,6 @@ export default function KnowledgeBaseDashboard() {
     });
 
     return (
-    return (
         <StandardPage
             title="Knowledge Base"
             description="Manage articles, solutions, and FAQs."

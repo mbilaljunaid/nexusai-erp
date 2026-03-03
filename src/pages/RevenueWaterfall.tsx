@@ -22,13 +22,9 @@ export default function RevenueWaterfall() {
 
     return (
         <StandardPage
-      title="Revenue Waterfall"
-      description="Visualize recognized revenue over time."
-      className="p-8 max-w-[1600px] mx-auto space-y-8 animate
-                        Visualize recognized revenue over time.
-                    </p>
-                </div>
-
+            title="Revenue Waterfall"
+            description="Visualize recognized revenue over time."
+            actions={
                 <Select value={year} onValueChange={setYear}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Select Year" />
@@ -39,7 +35,8 @@ export default function RevenueWaterfall() {
                         <SelectItem value="2027">FY 2027</SelectItem>
                     </SelectContent>
                 </Select>
-            </div>
+            }
+        >
 
             {error && (
                 <Alert variant="destructive">
@@ -95,5 +92,5 @@ export default function RevenueWaterfall() {
                 </Card>
             </div>
         </StandardPage>
-  );
+    );
 }

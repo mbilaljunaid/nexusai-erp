@@ -43,10 +43,9 @@ export default function MarketingEngagement() {
 
   return (
     <StandardPage
-      title="Marketing &t
-        </h1>
-        <p className="text-muted-foreground mt-2">Campaigns, promotions, churn prediction, and retention strategies</p>
-      </div>
+      title="Marketing & Engagement"
+      description="Campaigns, promotions, churn prediction, and retention strategies"
+    >
 
       <div className="flex justify-end -mb-2">
         <Button

@@ -186,7 +186,6 @@ export default function LeaseApprovalsWorkbench() {
                     </Card>
                 </div>
             </div>
-        </div>
-        </StandardPage >
+        </StandardPage>
     );
 }

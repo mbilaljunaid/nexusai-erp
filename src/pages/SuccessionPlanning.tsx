@@ -337,9 +337,8 @@ export default function SuccessionPlanning() {
     <StandardPage
       title="Succession Planning"
       description="Identify and develop future leaders"
-      className="p-h1>
-          <p className="text-muted-foreground mt-1">Identify and develop future leaders</p>
-        </div>
+      className="space-y-6"
+      actions={
         <div className="flex gap-2">
           <Dialog open={createPoolOpen} onOpenChange={setCreatePoolOpen}>
             <DialogTrigger asChild>
@@ -405,8 +404,8 @@ export default function SuccessionPlanning() {
             </DialogContent>
           </Dialog>
         </div>
-      </div>
-
+      }
+    >
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -701,6 +700,6 @@ export default function SuccessionPlanning() {
         onSubmit={(assessment) => assessCandidateMutation.mutate(assessment)}
         isLoading={assessCandidateMutation.isPending}
       />
-    </StandardPage>
+    </StandardPage >
   );
 }

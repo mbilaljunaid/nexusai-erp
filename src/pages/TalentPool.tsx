@@ -20,9 +20,7 @@ export default function TalentPool() {
       className="space-y-6"
     >
       <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      <FormSearchWithMetadata formcession Planning</h1>
-        <p className="text-muted-foreground mt-1">Identify and develop future leaders</p>
-      </div>
+      <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={talents} onFilter={setFiltered} />
 
       <Card>
         <CardHeader><CardTitle className="text-base">High-Potential Employees</CardTitle></CardHeader>
