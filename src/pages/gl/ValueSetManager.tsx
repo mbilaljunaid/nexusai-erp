@@ -24,6 +24,7 @@ import { Plus, Search, Edit, List, Check, X, ShieldCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { GlValueSet, GlSegmentValue } from "@/types/erp-types";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 // --- Sub-Component: Value Manager (Manage Segment Values) ---
 function ValueManager({ valueSetId, valueSetName }: { valueSetId: string, valueSetName: string }) {
@@ -166,14 +167,10 @@ export default function ValueSetManager() {
     };
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Value Sets</h1>
-                    <p className="text-muted-foreground mt-2">
-                        Manage validation rules and value lists for Chart of Accounts segments.
-                    </p>
-                </div>
+        <StandardPage
+            title="Value Sets"
+            description="Manage validation rules and value lists for Chart of Accounts segments."
+            actions={
                 <Sheet open={isAddOpen} onOpenChange={setIsAddOpen}>
                     <SheetTrigger asChild>
                         <Button className="bg-[#0f172a] hover:bg-[#1e293b]">
@@ -248,8 +245,8 @@ export default function ValueSetManager() {
                         </SheetFooter>
                     </SheetContent>
                 </Sheet>
-            </div>
-
+            }
+        >
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -333,6 +330,6 @@ export default function ValueSetManager() {
                     )}
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

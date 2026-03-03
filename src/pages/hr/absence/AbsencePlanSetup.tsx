@@ -11,6 +11,7 @@ import { Plus, Save, Calendar, Clock, Settings, ListTree, ArrowRight, ShieldChec
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
 import { FileText, CheckCircle, Layers } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function AbsencePlanSetup() {
     const [selectedPlanType, setSelectedPlanType] = useState("ACCRUAL");
@@ -329,12 +330,10 @@ export default function AbsencePlanSetup() {
     }
 
     return (
-        <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500 pb-12 p-8 max-w-7xl mx-auto">
-            <div className="flex justify-between items-end">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Absence Plan Setup</h1>
-                    <p className="text-muted-foreground mt-1 text-lg">Define complex accrual matrices, balances, and carry-over rules.</p>
-                </div>
+        <StandardPage
+            title="Absence Plan Setup"
+            description="Define complex accrual matrices, balances, and carry-over rules."
+            actions={
                 <div className="flex gap-3">
                     <Button variant="outline" className="border-teal-500/20 text-teal-600 hover:bg-teal-500/5">
                         <ListTree className="h-4 w-4 mr-2" /> Plan Hierarchy
@@ -343,8 +342,8 @@ export default function AbsencePlanSetup() {
                         <Save className="h-4 w-4 mr-2" /> Save Active Version
                     </Button>
                 </div>
-            </div>
-
+            }
+        >
             <div className="grid grid-cols-12 gap-6">
                 {/* Left Sidebar: Plan Settings Navigation */}
                 <div className="col-span-12 md:col-span-3 space-y-2">
@@ -402,6 +401,6 @@ export default function AbsencePlanSetup() {
                     {renderContent()}
                 </div>
             </div>
-        </div>
+        </StandardPage>
     );
 }

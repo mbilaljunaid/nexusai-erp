@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Calendar, AlertCircle, CheckCircle2, RefreshCw } from 'lucide-react';
 import { useEnterpriseStore } from '@/lib/enterpriseStore';
 import './RegulatoryCalendar.css';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface RegEvent {
     id: string; title: string; regulation: string; jurisdiction: string;
@@ -43,17 +44,17 @@ export default function RegulatoryCalendar() {
     const upcomingCount = dueSoon.filter(e => e.status !== 'Overdue').length;
 
     return (
-        <div className="regulatory-calendar">
-            <div className="regulatory-calendar-header">
-                <div>
-                    <h1 className="regulatory-calendar-title">Regulatory Calendar &amp; Compliance</h1>
-                    <p className="regulatory-calendar-subtitle">Filing deadlines · FCPA training compliance · Audit schedules</p>
-                </div>
+        <StandardPage
+            title="Regulatory Calendar & Compliance"
+            description="Filing deadlines · FCPA training compliance · Audit schedules"
+            actions={
                 <div className="regulatory-calendar-actions">
                     <button onClick={() => sweepMut.mutate()} className="btn-sweep"><RefreshCw size={11} /> Sweep Overdue</button>
                     <button onClick={() => setTab('new')} className="btn-add">+ Add Event</button>
                 </div>
-            </div>
+            }
+            className="regulatory-calendar"
+        >
 
             {/* Summary cards by regulation */}
             <div className="summary-grid">
@@ -205,6 +206,6 @@ export default function RegulatoryCalendar() {
                     </div>
                 </div>
             )}
-        </div>
+        </StandardPage>
     );
 }

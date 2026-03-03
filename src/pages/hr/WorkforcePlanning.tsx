@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/queryClient";
 import { Users, TrendingUp, Download } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-
+import { StandardPage } from "@/components/layout/StandardPage";
 export default function WorkforcePlanning() {
     const { data: plan } = useQuery({
         queryKey: ["/api/hr/workforce-plan"],
@@ -12,17 +12,16 @@ export default function WorkforcePlanning() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold">Workforce Planning</h1>
-                    <p className="text-muted-foreground">Headcount planning and attrition modeling</p>
-                </div>
+        <StandardPage
+            title="Workforce Planning"
+            description="Headcount planning and attrition modeling"
+            actions={
                 <Button variant="outline">
                     <Download className="h-4 w-4 mr-2" />
                     Export Plan
                 </Button>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-4 gap-4">
                 <Card>
@@ -67,6 +66,6 @@ export default function WorkforcePlanning() {
                     </ResponsiveContainer>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

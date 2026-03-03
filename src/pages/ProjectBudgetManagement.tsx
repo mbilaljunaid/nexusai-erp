@@ -9,6 +9,7 @@ import { DollarSign, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function ProjectBudgetManagement() {
   const { toast } = useToast();
@@ -54,110 +55,112 @@ export default function ProjectBudgetManagement() {
   const utilization = totalAllocated > 0 ? ((totalActual / totalAllocated) * 100).toFixed(1) : "0.0";
 
   return (
-    <div className="space-y-6 p-4">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <DollarSign className="h-8 w-8" />
-            Project Budget Management
-          </h1>
-          <p className="text-muted-foreground mt-2">Monitor project budgets and costs</p>
+    <StandardPage
+      title={
+        <div className="flex items-center gap-2">
+          <DollarSign className="h-8 w-8" />
+          Project Budget Management
         </div>
+      }
+      description="Monitor project budgets and costs"
+      actions={
         <EnterpriseContextSwitcher
           type="business-unit"
           value={buId}
           onChange={setBuId}
         />
-      </div>
+      }
+    >
+      <div className="space-y-6">
+        <div className="grid grid-cols-4 gap-3">
+          <Card className="p-3">
+            <CardContent className="pt-0">
+              <p className="text-xs text-muted-foreground">Total Allocated</p>
+              <p className="text-2xl font-bold">${totalAllocated.toLocaleString()}</p>
+            </CardContent>
+          </Card>
+          <Card className="p-3">
+            <CardContent className="pt-0">
+              <p className="text-xs text-muted-foreground">Total Spent</p>
+              <p className="text-2xl font-bold">${totalActual.toLocaleString()}</p>
+            </CardContent>
+          </Card>
+          <Card className="p-3">
+            <CardContent className="pt-0">
+              <p className="text-xs text-muted-foreground">Remaining</p>
+              <p className={`text-2xl font-bold ${remaining >= 0 ? "text-green-600" : "text-red-600"}`}>${remaining.toLocaleString()}</p>
+            </CardContent>
+          </Card>
+          <Card className="p-3">
+            <CardContent className="pt-0">
+              <p className="text-xs text-muted-foreground">Budget Utilization</p>
+              <p className="text-2xl font-bold">{utilization}%</p>
+            </CardContent>
+          </Card>
+        </div>
 
-      <div className="grid grid-cols-4 gap-3">
-        <Card className="p-3">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Total Allocated</p>
-            <p className="text-2xl font-bold">${totalAllocated.toLocaleString()}</p>
+        <Card data-testid="card-new-budget">
+          <CardHeader><CardTitle className="text-base">Add Budget</CardTitle></CardHeader>
+          <CardContent className="space-y-3">
+            <div className="grid grid-cols-4 gap-3">
+              <Input placeholder="Project" value={newBudget.project} onChange={(e) => setNewBudget({ ...newBudget, project: e.target.value })} data-testid="input-project" />
+              <Select value={newBudget.category} onValueChange={(v) => setNewBudget({ ...newBudget, category: v })}>
+                <SelectTrigger data-testid="select-category"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Labor">Labor</SelectItem>
+                  <SelectItem value="Materials">Materials</SelectItem>
+                  <SelectItem value="Overhead">Overhead</SelectItem>
+                </SelectContent>
+              </Select>
+              <Input placeholder="Allocated" type="number" value={newBudget.allocated} onChange={(e) => setNewBudget({ ...newBudget, allocated: e.target.value })} data-testid="input-allocated" />
+              <Input placeholder="Actual" type="number" value={newBudget.actual} onChange={(e) => setNewBudget({ ...newBudget, actual: e.target.value })} data-testid="input-actual" />
+            </div>
+            <Button
+              disabled={createMutation.isPending || !newBudget.project}
+              className="w-full"
+              data-testid="button-create-budget"
+              onClick={() => createMutation.mutate(newBudget)}
+            >
+              <Plus className="w-4 h-4 mr-2" /> Add Budget
+            </Button>
           </CardContent>
         </Card>
-        <Card className="p-3">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Total Spent</p>
-            <p className="text-2xl font-bold">${totalActual.toLocaleString()}</p>
-          </CardContent>
-        </Card>
-        <Card className="p-3">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Remaining</p>
-            <p className={`text-2xl font-bold ${remaining >= 0 ? "text-green-600" : "text-red-600"}`}>${remaining.toLocaleString()}</p>
-          </CardContent>
-        </Card>
-        <Card className="p-3">
-          <CardContent className="pt-0">
-            <p className="text-xs text-muted-foreground">Budget Utilization</p>
-            <p className="text-2xl font-bold">{utilization}%</p>
-          </CardContent>
-        </Card>
-      </div>
 
-      <Card data-testid="card-new-budget">
-        <CardHeader><CardTitle className="text-base">Add Budget</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-4 gap-3">
-            <Input placeholder="Project" value={newBudget.project} onChange={(e) => setNewBudget({ ...newBudget, project: e.target.value })} data-testid="input-project" />
-            <Select value={newBudget.category} onValueChange={(v) => setNewBudget({ ...newBudget, category: v })}>
-              <SelectTrigger data-testid="select-category"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Labor">Labor</SelectItem>
-                <SelectItem value="Materials">Materials</SelectItem>
-                <SelectItem value="Overhead">Overhead</SelectItem>
-              </SelectContent>
-            </Select>
-            <Input placeholder="Allocated" type="number" value={newBudget.allocated} onChange={(e) => setNewBudget({ ...newBudget, allocated: e.target.value })} data-testid="input-allocated" />
-            <Input placeholder="Actual" type="number" value={newBudget.actual} onChange={(e) => setNewBudget({ ...newBudget, actual: e.target.value })} data-testid="input-actual" />
-          </div>
-          <Button
-            disabled={createMutation.isPending || !newBudget.project}
-            className="w-full"
-            data-testid="button-create-budget"
-            onClick={() => createMutation.mutate(newBudget)}
-          >
-            <Plus className="w-4 h-4 mr-2" /> Add Budget
-          </Button>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader><CardTitle className="text-base">Budget Details</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          {isLoading ? (
-            <p>Loading...</p>
-          ) : budgets.length === 0 ? (
-            <p className="text-muted-foreground text-center py-4">No budgets</p>
-          ) : (
-            budgets.map((budget: any) => {
-              const variance = (parseFloat(budget.actual || 0) - parseFloat(budget.allocated || 0));
-              const status = variance > 0 ? "over" : "on-track";
-              return (
-                <div key={budget.id} className="p-3 border rounded-lg hover-elevate flex items-center justify-between" data-testid={`budget-${budget.id}`}>
-                  <div className="flex-1">
-                    <h3 className="font-semibold">{budget.project}</h3>
-                    <p className="text-sm text-muted-foreground">Category: {budget.category} • Allocated: ${budget.allocated} • Actual: ${budget.actual}</p>
+        <Card>
+          <CardHeader><CardTitle className="text-base">Budget Details</CardTitle></CardHeader>
+          <CardContent className="space-y-3">
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : budgets.length === 0 ? (
+              <p className="text-muted-foreground text-center py-4">No budgets</p>
+            ) : (
+              budgets.map((budget: any) => {
+                const variance = (parseFloat(budget.actual || 0) - parseFloat(budget.allocated || 0));
+                const status = variance > 0 ? "over" : "on-track";
+                return (
+                  <div key={budget.id} className="p-3 border rounded-lg hover-elevate flex items-center justify-between" data-testid={`budget-${budget.id}`}>
+                    <div className="flex-1">
+                      <h3 className="font-semibold">{budget.project}</h3>
+                      <p className="text-sm text-muted-foreground">Category: {budget.category} • Allocated: ${budget.allocated} • Actual: ${budget.actual}</p>
+                    </div>
+                    <div className="flex gap-2 items-center">
+                      <Badge variant={status === "on-track" ? "default" : "destructive"}>{status}</Badge>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        data-testid={`button-delete-${budget.id}`}
+                        onClick={() => deleteMutation.mutate(budget.id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex gap-2 items-center">
-                    <Badge variant={status === "on-track" ? "default" : "destructive"}>{status}</Badge>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      data-testid={`button-delete-${budget.id}`}
-                      onClick={() => deleteMutation.mutate(budget.id)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              );
-            })
-          )}
-        </CardContent>
-      </Card>
-    </div>
+                );
+              })
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </StandardPage>
   );
 }

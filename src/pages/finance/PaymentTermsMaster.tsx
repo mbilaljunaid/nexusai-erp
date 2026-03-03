@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Calendar, Clock, Percent, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { StandardPage } from '@/components/layout/StandardPage';
 
 interface PaymentTerm {
     id: string;
@@ -57,17 +58,16 @@ export default function PaymentTermsMaster() {
     });
 
     return (
-        <div className="ptm-container">
-            <div className="ptm-header">
-                <div>
-                    <h1 className="ptm-title">Payment Terms Master</h1>
-                    <p className="ptm-sub">Configure Net, EOM, Instalment-Split, and Immediate terms</p>
-                </div>
+    return (
+        <StandardPage
+            title="Payment Terms Master"
+            description="Configure Net, EOM, Instalment-Split, and Immediate terms"
+            actions={
                 <button className="add-btn" onClick={() => setShowNew(true)} aria-label="Add payment term">
                     <Plus size={14} /> Add Term
                 </button>
-            </div>
-
+            }
+        >
             <div className="ptm-layout">
                 {/* Terms List */}
                 <div className="terms-panel">
@@ -242,6 +242,7 @@ export default function PaymentTermsMaster() {
                 .td-kv span { font-size: 11px; color: #9ca3af; margin-bottom: 2px; }
                 .td-kv strong { font-size: 13px; color: #111827; font-family: monospace; }
             `}</style>
-        </div>
+        </style>
+        </StandardPage >
     );
 }

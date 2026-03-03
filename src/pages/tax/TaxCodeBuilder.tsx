@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Code, Save } from "lucide-react";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function TaxCodeBuilder() {
     const { toast } = useToast();
@@ -31,73 +32,71 @@ export default function TaxCodeBuilder() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div>
-                <h1 className="text-3xl font-bold">Tax Code Builder</h1>
-                <p className="text-muted-foreground">Create and configure tax codes</p>
+    return (
+        <StandardPage
+            title="Tax Code Builder"
+            description="Create and configure tax codes"
+        >
+            <div className="container mx-auto space-y-6">
+                <Card>
+                    <CardContent className="space-y-4 pt-6">
+                        <div>
+                            <label className="text-sm font-medium">Tax Code</label>
+                            <Input
+                                value={code}
+                                onChange={(e) => setCode(e.target.value)}
+                                placeholder="e.g., SALES-CA"
+                            />
+                        </div>
+                        <div>
+                            <label className="text-sm font-medium">Description</label>
+                            <Textarea
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                placeholder="Enter description..."
+                                rows={2}
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="text-sm font-medium">Tax Type</label>
+                                <Select value={taxType} onValueChange={setTaxType}>
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="SALES">Sales Tax</SelectItem>
+                                        <SelectItem value="USE">Use Tax</SelectItem>
+                                        <SelectItem value="VAT">VAT</SelectItem>
+                                        <SelectItem value="GST">GST</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div>
+                                <label className="text-sm font-medium">Applicability</label>
+                                <Select defaultValue="ALL">
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="ALL">All Transactions</SelectItem>
+                                        <SelectItem value="GOODS">Goods Only</SelectItem>
+                                        <SelectItem value="SERVICES">Services Only</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+                        <Button
+                            className="w-full"
+                            onClick={() => createMutation.mutate({ code, description, taxType })}
+                            disabled={!code || !description}
+                        >
+                            <Save className="h-4 w-4 mr-2" />
+                            Create Tax Code
+                        </Button>
+                    </CardContent>
+                </Card>
             </div>
-
-            <Card>
-                <CardHeader>
-                    <CardTitle>Create Tax Code</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div>
-                        <label className="text-sm font-medium">Tax Code</label>
-                        <Input
-                            value={code}
-                            onChange={(e) => setCode(e.target.value)}
-                            placeholder="e.g., SALES-CA"
-                        />
-                    </div>
-                    <div>
-                        <label className="text-sm font-medium">Description</label>
-                        <Textarea
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            placeholder="Enter description..."
-                            rows={2}
-                        />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="text-sm font-medium">Tax Type</label>
-                            <Select value={taxType} onValueChange={setTaxType}>
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="SALES">Sales Tax</SelectItem>
-                                    <SelectItem value="USE">Use Tax</SelectItem>
-                                    <SelectItem value="VAT">VAT</SelectItem>
-                                    <SelectItem value="GST">GST</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div>
-                            <label className="text-sm font-medium">Applicability</label>
-                            <Select defaultValue="ALL">
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="ALL">All Transactions</SelectItem>
-                                    <SelectItem value="GOODS">Goods Only</SelectItem>
-                                    <SelectItem value="SERVICES">Services Only</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                    <Button
-                        className="w-full"
-                        onClick={() => createMutation.mutate({ code, description, taxType })}
-                        disabled={!code || !description}
-                    >
-                        <Save className="h-4 w-4 mr-2" />
-                        Create Tax Code
-                    </Button>
-                </CardContent>
-            </Card>
-        </div>
+        </StandardPage>
     );
 }

@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { UploadCloud, CheckCircle2, AlertCircle, Search, Link2, X } from 'lucide-react';
+import { StandardPage } from '@/components/layout/StandardPage';
 
 interface LockboxBatch {
     id: string;
@@ -140,14 +141,10 @@ export default function LockboxWorkbench() {
     const unmatched = safeItems.filter(i => i.match_status === 'Unmatched').length;
 
     return (
-        <div className="lbw-container">
-            <div className="lbw-header">
-                <div>
-                    <h1 className="lbw-title">Lockbox Workbench</h1>
-                    <p className="lbw-sub">Bank lockbox remittances — auto-matched to open invoices</p>
-                </div>
-            </div>
-
+        <StandardPage
+            title="Lockbox Workbench"
+            description="Bank lockbox remittances — auto-matched to open invoices"
+        >
             {/* KPIs */}
             <div className="lbw-kpis">
                 <div className="kpi-card blue"><div className="kpi-val">{summary?.total_batches ?? 0}</div><div className="kpi-lbl">Total Batches</div></div>
@@ -409,6 +406,7 @@ export default function LockboxWorkbench() {
                 .section-title { margin-top: 24px; font-size: 13px; margin-bottom: 8px; }
                 .manual-search-input { width: 100%; margin-bottom: 16px; }
             `}</style>
-        </div>
+        </style>
+        </StandardPage >
     );
 }

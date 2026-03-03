@@ -21,6 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, ShieldAlert, Trash2, Edit } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function CVRManager() {
     const { toast } = useToast();
@@ -69,21 +70,15 @@ export default function CVRManager() {
     };
 
     return (
-        <div className="p-8 space-y-6 animate-in fade-in duration-500">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 flex items-center gap-3">
-                        <ShieldAlert className="h-8 w-8 text-rose-600" />
-                        Cross-Validation Rules
-                    </h1>
-                    <p className="text-muted-foreground mt-2">
-                        Prevent invalid account combinations (e.g., Cost Center 100 cannot use Account 5000).
-                    </p>
-                </div>
+        <StandardPage
+            title="Cross-Validation Rules"
+            description="Prevent invalid account combinations (e.g., Cost Center 100 cannot use Account 5000)."
+            actions={
                 <Button onClick={() => setIsCreateOpen(true)} className="bg-rose-600 hover:bg-rose-700">
                     <Plus className="mr-2 h-4 w-4" /> Create Rule
                 </Button>
-            </div>
+            }
+        >
 
             <div className="grid gap-6">
                 <Card>
@@ -174,6 +169,6 @@ export default function CVRManager() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

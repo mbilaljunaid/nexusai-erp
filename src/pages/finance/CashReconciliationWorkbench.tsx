@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Loader2, Plus, RefreshCw, Upload } from "lucide-react";
-import { StandardPage } from "@/components/ui/StandardPage";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";

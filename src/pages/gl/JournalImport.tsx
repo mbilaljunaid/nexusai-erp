@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function JournalImport() {
     const { toast } = useToast();
@@ -89,21 +90,15 @@ export default function JournalImport() {
     }
 
     return (
-        <div className="p-8 space-y-6 animate-in fade-in duration-500">
-            <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                    <div className="p-3 bg-emerald-100 rounded-xl">
-                        <FileSpreadsheet className="h-6 w-6 text-emerald-600" />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Journal Imports</h1>
-                        <p className="text-muted-foreground">Upload, validate, and process flat-file journal entries</p>
-                    </div>
-                </div>
+        <StandardPage
+            title="Journal Imports"
+            description="Upload, validate, and process flat-file journal entries"
+            actions={
                 <Button onClick={() => setIsImportOpen(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700">
                     <Upload className="h-4 w-4" /> Upload File
                 </Button>
-            </div>
+            }
+        >
 
             <Dialog open={isImportOpen} onOpenChange={setIsImportOpen}>
                 <DialogContent>
@@ -208,6 +203,6 @@ export default function JournalImport() {
                     )}
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

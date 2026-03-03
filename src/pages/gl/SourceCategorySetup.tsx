@@ -27,6 +27,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Tags, Plus, Loader2, Search, Filter, BookOpen, Database } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function SourceCategorySetup() {
     const { toast } = useToast();
@@ -82,19 +83,10 @@ export default function SourceCategorySetup() {
     }
 
     return (
-        <div className="p-8 space-y-6 animate-in fade-in duration-500">
-            <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                    <div className="p-3 bg-amber-100 rounded-xl">
-                        <Tags className="h-6 w-6 text-amber-600" />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Sources & Categories</h1>
-                        <p className="text-muted-foreground italic">Standard Origins: Manual, Spreadsheet, Intercompany, Payables, Receivables</p>
-                    </div>
-                </div>
-            </div>
-
+        <StandardPage
+            title="Sources & Categories"
+            description="Standard Origins: Manual, Spreadsheet, Intercompany, Payables, Receivables"
+        >
             <Tabs defaultValue="sources" className="space-y-4">
                 <TabsList className="bg-slate-100 p-1">
                     <TabsTrigger value="sources" className="flex items-center gap-2">
@@ -274,6 +266,6 @@ export default function SourceCategorySetup() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

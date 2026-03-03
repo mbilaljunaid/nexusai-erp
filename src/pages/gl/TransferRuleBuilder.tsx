@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface TransferRule {
     id?: number;
@@ -176,14 +177,10 @@ export default function TransferRuleBuilder() {
     if (isLoading) return <div>Loading...</div>;
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold">GL Transfer Rule Builder</h1>
-                    <p className="text-muted-foreground">
-                        Automate journal transfers between ledgers
-                    </p>
-                </div>
+        <StandardPage
+            title="GL Transfer Rule Builder"
+            description="Automate journal transfers between ledgers"
+            actions={
                 <div className="flex gap-2">
                     <Button
                         variant="outline"
@@ -214,7 +211,8 @@ export default function TransferRuleBuilder() {
                         </Button>
                     )}
                 </div>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-12 gap-6">
                 {/* Rules List */}
@@ -227,8 +225,8 @@ export default function TransferRuleBuilder() {
                             <div
                                 key={rule.id}
                                 className={`p-3 rounded-lg cursor-pointer border ${selectedRule === rule.id
-                                        ? "border-primary bg-primary/5"
-                                        : "border-border hover:bg-accent"
+                                    ? "border-primary bg-primary/5"
+                                    : "border-border hover:bg-accent"
                                     }`}
                                 onClick={() => loadRule(rule)}
                             >
@@ -236,8 +234,8 @@ export default function TransferRuleBuilder() {
                                     <div className="font-medium">{rule.name}</div>
                                     <div
                                         className={`px-2 py-0.5 rounded text-xs ${rule.isActive
-                                                ? "bg-green-100 text-green-700"
-                                                : "bg-gray-100 text-gray-700"
+                                            ? "bg-green-100 text-green-700"
+                                            : "bg-gray-100 text-gray-700"
                                             }`}
                                     >
                                         {rule.isActive ? "Active" : "Inactive"}
@@ -459,6 +457,6 @@ export default function TransferRuleBuilder() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

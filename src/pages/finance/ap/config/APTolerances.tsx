@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Settings } from "lucide-react";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 export function APTolerances() {
     const { toast } = useToast();
@@ -61,49 +62,50 @@ export function APTolerances() {
     if (isLoading) return <div>Loading...</div>;
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Invoice Matching Tolerances</CardTitle>
-                <CardDescription>Configure acceptable variances for AP to PO matching</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-                <div className="grid gap-6 md:grid-cols-3">
-                    <div className="space-y-2">
-                        <Label htmlFor="priceTolerancePercent">Price Tolerance (%)</Label>
-                        <Input
-                            id="priceTolerancePercent"
-                            type="number"
-                            value={params.priceTolerancePercent || 0}
-                            onChange={(e) => setParams({ ...params, priceTolerancePercent: Number(e.target.value) })}
-                        />
-                        <p className="text-xs text-muted-foreground">Maximum allowed unit price variance.</p>
+        <StandardPage
+            title="Invoice Matching Tolerances"
+            description="Configure acceptable variances for AP to PO matching"
+        >
+            <Card>
+                <CardContent className="space-y-6">
+                    <div className="grid gap-6 md:grid-cols-3">
+                        <div className="space-y-2">
+                            <Label htmlFor="priceTolerancePercent">Price Tolerance (%)</Label>
+                            <Input
+                                id="priceTolerancePercent"
+                                type="number"
+                                value={params.priceTolerancePercent || 0}
+                                onChange={(e) => setParams({ ...params, priceTolerancePercent: Number(e.target.value) })}
+                            />
+                            <p className="text-xs text-muted-foreground">Maximum allowed unit price variance.</p>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="quantityTolerancePercent">Quantity Tolerance (%)</Label>
+                            <Input
+                                id="quantityTolerancePercent"
+                                type="number"
+                                value={params.quantityTolerancePercent || 0}
+                                onChange={(e) => setParams({ ...params, quantityTolerancePercent: Number(e.target.value) })}
+                            />
+                            <p className="text-xs text-muted-foreground">Maximum allowed quantity variance.</p>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="maxAmountVariance">Max Amount Variance ($)</Label>
+                            <Input
+                                id="maxAmountVariance"
+                                type="number"
+                                value={params.maxAmountVariance || 0}
+                                onChange={(e) => setParams({ ...params, maxAmountVariance: Number(e.target.value) })}
+                            />
+                            <p className="text-xs text-muted-foreground">Absolute maximum variance in amount.</p>
+                        </div>
                     </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="quantityTolerancePercent">Quantity Tolerance (%)</Label>
-                        <Input
-                            id="quantityTolerancePercent"
-                            type="number"
-                            value={params.quantityTolerancePercent || 0}
-                            onChange={(e) => setParams({ ...params, quantityTolerancePercent: Number(e.target.value) })}
-                        />
-                        <p className="text-xs text-muted-foreground">Maximum allowed quantity variance.</p>
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="maxAmountVariance">Max Amount Variance ($)</Label>
-                        <Input
-                            id="maxAmountVariance"
-                            type="number"
-                            value={params.maxAmountVariance || 0}
-                            onChange={(e) => setParams({ ...params, maxAmountVariance: Number(e.target.value) })}
-                        />
-                        <p className="text-xs text-muted-foreground">Absolute maximum variance in amount.</p>
-                    </div>
-                </div>
-                <Button onClick={() => updateParamsMutation.mutate(params)}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    Save Tolerances
-                </Button>
-            </CardContent>
-        </Card>
+                    <Button onClick={() => updateParamsMutation.mutate(params)}>
+                        <Settings className="mr-2 h-4 w-4" />
+                        Save Tolerances
+                    </Button>
+                </CardContent>
+            </Card>
+        </StandardPage>
     );
 }

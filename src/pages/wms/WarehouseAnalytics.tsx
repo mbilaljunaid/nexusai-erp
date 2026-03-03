@@ -6,6 +6,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { BarChart3, Download } from "lucide-react";
 import { useState } from "react";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function WarehouseAnalytics() {
     const [period, setPeriod] = useState("WEEK");
@@ -16,12 +17,10 @@ export default function WarehouseAnalytics() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold">Warehouse Analytics</h1>
-                    <p className="text-muted-foreground">KPI dashboard and performance trends</p>
-                </div>
+        <StandardPage
+            title="Warehouse Analytics"
+            description="KPI dashboard and performance trends"
+            actions={
                 <div className="flex gap-2">
                     <Select value={period} onValueChange={setPeriod}>
                         <SelectTrigger className="w-40">
@@ -38,9 +37,9 @@ export default function WarehouseAnalytics() {
                         Export
                     </Button>
                 </div>
-            </div>
-
-            <div className="grid grid-cols-5 gap-4">
+            }
+        >
+            <div className="space-y-6">
                 <Card>
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Order Fill Rate</div>
@@ -109,5 +108,6 @@ export default function WarehouseAnalytics() {
                 </Card>
             </div>
         </div>
+        </StandardPage >
     );
 }

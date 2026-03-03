@@ -14,6 +14,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { toast } from "@/hooks/use-toast";
 import ModuleLayout from "@/components/layouts/ModuleLayout";
 import { FinanceSidebar } from "@/components/nav/FinanceSidebar";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function EliminationRules() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -101,16 +102,15 @@ export default function EliminationRules() {
 
     return (
         <ModuleLayout sidebar={<FinanceSidebar />}>
-            <div className="p-6 space-y-6">
-                <div className="flex justify-between items-center">
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Elimination Rules</h1>
-                        <p className="text-muted-foreground">Define logic for intercompany eliminations.</p>
-                    </div>
+            <StandardPage
+                title="Elimination Rules"
+                description="Define logic for intercompany eliminations."
+                actions={
                     <Button onClick={handleCreate}>
                         <Plus className="mr-2 h-4 w-4" /> New Rule
                     </Button>
-                </div>
+                }
+            >
 
                 <Card>
                     <CardHeader>
@@ -218,7 +218,7 @@ export default function EliminationRules() {
                         </form>
                     </DialogContent>
                 </Dialog>
-            </div>
+            </StandardPage>
         </ModuleLayout>
     );
 }

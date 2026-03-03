@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Heart, Shield, Eye, Star, DollarSign, BarChart3, CheckCircle2, X } from 'lucide-react';
-
+import { StandardPage } from "@/components/layout/StandardPage";
 interface BenefitPlan {
     id: string;
     name: string;
@@ -96,14 +96,10 @@ export default function BenefitsEnrollment() {
     const enrolledPlanIds = new Set(enrollments.filter(e => !e.waived).map(e => e.plan_id));
 
     return (
-        <div className="be-container">
-            <div className="be-header">
-                <div>
-                    <h1 className="be-title">Benefits Enrollment</h1>
-                    <p className="be-subtitle">Open enrollment, life-event changes, and benefits catalog management</p>
-                </div>
-            </div>
-
+        <StandardPage
+            title="Benefits Enrollment"
+            description="Open enrollment, life-event changes, and benefits catalog management"
+        >
             {/* Tabs */}
             <div className="be-tabs">
                 {(['catalog', 'enrollments', 'summary'] as const).map(t => (
@@ -281,7 +277,7 @@ export default function BenefitsEnrollment() {
             )}
 
             <style>{`
-                .be-container { padding: 24px; max-width: 1400px; margin: 0 auto; font-family: 'Inter', sans-serif; }
+                .be-container { font-family: 'Inter', sans-serif; }
                 .be-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
                 .be-title { font-size: 22px; font-weight: 700; color: #111827; margin: 0; }
                 .be-subtitle { font-size: 13px; color: #6b7280; margin: 4px 0 0; }
@@ -340,6 +336,6 @@ export default function BenefitsEnrollment() {
                 .msubmit { padding: 8px 20px; background: #1d4ed8; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
                 .msubmit:disabled { background: #9ca3af; }
             `}</style>
-        </div>
+        </StandardPage>
     );
 }

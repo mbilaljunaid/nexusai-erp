@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/queryClient";
 import { DollarSign, TrendingUp, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function CompensationBenchmarking() {
     const { data: benchmark } = useQuery({
@@ -12,17 +13,16 @@ export default function CompensationBenchmarking() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold">Compensation Benchmarking</h1>
-                    <p className="text-muted-foreground">Market data and pay equity analysis</p>
-                </div>
+        <StandardPage
+            title="Compensation Benchmarking"
+            description="Market data and pay equity analysis"
+            actions={
                 <Button variant="outline">
                     <Download className="h-4 w-4 mr-2" />
                     Export Report
                 </Button>
-            </div>
+            }
+        >
 
             <Card>
                 <CardHeader>
@@ -68,6 +68,6 @@ export default function CompensationBenchmarking() {
                     ))}
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

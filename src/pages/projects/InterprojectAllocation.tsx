@@ -11,6 +11,7 @@ import { Plus, Save, Play, Trash2, ArrowRight, DollarSign, Calendar } from "luci
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface AllocationRule {
     id?: number;
@@ -176,14 +177,10 @@ export default function InterprojectAllocation() {
     };
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold">Interproject Allocation</h1>
-                    <p className="text-muted-foreground">
-                        Allocate costs across projects based on various drivers
-                    </p>
-                </div>
+        <StandardPage
+            title="Interproject Allocation"
+            description="Allocate costs across projects based on various drivers"
+            actions={
                 <div className="flex items-center gap-3">
                     <EnterpriseContextSwitcher
                         type="business-unit"
@@ -211,8 +208,8 @@ export default function InterprojectAllocation() {
                         </Button>
                     )}
                 </div>
-            </div>
-
+            }
+        >
             <div className="grid grid-cols-12 gap-6">
                 {/* Rules List */}
                 <Card className="col-span-3">
@@ -449,6 +446,6 @@ export default function InterprojectAllocation() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

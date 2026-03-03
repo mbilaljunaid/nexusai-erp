@@ -6,10 +6,7 @@ import { ArMetricCards } from "@/components/ar";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/lib/api";
-import {
-    FileText, Users, Receipt, PieChart,
-    BarChart, Activity, RefreshCw, Briefcase, Settings
-} from "lucide-react";
+import { FileText, Users, Receipt, PieChart, BarChart, Activity, RefreshCw, Briefcase } from "lucide-react";
 import { useState } from "react";
 import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 
@@ -88,47 +85,35 @@ export default function AccountsReceivable() {
     ];
 
     return (
-        <StandardPage
-            title="Accounts Receivable Hub"
-            description="Comprehensive AR management, billing, collections, and AI predictions."
-            breadcrumbs={[{ label: "Finance", href: "/finance" }, { label: "Accounts Receivable" }]}
-            actions={
-                <div className="flex gap-2 items-center">
-                    <EnterpriseContextSwitcher type="business-unit" value={buId} onChange={setBuId} className="mr-2" />
-                    <Button variant="outline" onClick={handleSeedData}>
-                        Seed Demo Data
-                    </Button>
-                </div>
-            }
         >
-            <div className="space-y-6">
-                {/* Metric Cards */}
-                <ArMetricCards buId={buId} />
+        <div className="space-y-6">
+            {/* Metric Cards */}
+            <ArMetricCards buId={buId} />
 
-                {/* Navigation Cards */}
-                <div>
-                    <h3 className="text-lg font-semibold mb-4">Quick Access</h3>
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                        {navigationCards.map((card) => (
-                            <Card
-                                key={card.href}
-                                className="cursor-pointer hover:shadow-md transition-shadow group"
-                                onClick={() => setLocation(card.href)}
-                            >
-                                <CardHeader>
-                                    <div className="flex items-center gap-3">
-                                        <div className={`p-2 rounded-lg bg-opacity-10 group-hover:bg-opacity-20 transition-colors ${card.color.replace('text-', 'bg-')}`}>
-                                            <card.icon className={`h-6 w-6 ${card.color}`} />
-                                        </div>
-                                        <CardTitle className="text-base">{card.title}</CardTitle>
+            {/* Navigation Cards */}
+            <div>
+                <h3 className="text-lg font-semibold mb-4">Quick Access</h3>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    {navigationCards.map((card) => (
+                        <Card
+                            key={card.href}
+                            className="cursor-pointer hover:shadow-md transition-shadow group"
+                            onClick={() => setLocation(card.href)}
+                        >
+                            <CardHeader>
+                                <div className="flex items-center gap-3">
+                                    <div className={`p-2 rounded-lg bg-opacity-10 group-hover:bg-opacity-20 transition-colors ${card.color.replace('text-', 'bg-')}`}>
+                                        <card.icon className={`h-6 w-6 ${card.color}`} />
                                     </div>
-                                    <CardDescription className="mt-2">{card.description}</CardDescription>
-                                </CardHeader>
-                            </Card>
-                        ))}
-                    </div>
+                                    <CardTitle className="text-base">{card.title}</CardTitle>
+                                </div>
+                                <CardDescription className="mt-2">{card.description}</CardDescription>
+                            </CardHeader>
+                        </Card>
+                    ))}
                 </div>
             </div>
-        </StandardPage>
+        </div>
+        </StandardPage >
     );
 }

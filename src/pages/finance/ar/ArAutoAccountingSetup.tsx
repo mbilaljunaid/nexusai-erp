@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
 import { Loader2, Plus } from "lucide-react";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 // Matches API response structure
 interface AutoAccountingRule {
@@ -91,176 +92,60 @@ export default function ArAutoAccountingSetup() {
         mutation.mutate(values);
     }
 
-    return (
-        <div className="p-6 space-y-6 max-w-7xl mx-auto h-full overflow-y-auto">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">AutoAccounting Setup</h1>
-                    <p className="text-muted-foreground mt-2">
-                        Configure dynamic GL segment derivation rules for AR transactions. Map each segment to its specific source (e.g. Cost Center to Memo Line).
-                    </p>
-                </div>
-                <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogTrigger asChild>
-                        <Button>
-                            <Plus className="mr-2 h-4 w-4" />
-                            New Derivation Rule
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-2xl">
-                        <DialogHeader>
-                            <DialogTitle>Create AutoAccounting Rule</DialogTitle>
-                            <DialogDescription>Define how CCID segments should be derived for a target account class.</DialogDescription>
-                        </DialogHeader>
+                </Dialog >
+            </div >
 
-                        <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <FormField
-                                        control={form.control}
-                                        name="ruleName"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Rule Name</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="e.g. Standard Revenue Mapping" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="accountClass"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Account Class Target</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                    <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Select class" />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        <SelectItem value="Revenue">Revenue</SelectItem>
-                                                        <SelectItem value="Receivable">Receivable</SelectItem>
-                                                        <SelectItem value="Tax">Tax</SelectItem>
-                                                        <SelectItem value="Freight">Freight</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="ledgerId"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Ledger ID</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="e.g. PRIMARY" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-
-                                <div className="mt-6 border rounded-md p-4 bg-muted/20">
-                                    <h4 className="font-medium mb-4">Segment Source Mappings</h4>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        {[1, 2, 3, 4, 5].map((num) => (
-                                            <FormField
-                                                key={num}
-                                                control={form.control}
-                                                name={`segment${num}Source` as any}
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormLabel>Segment {num} Source</FormLabel>
-                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                            <FormControl>
-                                                                <SelectTrigger>
-                                                                    <SelectValue placeholder="Select Source" />
-                                                                </SelectTrigger>
-                                                            </FormControl>
-                                                            <SelectContent>
-                                                                {sourceOptions.map(opt => (
-                                                                    <SelectItem key={opt} value={opt}>{opt}</SelectItem>
-                                                                ))}
-                                                            </SelectContent>
-                                                        </Select>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <DialogFooter>
-                                    <Button type="submit" disabled={mutation.isPending}>
-                                        {mutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                        Save Rule
-                                    </Button>
-                                </DialogFooter>
-                            </form>
-                        </Form>
-                    </DialogContent>
-                </Dialog>
-            </div>
-
-            <Card>
-                <CardHeader>
-                    <CardTitle>Derivation Matrix</CardTitle>
-                    <CardDescription>Rules currently evaluating during line generation.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    {isLoading ? (
-                        <div className="h-24 flex items-center justify-center">
-                            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                        </div>
-                    ) : (
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Rule Name</TableHead>
-                                    <TableHead>Target Class</TableHead>
-                                    <TableHead>Segment 1</TableHead>
-                                    <TableHead>Segment 2</TableHead>
-                                    <TableHead>Segment 3</TableHead>
-                                    <TableHead>Segment 4</TableHead>
-                                    <TableHead>Status</TableHead>
+        <Card>
+            <CardHeader>
+                <CardTitle>Derivation Matrix</CardTitle>
+                <CardDescription>Rules currently evaluating during line generation.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                {isLoading ? (
+                    <div className="h-24 flex items-center justify-center">
+                        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                    </div>
+                ) : (
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Rule Name</TableHead>
+                                <TableHead>Target Class</TableHead>
+                                <TableHead>Segment 1</TableHead>
+                                <TableHead>Segment 2</TableHead>
+                                <TableHead>Segment 3</TableHead>
+                                <TableHead>Segment 4</TableHead>
+                                <TableHead>Status</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {rules?.map((rule) => (
+                                <TableRow key={rule.id}>
+                                    <TableCell className="font-medium">{rule.ruleName}</TableCell>
+                                    <TableCell>{rule.accountClass}</TableCell>
+                                    <TableCell>{rule.segment1Source}</TableCell>
+                                    <TableCell>{rule.segment2Source}</TableCell>
+                                    <TableCell>{rule.segment3Source}</TableCell>
+                                    <TableCell>{rule.segment4Source}</TableCell>
+                                    <TableCell>
+                                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${rule.enabledFlag ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                            {rule.enabledFlag ? 'Active' : 'Inactive'}
+                                        </span>
+                                    </TableCell>
                                 </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {rules?.map((rule) => (
-                                    <TableRow key={rule.id}>
-                                        <TableCell className="font-medium">{rule.ruleName}</TableCell>
-                                        <TableCell>{rule.accountClass}</TableCell>
-                                        <TableCell>{rule.segment1Source}</TableCell>
-                                        <TableCell>{rule.segment2Source}</TableCell>
-                                        <TableCell>{rule.segment3Source}</TableCell>
-                                        <TableCell>{rule.segment4Source}</TableCell>
-                                        <TableCell>
-                                            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${rule.enabledFlag ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                                {rule.enabledFlag ? 'Active' : 'Inactive'}
-                                            </span>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                                {!rules?.length && (
-                                    <TableRow>
-                                        <TableCell colSpan={7} className="text-center h-24 text-muted-foreground">
-                                            No AutoAccounting rules defined. Create one to begin generating dynamic CCIDs.
-                                        </TableCell>
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    )}
-                </CardContent>
-            </Card>
-        </div>
+                            ))}
+                            {!rules?.length && (
+                                <TableRow>
+                                    <TableCell colSpan={7} className="text-center h-24 text-muted-foreground">
+                                        No AutoAccounting rules defined. Create one to begin generating dynamic CCIDs.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                )}
+            </CardContent>
+        </Card>
+        </StandardPage >
     );
 }

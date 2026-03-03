@@ -9,6 +9,7 @@ import CashTransactionSideSheet from '@/components/cm/CashTransactionSideSheet';
 import ImportStatementDialog from '@/components/cm/ImportStatementDialog';
 import { CashForecastWidget } from '@/components/cash/CashForecastWidget';
 import { useEnterpriseStore } from '@/lib/enterpriseStore';
+import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function CashManagementDashboard() {
     const { legalEntityId } = useEnterpriseStore();
@@ -42,80 +43,84 @@ export default function CashManagementDashboard() {
     };
 
     return (
-        <div className="p-6 space-y-6">
-            {/* Legal Entity Context Banner */}
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Landmark className="w-4 h-4" />
-                {legalEntityId
-                    ? <span className="font-medium text-foreground">Legal Entity: <span className="font-bold text-primary">{legalEntityId}</span></span>
-                    : <span className="italic">No Legal Entity selected — showing all accounts</span>
-                }
-            </div>
-            {/* Metric Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <MetricCard title="Bank Balances" value="$1,250,000" icon={Wallet} />
-                <MetricCard title="Unreconciled Items" value="12" icon={AlertCircle} />
-                <MetricCard title="Cash Position Today" value="$850,000" icon={TrendingUp} />
-                <MetricCard title="Statement Exceptions" value="3" icon={FileWarning} />
-            </div>
-            {/* Forecast Widget */}
-            <div className="grid grid-cols-1 gap-4">
-                <CashForecastWidget />
-            </div>
+        <StandardPage
+            title="Cash Management Dashboard"
+        >
+            <div className="space-y-6">
+                {/* Legal Entity Context Banner */}
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Landmark className="w-4 h-4" />
+                    {legalEntityId
+                        ? <span className="font-medium text-foreground">Legal Entity: <span className="font-bold text-primary">{legalEntityId}</span></span>
+                        : <span className="italic">No Legal Entity selected — showing all accounts</span>
+                    }
+                </div>
+                {/* Metric Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <MetricCard title="Bank Balances" value="$1,250,000" icon={Wallet} />
+                    <MetricCard title="Unreconciled Items" value="12" icon={AlertCircle} />
+                    <MetricCard title="Cash Position Today" value="$850,000" icon={TrendingUp} />
+                    <MetricCard title="Statement Exceptions" value="3" icon={FileWarning} />
+                </div>
+                {/* Forecast Widget */}
+                <div className="grid grid-cols-1 gap-4">
+                    <CashForecastWidget />
+                </div>
 
-            {/* Premium Grid for cash transactions */}
-            <CashGrid
-                accountId={sampleAccount.id}
-                legalEntityId={legalEntityId}
-                onAddTransaction={() => {
-                    setSelectedTransaction(null);
-                    setTransactionOpen(true);
-                }}
-                onEditTransaction={(txn: any) => {
-                    setSelectedTransaction(txn);
-                    setTransactionOpen(true);
-                }}
-                onImportStatement={() => setImportOpen(true)}
-            />
-            {/* Action Buttons */}
-            <div className="flex gap-4 mt-4">
-                <button
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                    onClick={() => setBankAccountOpen(true)}
-                >
-                    View Bank Account
-                </button>
-                <button
-                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                    onClick={() => setStatementOpen(true)}
-                >
-                    View Statement Line
-                </button>
-                <button
-                    className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-                    onClick={() => setReconciliationOpen(true)}
-                >
-                    View Reconciliation Detail
-                </button>
+                {/* Premium Grid for cash transactions */}
+                <CashGrid
+                    accountId={sampleAccount.id}
+                    legalEntityId={legalEntityId}
+                    onAddTransaction={() => {
+                        setSelectedTransaction(null);
+                        setTransactionOpen(true);
+                    }}
+                    onEditTransaction={(txn: any) => {
+                        setSelectedTransaction(txn);
+                        setTransactionOpen(true);
+                    }}
+                    onImportStatement={() => setImportOpen(true)}
+                />
+                {/* Action Buttons */}
+                <div className="flex gap-4 mt-4">
+                    <button
+                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                        onClick={() => setBankAccountOpen(true)}
+                    >
+                        View Bank Account
+                    </button>
+                    <button
+                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                        onClick={() => setStatementOpen(true)}
+                    >
+                        View Statement Line
+                    </button>
+                    <button
+                        className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+                        onClick={() => setReconciliationOpen(true)}
+                    >
+                        View Reconciliation Detail
+                    </button>
+                </div>
+                {/* Side Sheets */}
+                <BankAccountSideSheet open={bankAccountOpen} account={sampleAccount} onClose={() => setBankAccountOpen(false)} />
+                <StatementLineSideSheet open={statementOpen} line={sampleStatement} onClose={() => setStatementOpen(false)} />
+                <ReconciliationDetailSideSheet open={reconciliationOpen} detail={sampleReconciliation} onClose={() => setReconciliationOpen(false)} />
+                <CashTransactionSideSheet
+                    open={transactionOpen}
+                    accountId={sampleAccount.id}
+                    transaction={selectedTransaction}
+                    onClose={() => {
+                        setTransactionOpen(false);
+                        setSelectedTransaction(null);
+                    }}
+                />
+                <ImportStatementDialog
+                    open={importOpen}
+                    accountId={sampleAccount.id}
+                    onClose={() => setImportOpen(false)}
+                />
             </div>
-            {/* Side Sheets */}
-            <BankAccountSideSheet open={bankAccountOpen} account={sampleAccount} onClose={() => setBankAccountOpen(false)} />
-            <StatementLineSideSheet open={statementOpen} line={sampleStatement} onClose={() => setStatementOpen(false)} />
-            <ReconciliationDetailSideSheet open={reconciliationOpen} detail={sampleReconciliation} onClose={() => setReconciliationOpen(false)} />
-            <CashTransactionSideSheet
-                open={transactionOpen}
-                accountId={sampleAccount.id}
-                transaction={selectedTransaction}
-                onClose={() => {
-                    setTransactionOpen(false);
-                    setSelectedTransaction(null);
-                }}
-            />
-            <ImportStatementDialog
-                open={importOpen}
-                accountId={sampleAccount.id}
-                onClose={() => setImportOpen(false)}
-            />
-        </div>
+        </StandardPage>
     );
 }

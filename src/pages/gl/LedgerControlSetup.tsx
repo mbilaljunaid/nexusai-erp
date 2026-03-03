@@ -10,8 +10,7 @@ import { Settings, Loader2, Save, Info, AlertTriangle, Scale, Shield } from "luc
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CodeCombinationPicker } from "@/components/gl/CodeCombinationPicker";
-
-
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function LedgerControlSetup() {
     const { toast } = useToast();
@@ -55,19 +54,10 @@ export default function LedgerControlSetup() {
     }
 
     return (
-        <div className="p-8 space-y-6 animate-in fade-in duration-500">
-            <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                    <div className="p-3 bg-slate-100 rounded-xl">
-                        <Settings className="h-6 w-6 text-slate-600" />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Ledger Controls</h1>
-                        <p className="text-muted-foreground italic">Oracle Foundation: Suspense Posting, Rounding Account, Netting Rules</p>
-                    </div>
-                </div>
-            </div>
-
+        <StandardPage
+            title="Ledger Controls"
+            description="Oracle Foundation: Suspense Posting, Rounding Account, Netting Rules"
+        >
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-8">
                     {/* Suspense Posting Section */}
@@ -191,6 +181,6 @@ export default function LedgerControlSetup() {
                     </Card>
                 </div>
             </div>
-        </div>
+        </StandardPage>
     );
 }

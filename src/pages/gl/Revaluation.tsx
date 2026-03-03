@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { useLedger } from "@/context/LedgerContext";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 
 type RevaluationRun = {
@@ -119,20 +120,18 @@ export default function Revaluation() {
     };
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Revaluation</h2>
-                    <div className="text-muted-foreground mt-2 flex items-center gap-2">
-                        <span>Manage foreign currency revaluation runs and unrealized gain/loss.</span>
-                        <LedgerContextBadge />
-                    </div>
+        <StandardPage
+            title="Revaluation"
+            description="Manage foreign currency revaluation runs and unrealized gain/loss."
+            actions={
+                <div className="flex gap-2 items-center">
+                    <LedgerContextBadge />
+                    <Button onClick={() => setIsCreateOpen(true)}>
+                        <Play className="mr-2 h-4 w-4" /> Run Revaluation
+                    </Button>
                 </div>
-
-                <Button onClick={() => setIsCreateOpen(true)}>
-                    <Play className="mr-2 h-4 w-4" /> Run Revaluation
-                </Button>
-            </div>
+            }
+        >
 
             <div className="flex items-center gap-4 bg-muted/30 p-4 rounded-lg">
                 <div className="flex-1 max-w-sm">
@@ -282,6 +281,6 @@ export default function Revaluation() {
                     </div>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Clock, AlertTriangle, CheckCircle2, TrendingUp, RefreshCw } from 'lucide-react';
-
+import { StandardPage } from "@/components/layout/StandardPage";
 interface OvertimeRule {
     id: string;
     rule_code: string;
@@ -63,13 +63,10 @@ export default function OvertimeComplianceDashboard() {
     const totalPayroll = report.reduce((s, r) => s + Number(r.gross_pay), 0);
 
     return (
-        <div className="ocd-container">
-            <div className="ocd-header">
-                <div>
-                    <h1 className="ocd-title">Overtime Compliance Dashboard</h1>
-                    <p className="ocd-sub">FLSA · California · Canada · EU WTD — regulatory overtime tracking</p>
-                </div>
-            </div>
+        <StandardPage
+            title="Overtime Compliance Dashboard"
+            description="FLSA · California · Canada · EU WTD — regulatory overtime tracking"
+        >
 
             <div className="ocd-kpis">
                 <div className="kpi blue"><div className="kv">{report.length}</div><div className="kl">Employees</div></div>
@@ -166,10 +163,8 @@ export default function OvertimeComplianceDashboard() {
             )}
 
             <style>{`
-                .ocd-container { padding: 24px; max-width: 1200px; margin: 0 auto; font-family: 'Inter', sans-serif; }
+                .ocd-container { font-family: 'Inter', sans-serif; }
                 .ocd-header { margin-bottom: 20px; }
-                .ocd-title { font-size: 22px; font-weight: 700; color: #111827; margin: 0; }
-                .ocd-sub { font-size: 13px; color: #6b7280; margin: 4px 0 0; }
                 .ocd-kpis { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
                 .kpi { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px 20px; flex: 1; min-width: 130px; }
                 .kpi.blue { border-left: 4px solid #1d4ed8; } .kpi.orange { border-left: 4px solid #d97706; } .kpi.red { border-left: 4px solid #dc2626; } .kpi.green { border-left: 4px solid #059669; }
@@ -217,6 +212,6 @@ export default function OvertimeComplianceDashboard() {
                 .rcg span { font-size: 10px; color: #9ca3af; }
                 .rcg strong { font-size: 13px; color: #111827; font-family: monospace; }
             `}</style>
-        </div>
+        </StandardPage>
     );
 }

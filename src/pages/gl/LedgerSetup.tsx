@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Loader2, Plus, Settings, Shield, Globe, Landmark } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function LedgerSetup() {
     const { toast } = useToast();
@@ -57,12 +58,10 @@ export default function LedgerSetup() {
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Ledger Architecture</h1>
-                    <p className="text-muted-foreground italic">Oracle Foundation: Supported Ledger Types (Primary, Secondary, Reporting)</p>
-                </div>
+        <StandardPage
+            title="Ledger Architecture"
+            description="Oracle Foundation: Supported Ledger Types (Primary, Secondary, Reporting)"
+            actions={
                 <Dialog open={isCreating} onOpenChange={setIsCreating}>
                     <DialogTrigger asChild>
                         <Button className="gap-2">
@@ -134,8 +133,8 @@ export default function LedgerSetup() {
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
-            </div>
-
+            }
+        >
             <Tabs defaultValue="ledgers" className="space-y-4">
                 <TabsList>
                     <TabsTrigger value="ledgers">Defined Ledgers</TabsTrigger>
@@ -238,6 +237,6 @@ export default function LedgerSetup() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div >
+        </StandardPage>
     );
 }

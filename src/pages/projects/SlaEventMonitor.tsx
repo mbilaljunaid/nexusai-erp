@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, FileText, ArrowLeftRight, CheckCircle2 } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface CostDistribution {
     id: string;
@@ -81,15 +82,13 @@ export default function SlaEventMonitor() {
     ];
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-2xl font-bold tracking-tight">SLA Event Monitor</h2>
-                    <p className="text-muted-foreground">Subledger Accounting events and journal entries</p>
-                </div>
+        <StandardPage
+            title="SLA Event Monitor"
+            description="Subledger Accounting events and journal entries"
+            actions={
                 <Button variant="outline"><FileText className="h-4 w-4 mr-2" /> Export Journal</Button>
-            </div>
-
+            }
+        >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card>
                     <CardHeader className="py-4">
@@ -147,6 +146,6 @@ export default function SlaEventMonitor() {
                     onPageChange={setPage}
                 />
             </Card>
-        </div>
+        </StandardPage>
     );
 }

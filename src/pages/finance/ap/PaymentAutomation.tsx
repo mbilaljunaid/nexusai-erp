@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { CreditCard, Play } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function PaymentAutomation() {
     const { toast } = useToast();
@@ -14,10 +15,7 @@ export default function PaymentAutomation() {
 
     const runAutomationMutation = useMutation({
         mutationFn: (data: any) =>
-            apiRequest("/ap/automation/run", {
-                method: "POST",
-                body: JSON.stringify(data),
-            }),
+            apiRequest("POST", "/ap/automation/run", data),
         onSuccess: () => {
             toast({ title: "Success", description: "Payment automation executed successfully" });
             queryClient.invalidateQueries({ queryKey: ["/api/ap/automation"] });
@@ -25,11 +23,10 @@ export default function PaymentAutomation() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div>
-                <h1 className="text-3xl font-bold">Advanced Payment Automation</h1>
-                <p className="text-muted-foreground">Batch optimization, early pay discounts, virtual cards</p>
-            </div>
+        <StandardPage
+            title="Advanced Payment Automation"
+            description="Batch optimization, early pay discounts, virtual cards"
+        >
 
             <Card>
                 <CardHeader>
@@ -71,6 +68,6 @@ export default function PaymentAutomation() {
                     </Button>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

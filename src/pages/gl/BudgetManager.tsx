@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useLedger } from "@/context/LedgerContext";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 // Types
 interface BudgetBalance {
@@ -93,21 +94,18 @@ export default function BudgetManager() {
     };
 
     return (
-        <div className="space-y-6 pt-6 pb-12 animate-in fade-in duration-500">
-            <div className="flex flex-row items-center justify-between">
-                <div className="flex flex-col gap-1">
-                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
-                        Budgetary Control & Monitoring
-                    </h1>
-                    <p className="text-gray-400">Real-time funds validation and expenditure tracking.</p>
-                </div>
+        <StandardPage
+            title="Budgetary Control & Monitoring"
+            description="Real-time funds validation and expenditure tracking."
+            actions={
                 <div className="flex gap-3">
                     <LedgerContextBadge />
                     <Badge variant="outline" className="bg-emerald-500/10 border-emerald-500/20 text-emerald-400 py-1.5 px-3">
                         Period: {selectedPeriod}
                     </Badge>
                 </div>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card className="glass-morphism border-0 shadow-lg p-1">
@@ -347,6 +345,6 @@ export default function BudgetManager() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

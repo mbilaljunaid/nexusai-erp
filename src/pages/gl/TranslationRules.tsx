@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function TranslationRules() {
     const { toast } = useToast();
@@ -59,21 +60,15 @@ export default function TranslationRules() {
     if (isLoading) return <div className="flex justify-center p-10"><Loader2 className="animate-spin" /></div>;
 
     return (
-        <div className="p-8 space-y-6 animate-in fade-in duration-500">
-            <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                    <div className="p-3 bg-indigo-100 rounded-xl">
-                        <Globe className="h-6 w-6 text-indigo-600" />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Translation Rules</h1>
-                        <p className="text-muted-foreground">Configure currency translation methods for consolidation.</p>
-                    </div>
-                </div>
+        <StandardPage
+            title="Translation Rules"
+            description="Configure currency translation methods for consolidation."
+            actions={
                 <Button onClick={() => setIsCreateOpen(true)} className="gap-2 bg-indigo-600 hover:bg-indigo-700">
                     <Plus className="h-4 w-4" /> Create Rule
                 </Button>
-            </div>
+            }
+        >
 
             <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                 <DialogContent className="max-w-lg">
@@ -178,6 +173,6 @@ export default function TranslationRules() {
                     </Table>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

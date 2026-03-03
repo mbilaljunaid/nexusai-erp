@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Import, CheckCircle2, AlertTriangle, FileText, ArrowRight } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface PendingTransaction {
     id: number;
@@ -81,12 +82,10 @@ export default function TransactionImport() {
     ];
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-2xl font-bold tracking-tight">Transaction Import</h2>
-                    <p className="text-muted-foreground">Review and import pending entries from Accounts Payable and Inventory</p>
-                </div>
+        <StandardPage
+            title="Transaction Import"
+            description="Review and import pending entries from Accounts Payable and Inventory"
+            actions={
                 <div className="flex gap-2">
                     <Button variant="outline"><FileText className="h-4 w-4 mr-2" /> Exceptions</Button>
                     <Button
@@ -104,8 +103,8 @@ export default function TransactionImport() {
                         )}
                     </Button>
                 </div>
-            </div>
-
+            }
+        >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card className="bg-yellow-50 dark:bg-yellow-900/10 border-yellow-200 dark:border-yellow-900/50">
                     <CardHeader className="py-4">
@@ -150,6 +149,6 @@ export default function TransactionImport() {
                     pageSize={20}
                 />
             </Card>
-        </div>
+        </StandardPage>
     );
 }

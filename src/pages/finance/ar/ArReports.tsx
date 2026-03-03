@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function ArReports() {
     const { data: aging, refetch: refetchAging } = useQuery({
@@ -66,14 +67,14 @@ export default function ArReports() {
     });
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold tracking-tight">AR Reporting & Analytics</h1>
+        <StandardPage
+            title="AR Reporting & Analytics"
+            actions={
                 <Button variant="outline">
                     <Download className="mr-2 h-4 w-4" /> Export All
                 </Button>
-            </div>
-
+            }
+        >
             <Tabs defaultValue="aging">
                 <TabsList>
                     <TabsTrigger value="aging">Aging Analysis</TabsTrigger>
@@ -240,6 +241,6 @@ export default function ArReports() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

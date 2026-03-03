@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export function ValidationControls() {
     const [controls, setControls] = React.useState<any>({});
@@ -43,11 +44,10 @@ export function ValidationControls() {
     if (loading) return <div>Loading controls...</div>;
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-500">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight">Validation Controls</h1>
-                <p className="text-muted-foreground">Manage system-wide enforcement levels for accounting integrity.</p>
-            </div>
+        <StandardPage
+            title="Validation Controls"
+            description="Manage system-wide enforcement levels for accounting integrity."
+        >
 
             <div className="grid gap-6 md:grid-cols-2">
                 <Card>
@@ -154,6 +154,6 @@ export function ValidationControls() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

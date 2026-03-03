@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, MessageSquare, CheckCircle2 } from 'lucide-react';
+import { StandardPage } from '@/components/layout/StandardPage';
 
 interface Dispute { id: string; dispute_number: string; from_entity: string; to_entity: string; disputed_amount: number; currency: string; status: string; reason: string; opened_by: string; opened_at: string; events: DEvent[]; resolution: string; }
 interface DEvent { at: string; by: string; action: string; note: string; }
@@ -40,15 +41,13 @@ export default function ICDisputeWorkbench() {
     const totalAmt = safeDisputes.reduce((s, d) => s + Number(d.disputed_amount ?? 0), 0);
 
     return (
-        <div style={{ padding: 24, maxWidth: 1400, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, alignItems: 'flex-start' }}>
-                <div>
-                    <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>IC Dispute Workbench</h1>
-                    <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Intercompany discrepancy management · Dispute lifecycle · Resolution tracking</p>
-                </div>
+        <StandardPage
+            title="IC Dispute Workbench"
+            description="Intercompany discrepancy management · Dispute lifecycle · Resolution tracking"
+            actions={
                 <button onClick={() => setShowNew(true)} style={{ padding: '7px 14px', background: '#dc2626', color: '#fff', border: 'none', borderRadius: 8, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>+ Open Dispute</button>
-            </div>
-
+            }
+        >
             {/* KPI row */}
             <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
                 {[{ label: 'Active Disputes', val: totalOpen, clr: '#dc2626' }, { label: 'Total Disputed', val: `$${totalAmt.toLocaleString(undefined, { minimumFractionDigits: 0 })}`, clr: '#d97706' }, { label: 'Total Disputes', val: safeDisputes.length, clr: '#1d4ed8' }].map(k => (
@@ -196,6 +195,6 @@ export default function ICDisputeWorkbench() {
                     </div>
                 )}
             </div>
-        </div>
+        </StandardPage>
     );
 }

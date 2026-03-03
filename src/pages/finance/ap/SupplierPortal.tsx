@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FileText, CheckCircle2, Clock, Upload, Bell } from "lucide-react";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function SupplierPortal() {
     const [page, setPage] = useState(1);
@@ -67,13 +68,11 @@ export default function SupplierPortal() {
     ];
 
     return (
-        <div className="container mx-auto py-8 px-4 max-w-7xl">
-            <div className="flex justify-between items-center mb-8">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Supplier Self-Service Portal</h1>
-                    <p className="text-muted-foreground mt-1">Welcome back, Acme Corp. View your orders, submit invoices, and track payments.</p>
-                </div>
-                <div className="flex items-center gap-4">
+        <StandardPage
+            title="Supplier Self-Service Portal"
+            description="Welcome back, Acme Corp. View your orders, submit invoices, and track payments."
+            actions={
+                <>
                     <Button variant="outline" size="icon">
                         <Bell className="h-4 w-4" />
                     </Button>
@@ -81,8 +80,9 @@ export default function SupplierPortal() {
                         <Upload className="mr-2 h-4 w-4" />
                         Submit Invoice
                     </Button>
-                </div>
-            </div>
+                </>
+            }
+        >
 
             <div className="grid gap-6 md:grid-cols-3 mb-8">
                 <Card>
@@ -174,6 +174,6 @@ export default function SupplierPortal() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Plus, Building2, ShieldCheck, CreditCard } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 function EntityForm({ onSubmit, ledgers, isLoading }: { onSubmit: (data: any) => void, ledgers: any[], isLoading: boolean }) {
     const [formData, setFormData] = useState({
@@ -137,31 +138,28 @@ export default function LegalEntitySetup() {
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Legal Entities</h1>
-                    <p className="text-muted-foreground italic">Enterprise Structure: Organizational Units & Tax Registrations</p>
-                </div>
-                <Dialog open={isCreating} onOpenChange={setIsCreating}>
-                    <DialogTrigger asChild>
-                        <Button className="gap-2 bg-[#0f172a]">
-                            <Plus className="h-4 w-4" /> Register Entity
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[500px]">
-                        <DialogHeader>
-                            <DialogTitle>Register New Legal Entity</DialogTitle>
-                            <CardDescription>Define a legal organization unit and map it to a primary ledger.</CardDescription>
-                        </DialogHeader>
-                        <EntityForm
-                            onSubmit={(data) => createEntityMutation.mutate(data)}
-                            ledgers={ledgers || []}
-                            isLoading={createEntityMutation.isPending}
-                        />
-                    </DialogContent>
-                </Dialog>
-            </div>
+        <StandardPage
+            title="Legal Entities"
+            description="Enterprise Structure: Organizational Units & Tax Registrations"
+            actions={
+                <Button onClick={() => setIsCreating(true)} className="gap-2 bg-[#0f172a]">
+                    <Plus className="h-4 w-4" /> Register Entity
+                </Button>
+            }
+        >
+            <Dialog open={isCreating} onOpenChange={setIsCreating}>
+                <DialogContent className="sm:max-w-[500px]">
+                    <DialogHeader>
+                        <DialogTitle>Register New Legal Entity</DialogTitle>
+                        <CardDescription>Define a legal organization unit and map it to a primary ledger.</CardDescription>
+                    </DialogHeader>
+                    <EntityForm
+                        onSubmit={(data) => createEntityMutation.mutate(data)}
+                        ledgers={ledgers || []}
+                        isLoading={createEntityMutation.isPending}
+                    />
+                </DialogContent>
+            </Dialog>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card className="bg-gradient-to-br from-blue-500/10 to-transparent border-blue-500/20">
@@ -239,6 +237,6 @@ export default function LegalEntitySetup() {
                     </Table>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

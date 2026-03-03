@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { CheckCircle, Clock, AlertTriangle, XCircle, FileText, ChevronUp, ChevronDown } from 'lucide-react';
+import { StandardPage } from '@/components/layout/StandardPage';
 
 interface Certification {
     id: string;
@@ -75,12 +76,10 @@ export default function AccountCertPortal() {
     const certifiedPct = certs.length ? Math.round(certs.filter(c => c.status === 'Certified').length / certs.length * 100) : 0;
 
     return (
-        <div className="account-cert-portal">
-            <div className="cert-header">
-                <div>
-                    <h1 className="cert-title">Account Reconciliation Certification</h1>
-                    <p className="cert-subtitle">SOX sign-off portal — preparer → reviewer → certified</p>
-                </div>
+        <StandardPage
+            title="Account Reconciliation Certification"
+            description="SOX sign-off portal — preparer → reviewer → certified"
+            actions={
                 <select
                     value={period}
                     onChange={e => setPeriod(e.target.value)}
@@ -91,113 +90,112 @@ export default function AccountCertPortal() {
                         <option key={m} value={`${m}-2026`}>{m}-2026</option>
                     ))}
                 </select>
-            </div>
+            }
+        >
+            <div className="account-cert-portal">
 
-            {/* Summary KPIs */}
-            <div className="cert-kpis">
-                <div className="kpi-card">
-                    <div className="kpi-value">{certifiedPct}%</div>
-                    <div className="kpi-label">Certified</div>
-                    <div className="kpi-progress">
-                        <div className="kpi-bar" style={{ width: `${certifiedPct}%` }} />
-                    </div>
-                </div>
-                <div className="kpi-card">
-                    <div className="kpi-value">{certs.length}</div>
-                    <div className="kpi-label">Total Accounts</div>
-                </div>
-                <div className="kpi-card">
-                    <div className="kpi-value kpi-red">
-                        ${totalVariance.toLocaleString('en-US', { maximumFractionDigits: 0 })}
-                    </div>
-                    <div className="kpi-label">Total Variance</div>
-                </div>
-                {summary.map(s => {
-                    const cfg = STATUS_CONFIG[s.status as keyof typeof STATUS_CONFIG];
-                    const Icon = cfg?.icon ?? Clock;
-                    return (
-                        <div key={s.status} className="kpi-status-card" style={{ borderColor: cfg?.color }}>
-                            <Icon size={18} color={cfg?.color} />
-                            <div className="kpi-status-count" style={{ color: cfg?.color }}>{s.count}</div>
-                            <div className="kpi-status-label">{s.status}</div>
+                {/* Summary KPIs */}
+                <div className="cert-kpis">
+                    <div className="kpi-card">
+                        <div className="kpi-value">{certifiedPct}%</div>
+                        <div className="kpi-label">Certified</div>
+                        <div className="kpi-progress">
+                            <div className="kpi-bar" style={{ width: `${certifiedPct}%` }} />
                         </div>
-                    );
-                })}
-            </div>
+                    </div>
+                    <div className="kpi-card">
+                        <div className="kpi-value">{certs.length}</div>
+                        <div className="kpi-label">Total Accounts</div>
+                    </div>
+                    <div className="kpi-card">
+                        <div className="kpi-value kpi-red">
+                            ${totalVariance.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+                        </div>
+                        <div className="kpi-label">Total Variance</div>
+                    </div>
+                    {summary.map(s => {
+                        const cfg = STATUS_CONFIG[s.status as keyof typeof STATUS_CONFIG];
+                        const Icon = cfg?.icon ?? Clock;
+                        return (
+                            <div key={s.status} className="kpi-status-card" style={{ borderColor: cfg?.color }}>
+                                <Icon size={18} color={cfg?.color} />
+                                <div className="kpi-status-count" style={{ color: cfg?.color }}>{s.count}</div>
+                                <div className="kpi-status-label">{s.status}</div>
+                            </div>
+                        );
+                    })}
+                </div>
 
-            {/* Table */}
-            <div className="cert-table-wrapper">
-                <table className="cert-table">
-                    <thead>
-                        <tr>
-                            <th>Account</th>
-                            <th>Status</th>
-                            <th
-                                className="sortable-col"
-                                onClick={() => { setSortField('variance'); setSortDir(d => d === 'asc' ? 'desc' : 'asc'); }}
-                            >
-                                Variance
-                                {sortField === 'variance' && (sortDir === 'desc' ? <ChevronDown size={14} /> : <ChevronUp size={14} />)}
-                            </th>
-                            <th>GL Balance</th>
-                            <th>Sub Balance</th>
-                            <th>Preparer</th>
-                            <th>Reviewer</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {isLoading ? (
-                            <tr><td colSpan={8} className="loading-cell">Loading certifications…</td></tr>
-                        ) : sorted.length === 0 ? (
-                            <tr><td colSpan={8} className="empty-cell">No certifications for {period}</td></tr>
-                        ) : sorted.map(cert => {
-                            const cfg = STATUS_CONFIG[cert.status];
-                            const Icon = cfg.icon;
-                            return (
-                                <tr key={cert.id} className="cert-row">
-                                    <td className="account-code">{cert.account_id}</td>
-                                    <td>
-                                        <span className="status-badge" style={{ background: cfg.bg, color: cfg.color }}>
-                                            <Icon size={12} /> {cert.status}
-                                        </span>
-                                    </td>
-                                    <td className={`variance-cell ${Math.abs(cert.variance) > 1000 ? 'high-variance' : ''}`}>
-                                        {cert.variance >= 0 ? '+' : ''}{cert.variance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                                    </td>
-                                    <td>{cert.balance_per_gl.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
-                                    <td>{cert.balance_per_sub.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
-                                    <td className="email-cell">{cert.preparer_email}</td>
-                                    <td className="email-cell">{cert.reviewer_email}</td>
-                                    <td className="actions-cell">
-                                        {cert.status === 'In-Review' && (
-                                            <button
-                                                className="btn-certify"
-                                                onClick={() => certifyMutation.mutate(cert.id)}
-                                                disabled={certifyMutation.isPending}
-                                                aria-label={`Certify account ${cert.account_id}`}
-                                            >
-                                                Certify
-                                            </button>
-                                        )}
-                                        {cert.escalation_reason && (
-                                            <span className="escalation-tooltip" title={cert.escalation_reason}>
-                                                <AlertTriangle size={14} color="#dc2626" />
+                {/* Table */}
+                <div className="cert-table-wrapper">
+                    <table className="cert-table">
+                        <thead>
+                            <tr>
+                                <th>Account</th>
+                                <th>Status</th>
+                                <th
+                                    className="sortable-col"
+                                    onClick={() => { setSortField('variance'); setSortDir(d => d === 'asc' ? 'desc' : 'asc'); }}
+                                >
+                                    Variance
+                                    {sortField === 'variance' && (sortDir === 'desc' ? <ChevronDown size={14} /> : <ChevronUp size={14} />)}
+                                </th>
+                                <th>GL Balance</th>
+                                <th>Sub Balance</th>
+                                <th>Preparer</th>
+                                <th>Reviewer</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {isLoading ? (
+                                <tr><td colSpan={8} className="loading-cell">Loading certifications…</td></tr>
+                            ) : sorted.length === 0 ? (
+                                <tr><td colSpan={8} className="empty-cell">No certifications for {period}</td></tr>
+                            ) : sorted.map(cert => {
+                                const cfg = STATUS_CONFIG[cert.status];
+                                const Icon = cfg.icon;
+                                return (
+                                    <tr key={cert.id} className="cert-row">
+                                        <td className="account-code">{cert.account_id}</td>
+                                        <td>
+                                            <span className="status-badge" style={{ background: cfg.bg, color: cfg.color }}>
+                                                <Icon size={12} /> {cert.status}
                                             </span>
-                                        )}
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </div>
+                                        </td>
+                                        <td className={`variance-cell ${Math.abs(cert.variance) > 1000 ? 'high-variance' : ''}`}>
+                                            {cert.variance >= 0 ? '+' : ''}{cert.variance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                        </td>
+                                        <td>{cert.balance_per_gl.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                                        <td>{cert.balance_per_sub.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                                        <td className="email-cell">{cert.preparer_email}</td>
+                                        <td className="email-cell">{cert.reviewer_email}</td>
+                                        <td className="actions-cell">
+                                            {cert.status === 'In-Review' && (
+                                                <button
+                                                    className="btn-certify"
+                                                    onClick={() => certifyMutation.mutate(cert.id)}
+                                                    disabled={certifyMutation.isPending}
+                                                    aria-label={`Certify account ${cert.account_id}`}
+                                                >
+                                                    Certify
+                                                </button>
+                                            )}
+                                            {cert.escalation_reason && (
+                                                <span className="escalation-tooltip" title={cert.escalation_reason}>
+                                                    <AlertTriangle size={14} color="#dc2626" />
+                                                </span>
+                                            )}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
 
-            <style>{`
-                .account-cert-portal { padding: 24px; max-width: 1400px; margin: 0 auto; font-family: 'Inter', sans-serif; }
-                .cert-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
-                .cert-title { font-size: 22px; font-weight: 700; color: #111827; margin: 0; }
-                .cert-subtitle { font-size: 13px; color: #6b7280; margin: 4px 0 0; }
+                <style>{`
+                .account-cert-portal { max-width: 1400px; margin: 0 auto; font-family: 'Inter', sans-serif; }
                 .period-select { padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background: #fff; }
                 .cert-kpis { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
                 .kpi-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px 20px; min-width: 140px; }
@@ -228,6 +226,7 @@ export default function AccountCertPortal() {
                 .loading-cell, .empty-cell { text-align: center; padding: 40px; color: #9ca3af; }
                 .escalation-tooltip { cursor: help; }
             `}</style>
-        </div>
+            </div>
+        </StandardPage>
     );
 }

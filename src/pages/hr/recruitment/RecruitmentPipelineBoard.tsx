@@ -30,6 +30,7 @@ import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 const STAGES = ["NEW", "SCREENING", "INTERVIEW", "OFFER", "HIRED", "REJECTED"];
 
@@ -92,19 +93,10 @@ export default function RecruitmentPipelineBoard() {
     };
 
     return (
-        <div className="flex flex-col h-screen bg-slate-50/50">
-            {/* Header */}
-            <header className="px-6 py-4 bg-white border-b flex items-center justify-between sticky top-0 z-10 shadow-sm">
-                <div className="flex items-center gap-4">
-                    <div className="bg-blue-600 p-2 rounded-lg">
-                        <Trello className="h-6 w-6 text-white" />
-                    </div>
-                    <div>
-                        <h1 className="text-xl font-bold tracking-tight">Recruitment Pipeline</h1>
-                        <p className="text-xs text-muted-foreground">Manage candidate flow and hiring stages</p>
-                    </div>
-                </div>
-
+        <StandardPage
+            title="Recruitment Pipeline"
+            description="Manage candidate flow and hiring stages"
+            actions={
                 <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-md border">
                         <Briefcase className="h-4 w-4 text-slate-500" />
@@ -130,10 +122,9 @@ export default function RecruitmentPipelineBoard() {
                         Add Candidate
                     </Button>
                 </div>
-            </header>
-
-            {/* Board */}
-            <main className="flex-1 overflow-x-auto p-6">
+            }
+        >
+            <div className="flex-1 overflow-x-auto pb-4">
                 {!selectedJobId ? (
                     <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
                         <div className="bg-slate-100 p-6 rounded-full">
@@ -247,7 +238,7 @@ export default function RecruitmentPipelineBoard() {
                         })}
                     </div>
                 )}
-            </main>
-        </div>
+            </div>
+        </StandardPage>
     );
 }

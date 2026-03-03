@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { useToast } from "@/hooks/use-toast";
 import { Calendar as CalendarIcon, Plus, Loader2, CalendarDays } from "lucide-react";
 import { format } from "date-fns";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function CalendarSetup() {
     const { toast } = useToast();
@@ -66,21 +67,15 @@ export default function CalendarSetup() {
     }
 
     return (
-        <div className="p-8 space-y-6 animate-in fade-in duration-500">
-            <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                    <div className="p-3 bg-purple-100 rounded-xl">
-                        <CalendarIcon className="h-6 w-6 text-purple-600" />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Accounting Calendars</h1>
-                        <p className="text-muted-foreground italic">Oracle Foundation: Define fiscal years and period typess</p>
-                    </div>
-                </div>
+        <StandardPage
+            title="Accounting Calendars"
+            description="Oracle Foundation: Define fiscal years and period types"
+            actions={
                 <Button onClick={() => setIsCreating(true)} className="gap-2 bg-purple-600 hover:bg-purple-700">
                     <Plus className="h-4 w-4" /> New Calendar
                 </Button>
-            </div>
+            }
+        >
 
             <Dialog open={isCreating} onOpenChange={setIsCreating}>
                 <DialogContent>
@@ -176,6 +171,6 @@ export default function CalendarSetup() {
                     )}
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

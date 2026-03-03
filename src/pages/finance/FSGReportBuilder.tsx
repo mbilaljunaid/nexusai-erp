@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Play, Trash2, ChevronRight, Table2, BarChart3 } from 'lucide-react';
+import { StandardPage } from '@/components/layout/StandardPage';
 
 interface FSGRow {
     rowNum: number;
@@ -100,12 +101,10 @@ export default function FSGReportBuilder() {
     }, [selectedReport, runParams, runMutation]);
 
     return (
-        <div className="fsg-builder">
-            <div className="fsg-header">
-                <div>
-                    <h1 className="fsg-title">FSG Report Builder</h1>
-                    <p className="fsg-subtitle">Oracle FSG-equivalent — define rows, columns, account ranges & formulas</p>
-                </div>
+        <StandardPage
+            title="FSG Report Builder"
+            description="Oracle FSG-equivalent — define rows, columns, account ranges & formulas"
+            actions={
                 <div className="fsg-tabs">
                     {(['library', 'builder'] as const).map(tab => (
                         <button
@@ -119,158 +118,159 @@ export default function FSGReportBuilder() {
                         </button>
                     ))}
                 </div>
-            </div>
-
+            }
+        >
             {activeTab === 'library' ? (
-                <div className="fsg-library">
-                    {/* Run Panel */}
-                    <div className="run-panel">
-                        <h2 className="panel-title">Run a Report</h2>
-                        <div className="run-row">
-                            <select
-                                value={selectedReport ?? ''}
-                                onChange={e => setSelectedReport(e.target.value)}
-                                className="fsg-select"
-                                aria-label="Select report"
-                            >
-                                <option value="">Select report…</option>
-                                {reports.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
-                            </select>
-                            <input
-                                className="fsg-input"
-                                placeholder="Period (e.g. Jan-2026)"
-                                value={runParams.periodName}
-                                onChange={e => setRunParams(p => ({ ...p, periodName: e.target.value }))}
-                                aria-label="Period name"
-                            />
-                            <input
-                                className="fsg-input"
-                                placeholder="Ledger ID"
-                                value={runParams.ledgerId}
-                                onChange={e => setRunParams(p => ({ ...p, ledgerId: e.target.value }))}
-                                aria-label="Ledger ID"
-                            />
-                            <button
-                                className="run-btn"
-                                onClick={handleRun}
-                                disabled={runMutation.isPending || !selectedReport}
-                                aria-label="Run report"
-                            >
-                                <Play size={14} />
-                                {runMutation.isPending ? 'Running…' : 'Run'}
-                            </button>
+                { activeTab === 'library' ? (
+                    <div className="fsg-library">
+                        {/* Run Panel */}
+                        <div className="run-panel">
+                            <h2 className="panel-title">Run a Report</h2>
+                            <div className="run-row">
+                                <select
+                                    value={selectedReport ?? ''}
+                                    onChange={e => setSelectedReport(e.target.value)}
+                                    className="fsg-select"
+                                    aria-label="Select report"
+                                >
+                                    <option value="">Select report…</option>
+                                    {reports.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+                                </select>
+                                <input
+                                    className="fsg-input"
+                                    placeholder="Period (e.g. Jan-2026)"
+                                    value={runParams.periodName}
+                                    onChange={e => setRunParams(p => ({ ...p, periodName: e.target.value }))}
+                                    aria-label="Period name"
+                                />
+                                <input
+                                    className="fsg-input"
+                                    placeholder="Ledger ID"
+                                    value={runParams.ledgerId}
+                                    onChange={e => setRunParams(p => ({ ...p, ledgerId: e.target.value }))}
+                                    aria-label="Ledger ID"
+                                />
+                                <button
+                                    className="run-btn"
+                                    onClick={handleRun}
+                                    disabled={runMutation.isPending || !selectedReport}
+                                    aria-label="Run report"
+                                >
+                                    <Play size={14} />
+                                    {runMutation.isPending ? 'Running…' : 'Run'}
+                                </button>
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Run Result */}
-                    {runResult && (
-                        <div className="run-result">
-                            <h2 className="panel-title">{runResult.reportName} — {runResult.periodName}</h2>
-                            <div className="result-table-wrapper">
-                                <table className="result-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Row</th>
-                                            {(runResult.columns ?? []).map((c: FSGColumn) => (
-                                                <th key={c.colNum}>{c.label}</th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {(runResult.rows ?? []).map((row: FSGRow) => (
-                                            <tr key={row.rowNum} className={row.isTotal ? 'total-row' : ''}>
-                                                <td className="row-label" style={{ paddingLeft: `${(row.indent ?? 0) * 16 + 12}px`, fontWeight: row.isBold ? 700 : 400 }}>
-                                                    {row.label}
-                                                </td>
-                                                {(runResult.columns ?? []).map((c: FSGColumn) => {
-                                                    const val = runResult.data?.[row.rowNum]?.[c.colNum] ?? 0;
-                                                    return (
-                                                        <td key={c.colNum} className={`value-cell ${val < 0 ? 'negative' : ''}`}>
-                                                            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val)}
-                                                        </td>
-                                                    );
-                                                })}
+                        {/* Run Result */}
+                        {runResult && (
+                            <div className="run-result">
+                                <h2 className="panel-title">{runResult.reportName} — {runResult.periodName}</h2>
+                                <div className="result-table-wrapper">
+                                    <table className="result-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Row</th>
+                                                {(runResult.columns ?? []).map((c: FSGColumn) => (
+                                                    <th key={c.colNum}>{c.label}</th>
+                                                ))}
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            {(runResult.rows ?? []).map((row: FSGRow) => (
+                                                <tr key={row.rowNum} className={row.isTotal ? 'total-row' : ''}>
+                                                    <td className="row-label" style={{ paddingLeft: `${(row.indent ?? 0) * 16 + 12}px`, fontWeight: row.isBold ? 700 : 400 }}>
+                                                        {row.label}
+                                                    </td>
+                                                    {(runResult.columns ?? []).map((c: FSGColumn) => {
+                                                        const val = runResult.data?.[row.rowNum]?.[c.colNum] ?? 0;
+                                                        return (
+                                                            <td key={c.colNum} className={`value-cell ${val < 0 ? 'negative' : ''}`}>
+                                                                {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val)}
+                                                            </td>
+                                                        );
+                                                    })}
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
-                    )}
-
-                    {/* Report Library */}
-                    <div className="report-cards">
-                        {reports.map(r => (
-                            <div key={r.id} className="report-card" onClick={() => { setSelectedReport(r.id); }}>
-                                <div className="report-card-name">{r.name}</div>
-                                <div className="report-card-type">{r.report_type}</div>
-                                <ChevronRight size={16} color="#9ca3af" />
-                            </div>
-                        ))}
-                        {reports.length === 0 && (
-                            <div className="empty-library">No reports yet — use the Builder tab to create one</div>
                         )}
-                    </div>
-                </div>
-            ) : (
-                <div className="fsg-design">
-                    <div className="design-toolbar">
-                        <input
-                            className="report-name-input"
-                            value={reportName}
-                            onChange={e => setReportName(e.target.value)}
-                            aria-label="Report name"
-                        />
-                        <select
-                            value={reportType}
-                            onChange={e => setReportType(e.target.value as any)}
-                            className="fsg-select"
-                            aria-label="Report type"
-                        >
-                            {REPORT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                        </select>
-                        <button
-                            className="save-btn"
-                            onClick={() => saveMutation.mutate({ name: reportName, reportType, rows, columns })}
-                            disabled={saveMutation.isPending}
-                            aria-label="Save report"
-                        >
-                            {saveMutation.isPending ? 'Saving…' : 'Save Report'}
-                        </button>
-                    </div>
 
-                    {/* Rows Editor */}
-                    <div className="editor-section">
-                        <div className="editor-header">
-                            <h2 className="panel-title">Rows</h2>
-                            <button className="add-row-btn" onClick={addRow} aria-label="Add row">
-                                <Plus size={14} /> Add Row
+                        {/* Report Library */}
+                        <div className="report-cards">
+                            {reports.map(r => (
+                                <div key={r.id} className="report-card" onClick={() => { setSelectedReport(r.id); }}>
+                                    <div className="report-card-name">{r.name}</div>
+                                    <div className="report-card-type">{r.report_type}</div>
+                                    <ChevronRight size={16} color="#9ca3af" />
+                                </div>
+                            ))}
+                            {reports.length === 0 && (
+                                <div className="empty-library">No reports yet — use the Builder tab to create one</div>
+                            )}
+                        </div>
+                    </div>
+                ) : (
+                    <div className="fsg-design">
+                        <div className="design-toolbar">
+                            <input
+                                className="report-name-input"
+                                value={reportName}
+                                onChange={e => setReportName(e.target.value)}
+                                aria-label="Report name"
+                            />
+                            <select
+                                value={reportType}
+                                onChange={e => setReportType(e.target.value as any)}
+                                className="fsg-select"
+                                aria-label="Report type"
+                            >
+                                {REPORT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                            </select>
+                            <button
+                                className="save-btn"
+                                onClick={() => saveMutation.mutate({ name: reportName, reportType, rows, columns })}
+                                disabled={saveMutation.isPending}
+                                aria-label="Save report"
+                            >
+                                {saveMutation.isPending ? 'Saving…' : 'Save Report'}
                             </button>
                         </div>
-                        <table className="editor-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th><th>Label</th><th>Account Range</th>
-                                    <th>Formula (e.g. R1+R2)</th><th>Bold</th><th>Total</th><th>Del</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {rows.map(row => (
-                                    <tr key={row.rowNum}>
-                                        <td className="row-num">{row.rowNum}</td>
-                                        <td><input className="editor-input" value={row.label} onChange={e => updateRow(row.rowNum, 'label', e.target.value)} aria-label="Row label" /></td>
-                                        <td><input className="editor-input mono" value={row.accountRange ?? ''} placeholder="e.g. 5000-5999" onChange={e => updateRow(row.rowNum, 'accountRange', e.target.value)} aria-label="Account range" /></td>
-                                        <td><input className="editor-input mono" value={row.formula ?? ''} placeholder="e.g. R1 - R2" onChange={e => updateRow(row.rowNum, 'formula', e.target.value)} aria-label="Formula" /></td>
-                                        <td><input type="checkbox" checked={!!row.isBold} onChange={e => updateRow(row.rowNum, 'isBold', e.target.checked)} aria-label="Bold" /></td>
-                                        <td><input type="checkbox" checked={!!row.isTotal} onChange={e => updateRow(row.rowNum, 'isTotal', e.target.checked)} aria-label="Total row" /></td>
-                                        <td><button className="delete-btn" onClick={() => removeRow(row.rowNum)} aria-label={`Delete row ${row.rowNum}`}><Trash2 size={14} /></button></td>
+
+                        {/* Rows Editor */}
+                        <div className="editor-section">
+                            <div className="editor-header">
+                                <h2 className="panel-title">Rows</h2>
+                                <button className="add-row-btn" onClick={addRow} aria-label="Add row">
+                                    <Plus size={14} /> Add Row
+                                </button>
+                            </div>
+                            <table className="editor-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th><th>Label</th><th>Account Range</th>
+                                        <th>Formula (e.g. R1+R2)</th><th>Bold</th><th>Total</th><th>Del</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {rows.map(row => (
+                                        <tr key={row.rowNum}>
+                                            <td className="row-num">{row.rowNum}</td>
+                                            <td><input className="editor-input" value={row.label} onChange={e => updateRow(row.rowNum, 'label', e.target.value)} aria-label="Row label" /></td>
+                                            <td><input className="editor-input mono" value={row.accountRange ?? ''} placeholder="e.g. 5000-5999" onChange={e => updateRow(row.rowNum, 'accountRange', e.target.value)} aria-label="Account range" /></td>
+                                            <td><input className="editor-input mono" value={row.formula ?? ''} placeholder="e.g. R1 - R2" onChange={e => updateRow(row.rowNum, 'formula', e.target.value)} aria-label="Formula" /></td>
+                                            <td><input type="checkbox" checked={!!row.isBold} onChange={e => updateRow(row.rowNum, 'isBold', e.target.checked)} aria-label="Bold" /></td>
+                                            <td><input type="checkbox" checked={!!row.isTotal} onChange={e => updateRow(row.rowNum, 'isTotal', e.target.checked)} aria-label="Total row" /></td>
+                                            <td><button className="delete-btn" onClick={() => removeRow(row.rowNum)} aria-label={`Delete row ${row.rowNum}`}><Trash2 size={14} /></button></td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
 
             <style>{`
                 .fsg-builder { padding: 24px; max-width: 1400px; margin: 0 auto; font-family: 'Inter', sans-serif; }
@@ -318,6 +318,7 @@ export default function FSGReportBuilder() {
                 .delete-btn { background: none; border: none; cursor: pointer; color: #dc2626; padding: 4px; border-radius: 4px; }
                 .delete-btn:hover { background: #fee2e2; }
             `}</style>
-        </div>
+        </style>
+        </StandardPage >
     );
 }

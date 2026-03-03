@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge"; // Fixed import
 import { Plus, Library, Layers, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function LedgerSetSetup() {
     const { toast } = useToast();
@@ -90,18 +91,15 @@ export default function LedgerSetSetup() {
     };
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Ledger Sets</h1>
-                    <p className="text-muted-foreground mt-2">
-                        Group multiple ledgers for consolidated reporting and simultaneous period open/close.
-                    </p>
-                </div>
+        <StandardPage
+            title="Ledger Sets"
+            description="Group multiple ledgers for consolidated reporting and simultaneous period open/close."
+            actions={
                 <Button onClick={() => setIsCreateOpen(true)} className="bg-[#0f172a]">
                     <Plus className="mr-2 h-4 w-4" /> Create Ledger Set
                 </Button>
-            </div>
+            }
+        >
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {items(ledgerSets, setsLoading)}
@@ -153,7 +151,7 @@ export default function LedgerSetSetup() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 
     function items(sets: any[], loading: boolean) {

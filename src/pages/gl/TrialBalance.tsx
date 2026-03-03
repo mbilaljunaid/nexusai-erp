@@ -18,7 +18,7 @@ import { useNexusAI } from "@/contexts/NexusAIContext";
 import { useLedger } from "@/context/LedgerContext";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface TrialBalanceRow {
     ccid: string;
@@ -101,21 +101,17 @@ export default function TrialBalance() {
     });
 
     return (
-        <div className="p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Trial Balance</h1>
-                    <p className="text-muted-foreground mt-1">
-                        Detailed balances by Code Combination for the selected period.
-                    </p>
-                </div>
+        <StandardPage
+            title="Trial Balance"
+            description="Detailed balances by Code Combination for the selected period."
+            actions={
                 <div className="flex gap-2">
                     <Button variant="outline" onClick={handleExportCSV}><Download className="mr-2 h-4 w-4" /> Export CSV</Button>
                     <Button variant="outline"><Download className="mr-2 h-4 w-4" /> Export PDF</Button>
                     <Button><Filter className="mr-2 h-4 w-4" /> Multi-Period</Button>
                 </div>
-            </div>
-
+            }
+        >
             {/* AI Insights Section */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card className="md:col-span-2 border-primary/20 bg-primary/5 shadow-sm hover:shadow-md transition-shadow">
@@ -374,6 +370,6 @@ export default function TrialBalance() {
                     )}
                 </SheetContent>
             </Sheet>
-        </div>
+        </StandardPage>
     );
 }

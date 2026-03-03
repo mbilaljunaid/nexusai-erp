@@ -31,6 +31,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function APWithholdingTax() {
     const { toast } = useToast();
@@ -96,14 +97,10 @@ export default function APWithholdingTax() {
     });
 
     return (
-        <div className="space-y-6">
-            <div>
-                <h2 className="text-2xl font-bold tracking-tight">Withholding Tax (WHT) Groups</h2>
-                <p className="text-muted-foreground">
-                    Manage multi-tier withholding tax groups and calculate priority-based cascading rates.
-                </p>
-            </div>
-
+        <StandardPage
+            title="Withholding Tax (WHT) Groups"
+            description="Manage multi-tier withholding tax groups and calculate priority-based cascading rates."
+        >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -279,6 +276,6 @@ export default function APWithholdingTax() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

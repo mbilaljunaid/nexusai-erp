@@ -21,6 +21,7 @@ import {
     BarChart3,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface Period {
     id: number;
@@ -108,14 +109,10 @@ export default function MultiPeriodQuery() {
     };
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold">Multi-Period Query & Analysis</h1>
-                    <p className="text-muted-foreground">
-                        Cross-period analysis, trending, and variance reporting
-                    </p>
-                </div>
+        <StandardPage
+            title="Multi-Period Query & Analysis"
+            description="Cross-period analysis, trending, and variance reporting"
+            actions={
                 <div className="flex gap-2">
                     <Button variant="outline">
                         <Download className="h-4 w-4 mr-2" />
@@ -126,7 +123,8 @@ export default function MultiPeriodQuery() {
                         Visualize Trends
                     </Button>
                 </div>
-            </div>
+            }
+        >
 
             {/* Query Builder */}
             <Card>
@@ -277,8 +275,8 @@ export default function MultiPeriodQuery() {
                                                 <td className="text-right p-3 border-r bg-blue-50">
                                                     <div
                                                         className={`font-medium ${account.variance >= 0
-                                                                ? "text-green-600"
-                                                                : "text-red-600"
+                                                            ? "text-green-600"
+                                                            : "text-red-600"
                                                             }`}
                                                     >
                                                         {account.variance >= 0 ? (
@@ -380,6 +378,6 @@ export default function MultiPeriodQuery() {
                     </CardContent>
                 </Card>
             )}
-        </div>
+        </StandardPage>
     );
 }

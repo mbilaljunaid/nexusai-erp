@@ -13,6 +13,7 @@ import { Plus, Link, Unlink, RotateCcw } from "lucide-react";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { useLocation } from "wouter";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function ARReceipts() {
     const { toast } = useToast();
@@ -154,10 +155,10 @@ export default function ARReceipts() {
     ];
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold tracking-tight">AR Receipts Workbench</h1>
-            </div>
+        <StandardPage
+            title="AR Receipts Workbench"
+            description="Manage customer payments and applications"
+        >
 
             <Card>
                 <CardHeader><CardTitle>Record New Receipt</CardTitle></CardHeader>
@@ -205,7 +206,7 @@ export default function ARReceipts() {
             )}
 
             <ViewAccountingModal open={accountingModalOpen} onOpenChange={setAccountingModalOpen} entityId={selectedEntityId} />
-        </div>
+        </StandardPage>
     );
 }
 

@@ -14,6 +14,7 @@ import { api } from "@/lib/api";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 export function LotSerialManager() {
     const { toast } = useToast();
@@ -130,13 +131,10 @@ export function LotSerialManager() {
     ];
 
     return (
-        <div className="space-y-4">
-            <div className="flex justify-between items-center bg-muted/20 p-4 rounded-lg border">
-                <div>
-                    <h2 className="text-xl font-bold tracking-tight">Lot & Serial Operations</h2>
-                    <p className="text-sm text-muted-foreground">Manage granular inventory tracking and expiration.</p>
-                </div>
-
+        <StandardPage
+            title="Lot & Serial Operations"
+            description="Manage granular inventory tracking and expiration."
+            actions={
                 <div className="flex items-center gap-4">
                     <EnterpriseContextSwitcher
                         type="inventory-org"
@@ -186,74 +184,79 @@ export function LotSerialManager() {
                         </DialogContent>
                     </Dialog>
                 </div>
-            </div>
+            }
+        >
+            <div className="space-y-4">
 
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-2 max-w-[400px]">
-                    <TabsTrigger value="lots" className="flex items-center gap-2">
-                        <Barcode className="h-4 w-4" /> Lot Control
-                    </TabsTrigger>
-                    <TabsTrigger value="serials" className="flex items-center gap-2">
-                        <QrCode className="h-4 w-4" /> Serial Tracking
-                    </TabsTrigger>
-                </TabsList>
 
-                <div className="mt-4 flex items-center gap-2 mb-4">
-                    <div className="relative flex-1 max-w-sm">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            placeholder={`Search ${activeTab}...`}
-                            className="pl-8"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
+
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 max-w-[400px]">
+                        <TabsTrigger value="lots" className="flex items-center gap-2">
+                            <Barcode className="h-4 w-4" /> Lot Control
+                        </TabsTrigger>
+                        <TabsTrigger value="serials" className="flex items-center gap-2">
+                            <QrCode className="h-4 w-4" /> Serial Tracking
+                        </TabsTrigger>
+                    </TabsList>
+
+                    <div className="mt-4 flex items-center gap-2 mb-4">
+                        <div className="relative flex-1 max-w-sm">
+                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                            <Input
+                                placeholder={`Search ${activeTab}...`}
+                                className="pl-8"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                            />
+                        </div>
                     </div>
-                </div>
 
-                <TabsContent value="lots" className="mt-0">
-                    <Card>
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-base">Active Lots</CardTitle>
-                            <CardDescription>Expiration and quantity tracking by lot.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <StandardTable
-                                data={lotsData?.data || []}
-                                columns={lotColumns}
-                                isLoading={lotsLoading}
-                                page={lotPage}
-                                pageSize={pageSize}
-                                totalItems={lotsData?.total || 0}
-                                onPageChange={setLotPage}
-                                filterColumn="lotNumber"
-                                filterPlaceholder="Filter lots..."
-                            />
-                        </CardContent>
-                    </Card>
-                </TabsContent>
+                    <TabsContent value="lots" className="mt-0">
+                        <Card>
+                            <CardHeader className="pb-3">
+                                <CardTitle className="text-base">Active Lots</CardTitle>
+                                <CardDescription>Expiration and quantity tracking by lot.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <StandardTable
+                                    data={lotsData?.data || []}
+                                    columns={lotColumns}
+                                    isLoading={lotsLoading}
+                                    page={lotPage}
+                                    pageSize={pageSize}
+                                    totalItems={lotsData?.total || 0}
+                                    onPageChange={setLotPage}
+                                    filterColumn="lotNumber"
+                                    filterPlaceholder="Filter lots..."
+                                />
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
 
-                <TabsContent value="serials" className="mt-0">
-                    <Card>
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-base">Serial Registry</CardTitle>
-                            <CardDescription>Individual unit tracking and lifecycle.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <StandardTable
-                                data={serialsData?.data || []}
-                                columns={serialColumns}
-                                isLoading={serialsLoading}
-                                page={serialPage}
-                                pageSize={pageSize}
-                                totalItems={serialsData?.total || 0}
-                                onPageChange={setSerialPage}
-                                filterColumn="serialNumber"
-                                filterPlaceholder="Filter serials..."
-                            />
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-            </Tabs>
-        </div>
+                    <TabsContent value="serials" className="mt-0">
+                        <Card>
+                            <CardHeader className="pb-3">
+                                <CardTitle className="text-base">Serial Registry</CardTitle>
+                                <CardDescription>Individual unit tracking and lifecycle.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <StandardTable
+                                    data={serialsData?.data || []}
+                                    columns={serialColumns}
+                                    isLoading={serialsLoading}
+                                    page={serialPage}
+                                    pageSize={pageSize}
+                                    totalItems={serialsData?.total || 0}
+                                    onPageChange={setSerialPage}
+                                    filterColumn="serialNumber"
+                                    filterPlaceholder="Filter serials..."
+                                />
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+                </Tabs>
+            </div>
+        </StandardPage>
     );
 }

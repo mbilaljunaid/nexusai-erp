@@ -30,6 +30,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface ReportDefinition {
     id: string;
@@ -141,19 +142,12 @@ export default function FinancialReports() {
     };
 
     return (
-        <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-in fade-in duration-500">
-            {/* Header Section */}
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-700 to-cyan-600 bg-clip-text text-transparent">
-                        Financial Reporting Center
-                    </h1>
-                    <div className="flex items-center gap-2 mt-1">
-                        <span className="text-muted-foreground text-sm">Enterprise Financial Intelligence & Analysis</span>
-                        <LedgerContextBadge />
-                    </div>
-                </div>
-                <div className="flex gap-2">
+        <StandardPage
+            title="Financial Reporting Center"
+            description="Enterprise Financial Intelligence & Analysis"
+            actions={
+                <div className="flex gap-2 items-center">
+                    <LedgerContextBadge />
                     <Button variant="secondary" onClick={() => setIsAnalysisOpen(true)}>
                         <TrendingUp className="mr-2 h-4 w-4" /> Analyze Variance
                     </Button>
@@ -166,7 +160,8 @@ export default function FinancialReports() {
                         <Download className="mr-2 h-4 w-4" /> Export Excel
                     </Button>
                 </div>
-            </div>
+            }
+        >
 
             {/* Metric Cards (Quick Stats) */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -429,7 +424,7 @@ export default function FinancialReports() {
                     </div>
                 </SheetContent>
             </Sheet >
-        </div >
+        </StandardPage>
     );
 }
 

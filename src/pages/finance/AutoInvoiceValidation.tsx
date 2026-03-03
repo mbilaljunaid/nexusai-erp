@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { CheckCircle2, AlertTriangle, Play, Download, RefreshCw, FileText } from 'lucide-react';
+import { StandardPage } from '@/components/layout/StandardPage';
 
 interface AutoInvRun {
     id: string;
@@ -69,14 +70,10 @@ export default function AutoInvoiceValidation() {
     };
 
     return (
-        <div className="aiv-container">
-            <div className="aiv-header">
-                <div>
-                    <h1 className="aiv-title">AutoInvoice Validation</h1>
-                    <p className="aiv-sub">Oracle AR AutoInvoice — validate billing lines before AR import</p>
-                </div>
-            </div>
-
+        <StandardPage
+            title="AutoInvoice Validation"
+            description="Oracle AR AutoInvoice — validate billing lines before AR import"
+        >
             <div className="aiv-layout">
                 {/* Left: Run Form + History */}
                 <div className="aiv-left">
@@ -194,11 +191,7 @@ export default function AutoInvoiceValidation() {
             </div>
 
             <style>{`
-                .aiv-container { padding: 24px; max-width: 1400px; margin: 0 auto; font-family: 'Inter', sans-serif; }
-                .aiv-header { margin-bottom: 20px; }
-                .aiv-title { font-size: 22px; font-weight: 700; color: #111827; margin: 0; }
-                .aiv-sub { font-size: 13px; color: #6b7280; margin: 4px 0 0; }
-                .aiv-layout { display: grid; grid-template-columns: 340px 1fr; gap: 20px; }
+                .aiv-layout { display: grid; grid-template-columns: 340px 1fr; gap: 20px; font-family: 'Inter', sans-serif; }
                 .aiv-left { display: flex; flex-direction: column; gap: 16px; }
                 .run-form { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; }
                 .rf-title { font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 12px; }
@@ -247,6 +240,6 @@ export default function AutoInvoiceValidation() {
                 .all-pass { display: flex; align-items: center; gap: 10px; padding: 24px; color: #059669; font-size: 14px; font-weight: 600; }
                 .import-success { display: flex; align-items: center; gap: 6px; color: #7c3aed; font-size: 12px; margin-top: 10px; padding: 8px 12px; background: #f3e8ff; border-radius: 6px; }
             `}</style>
-        </div>
+        </StandardPage>
     );
 }

@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Calculator, TrendingUp, TrendingDown, FileCheck, RefreshCw } from 'lucide-react';
+import { StandardPage } from '@/components/layout/StandardPage';
 
 interface TaxProvision {
     id: string;
@@ -272,7 +273,8 @@ export default function TaxProvisionWorkbench() {
                 .prov-status.reviewed { background: #fef3c7; color: #d97706; }
                 .prov-status.filed { background: #d1fae5; color: #059669; }
             `}</style>
-        </div>
+        </style>
+        </StandardPage >
     );
 }
 

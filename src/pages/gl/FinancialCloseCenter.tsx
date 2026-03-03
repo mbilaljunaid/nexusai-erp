@@ -10,19 +10,17 @@ import EliminationRules from "./EliminationRules";
 import { Button } from "@/components/ui/button";
 import { Calendar, BarChart3, Settings, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function FinancialCloseCenter() {
     const [activeTab, setActiveTab] = useState("overview");
 
     return (
         <ModuleLayout sidebar={<FinanceSidebar />}>
-            <div className="p-6 space-y-6">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Financial Close Center</h1>
-                    <p className="text-muted-foreground mt-2">
-                        Centralized hub for period close orchestration, consolidation, and financial reporting.
-                    </p>
-                </div>
+            <StandardPage
+                title="Financial Close Center"
+                description="Centralized hub for period close orchestration, consolidation, and financial reporting."
+            >
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <Card className="bg-gradient-to-br from-indigo-50 to-white border-indigo-100">
@@ -100,7 +98,7 @@ export default function FinancialCloseCenter() {
                         <EliminationRules />
                     </TabsContent>
                 </Tabs>
-            </div>
+            </StandardPage>
         </ModuleLayout>
     );
 }

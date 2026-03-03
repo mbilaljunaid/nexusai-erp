@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 type BankAccount = {
     id: string;
@@ -71,20 +72,18 @@ export default function TreasuryBankAccounts() {
     };
 
     return (
-        <div className="p-6 space-y-6 max-w-[1400px] mx-auto">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Treasury Bank Accounts</h1>
-                    <p className="text-muted-foreground mt-2">Manage internal bank accounts, SWIFT connectivity, and balances.</p>
-                </div>
+        <StandardPage
+            title="Treasury Bank Accounts"
+            description="Manage internal bank accounts, SWIFT connectivity, and balances."
+            actions={
                 <div className="space-x-2">
                     <Button onClick={() => setCreateDialogOpen(true)}>
                         <Plus className="h-4 w-4 mr-2" />
                         Create Account
                     </Button>
                 </div>
-            </div>
-
+            }
+        >
             <div className="grid grid-cols-1 gap-6">
                 <Card>
                     <CardHeader>
@@ -218,6 +217,6 @@ export default function TreasuryBankAccounts() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

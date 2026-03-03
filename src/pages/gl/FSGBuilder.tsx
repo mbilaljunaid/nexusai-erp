@@ -13,6 +13,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function FSGBuilder() {
     const { toast } = useToast();
@@ -140,16 +141,11 @@ export default function FSGBuilder() {
     });
 
     return (
-        <div className="p-6 max-w-[1200px] mx-auto space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Financial Report Builder</h1>
-                    <div className="flex items-center gap-2 mt-1">
-                        <span className="text-muted-foreground">Configure FSG Row Sets, Column Sets, and Report Definitions.</span>
-                        <LedgerContextBadge />
-                    </div>
-                </div>
-            </div>
+        <StandardPage
+            title="Financial Report Builder"
+            description="Configure FSG Row Sets, Column Sets, and Report Definitions."
+            actions={<LedgerContextBadge />}
+        >
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
                 <TabsList>
@@ -454,6 +450,6 @@ export default function FSGBuilder() {
                 </TabsContent>
 
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

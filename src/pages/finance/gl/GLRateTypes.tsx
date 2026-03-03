@@ -1,17 +1,11 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit2, Trash2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -64,65 +58,55 @@ export default function GLRateTypes() {
     createMutation.mutate(formData);
   };
 
-  return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">GL Rate Types</h1>
-          <div className="flex items-center gap-2 text-muted-foreground mt-2">
-            Manage global exchange rate types
-          </div>
+  const columns: Column<any>[] = [
+    { header: "Rate Type", accessorKey: "rateType", className: "font-medium" },
+    { header: "Description", accessorKey: "description" },
+    {
+      header: "Status",
+      accessorKey: "isActive",
+      cell: (row) => (
+        <Badge variant={row.isActive ? "default" : "secondary"}>
+          {row.isActive ? "Active" : "Inactive"}
+        </Badge>
+      )
+    },
+    {
+      header: "Created",
+      accessorKey: "createdAt",
+      cell: (row) => row.createdAt ? format(new Date(row.createdAt), "MMM d, yyyy") : "N/A"
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      className: "text-right",
+      cell: (row) => (
+        <div className="flex justify-end">
+          <Button variant="ghost" size="icon">
+            <Edit2 className="h-4 w-4" />
+          </Button>
         </div>
-        <Button onClick={() => setIsFormOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Rate Type
-        </Button>
-      </div>
+      )
+    }
+  ];
 
-      <div className="bg-white rounded-lg border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Rate Type</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Created</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center py-8">Loading...</TableCell>
-              </TableRow>
-            ) : !rateTypes || rateTypes.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                  No rate types configured.
-                </TableCell>
-              </TableRow>
-            ) : (
-              rateTypes.map((rt: any) => (
-                <TableRow key={rt.id}>
-                  <TableCell className="font-medium">{rt.rateType}</TableCell>
-                  <TableCell>{rt.description}</TableCell>
-                  <TableCell>
-                    <Badge variant={rt.isActive ? "default" : "secondary"}>
-                      {rt.isActive ? "Active" : "Inactive"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{rt.createdAt ? format(new Date(rt.createdAt), "MMM d, yyyy") : "N/A"}</TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="ghost" size="icon">
-                      <Edit2 className="h-4 w-4" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+  return (
+    <StandardPage
+      title="GL Rate Types"
+      description="Manage global exchange rate types"
+      actions={
+        <Button onClick={() => setIsFormOpen(true)}>
+          <Plus className="h-4 w-4 mr-2" /> Add Rate Type
+        </Button>
+      }
+    >
+
+      <StandardTable
+        data={rateTypes || []}
+        columns={columns}
+        isLoading={isLoading}
+        filterColumn="rateType"
+        filterPlaceholder="Search rate types..."
+      />
 
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent>
@@ -158,6 +142,6 @@ export default function GLRateTypes() {
           </form>
         </DialogContent>
       </Dialog>
-    </div>
+    </StandardPage>
   );
 }

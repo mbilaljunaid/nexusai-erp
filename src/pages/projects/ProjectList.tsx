@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, TrendingUp } from "lucide-react";
 import { Link } from "wouter";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from '@/components/enterprise/EnterpriseContextSwitcher';
+import { StandardPage } from '@/components/layout/StandardPage';
 
 interface Project {
     id: string;
@@ -118,22 +119,27 @@ export default function ProjectList() {
     ];
 
     return (
-        <div className="space-y-3">
-            <div className="flex justify-end">
+        <StandardPage
+            title="Project List"
+            description="View and manage projects in the portfolio"
+            actions={
                 <EnterpriseContextSwitcher
                     type="business-unit"
                     value={buId}
                     onChange={setBuId}
                 />
+            }
+        >
+            <div className="space-y-4">
+                <StandardTable
+                    data={projects || []}
+                    columns={columns}
+                    keyExtractor={(p) => p.id}
+                    filterColumn="name"
+                    filterPlaceholder="Filter projects..."
+                    isLoading={isLoading}
+                />
             </div>
-            <StandardTable
-                data={projects || []}
-                columns={columns}
-                keyExtractor={(p) => p.id}
-                filterColumn="name"
-                filterPlaceholder="Filter projects..."
-                isLoading={isLoading}
-            />
-        </div>
+        </StandardPage>
     );
 }

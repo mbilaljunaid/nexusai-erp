@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface FSGRow {
     id: string;
@@ -209,14 +210,10 @@ export default function AdvancedFSGDesigner() {
     if (isLoading) return <div>Loading...</div>;
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold">Advanced FSG Designer</h1>
-                    <p className="text-muted-foreground">
-                        Create financial statement generators with formulas and conditional formatting
-                    </p>
-                </div>
+        <StandardPage
+            title="Advanced FSG Designer"
+            description="Create financial statement generators with formulas and conditional formatting"
+            actions={
                 <div className="flex gap-2">
                     <Button
                         variant="outline"
@@ -240,7 +237,8 @@ export default function AdvancedFSGDesigner() {
                         Run Report
                     </Button>
                 </div>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-12 gap-6">
                 {/* Report List */}
@@ -253,8 +251,8 @@ export default function AdvancedFSGDesigner() {
                             <div
                                 key={report.id}
                                 className={`p-3 rounded-lg cursor-pointer border ${selectedReport === report.id
-                                        ? "border-primary bg-primary/5"
-                                        : "border-border hover:bg-accent"
+                                    ? "border-primary bg-primary/5"
+                                    : "border-border hover:bg-accent"
                                     }`}
                                 onClick={() => {
                                     setSelectedReport(report.id);
@@ -669,6 +667,6 @@ export default function AdvancedFSGDesigner() {
                     </Card>
                 </div>
             )}
-        </div>
+        </StandardPage>
     );
 }

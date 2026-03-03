@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
@@ -194,19 +195,16 @@ export default function AutoInvoiceWorkbench() {
     ];
 
     return (
-        <div className="p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-2xl font-bold flex items-center gap-2">
-                        <FileDigit className="w-6 h-6 text-primary" /> AutoInvoice Workbench
-                    </h1>
-                    <p className="text-muted-foreground mt-1">Manage, repair, and import incoming invoice interfaces.</p>
-                </div>
+        <StandardPage
+            title="AutoInvoice Workbench"
+            description="Manage, repair, and import incoming invoice interfaces."
+            actions={
                 <Button onClick={() => importBatch.mutate()} disabled={importBatch.isPending || (newLines.length === 0 && errorLines.length === 0)}>
                     <Play className="w-4 h-4 mr-2" />
                     {importBatch.isPending ? "Processing..." : "Run AutoInvoice Import"}
                 </Button>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-3 gap-4">
                 <Card>
@@ -282,6 +280,6 @@ export default function AutoInvoiceWorkbench() {
                     </Tabs>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

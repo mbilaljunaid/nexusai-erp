@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Save, Settings2, ShieldCheck, Link as LinkIcon, AlertCircle, PlayCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function ElementConfiguration() {
     const [selectedTab, setSelectedTab] = useState("elements");
@@ -25,12 +26,10 @@ export default function ElementConfiguration() {
     ];
 
     return (
-        <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500 pb-12 p-8 max-w-7xl mx-auto">
-            <div className="flex justify-between items-end">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Payroll Elements Configuration</h1>
-                    <p className="text-muted-foreground mt-1 text-lg">Define earnings, deductions, calculation rules, and eligibility profiles.</p>
-                </div>
+        <StandardPage
+            title="Payroll Elements Configuration"
+            description="Define earnings, deductions, calculation rules, and eligibility profiles."
+            actions={
                 <div className="flex gap-3">
                     <Button variant="outline" className="border-teal-500/20 text-teal-600 hover:bg-teal-500/5">
                         <PlayCircle className="h-4 w-4 mr-2" /> Simulate Calculation
@@ -42,8 +41,8 @@ export default function ElementConfiguration() {
                         <Plus className="h-4 w-4 mr-2" /> Create Element
                     </Button>
                 </div>
-            </div>
-
+            }
+        >
             <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
                 <TabsList className="bg-zinc-100/50 dark:bg-zinc-800/50 p-1 grid grid-cols-4 md:w-[600px]">
                     <TabsTrigger value="elements" className="flex items-center gap-2">
@@ -255,6 +254,6 @@ export default function ElementConfiguration() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

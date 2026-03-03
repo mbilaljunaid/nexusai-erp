@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { IconNavigation } from "@/components/IconNavigation";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 
+import { StandardPage } from "@/components/layout/StandardPage";
+
 export default function PurchaseOrders() {
   const [activeNav, setActiveNav] = useState("list");
   const { data: pos = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/purchase-orders"] });
@@ -33,12 +35,10 @@ export default function PurchaseOrders() {
   };
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Purchase Orders</h1>
-        <p className="text-muted-foreground">Create, track, and manage purchase orders with vendors</p>
-      </div>
-
+    <StandardPage
+      title="Purchase Orders"
+      description="Create, track, and manage purchase orders with vendors"
+    >
       <IconNavigation items={navigationItems} activeId={activeNav} onSelect={setActiveNav} />
 
       {activeNav === "list" && (
@@ -163,6 +163,6 @@ export default function PurchaseOrders() {
           </CardContent>
         </Card>
       )}
-    </div>
+    </StandardPage>
   );
 }

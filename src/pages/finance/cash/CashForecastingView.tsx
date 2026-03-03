@@ -21,8 +21,8 @@ import {
     Legend,
     LineChart,
     Line
-} from "recharts";
 import { TrendingUp, TrendingDown, DollarSign } from "lucide-react";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 interface ForecastData {
     date: string;
@@ -80,15 +80,10 @@ export default function CashForecastingView() {
     }), { totalReceipts: 0, totalPayments: 0, netCashFlow: 0, endingBalance: 0 });
 
     return (
-        <div className="space-y-6 p-6">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold">Cash Forecasting</h1>
-                    <p className="text-muted-foreground mt-1">
-                        Project cash flow and analyze scenarios
-                    </p>
-                </div>
+        <StandardPage
+            title="Cash Forecasting"
+            description="Project cash flow and analyze scenarios"
+            actions={
                 <div className="flex gap-3">
                     <Select value={selectedPeriod} onValueChange={(v: any) => setSelectedPeriod(v)}>
                         <SelectTrigger className="w-32">
@@ -101,139 +96,141 @@ export default function CashForecastingView() {
                         </SelectContent>
                     </Select>
                 </div>
+            }
+        >
+            <div className="space-y-6">
+                {/* Summary Metrics */}
+                {summary && (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <Card>
+                            <CardContent className="pt-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">Total Receipts</p>
+                                        <p className="text-2xl font-bold text-green-600">
+                                            {formatCurrency(summary.totalReceipts)}
+                                        </p>
+                                    </div>
+                                    <TrendingUp className="h-8 w-8 text-green-600" />
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardContent className="pt-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">Total Payments</p>
+                                        <p className="text-2xl font-bold text-red-600">
+                                            {formatCurrency(summary.totalPayments)}
+                                        </p>
+                                    </div>
+                                    <TrendingDown className="h-8 w-8 text-red-600" />
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardContent className="pt-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">Net Cash Flow</p>
+                                        <p className={`text-2xl font-bold ${summary.netCashFlow >= 0 ? "text-green-600" : "text-red-600"
+                                            }`}>
+                                            {formatCurrency(summary.netCashFlow)}
+                                        </p>
+                                    </div>
+                                    <DollarSign className="h-8 w-8 text-muted-foreground" />
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardContent className="pt-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">Ending Balance</p>
+                                        <p className="text-2xl font-bold">
+                                            {formatCurrency(summary.endingBalance)}
+                                        </p>
+                                    </div>
+                                    <DollarSign className="h-8 w-8 text-blue-600" />
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                )}
+
+                {/* Scenario Tabs */}
+                <Tabs value={selectedScenario} onValueChange={setSelectedScenario}>
+                    <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="best">Best Case</TabsTrigger>
+                        <TabsTrigger value="expected">Expected</TabsTrigger>
+                        <TabsTrigger value="worst">Worst Case</TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value={selectedScenario} className="space-y-4 mt-6">
+                        {/* Cash Flow Waterfall Chart */}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Cash Flow Projection</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                {isLoading ? (
+                                    <div className="h-80 bg-muted animate-pulse rounded" />
+                                ) : (
+                                    <ResponsiveContainer width="100%" height={350}>
+                                        <BarChart data={currentScenario?.data || []}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="date" tickFormatter={formatDate} fontSize={12} />
+                                            <YAxis tickFormatter={formatCurrency} fontSize={12} />
+                                            <Tooltip
+                                                formatter={(value: number) => formatCurrency(value)}
+                                                labelFormatter={formatDate}
+                                            />
+                                            <Legend />
+                                            <Bar dataKey="receipts" fill="#10b981" name="Receipts" />
+                                            <Bar dataKey="payments" fill="#ef4444" name="Payments" />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                )}
+                            </CardContent>
+                        </Card>
+
+                        {/* Balance Trend */}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Projected Balance Trend</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                {isLoading ? (
+                                    <div className="h-64 bg-muted animate-pulse rounded" />
+                                ) : (
+                                    <ResponsiveContainer width="100%" height={250}>
+                                        <LineChart data={currentScenario?.data || []}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="date" tickFormatter={formatDate} fontSize={12} />
+                                            <YAxis tickFormatter={formatCurrency} fontSize={12} />
+                                            <Tooltip
+                                                formatter={(value: number) => formatCurrency(value)}
+                                                labelFormatter={formatDate}
+                                            />
+                                            <Line
+                                                type="monotone"
+                                                dataKey="endingBalance"
+                                                stroke="#3b82f6"
+                                                strokeWidth={3}
+                                                name="Ending Balance"
+                                                dot={{ r: 4 }}
+                                            />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+                </Tabs>
             </div>
-
-            {/* Summary Metrics */}
-            {summary && (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card>
-                        <CardContent className="pt-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm text-muted-foreground">Total Receipts</p>
-                                    <p className="text-2xl font-bold text-green-600">
-                                        {formatCurrency(summary.totalReceipts)}
-                                    </p>
-                                </div>
-                                <TrendingUp className="h-8 w-8 text-green-600" />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardContent className="pt-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm text-muted-foreground">Total Payments</p>
-                                    <p className="text-2xl font-bold text-red-600">
-                                        {formatCurrency(summary.totalPayments)}
-                                    </p>
-                                </div>
-                                <TrendingDown className="h-8 w-8 text-red-600" />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardContent className="pt-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm text-muted-foreground">Net Cash Flow</p>
-                                    <p className={`text-2xl font-bold ${summary.netCashFlow >= 0 ? "text-green-600" : "text-red-600"
-                                        }`}>
-                                        {formatCurrency(summary.netCashFlow)}
-                                    </p>
-                                </div>
-                                <DollarSign className="h-8 w-8 text-muted-foreground" />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardContent className="pt-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm text-muted-foreground">Ending Balance</p>
-                                    <p className="text-2xl font-bold">
-                                        {formatCurrency(summary.endingBalance)}
-                                    </p>
-                                </div>
-                                <DollarSign className="h-8 w-8 text-blue-600" />
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-            )}
-
-            {/* Scenario Tabs */}
-            <Tabs value={selectedScenario} onValueChange={setSelectedScenario}>
-                <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="best">Best Case</TabsTrigger>
-                    <TabsTrigger value="expected">Expected</TabsTrigger>
-                    <TabsTrigger value="worst">Worst Case</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value={selectedScenario} className="space-y-4 mt-6">
-                    {/* Cash Flow Waterfall Chart */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Cash Flow Projection</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            {isLoading ? (
-                                <div className="h-80 bg-muted animate-pulse rounded" />
-                            ) : (
-                                <ResponsiveContainer width="100%" height={350}>
-                                    <BarChart data={currentScenario?.data || []}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="date" tickFormatter={formatDate} fontSize={12} />
-                                        <YAxis tickFormatter={formatCurrency} fontSize={12} />
-                                        <Tooltip
-                                            formatter={(value: number) => formatCurrency(value)}
-                                            labelFormatter={formatDate}
-                                        />
-                                        <Legend />
-                                        <Bar dataKey="receipts" fill="#10b981" name="Receipts" />
-                                        <Bar dataKey="payments" fill="#ef4444" name="Payments" />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            )}
-                        </CardContent>
-                    </Card>
-
-                    {/* Balance Trend */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Projected Balance Trend</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            {isLoading ? (
-                                <div className="h-64 bg-muted animate-pulse rounded" />
-                            ) : (
-                                <ResponsiveContainer width="100%" height={250}>
-                                    <LineChart data={currentScenario?.data || []}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="date" tickFormatter={formatDate} fontSize={12} />
-                                        <YAxis tickFormatter={formatCurrency} fontSize={12} />
-                                        <Tooltip
-                                            formatter={(value: number) => formatCurrency(value)}
-                                            labelFormatter={formatDate}
-                                        />
-                                        <Line
-                                            type="monotone"
-                                            dataKey="endingBalance"
-                                            stroke="#3b82f6"
-                                            strokeWidth={3}
-                                            name="Ending Balance"
-                                            dot={{ r: 4 }}
-                                        />
-                                    </LineChart>
-                                </ResponsiveContainer>
-                            )}
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-            </Tabs>
-        </div>
+        </StandardPage>
     );
 }

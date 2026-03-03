@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-
+import { StandardPage } from "@/components/layout/StandardPage";
 interface NineBoxEntry { employee_id: string; performance: number; potential: number; box_label: string; assessed_by: string; notes: string; }
 
 const BOX_CONFIG: Record<string, { bg: string; border: string; label: string }> = {
@@ -40,18 +40,17 @@ export default function NineBoxGrid() {
     const boxEntries = (perf: number, pot: number) => grid.filter(e => e.performance === perf && e.potential === pot);
 
     return (
-        <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, alignItems: 'flex-end' }}>
-                <div>
-                    <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>Nine-Box Talent Grid</h1>
-                    <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Performance × Potential · Cascading goal alignment · GDPR-compliant</p>
-                </div>
+        <StandardPage
+            title="Nine-Box Talent Grid"
+            description="Performance × Potential · Cascading goal alignment · GDPR-compliant"
+            actions={
                 <div style={{ display: 'flex', gap: 8 }}>
                     <input value={period} onChange={e => setPeriod(e.target.value)} placeholder="YYYY" style={{ padding: '6px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12, width: 80 }} aria-label="Year" />
                     <button onClick={() => setShowAdd(true)} style={{ padding: '6px 12px', background: '#7c3aed', color: '#fff', border: 'none', borderRadius: 8, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>+ Add Assessment</button>
                     <button onClick={() => purgeMut.mutate()} style={{ padding: '6px 12px', background: '#f3f4f6', color: '#6b7280', border: 'none', borderRadius: 8, fontSize: 11, cursor: 'pointer' }} title="GDPR purge expired records">🔒 GDPR Purge</button>
                 </div>
-            </div>
+            }
+        >
 
             {showAdd && (
                 <div style={{ background: '#faf5ff', border: '1px solid #e9d5ff', borderRadius: 10, padding: 14, marginBottom: 16 }}>
@@ -137,6 +136,6 @@ export default function NineBoxGrid() {
                     </tbody>
                 </table>
             </div>
-        </div>
+        </StandardPage>
     );
 }

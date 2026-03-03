@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2, Plus, ArrowRightLeft } from "lucide-react";
 import { CodeCombinationPicker } from "@/components/gl/CodeCombinationPicker";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 type IntercompanyRule = {
     id: string;
@@ -95,16 +96,15 @@ export default function IntercompanyRules() {
     ];
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Intercompany Rules</h2>
-                    <p className="text-muted-foreground">Configure manual and automatic balancing rules between legal entities.</p>
-                </div>
+        <StandardPage
+            title="Intercompany Rules"
+            description="Configure manual and automatic balancing rules between legal entities."
+            actions={
                 <Button onClick={() => setIsCreateOpen(true)}>
                     <Plus className="mr-2 h-4 w-4" /> Add Rule
                 </Button>
-            </div>
+            }
+        >
 
             <Card>
                 <CardContent className="p-0">
@@ -228,6 +228,6 @@ export default function IntercompanyRules() {
                     </div>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

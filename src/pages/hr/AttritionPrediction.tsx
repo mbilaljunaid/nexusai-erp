@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { TrendingDown, AlertTriangle, User } from 'lucide-react';
-
+import { StandardPage } from "@/components/layout/StandardPage";
 interface RiskScore {
     id: string; employee_id: string; risk_score: number; risk_band: string;
     tenure_months: number; engagement_score: number; last_promotion_days: number;
@@ -53,15 +53,13 @@ export default function AttritionPrediction() {
     const totalHeadcount = distribution.reduce((s, d) => s + Number(d.count), 0);
 
     return (
-        <div style={{ padding: 24, maxWidth: 1400, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-                <div>
-                    <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>Attrition Risk Prediction</h1>
-                    <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>SHAP-explained risk factors · Flight risk scoring · Retention signals</p>
-                </div>
+        <StandardPage
+            title="Attrition Risk Prediction"
+            description="SHAP-explained risk factors · Flight risk scoring · Retention signals"
+            actions={
                 <button onClick={() => setShowScore(true)} style={{ padding: '8px 14px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>+ Score Employee</button>
-            </div>
-
+            }
+        >
             {/* Distribution KPIs */}
             <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
                 {['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'].map(band => {
@@ -167,6 +165,6 @@ export default function AttritionPrediction() {
                     </div>
                 )}
             </div>
-        </div>
+        </StandardPage>
     );
 }

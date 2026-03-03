@@ -16,6 +16,7 @@ import { Plus, Network } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { GlValueSet, GlSegmentValue, GlSegmentHierarchy } from "@/types/erp-types";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 // Helper to build tree structure
 type TreeNode = GlSegmentValue & { children: TreeNode[] };
@@ -118,15 +119,10 @@ export default function HierarchyManager() {
     const allValues = values;
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Hierarchy Manager</h1>
-                    <p className="text-muted-foreground mt-2">
-                        Define parent-child relationships for account rollup and reporting.
-                    </p>
-                </div>
-            </div>
+        <StandardPage
+            title="Hierarchy Manager"
+            description="Define parent-child relationships for account rollup and reporting."
+        >
 
             <Card className="bg-slate-50 dark:bg-slate-900">
                 <CardHeader>
@@ -252,6 +248,6 @@ export default function HierarchyManager() {
                     </Card>
                 </div>
             )}
-        </div>
+        </StandardPage>
     );
 }

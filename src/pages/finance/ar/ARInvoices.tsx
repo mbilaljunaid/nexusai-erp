@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { useNexusAI } from "@/contexts/NexusAIContext";
 import { useLocation } from "wouter";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function ARInvoices() {
   const { toast } = useToast();
@@ -413,8 +414,7 @@ export default function ARInvoices() {
       <ViewAccountingModal
         open={accountingModalOpen}
         onOpenChange={setAccountingModalOpen}
-        entityId={selectedEntityId}
       />
-    </div >
+    </StandardPage>
   );
 }

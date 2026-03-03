@@ -22,6 +22,7 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 interface FaAssetWithFinancials extends Omit<FaAsset, 'originalCost' | 'datePlacedInService'> {
     datePlacedInService: string | Date;
@@ -94,69 +95,67 @@ export default function AssetWorkbench() {
     ];
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Fixed Assets</h1>
-                    <p className="text-muted-foreground">
-                        Manage your asset lifecycle, depreciation, and reporting.
-                    </p>
-                </div>
+        <StandardPage
+            title="Fixed Assets"
+            description="Manage your asset lifecycle, depreciation, and reporting."
+            actions={
                 <div className="flex gap-2">
                     <AddAssetDialog />
                 </div>
+            }
+        >
+            <div className="space-y-6">
+                <AssetStatCards stats={stats} isLoading={isLoadingStats} />
+
+                <Tabs defaultValue="register" className="space-y-4">
+                    <TabsList>
+                        <TabsTrigger value="register">Asset Register</TabsTrigger>
+                        <TabsTrigger value="mass-additions">Mass Additions</TabsTrigger>
+                        <TabsTrigger value="reports">Reports</TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="register">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Asset Register</CardTitle>
+                                <CardDescription>
+                                    A list of all assets in the Corporate Book.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <StandardTable
+                                    data={assets}
+                                    columns={columns}
+                                    isLoading={isLoadingAssets}
+                                    page={page}
+                                    pageSize={pageSize}
+                                    totalItems={totalCount}
+                                    onPageChange={setPage}
+                                    keyExtractor={(i) => i.id}
+                                />
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+
+                    <TabsContent value="mass-additions">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Mass Additions</CardTitle>
+                                <CardDescription>
+                                    Review and post assets imported from Accounts Payable.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <MassAdditionsTable />
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+
+                    <TabsContent value="reports">
+                        <AssetRollForwardReport />
+                    </TabsContent>
+                </Tabs>
             </div>
-
-            <AssetStatCards stats={stats} isLoading={isLoadingStats} />
-
-            <Tabs defaultValue="register" className="space-y-4">
-                <TabsList>
-                    <TabsTrigger value="register">Asset Register</TabsTrigger>
-                    <TabsTrigger value="mass-additions">Mass Additions</TabsTrigger>
-                    <TabsTrigger value="reports">Reports</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="register">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Asset Register</CardTitle>
-                            <CardDescription>
-                                A list of all assets in the Corporate Book.
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <StandardTable
-                                data={assets}
-                                columns={columns}
-                                isLoading={isLoadingAssets}
-                                page={page}
-                                pageSize={pageSize}
-                                totalItems={totalCount}
-                                onPageChange={setPage}
-                                keyExtractor={(i) => i.id}
-                            />
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-
-                <TabsContent value="mass-additions">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Mass Additions</CardTitle>
-                            <CardDescription>
-                                Review and post assets imported from Accounts Payable.
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <MassAdditionsTable />
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-
-                <TabsContent value="reports">
-                    <AssetRollForwardReport />
-                </TabsContent>
-            </Tabs>
-        </div>
+        </StandardPage>
     );
 }

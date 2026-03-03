@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { Link as RouterLink } from "wouter";
 import { useNexusAI } from "@/contexts/NexusAIContext";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 const configTiles = [
     {
@@ -179,16 +180,10 @@ const configTiles = [
 export default function ConfigurationHub() {
     const { open, sendMessage } = useNexusAI();
     return (
-        <div className="p-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="flex flex-col gap-2">
-                <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 flex items-center gap-3">
-                    <Settings className="h-10 w-10 text-primary animate-spin-slow" />
-                    Configuration & Setup
-                </h1>
-                <p className="text-lg text-slate-500 max-w-2xl">
-                    Comprehensive enterprise setup for the General Ledger. Achieve 100% parity with Oracle Fusion configuration standards.
-                </p>
-            </div>
+        <StandardPage
+            title="Configuration & Setup"
+            description="Comprehensive enterprise setup for the General Ledger. Achieve 100% parity with Oracle Fusion configuration standards."
+        >
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {configTiles.map((tile, idx) => (
@@ -216,6 +211,6 @@ export default function ConfigurationHub() {
                 ))}
             </div>
 
-        </div>
+        </StandardPage>
     );
 }

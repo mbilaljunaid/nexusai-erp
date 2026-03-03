@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Calendar, Zap, Send, BarChart2, Users } from 'lucide-react';
 import { useEnterpriseStore } from '@/lib/enterpriseStore';
-
+import { StandardPage } from "@/components/layout/StandardPage";
 interface Shift {
     id: string;
     employee_id: string;
@@ -86,12 +86,10 @@ export default function PredictiveScheduler() {
     const maxDemand = coverage?.forecasted ? Math.max(...coverage.forecasted.map(f => f.required_headcount), 1) : 1;
 
     return (
-        <div className="ps-container">
-            <div className="ps-header">
-                <div>
-                    <h1 className="ps-title">Predictive Scheduler</h1>
-                    <p className="ps-sub">AI-driven demand forecasting + constraint-based shift scheduling</p>
-                </div>
+        <StandardPage
+            title="Predictive Scheduler"
+            description="AI-driven demand forecasting + constraint-based shift scheduling"
+            actions={
                 <div className="ps-ctrl">
                     <div className="ps-loc">
                         <label className="ll">Location</label>
@@ -106,7 +104,8 @@ export default function PredictiveScheduler() {
                         <Send size={13} /> {publishMutation.isPending ? 'Publishing…' : 'Publish'}
                     </button>
                 </div>
-            </div>
+            }
+        >
 
             <div className="tab-bar">
                 {(['schedule', 'forecast', 'generate'] as const).map(t => (
@@ -219,10 +218,7 @@ export default function PredictiveScheduler() {
             )}
 
             <style>{`
-                .ps-container { padding: 24px; max-width: 1400px; margin: 0 auto; font-family: 'Inter', sans-serif; }
-                .ps-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-                .ps-title { font-size: 22px; font-weight: 700; color: #111827; margin: 0; }
-                .ps-sub { font-size: 13px; color: #6b7280; margin: 4px 0 0; }
+                .ps-container { font-family: 'Inter', sans-serif; }
                 .ps-ctrl { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
                 .ps-loc, .ps-wk { display: flex; flex-direction: column; gap: 3px; }
                 .ll { font-size: 10px; font-weight: 600; color: #374151; }
@@ -271,6 +267,6 @@ export default function PredictiveScheduler() {
                 .gen-btn:disabled { background: #9ca3af; }
                 .gen-result { margin-top: 12px; padding: 10px 14px; background: #d1fae5; color: #059669; border-radius: 8px; font-size: 12px; font-weight: 600; }
             `}</style>
-        </div>
+        </StandardPage>
     );
 }

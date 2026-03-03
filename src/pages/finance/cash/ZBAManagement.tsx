@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { PlayCircle, Settings, History, TrendingDown } from "lucide-react";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 interface ZBAPool {
     id: string;
@@ -95,15 +96,10 @@ export default function ZBAManagement() {
     };
 
     return (
-        <div className="space-y-6 p-6">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold">Zero-Based Accounting (ZBA)</h1>
-                    <p className="text-muted-foreground mt-1">
-                        Manage ZBA pools and execute automated cash sweeps
-                    </p>
-                </div>
+        <StandardPage
+            title="Zero-Based Accounting (ZBA)"
+            description="Manage ZBA pools and execute automated cash sweeps"
+            actions={
                 <Button
                     onClick={() => executeSweepsMutation.mutate()}
                     disabled={executeSweepsMutation.isPending || pools.length === 0}
@@ -112,131 +108,134 @@ export default function ZBAManagement() {
                     <PlayCircle className="mr-2 h-5 w-5" />
                     {executeSweepsMutation.isPending ? "Executing..." : "Execute All Sweeps"}
                 </Button>
-            </div>
+            }
+        >
+            <div className="space-y-6">
 
-            {/* Info Card */}
-            <Card className="border-purple-500 bg-purple-50 dark:bg-purple-950/20">
-                <CardContent className="pt-6">
-                    <p className="text-sm text-purple-900 dark:text-purple-100">
-                        <strong>Zero-Based Accounting (ZBA)</strong> automatically transfers funds between subsidiary
-                        accounts and a master account to maintain target balances. This optimizes cash utilization
-                        and reduces idle balances.
-                    </p>
-                </CardContent>
-            </Card>
-
-            {/* ZBA Pools */}
-            <Card>
-                <CardHeader>
-                    <div className="flex items-center justify-between">
-                        <CardTitle>ZBA Pools</CardTitle>
-                        <Button variant="outline" size="sm">
-                            <Settings className="mr-2 h-4 w-4" />
-                            Configure Pool
-                        </Button>
-                    </div>
-                </CardHeader>
-                <CardContent>
-                    {poolsLoading ? (
-                        <div className="space-y-3">
-                            {[1, 2].map(i => (
-                                <div key={i} className="h-32 bg-muted animate-pulse rounded" />
-                            ))}
-                        </div>
-                    ) : pools.length === 0 ? (
-                        <div className="text-center py-12 text-muted-foreground">
-                            <TrendingDown className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                            <p>No ZBA pools configured</p>
-                            <p className="text-sm mt-1">Configure a pool to start automated cash sweeps</p>
-                        </div>
-                    ) : (
-                        <div className="space-y-4">
-                            {pools.map((pool) => (
-                                <div
-                                    key={pool.id}
-                                    className="p-4 border rounded-lg hover:bg-muted/50 transition-colors"
-                                >
-                                    <div className="flex items-start justify-between mb-3">
-                                        <div>
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <h3 className="font-semibold text-lg">{pool.name}</h3>
-                                                <Badge variant={pool.status === "active" ? "default" : "secondary"}>
-                                                    {pool.status}
-                                                </Badge>
-                                            </div>
-                                            <p className="text-sm text-muted-foreground">
-                                                Master Account: {pool.masterAccountName}
-                                            </p>
-                                        </div>
-                                        <Button variant="outline" size="sm">
-                                            <PlayCircle className="mr-2 h-4 w-4" />
-                                            Execute Sweep
-                                        </Button>
-                                    </div>
-
-                                    <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t">
-                                        <div>
-                                            <p className="text-sm text-muted-foreground">Target Balance</p>
-                                            <p className="font-semibold text-lg">
-                                                {formatCurrency(pool.targetBalance, pool.currency)}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <p className="text-sm text-muted-foreground">Subsidiary Accounts</p>
-                                            <p className="font-semibold text-lg">{pool.subsidiaryAccounts.length}</p>
-                                        </div>
-                                        <div>
-                                            <p className="text-sm text-muted-foreground">Currency</p>
-                                            <p className="font-semibold text-lg">{pool.currency}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
-
-            {/* Sweep History */}
-            <Card>
-                <CardHeader>
-                    <div className="flex items-center gap-2">
-                        <History className="h-5 w-5" />
-                        <CardTitle>Sweep History</CardTitle>
-                    </div>
-                </CardHeader>
-                <CardContent>
-                    {history.length === 0 ? (
-                        <p className="text-center py-8 text-muted-foreground">
-                            No sweep history available
+                {/* Info Card */}
+                <Card className="border-purple-500 bg-purple-50 dark:bg-purple-950/20">
+                    <CardContent className="pt-6">
+                        <p className="text-sm text-purple-900 dark:text-purple-100">
+                            <strong>Zero-Based Accounting (ZBA)</strong> automatically transfers funds between subsidiary
+                            accounts and a master account to maintain target balances. This optimizes cash utilization
+                            and reduces idle balances.
                         </p>
-                    ) : (
-                        <div className="space-y-3">
-                            {history.slice(0, 10).map((sweep) => (
-                                <div
-                                    key={sweep.id}
-                                    className="flex items-center justify-between p-3 border rounded-lg"
-                                >
-                                    <div className="flex-1">
-                                        <p className="font-medium">{formatDate(sweep.executionDate)}</p>
-                                        <p className="text-sm text-muted-foreground">
-                                            {sweep.accountsProcessed} accounts processed
-                                        </p>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="font-semibold text-lg text-blue-600">
-                                            {formatCurrency(sweep.totalSwept)}
-                                        </p>
-                                        <Badge variant={sweep.status === "completed" ? "default" : "destructive"}>
-                                            {sweep.status}
-                                        </Badge>
-                                    </div>
-                                </div>
-                            ))}
+                    </CardContent>
+                </Card>
+
+                {/* ZBA Pools */}
+                <Card>
+                    <CardHeader>
+                        <div className="flex items-center justify-between">
+                            <CardTitle>ZBA Pools</CardTitle>
+                            <Button variant="outline" size="sm">
+                                <Settings className="mr-2 h-4 w-4" />
+                                Configure Pool
+                            </Button>
                         </div>
-                    )}
-                </CardContent>
-            </Card>
-        </div>
+                    </CardHeader>
+                    <CardContent>
+                        {poolsLoading ? (
+                            <div className="space-y-3">
+                                {[1, 2].map(i => (
+                                    <div key={i} className="h-32 bg-muted animate-pulse rounded" />
+                                ))}
+                            </div>
+                        ) : pools.length === 0 ? (
+                            <div className="text-center py-12 text-muted-foreground">
+                                <TrendingDown className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                                <p>No ZBA pools configured</p>
+                                <p className="text-sm mt-1">Configure a pool to start automated cash sweeps</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-4">
+                                {pools.map((pool) => (
+                                    <div
+                                        key={pool.id}
+                                        className="p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                                    >
+                                        <div className="flex items-start justify-between mb-3">
+                                            <div>
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <h3 className="font-semibold text-lg">{pool.name}</h3>
+                                                    <Badge variant={pool.status === "active" ? "default" : "secondary"}>
+                                                        {pool.status}
+                                                    </Badge>
+                                                </div>
+                                                <p className="text-sm text-muted-foreground">
+                                                    Master Account: {pool.masterAccountName}
+                                                </p>
+                                            </div>
+                                            <Button variant="outline" size="sm">
+                                                <PlayCircle className="mr-2 h-4 w-4" />
+                                                Execute Sweep
+                                            </Button>
+                                        </div>
+
+                                        <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t">
+                                            <div>
+                                                <p className="text-sm text-muted-foreground">Target Balance</p>
+                                                <p className="font-semibold text-lg">
+                                                    {formatCurrency(pool.targetBalance, pool.currency)}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm text-muted-foreground">Subsidiary Accounts</p>
+                                                <p className="font-semibold text-lg">{pool.subsidiaryAccounts.length}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm text-muted-foreground">Currency</p>
+                                                <p className="font-semibold text-lg">{pool.currency}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+
+                {/* Sweep History */}
+                <Card>
+                    <CardHeader>
+                        <div className="flex items-center gap-2">
+                            <History className="h-5 w-5" />
+                            <CardTitle>Sweep History</CardTitle>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        {history.length === 0 ? (
+                            <p className="text-center py-8 text-muted-foreground">
+                                No sweep history available
+                            </p>
+                        ) : (
+                            <div className="space-y-3">
+                                {history.slice(0, 10).map((sweep) => (
+                                    <div
+                                        key={sweep.id}
+                                        className="flex items-center justify-between p-3 border rounded-lg"
+                                    >
+                                        <div className="flex-1">
+                                            <p className="font-medium">{formatDate(sweep.executionDate)}</p>
+                                            <p className="text-sm text-muted-foreground">
+                                                {sweep.accountsProcessed} accounts processed
+                                            </p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="font-semibold text-lg text-blue-600">
+                                                {formatCurrency(sweep.totalSwept)}
+                                            </p>
+                                            <Badge variant={sweep.status === "completed" ? "default" : "destructive"}>
+                                                {sweep.status}
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+            </div>
+        </StandardPage>
     );
 }

@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Plus, DollarSign, Users, Briefcase, FileText, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 interface BillRateSchedule {
     id: string;
@@ -144,13 +145,11 @@ export default function BillRateManager() {
     ];
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-2xl font-bold tracking-tight">Bill Rate Manager</h2>
-                    <p className="text-muted-foreground">Manage revenue rates for projects and labor costing</p>
-                </div>
-                {!selectedSchedule && (
+        <StandardPage
+            title="Bill Rate Manager"
+            description="Manage revenue rates for projects and labor costing"
+            actions={
+                !selectedSchedule ? (
                     <Dialog open={isSchOpen} onOpenChange={setIsSchOpen}>
                         <DialogTrigger asChild>
                             <Button className="bg-blue-600 hover:bg-blue-700">
@@ -172,75 +171,77 @@ export default function BillRateManager() {
                             </div>
                         </DialogContent>
                     </Dialog>
-                )}
-            </div>
+                ) : null
+            }
+        >
+            <div className="space-y-6">
+                {selectedSchedule ? (
+                    <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
+                        <div className="flex items-center gap-4">
+                            <Button variant="outline" size="sm" onClick={() => setSelectedSchedule(null)}>← Back to Schedules</Button>
+                            <h3 className="text-xl font-semibold">{selectedSchedule.name}</h3>
+                            <Badge variant="outline">{selectedSchedule.currencyCode}</Badge>
+                        </div>
 
-            {selectedSchedule ? (
-                <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
-                    <div className="flex items-center gap-4">
-                        <Button variant="outline" size="sm" onClick={() => setSelectedSchedule(null)}>← Back to Schedules</Button>
-                        <h3 className="text-xl font-semibold">{selectedSchedule.name}</h3>
-                        <Badge variant="outline">{selectedSchedule.currencyCode}</Badge>
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between">
+                                <div>
+                                    <CardTitle>Schedule Rates</CardTitle>
+                                    <CardDescription>Define Person, Job, or Expenditure Type specific bill rates</CardDescription>
+                                </div>
+                                <Dialog open={isRateOpen} onOpenChange={setIsRateOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button size="sm"><Plus className="h-4 w-4 mr-2" /> Add Rate</Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader><DialogTitle>Add Bill Rate</DialogTitle></DialogHeader>
+                                        <div className="space-y-4 py-4">
+                                            <div className="space-y-2">
+                                                <Label>Job Title Override</Label>
+                                                <Input placeholder="e.g. Senior Architect" value={rateForm.jobTitle} onChange={(e) => setRateForm({ ...rateForm, jobTitle: e.target.value })} />
+                                            </div>
+                                            <div className="space-y-2 text-center text-xs text-muted-foreground">-- OR --</div>
+                                            <div className="space-y-2">
+                                                <Label>Expenditure Type Override</Label>
+                                                <Select value={rateForm.expenditureTypeId} onValueChange={(v) => setRateForm({ ...rateForm, expenditureTypeId: v })}>
+                                                    <SelectTrigger><SelectValue placeholder="Select type..." /></SelectTrigger>
+                                                    <SelectContent>
+                                                        {expTypes?.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="space-y-2">
+                                                    <Label>Rate ({selectedSchedule.currencyCode})</Label>
+                                                    <Input type="number" placeholder="0.00" value={rateForm.rate} onChange={(e) => setRateForm({ ...rateForm, rate: e.target.value })} />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label>Start Date</Label>
+                                                    <Input type="date" value={rateForm.startDate} onChange={(e) => setRateForm({ ...rateForm, startDate: e.target.value })} />
+                                                </div>
+                                            </div>
+                                            <Button className="w-full" onClick={() => rateMutation.mutate(rateForm)}>Add Rate</Button>
+                                        </div>
+                                    </DialogContent>
+                                </Dialog>
+                            </CardHeader>
+                            <CardContent>
+                                <StandardTable data={rates || []} columns={rateColumns} isLoading={loadingRates} pageSize={10} />
+                            </CardContent>
+                        </Card>
                     </div>
-
+                ) : (
                     <Card>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                            <div>
-                                <CardTitle>Schedule Rates</CardTitle>
-                                <CardDescription>Define Person, Job, or Expenditure Type specific bill rates</CardDescription>
-                            </div>
-                            <Dialog open={isRateOpen} onOpenChange={setIsRateOpen}>
-                                <DialogTrigger asChild>
-                                    <Button size="sm"><Plus className="h-4 w-4 mr-2" /> Add Rate</Button>
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader><DialogTitle>Add Bill Rate</DialogTitle></DialogHeader>
-                                    <div className="space-y-4 py-4">
-                                        <div className="space-y-2">
-                                            <Label>Job Title Override</Label>
-                                            <Input placeholder="e.g. Senior Architect" value={rateForm.jobTitle} onChange={(e) => setRateForm({ ...rateForm, jobTitle: e.target.value })} />
-                                        </div>
-                                        <div className="space-y-2 text-center text-xs text-muted-foreground">-- OR --</div>
-                                        <div className="space-y-2">
-                                            <Label>Expenditure Type Override</Label>
-                                            <Select value={rateForm.expenditureTypeId} onValueChange={(v) => setRateForm({ ...rateForm, expenditureTypeId: v })}>
-                                                <SelectTrigger><SelectValue placeholder="Select type..." /></SelectTrigger>
-                                                <SelectContent>
-                                                    {expTypes?.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label>Rate ({selectedSchedule.currencyCode})</Label>
-                                                <Input type="number" placeholder="0.00" value={rateForm.rate} onChange={(e) => setRateForm({ ...rateForm, rate: e.target.value })} />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label>Start Date</Label>
-                                                <Input type="date" value={rateForm.startDate} onChange={(e) => setRateForm({ ...rateForm, startDate: e.target.value })} />
-                                            </div>
-                                        </div>
-                                        <Button className="w-full" onClick={() => rateMutation.mutate(rateForm)}>Add Rate</Button>
-                                    </div>
-                                </DialogContent>
-                            </Dialog>
+                        <CardHeader>
+                            <CardTitle>Bill Rate Schedules</CardTitle>
+                            <CardDescription>Schedules are linked to projects and tasks to determine revenue and inter-project billing</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <StandardTable data={rates || []} columns={rateColumns} isLoading={loadingRates} pageSize={10} />
+                            <StandardTable data={schedules || []} columns={schColumns} isLoading={loadingSch} pageSize={10} />
                         </CardContent>
                     </Card>
-                </div>
-            ) : (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Bill Rate Schedules</CardTitle>
-                        <CardDescription>Schedules are linked to projects and tasks to determine revenue and inter-project billing</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <StandardTable data={schedules || []} columns={schColumns} isLoading={loadingSch} pageSize={10} />
-                    </CardContent>
-                </Card>
-            )}
-        </div>
+                )}
+            </div>
+        </StandardPage>
     );
 }

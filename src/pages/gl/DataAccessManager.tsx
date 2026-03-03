@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Lock, UserCheck, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function DataAccessManager() {
     const { toast } = useToast();
@@ -67,21 +68,15 @@ export default function DataAccessManager() {
     };
 
     return (
-        <div className="p-8 space-y-6 animate-in fade-in duration-500">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 flex items-center gap-3">
-                        <Lock className="h-8 w-8 text-emerald-600" />
-                        Data Access Sets
-                    </h1>
-                    <p className="text-muted-foreground mt-2">
-                        Define security policies to restrict user access to specific Ledgers or Segment Values.
-                    </p>
-                </div>
+        <StandardPage
+            title="Data Access Sets"
+            description="Define security policies to restrict user access to specific Ledgers or Segment Values."
+            actions={
                 <Button onClick={() => setIsCreateOpen(true)} className="bg-emerald-600 hover:bg-emerald-700">
                     <Shield className="mr-2 h-4 w-4" /> Create Access Set
                 </Button>
-            </div>
+            }
+        >
 
             <div className="grid gap-6">
                 <Card>
@@ -167,6 +162,6 @@ export default function DataAccessManager() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

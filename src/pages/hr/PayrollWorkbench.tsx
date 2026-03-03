@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PlayCircle, CheckCircle2, XCircle, FileText, Download, Globe, DollarSign, Users, RefreshCw } from 'lucide-react';
 import { EnterpriseContextSwitcher, buildScopeHeaders } from '@/components/enterprise/EnterpriseContextSwitcher';
-
+import { StandardPage } from "@/components/layout/StandardPage";
 interface PayrollRun {
     id: string;
     payroll_name: string;
@@ -87,16 +87,15 @@ export default function PayrollWorkbench() {
     const totalEmp = runs.reduce((s, r) => s + Number(r.employee_count ?? 0), 0);
 
     return (
-        <div className="pw-container">
-            <div className="pw-header">
-                <div>
-                    <h1 className="pw-title">Global Payroll Workbench</h1>
-                    <p className="pw-subtitle">Multi-country payroll processing, GL costing & statutory payment files</p>
-                </div>
+        <StandardPage
+            title="Global Payroll Workbench"
+            description="Multi-country payroll processing, GL costing & statutory payment files"
+            actions={
                 <button className="create-run-btn" onClick={() => setShowCreateForm(true)} aria-label="Create payroll run">
                     + Create Run
                 </button>
-            </div>
+            }
+        >
 
             {/* KPI Strip */}
             <div className="pw-kpis">
@@ -215,10 +214,7 @@ export default function PayrollWorkbench() {
             )}
 
             <style>{`
-                .pw-container { padding: 24px; max-width: 1400px; margin: 0 auto; font-family: 'Inter', sans-serif; }
-                .pw-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
-                .pw-title { font-size: 22px; font-weight: 700; color: #111827; margin: 0; }
-                .pw-subtitle { font-size: 13px; color: #6b7280; margin: 4px 0 0; }
+                .pw-container { font-family: 'Inter', sans-serif; }
                 .create-run-btn { padding: 10px 20px; background: linear-gradient(135deg, #1d4ed8, #7c3aed); color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
                 .pw-kpis { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
                 .country-filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
@@ -259,7 +255,7 @@ export default function PayrollWorkbench() {
                 .pw-kpi-val { font-size: 20px; font-weight: 800; }
                 .pw-kpi-lbl { font-size: 11px; color: #6b7280; margin-top: 2px; }
             `}</style>
-        </div>
+        </StandardPage>
     );
 }
 

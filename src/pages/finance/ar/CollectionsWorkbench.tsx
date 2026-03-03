@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/queryClient";
 import { Users, Phone } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function CollectionsWorkbench() {
     const { data: collections } = useQuery({
@@ -12,11 +13,10 @@ export default function CollectionsWorkbench() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div>
-                <h1 className="text-3xl font-bold">Collections Workbench</h1>
-                <p className="text-muted-foreground">Collector assignment, dunning strategy, promise-to-pay</p>
-            </div>
+        <StandardPage
+            title="Collections Workbench"
+            description="Collector assignment, dunning strategy, promise-to-pay"
+        >
 
             <div className="grid grid-cols-4 gap-4">
                 <Card>
@@ -76,6 +76,6 @@ export default function CollectionsWorkbench() {
                     ))}
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

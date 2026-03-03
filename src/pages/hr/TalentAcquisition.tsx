@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/queryClient";
 import { Calendar, Users, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function TalentAcquisition() {
     const { data: pipeline } = useQuery({
@@ -12,17 +13,16 @@ export default function TalentAcquisition() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold">Talent Acquisition Pipeline</h1>
-                    <p className="text-muted-foreground">Recruitment and interview tracking</p>
-                </div>
+        <StandardPage
+            title="Talent Acquisition Pipeline"
+            description="Recruitment and interview tracking"
+            actions={
                 <Button variant="outline">
                     <Download className="h-4 w-4 mr-2" />
                     Export
                 </Button>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-5 gap-4">
                 <Card>
@@ -73,6 +73,6 @@ export default function TalentAcquisition() {
                     ))}
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, Users, Building, MapPin, Contact2 } from "lucide-react";
 import type { ArCustomer, ArCustomerAccount, ArCustomerSite, ArCustomerContact } from "@shared/schema";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function ARCustomers() {
   const { toast } = useToast();
@@ -131,11 +132,10 @@ export default function ARCustomers() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Customer Master (TCA)</h1>
-      </div>
-
+    <StandardPage
+      title="Customer Master (TCA)"
+      description="Manage all customer accounts, sites, and contacts"
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
         {/* Customers (Parties) */}
         <div className="border rounded-lg p-4 bg-card">
@@ -321,6 +321,6 @@ export default function ARCustomers() {
         </div>
 
       </div>
-    </div>
+    </StandardPage>
   );
 }

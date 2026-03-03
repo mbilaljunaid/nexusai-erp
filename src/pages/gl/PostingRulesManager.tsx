@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface AutoPostRule {
     id: string;
@@ -94,13 +95,10 @@ export function PostingRulesManager() {
     };
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-500">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Posting Rules Engine</h1>
-                    <p className="text-muted-foreground">Configure criteria for automated journal posting.</p>
-                </div>
-            </div>
+        <StandardPage
+            title="Posting Rules Engine"
+            description="Configure criteria for automated journal posting."
+        >
 
             <Card>
                 <CardHeader>
@@ -179,6 +177,6 @@ export function PostingRulesManager() {
                     Auto-posting runs securely in the background. Rules are evaluated whenever a journal batch is approved.
                 </p>
             </div>
-        </div>
+        </StandardPage>
     );
 }

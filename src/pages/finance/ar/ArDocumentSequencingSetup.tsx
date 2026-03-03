@@ -12,6 +12,7 @@ import { z } from "zod";
 import { useState } from "react";
 import { Loader2, Plus, Link as LinkIcon } from "lucide-react";
 import { format } from "date-fns";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 const sequenceSchema = z.object({
     name: z.string().min(1, "Name is required"),
@@ -105,14 +106,11 @@ export default function ArDocumentSequencingSetup() {
     });
 
     return (
-        <div className="p-6 space-y-6 max-w-7xl mx-auto h-full overflow-y-auto">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight">Document Sequencing</h1>
-                <p className="text-muted-foreground mt-2">
-                    Configure Gapless and Automatic document numbering sequences, and assign them by Ledger or Legal Entity.
-                </p>
-            </div>
-
+    return (
+        <StandardPage
+            title="Document Sequencing"
+            description="Configure Gapless and Automatic document numbering sequences, and assign them by Ledger or Legal Entity."
+        >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Sequences Card */}
                 <Card className="flex flex-col">
@@ -307,6 +305,6 @@ export default function ArDocumentSequencingSetup() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }
