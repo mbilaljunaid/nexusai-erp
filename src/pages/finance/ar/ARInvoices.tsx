@@ -239,35 +239,30 @@ export default function ARInvoices() {
   ];
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center mb-2">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <CreditCard className="w-8 h-8" />
-            Accounts Receivable
-          </h1>
-          <p className="text-muted-foreground">Track customer payments and collections (Converged)</p>
+    <StandardPage
+      title="Accounts Receivable"
+      description="Track customer payments and collections (Converged)"
+      actions={
+        <div className="flex gap-2">
+          <Button
+            onClick={() => {
+              open();
+              sendMessage("Analyze the aging report and predict payment dates for outstanding invoices.");
+            }}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold gap-2 shadow-lg"
+          >
+            <BrainCircuit className="h-4 w-4" />
+            AI Payment Prediction
+          </Button>
+          <Button variant="outline" onClick={() => setIsInterestModalOpen(true)} data-testid="button-interest-invoices">
+            <Calculator className="w-4 h-4 mr-2" /> Generate Interest Invoices
+          </Button>
+          <Button variant="outline" onClick={() => setIsDebitMemoOpen(true)} data-testid="button-new-debit-memo">
+            <Plus className="w-4 h-4 mr-2" /> New Debit Memo
+          </Button>
         </div>
-        <Button
-          onClick={() => {
-            open();
-            sendMessage("Analyze the aging report and predict payment dates for outstanding invoices.");
-          }}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold gap-2 shadow-lg"
-        >
-          <BrainCircuit className="h-4 w-4" />
-          AI Payment Prediction
-        </Button>
-      </div>
-
-      <div className="flex justify-end gap-2 mb-4">
-        <Button variant="outline" onClick={() => setIsInterestModalOpen(true)} data-testid="button-interest-invoices">
-          <Calculator className="w-4 h-4 mr-2" /> Generate Interest Invoices
-        </Button>
-        <Button variant="outline" onClick={() => setIsDebitMemoOpen(true)} data-testid="button-new-debit-memo">
-          <Plus className="w-4 h-4 mr-2" /> New Debit Memo
-        </Button>
-      </div>
+      }
+    >
 
       <div className="grid grid-cols-3 gap-4">
         <Card>
@@ -414,6 +409,7 @@ export default function ARInvoices() {
       <ViewAccountingModal
         open={accountingModalOpen}
         onOpenChange={setAccountingModalOpen}
+        entityId={selectedEntityId || ""}
       />
     </StandardPage>
   );

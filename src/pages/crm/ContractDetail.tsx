@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function ContractDetail() {
     const { id } = useParams() as any;
@@ -33,21 +34,11 @@ export default function ContractDetail() {
     if (!contract) return <div>Contract not found</div>;
 
     return (
-        <div className="p-8 max-w-5xl mx-auto space-y-6">
-            <Link href="/crm/contracts">
-                <Button variant="ghost" className="pl-0 gap-2 text-muted-foreground mb-4">
-                    <ArrowLeft className="h-4 w-4" /> Back to Contracts
-                </Button>
-            </Link>
-
-            <div className="flex justify-between items-start">
-                <div>
-                    <div className="flex items-center gap-3">
-                        <FileText className="h-8 w-8 text-primary" />
-                        <h1 className="text-3xl font-bold">{contract.title}</h1>
-                    </div>
-                    <p className="text-muted-foreground mt-1 ml-11">{contract.contractNumber}</p>
-                </div>
+        <StandardPage
+            title={contract.title}
+            description={contract.contractNumber}
+            breadcrumbs={[{ label: "Contracts", href: "/crm/contracts" }, { label: contract.title }]}
+            actions={
                 <div className="flex gap-2">
                     {contract.status === 'Draft' && (
                         <Button onClick={() => updateStatusMutation.mutate("Active")} className="bg-green-600 hover:bg-green-700">
@@ -60,7 +51,8 @@ export default function ContractDetail() {
                         </Button>
                     )}
                 </div>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-3 gap-6">
                 <Card className="col-span-2">
@@ -107,6 +99,6 @@ export default function ContractDetail() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

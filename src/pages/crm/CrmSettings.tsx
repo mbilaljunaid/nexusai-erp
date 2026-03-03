@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, Trash2, Save } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface SalesStage {
     id: string;
@@ -99,17 +100,18 @@ export default function CrmSettings() {
     if (isLoading) return <div className="flex justify-center p-10"><Loader2 className="animate-spin" /></div>;
 
     return (
-        <div className="space-y-6 max-w-4xl pb-10">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">CRM Settings</h1>
-                    <p className="text-muted-foreground">Configure sales stages, workflows, and scoring rules.</p>
-                </div>
+    return (
+        <StandardPage
+            title="CRM Settings"
+            description="Configure sales stages, workflows, and scoring rules."
+            className="max-w-4xl pb-10 mx-auto"
+            actions={
                 <Button onClick={handleSave} disabled={updateSettingsMutation.isPending}>
                     {updateSettingsMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
                     Save Changes
                 </Button>
-            </div>
+            }
+        >
 
             <Card>
                 <CardHeader>
@@ -189,6 +191,6 @@ export default function CrmSettings() {
                     </Button>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

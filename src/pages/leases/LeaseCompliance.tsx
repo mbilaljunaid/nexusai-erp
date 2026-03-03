@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/queryClient";
 import { Shield, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function LeaseCompliance() {
     const { data: compliance } = useQuery({
@@ -12,18 +13,16 @@ export default function LeaseCompliance() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold">Lease Compliance Dashboard</h1>
-                    <p className="text-muted-foreground">ASC 842 compliance and disclosure tracking</p>
-                </div>
+        <StandardPage
+            title="Lease Compliance Dashboard"
+            description="ASC 842 compliance and disclosure tracking"
+            actions={
                 <Button variant="outline">
                     <Download className="h-4 w-4 mr-2" />
                     Generate Disclosures
                 </Button>
-            </div>
-
+            }
+        >
             <div className="grid grid-cols-4 gap-4">
                 <Card>
                     <CardContent className="pt-6">
@@ -67,6 +66,6 @@ export default function LeaseCompliance() {
                     ))}
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

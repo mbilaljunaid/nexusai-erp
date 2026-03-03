@@ -16,6 +16,7 @@ import {
     EnterpriseContextSwitcher,
     buildScopeHeaders
 } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function LeasePortfolioWorkbench() {
     const [search, setSearch] = useState("");
@@ -63,14 +64,10 @@ export default function LeasePortfolioWorkbench() {
     });
 
     return (
-        <div className="p-6 space-y-6 bg-slate-50 min-h-screen">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-                        Lease Portfolio
-                    </h1>
-                    <p className="text-muted-foreground">Manage IFRS 16 / ASC 842 Lease Contracts</p>
-                </div>
+        <StandardPage
+            title="Lease Portfolio"
+            description="Manage IFRS 16 / ASC 842 Lease Contracts"
+            actions={
                 <div className="flex gap-2 items-center">
                     <EnterpriseContextSwitcher
                         type="business-unit"
@@ -102,104 +99,107 @@ export default function LeasePortfolioWorkbench() {
                         </DialogContent>
                     </Dialog>
                 </div>
-            </div>
+            }
+        >
+            <div className="space-y-6">
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card>
-                    <CardHeader className="pb-2"><CardTitle className="text-sm">Total Liability</CardTitle></CardHeader>
-                    <CardContent><div className="text-2xl font-bold">$1.2M</div></CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="pb-2"><CardTitle className="text-sm">Active Leases</CardTitle></CardHeader>
-                    <CardContent><div className="text-2xl font-bold">{leases?.length || 0}</div></CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="pb-2"><CardTitle className="text-sm">Avg. Interest Rate</CardTitle></CardHeader>
-                    <CardContent><div className="text-2xl font-bold">4.2%</div></CardContent>
-                </Card>
-            </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <Card>
+                        <CardHeader className="pb-2"><CardTitle className="text-sm">Total Liability</CardTitle></CardHeader>
+                        <CardContent><div className="text-2xl font-bold">$1.2M</div></CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="pb-2"><CardTitle className="text-sm">Active Leases</CardTitle></CardHeader>
+                        <CardContent><div className="text-2xl font-bold">{leases?.length || 0}</div></CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="pb-2"><CardTitle className="text-sm">Avg. Interest Rate</CardTitle></CardHeader>
+                        <CardContent><div className="text-2xl font-bold">4.2%</div></CardContent>
+                    </Card>
+                </div>
 
-            <div className="flex items-center space-x-2 bg-white p-4 rounded-lg border">
-                <Search className="h-5 w-5 text-muted-foreground" />
-                <Input
-                    placeholder="Search by Lease Number or Vendor..."
-                    className="border-0 focus-visible:ring-0"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                />
-            </div>
+                <div className="flex items-center space-x-2 bg-white p-4 rounded-lg border">
+                    <Search className="h-5 w-5 text-muted-foreground" />
+                    <Input
+                        placeholder="Search by Lease Number or Vendor..."
+                        className="border-0 focus-visible:ring-0"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
 
-            <Card>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Lease Number</TableHead>
-                            <TableHead>Description</TableHead>
-                            <TableHead>Start Date</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Action</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {isLoading ? (
-                            <TableRow><TableCell colSpan={5} className="text-center h-24">Loading...</TableCell></TableRow>
-                        ) : leases?.map((lease: any) => (
-                            <TableRow key={lease.id}>
-                                <TableCell className="font-medium flex items-center gap-2">
-                                    <FileText className="h-4 w-4 text-blue-500" />
-                                    {lease.leaseNumber}
-                                </TableCell>
-                                <TableCell>{lease.description}</TableCell>
-                                <TableCell>{new Date(lease.commencementDate).toLocaleDateString()}</TableCell>
-                                <TableCell>
-                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                                        {lease.status}
-                                    </Badge>
-                                </TableCell>
-                                <TableCell>
-                                    <Dialog>
-                                        <DialogTrigger asChild>
-                                            <Button variant="ghost" size="sm" onClick={() => setSelectedLeaseId(lease.id)}>
-                                                View Details
-                                            </Button>
-                                        </DialogTrigger>
-                                        <DialogContent className="max-w-4xl h-[80vh] overflow-y-auto">
-                                            {selectedLeaseId === lease.id && (
-                                                <LeaseDetailView leaseId={lease.id} />
-                                            )}
-                                        </DialogContent>
-                                    </Dialog>
-                                </TableCell>
+                <Card>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Lease Number</TableHead>
+                                <TableHead>Description</TableHead>
+                                <TableHead>Start Date</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead>Action</TableHead>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </Card>
+                        </TableHeader>
+                        <TableBody>
+                            {isLoading ? (
+                                <TableRow><TableCell colSpan={5} className="text-center h-24">Loading...</TableCell></TableRow>
+                            ) : leases?.map((lease: any) => (
+                                <TableRow key={lease.id}>
+                                    <TableCell className="font-medium flex items-center gap-2">
+                                        <FileText className="h-4 w-4 text-blue-500" />
+                                        {lease.leaseNumber}
+                                    </TableCell>
+                                    <TableCell>{lease.description}</TableCell>
+                                    <TableCell>{new Date(lease.commencementDate).toLocaleDateString()}</TableCell>
+                                    <TableCell>
+                                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                            {lease.status}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <Button variant="ghost" size="sm" onClick={() => setSelectedLeaseId(lease.id)}>
+                                                    View Details
+                                                </Button>
+                                            </DialogTrigger>
+                                            <DialogContent className="max-w-4xl h-[80vh] overflow-y-auto">
+                                                {selectedLeaseId === lease.id && (
+                                                    <LeaseDetailView leaseId={lease.id} />
+                                                )}
+                                            </DialogContent>
+                                        </Dialog>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </Card>
 
-            <div className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">
-                    Showing {leases.length} of {pagination.total} leases
-                </p>
-                <div className="space-x-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setPage(p => Math.max(1, p - 1))}
-                        disabled={page === 1}
-                    >
-                        Previous
-                    </Button>
-                    <span className="text-sm font-medium">Page {page} of {pagination.totalPages}</span>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
-                        disabled={page === pagination.totalPages}
-                    >
-                        Next
-                    </Button>
+                <div className="flex items-center justify-between">
+                    <p className="text-sm text-muted-foreground">
+                        Showing {leases.length} of {pagination.total} leases
+                    </p>
+                    <div className="space-x-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                            disabled={page === 1}
+                        >
+                            Previous
+                        </Button>
+                        <span className="text-sm font-medium">Page {page} of {pagination.totalPages}</span>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
+                            disabled={page === pagination.totalPages}
+                        >
+                            Next
+                        </Button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </StandardPage>
     );
 }

@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { StandardPage } from "@/components/layout/StandardPage";
 export default function ContractDashboard() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
@@ -52,12 +53,10 @@ export default function ContractDashboard() {
     });
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-8">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Contract Management</h1>
-                    <p className="text-muted-foreground mt-2">Manage MSAs, SOWs, and Renewals.</p>
-                </div>
+        <StandardPage
+            title="Contract Management"
+            description="Manage MSAs, SOWs, and Renewals."
+            actions={
                 <div className="flex gap-4 items-center">
                     <EnterpriseContextSwitcher
                         type="business-unit"
@@ -68,7 +67,8 @@ export default function ContractDashboard() {
                         <Plus className="mr-2 h-4 w-4" /> New Contract
                     </Button>
                 </div>
-            </div>
+            }
+        >
 
             {/* Expiring Alert */}
             {expiring.length > 0 && (
@@ -153,6 +153,6 @@ export default function ContractDashboard() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

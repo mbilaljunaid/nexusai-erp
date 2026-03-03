@@ -3,6 +3,7 @@ import { useParams } from "wouter";
 import { TrendingUp, Users, DollarSign, Target } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function CampaignDetail() {
     const params = useParams() as any;
@@ -21,11 +22,10 @@ export default function CampaignDetail() {
     const { campaign, stats } = data || {};
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-8">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight">{campaign?.name}</h1>
-                <p className="text-muted-foreground mt-2">Campaign Performance & ROI Analysis</p>
-            </div>
+        <StandardPage
+            title={campaign?.name || "Campaign Stats"}
+            description="Campaign Performance & ROI Analysis"
+        >
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <Card className={stats?.roi > 0 ? "bg-green-50 border-green-200" : ""}>
@@ -95,6 +95,6 @@ export default function CampaignDetail() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

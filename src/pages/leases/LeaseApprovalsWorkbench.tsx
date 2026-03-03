@@ -13,6 +13,7 @@ import {
     ArrowRight
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 interface LeaseWorkflowItem {
     id: string;
@@ -65,14 +66,10 @@ export default function LeaseApprovalsWorkbench() {
     };
 
     return (
-        <div className="space-y-6 p-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold">Lease Approval Workbench</h1>
-                    <p className="text-muted-foreground mt-1">Review and approve lease contracts for financial recognition</p>
-                </div>
-            </div>
-
+        <StandardPage
+            title="Lease Approval Workbench"
+            description="Review and approve lease contracts for financial recognition"
+        >
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Pending List */}
                 <div className="lg:col-span-2 space-y-4">
@@ -190,5 +187,6 @@ export default function LeaseApprovalsWorkbench() {
                 </div>
             </div>
         </div>
+        </StandardPage >
     );
 }

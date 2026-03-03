@@ -2,18 +2,17 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Mail, MessageSquare, Calendar, Users, Play, Save } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function MarketingAutomationCanvas() {
     const [nodes, setNodes] = useState<any[]>([]);
     const [connections, setConnections] = useState<any[]>([]);
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold">Marketing Automation Canvas</h1>
-                    <p className="text-muted-foreground">Visual workflow builder for campaigns</p>
-                </div>
+        <StandardPage
+            title="Marketing Automation Canvas"
+            description="Visual workflow builder for campaigns"
+            actions={
                 <div className="flex gap-2">
                     <Button variant="outline">
                         <Save className="h-4 w-4 mr-2" />
@@ -24,7 +23,8 @@ export default function MarketingAutomationCanvas() {
                         Activate
                     </Button>
                 </div>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-4 gap-4">
                 <Card>
@@ -63,6 +63,6 @@ export default function MarketingAutomationCanvas() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

@@ -2,30 +2,32 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/queryClient";
-import { TrendingDown, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
 
 export default function CategoryManagement() {
-    const { data: categories } = useQuery({
+    const { data: categories } = useQuery<any>({
         queryKey: ["/api/scm/category-management"],
-        queryFn: () => apiRequest("/api/scm/category-management"),
+        queryFn: async () => {
+            const res = await apiRequest("GET", "/api/scm/category-management");
+            return res.json();
+        }
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold">Category Management</h1>
-                    <p className="text-muted-foreground">Spend analysis and supplier consolidation</p>
-                </div>
+        <StandardPage
+            title="Category Management"
+            description="Spend analysis and supplier consolidation"
+            actions={
                 <Button variant="outline">
                     <Download className="h-4 w-4 mr-2" />
                     Export Report
                 </Button>
-            </div>
-
+            }
+        >
             <div className="grid grid-cols-4 gap-4">
                 <Card>
                     <CardContent className="pt-6">
@@ -99,6 +101,6 @@ export default function CategoryManagement() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

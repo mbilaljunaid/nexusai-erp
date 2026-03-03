@@ -10,6 +10,7 @@ import { DataTable } from "@/components/ui/DataTable";
 import { Package, Truck, CheckCircle, ClipboardList, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function FulfillmentWorkbench() {
     const { toast } = useToast();
@@ -112,17 +113,15 @@ export default function FulfillmentWorkbench() {
     ];
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-white/90">Order Fulfillment</h1>
-                    <p className="text-white/60">Wave Planning & Task Execution</p>
-                </div>
+        <StandardPage
+            title="Order Fulfillment"
+            description="Wave Planning & Task Execution"
+            actions={
                 <div className="flex gap-2">
                     <Button variant="outline"><RefreshCw className="mr-2 h-4 w-4" /> Refresh</Button>
                 </div>
-            </div>
-
+            }
+        >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card className="bg-white/5 border-white/10">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -259,6 +258,6 @@ export default function FulfillmentWorkbench() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

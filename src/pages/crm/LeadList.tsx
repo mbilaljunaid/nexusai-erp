@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Loader2 } from "lucide-react";
 import { useLocation } from "wouter";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface PaginationData {
     total: number;
@@ -54,7 +55,11 @@ export default function LeadList() {
     };
 
     return (
-        <div className="space-y-4">
+        <StandardPage
+            title="Leads"
+            description="Manage and track your sales leads"
+            className="space-y-4"
+        >
             <div className="flex justify-between items-center">
                 <div className="relative w-72">
                     <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -108,6 +113,6 @@ export default function LeadList() {
                     </div>
                 </>
             )}
-        </div>
+        </StandardPage>
     );
 }

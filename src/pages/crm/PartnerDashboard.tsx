@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function PartnerDashboard() {
     const { toast } = useToast();
@@ -54,16 +55,15 @@ export default function PartnerDashboard() {
     if (!partner) return <div className="p-8">Loading Partner Profile...</div>;
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-8">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Partner Portal</h1>
-                    <p className="text-muted-foreground mt-2">Welcome back, {partner.name}. Manage your deal registrations.</p>
-                </div>
+        <StandardPage
+            title="Partner Portal"
+            description={`Welcome back, ${partner.name}. Manage your deal registrations.`}
+            actions={
                 <Button onClick={() => setIsRegisterOpen(true)}>
                     <Plus className="mr-2 h-4 w-4" /> Register Deal
                 </Button>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card>
@@ -161,6 +161,6 @@ export default function PartnerDashboard() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

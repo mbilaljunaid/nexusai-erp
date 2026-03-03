@@ -21,6 +21,7 @@ import {
     FileText
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function LeaseComplianceDashboard() {
     const { data: stats } = useQuery({
@@ -43,18 +44,16 @@ export default function LeaseComplianceDashboard() {
     ];
 
     return (
-        <div className="space-y-6 p-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold">Lease Compliance Dashboard</h1>
-                    <p className="text-muted-foreground mt-1">IFRS 16 and ASC 842 financial disclosure overview</p>
-                </div>
+        <StandardPage
+            title="Lease Compliance Dashboard"
+            description="IFRS 16 and ASC 842 financial disclosure overview"
+            actions={
                 <div className="flex items-center gap-2 px-4 py-2 bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-400 rounded-full border border-green-200 dark:border-green-900">
                     <ShieldCheck className="h-4 w-4" />
                     <span className="text-sm font-semibold">Audit Compliant - Period Q1 2026</span>
                 </div>
-            </div>
-
+            }
+        >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Metric Cards */}
                 <Card>
@@ -196,6 +195,6 @@ export default function LeaseComplianceDashboard() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

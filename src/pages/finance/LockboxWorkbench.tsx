@@ -406,7 +406,6 @@ export default function LockboxWorkbench() {
                 .section-title { margin-top: 24px; font-size: 13px; margin-bottom: 8px; }
                 .manual-search-input { width: 100%; margin-bottom: 16px; }
             `}</style>
-        </style>
         </StandardPage >
     );
 }

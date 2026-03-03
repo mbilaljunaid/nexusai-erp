@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface Territory {
     id: string;
@@ -57,12 +58,10 @@ export default function TerritoryManager() {
     });
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-8">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Territory Management</h1>
-                    <p className="text-muted-foreground mt-2">Define territories and assignment rules for your sales team.</p>
-                </div>
+        <StandardPage
+            title="Territory Management"
+            description="Define territories and assignment rules for your sales team."
+            actions={
                 <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                     <DialogTrigger asChild>
                         <Button><Plus className="mr-2 h-4 w-4" /> New Territory</Button>
@@ -96,7 +95,8 @@ export default function TerritoryManager() {
                         </form>
                     </DialogContent>
                 </Dialog>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* List of Territories */}
@@ -136,7 +136,7 @@ export default function TerritoryManager() {
                     )}
                 </div>
             </div>
-        </div>
+        </StandardPage>
     );
 }
 

@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function FieldServiceDashboard() {
     const { toast } = useToast();
@@ -42,16 +43,16 @@ export default function FieldServiceDashboard() {
     });
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-8">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Dispatcher Console</h1>
-                    <p className="text-muted-foreground mt-2">Manage field technicians and work orders.</p>
-                </div>
+    return (
+        <StandardPage
+            title="Dispatcher Console"
+            description="Manage field technicians and work orders."
+            actions={
                 <Button onClick={() => setIsCreateOpen(true)}>
                     <Plus className="mr-2 h-4 w-4" /> New Work Order
                 </Button>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Stats */}
@@ -162,6 +163,6 @@ export default function FieldServiceDashboard() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

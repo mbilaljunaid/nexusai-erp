@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function LeaseSystemSetup() {
     const { toast } = useToast();
@@ -44,17 +45,13 @@ export default function LeaseSystemSetup() {
     };
 
     return (
-        <div className="p-6 space-y-6 max-w-4xl mx-auto">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-                        Lease System Setup
-                    </h1>
-                    <p className="text-muted-foreground mt-1">Configure global IFRS 16 / ASC 842 parameters</p>
-                </div>
+        <StandardPage
+            title="Lease System Setup"
+            description="Configure global IFRS 16 / ASC 842 parameters"
+            actions={
                 <Button onClick={handleSave}>Save Changes</Button>
-            </div>
-
+            }
+        >
             <Tabs defaultValue="general">
                 <TabsList>
                     <TabsTrigger value="general">General Options</TabsTrigger>
@@ -151,6 +148,6 @@ export default function LeaseSystemSetup() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

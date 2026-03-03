@@ -97,12 +97,10 @@ export default function TaxProvisionWorkbench() {
     );
 
     return (
-        <div className="tax-provision-workbench">
-            <div className="tax-header">
-                <div>
-                    <h1 className="tax-title">Tax Provision Workbench</h1>
-                    <p className="tax-subtitle">ASC 740 / IAS 12 current & deferred tax computation</p>
-                </div>
+        <StandardPage
+            title="Tax Provision Workbench"
+            description="ASC 740 / IAS 12 current & deferred tax computation"
+            actions={
                 <div className="tax-controls">
                     <select
                         value={year}
@@ -125,8 +123,8 @@ export default function TaxProvisionWorkbench() {
                         ))}
                     </div>
                 </div>
-            </div>
-
+            }
+        >
             <div className="tax-layout">
                 {/* Input Form */}
                 <div className="tax-form-card">
@@ -273,7 +271,6 @@ export default function TaxProvisionWorkbench() {
                 .prov-status.reviewed { background: #fef3c7; color: #d97706; }
                 .prov-status.filed { background: #d1fae5; color: #059669; }
             `}</style>
-        </style>
         </StandardPage >
     );
 }

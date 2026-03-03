@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface Commission {
     id: string;
@@ -41,18 +42,18 @@ export default function IncentiveDashboard() {
     const closedDeals = commissions?.length || 0;
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-8">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Incentive Compensation</h1>
-                    <p className="text-muted-foreground mt-2">Track your commission earnings and payouts.</p>
-                </div>
+    return (
+        <StandardPage
+            title="Incentive Compensation"
+            description="Track your commission earnings and payouts."
+            actions={
                 <div className="flex items-center gap-2">
                     <Badge variant="secondary" className="text-base px-4 py-1">
                         Current Plan: Standard 10%
                     </Badge>
                 </div>
-            </div>
+            }
+        >
 
             {/* Metrics Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -137,6 +138,6 @@ export default function IncentiveDashboard() {
                     </Table>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

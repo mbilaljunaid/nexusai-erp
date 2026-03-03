@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface CommissionPlan {
     id: string;
@@ -83,12 +84,10 @@ export default function CommissionPlanManager() {
     });
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-8">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Commission Management</h1>
-                    <p className="text-muted-foreground mt-2">Manage compensation plans and assign them to sales representatives.</p>
-                </div>
+        <StandardPage
+            title="Commission Management"
+            description="Manage compensation plans and assign them to sales representatives."
+            actions={
                 <div className="flex gap-2">
                     <Button variant="outline" onClick={() => setIsAssignOpen(true)}>
                         <Users className="mr-2 h-4 w-4" /> Assign to User
@@ -97,7 +96,8 @@ export default function CommissionPlanManager() {
                         <Plus className="mr-2 h-4 w-4" /> Create Plan
                     </Button>
                 </div>
-            </div>
+            }
+        >
 
             <Card>
                 <CardHeader>
@@ -251,6 +251,6 @@ export default function CommissionPlanManager() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

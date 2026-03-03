@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function LeaseDisclosureReport() {
     // In a real app, this would be a dedicated aggregated endpoint.
@@ -34,19 +35,15 @@ export default function LeaseDisclosureReport() {
     ];
 
     return (
-        <div className="p-6 space-y-6 max-w-5xl mx-auto">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-                        Lease Disclosure Report
-                    </h1>
-                    <p className="text-muted-foreground mt-1">IFRS 16 / ASC 842 Note Disclosure Generator</p>
-                </div>
+        <StandardPage
+            title="Lease Disclosure Report"
+            description="IFRS 16 / ASC 842 Note Disclosure Generator"
+            actions={
                 <Button variant="outline" onClick={() => window.print()}>
                     <Printer className="mr-2 h-4 w-4" /> Print PDF
                 </Button>
-            </div>
-
+            }
+        >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card>
                     <CardHeader className="pb-2"><CardTitle className="text-sm">Weighted Avg. Discount Rate</CardTitle></CardHeader>
@@ -152,6 +149,6 @@ export default function LeaseDisclosureReport() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

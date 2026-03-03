@@ -8,6 +8,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { TrendingUp, Target, Star, Users, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function PredictiveLeadScoring() {
     const [filterStatus, setFilterStatus] = useState("ALL");
@@ -31,17 +32,16 @@ export default function PredictiveLeadScoring() {
     };
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold">Predictive Lead Scoring</h1>
-                    <p className="text-muted-foreground">AI-powered lead qualification and prioritization</p>
-                </div>
+        <StandardPage
+            title="Predictive Lead Scoring"
+            description="AI-powered lead qualification and prioritization"
+            actions={
                 <Button variant="outline">
                     <Download className="h-4 w-4 mr-2" />
                     Export Leads
                 </Button>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-4 gap-4">
                 <Card>
@@ -186,6 +186,6 @@ export default function PredictiveLeadScoring() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

@@ -58,7 +58,6 @@ export default function PaymentTermsMaster() {
     });
 
     return (
-    return (
         <StandardPage
             title="Payment Terms Master"
             description="Configure Net, EOM, Instalment-Split, and Immediate terms"
@@ -242,7 +241,6 @@ export default function PaymentTermsMaster() {
                 .td-kv span { font-size: 11px; color: #9ca3af; margin-bottom: 2px; }
                 .td-kv strong { font-size: 13px; color: #111827; font-family: monospace; }
             `}</style>
-        </style>
         </StandardPage >
     );
 }

@@ -10,6 +10,7 @@ import { Package, Truck, ClipboardList, RefreshCw, Layers, ArrowRight, CheckCirc
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { DashboardWidget } from "@/components/layout/StandardDashboard";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function WarehouseOperations() {
     const { toast } = useToast();
@@ -68,27 +69,21 @@ export default function WarehouseOperations() {
     });
 
     return (
-        <div className="p-8 max-w-[1600px] mx-auto space-y-8 min-h-screen bg-slate-950 text-slate-200">
-            {/* Header Section */}
-            <div className="flex justify-between items-end border-b border-slate-800 pb-6">
-                <div className="space-y-1">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-blue-500/10 rounded-lg">
-                            <Layers className="h-6 w-6 text-blue-400" />
-                        </div>
-                        <h1 className="text-3xl font-bold tracking-tight text-white">Warehouse Operations</h1>
-                    </div>
-                    <p className="text-slate-400">Terminal Core • Execution & Fulfillment Hub</p>
-                </div>
+        <StandardPage
+            title="Warehouse Operations"
+            description="Terminal Core • Execution & Fulfillment Hub"
+            className="bg-slate-950 text-slate-200"
+            actions={
                 <div className="flex gap-3">
-                    <Button variant="outline" className="border-slate-800 bg-slate-900/50 hover:bg-slate-800" onClick={() => queryClient.invalidateQueries()}>
+                    <Button variant="outline" className="border-slate-800 bg-slate-900/50 hover:bg-slate-800 text-slate-200" onClick={() => queryClient.invalidateQueries()}>
                         <RefreshCw className="mr-2 h-4 w-4" /> Sync Registry
                     </Button>
-                    <Button className="bg-blue-600 hover:bg-blue-500">
+                    <Button className="bg-blue-600 hover:bg-blue-500 text-white">
                         <QrCode className="mr-2 h-4 w-4" /> Scan LPN/Task
                     </Button>
                 </div>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <DashboardWidget title="Orders Ready" icon={ClipboardList}>
@@ -278,6 +273,6 @@ export default function WarehouseOperations() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

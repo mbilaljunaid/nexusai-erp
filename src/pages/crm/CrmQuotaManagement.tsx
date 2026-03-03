@@ -35,6 +35,7 @@ import {
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 const QUARTERS = ["Q1-2026", "Q2-2026", "Q3-2026", "Q4-2026"];
 
@@ -88,19 +89,11 @@ export default function CrmQuotaManagement() {
     });
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-8 bg-slate-50/30 min-h-screen">
-            {/* Header */}
-            <div className="flex justify-between items-center">
-                <div className="flex items-center gap-4">
-                    <div className="bg-indigo-600 p-3 rounded-xl shadow-lg ring-4 ring-indigo-50">
-                        <Target className="h-7 w-7 text-white" />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight text-slate-900">Sales Quota Management</h1>
-                        <p className="text-muted-foreground mt-1 font-medium tracking-tight">Set targets and monitor representative performance</p>
-                    </div>
-                </div>
-
+        <StandardPage
+            className="bg-slate-50/30"
+            title="Sales Quota Management"
+            description="Set targets and monitor representative performance"
+            actions={
                 <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border shadow-sm ring-1 ring-slate-100">
                         <Calendar className="h-4 w-4 text-indigo-500" />
@@ -118,7 +111,8 @@ export default function CrmQuotaManagement() {
                         Bulk Update
                     </Button>
                 </div>
-            </div>
+            }
+        >
 
             {/* Stats Overview */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -235,6 +229,6 @@ export default function CrmQuotaManagement() {
                     )}
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

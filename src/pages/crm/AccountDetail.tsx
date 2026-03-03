@@ -10,6 +10,7 @@ import { ArrowLeft, Building2, Globe, Mail, Phone, MapPin, Users, Briefcase, Mes
 import { StandardTable } from "@/components/ui/StandardTable";
 import type { Account, Contact, Opportunity, Case } from "@/types/erp-types";
 import { Link } from "wouter";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function AccountDetail() {
     const [, params] = useRoute("/crm/accounts/:id") as [boolean, { id?: string } | null];
@@ -53,111 +54,113 @@ export default function AccountDetail() {
     if (!account) return <div className="p-8">Loading...</div>;
 
     return (
-        <div className="space-y-6 flex flex-col flex-1 overflow-y-auto pb-10">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
-                <div className="flex items-center gap-4">
-                    <Link href="/crm">
-                        <Button variant="outline" size="icon" className="rounded-full">
-                            <ArrowLeft className="h-4 w-4" />
-                        </Button>
-                    </Link>
+        <StandardPage title="Account Overview" description="Manage account data and relationships">
+            <div className="space-y-6 flex flex-col flex-1 overflow-y-auto pb-10">
+                {/* Header */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
                     <div className="flex items-center gap-4">
-                        <div className="h-16 w-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                            <Building2 className="h-8 w-8" />
-                        </div>
-                        <div>
-                            <h1 className="text-3xl font-bold tracking-tight">{account.name}</h1>
-                            <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
-                                <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {account.billingCity || 'No Location'}, {account.billingCountry}</span>
-                                <span className="flex items-center gap-1"><Globe className="h-3 w-3" /> {account.website || 'No Website'}</span>
+                        <Link href="/crm">
+                            <Button variant="outline" size="icon" className="rounded-full">
+                                <ArrowLeft className="h-4 w-4" />
+                            </Button>
+                        </Link>
+                        <div className="flex items-center gap-4">
+                            <div className="h-16 w-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                                <Building2 className="h-8 w-8" />
+                            </div>
+                            <div>
+                                <h1 className="text-3xl font-bold tracking-tight">{account.name}</h1>
+                                <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
+                                    <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {account.billingCity || 'No Location'}, {account.billingCountry}</span>
+                                    <span className="flex items-center gap-1"><Globe className="h-3 w-3" /> {account.website || 'No Website'}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div className="flex gap-2">
+                        <Button variant="outline">Edit</Button>
+                        <Button>Create Opportunity</Button>
+                    </div>
                 </div>
-                <div className="flex gap-2">
-                    <Button variant="outline">Edit</Button>
-                    <Button>Create Opportunity</Button>
-                </div>
-            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Left Sidebar: Info */}
-                <div className="space-y-6">
-                    <Card>
-                        <CardContent className="p-6 space-y-4">
-                            <h3 className="font-semibold mb-4">Account Info</h3>
-                            <div className="grid grid-cols-1 gap-4 text-sm">
-                                <div>
-                                    <p className="text-muted-foreground">Industry</p>
-                                    <p className="font-medium">{account.industry || '-'}</p>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Left Sidebar: Info */}
+                    <div className="space-y-6">
+                        <Card>
+                            <CardContent className="p-6 space-y-4">
+                                <h3 className="font-semibold mb-4">Account Info</h3>
+                                <div className="grid grid-cols-1 gap-4 text-sm">
+                                    <div>
+                                        <p className="text-muted-foreground">Industry</p>
+                                        <p className="font-medium">{account.industry || '-'}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-muted-foreground">Annual Revenue</p>
+                                        <p className="font-medium">${Number(account.annualRevenue || 0).toLocaleString()}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-muted-foreground">Phone</p>
+                                        <p className="font-medium text-blue-600">{account.phone || '-'}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-muted-foreground">Owner</p>
+                                        <p className="font-medium">{account.ownerId || 'Unassigned'}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="text-muted-foreground">Annual Revenue</p>
-                                    <p className="font-medium">${Number(account.annualRevenue || 0).toLocaleString()}</p>
-                                </div>
-                                <div>
-                                    <p className="text-muted-foreground">Phone</p>
-                                    <p className="font-medium text-blue-600">{account.phone || '-'}</p>
-                                </div>
-                                <div>
-                                    <p className="text-muted-foreground">Owner</p>
-                                    <p className="font-medium">{account.ownerId || 'Unassigned'}</p>
-                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    {/* Main Content: Tabs */}
+                    <div className="lg:col-span-2">
+                        <Tabs defaultValue="opportunities">
+                            <TabsList className="w-full justify-start border-b rounded-none bg-transparent p-0 h-auto">
+                                <TabsTrigger value="opportunities" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3">
+                                    Opportunities <Badge variant="secondary" className="ml-2">{opportunities.length}</Badge>
+                                </TabsTrigger>
+                                <TabsTrigger value="contacts" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3">
+                                    Contacts <Badge variant="secondary" className="ml-2">{(contacts as any).data?.length || 0}</Badge>
+                                </TabsTrigger>
+                                <TabsTrigger value="cases" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3">
+                                    Cases <Badge variant="secondary" className="ml-2">{cases.length}</Badge>
+                                </TabsTrigger>
+                            </TabsList>
+
+                            <div className="pt-6">
+                                <TabsContent value="opportunities">
+                                    <StandardTable
+                                        data={opportunities}
+                                        columns={[
+                                            { header: "Name", accessorKey: "name", cell: (o: Opportunity) => <span className="font-medium">{o.name}</span> },
+                                            { header: "Stage", accessorKey: "stage", cell: (o: Opportunity) => <Badge variant="outline">{o.stage}</Badge> },
+                                            { header: "Amount", accessorKey: "amount", cell: (o: Opportunity) => `$${Number(o.amount).toLocaleString()}` },
+                                            { header: "Close Date", accessorKey: "closeDate", cell: (o: Opportunity) => o.closeDate ? new Date(o.closeDate).toLocaleDateString() : '-' }
+                                        ]}
+                                    />
+                                </TabsContent>
+
+                                <TabsContent value="contacts">
+                                    <StandardTable
+                                        data={(contacts as any).data || []}
+                                        columns={[
+                                            { header: "Name", accessorKey: "name", cell: (c: any) => <span className="font-medium">{c.firstName} {c.lastName}</span> },
+                                            { header: "Email", accessorKey: "email" },
+                                            { header: "Role", accessorKey: "role", cell: () => "Decision Maker" } // Mock
+                                        ]}
+                                    />
+                                </TabsContent>
+
+                                <TabsContent value="cases">
+                                    <div className="p-8 text-center text-muted-foreground border-2 border-dashed rounded-xl">
+                                        <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                                        No open support cases
+                                    </div>
+                                </TabsContent>
                             </div>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                {/* Main Content: Tabs */}
-                <div className="lg:col-span-2">
-                    <Tabs defaultValue="opportunities">
-                        <TabsList className="w-full justify-start border-b rounded-none bg-transparent p-0 h-auto">
-                            <TabsTrigger value="opportunities" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3">
-                                Opportunities <Badge variant="secondary" className="ml-2">{opportunities.length}</Badge>
-                            </TabsTrigger>
-                            <TabsTrigger value="contacts" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3">
-                                Contacts <Badge variant="secondary" className="ml-2">{(contacts as any).data?.length || 0}</Badge>
-                            </TabsTrigger>
-                            <TabsTrigger value="cases" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3">
-                                Cases <Badge variant="secondary" className="ml-2">{cases.length}</Badge>
-                            </TabsTrigger>
-                        </TabsList>
-
-                        <div className="pt-6">
-                            <TabsContent value="opportunities">
-                                <StandardTable
-                                    data={opportunities}
-                                    columns={[
-                                        { header: "Name", accessorKey: "name", cell: (o: Opportunity) => <span className="font-medium">{o.name}</span> },
-                                        { header: "Stage", accessorKey: "stage", cell: (o: Opportunity) => <Badge variant="outline">{o.stage}</Badge> },
-                                        { header: "Amount", accessorKey: "amount", cell: (o: Opportunity) => `$${Number(o.amount).toLocaleString()}` },
-                                        { header: "Close Date", accessorKey: "closeDate", cell: (o: Opportunity) => o.closeDate ? new Date(o.closeDate).toLocaleDateString() : '-' }
-                                    ]}
-                                />
-                            </TabsContent>
-
-                            <TabsContent value="contacts">
-                                <StandardTable
-                                    data={(contacts as any).data || []}
-                                    columns={[
-                                        { header: "Name", accessorKey: "name", cell: (c: any) => <span className="font-medium">{c.firstName} {c.lastName}</span> },
-                                        { header: "Email", accessorKey: "email" },
-                                        { header: "Role", accessorKey: "role", cell: () => "Decision Maker" } // Mock
-                                    ]}
-                                />
-                            </TabsContent>
-
-                            <TabsContent value="cases">
-                                <div className="p-8 text-center text-muted-foreground border-2 border-dashed rounded-xl">
-                                    <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                                    No open support cases
-                                </div>
-                            </TabsContent>
-                        </div>
-                    </Tabs>
+                        </Tabs>
+                    </div>
                 </div>
             </div>
-        </div>
+        </StandardPage>
     );
 }

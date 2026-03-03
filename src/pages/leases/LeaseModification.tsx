@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { FileText, Save } from "lucide-react";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function LeaseModification() {
     const { toast } = useToast();
@@ -28,12 +29,10 @@ export default function LeaseModification() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div>
-                <h1 className="text-3xl font-bold">Lease Modification Workbench</h1>
-                <p className="text-muted-foreground">Process lease modifications and remeasurements</p>
-            </div>
-
+        <StandardPage
+            title="Lease Modification Workbench"
+            description="Process lease modifications and remeasurements"
+        >
             <Card>
                 <CardHeader>
                     <CardTitle>Create Modification</CardTitle>
@@ -75,6 +74,6 @@ export default function LeaseModification() {
                     </Button>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

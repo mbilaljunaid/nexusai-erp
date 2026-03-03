@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Plus, Search, Edit2, CheckCircle2, XCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { StandardPage } from '@/components/layout/StandardPage';
 import {
     Sheet,
     SheetContent,
@@ -77,8 +78,8 @@ export default function CostComponents() {
             form.reset();
         },
         onError: (error: any) => {
-            toast({ 
-                title: "Error", 
+            toast({
+                title: "Error",
                 description: error.message,
                 variant: "destructive"
             });
@@ -90,12 +91,10 @@ export default function CostComponents() {
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Cost Components</h1>
-                    <p className="text-muted-foreground">Manage Landed Cost elements and their allocation rules.</p>
-                </div>
+        <StandardPage
+            title="Cost Components"
+            description="Manage Landed Cost elements and their allocation rules."
+            actions={
                 <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <SheetTrigger asChild>
                         <Button>
@@ -194,8 +193,8 @@ export default function CostComponents() {
                         </Form>
                     </SheetContent>
                 </Sheet>
-            </div>
-
+            }
+        >
             <Card>
                 <CardHeader>
                     <div className="flex items-center justify-between">
@@ -271,6 +270,6 @@ export default function CostComponents() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

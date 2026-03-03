@@ -10,7 +10,7 @@ import {
     Activity, Package, Truck, Clock, AlertTriangle,
     CheckCircle2, TrendingUp, Layers, MousePointer2
 } from "lucide-react";
-import { DashboardWidget } from "@/components/layout/StandardDashboard";
+import { DashboardWidget, StandardDashboard } from "@/components/layout/StandardDashboard";
 import { Badge } from "@/components/ui/badge";
 import { EnterpriseContextSwitcher } from "@/components/EnterpriseContextSwitcher";
 
@@ -31,39 +31,36 @@ const zoneUtilization = [
 ];
 
 export default function WmsDashboard() {
-    const [activeInvOrgId, setActiveInvOrgId] = useState<string | undefined>();
-
     return (
-        <div className="p-8 max-w-[1600px] mx-auto space-y-8 bg-slate-950 text-slate-200 min-h-screen">
-            {/* Header */}
-            <div className="flex justify-between items-center bg-slate-900 px-6 py-4 rounded-xl border border-slate-800">
-                <div className="flex items-center gap-4">
-                    <div className="p-3 bg-blue-600 rounded-lg">
-                        <Activity className="h-6 w-6 text-white" />
+        <StandardDashboard
+            className="bg-slate-950 text-slate-200"
+            header={
+                <div className="flex justify-between items-center bg-slate-900 px-6 py-4 rounded-xl border border-slate-800">
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-blue-600 rounded-lg">
+                            <Activity className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                            <h1 className="text-2xl font-bold text-white">WMS Executive Insight</h1>
+                            <p className="text-slate-400 text-sm">Real-time Warehouse Operations &amp; Efficiency</p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 className="text-2xl font-bold text-white">WMS Executive Insight</h1>
-                        <p className="text-slate-400 text-sm">Real-time Warehouse Operations &amp; Efficiency</p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-6">
-                    <EnterpriseContextSwitcher
-                        type="inventory-org"
-                        value={activeInvOrgId}
-                        onChange={setActiveInvOrgId}
-                    />
-                    <div className="w-px h-8 bg-slate-800" />
-                    <div className="text-right">
-                        <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Active Workers</p>
-                        <p className="text-xl font-bold text-white">24</p>
-                    </div>
-                    <div className="w-px h-8 bg-slate-800" />
-                    <div className="text-right">
-                        <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">System Health</p>
-                        <p className="text-xl font-bold text-green-400">99.9%</p>
+                    <div className="flex items-center gap-6">
+                        <EnterpriseContextSwitcher />
+                        <div className="w-px h-8 bg-slate-800" />
+                        <div className="text-right">
+                            <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Active Workers</p>
+                            <p className="text-xl font-bold text-white">24</p>
+                        </div>
+                        <div className="w-px h-8 bg-slate-800" />
+                        <div className="text-right">
+                            <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">System Health</p>
+                            <p className="text-xl font-bold text-green-400">99.9%</p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
+        >
 
             {/* Key Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -232,6 +229,6 @@ export default function WmsDashboard() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardDashboard>
     );
 }

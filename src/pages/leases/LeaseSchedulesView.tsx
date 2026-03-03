@@ -21,6 +21,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2, RefreshCw, PenTool, Download } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 interface LeaseSchedule {
     period: number;
@@ -140,199 +141,201 @@ export default function LeaseSchedulesView({ leaseId }: { leaseId: string }) {
     }
 
     return (
-        <div className="space-y-6">
-            {/* Lease Overview Header */}
-            {lease && (
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <div>
-                            <CardTitle>{lease.leaseName} - Amortization Schedule</CardTitle>
-                            <p className="text-sm text-muted-foreground mt-1">
-                                {lease.leaseType} Lease • {lease.discountRate}% Incremental Borrowing Rate
-                            </p>
-                        </div>
-                        <div className="flex gap-2">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setLocation(`/finance/leases/${leaseId}/modify`)}
-                            >
-                                <PenTool className="mr-2 h-4 w-4" /> Remeasure Lease
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => generateScheduleMutation.mutate()}
-                                disabled={generateScheduleMutation.isPending}
-                            >
-                                {generateScheduleMutation.isPending ? (
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                ) : (
-                                    <RefreshCw className="mr-2 h-4 w-4" />
-                                )}
-                                Regenerate Schedule
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={handleExportCSV}
-                            >
-                                <Download className="mr-2 h-4 w-4" />
-                                Export CSV
-                            </Button>
-                            <PDFExportButton
-                                endpoint={`/api/lease/leases/${leaseId}/schedules/pdf`}
-                                label="Download PDF"
-                                filename={`Lease_Schedule_${leaseId}.pdf`}
-                            />
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <StandardPage title="Amortization Schedule">
+            <div className="space-y-6">
+                {/* Lease Overview Header */}
+                {lease && (
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between">
                             <div>
-                                <p className="text-xs text-muted-foreground">Commencement Date</p>
-                                <p className="font-medium">{new Date(lease.startDate).toLocaleDateString()}</p>
-                            </div>
-                            <div>
-                                <p className="text-xs text-muted-foreground">End Date</p>
-                                <p className="font-medium">{new Date(lease.endDate).toLocaleDateString()}</p>
-                            </div>
-                            <div>
-                                <p className="text-xs text-muted-foreground">Initial Liability (NPV)</p>
-                                <p className="font-bold text-lg text-blue-600">
-                                    {formatCurrency(lease.totalValue, lease.currency)}
+                                <CardTitle>{lease.leaseName} - Amortization Schedule</CardTitle>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                    {lease.leaseType} Lease • {lease.discountRate}% Incremental Borrowing Rate
                                 </p>
                             </div>
-                            <div>
-                                <p className="text-xs text-muted-foreground">Accounting Standard</p>
-                                <Badge variant="outline" className="border-blue-500 text-blue-600">
-                                    ASC 842 / IFRS 16
-                                </Badge>
+                            <div className="flex gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setLocation(`/finance/leases/${leaseId}/modify`)}
+                                >
+                                    <PenTool className="mr-2 h-4 w-4" /> Remeasure Lease
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => generateScheduleMutation.mutate()}
+                                    disabled={generateScheduleMutation.isPending}
+                                >
+                                    {generateScheduleMutation.isPending ? (
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <RefreshCw className="mr-2 h-4 w-4" />
+                                    )}
+                                    Regenerate Schedule
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={handleExportCSV}
+                                >
+                                    <Download className="mr-2 h-4 w-4" />
+                                    Export CSV
+                                </Button>
+                                <PDFExportButton
+                                    endpoint={`/api/lease/leases/${leaseId}/schedules/pdf`}
+                                    label="Download PDF"
+                                    filename={`Lease_Schedule_${leaseId}.pdf`}
+                                />
                             </div>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div>
+                                    <p className="text-xs text-muted-foreground">Commencement Date</p>
+                                    <p className="font-medium">{new Date(lease.startDate).toLocaleDateString()}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-muted-foreground">End Date</p>
+                                    <p className="font-medium">{new Date(lease.endDate).toLocaleDateString()}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-muted-foreground">Initial Liability (NPV)</p>
+                                    <p className="font-bold text-lg text-blue-600">
+                                        {formatCurrency(lease.totalValue, lease.currency)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-muted-foreground">Accounting Standard</p>
+                                    <Badge variant="outline" className="border-blue-500 text-blue-600">
+                                        ASC 842 / IFRS 16
+                                    </Badge>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
+
+                {/* Visualization */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Accounting Projections</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="h-[300px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={schedules}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                    <XAxis dataKey="date" tickFormatter={formatDate} fontSize={10} />
+                                    <YAxis fontSize={10} tickFormatter={(v) => formatCurrency(v).replace('$', '') + 'k'} />
+                                    <Tooltip
+                                        formatter={(v: number) => formatCurrency(v)}
+                                        labelFormatter={formatDate}
+                                    />
+                                    <Legend />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="closingLiability"
+                                        stroke="#ef4444"
+                                        name="Lease Liability"
+                                        strokeWidth={2}
+                                        dot={false}
+                                    />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="rouClosingBalance"
+                                        stroke="#3b82f6"
+                                        name="ROU Asset Value"
+                                        strokeWidth={2}
+                                        dot={false}
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
                         </div>
                     </CardContent>
                 </Card>
-            )}
 
-            {/* Visualization */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Accounting Projections</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="h-[300px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={schedules}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                <XAxis dataKey="date" tickFormatter={formatDate} fontSize={10} />
-                                <YAxis fontSize={10} tickFormatter={(v) => formatCurrency(v).replace('$', '') + 'k'} />
-                                <Tooltip
-                                    formatter={(v: number) => formatCurrency(v)}
-                                    labelFormatter={formatDate}
-                                />
-                                <Legend />
-                                <Line
-                                    type="monotone"
-                                    dataKey="closingLiability"
-                                    stroke="#ef4444"
-                                    name="Lease Liability"
-                                    strokeWidth={2}
-                                    dot={false}
-                                />
-                                <Line
-                                    type="monotone"
-                                    dataKey="rouClosingBalance"
-                                    stroke="#3b82f6"
-                                    name="ROU Asset Value"
-                                    strokeWidth={2}
-                                    dot={false}
-                                />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Schedule Table */}
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>Detailed Schedule</CardTitle>
-                    <div className="flex gap-2">
-                        <Button
-                            variant={activeTab === "payment" ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => setActiveTab("payment")}
-                        >
-                            Liability & Payments
-                        </Button>
-                        <Button
-                            variant={activeTab === "rou" ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => setActiveTab("rou")}
-                        >
-                            ROU Asset Amortization
-                        </Button>
-                    </div>
-                </CardHeader>
-                <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="w-[80px]">Period</TableHead>
-                                <TableHead>Date</TableHead>
-                                {activeTab === "payment" ? (
-                                    <>
-                                        <TableHead className="text-right">Opening Liability</TableHead>
-                                        <TableHead className="text-right">Payment</TableHead>
-                                        <TableHead className="text-right">Interest</TableHead>
-                                        <TableHead className="text-right">Principal Reduction</TableHead>
-                                        <TableHead className="text-right">Closing Liability</TableHead>
-                                    </>
-                                ) : (
-                                    <>
-                                        <TableHead className="text-right">Opening ROU</TableHead>
-                                        <TableHead className="text-right">Amortization</TableHead>
-                                        <TableHead className="text-right">Impairment/Adj</TableHead>
-                                        <TableHead className="text-right">Closing ROU</TableHead>
-                                    </>
-                                )}
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {schedules.map((row) => (
-                                <TableRow key={row.period}>
-                                    <TableCell className="font-medium">#{row.period}</TableCell>
-                                    <TableCell>{formatDate(row.date)}</TableCell>
+                {/* Schedule Table */}
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <CardTitle>Detailed Schedule</CardTitle>
+                        <div className="flex gap-2">
+                            <Button
+                                variant={activeTab === "payment" ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => setActiveTab("payment")}
+                            >
+                                Liability & Payments
+                            </Button>
+                            <Button
+                                variant={activeTab === "rou" ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => setActiveTab("rou")}
+                            >
+                                ROU Asset Amortization
+                            </Button>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-[80px]">Period</TableHead>
+                                    <TableHead>Date</TableHead>
                                     {activeTab === "payment" ? (
                                         <>
-                                            <TableCell className="text-right">{formatCurrency(row.openingLiability)}</TableCell>
-                                            <TableCell className="text-right font-medium text-red-600">{formatCurrency(row.paymentAmount)}</TableCell>
-                                            <TableCell className="text-right text-orange-600">{formatCurrency(row.interestExpense)}</TableCell>
-                                            <TableCell className="text-right text-green-600">{formatCurrency(parseFloat(row.paymentAmount) - parseFloat(row.interestExpense))}</TableCell>
-                                            <TableCell className="text-right font-bold">{formatCurrency(row.closingLiability)}</TableCell>
+                                            <TableHead className="text-right">Opening Liability</TableHead>
+                                            <TableHead className="text-right">Payment</TableHead>
+                                            <TableHead className="text-right">Interest</TableHead>
+                                            <TableHead className="text-right">Principal Reduction</TableHead>
+                                            <TableHead className="text-right">Closing Liability</TableHead>
                                         </>
                                     ) : (
                                         <>
-                                            <TableCell className="text-right">{formatCurrency(row.rouOpeningBalance)}</TableCell>
-                                            <TableCell className="text-right text-blue-600">{formatCurrency(row.amortizationExpense)}</TableCell>
-                                            <TableCell className="text-right">$0.00</TableCell>
-                                            <TableCell className="text-right font-bold">{formatCurrency(row.rouClosingBalance)}</TableCell>
+                                            <TableHead className="text-right">Opening ROU</TableHead>
+                                            <TableHead className="text-right">Amortization</TableHead>
+                                            <TableHead className="text-right">Impairment/Adj</TableHead>
+                                            <TableHead className="text-right">Closing ROU</TableHead>
                                         </>
                                     )}
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
+                            </TableHeader>
+                            <TableBody>
+                                {schedules.map((row) => (
+                                    <TableRow key={row.period}>
+                                        <TableCell className="font-medium">#{row.period}</TableCell>
+                                        <TableCell>{formatDate(row.date)}</TableCell>
+                                        {activeTab === "payment" ? (
+                                            <>
+                                                <TableCell className="text-right">{formatCurrency(row.openingLiability)}</TableCell>
+                                                <TableCell className="text-right font-medium text-red-600">{formatCurrency(row.paymentAmount)}</TableCell>
+                                                <TableCell className="text-right text-orange-600">{formatCurrency(row.interestExpense)}</TableCell>
+                                                <TableCell className="text-right text-green-600">{formatCurrency(parseFloat(row.paymentAmount) - parseFloat(row.interestExpense))}</TableCell>
+                                                <TableCell className="text-right font-bold">{formatCurrency(row.closingLiability)}</TableCell>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <TableCell className="text-right">{formatCurrency(row.rouOpeningBalance)}</TableCell>
+                                                <TableCell className="text-right text-blue-600">{formatCurrency(row.amortizationExpense)}</TableCell>
+                                                <TableCell className="text-right">$0.00</TableCell>
+                                                <TableCell className="text-right font-bold">{formatCurrency(row.rouClosingBalance)}</TableCell>
+                                            </>
+                                        )}
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
 
-            <div className="flex items-center gap-2 p-4 bg-muted/50 rounded-lg text-sm">
-                <Info className="h-4 w-4 text-blue-500" />
-                <p className="text-muted-foreground">
-                    Schedules are generated based on the selected discount rate and payment frequency defined in the lease agreement.
-                    Standard accounting rules for {lease?.leaseType} leases apply.
-                </p>
+                <div className="flex items-center gap-2 p-4 bg-muted/50 rounded-lg text-sm">
+                    <Info className="h-4 w-4 text-blue-500" />
+                    <p className="text-muted-foreground">
+                        Schedules are generated based on the selected discount rate and payment frequency defined in the lease agreement.
+                        Standard accounting rules for {lease?.leaseType} leases apply.
+                    </p>
+                </div>
             </div>
-        </div>
+        </StandardPage>
     );
 }

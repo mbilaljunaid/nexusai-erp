@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function WorkOrderDetail() {
     const { id } = useParams() as any;
@@ -53,20 +54,25 @@ export default function WorkOrderDetail() {
     const { workOrder, appointments, linkedCase } = data || {};
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-6">
-            <div className="flex justify-between items-start">
-                <div>
-                    <div className="flex items-center gap-3">
-                        <h1 className="text-2xl font-bold tracking-tight">{workOrder?.workOrderNumber}</h1>
-                        <Badge variant={workOrder?.status === 'Completed' ? 'default' : 'secondary'}>{workOrder?.status}</Badge>
-                        {workOrder?.priority === 'High' && <Badge variant="destructive">High Priority</Badge>}
-                    </div>
-                    <p className="text-xl mt-2 font-medium">{workOrder?.subject}</p>
-                    <div className="flex items-center gap-2 text-muted-foreground mt-1">
+        <StandardPage
+            title={
+                <div className="flex items-center gap-3">
+                    <span>{workOrder?.workOrderNumber}</span>
+                    <Badge variant={workOrder?.status === 'Completed' ? 'default' : 'secondary'}>{workOrder?.status}</Badge>
+                    {workOrder?.priority === 'High' && <Badge variant="destructive">High Priority</Badge>}
+                </div>
+            }
+            description={
+                <div className="mt-2">
+                    <span className="text-xl font-medium text-foreground">{workOrder?.subject}</span>
+                    <div className="flex items-center gap-2 text-muted-foreground mt-1 text-sm">
                         <MapPin className="h-4 w-4" />
                         {workOrder?.street}, {workOrder?.city}
                     </div>
                 </div>
+            }
+            breadcrumbs={[{ label: "Field Service", href: "/crm/field-service" }, { label: workOrder?.workOrderNumber || "Detail" }]}
+            actions={
                 <div className="flex gap-2">
                     {workOrder?.status === 'New' && (
                         <Button onClick={() => setIsAssignOpen(true)}>
@@ -79,7 +85,8 @@ export default function WorkOrderDetail() {
                         </Button>
                     )}
                 </div>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Details */}
@@ -166,6 +173,6 @@ export default function WorkOrderDetail() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

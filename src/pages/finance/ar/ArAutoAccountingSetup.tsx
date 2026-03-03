@@ -92,60 +92,184 @@ export default function ArAutoAccountingSetup() {
         mutation.mutate(values);
     }
 
-                </Dialog >
-            </div >
+    return (
+        <StandardPage
+            title="AutoAccounting Setup"
+            description="Configure rules for dynamic accounting segment generation"
+            actions={
+                <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogTrigger asChild>
+                        <Button>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Create Rule
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                            <DialogTitle>New Derivation Rule</DialogTitle>
+                            <DialogDescription>
+                                Set segment sources for transaction accounting.
+                            </DialogDescription>
+                        </DialogHeader>
 
-        <Card>
-            <CardHeader>
-                <CardTitle>Derivation Matrix</CardTitle>
-                <CardDescription>Rules currently evaluating during line generation.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                {isLoading ? (
-                    <div className="h-24 flex items-center justify-center">
-                        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                    </div>
-                ) : (
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Rule Name</TableHead>
-                                <TableHead>Target Class</TableHead>
-                                <TableHead>Segment 1</TableHead>
-                                <TableHead>Segment 2</TableHead>
-                                <TableHead>Segment 3</TableHead>
-                                <TableHead>Segment 4</TableHead>
-                                <TableHead>Status</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {rules?.map((rule) => (
-                                <TableRow key={rule.id}>
-                                    <TableCell className="font-medium">{rule.ruleName}</TableCell>
-                                    <TableCell>{rule.accountClass}</TableCell>
-                                    <TableCell>{rule.segment1Source}</TableCell>
-                                    <TableCell>{rule.segment2Source}</TableCell>
-                                    <TableCell>{rule.segment3Source}</TableCell>
-                                    <TableCell>{rule.segment4Source}</TableCell>
-                                    <TableCell>
-                                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${rule.enabledFlag ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                            {rule.enabledFlag ? 'Active' : 'Inactive'}
-                                        </span>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                            {!rules?.length && (
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                <FormField
+                                    control={form.control}
+                                    name="ruleName"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Rule Name</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="e.g. Sales Revenue Default" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="accountClass"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Target Class</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select class" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="Revenue">Revenue</SelectItem>
+                                                        <SelectItem value="Receivable">Receivable</SelectItem>
+                                                        <SelectItem value="Freight">Freight</SelectItem>
+                                                        <SelectItem value="Tax">Tax</SelectItem>
+                                                        <SelectItem value="Clearing">Clearing</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="ledgerId"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Ledger</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select ledger" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="PRIMARY">US Primary</SelectItem>
+                                                        <SelectItem value="SECONDARY">EU Secondary</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+
+                                <div className="space-y-2 border-t pt-2 mt-2">
+                                    <h4 className="font-semibold text-sm">Segment Sources</h4>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {[1, 2, 3, 4, 5].map((segNum) => (
+                                            <FormField
+                                                key={segNum}
+                                                control={form.control}
+                                                name={`segment${segNum}Source` as keyof z.infer<typeof ruleSchema>}
+                                                render={({ field }) => (
+                                                    <FormItem className="space-y-1">
+                                                        <FormLabel className="text-xs">Segment {segNum}</FormLabel>
+                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                            <FormControl>
+                                                                <SelectTrigger className="h-8 text-xs">
+                                                                    <SelectValue placeholder="Source" />
+                                                                </SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                {sourceOptions.map(opt => (
+                                                                    <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <DialogFooter className="mt-4 border-t pt-4 border-gray-100">
+                                    <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+                                    <Button type="submit" disabled={mutation.isPending}>
+                                        {mutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                        Save Rule
+                                    </Button>
+                                </DialogFooter>
+                            </form>
+                        </Form>
+                    </DialogContent>
+                </Dialog>
+            }
+        >
+            <Card>
+                <CardHeader>
+                    <CardTitle>Derivation Matrix</CardTitle>
+                    <CardDescription>Rules currently evaluating during line generation.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {isLoading ? (
+                        <div className="h-24 flex items-center justify-center">
+                            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                        </div>
+                    ) : (
+                        <Table>
+                            <TableHeader>
                                 <TableRow>
-                                    <TableCell colSpan={7} className="text-center h-24 text-muted-foreground">
-                                        No AutoAccounting rules defined. Create one to begin generating dynamic CCIDs.
-                                    </TableCell>
+                                    <TableHead>Rule Name</TableHead>
+                                    <TableHead>Target Class</TableHead>
+                                    <TableHead>Segment 1</TableHead>
+                                    <TableHead>Segment 2</TableHead>
+                                    <TableHead>Segment 3</TableHead>
+                                    <TableHead>Segment 4</TableHead>
+                                    <TableHead>Status</TableHead>
                                 </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                )}
-            </CardContent>
-        </Card>
+                            </TableHeader>
+                            <TableBody>
+                                {rules?.map((rule) => (
+                                    <TableRow key={rule.id}>
+                                        <TableCell className="font-medium">{rule.ruleName}</TableCell>
+                                        <TableCell>{rule.accountClass}</TableCell>
+                                        <TableCell>{rule.segment1Source}</TableCell>
+                                        <TableCell>{rule.segment2Source}</TableCell>
+                                        <TableCell>{rule.segment3Source}</TableCell>
+                                        <TableCell>{rule.segment4Source}</TableCell>
+                                        <TableCell>
+                                            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${rule.enabledFlag ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                                {rule.enabledFlag ? 'Active' : 'Inactive'}
+                                            </span>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                                {!rules?.length && (
+                                    <TableRow>
+                                        <TableCell colSpan={7} className="text-center h-24 text-muted-foreground">
+                                            No AutoAccounting rules defined. Create one to begin generating dynamic CCIDs.
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    )}
+                </CardContent>
+            </Card>
         </StandardPage >
     );
 }

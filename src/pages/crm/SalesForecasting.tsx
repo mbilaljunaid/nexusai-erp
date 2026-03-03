@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function SalesForecasting() {
     // Mock User ID for now (Phase 1 Auth)
@@ -26,12 +27,10 @@ export default function SalesForecasting() {
     const attainmentColor = (forecast?.attainment || 0) >= 100 ? "bg-green-500" : (forecast?.attainment || 0) >= 70 ? "bg-blue-500" : "bg-amber-500";
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-8">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Sales Forecasting</h1>
-                    <p className="text-muted-foreground mt-2">Pipeline analysis and quota attainment.</p>
-                </div>
+        <StandardPage
+            title="Sales Forecasting"
+            description="Pipeline analysis and quota attainment."
+            actions={
                 <div className="w-[180px]">
                     <Select value={period} onValueChange={setPeriod}>
                         <SelectTrigger>
@@ -45,7 +44,8 @@ export default function SalesForecasting() {
                         </SelectContent>
                     </Select>
                 </div>
-            </div>
+            }
+        >
 
             {/* Quota Progress */}
             <Card className="bg-muted/50">
@@ -112,6 +112,6 @@ export default function SalesForecasting() {
             <div className="text-center text-muted-foreground p-8 bg-muted/20 rounded-lg border border-dashed">
                 Detailed forecast breakdown by Opportunity available in "Deep Dive" view (Coming Soon).
             </div>
-        </div>
+        </StandardPage>
     );
 }

@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/queryClient";
 import { FileText, Download } from "lucide-react";
+import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function LeaseScheduleViewer() {
     const { data: schedule } = useQuery({
@@ -11,18 +12,16 @@ export default function LeaseScheduleViewer() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold">Lease Payment Schedule</h1>
-                    <p className="text-muted-foreground">View amortization and payment schedules</p>
-                </div>
+        <StandardPage
+            title="Lease Payment Schedule"
+            description="View amortization and payment schedules"
+            actions={
                 <Button variant="outline">
                     <Download className="h-4 w-4 mr-2" />
                     Export Schedule
                 </Button>
-            </div>
-
+            }
+        >
             <Card>
                 <CardHeader>
                     <CardTitle>Payment Schedule</CardTitle>
@@ -54,6 +53,6 @@ export default function LeaseScheduleViewer() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

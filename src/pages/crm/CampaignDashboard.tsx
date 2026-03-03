@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function CampaignDashboard() {
     const { toast } = useToast();
@@ -49,16 +50,15 @@ export default function CampaignDashboard() {
     const totalBudget = campaigns?.reduce((sum: number, c: any) => sum + Number(c.budgetedCost || 0), 0) || 0;
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-8">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Campaign Management</h1>
-                    <p className="text-muted-foreground mt-2">Track marketing initiatives and ROI.</p>
-                </div>
+        <StandardPage
+            title="Campaign Management"
+            description="Track marketing initiatives and ROI."
+            actions={
                 <Button onClick={() => setIsCreateOpen(true)}>
                     <Plus className="mr-2 h-4 w-4" /> New Campaign
                 </Button>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card>
@@ -159,6 +159,6 @@ export default function CampaignDashboard() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

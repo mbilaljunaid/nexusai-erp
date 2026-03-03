@@ -31,7 +31,6 @@ export default function NettingCenter() {
     const runAnalysisMut = useMutation({ mutationFn: (d: any) => fetch('/api/ic/tp/analyses', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['tp-analyses'] }) });
 
     return (
-    return (
         <StandardPage
             title="IC Netting Center"
             description="Multilateral netting · Transfer pricing · Arm-length analysis"

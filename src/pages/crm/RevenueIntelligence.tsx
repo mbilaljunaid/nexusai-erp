@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/queryClient";
 import { TrendingUp, DollarSign, Target, BarChart3, Download } from "lucide-react";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function RevenueIntelligence() {
     const { data: analytics } = useQuery({
@@ -12,17 +13,16 @@ export default function RevenueIntelligence() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold">Revenue Intelligence</h1>
-                    <p className="text-muted-foreground">AI-powered revenue forecasting and insights</p>
-                </div>
+        <StandardPage
+            title="Revenue Intelligence"
+            description="AI-powered revenue forecasting and insights"
+            actions={
                 <Button variant="outline">
                     <Download className="h-4 w-4 mr-2" />
                     Export Report
                 </Button>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-4 gap-4">
                 <Card>
@@ -90,6 +90,6 @@ export default function RevenueIntelligence() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }
