@@ -58,9 +58,11 @@ export default function BillingWorkbench() {
         }
     });
 
-    // Run AI Scan
     const aiScanMutation = useMutation({
-        mutationFn: () => fetch("/api/billing/ai/detect-anomalies", { method: "POST" }).then(r => r.json()),
+        mutationFn: () => fetch("/api/billing/ai/detect-anomalies", {
+            method: "POST",
+            headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+        }).then(r => r.json()),
         onSuccess: (data) => {
             toast({ title: "AI Analysis Complete", description: `Scanned events. Found potential issues.` });
         }

@@ -8,18 +8,23 @@ import { Badge } from "@/components/ui/badge";
 import { Building2, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { EnterpriseContextSwitcher } from "@/components/EnterpriseContextSwitcher";
+import { useEnterpriseStore } from "@/lib/store/enterprise";
 
 export default function FinancialConsolidation() {
   const { toast } = useToast();
+  const setId = useEnterpriseStore((s) => s.setId);
   const [newEntity, setNewEntity] = useState({ entityName: "", parentEntity: "Group", consolidationMethod: "full", currency: "USD" });
 
+  const headers = setId ? { "x-set-id": setId } : {};
+
   const { data: entities = [], isLoading } = useQuery({
-    queryKey: ["/api/consolidations"],
-    queryFn: () => fetch("/api/consolidations").then(r => r.json()),
+    queryKey: ["/api/consolidations", setId],
+    queryFn: () => fetch("/api/consolidations", { headers }).then(r => r.json()),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/consolidations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/consolidations", { method: "POST", headers: { "Content-Type": "application/json", ...headers }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/consolidations"] });
       setNewEntity({ entityName: "", parentEntity: "Group", consolidationMethod: "full", currency: "USD" });
@@ -28,7 +33,7 @@ export default function FinancialConsolidation() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => fetch(`/api/consolidations/${id}`, { method: "DELETE" }),
+    mutationFn: (id) => fetch(`/api/consolidations/${id}`, { method: "DELETE", headers }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/consolidations"] });
       toast({ title: "Entity deleted" });
@@ -44,12 +49,15 @@ export default function FinancialConsolidation() {
 
   return (
     <div className="space-y-6 p-4" data-testid="financial-consolidation">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Building2 className="h-8 w-8" />
-          Financial Consolidation
-        </h1>
-        <p className="text-muted-foreground mt-2">Manage multi-entity consolidation and intercompany eliminations</p>
+      <div className="flex justify-between items-start mb-6">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Building2 className="h-8 w-8" />
+            Financial Consolidation
+          </h1>
+          <p className="text-muted-foreground mt-2">Manage multi-entity consolidation and intercompany eliminations</p>
+        </div>
+        <EnterpriseContextSwitcher type="set" />
       </div>
 
       <div className="grid grid-cols-4 gap-3">

@@ -34,7 +34,12 @@ export default function ContractDashboard() {
     const createMutation = useMutation({
         mutationFn: async (data: any) => {
             const res = await fetch("/api/crm/contracts", {
-                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data),
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {})
+                },
+                body: JSON.stringify(data),
             });
             if (!res.ok) throw new Error(await res.text());
             return res.json();

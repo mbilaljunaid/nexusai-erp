@@ -13,6 +13,7 @@ import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { api } from "@/lib/api";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 export function LotSerialManager() {
     const { toast } = useToast();
@@ -22,21 +23,55 @@ export function LotSerialManager() {
     const [pageSize] = useState(25);
     const [search, setSearch] = useState("");
     const [createOpen, setCreateOpen] = useState(false);
+    const [activeInvOrgId, setActiveInvOrgId] = useState<string | undefined>(undefined);
+
+    const scopeHeaders = buildScopeHeaders({
+        'inventory-org': activeInvOrgId,
+    });
 
     // Queries
     const { data: lotsData, isLoading: lotsLoading } = useQuery({
-        queryKey: ["/api/inventory/lots", lotPage, pageSize, search],
-        queryFn: () => api.inventory.lots.list({ limit: pageSize, offset: (lotPage - 1) * pageSize, search })
+        queryKey: ["/api/inventory/lots", lotPage, pageSize, search, activeInvOrgId],
+        queryFn: async () => {
+            const query = new URLSearchParams();
+            query.append("limit", pageSize.toString());
+            query.append("offset", ((lotPage - 1) * pageSize).toString());
+            if (search) query.append("search", search);
+
+            const res = await fetch(`/api/inventory/lots?${query.toString()}`, {
+                headers: { 'Content-Type': 'application/json', ...scopeHeaders }
+            });
+            if (!res.ok) throw new Error("Failed to fetch lots");
+            return res.json();
+        }
     });
 
     const { data: serialsData, isLoading: serialsLoading } = useQuery({
-        queryKey: ["/api/inventory/serials", serialPage, pageSize, search],
-        queryFn: () => api.inventory.serials.list({ limit: pageSize, offset: (serialPage - 1) * pageSize, search })
+        queryKey: ["/api/inventory/serials", serialPage, pageSize, search, activeInvOrgId],
+        queryFn: async () => {
+            const query = new URLSearchParams();
+            query.append("limit", pageSize.toString());
+            query.append("offset", ((serialPage - 1) * pageSize).toString());
+            if (search) query.append("search", search);
+
+            const res = await fetch(`/api/inventory/serials?${query.toString()}`, {
+                headers: { 'Content-Type': 'application/json', ...scopeHeaders }
+            });
+            if (!res.ok) throw new Error("Failed to fetch serials");
+            return res.json();
+        }
     });
 
     const { data: items = [] } = useQuery({
-        queryKey: ["/api/inventory/items"],
-        queryFn: () => api.inventory.products.list().then(res => res.data || [])
+        queryKey: ["/api/inventory/items", activeInvOrgId],
+        queryFn: async () => {
+            const res = await fetch(`/api/inventory/products`, {
+                headers: { 'Content-Type': 'application/json', ...scopeHeaders }
+            });
+            if (!res.ok) throw new Error("Failed to fetch products");
+            const data = await res.json();
+            return data.data || [];
+        }
     });
 
     // Mutations
@@ -102,47 +137,55 @@ export function LotSerialManager() {
                     <p className="text-sm text-muted-foreground">Manage granular inventory tracking and expiration.</p>
                 </div>
 
-                <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-                    <DialogTrigger asChild>
-                        <Button>
-                            <Plus className="h-4 w-4 mr-2" />
-                            Create {activeTab === "lots" ? "Lot" : "Serial"}
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Create New {activeTab === "lots" ? "Lot" : "Serial"}</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                            <div className="space-y-2">
-                                <Label>Select Item</Label>
-                                <Select value={newItemId} onValueChange={setNewItemId}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Choose item..." />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {items.map((i: any) => (
-                                            <SelectItem key={i.id} value={i.id}>{i.itemName} ({i.sku})</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="space-y-2">
-                                <Label>{activeTab === "lots" ? "Lot Number" : "Serial Number"}</Label>
-                                <Input value={newNumber} onChange={(e) => setNewNumber(e.target.value)} placeholder={activeTab === "lots" ? "L-2024-001" : "SN-99999"} />
-                            </div>
-                            {activeTab === "lots" && (
-                                <div className="space-y-2">
-                                    <Label>Quantity</Label>
-                                    <Input type="number" value={newQty} onChange={(e) => setNewQty(e.target.value)} />
-                                </div>
-                            )}
-                            <Button className="w-full" onClick={handleCreate} disabled={!newItemId || !newNumber}>
-                                Create Record
+                <div className="flex items-center gap-4">
+                    <EnterpriseContextSwitcher
+                        type="inventory-org"
+                        value={activeInvOrgId}
+                        onChange={setActiveInvOrgId}
+                    />
+
+                    <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+                        <DialogTrigger asChild>
+                            <Button>
+                                <Plus className="h-4 w-4 mr-2" />
+                                Create {activeTab === "lots" ? "Lot" : "Serial"}
                             </Button>
-                        </div>
-                    </DialogContent>
-                </Dialog>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Create New {activeTab === "lots" ? "Lot" : "Serial"}</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4 py-4">
+                                <div className="space-y-2">
+                                    <Label>Select Item</Label>
+                                    <Select value={newItemId} onValueChange={setNewItemId}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Choose item..." />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {items.map((i: any) => (
+                                                <SelectItem key={i.id} value={i.id}>{i.itemName} ({i.sku})</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>{activeTab === "lots" ? "Lot Number" : "Serial Number"}</Label>
+                                    <Input value={newNumber} onChange={(e) => setNewNumber(e.target.value)} placeholder={activeTab === "lots" ? "L-2024-001" : "SN-99999"} />
+                                </div>
+                                {activeTab === "lots" && (
+                                    <div className="space-y-2">
+                                        <Label>Quantity</Label>
+                                        <Input type="number" value={newQty} onChange={(e) => setNewQty(e.target.value)} />
+                                    </div>
+                                )}
+                                <Button className="w-full" onClick={handleCreate} disabled={!newItemId || !newNumber}>
+                                    Create Record
+                                </Button>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                </div>
             </div>
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

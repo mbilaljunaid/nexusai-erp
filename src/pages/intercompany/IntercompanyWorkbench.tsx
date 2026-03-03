@@ -39,7 +39,10 @@ export default function IntercompanyWorkbench() {
 
     const submitBatch = useMutation({
         mutationFn: async (id: string) => {
-            const res = await fetch(`/api/intercompany/batches/${id}/submit`, { method: "POST" });
+            const res = await fetch(`/api/intercompany/batches/${id}/submit`, {
+                method: "POST",
+                headers: scopeHeaders
+            });
             if (!res.ok) throw new Error("Failed to submit");
         },
         onSuccess: () => {
@@ -50,7 +53,10 @@ export default function IntercompanyWorkbench() {
 
     const resubmitTransaction = useMutation({
         mutationFn: async (id: string) => {
-            const res = await fetch(`/api/intercompany/transactions/${id}/resubmit`, { method: "POST" });
+            const res = await fetch(`/api/intercompany/transactions/${id}/resubmit`, {
+                method: "POST",
+                headers: scopeHeaders
+            });
             if (!res.ok) throw new Error("Failed to resubmit");
         },
         onSuccess: () => {
@@ -73,7 +79,7 @@ export default function IntercompanyWorkbench() {
         mutationFn: async ({ id, action, rejectionReason }: { id: string, action: "APPROVE" | "REJECT", rejectionReason?: string }) => {
             const res = await fetch(`/api/intercompany/transactions/${id}/respond`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...scopeHeaders },
                 body: JSON.stringify({
                     action,
                     rejectionReason,

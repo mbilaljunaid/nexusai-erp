@@ -7,18 +7,23 @@ import { Badge } from "@/components/ui/badge";
 import { Zap, Plus, Trash2, CheckCircle } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { EnterpriseContextSwitcher } from "@/components/EnterpriseContextSwitcher";
+import { useEnterpriseStore } from "@/lib/store/enterprise";
 
 export default function WIPTracking() {
   const { toast } = useToast();
+  const inventoryOrgId = useEnterpriseStore((s) => s.invOrgId);
   const [newWIP, setNewWIP] = useState({ workOrder: "WO-001", operation: "Assembly", status: "queued" });
 
+  const headers = inventoryOrgId ? { "x-inventory-org-id": inventoryOrgId } : {};
+
   const { data: wipItems = [], isLoading } = useQuery({
-    queryKey: ["/api/wip"],
-    queryFn: () => fetch("/api/wip").then(r => r.json()),
+    queryKey: ["/api/wip", inventoryOrgId],
+    queryFn: () => fetch("/api/wip", { headers }).then(r => r.json()),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/wip", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    mutationFn: (data: any) => fetch("/api/wip", { method: "POST", headers: { "Content-Type": "application/json", ...headers }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/wip"] });
       setNewWIP({ workOrder: "WO-001", operation: "Assembly", status: "queued" });
@@ -27,7 +32,7 @@ export default function WIPTracking() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/wip/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => fetch(`/api/wip/${id}`, { method: "DELETE", headers }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/wip"] });
       toast({ title: "WIP item deleted" });
@@ -39,12 +44,15 @@ export default function WIPTracking() {
 
   return (
     <div className="space-y-6 p-4">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Zap className="h-8 w-8" />
-          WIP Tracking
-        </h1>
-        <p className="text-muted-foreground mt-2">Track work-in-process across operations</p>
+      <div className="flex justify-between items-start mb-6">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Zap className="h-8 w-8" />
+            WIP Tracking
+          </h1>
+          <p className="text-muted-foreground mt-2">Track work-in-process across operations</p>
+        </div>
+        <EnterpriseContextSwitcher type="inventory-org" />
       </div>
 
       <div className="grid grid-cols-4 gap-3">

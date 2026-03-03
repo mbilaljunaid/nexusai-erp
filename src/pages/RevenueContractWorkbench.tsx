@@ -155,7 +155,10 @@ export default function RevenueContractWorkbench() {
 
     const processMutation = useMutation({
         mutationFn: async () => {
-            const res = await fetch("/api/revenue/jobs/process-events", { method: "POST" });
+            const res = await fetch("/api/revenue/jobs/process-events", {
+                method: "POST",
+                headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
+            });
             if (!res.ok) throw new Error("Processing failed");
             return res.json();
         },
