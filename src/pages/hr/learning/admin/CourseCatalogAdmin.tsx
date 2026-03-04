@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Plus, ShieldCheck, Activity } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -53,13 +53,13 @@ export default function CourseCatalogAdmin() {
         }
     });
 
-    const columns: Column<any>[] = [
-        { header: "Course Title", accessorKey: "title", className: "font-medium" },
-        { header: "Provider", accessorKey: "provider" },
-        { header: "Category", accessorKey: "category", cell: (item) => item.category || "N/A" },
+    const columns: SpreadsheetColumn<any>[] = [
+        { header: "Course Title", id: "title", width: "150px", className: "font-medium" },
+        { header: "Provider", id: "provider", width: "150px" },
+        { header: "Category", id: "category", width: "150px", cell: (item) => item.category || "N/A" },
         {
             header: "Status",
-            accessorKey: "status",
+            id: "status", width: "150px",
             cell: (item) => (
                 <Badge variant={item.status === 'ACTIVE' ? 'default' : 'secondary'}>
                     {item.status}
@@ -68,15 +68,15 @@ export default function CourseCatalogAdmin() {
         },
         {
             header: "Validity",
-            accessorKey: "validityMonths",
+            id: "validityMonths", width: "150px",
             cell: (item) => item.validityMonths ? `${item.validityMonths} Months` : "-"
         },
         {
             header: "Price",
-            accessorKey: "price",
+            id: "price", width: "150px",
             cell: (item) => Number(item.price) > 0 ? `${item.currency} ${item.price}` : "Free"
         },
-        { header: "Created At", accessorKey: "createdAt", cell: (item) => new Date(item.createdAt).toLocaleDateString() },
+        { header: "Created At", id: "createdAt", width: "150px", cell: (item) => new Date(item.createdAt).toLocaleDateString() },
         {
             header: "Actions",
             id: "actions",
@@ -86,13 +86,13 @@ export default function CourseCatalogAdmin() {
         }
     ];
 
-    const auditColumns: Column<any>[] = [
-        { header: "Date", accessorKey: "createdAt", cell: (item) => new Date(item.createdAt).toLocaleString() },
-        { header: "Action", accessorKey: "action" },
-        { header: "Entity", accessorKey: "entityType" },
-        { header: "Entity ID", accessorKey: "entityId", className: "font-mono text-xs" },
-        { header: "Actor", accessorKey: "actorId" },
-        { header: "Details", accessorKey: "newValue", className: "truncate max-w-[200px]" },
+    const auditColumns: SpreadsheetColumn<any>[] = [
+        { header: "Date", id: "createdAt", width: "150px", cell: (item) => new Date(item.createdAt).toLocaleString() },
+        { header: "Action", id: "action", width: "150px" },
+        { header: "Entity", id: "entityType", width: "150px" },
+        { header: "Entity ID", id: "entityId", width: "150px", className: "font-mono text-xs" },
+        { header: "Actor", id: "actorId", width: "150px" },
+        { header: "Details", id: "newValue", width: "150px", className: "truncate max-w-[200px]" },
     ];
 
     return (
@@ -124,28 +124,20 @@ export default function CourseCatalogAdmin() {
 
                     <TabsContent value="courses" className="space-y-4">
                         <div className="bg-white rounded-md border">
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={courses || []}
                                 columns={columns}
                                 isLoading={isLoading}
-                                totalItems={totalCourses}
-                                page={page}
-                                pageSize={pageSize}
-                                onPageChange={setPage}
-                                filterColumn="title"
-                                filterPlaceholder="Search courses..."
-                            />
+                             onChange={() => {}} containerHeight="600px" />
                         </div>
                     </TabsContent>
 
                     <TabsContent value="audit" className="space-y-4">
                         <div className="bg-white rounded-md border">
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={auditLogs || []}
                                 columns={auditColumns}
-                                filterColumn="action"
-                                filterPlaceholder="Filter by Action..."
-                            />
+                             onChange={() => {}} containerHeight="600px" />
                         </div>
                     </TabsContent>
                 </Tabs>

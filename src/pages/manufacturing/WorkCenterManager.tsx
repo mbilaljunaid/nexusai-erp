@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -68,24 +68,24 @@ export default function WorkCenterManager() {
         }
     });
 
-    const columns: Column<WorkCenter>[] = [
+    const columns: SpreadsheetColumn<WorkCenter>[] = [
         {
             header: "Name",
-            accessorKey: "name",
+            id: "name", width: "150px",
             cell: (row: WorkCenter) => <span className="font-semibold">{row.name}</span>
         },
         {
             header: "Description",
-            accessorKey: "description",
+            id: "description", width: "150px",
         },
         {
             header: "Capacity",
-            accessorKey: "capacity",
+            id: "capacity", width: "150px",
             cell: (row: WorkCenter) => <span className="font-mono">{row.capacity} units/day</span>
         },
         {
             header: "Status",
-            accessorKey: "status",
+            id: "status", width: "150px",
             cell: (row: WorkCenter) => {
                 const colors = {
                     active: "default",
@@ -174,14 +174,11 @@ export default function WorkCenterManager() {
                 </Sheet>
             }
         >
-            <StandardTable
+            <InteractiveSpreadsheet
                 data={centers}
                 columns={columns}
                 isLoading={isLoading}
-                keyExtractor={(item) => item.id}
-                filterColumn="name"
-                filterPlaceholder="Filter by work center name..."
-            />
+             onChange={() => {}} containerHeight="600px" />
         </StandardPage>
     );
 }

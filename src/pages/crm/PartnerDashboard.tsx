@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Users, Plus, DollarSign, CheckCircle, XCircle, Clock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/ui/DataTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -53,6 +53,23 @@ export default function PartnerDashboard() {
     });
 
     if (!partner) return <div className="p-8">Loading Partner Profile...</div>;
+
+    const dealColumns: SpreadsheetColumn<any>[] = [
+        { id: "dealName", header: "Deal Name", width: "200px", cell: (row) => <span className="font-semibold">{row.dealName}</span> },
+        { id: "customerName", header: "Customer", width: "150px", cell: (row) => <span className="text-muted-foreground">{row.customerName}</span> },
+        { id: "stage", header: "Stage", width: "120px", cell: (row) => <span className="text-muted-foreground">{row.stage}</span> },
+        { id: "amount", header: "Amount", width: "120px", cell: (row) => <span className="font-medium">${Number(row.amount).toLocaleString()}</span> },
+        {
+            id: "status", header: "Status", width: "120px", cell: (row) => (
+                <span className={`text-xs px-2 py-1 rounded-full ${row.status === 'Approved' ? 'bg-green-100 text-green-800' :
+                    row.status === 'Rejected' ? 'bg-red-100 text-red-800' :
+                        'bg-amber-100 text-amber-800'
+                    }`}>
+                    {row.status}
+                </span>
+            )
+        }
+    ];
 
     return (
         <StandardPage
@@ -106,27 +123,16 @@ export default function PartnerDashboard() {
                     <CardTitle>Registered Deals</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="space-y-4">
+                    <div className="h-[400px]">
                         {deals.length === 0 ? (
-                            <p className="text-muted-foreground">No deals registered yet.</p>
+                            <div className="text-muted-foreground h-full flex items-center justify-center">No deals registered yet.</div>
                         ) : (
-                            deals.map((deal: any) => (
-                                <div key={deal.id} className="flex justify-between items-center border-b pb-4 last:border-0 last:pb-0">
-                                    <div>
-                                        <p className="font-semibold">{deal.dealName}</p>
-                                        <p className="text-sm text-muted-foreground">{deal.customerName} • {deal.stage}</p>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="font-medium">${Number(deal.amount).toLocaleString()}</p>
-                                        <span className={`text-xs px-2 py-1 rounded-full ${deal.status === 'Approved' ? 'bg-green-100 text-green-800' :
-                                            deal.status === 'Rejected' ? 'bg-red-100 text-red-800' :
-                                                'bg-amber-100 text-amber-800'
-                                            }`}>
-                                            {deal.status}
-                                        </span>
-                                    </div>
-                                </div>
-                            ))
+                            <InteractiveSpreadsheet
+                                columns={dealColumns}
+                                data={deals}
+                                onChange={() => { }}
+                                containerHeight="100%"
+                            />
                         )}
                     </div>
                 </CardContent>

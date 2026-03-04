@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -82,19 +82,23 @@ export default function CalendarManager() {
         }
     });
 
-    const columns: Column<Calendar>[] = [
+    const columns: SpreadsheetColumn<Calendar>[] = [
         {
+            id: "calendarCode",
             header: "Calendar Code",
-            accessorKey: "calendarCode",
+            width: "200px",
             cell: (row) => <div className="font-medium">{row.calendarCode}</div>
         },
         {
+            id: "description",
             header: "Description",
-            accessorKey: "description",
+            width: "250px",
+            cell: (row) => <span>{row.description}</span>
         },
         {
+            id: "weekendDays",
             header: "Weekend Days",
-            accessorKey: "weekendDays",
+            width: "200px",
             cell: (row) => (
                 <div className="flex gap-1">
                     {row.weekendDays.split(",").map((day: string) => (
@@ -104,8 +108,9 @@ export default function CalendarManager() {
             )
         },
         {
+            id: "status",
             header: "Status",
-            accessorKey: "status",
+            width: "150px",
             cell: (row) => (
                 <Badge variant={row.status === "active" ? "default" : "secondary"}>
                     {row.status}
@@ -113,9 +118,10 @@ export default function CalendarManager() {
             )
         },
         {
+            id: "createdAt",
             header: "Created",
-            accessorKey: "createdAt",
-            cell: (row) => new Date(row.createdAt).toLocaleDateString()
+            width: "150px",
+            cell: (row) => <span>{new Date(row.createdAt).toLocaleDateString()}</span>
         }
     ];
 
@@ -248,16 +254,17 @@ export default function CalendarManager() {
                         </div>
                     </div>
                 </CardHeader>
-                <CardContent>
-                    <StandardTable
-                        data={calendars || []}
-                        columns={columns}
-                        isLoading={isLoading}
-                        page={page + 1}
-                        pageSize={10}
-                        totalItems={calendars?.length || 0}
-                        onPageChange={(p) => setPage(p - 1)}
-                    />
+                <CardContent className="h-[600px]">
+                    {isLoading ? (
+                        <div className="text-center p-4">Loading calendars...</div>
+                    ) : (
+                        <InteractiveSpreadsheet
+                            data={calendars || []}
+                            columns={columns}
+                            onChange={() => { }}
+                            containerHeight="100%"
+                        />
+                    )}
                 </CardContent>
             </Card>
         </StandardPage>

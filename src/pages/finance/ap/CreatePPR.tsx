@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { ChevronRight, ChevronLeft, Save, Plus, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 const steps = [
     { id: 1, name: "Template & Criteria" },
@@ -126,24 +126,24 @@ export default function CreatePPR() {
         }
     };
 
-    const invoiceColumns: Column<any>[] = [
+    const invoiceColumns: SpreadsheetColumn<any>[] = [
         {
             header: "Select",
-            accessorKey: "id",
+            id: "id", width: "150px",
             cell: (row) => <Checkbox checked={selectedInvoices.has(row.id)} onCheckedChange={() => toggleInvoice(row.id)} />,
             className: "w-12 text-center"
         },
-        { header: "Supplier", accessorKey: "supplierId", cell: (r) => r.supplier?.name || "Unknown" },
-        { header: "Invoice Number", accessorKey: "invoiceNumber" },
-        { header: "Date", accessorKey: "invoiceDate", cell: (r) => new Date(r.invoiceDate).toLocaleDateString() },
-        { header: "Amount", accessorKey: "invoiceAmount", cell: (r) => `$${parseFloat(r.invoiceAmount).toLocaleString()}` },
-        { header: "Due Date", accessorKey: "dueDate", cell: (r) => r.dueDate ? new Date(r.dueDate).toLocaleDateString() : "-" }
+        { header: "Supplier", id: "supplierId", width: "150px", cell: (r) => r.supplier?.name || "Unknown" },
+        { header: "Invoice Number", id: "invoiceNumber", width: "150px" },
+        { header: "Date", id: "invoiceDate", width: "150px", cell: (r) => new Date(r.invoiceDate).toLocaleDateString() },
+        { header: "Amount", id: "invoiceAmount", width: "150px", cell: (r) => `$${parseFloat(r.invoiceAmount).toLocaleString()}` },
+        { header: "Due Date", id: "dueDate", width: "150px", cell: (r) => r.dueDate ? new Date(r.dueDate).toLocaleDateString() : "-" }
     ];
 
-    const paymentColumns: Column<any>[] = [
-        { header: "Payee (Supplier)", accessorKey: "supplierName" },
-        { header: "Invoices to Pay", accessorKey: "invoiceCount" },
-        { header: "Total Payment Amount", accessorKey: "totalAmount", cell: (r) => <span className="font-bold text-green-700">£{parseFloat(r.totalAmount).toLocaleString()}</span> }
+    const paymentColumns: SpreadsheetColumn<any>[] = [
+        { header: "Payee (Supplier)", id: "supplierName", width: "150px" },
+        { header: "Invoices to Pay", id: "invoiceCount", width: "150px" },
+        { header: "Total Payment Amount", id: "totalAmount", width: "150px", cell: (r) => <span className="font-bold text-green-700">£{parseFloat(r.totalAmount).toLocaleString()}</span> }
     ];
 
     return (
@@ -294,12 +294,11 @@ export default function CreatePPR() {
                                 <div className="flex justify-between items-center mb-2">
                                     <span className="text-sm text-muted-foreground">{eligibleInvoices?.data?.length || 0} eligible invoices found. {selectedInvoices.size} selected.</span>
                                 </div>
-                                <StandardTable
+                                <InteractiveSpreadsheet
                                     data={eligibleInvoices?.data || []}
                                     columns={invoiceColumns}
                                     isLoading={loadingInvoices}
-                                    filterColumn="invoiceNumber"
-                                />
+                                 onChange={() => {}} containerHeight="600px" />
                             </div>
                         )}
 
@@ -309,10 +308,10 @@ export default function CreatePPR() {
                                     <CheckCircle2 className="h-5 w-5" />
                                     <span>System has grouped <strong>{selectedInvoices.size}</strong> invoices into <strong>{proposedPayments.length}</strong> proposed payments based on Supplier grouping rules.</span>
                                 </div>
-                                <StandardTable
+                                <InteractiveSpreadsheet
                                     data={proposedPayments}
                                     columns={paymentColumns}
-                                />
+                                 onChange={() => {}} containerHeight="600px" />
                             </div>
                         )}
 

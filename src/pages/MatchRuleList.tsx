@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,14 +25,14 @@ export default function MatchRuleList() {
 
     // Table Columns
     const columns = [
-        { header: "Rule Name", accessorKey: "ruleName", sortable: true },
+        { header: "Rule Name", id: "ruleName", width: "150px", sortable: true },
         {
-            header: "Threshold", accessorKey: "matchScoreThreshold", cell: (row: any) => (
+            header: "Threshold", id: "matchScoreThreshold", width: "150px", cell: (row: any) => (
                 <Badge variant="outline" className="font-mono">{row.matchScoreThreshold}%</Badge>
             )
         },
         {
-            header: "Status", accessorKey: "activeFlag", cell: (row: any) => (
+            header: "Status", id: "activeFlag", width: "150px", cell: (row: any) => (
                 <div className="flex items-center gap-2">
                     {row.activeFlag ?
                         <CheckCircle2 className="w-4 h-4 text-green-600" /> :
@@ -44,7 +44,7 @@ export default function MatchRuleList() {
                 </div>
             )
         },
-        { header: "Description", accessorKey: "description" },
+        { header: "Description", id: "description", width: "150px" },
         {
             header: "Actions", id: "actions", cell: (row: any) => (
                 <Button variant="ghost" size="sm" onClick={() => setLocation(`/mdm/config/match-rules/${row.id}`)}>
@@ -136,13 +136,11 @@ export default function MatchRuleList() {
         >
             <Card>
                 <CardContent className="p-0">
-                    <StandardTable
+                    <InteractiveSpreadsheet
                         data={rules}
                         columns={columns}
                         isLoading={isLoading}
-                        filterColumn="ruleName"
-                        filterPlaceholder="Search rules..."
-                    />
+                     onChange={() => {}} containerHeight="600px" />
                 </CardContent>
             </Card>
         </StandardPage>

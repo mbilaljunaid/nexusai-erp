@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { FileText, Plus, Calendar, AlertTriangle, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/ui/DataTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -52,6 +52,32 @@ export default function ContractDashboard() {
         }
     });
 
+    const contractColumns: SpreadsheetColumn<any>[] = [
+        { id: "contractNumber", header: "Contract #", width: "150px", cell: (row) => <span>{row.contractNumber}</span> },
+        { id: "title", header: "Title", width: "250px", cell: (row) => <span>{row.title}</span> },
+        { id: "contractType", header: "Type", width: "120px", cell: (row) => <span>{row.contractType}</span> },
+        {
+            id: "status", header: "Status", width: "120px", cell: (row) => {
+                const val = row.status;
+                return (
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${val === 'Active' ? 'bg-green-100 text-green-700' : val === 'Expired' ? 'bg-red-100 text-red-700' : 'bg-slate-100'}`}>
+                        {val}
+                    </span>
+                );
+            }
+        },
+        { id: "totalAmount", header: "Value", width: "120px", cell: (row) => <span>${Number(row.totalAmount).toLocaleString()}</span> },
+        { id: "startDate", header: "Start Date", width: "120px", cell: (row) => <span>{row.startDate ? format(new Date(row.startDate), "MMM dd, yyyy") : "-"}</span> },
+        { id: "endDate", header: "End Date", width: "120px", cell: (row) => <span>{row.endDate ? format(new Date(row.endDate), "MMM dd, yyyy") : "-"}</span> },
+        {
+            id: "id", header: "Actions", width: "100px", cell: (row) => (
+                <Link href={`/crm/contracts/${row.id}`}>
+                    <Button variant="ghost" size="sm">View</Button>
+                </Link>
+            )
+        }
+    ];
+
     return (
         <StandardPage
             title="Contract Management"
@@ -81,31 +107,12 @@ export default function ContractDashboard() {
                 </div>
             )}
 
-            <div className="bg-white rounded-md border">
-                <DataTable
+            <div className="bg-white rounded-md border h-[500px]">
+                <InteractiveSpreadsheet
+                    columns={contractColumns}
                     data={contracts}
-                    columns={[
-                        { key: "contractNumber", header: "Contract #", sortable: true, filterable: true },
-                        { key: "title", header: "Title", sortable: true, filterable: true },
-                        { key: "contractType", header: "Type", sortable: true, filterable: true },
-                        {
-                            key: "status", header: "Status", sortable: true, filterable: true, render: (val) => (
-                                <span className={`px-2 py-1 rounded text-xs font-medium ${val === 'Active' ? 'bg-green-100 text-green-700' : val === 'Expired' ? 'bg-red-100 text-red-700' : 'bg-slate-100'}`}>
-                                    {val}
-                                </span>
-                            )
-                        },
-                        { key: "totalAmount", header: "Value", sortable: true, render: (val) => `$${Number(val).toLocaleString()}` },
-                        { key: "startDate", header: "Start Date", sortable: true, render: (val) => val ? format(new Date(val), "MMM dd, yyyy") : "-" },
-                        { key: "endDate", header: "End Date", sortable: true, render: (val) => val ? format(new Date(val), "MMM dd, yyyy") : "-" },
-                        {
-                            key: "id", header: "Actions", render: (_, row) => (
-                                <Link href={`/crm/contracts/${row.id}`}>
-                                    <Button variant="ghost" size="sm">View</Button>
-                                </Link>
-                            )
-                        }
-                    ]}
+                    onChange={() => { }}
+                    containerHeight="100%"
                 />
             </div>
 

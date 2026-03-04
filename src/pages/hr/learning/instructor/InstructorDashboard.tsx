@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { StandardTable, Column } from "@/components/ui/StandardTable"; // Assuming this path
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet"; // Assuming this path
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,13 +25,13 @@ export default function InstructorDashboard() {
         }
     });
 
-    const columns: Column<any>[] = [
-        { header: "Session Title", accessorKey: "title", className: "font-medium" },
-        { header: "Date", accessorKey: "date", cell: (item) => <div className="flex items-center gap-2"><Calendar className="h-4 w-4 text-muted-foreground" />{item.date}</div> },
-        { header: "Enrolled", accessorKey: "enrolled", cell: (item) => <div className="flex items-center gap-2"><Users className="h-4 w-4 text-muted-foreground" />{item.enrolled} Students</div> },
+    const columns: SpreadsheetColumn<any>[] = [
+        { header: "Session Title", id: "title", width: "150px", className: "font-medium" },
+        { header: "Date", id: "date", width: "150px", cell: (item) => <div className="flex items-center gap-2"><Calendar className="h-4 w-4 text-muted-foreground" />{item.date}</div> },
+        { header: "Enrolled", id: "enrolled", width: "150px", cell: (item) => <div className="flex items-center gap-2"><Users className="h-4 w-4 text-muted-foreground" />{item.enrolled} Students</div> },
         {
             header: "Status",
-            accessorKey: "status",
+            id: "status", width: "150px",
             cell: (item) => (
                 <Badge variant={item.status === 'COMPLETED' ? "secondary" : "default"}>
                     {item.status}
@@ -106,13 +106,11 @@ export default function InstructorDashboard() {
                                 <CardDescription>Manage attendance and view rosters for your assigned courses.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <StandardTable
+                                <InteractiveSpreadsheet
                                     data={teachingData || []}
                                     columns={columns}
                                     isLoading={isLoading}
-                                    filterColumn="title"
-                                    filterPlaceholder="Search sessions..."
-                                />
+                                 onChange={() => {}} containerHeight="600px" />
                             </CardContent>
                         </Card>
                     </TabsContent>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -238,22 +238,15 @@ export default function TrialBalance() {
                         </div>
                     ) : (
                         <div className="border rounded-lg overflow-hidden">
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={report?.rows || []}
-                                totalItems={report?.pagination?.total || 0}
-                                page={page}
-                                pageSize={pageSize}
-                                onPageChange={setPage}
-                                keyExtractor={(row: TrialBalanceRow) => row.ccid}
                                 isLoading={isLoading}
                                 onRowClick={(row: TrialBalanceRow) => setSelectedCCID(row.ccid)}
                                 isVirtualized={false} // Disabled for paginated high-level view
-                                filterColumn="code"
-                                filterPlaceholder="Filter by combinations..."
                                 columns={[
                                     {
                                         header: "Code Combination",
-                                        accessorKey: "code",
+                                        id: "code", width: "150px",
                                         width: "35%",
                                         cell: (row: TrialBalanceRow) => (
                                             <div className="flex flex-col">
@@ -266,7 +259,7 @@ export default function TrialBalance() {
                                     },
                                     {
                                         header: "Type",
-                                        accessorKey: "accountType",
+                                        id: "accountType", width: "150px",
                                         width: "15%",
                                         cell: (row: TrialBalanceRow) => (
                                             <Badge variant={row.accountType === "Asset" ? "default" : "secondary"} className="text-[10px] uppercase">
@@ -276,21 +269,21 @@ export default function TrialBalance() {
                                     },
                                     {
                                         header: "Debit",
-                                        accessorKey: "totalDebit",
+                                        id: "totalDebit", width: "150px",
                                         width: "15%",
                                         className: "text-right tabular-nums",
                                         cell: (row: TrialBalanceRow) => row.totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2 })
                                     },
                                     {
                                         header: "Credit",
-                                        accessorKey: "totalCredit",
+                                        id: "totalCredit", width: "150px",
                                         width: "15%",
                                         className: "text-right tabular-nums",
                                         cell: (row: TrialBalanceRow) => row.totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2 })
                                     },
                                     {
                                         header: "Net Balance",
-                                        accessorKey: "netBalance",
+                                        id: "netBalance", width: "150px",
                                         width: "15%",
                                         className: "text-right font-bold tabular-nums",
                                         cell: (row: TrialBalanceRow) => (
@@ -302,7 +295,7 @@ export default function TrialBalance() {
                                     {
                                         header: "",
                                         width: "5%",
-                                        cell: () => <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        cell: () => <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity"  onChange={() => {}} containerHeight="600px" />
                                     }
                                 ]}
                             />

@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Lock, Unlock, Loader2, Edit, Plus, Building2, MapPin, Users, Globe } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -92,15 +92,15 @@ export default function APSupplierDetail() {
     if (isLoading) return <div className="p-8 flex items-center justify-center"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
     if (!supplier) return <div className="p-8 text-center text-muted-foreground">Supplier not found.</div>;
 
-    const siteColumns: Column<any>[] = [
-        { header: "Site Name", accessorKey: "siteName", className: "font-medium text-indigo-600" },
-        { header: "Business Unit", accessorKey: "businessUnitId", className: "font-mono text-xs" },
-        { header: "Address", accessorKey: "address" },
-        { header: "IBAN", accessorKey: "iban", className: "font-mono text-xs" },
-        { header: "SWIFT", accessorKey: "swiftCode", className: "font-mono text-xs" },
+    const siteColumns: SpreadsheetColumn<any>[] = [
+        { header: "Site Name", id: "siteName", width: "150px", className: "font-medium text-indigo-600" },
+        { header: "Business Unit", id: "businessUnitId", width: "150px", className: "font-mono text-xs" },
+        { header: "Address", id: "address", width: "150px" },
+        { header: "IBAN", id: "iban", width: "150px", className: "font-mono text-xs" },
+        { header: "SWIFT", id: "swiftCode", width: "150px", className: "font-mono text-xs" },
         {
             header: "Status",
-            accessorKey: "active",
+            id: "active", width: "150px",
             cell: (row) => <Badge variant={row.active ? "default" : "secondary"}>{row.active ? "Active" : "Inactive"}</Badge>
         }
     ];
@@ -182,12 +182,11 @@ export default function APSupplierDetail() {
                             </Button>
                         </CardHeader>
                         <CardContent>
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={sites || []}
                                 columns={siteColumns}
                                 isLoading={sitesLoading}
-                                filterColumn="siteName"
-                            />
+                             onChange={() => {}} containerHeight="600px" />
                         </CardContent>
                     </Card>
                 </TabsContent>

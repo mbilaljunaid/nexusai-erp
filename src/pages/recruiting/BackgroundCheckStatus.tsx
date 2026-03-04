@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle2, ShieldAlert, ClipboardList } from 'lucide-react';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface BGCOrder {
     id: string; applicant_id: string; candidate_name: string; package_type: string;
@@ -39,6 +40,44 @@ export default function BackgroundCheckStatus() {
         const d = await fetch(`/api/recruiting/bgc/orders/${id}`).then(r => r.json());
         setSelectedOrder(d);
     };
+
+    const orderColumns: SpreadsheetColumn<any>[] = [
+        {
+            id: "candidate", header: "Candidate", width: "200px", cell: (row) => (
+                <div onClick={() => loadDetail(row.id)} className="cursor-pointer">
+                    <div style={{ fontWeight: 700 }}>{row.candidate_name ?? row.applicant_id}</div>
+                    <div style={{ fontSize: 10, color: '#9ca3af' }}>{row.applicant_id}</div>
+                </div>
+            )
+        },
+        { id: "package", header: "Package", width: "120px", cell: (row) => <div style={{ fontFamily: 'monospace', fontSize: 10, fontWeight: 700, color: '#374151' }}>{row.package_type}</div> },
+        {
+            id: "progress", header: "Progress", width: "200px", cell: (row) => {
+                const pct = row.total_components > 0 ? Math.round(Number(row.completed_components) / Number(row.total_components) * 100) : 0;
+                return (
+                    <div style={{ minWidth: 90 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: '#6b7280' }}>
+                            <span>{row.completed_components}/{row.total_components}</span>
+                            {Number(row.hits) > 0 && <span style={{ color: '#dc2626', fontWeight: 700 }}>⚑ {row.hits} hit{Number(row.hits) > 1 ? 's' : ''}</span>}
+                        </div>
+                        <div style={{ background: '#f3f4f6', borderRadius: 999, height: 5, marginTop: 2 }}>
+                            <div style={{ width: pct + '%', background: pct === 100 ? '#059669' : '#1d4ed8', height: '100%', borderRadius: 999 }} />
+                        </div>
+                    </div>
+                );
+            }
+        },
+        { id: "adjudication", header: "Adjudication", width: "120px", cell: (row) => row.adjudication ? <span style={{ fontWeight: 700, color: ADJ_CLR[row.adjudication] ?? '#6b7280' }}>{row.adjudication}</span> : <span style={{ color: '#9ca3af', fontSize: 10 }}>—</span> },
+        { id: "status", header: "Status", width: "150px", cell: (row) => <span style={{ padding: '2px 7px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: (STATUS_CLR[row.status] ?? '#6b7280') + '18', color: STATUS_CLR[row.status] ?? '#6b7280' }}>{row.status.replace(/_/g, ' ')}</span> },
+        {
+            id: "actions", header: "", width: "160px", cell: (row) => (
+                <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', width: '100%' }}>
+                    <button onClick={(e) => { e.stopPropagation(); loadDetail(row.id); }} style={{ padding: '3px 8px', background: '#f3f4f6', color: '#374151', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>View</button>
+                    {row.status === 'Initiated' && <button onClick={(e) => { e.stopPropagation(); consentMut.mutate(row.id); }} style={{ padding: '3px 8px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>Get Consent</button>}
+                </div>
+            )
+        }
+    ];
 
     return (
         <div style={{ padding: 24, maxWidth: 1300, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
@@ -96,45 +135,17 @@ export default function BackgroundCheckStatus() {
 
             <div style={{ display: 'flex', gap: 14 }}>
                 {/* Orders list */}
-                <div style={{ flex: 1 }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)' }}>
-                        <thead><tr style={{ background: '#f9fafb' }}>
-                            {['Candidate', 'Package', 'Progress', 'Adjudication', 'Status', ''].map(h => <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 700, color: '#374151', borderBottom: '2px solid #e5e7eb' }}>{h}</th>)}
-                        </tr></thead>
-                        <tbody>
-                            {orders.map(o => {
-                                const pct = o.total_components > 0 ? Math.round(Number(o.completed_components) / Number(o.total_components) * 100) : 0;
-                                return (
-                                    <tr key={o.id} onClick={() => loadDetail(o.id)} style={{ borderBottom: '1px solid #f3f4f6', cursor: 'pointer', background: selectedOrder?.id === o.id ? '#f0f9ff' : undefined }}>
-                                        <td style={{ padding: '9px 12px' }}>
-                                            <div style={{ fontWeight: 700 }}>{o.candidate_name ?? o.applicant_id}</div>
-                                            <div style={{ fontSize: 10, color: '#9ca3af' }}>{o.applicant_id}</div>
-                                        </td>
-                                        <td style={{ padding: '9px 12px', fontFamily: 'monospace', fontSize: 10, fontWeight: 700, color: '#374151' }}>{o.package_type}</td>
-                                        <td style={{ padding: '9px 12px', minWidth: 90 }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: '#6b7280' }}>
-                                                <span>{o.completed_components}/{o.total_components}</span>
-                                                {Number(o.hits) > 0 && <span style={{ color: '#dc2626', fontWeight: 700 }}>⚑ {o.hits} hit{Number(o.hits) > 1 ? 's' : ''}</span>}
-                                            </div>
-                                            <div style={{ background: '#f3f4f6', borderRadius: 999, height: 5, marginTop: 2 }}>
-                                                <div style={{ width: pct + '%', background: pct === 100 ? '#059669' : '#1d4ed8', height: '100%', borderRadius: 999 }} />
-                                            </div>
-                                        </td>
-                                        <td style={{ padding: '9px 12px' }}>
-                                            {o.adjudication ? <span style={{ fontWeight: 700, color: ADJ_CLR[o.adjudication] ?? '#6b7280' }}>{o.adjudication}</span> : <span style={{ color: '#9ca3af', fontSize: 10 }}>—</span>}
-                                        </td>
-                                        <td style={{ padding: '9px 12px' }}>
-                                            <span style={{ padding: '2px 7px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: (STATUS_CLR[o.status] ?? '#6b7280') + '18', color: STATUS_CLR[o.status] ?? '#6b7280' }}>{o.status.replace(/_/g, ' ')}</span>
-                                        </td>
-                                        <td style={{ padding: '9px 12px' }}>
-                                            {o.status === 'Initiated' && <button onClick={(e) => { e.stopPropagation(); consentMut.mutate(o.id); }} style={{ padding: '3px 8px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>Get Consent</button>}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                            {orders.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No orders</td></tr>}
-                        </tbody>
-                    </table>
+                <div style={{ flex: 1, height: 600, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)', border: '1px solid #e5e7eb' }}>
+                    {orders.length === 0 ? (
+                        <div style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No orders</div>
+                    ) : (
+                        <InteractiveSpreadsheet
+                            columns={orderColumns}
+                            data={orders.map(o => ({ ...o, _selected: o.id === selectedOrder?.id }))}
+                            onChange={() => { }}
+                            containerHeight="100%"
+                        />
+                    )}
                 </div>
 
                 {/* Detail panel */}

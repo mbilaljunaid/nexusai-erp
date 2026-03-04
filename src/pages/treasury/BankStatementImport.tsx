@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Upload, FileText, CheckCircle2, AlertCircle, Link2, BarChart3 } from 'lucide-react';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface ImportRecord {
     id: string;
@@ -73,6 +74,21 @@ export default function BankStatementImport() {
 
     const unmatched = transactions.filter(t => t.match_status === 'Unmatched').length;
     const matched = transactions.filter(t => t.match_status === 'Matched').length;
+
+    const txColumns: SpreadsheetColumn<any>[] = [
+        { id: "date", header: "Date", width: "120px", cell: (row) => <span className="mono">{row.transaction_date}</span> },
+        { id: "direction", header: "Direction", width: "100px", cell: (row) => <span className={`dir-badge ${row.direction === 'Credit' ? 'cr' : 'dr'}`}>{row.direction}</span> },
+        { id: "amount", header: "Amount", width: "120px", cell: (row) => <span className={`mono ${row.direction === 'Credit' ? 'green' : 'red'}`}>{fmt(row.amount, row.currency_code)}</span> },
+        { id: "description", header: "Description", width: "250px", cell: (row) => <span className="desc">{row.description ?? '—'}</span> },
+        { id: "ref", header: "Ref", width: "120px", cell: (row) => <span className="mono small">{row.bank_ref ?? '—'}</span> },
+        {
+            id: "status", header: "Status", width: "150px", cell: (row) => (
+                row.match_status === 'Matched'
+                    ? <span className="matched"><CheckCircle2 size={12} /> Matched</span>
+                    : <span className="unmatched"><AlertCircle size={12} /> {row.match_status}</span>
+            )
+        }
+    ];
 
     return (
         <div className="bsi-container">
@@ -157,26 +173,18 @@ export default function BankStatementImport() {
                                     <button key={s} className={`filter-pill ${matchFilter === s ? 'active' : ''}`} onClick={() => setMatchFilter(s)}>{s || 'All'}</button>
                                 ))}
                             </div>
-                            <table className="tx-table">
-                                <thead><tr><th>Date</th><th>Direction</th><th>Amount</th><th>Description</th><th>Ref</th><th>Status</th></tr></thead>
-                                <tbody>
-                                    {transactions.map(tx => (
-                                        <tr key={tx.id} className="tx-row">
-                                            <td className="mono">{tx.transaction_date}</td>
-                                            <td><span className={`dir-badge ${tx.direction === 'Credit' ? 'cr' : 'dr'}`}>{tx.direction}</span></td>
-                                            <td className={`mono ${tx.direction === 'Credit' ? 'green' : 'red'}`}>{fmt(tx.amount, tx.currency_code)}</td>
-                                            <td className="desc">{tx.description ?? '—'}</td>
-                                            <td className="mono small">{tx.bank_ref ?? '—'}</td>
-                                            <td>
-                                                {tx.match_status === 'Matched'
-                                                    ? <span className="matched"><CheckCircle2 size={12} /> Matched</span>
-                                                    : <span className="unmatched"><AlertCircle size={12} /> {tx.match_status}</span>}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {transactions.length === 0 && <tr><td colSpan={6} className="empty">No transactions</td></tr>}
-                                </tbody>
-                            </table>
+                            <div className="h-[400px]">
+                                {transactions.length === 0 ? (
+                                    <div className="p-8 text-center text-gray-500 h-full flex items-center justify-center">No transactions</div>
+                                ) : (
+                                    <InteractiveSpreadsheet
+                                        columns={txColumns}
+                                        data={transactions}
+                                        onChange={() => { }}
+                                        containerHeight="100%"
+                                    />
+                                )}
+                            </div>
                         </>
                     ) : (
                         <div className="no-select">

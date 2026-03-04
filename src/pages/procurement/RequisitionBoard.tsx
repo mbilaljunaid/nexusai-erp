@@ -7,7 +7,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface Requisition {
     id: number | string;
@@ -34,24 +34,24 @@ export default function RequisitionBoard() {
             });
     };
 
-    const columns: Column<Requisition>[] = [
+    const columns: SpreadsheetColumn<Requisition>[] = [
         {
-            accessorKey: "reqNumber",
+            id: "reqNumber", width: "150px",
             header: "Req Number",
             cell: (item) => <span className="font-semibold">{item.reqNumber}</span>
         },
         {
-            accessorKey: "description",
+            id: "description", width: "150px",
             header: "Description",
             cell: (item) => <span>{item.description}</span>
         },
         {
-            accessorKey: "totalAmount",
+            id: "totalAmount", width: "150px",
             header: "Total",
             cell: (item) => <span>${Number(item.totalAmount).toLocaleString()}</span>
         },
         {
-            accessorKey: "status",
+            id: "status", width: "150px",
             header: "Status",
             cell: (item) => (
                 <Badge variant={
@@ -103,13 +103,11 @@ export default function RequisitionBoard() {
                 </Link>
             }
         >
-            <StandardTable
+            <InteractiveSpreadsheet
                 data={requisitions}
                 columns={columns}
                 isLoading={isLoading}
-                filterColumn="reqNumber"
-                filterPlaceholder="Search requisitions..."
-            />
+             onChange={() => {}} containerHeight="600px" />
         </StandardPage>
     );
 }

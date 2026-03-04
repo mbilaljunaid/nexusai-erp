@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { DataTable } from "@/components/ui/DataTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Package, Truck, CheckCircle, ClipboardList, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -69,44 +69,43 @@ export default function FulfillmentWorkbench() {
     });
 
     // Columns for Orders
-    const orderColumns = [
-        { accessorKey: "orderNumber", header: "Order #" },
-        { accessorKey: "customer", header: "Customer" }, // Need join or simple display
-        { accessorKey: "totalAmount", header: "Value" },
-        { accessorKey: "requestedDate", header: "Due Date" },
+    const orderColumns: SpreadsheetColumn<any>[] = [
         {
             id: "select",
-            header: "Select",
-            cell: ({ row }: any) => (
+            header: "",
+            width: "50px",
+            cell: (row: any) => (
                 <input
                     type="checkbox"
-                    aria-label={`Select order ${row.original.orderNumber}`}
-                    checked={selectedOrders.includes(row.original.id)}
+                    aria-label={`Select order ${row.orderNumber}`}
+                    checked={selectedOrders.includes(row.id)}
                     onChange={(e) => {
-                        if (e.target.checked) setSelectedOrders([...selectedOrders, row.original.id]);
-                        else setSelectedOrders(selectedOrders.filter(id => id !== row.original.id));
+                        if (e.target.checked) setSelectedOrders([...selectedOrders, row.id]);
+                        else setSelectedOrders(selectedOrders.filter(id => id !== row.id));
                     }}
                 />
             )
-        }
+        },
+        { id: "orderNumber", header: "Order #", width: "150px", cell: (row) => <span className="font-medium text-white">{row.orderNumber}</span> },
+        { id: "totalAmount", header: "Total Amount", width: "150px", cell: (row) => <span>${Number(row.totalAmount).toFixed(2)}</span> },
+        { id: "status", header: "Status", width: "150px", cell: (row) => <Badge variant="secondary">{row.status}</Badge> }
     ];
 
     // Columns for Tasks
-    const taskColumns = [
-        { accessorKey: "taskNumber", header: "Task #" },
-        { accessorKey: "item", header: "Item" }, // Need generic join logic or just ID
-        { accessorKey: "quantityPlanned", header: "Qty To Pick" },
-        { accessorKey: "status", header: "Status", cell: ({ row }: any) => <Badge>{row.original.status}</Badge> },
+    const taskColumns: SpreadsheetColumn<any>[] = [
+        { id: "taskNumber", header: "Task #", width: "150px", cell: (row) => <span className="font-medium text-white">{row.taskNumber}</span> },
+        { id: "itemId", header: "Item ID", width: "150px", cell: (row) => <span>{row.itemId}</span> },
+        { id: "quantity", header: "Qty", width: "150px", cell: (row) => <span>{row.quantityPlanned} {row.uom}</span> },
         {
             id: "actions",
             header: "Action",
-            cell: ({ row }: any) => (
+            width: "150px",
+            cell: (row: any) => (
                 <Button
                     size="sm"
-                    onClick={() => confirmTaskMutation.mutate({ taskId: row.original.id, quantity: Number(row.original.quantityPlanned) })}
-                    disabled={row.original.status !== 'PENDING'}
+                    onClick={() => confirmTaskMutation.mutate({ taskId: row.id, quantity: Number(row.quantityPlanned) })}
                 >
-                    Confirm Pick
+                    Confirm
                 </Button>
             )
         }
@@ -172,43 +171,17 @@ export default function FulfillmentWorkbench() {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            {/* Simplified Table for now - ideally use reusable DataTable but columns vary */}
-                            <div className="rounded-md border border-white/10">
-                                <table className="w-full text-sm text-left text-white/70">
-                                    <thead className="bg-white/5">
-                                        <tr>
-                                            <th className="p-4">Select</th>
-                                            <th className="p-4">Order #</th>
-                                            <th className="p-4">Total Amount</th>
-                                            <th className="p-4">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {readyOrders.map((order: any) => (
-                                            <tr key={order.id} className="border-b border-white/5">
-                                                <td className="p-4">
-                                                    <input
-                                                        type="checkbox"
-                                                        aria-label={`Select order ${order.orderNumber}`}
-                                                        checked={selectedOrders.includes(order.id)}
-                                                        onChange={(e) => {
-                                                            if (e.target.checked) setSelectedOrders([...selectedOrders, order.id]);
-                                                            else setSelectedOrders(selectedOrders.filter(id => id !== order.id));
-                                                        }}
-                                                    />
-                                                </td>
-                                                <td className="p-4 font-medium text-white">{order.orderNumber}</td>
-                                                <td className="p-4">${Number(order.totalAmount).toFixed(2)}</td>
-                                                <td className="p-4"><Badge variant="secondary">{order.status}</Badge></td>
-                                            </tr>
-                                        ))}
-                                        {readyOrders.length === 0 && (
-                                            <tr>
-                                                <td colSpan={4} className="p-4 text-center text-white/40">No orders ready for fulfillment</td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
+                            <div className="rounded-md border border-white/10 h-[400px]">
+                                {readyOrders.length === 0 ? (
+                                    <div className="p-8 text-center text-white/40 h-full flex items-center justify-center">No orders ready for fulfillment</div>
+                                ) : (
+                                    <InteractiveSpreadsheet
+                                        columns={orderColumns}
+                                        data={readyOrders}
+                                        onChange={() => { }}
+                                        containerHeight="100%"
+                                    />
+                                )}
                             </div>
                         </CardContent>
                     </Card>
@@ -220,39 +193,17 @@ export default function FulfillmentWorkbench() {
                             <CardTitle className="text-white/90">Picking Queue</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="rounded-md border border-white/10">
-                                <table className="w-full text-sm text-left text-white/70">
-                                    <thead className="bg-white/5">
-                                        <tr>
-                                            <th className="p-4">Task #</th>
-                                            <th className="p-4">Item ID</th>
-                                            <th className="p-4">Qty</th>
-                                            <th className="p-4">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {tasks.map((task: any) => (
-                                            <tr key={task.id} className="border-b border-white/5">
-                                                <td className="p-4 font-medium text-white">{task.taskNumber}</td>
-                                                <td className="p-4">{task.itemId}</td>
-                                                <td className="p-4">{task.quantityPlanned} {task.uom}</td>
-                                                <td className="p-4">
-                                                    <Button
-                                                        size="sm"
-                                                        onClick={() => confirmTaskMutation.mutate({ taskId: task.id, quantity: Number(task.quantityPlanned) })}
-                                                    >
-                                                        Confirm
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                        {tasks.length === 0 && (
-                                            <tr>
-                                                <td colSpan={4} className="p-4 text-center text-white/40">No pending tasks</td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
+                            <div className="rounded-md border border-white/10 h-[400px]">
+                                {tasks.length === 0 ? (
+                                    <div className="p-8 text-center text-white/40 h-full flex items-center justify-center">No pending tasks</div>
+                                ) : (
+                                    <InteractiveSpreadsheet
+                                        columns={taskColumns}
+                                        data={tasks}
+                                        onChange={() => { }}
+                                        containerHeight="100%"
+                                    />
+                                )}
                             </div>
                         </CardContent>
                     </Card>

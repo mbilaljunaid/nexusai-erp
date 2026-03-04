@@ -21,7 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { Input } from "@/components/ui/input";
 import { MetricCard } from "@/components/gl/premium/MetricCard";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { SideSheet } from "@/components/gl/premium/SideSheet";
 import { format } from "date-fns";
 import { api } from "@/lib/api";
@@ -83,10 +83,10 @@ export default function JournalEntries() {
     }
   };
 
-  const columns: Column<GlJournal>[] = [
+  const columns: SpreadsheetColumn<GlJournal>[] = [
     {
       header: "Batch #",
-      accessorKey: "journalNumber",
+      id: "journalNumber", width: "150px",
       width: "15%",
       cell: (item) => <span className="font-mono font-bold text-indigo-600">{item.journalNumber}</span>
     },
@@ -102,7 +102,7 @@ export default function JournalEntries() {
     },
     {
       header: "Description",
-      accessorKey: "description",
+      id: "description", width: "150px",
       width: "35%",
       cell: (item: any) => (
         <div className="flex flex-col">
@@ -208,16 +208,12 @@ export default function JournalEntries() {
           </div>
         </CardHeader>
         <CardContent className="p-0">
-          <StandardTable
+          <InteractiveSpreadsheet
             data={journalResponse?.data || []}
             columns={columns}
             isLoading={isLoading}
             onRowClick={handleRowClick}
-            page={page}
-            pageSize={pageSize}
-            totalItems={journalResponse?.total}
-            onPageChange={setPage}
-          />
+           onChange={() => {}} containerHeight="600px" />
         </CardContent>
       </Card>
 

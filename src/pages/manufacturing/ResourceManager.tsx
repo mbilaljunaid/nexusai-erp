@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -48,34 +48,41 @@ export default function ResourceManager() {
         }
     });
 
-    const columns: Column<Resource>[] = [
+    const columns: SpreadsheetColumn<Resource>[] = [
         {
+            id: "resourceCode",
             header: "Code",
-            accessorKey: "resourceCode",
+            width: "150px",
             cell: (row: Resource) => <span className="font-mono font-bold text-blue-600">{row.resourceCode}</span>
         },
         {
+            id: "name",
             header: "Name",
-            accessorKey: "name",
+            width: "250px",
+            cell: (row: Resource) => <span>{row.name}</span>
         },
         {
+            id: "type",
             header: "Type",
-            accessorKey: "type",
+            width: "150px",
             cell: (row: Resource) => <Badge variant="outline">{row.type}</Badge>
         },
         {
+            id: "costPerHour",
             header: "Cost/Hr",
-            accessorKey: "costPerHour",
+            width: "150px",
             cell: (row: Resource) => <span>${Number(row.costPerHour).toLocaleString()}</span>
         },
         {
+            id: "capacityPerHour",
             header: "Capacity",
-            accessorKey: "capacityPerHour",
+            width: "150px",
             cell: (row: Resource) => <span>{row.capacityPerHour} units/hr</span>
         },
         {
+            id: "status",
             header: "Status",
-            accessorKey: "status",
+            width: "150px",
             cell: (row: Resource) => (
                 <Badge variant={row.status === "active" ? "default" : "secondary"}>
                     {row.status}
@@ -153,14 +160,18 @@ export default function ResourceManager() {
                 </Sheet>
             }
         >
-            <StandardTable
-                data={resources}
-                columns={columns}
-                isLoading={isLoading}
-                keyExtractor={(item) => item.id}
-                filterColumn="name"
-                filterPlaceholder="Filter by name..."
-            />
+            <div className="h-[600px]">
+                {isLoading ? (
+                    <div className="p-4 text-center">Loading resources...</div>
+                ) : (
+                    <InteractiveSpreadsheet
+                        columns={columns}
+                        data={resources}
+                        onChange={() => { }}
+                        containerHeight="100%"
+                    />
+                )}
+            </div>
         </StandardPage>
     );
 }

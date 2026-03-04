@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -195,10 +195,10 @@ export default function CoaStructureSetup() {
         createMutation.mutate(formData);
     };
 
-    const columns: Column<GlCoaStructure>[] = [
-        { header: "Structure Name", accessorKey: "name", className: "font-medium" },
-        { header: "Description", accessorKey: "description" },
-        { header: "Delimiter", accessorKey: "delimiter", cell: (item) => <Badge variant="outline">{item.delimiter}</Badge> },
+    const columns: SpreadsheetColumn<GlCoaStructure>[] = [
+        { header: "Structure Name", id: "name", width: "150px", className: "font-medium" },
+        { header: "Description", id: "description", width: "150px" },
+        { header: "Delimiter", id: "delimiter", width: "150px", cell: (item) => <Badge variant="outline">{item.delimiter}</Badge> },
         {
             header: "Actions",
             id: "actions",
@@ -221,12 +221,11 @@ export default function CoaStructureSetup() {
                 </Button>
             }
         >
-            <StandardTable
+            <InteractiveSpreadsheet
                 data={structures}
                 columns={columns}
                 isLoading={isLoading}
-                filterColumn="name"
-            />
+             onChange={() => {}} containerHeight="600px" />
 
             {/* Create Sheet */}
             <Sheet open={isAddOpen} onOpenChange={setIsAddOpen}>

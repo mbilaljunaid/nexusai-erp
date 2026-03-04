@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { MapPin, AlertTriangle, Package, Zap, TrendingUp } from 'lucide-react';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface Shipment {
     id: string;
@@ -81,6 +82,29 @@ export default function ShipmentTracking() {
     const inTransit = shipments.filter(s => s.current_status === 'InTransit').length;
     const exceptions = shipments.filter(s => s.current_status === 'Exception').length;
     const delivered = shipments.filter(s => s.current_status === 'Delivered').length;
+
+    const performanceColumns: SpreadsheetColumn<any>[] = [
+        { id: "carrier", header: "Carrier SCAC", width: "150px", cell: (row) => <span className="mono bold">{row.carrier_scac}</span> },
+        { id: "total", header: "Total", width: "100px", cell: (row) => <span className="mono">{row.total_shipments}</span> },
+        { id: "delivered", header: "Delivered", width: "100px", cell: (row) => <span className="mono green">{row.delivered}</span> },
+        { id: "exceptions", header: "Exceptions", width: "100px", cell: (row) => <span className="mono red">{row.exceptions}</span> },
+        { id: "ontime", header: "On-Time %", width: "150px", cell: (row) => <strong className="mono">{Number(row.on_time_pct).toFixed(1)}%</strong> },
+        {
+            id: "score", header: "Score", width: "200px", cell: (row) => (
+                <div className="perf-bar-bg w-full">
+                    <div className="perf-bar" style={{ width: `${row.on_time_pct}%`, background: Number(row.on_time_pct) >= 95 ? '#059669' : Number(row.on_time_pct) >= 85 ? '#d97706' : '#dc2626' }} />
+                </div>
+            )
+        }
+    ];
+
+    const modeColumns: SpreadsheetColumn<any>[] = [
+        { id: "mode", header: "Mode", width: "150px", cell: (row) => <span className="mono bold" style={{ color: row.mode === modeResult?.recommended?.mode ? '#059669' : 'inherit' }}>{row.mode}</span> },
+        { id: "cost", header: "Cost", width: "150px", cell: (row) => <span className="mono">${row.cost?.toFixed(2)}</span> },
+        { id: "transit", header: "Transit", width: "100px", cell: (row) => <span>{row.transitDays}d</span> },
+        { id: "co2", header: "CO₂ (kg)", width: "150px", cell: (row) => <span>{row.co2Kg?.toFixed(1)}</span> },
+        { id: "score", header: "Score", width: "100px", cell: (row) => <strong>{(row.score * 100).toFixed(0)}</strong> }
+    ];
 
     return (
         <div className="st-container">
@@ -186,27 +210,17 @@ export default function ShipmentTracking() {
             )}
 
             {activeTab === 'performance' && (
-                <div className="perf-panel">
-                    <table className="perf-table">
-                        <thead><tr><th>Carrier SCAC</th><th>Total</th><th>Delivered</th><th>Exceptions</th><th>On-Time %</th><th>Score</th></tr></thead>
-                        <tbody>
-                            {performance.map(p => (
-                                <tr key={p.carrier_scac} className="perf-row">
-                                    <td className="mono bold">{p.carrier_scac}</td>
-                                    <td className="mono">{p.total_shipments}</td>
-                                    <td className="mono green">{p.delivered}</td>
-                                    <td className="mono red">{p.exceptions}</td>
-                                    <td className="mono"><strong>{Number(p.on_time_pct).toFixed(1)}%</strong></td>
-                                    <td>
-                                        <div className="perf-bar-bg">
-                                            <div className="perf-bar" style={{ width: `${p.on_time_pct}%`, background: Number(p.on_time_pct) >= 95 ? '#059669' : Number(p.on_time_pct) >= 85 ? '#d97706' : '#dc2626' }} />
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                            {performance.length === 0 && <tr><td colSpan={6} className="empty">No performance data</td></tr>}
-                        </tbody>
-                    </table>
+                <div className="perf-panel h-[500px]">
+                    {performance.length === 0 ? (
+                        <div className="flex items-center justify-center p-8 text-gray-500 h-full">No performance data</div>
+                    ) : (
+                        <InteractiveSpreadsheet
+                            columns={performanceColumns}
+                            data={performance}
+                            onChange={() => { }}
+                            containerHeight="100%"
+                        />
+                    )}
                 </div>
             )}
 
@@ -232,20 +246,14 @@ export default function ShipmentTracking() {
                                 <div className="mr-rec-mode">{modeResult.recommended?.mode}</div>
                                 <div className="mr-rec-sub">${modeResult.recommended?.cost?.toFixed(2)} · {modeResult.recommended?.transitDays}d · {modeResult.recommended?.co2Kg?.toFixed(1)}kg CO₂</div>
                             </div>
-                            <table className="opt-table">
-                                <thead><tr><th>Mode</th><th>Cost</th><th>Transit</th><th>CO₂ (kg)</th><th>Score</th></tr></thead>
-                                <tbody>
-                                    {modeResult.options?.map((o: any) => (
-                                        <tr key={o.mode} className={o.mode === modeResult.recommended?.mode ? 'opt-rec' : ''}>
-                                            <td className="mono bold">{o.mode}</td>
-                                            <td className="mono">${o.cost?.toFixed(2)}</td>
-                                            <td>{o.transitDays}d</td>
-                                            <td>{o.co2Kg?.toFixed(1)}</td>
-                                            <td><strong>{(o.score * 100).toFixed(0)}</strong></td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                            <div className="h-64 mt-4">
+                                <InteractiveSpreadsheet
+                                    columns={modeColumns}
+                                    data={modeResult.options || []}
+                                    onChange={() => { }}
+                                    containerHeight="100%"
+                                />
+                            </div>
                         </div>
                     )}
                 </div>

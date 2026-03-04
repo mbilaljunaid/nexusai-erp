@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -85,13 +85,13 @@ export default function QualityManager() {
         }
     });
 
-    const columns: Column<Inspection>[] = [
-        { header: "Inspection ID", accessorKey: "id", cell: (row: Inspection) => <span className="font-mono text-xs">{row.id.substring(0, 8)}</span> },
-        { header: "Work Order", accessorKey: "productionOrderId", cell: (row: any) => <span className="font-semibold">{row.orderNumber || row.productionOrderId.substring(0, 8) + '...'}</span> },
-        { header: "Status", accessorKey: "status", cell: (row: Inspection) => <Badge variant={row.status === "pass" ? "default" : row.status === "fail" ? "destructive" : "secondary"}>{row.status.toUpperCase()}</Badge> },
-        { header: "Date", accessorKey: "inspectionDate", cell: (row: Inspection) => row.inspectionDate ? new Date(row.inspectionDate).toLocaleDateString() : '-' },
+    const columns: SpreadsheetColumn<Inspection>[] = [
+        { id: "id", header: "Inspection ID", width: "150px", cell: (row: Inspection) => <span className="font-mono text-xs">{row.id.substring(0, 8)}</span> },
+        { id: "productionOrderId", header: "Work Order", width: "150px", cell: (row: any) => <span className="font-semibold">{row.orderNumber || row.productionOrderId.substring(0, 8) + '...'}</span> },
+        { id: "status", header: "Status", width: "150px", cell: (row: Inspection) => <Badge variant={row.status === "pass" ? "default" : row.status === "fail" ? "destructive" : "secondary"}>{row.status.toUpperCase()}</Badge> },
+        { id: "inspectionDate", header: "Date", width: "150px", cell: (row: Inspection) => <span>{row.inspectionDate ? new Date(row.inspectionDate).toLocaleDateString() : '-'}</span> },
         {
-            header: "Actions", id: "actions", cell: (row: Inspection) => (
+            id: "actions", header: "Actions", width: "150px", cell: (row: Inspection) => (
                 <Button variant="ghost" size="sm" onClick={() => { setSelectedInspection(row); setIsSheetOpen(true); }}>
                     <Search className="h-4 w-4 mr-1" /> View/Edit
                 </Button>
@@ -130,18 +130,18 @@ export default function QualityManager() {
                 </TabsList>
 
                 <TabsContent value="inspections">
-                    <StandardTable
-                        data={inspections}
-                        columns={columns}
-                        isLoading={isLoading}
-                        keyExtractor={(item) => item.id}
-                        filterColumn="productionOrderId"
-                        filterPlaceholder="Filter by work order..."
-                        page={page}
-                        pageSize={pageSize}
-                        totalItems={totalItems}
-                        onPageChange={setPage}
-                    />
+                    <div className="h-[600px]">
+                        {isLoading ? (
+                            <div className="text-center p-4">Loading inspections...</div>
+                        ) : (
+                            <InteractiveSpreadsheet
+                                data={inspections}
+                                columns={columns}
+                                onChange={() => { }}
+                                containerHeight="100%"
+                            />
+                        )}
+                    </div>
                 </TabsContent>
 
                 <TabsContent value="nonconformances">

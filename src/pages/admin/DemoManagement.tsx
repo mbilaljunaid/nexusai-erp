@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Pagination } from '@/components/admin/Pagination';
 import { ViewModeToggle } from '@/components/admin/ViewModeToggle';
-import { DataTable, DataTableColumn } from '@/components/admin/DataTable';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from '@/components/ui/InteractiveSpreadsheet';
 import { useDemoEnvironments, useDeleteDemoEnvironment, useUpdateDemoStatus } from '@/hooks/admin/useAdminData';
 import { exportToCSV } from '@/utils/exportUtils';
 import { toast } from 'sonner';
@@ -176,12 +176,11 @@ export default function DemoManagement() {
     };
 
     // Table columns configuration
-    const tableColumns: DataTableColumn<Demo>[] = [
+    const tableColumns: SpreadsheetColumn<Demo>[] = [
         {
             id: 'name',
             header: 'Name',
-            accessorKey: 'name',
-            sortable: true,
+            width: '250px',
             cell: (demo) => (
                 <div>
                     <div className="font-medium">{demo.name || demo.slug}</div>
@@ -192,7 +191,7 @@ export default function DemoManagement() {
         {
             id: 'status',
             header: 'Status',
-            sortable: true,
+            width: '120px',
             cell: (demo) => (
                 <Badge variant={
                     demo.status === 'active' ? 'default' :
@@ -205,18 +204,19 @@ export default function DemoManagement() {
         {
             id: 'createdAt',
             header: 'Created',
-            sortable: true,
-            cell: (demo) => new Date(demo.createdAt).toLocaleDateString(),
+            width: '120px',
+            cell: (demo) => <span>{new Date(demo.createdAt).toLocaleDateString()}</span>,
         },
         {
             id: 'expiresAt',
             header: 'Expires',
-            sortable: true,
-            cell: (demo) => demo.expiresAt ? new Date(demo.expiresAt).toLocaleDateString() : 'Never',
+            width: '120px',
+            cell: (demo) => <span>{demo.expiresAt ? new Date(demo.expiresAt).toLocaleDateString() : 'Never'}</span>,
         },
         {
             id: 'actions',
             header: 'Actions',
+            width: '150px',
             cell: (demo) => (
                 <div className="flex items-center gap-2">
                     <Button variant="ghost" size="sm" onClick={() => {
@@ -407,7 +407,7 @@ export default function DemoManagement() {
                 <EditDemoDialog
                     open={editDialogOpen}
                     onOpenChange={setEditDialogOpen}
-                    demo={selectedDemo}
+                    demo={selectedDemo as any}
                 />
 
                 {/* Loading State */}
@@ -451,13 +451,14 @@ export default function DemoManagement() {
 
                 {!isLoading && !error && paginatedDemos.length > 0 && (
                     viewMode === 'table' ? (
-                        <DataTable
-                            data={paginatedDemos}
-                            columns={tableColumns}
-                            sortConfig={sortConfig}
-                            onSort={(key) => handleSort(key as keyof Demo)}
-                            getRowId={getRowId}
-                        />
+                        <div className="h-[500px]">
+                            <InteractiveSpreadsheet
+                                columns={tableColumns}
+                                data={paginatedDemos}
+                                onChange={() => { }}
+                                containerHeight="100%"
+                            />
+                        </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {paginatedDemos.map((demo: Demo) => (

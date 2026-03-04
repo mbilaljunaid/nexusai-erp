@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { DashboardWidget } from "@/components/layout/StandardDashboard";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function WarehouseOperations() {
     const { toast } = useToast();
@@ -67,6 +68,33 @@ export default function WarehouseOperations() {
             queryClient.invalidateQueries({ queryKey: ["/api/scm/wms/tasks"] });
         }
     });
+
+    const readyOrderColumns: SpreadsheetColumn<any>[] = [
+        {
+            id: "select",
+            header: "",
+            width: "50px",
+            cell: (row: any) => (
+                <div className="flex justify-center items-center h-full w-full">
+                    <input
+                        type="checkbox"
+                        title={`Select order ${row.orderNumber}`}
+                        aria-label={`Select order ${row.orderNumber}`}
+                        checked={selectedOrders.includes(row.id)}
+                        onChange={(e) => {
+                            if (e.target.checked) setSelectedOrders([...selectedOrders, row.id]);
+                            else setSelectedOrders(selectedOrders.filter(id => id !== row.id));
+                        }}
+                        className="rounded border-slate-700 bg-slate-900"
+                    />
+                </div>
+            )
+        },
+        { id: "orderNumber", header: "Order Number", width: "150px", cell: (row) => <span className="font-mono text-blue-400">{row.orderNumber}</span> },
+        { id: "totalAmount", header: "Total Amount", width: "150px", cell: (row) => <span className="font-medium">${Number(row.totalAmount).toLocaleString()}</span> },
+        { id: "priority", header: "Priority", width: "150px", cell: (row) => <Badge variant="outline" className="border-orange-500/20 text-orange-400 bg-orange-500/5">High</Badge> },
+        { id: "status", header: "Status", width: "150px", cell: (row) => <Badge className="bg-slate-800 text-slate-300 border-slate-700">{row.status}</Badge> }
+    ];
 
     return (
         <StandardPage
@@ -137,52 +165,17 @@ export default function WarehouseOperations() {
                             </Button>
                         </CardHeader>
                         <CardContent>
-                            <div className="overflow-x-auto rounded-lg border border-slate-800">
-                                <table className="w-full text-sm text-left">
-                                    <thead className="bg-slate-800/50 text-slate-400 font-medium border-b border-slate-800">
-                                        <tr>
-                                            <th className="p-4 w-12 text-center">
-                                                <input type="checkbox" title="Select all orders" aria-label="Select all orders" className="rounded border-slate-700 bg-slate-900" />
-                                            </th>
-                                            <th className="p-4">Order Number</th>
-                                            <th className="p-4">Total Amount</th>
-                                            <th className="p-4">Priority</th>
-                                            <th className="p-4">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-slate-800">
-                                        {readyOrders.map((order: any) => (
-                                            <tr key={order.id} className="hover:bg-slate-800/30 transition-colors">
-                                                <td className="p-4 text-center">
-                                                    <input
-                                                        type="checkbox"
-                                                        title={`Select order ${order.orderNumber}`}
-                                                        aria-label={`Select order ${order.orderNumber}`}
-                                                        checked={selectedOrders.includes(order.id)}
-                                                        onChange={(e) => {
-                                                            if (e.target.checked) setSelectedOrders([...selectedOrders, order.id]);
-                                                            else setSelectedOrders(selectedOrders.filter(id => id !== order.id));
-                                                        }}
-                                                        className="rounded border-slate-700 bg-slate-900"
-                                                    />
-                                                </td>
-                                                <td className="p-4 font-mono text-blue-400">{order.orderNumber}</td>
-                                                <td className="p-4 font-medium">${Number(order.totalAmount).toLocaleString()}</td>
-                                                <td className="p-4">
-                                                    <Badge variant="outline" className="border-orange-500/20 text-orange-400 bg-orange-500/5">High</Badge>
-                                                </td>
-                                                <td className="p-4">
-                                                    <Badge className="bg-slate-800 text-slate-300 border-slate-700">{order.status}</Badge>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                        {readyOrders.length === 0 && (
-                                            <tr>
-                                                <td colSpan={5} className="p-12 text-center text-slate-500 italic">No pending orders found in registry</td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
+                            <div className="overflow-hidden rounded-lg border border-slate-800 h-[400px]">
+                                {readyOrders.length === 0 ? (
+                                    <div className="p-12 text-center text-slate-500 italic h-full flex items-center justify-center">No pending orders found in registry</div>
+                                ) : (
+                                    <InteractiveSpreadsheet
+                                        columns={readyOrderColumns}
+                                        data={readyOrders}
+                                        onChange={() => { }}
+                                        containerHeight="100%"
+                                    />
+                                )}
                             </div>
                         </CardContent>
                     </Card>

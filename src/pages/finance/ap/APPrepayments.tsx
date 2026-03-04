@@ -4,7 +4,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -62,21 +62,21 @@ export default function APPrepayments() {
         }
     });
 
-    const columns: Column<any>[] = [
+    const columns: SpreadsheetColumn<any>[] = [
         {
             header: "Prepayment #",
-            accessorKey: "invoiceNumber",
+            id: "invoiceNumber", width: "150px",
             className: "font-mono font-medium"
         },
         { header: "Supplier", accessorKey: "supplier.name" },
         {
             header: "Original Amount",
-            accessorKey: "invoiceAmount",
+            id: "invoiceAmount", width: "150px",
             cell: (row) => `$${parseFloat(row.invoiceAmount).toFixed(2)}`
         },
         {
             header: "Applied",
-            accessorKey: "appliedAmount",
+            id: "appliedAmount", width: "150px",
             cell: (row) => {
                 const applied = parseFloat(row.invoiceAmount) - parseFloat(row.remainingAmount || row.invoiceAmount);
                 return `$${applied.toFixed(2)}`;
@@ -84,7 +84,7 @@ export default function APPrepayments() {
         },
         {
             header: "Remaining",
-            accessorKey: "remainingAmount",
+            id: "remainingAmount", width: "150px",
             cell: (row) => (
                 <span className="font-semibold text-green-600">
                     ${parseFloat(row.remainingAmount || row.invoiceAmount).toFixed(2)}
@@ -93,7 +93,7 @@ export default function APPrepayments() {
         },
         {
             header: "Status",
-            accessorKey: "status",
+            id: "status", width: "150px",
             cell: (row) => {
                 const remaining = parseFloat(row.remainingAmount || row.invoiceAmount);
                 const original = parseFloat(row.invoiceAmount);
@@ -191,17 +191,11 @@ export default function APPrepayments() {
                         <CardDescription>All supplier prepayments and their application status</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <StandardTable
+                        <InteractiveSpreadsheet
                             data={prepayments || []}
                             columns={columns}
-                            totalItems={prepayments?.length || 0}
-                            page={page}
-                            onPageChange={setPage}
-                            pageSize={pageSize}
                             isLoading={isLoading}
-                            filterColumn="invoiceNumber"
-                            filterPlaceholder="Search prepayments..."
-                        />
+                         onChange={() => {}} containerHeight="600px" />
                     </CardContent>
                 </Card>
             </div>

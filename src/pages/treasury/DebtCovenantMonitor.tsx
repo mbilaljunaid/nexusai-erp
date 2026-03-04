@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Shield, AlertTriangle, CheckCircle2, Search, RefreshCw, Eye } from 'lucide-react';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface ScreeningResult {
     id: string;
@@ -102,6 +103,60 @@ export default function DebtCovenantMonitor() {
     const pending = screenHistory.filter(s => s.match_status === 'PotentialMatch').length;
     const confirmed = screenHistory.filter(s => s.match_status === 'Confirmed').length;
 
+    const screenColumns: SpreadsheetColumn<any>[] = [
+        { id: "name", header: "Name", width: "150px", cell: (row) => <span className="fw">{row.entity_name}</span> },
+        { id: "type", header: "Type", width: "120px", cell: (row) => <span className="type-chip">{row.entity_type}</span> },
+        {
+            id: "status", header: "Status", width: "120px", cell: (row) => {
+                const cfg = STATUS_CFG[row.match_status] ?? { bg: '#f3f4f6', color: '#6b7280' };
+                return <span className="status-chip" style={{ background: cfg.bg, color: cfg.color }}>{row.match_status}</span>;
+            }
+        },
+        { id: "score", header: "Score", width: "100px", cell: (row) => <span className="mono">{row.match_score?.toFixed(0) ?? '—'}%</span> },
+        { id: "lists", header: "Lists", width: "150px", cell: (row) => <div className="lists">{(row.list_sources ?? []).map((l: string) => <span key={l} className="list-tag">{l}</span>)}</div> },
+        { id: "programs", header: "Programs", width: "150px", cell: (row) => <div className="lists">{(row.program_tags ?? []).map((p: string) => <span key={p} className="prog-tag">{p}</span>)}</div> },
+        { id: "date", header: "Date", width: "100px", cell: (row) => <span className="mono small">{new Date(row.screened_at).toLocaleDateString()}</span> },
+        {
+            id: "action", header: "", width: "100px", cell: (row) => (
+                (row.match_status === 'PotentialMatch' || row.match_status === 'Confirmed') && !row.reviewed_by ? (
+                    <button className="review-btn" onClick={() => setSelectedResult(row)} aria-label={`Review ${row.entity_name}`}><Eye size={12} /> Review</button>
+                ) : null
+            )
+        }
+    ];
+
+    const reconColumns: SpreadsheetColumn<any>[] = [
+        { id: "period", header: "Period", width: "150px", cell: (row) => <span className="mono fw">{row.period_name}</span> },
+        { id: "stmt_bal", header: "Statement Balance", width: "150px", cell: (row) => <span className="mono">{fmt(row.statement_balance)}</span> },
+        { id: "gl_bal", header: "GL Balance", width: "150px", cell: (row) => <span className="mono">{fmt(row.gl_balance)}</span> },
+        { id: "recon_bal", header: "Recon Balance", width: "150px", cell: (row) => <span className="mono">{fmt(row.reconciled_balance)}</span> },
+        {
+            id: "variance", header: "Variance", width: "150px", cell: (row) => {
+                const variance = Number(row.reconciled_balance) - Number(row.gl_balance);
+                return <span className={`mono ${Math.abs(variance) < 0.01 ? 'green' : 'red'}`}>{fmt(variance)}</span>;
+            }
+        },
+        {
+            id: "status", header: "Status", width: "120px", cell: (row) => {
+                const cfg = RECON_CFG[row.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
+                return <span className="status-chip" style={{ background: cfg.bg, color: cfg.color }}>{row.status}</span>;
+            }
+        },
+        {
+            id: "action", header: "Actions", width: "150px", cell: (row) => (
+                <div className="recon-btns">
+                    {row.status === 'Draft' && (
+                        <button className="tiny-btn blue" disabled={reviewSignoffMutation.isPending} onClick={() => reviewSignoffMutation.mutate(row.id)} aria-label={`Review recon for ${row.period_name}`}>Review</button>
+                    )}
+                    {row.status === 'Reviewed' && (
+                        <button className="tiny-btn green" disabled={approveSignoffMutation.isPending} onClick={() => approveSignoffMutation.mutate(row.id)} aria-label={`Approve recon for ${row.period_name}`}>Approve</button>
+                    )}
+                    {row.status === 'Approved' && <CheckCircle2 size={14} style={{ color: '#059669' }} />}
+                </div>
+            )
+        }
+    ];
+
     return (
         <div className="dcm-container">
             <div className="dcm-header">
@@ -170,33 +225,22 @@ export default function DebtCovenantMonitor() {
                         </div>
 
                         {/* History Table */}
-                        <div className="history-panel">
+                        <div className="history-panel flex flex-col h-[400px]">
                             <h3 className="sf-title">Screening History</h3>
-                            {isLoading ? <div className="loading">Loading…</div> : (
-                                <table className="sct">
-                                    <thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Score</th><th>Lists</th><th>Programs</th><th>Date</th><th></th></tr></thead>
-                                    <tbody>
-                                        {screenHistory.map(s => {
-                                            const cfg = STATUS_CFG[s.match_status] ?? { bg: '#f3f4f6', color: '#6b7280' };
-                                            return (
-                                                <tr key={s.id} className="sct-row">
-                                                    <td className="fw">{s.entity_name}</td>
-                                                    <td><span className="type-chip">{s.entity_type}</span></td>
-                                                    <td><span className="status-chip" style={{ background: cfg.bg, color: cfg.color }}>{s.match_status}</span></td>
-                                                    <td className="mono">{s.match_score?.toFixed(0) ?? '—'}%</td>
-                                                    <td><div className="lists">{(s.list_sources ?? []).map(l => <span key={l} className="list-tag">{l}</span>)}</div></td>
-                                                    <td><div className="lists">{(s.program_tags ?? []).map(p => <span key={p} className="prog-tag">{p}</span>)}</div></td>
-                                                    <td className="mono small">{new Date(s.screened_at).toLocaleDateString()}</td>
-                                                    <td>{(s.match_status === 'PotentialMatch' || s.match_status === 'Confirmed') && !s.reviewed_by && (
-                                                        <button className="review-btn" onClick={() => setSelectedResult(s)} aria-label={`Review ${s.entity_name}`}><Eye size={12} /> Review</button>
-                                                    )}</td>
-                                                </tr>
-                                            );
-                                        })}
-                                        {screenHistory.length === 0 && <tr><td colSpan={8} className="empty">No screening history</td></tr>}
-                                    </tbody>
-                                </table>
-                            )}
+                            <div className="flex-1 mt-2">
+                                {isLoading ? (
+                                    <div className="loading h-full flex items-center justify-center">Loading…</div>
+                                ) : screenHistory.length === 0 ? (
+                                    <div className="p-8 text-center text-gray-500 h-full flex items-center justify-center">No screening history</div>
+                                ) : (
+                                    <InteractiveSpreadsheet
+                                        columns={screenColumns}
+                                        data={screenHistory}
+                                        onChange={() => { }}
+                                        containerHeight="100%"
+                                    />
+                                )}
+                            </div>
                         </div>
                     </div>
 
@@ -245,39 +289,18 @@ export default function DebtCovenantMonitor() {
                         <ReconKpi label="Approved" value={reconSummary?.approved ?? 0} color="#059669" />
                         <ReconKpi label="Avg Variance" value={reconSummary?.avg_variance ? fmt(reconSummary.avg_variance) : '$0'} color="#7c3aed" isText />
                     </div>
-                    <table className="rct">
-                        <thead><tr><th>Period</th><th>Statement Balance</th><th>GL Balance</th><th>Recon Balance</th><th>Variance</th><th>Status</th><th>Actions</th></tr></thead>
-                        <tbody>
-                            {signoffs.map(sf => {
-                                const cfg = RECON_CFG[sf.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
-                                const variance = Number(sf.reconciled_balance) - Number(sf.gl_balance);
-                                return (
-                                    <tr key={sf.id} className="rct-row">
-                                        <td className="mono fw">{sf.period_name}</td>
-                                        <td className="mono">{fmt(sf.statement_balance)}</td>
-                                        <td className="mono">{fmt(sf.gl_balance)}</td>
-                                        <td className="mono">{fmt(sf.reconciled_balance)}</td>
-                                        <td className={`mono ${Math.abs(variance) < 0.01 ? 'green' : 'red'}`}>{fmt(variance)}</td>
-                                        <td><span className="status-chip" style={{ background: cfg.bg, color: cfg.color }}>{sf.status}</span></td>
-                                        <td>
-                                            <div className="recon-btns">
-                                                {sf.status === 'Draft' && (
-                                                    <button className="tiny-btn blue" disabled={reviewSignoffMutation.isPending}
-                                                        onClick={() => reviewSignoffMutation.mutate(sf.id)} aria-label={`Review recon for ${sf.period_name}`}>Review</button>
-                                                )}
-                                                {sf.status === 'Reviewed' && (
-                                                    <button className="tiny-btn green" disabled={approveSignoffMutation.isPending}
-                                                        onClick={() => approveSignoffMutation.mutate(sf.id)} aria-label={`Approve recon for ${sf.period_name}`}>Approve</button>
-                                                )}
-                                                {sf.status === 'Approved' && <CheckCircle2 size={14} style={{ color: '#059669' }} />}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                            {signoffs.length === 0 && <tr><td colSpan={7} className="empty">No bank reconciliations found</td></tr>}
-                        </tbody>
-                    </table>
+                    <div className="h-[400px]">
+                        {signoffs.length === 0 ? (
+                            <div className="p-8 text-center text-gray-500 h-full flex items-center justify-center">No bank reconciliations found</div>
+                        ) : (
+                            <InteractiveSpreadsheet
+                                columns={reconColumns}
+                                data={signoffs}
+                                onChange={() => { }}
+                                containerHeight="100%"
+                            />
+                        )}
+                    </div>
                 </div>
             )}
 

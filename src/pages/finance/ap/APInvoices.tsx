@@ -3,7 +3,7 @@ import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { Plus, FileText, CheckCircle, Lock, Unlock, AlertCircle, Paperclip, Upload, Eye, Building2 } from "lucide-react";
 import { useLocation } from "wouter";
@@ -187,7 +187,7 @@ export default function APInvoices() {
     setSelectedIds(newSet);
   };
 
-  const columns: Column<any>[] = [
+  const columns: SpreadsheetColumn<any>[] = [
     {
       header: (
         <Checkbox
@@ -208,13 +208,13 @@ export default function APInvoices() {
         />
       )
     },
-    { header: "BU", accessorKey: "businessUnitId", className: "text-muted-foreground font-mono text-xs w-20" },
-    { header: "Invoice #", accessorKey: "invoiceNumber", className: "font-mono font-medium" },
-    { header: "Supplier", accessorKey: "supplierId", cell: (row) => row.supplier?.name || "Unknown" },
-    { header: "Amount", accessorKey: "invoiceAmount", cell: (row) => `$${parseFloat(row.invoiceAmount).toFixed(2)}` },
+    { header: "BU", id: "businessUnitId", width: "150px", className: "text-muted-foreground font-mono text-xs w-20" },
+    { header: "Invoice #", id: "invoiceNumber", width: "150px", className: "font-mono font-medium" },
+    { header: "Supplier", id: "supplierId", width: "150px", cell: (row) => row.supplier?.name || "Unknown" },
+    { header: "Amount", id: "invoiceAmount", width: "150px", cell: (row) => `$${parseFloat(row.invoiceAmount).toFixed(2)}` },
     {
       header: "Status",
-      accessorKey: "invoiceStatus",
+      id: "invoiceStatus", width: "150px",
       cell: (row) => {
         const variant = row.invoiceStatus === "Paid" ? "default" :
           row.invoiceStatus === "Approved" ? "secondary" : "outline";
@@ -223,7 +223,7 @@ export default function APInvoices() {
     },
     {
       header: "Validation",
-      accessorKey: "validationStatus",
+      id: "validationStatus", width: "150px",
       cell: (row) => {
         const variant = row.validationStatus === "Validated" ? "default" :
           row.validationStatus === "Pending" ? "outline" : "destructive";
@@ -498,18 +498,12 @@ export default function APInvoices() {
             </div>
           )}
 
-          <StandardTable
+          <InteractiveSpreadsheet
             data={filteredData}
             columns={columns}
-            totalItems={filteredData.length}
-            page={page}
-            onPageChange={setPage}
-            pageSize={pageSize}
             isLoading={isLoading}
-            filterColumn="invoiceNumber"
-            filterPlaceholder="Search invoice #..."
             onRowClick={(item) => setLocation(`/finance/ap/invoices/${item.id}`)}
-          />
+           onChange={() => {}} containerHeight="600px" />
         </div >
 
         <ViewAccountingModal

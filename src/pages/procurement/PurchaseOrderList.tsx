@@ -7,7 +7,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface PurchaseOrder {
     id: number | string;
@@ -48,14 +48,14 @@ export default function PurchaseOrderList() {
         }
     });
 
-    const columns: Column<PurchaseOrder>[] = [
+    const columns: SpreadsheetColumn<PurchaseOrder>[] = [
         {
-            accessorKey: "poNumber",
+            id: "poNumber", width: "150px",
             header: "PO Number",
             cell: (item) => <span className="font-semibold">{item.poNumber}</span>
         },
         {
-            accessorKey: "supplier",
+            id: "supplier", width: "150px",
             header: "Supplier",
             cell: (item) => {
                 const sName = item.supplier?.supplierName || suppliers.find(s => s.id === item.supplierId)?.supplierName || "Unknown";
@@ -63,12 +63,12 @@ export default function PurchaseOrderList() {
             }
         },
         {
-            accessorKey: "totalAmount",
+            id: "totalAmount", width: "150px",
             header: "Amount",
             cell: (item) => <span>${Number(item.totalAmount).toLocaleString()}</span>
         },
         {
-            accessorKey: "status",
+            id: "status", width: "150px",
             header: "Status",
             cell: (item) => (
                 <Badge variant={item.status === 'Draft' ? 'outline' : item.status === 'Approved' ? 'secondary' : 'default'}>
@@ -77,7 +77,7 @@ export default function PurchaseOrderList() {
             )
         },
         {
-            accessorKey: "createdAt",
+            id: "createdAt", width: "150px",
             header: "Date",
             cell: (item) => <span>{new Date(item.createdAt).toLocaleDateString()}</span>
         },
@@ -109,13 +109,11 @@ export default function PurchaseOrderList() {
                 </Link>
             }
         >
-            <StandardTable
+            <InteractiveSpreadsheet
                 data={pos}
                 columns={columns}
                 isLoading={isLoading}
-                filterColumn="poNumber"
-                filterPlaceholder="Filter orders..."
-            />
+             onChange={() => {}} containerHeight="600px" />
         </StandardPage>
     );
 }

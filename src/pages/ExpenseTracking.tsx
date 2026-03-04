@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { StandardTable, Column } from "@/components/tables/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { MetricCard } from "@/components/MetricCard";
 import { useLocation } from "wouter";
 
@@ -102,20 +102,20 @@ export default function ExpenseTracking() {
     }
   });
 
-  const myExpenseColumns: Column<any>[] = [
+  const myExpenseColumns: SpreadsheetColumn<any>[] = [
     {
       header: "Report #",
-      accessorKey: "reportNumber",
+      id: "reportNumber", width: "150px",
       cell: (r) => <span className="font-mono font-bold">{r.reportNumber || `EXP-${r.id.slice(0, 6)}`}</span>
     },
     {
       header: "Title",
-      accessorKey: "title",
+      id: "title", width: "150px",
       cell: (r) => r.title || "Untitled Report"
     },
     {
       header: "Status",
-      accessorKey: "status",
+      id: "status", width: "150px",
       cell: (r) => {
         const colors = {
           DRAFT: 'outline',
@@ -128,25 +128,25 @@ export default function ExpenseTracking() {
     },
     {
       header: "Amount",
-      accessorKey: "totalAmount",
+      id: "totalAmount", width: "150px",
       cell: (r) => <span className="font-mono font-bold">${Number(r.totalAmount || 0).toFixed(2)}</span>
     },
     {
       header: "Created",
-      accessorKey: "createdAt",
+      id: "createdAt", width: "150px",
       cell: (r) => new Date(r.createdAt).toLocaleDateString()
     }
   ];
 
-  const approvalColumns: Column<any>[] = [
+  const approvalColumns: SpreadsheetColumn<any>[] = [
     {
       header: "Report #",
-      accessorKey: "reportNumber",
+      id: "reportNumber", width: "150px",
       cell: (r) => <span className="font-mono font-bold">{r.reportNumber || `EXP-${r.id.slice(0, 6)}`}</span>
     },
     {
       header: "Employee",
-      accessorKey: "employeeId",
+      id: "employeeId", width: "150px",
       cell: (r) => (
         <div className="flex items-center gap-2">
           <Users className="h-4 w-4 text-muted-foreground" />
@@ -156,23 +156,23 @@ export default function ExpenseTracking() {
     },
     {
       header: "Title",
-      accessorKey: "title",
+      id: "title", width: "150px",
       cell: (r) => r.title || "Untitled Report"
     },
     {
       header: "Amount",
-      accessorKey: "totalAmount",
+      id: "totalAmount", width: "150px",
       cell: (r) => <span className="font-mono font-bold">${Number(r.totalAmount || 0).toFixed(2)}</span>
     },
     {
       header: "Submitted",
-      accessorKey: "submittedAt",
+      id: "submittedAt", width: "150px",
       cell: (r) => r.submittedAt ? new Date(r.submittedAt).toLocaleDateString() :
         <span className="text-muted-foreground">N/A</span>
     },
     {
       header: "Days Pending",
-      accessorKey: "id",
+      id: "id", width: "150px",
       cell: (r) => {
         if (!r.submittedAt) return "-";
         const days = Math.floor((Date.now() - new Date(r.submittedAt).getTime()) / (1000 * 60 * 60 * 24));
@@ -191,7 +191,12 @@ export default function ExpenseTracking() {
     <StandardPage
       title="Expense Tracking"
       description="Track your expenses and manage approvals"
-      className="space-yted-foreground mt-1 text-lg">
+      className="space-y-6"
+    >
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Expense Tracking</h1>
+          <p className="text-muted-foreground mt-1 text-lg">
             Track your expenses and manage approvals
           </p>
         </div>
@@ -218,153 +223,48 @@ export default function ExpenseTracking() {
             )}
           </Button>
         </div>
-      </div>
+      </div >
 
       {/* My Expenses View */}
-      {viewMode === "myExpenses" && (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <MetricCard
-              title="Draft Reports"
-              value={myDraft.toString()}
-              icon={FileText}
-              loading={myExpensesLoading}
-            />
-            <MetricCard
-              title="Pending Approval"
-              value={mySubmitted.toString()}
-              icon={Clock}
-              iconColor="text-yellow-500"
-              loading={myExpensesLoading}
-            />
-            <MetricCard
-              title="Approved This Month"
-              value={myApproved.toString()}
-              icon={CheckCircle}
-              iconColor="text-green-500"
-              loading={myExpensesLoading}
-            />
-            <MetricCard
-              title="Total Amount"
-              value={`$${myTotal.toFixed(2)}`}
-              icon={DollarSign}
-              loading={myExpensesLoading}
-            />
-          </div>
-
-          <Card className="border-none shadow-none bg-transparent">
-            <CardContent className="p-0">
-              <StandardTable
-                data={myExpenses}
-                columns={myExpenseColumns}
-                isLoading={myExpensesLoading}
-                actions={(r) => (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setLocation(`/finance/expenses/${r.id}`)}
-                  >
-                    View
-                  </Button>
-                )}
-                pagination={{ currentPage: 1, totalPages: 1, onPageChange: () => { } }}
+      {
+        viewMode === "myExpenses" && (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <MetricCard
+                title="Draft Reports"
+                value={myDraft.toString()}
+                icon={FileText}
+                loading={myExpensesLoading}
               />
-            </CardContent>
-          </Card>
-        </>
-      )}
+              <MetricCard
+                title="Pending Approval"
+                value={mySubmitted.toString()}
+                icon={Clock}
+                iconColor="text-yellow-500"
+                loading={myExpensesLoading}
+              />
+              <MetricCard
+                title="Approved This Month"
+                value={myApproved.toString()}
+                icon={CheckCircle}
+                iconColor="text-green-500"
+                loading={myExpensesLoading}
+              />
+              <MetricCard
+                title="Total Amount"
+                value={`$${myTotal.toFixed(2)}`}
+                icon={DollarSign}
+                loading={myExpensesLoading}
+              />
+            </div>
 
-      {/* Approval Queue View (Manager) */}
-      {viewMode === "approvalQueue" && (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <MetricCard
-              title="Pending Approvals"
-              value={pendingApprovals.length.toString()}
-              icon={Clock}
-              iconColor="text-yellow-500"
-              loading={pendingLoading}
-            />
-            <MetricCard
-              title="Total Pending Amount"
-              value={`$${pendingApprovals.reduce((s, e) => s + Number(e.totalAmount || 0), 0).toFixed(2)}`}
-              icon={DollarSign}
-              loading={pendingLoading}
-            />
-            <MetricCard
-              title="Avg Processing Time"
-              value="1.5 days"
-              icon={TrendingUp}
-              iconColor="text-blue-500"
-            />
-            <MetricCard
-              title="Team Members"
-              value={employeeStats.length.toString()}
-              icon={Users}
-            />
-          </div>
-
-          {/* Employee Spending Overview */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                Team Expense Overview
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {employeeStats.slice(0, 5).map((emp: any) => (
-                  <div key={emp.employeeId} className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium">{emp.employeeName || emp.employeeId}</p>
-                      <p className="text-xs text-muted-foreground">{emp.reportCount} reports</p>
-                    </div>
-                    <span className="font-mono font-bold">${emp.totalAmount}</span>
-                  </div>
-                ))}
-                {employeeStats.length === 0 && (
-                  <p className="text-sm text-muted-foreground text-center py-4">
-                    No employee data available
-                  </p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Pending Approvals Table */}
-          <Card className="border-none shadow-none bg-transparent">
-            <CardContent className="p-0">
-              <StandardTable
-                data={pendingApprovals}
-                columns={approvalColumns}
-                isLoading={pendingLoading}
-                actions={(r) => (
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      onClick={() => approveMutation.mutate(r.id)}
-                      disabled={approveMutation.isPending}
-                    >
-                      {approveMutation.isPending ? (
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                      ) : (
-                        <CheckCircle className="h-3 w-3" />
-                      )}
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => {
-                        const reason = prompt("Enter rejection reason:");
-                        if (reason) {
-                          rejectMutation.mutate({ reportId: r.id, reason });
-                        }
-                      }}
-                      disabled={rejectMutation.isPending}
-                    >
-                      <XCircle className="h-3 w-3" />
-                    </Button>
+            <Card className="border-none shadow-none bg-transparent">
+              <CardContent className="p-0">
+                <InteractiveSpreadsheet
+                  data={myExpenses}
+                  columns={myExpenseColumns}
+                  isLoading={myExpensesLoading}
+                  actions={(r) => (
                     <Button
                       variant="outline"
                       size="sm"
@@ -372,14 +272,123 @@ export default function ExpenseTracking() {
                     >
                       View
                     </Button>
-                  </div>
-                )}
-                pagination={{ currentPage: 1, totalPages: 1, onPageChange: () => { } }}
+                  )}
+                  onChange={() => { }} containerHeight="600px"
+                />
+              </CardContent>
+            </Card>
+          </>
+        )
+      }
+
+      {/* Approval Queue View (Manager) */}
+      {
+        viewMode === "approvalQueue" && (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <MetricCard
+                title="Pending Approvals"
+                value={pendingApprovals.length.toString()}
+                icon={Clock}
+                iconColor="text-yellow-500"
+                loading={pendingLoading}
               />
-            </CardContent>
-          </Card>
-        </>
-      )}
-    </StandardPage>
+              <MetricCard
+                title="Total Pending Amount"
+                value={`$${pendingApprovals.reduce((s, e) => s + Number(e.totalAmount || 0), 0).toFixed(2)}`}
+                icon={DollarSign}
+                loading={pendingLoading}
+              />
+              <MetricCard
+                title="Avg Processing Time"
+                value="1.5 days"
+                icon={TrendingUp}
+                iconColor="text-blue-500"
+              />
+              <MetricCard
+                title="Team Members"
+                value={employeeStats.length.toString()}
+                icon={Users}
+              />
+            </div>
+
+            {/* Employee Spending Overview */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  Team Expense Overview
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {employeeStats.slice(0, 5).map((emp: any) => (
+                    <div key={emp.employeeId} className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium">{emp.employeeName || emp.employeeId}</p>
+                        <p className="text-xs text-muted-foreground">{emp.reportCount} reports</p>
+                      </div>
+                      <span className="font-mono font-bold">${emp.totalAmount}</span>
+                    </div>
+                  ))}
+                  {employeeStats.length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-4">
+                      No employee data available
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Pending Approvals Table */}
+            <Card className="border-none shadow-none bg-transparent">
+              <CardContent className="p-0">
+                <InteractiveSpreadsheet
+                  data={pendingApprovals}
+                  columns={approvalColumns}
+                  isLoading={pendingLoading}
+                  actions={(r) => (
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => approveMutation.mutate(r.id)}
+                        disabled={approveMutation.isPending}
+                      >
+                        {approveMutation.isPending ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          <CheckCircle className="h-3 w-3" />
+                        )}
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => {
+                          const reason = prompt("Enter rejection reason:");
+                          if (reason) {
+                            rejectMutation.mutate({ reportId: r.id, reason });
+                          }
+                        }}
+                        disabled={rejectMutation.isPending}
+                      >
+                        <XCircle className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setLocation(`/finance/expenses/${r.id}`)}
+                      >
+                        View
+                      </Button>
+                    </div>
+                  )}
+                  onChange={() => { }} containerHeight="600px"
+                />
+              </CardContent>
+            </Card>
+          </>
+        )
+      }
+    </StandardPage >
   );
 }

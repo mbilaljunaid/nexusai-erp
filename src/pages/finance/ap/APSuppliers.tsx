@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Lock, Unlock } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -53,24 +53,24 @@ export default function APSuppliers() {
         }
     });
 
-    const columns: Column<any>[] = [
-        { header: "BU", accessorKey: "businessUnitId", className: "text-muted-foreground font-mono text-xs w-20", cell: (row) => row.businessUnitId || "Default" },
-        { header: "Supplier #", accessorKey: "supplierNumber", className: "font-mono" },
-        { header: "Name", accessorKey: "name", className: "font-medium" },
-        { header: "Tax ID", accessorKey: "taxId" },
+    const columns: SpreadsheetColumn<any>[] = [
+        { header: "BU", id: "businessUnitId", width: "150px", className: "text-muted-foreground font-mono text-xs w-20", cell: (row) => row.businessUnitId || "Default" },
+        { header: "Supplier #", id: "supplierNumber", width: "150px", className: "font-mono" },
+        { header: "Name", id: "name", width: "150px", className: "font-medium" },
+        { header: "Tax ID", id: "taxId", width: "150px" },
         {
             header: "Payment Terms",
-            accessorKey: "paymentTerms",
+            id: "paymentTerms", width: "150px",
             cell: (row) => row.paymentTerms || "Net 30"
         },
         {
             header: "Outstanding Balance",
-            accessorKey: "totalBalance",
+            id: "totalBalance", width: "150px",
             cell: (row) => <span className="font-semibold text-primary">${parseFloat(row.totalBalance || 0).toLocaleString()}</span>
         },
         {
             header: "Status",
-            accessorKey: "status",
+            id: "status", width: "150px",
             cell: (row) => (
                 <div className="flex gap-2">
                     <Badge variant={row.status === "Active" ? "default" : "secondary"}>
@@ -143,18 +143,12 @@ export default function APSuppliers() {
                 </Button>
             }
         >
-            <StandardTable
+            <InteractiveSpreadsheet
                 data={suppliers || []}
                 columns={columns}
-                totalItems={suppliers?.length || 0}
-                page={page}
-                onPageChange={setPage}
-                pageSize={pageSize}
                 isLoading={isLoading}
-                filterColumn="name"
-                filterPlaceholder="Search suppliers..."
                 onRowClick={(item) => setLocation(`/finance/ap/suppliers/${item.id}`)}
-            />
+             onChange={() => {}} containerHeight="600px" />
 
             <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
                 <DialogContent>

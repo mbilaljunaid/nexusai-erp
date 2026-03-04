@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,17 +36,17 @@ export default function ReferenceDataDetail() {
 
     // Table Columns
     const columns = [
-        { header: "Code", accessorKey: "lookupCode", sortable: true, cell: (row: any) => <span className="font-mono">{row.lookupCode}</span> },
-        { header: "Meaning", accessorKey: "meaning", sortable: true },
-        { header: "Description", accessorKey: "description" },
+        { header: "Code", id: "lookupCode", width: "150px", sortable: true, cell: (row: any) => <span className="font-mono">{row.lookupCode}</span> },
+        { header: "Meaning", id: "meaning", width: "150px", sortable: true },
+        { header: "Description", id: "description", width: "150px" },
         {
-            header: "Enabled", accessorKey: "enabledFlag", cell: (row: any) => (
+            header: "Enabled", id: "enabledFlag", width: "150px", cell: (row: any) => (
                 <Badge variant={row.enabledFlag ? 'default' : 'secondary'}>
                     {row.enabledFlag ? 'Active' : 'Inactive'}
                 </Badge>
             )
         },
-        { header: "Order", accessorKey: "sortOrder" },
+        { header: "Order", id: "sortOrder", width: "150px" },
     ];
 
     // Create Mutation
@@ -175,13 +175,11 @@ export default function ReferenceDataDetail() {
                 <Card>
                     <CardHeader><CardTitle>Lookup Values</CardTitle></CardHeader>
                     <CardContent className="p-0">
-                        <StandardTable
+                        <InteractiveSpreadsheet
                             data={lookupValues}
                             columns={columns}
                             isLoading={isLoading}
-                            filterColumn="meaning"
-                            filterPlaceholder="Search values..."
-                        />
+                         onChange={() => {}} containerHeight="600px" />
                     </CardContent>
                 </Card>
             </div>

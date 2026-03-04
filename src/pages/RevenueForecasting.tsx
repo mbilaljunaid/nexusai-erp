@@ -7,6 +7,7 @@ import { TrendingUp, TrendingDown, Activity, Sparkles, LineChart, ArrowUpRight, 
 import { useNexusAI } from "@/contexts/NexusAIContext";
 import { useToast } from "@/hooks/use-toast";
 import { StandardDashboard, DashboardWidget } from "@/components/layout/StandardDashboard";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
@@ -54,6 +55,27 @@ export default function RevenueForecasting() {
   const trend = data?.model?.slope ?? 0;
   const lastHistoricalPeriod = data?.history[data.history.length - 1]?.period ?? "—";
   const nextPeriod = data?.forecast[0]?.period ?? "—";
+
+  const historyColumns: SpreadsheetColumn<any>[] = [
+    { id: "period", header: "Period", width: "200px", cell: (row, i) => <span className="font-mono text-xs">{row.period || `Period ${i + 1}`}</span> },
+    { id: "amount", header: <div className="text-right w-full">Amount</div>, width: "150px", cell: (row) => <div className="text-right font-medium w-full">{fmt(row.y)}</div> },
+    { id: "type", header: <div className="text-right w-full">Type</div>, width: "100px", cell: () => <div className="text-right w-full"><Badge variant="outline" className="text-[10px]">Actual</Badge></div> }
+  ];
+
+  const forecastColumns: SpreadsheetColumn<any>[] = [
+    { id: "period", header: "Period", width: "200px", cell: (row) => <span className="font-mono text-xs">{row.period}</span> },
+    { id: "amount", header: <div className="text-right w-full">Projected</div>, width: "150px", cell: (row) => <div className="text-right font-semibold text-indigo-700 w-full">{fmt(row.amount)}</div> },
+    {
+      id: "delta", header: <div className="text-right w-full">Δ vs Last</div>, width: "150px", cell: (row, i) => {
+        const prev = i === 0
+          ? (data?.history?.[data.history.length - 1]?.y ?? 0)
+          : data?.forecast?.[i - 1]?.amount ?? 0;
+        const delta = row.amount - prev;
+        const deltaFmt = `${delta >= 0 ? "+" : ""}${fmt(delta)}`;
+        return <div className={`text-right text-xs font-medium w-full ${delta >= 0 ? "text-emerald-600" : "text-red-500"}`}>{deltaFmt}</div>;
+      }
+    }
+  ];
 
   return (
     <StandardDashboard
@@ -159,27 +181,13 @@ export default function RevenueForecasting() {
           {/* History Table */}
           {data?.history && data.history.length > 0 && (
             <DashboardWidget title="Historical Recognition" colSpan={2} icon={BarChart2}>
-              <div className="overflow-auto max-h-64">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b text-muted-foreground">
-                      <th className="text-left py-2 px-3 font-medium">Period</th>
-                      <th className="text-right py-2 px-3 font-medium">Amount</th>
-                      <th className="text-right py-2 px-3 font-medium">Type</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.history.map((h, i) => (
-                      <tr key={i} className="border-b hover:bg-muted/30 transition-colors">
-                        <td className="py-2 px-3 font-mono text-xs">{h.period || `Period ${i + 1}`}</td>
-                        <td className="py-2 px-3 text-right font-medium">{fmt(h.y)}</td>
-                        <td className="py-2 px-3 text-right">
-                          <Badge variant="outline" className="text-[10px]">Actual</Badge>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="h-64">
+                <InteractiveSpreadsheet
+                  columns={historyColumns}
+                  data={data.history}
+                  onChange={() => { }}
+                  containerHeight="100%"
+                />
               </div>
             </DashboardWidget>
           )}
@@ -187,34 +195,13 @@ export default function RevenueForecasting() {
           {/* Forecast Table */}
           {data?.forecast && data.forecast.length > 0 && (
             <DashboardWidget title="ML Projected Periods" colSpan={2} icon={TrendingUp}>
-              <div className="overflow-auto max-h-64">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b text-muted-foreground">
-                      <th className="text-left py-2 px-3 font-medium">Period</th>
-                      <th className="text-right py-2 px-3 font-medium">Projected</th>
-                      <th className="text-right py-2 px-3 font-medium">Δ vs Last</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.forecast.map((f, i) => {
-                      const prev = i === 0
-                        ? (data.history[data.history.length - 1]?.y ?? 0)
-                        : data.forecast[i - 1].amount;
-                      const delta = f.amount - prev;
-                      const deltaFmt = `${delta >= 0 ? "+" : ""}${fmt(delta)}`;
-                      return (
-                        <tr key={i} className="border-b hover:bg-indigo-50/30 transition-colors">
-                          <td className="py-2 px-3 font-mono text-xs">{f.period}</td>
-                          <td className="py-2 px-3 text-right font-semibold text-indigo-700">{fmt(f.amount)}</td>
-                          <td className={`py-2 px-3 text-right text-xs font-medium ${delta >= 0 ? "text-emerald-600" : "text-red-500"}`}>
-                            {deltaFmt}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+              <div className="h-64">
+                <InteractiveSpreadsheet
+                  columns={forecastColumns}
+                  data={data.forecast}
+                  onChange={() => { }}
+                  containerHeight="100%"
+                />
               </div>
               {/* Totals row */}
               <div className="border-t pt-3 mt-2 flex justify-between items-center">

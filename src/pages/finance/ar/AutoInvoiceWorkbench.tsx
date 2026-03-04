@@ -5,7 +5,7 @@ import { AlertCircle, FileDigit, Play, CheckCircle2, XCircle } from "lucide-reac
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -100,14 +100,14 @@ export default function AutoInvoiceWorkbench() {
 
     // Columns for staging table
     const stagingCols = [
-        { header: "Batch Source", accessorKey: "batchSourceId" },
-        { header: "Customer ID", accessorKey: "customerId" },
-        { header: "Trx Type", accessorKey: "transactionTypeId" },
-        { header: "Amount", accessorKey: "amount" },
-        { header: "Currency", accessorKey: "currency" },
+        { header: "Batch Source", id: "batchSourceId", width: "150px" },
+        { header: "Customer ID", id: "customerId", width: "150px" },
+        { header: "Trx Type", id: "transactionTypeId", width: "150px" },
+        { header: "Amount", id: "amount", width: "150px" },
+        { header: "Currency", id: "currency", width: "150px" },
         {
             header: "Status",
-            accessorKey: "status",
+            id: "status", width: "150px",
             cell: ({ row }: any) => {
                 const s = row.original.status;
                 return (
@@ -249,33 +249,27 @@ export default function AutoInvoiceWorkbench() {
                         </div>
 
                         <TabsContent value="errors" className="p-4 m-0">
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={errorLines}
                                 columns={stagingCols}
                                 isLoading={loadingStaging}
-                                filterColumn="customerId"
-                                filterPlaceholder="Filter errors by Customer ID..."
-                            />
+                             onChange={() => {}} containerHeight="600px" />
                         </TabsContent>
 
                         <TabsContent value="new" className="p-4 m-0">
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={newLines}
                                 columns={stagingCols}
                                 isLoading={loadingStaging}
-                                filterColumn="customerId"
-                                filterPlaceholder="Filter new lines by Customer ID..."
-                            />
+                             onChange={() => {}} containerHeight="600px" />
                         </TabsContent>
 
                         <TabsContent value="processed" className="p-4 m-0">
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={processedLines}
                                 columns={stagingCols}
                                 isLoading={loadingStaging}
-                                filterColumn="customerId"
-                                filterPlaceholder="Filter processed lines by Customer ID..."
-                            />
+                             onChange={() => {}} containerHeight="600px" />
                         </TabsContent>
                     </Tabs>
                 </CardContent>

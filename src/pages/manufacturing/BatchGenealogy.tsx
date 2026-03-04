@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, GitBranch, ArrowRight, Package, FlaskConical, AlertCircle } from "lucide-react";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 
 interface GenealogyNode {
@@ -33,15 +33,17 @@ export default function BatchGenealogy() {
         enabled: !!activeLot
     });
 
-    const columns: Column<GenealogyNode>[] = [
+    const columns: SpreadsheetColumn<GenealogyNode>[] = [
         {
+            id: "lotNumber",
             header: "Lot Number",
-            accessorKey: "lotNumber",
+            width: "200px",
             cell: (row) => <span className="font-mono font-bold">{row.lotNumber}</span>
         },
         {
+            id: "productName",
             header: "Product",
-            accessorKey: "productName",
+            width: "250px",
             cell: (row) => (
                 <div className="flex flex-col">
                     <span className="font-medium">{row.productName}</span>
@@ -50,8 +52,9 @@ export default function BatchGenealogy() {
             )
         },
         {
+            id: "transactionType",
             header: "Type",
-            accessorKey: "transactionType",
+            width: "150px",
             cell: (row) => (
                 <Badge variant={row.transactionType === "YIELD" ? "default" : "outline"}>
                     {row.transactionType}
@@ -59,14 +62,16 @@ export default function BatchGenealogy() {
             )
         },
         {
+            id: "quantity",
             header: "Quantity",
-            accessorKey: "quantity",
+            width: "150px",
             cell: (row) => <span className="font-mono">{row.quantity}</span>
         },
         {
+            id: "transactionDate",
             header: "Date",
-            accessorKey: "transactionDate",
-            cell: (row) => new Date(row.transactionDate).toLocaleString()
+            width: "200px",
+            cell: (row) => <span>{new Date(row.transactionDate).toLocaleString()}</span>
         }
     ];
 
@@ -219,14 +224,17 @@ export default function BatchGenealogy() {
                                 <CardTitle>Genealogy Transaction Ledger</CardTitle>
                                 <CardDescription>Detailed audit trail of all movements related to this lot genealogy.</CardDescription>
                             </CardHeader>
-                            <CardContent>
-                                <StandardTable
-                                    data={genealogyData}
-                                    columns={columns}
-                                    isLoading={isLoading}
-                                    filterColumn="productName"
-                                    filterPlaceholder="Filter ledger..."
-                                />
+                            <CardContent className="h-[400px]">
+                                {isLoading ? (
+                                    <div className="text-center p-4">Loading ledger...</div>
+                                ) : (
+                                    <InteractiveSpreadsheet
+                                        data={genealogyData}
+                                        columns={columns}
+                                        onChange={() => { }}
+                                        containerHeight="100%"
+                                    />
+                                )}
                             </CardContent>
                         </Card>
                     </div>

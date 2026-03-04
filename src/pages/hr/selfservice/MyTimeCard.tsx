@@ -23,7 +23,7 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
@@ -113,10 +113,10 @@ export default function MyTimeCard() {
     });
 
     // Columns for Time Grid
-    const columns: Column<TimeEntry>[] = [
+    const columns: SpreadsheetColumn<TimeEntry>[] = [
         {
             header: "Date",
-            accessorKey: "date",
+            id: "date", width: "150px",
             cell: (item) => (
                 <div className="font-medium">
                     {new Date(item.date).toLocaleDateString("en-US", { weekday: 'short', month: 'short', day: 'numeric' })}
@@ -125,7 +125,7 @@ export default function MyTimeCard() {
         },
         {
             header: "Type",
-            accessorKey: "timeType",
+            id: "timeType", width: "150px",
             cell: (item) => (
                 <Badge variant={item.timeType === 'REGULAR' ? 'outline' : 'secondary'}>
                     {item.timeType}
@@ -134,22 +134,22 @@ export default function MyTimeCard() {
         },
         {
             header: "Start",
-            accessorKey: "startTime",
+            id: "startTime", width: "150px",
             cell: (item) => item.startTime ? new Date(item.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--"
         },
         {
             header: "End",
-            accessorKey: "endTime",
+            id: "endTime", width: "150px",
             cell: (item) => item.endTime ? new Date(item.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--"
         },
         {
             header: "Project",
-            accessorKey: "projectCode",
+            id: "projectCode", width: "150px",
             cell: (item) => item.projectCode ? <Badge variant="outline" className="font-mono text-[10px] uppercase">{item.projectCode}</Badge> : <span className="text-muted-foreground">-</span>
         },
         {
             header: "Cost Center",
-            accessorKey: "costCenter",
+            id: "costCenter", width: "150px",
             cell: (item) => item.costCenter ? <Badge variant="outline" className="font-mono text-[10px] text-zinc-500">{item.costCenter}</Badge> : <span className="text-muted-foreground">-</span>
         },
         {
@@ -162,7 +162,7 @@ export default function MyTimeCard() {
         },
         {
             header: "Notes",
-            accessorKey: "notes",
+            id: "notes", width: "150px",
             className: "text-muted-foreground truncate max-w-[200px]"
         }
     ];
@@ -256,12 +256,12 @@ export default function MyTimeCard() {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={timesheet?.entries || []}
                                 columns={columns}
                                 isLoading={sheetLoading}
                                 className="border-t pt-2"
-                            />
+                             onChange={() => {}} containerHeight="600px" />
 
                             {timesheet?.status === 'DRAFT' && (
                                 <div className="mt-4 p-4 bg-muted/50 rounded-lg flex items-center justify-between">

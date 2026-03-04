@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     BarChart,
@@ -65,10 +65,10 @@ export default function RevenueContractWorkbench() {
     const contracts = result?.data || [];
     const meta = result?.meta;
 
-    const columns: Column<RevenueContract>[] = [
+    const columns: SpreadsheetColumn<RevenueContract>[] = [
         {
             header: "Contract #",
-            accessorKey: "contractNumber",
+            id: "contractNumber", width: "150px",
             cell: (item) => (
                 <Link href={`/revenue/contracts/${item.id}`}>
                     <a className="font-mono font-medium text-blue-600 hover:underline cursor-pointer">
@@ -79,37 +79,37 @@ export default function RevenueContractWorkbench() {
         },
         {
             header: "Customer",
-            accessorKey: "customerName",
+            id: "customerName", width: "150px",
             cell: (item) => item.customerName || item.customerId || "Unknown"
         },
         {
             header: "Ledger",
-            accessorKey: "ledgerName",
+            id: "ledgerName", width: "150px",
             cell: (item) => <span className="text-xs">{item.ledgerName || item.ledgerId}</span>
         },
         {
             header: "Entity",
-            accessorKey: "legalEntityId",
+            id: "legalEntityId", width: "150px",
             cell: (item) => <Badge variant="outline">{item.legalEntityId || "PRIMARY"}</Badge>
         },
         {
             header: "BU",
-            accessorKey: "businessUnitId",
+            id: "businessUnitId", width: "150px",
             cell: (item) => <span className="text-xs font-mono text-muted-foreground">{item.orgId || "Default"}</span>
         },
         {
             header: "Org",
-            accessorKey: "orgId",
+            id: "orgId", width: "150px",
             cell: (item) => <span className="text-xs">{item.orgId || "OU-01"}</span>
         },
         {
             header: "Ver",
-            accessorKey: "versionNumber",
+            id: "versionNumber", width: "150px",
             cell: (item) => <Badge variant="secondary" className="px-1 text-[10px]">v{item.versionNumber || 1}</Badge>
         },
         {
             header: "Status",
-            accessorKey: "status",
+            id: "status", width: "150px",
             cell: (item) => {
                 const status = item.status;
                 return (
@@ -121,17 +121,17 @@ export default function RevenueContractWorkbench() {
         },
         {
             header: "Total Price",
-            accessorKey: "totalTransactionPrice",
+            id: "totalTransactionPrice", width: "150px",
             cell: (item) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(item.totalTransactionPrice || 0))
         },
         {
             header: "Allocated",
-            accessorKey: "totalAllocatedPrice",
+            id: "totalAllocatedPrice", width: "150px",
             cell: (item) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(item.totalAllocatedPrice || 0))
         },
         {
             header: "Created",
-            accessorKey: "createdAt",
+            id: "createdAt", width: "150px",
             cell: (item) => item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "-"
         },
         {
@@ -249,10 +249,10 @@ export default function RevenueContractWorkbench() {
                     <CardDescription>Manage performance obligations and revenue schedules.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <StandardTable
+                    <InteractiveSpreadsheet
                         data={contracts || []}
                         columns={columns}
-                    />
+                     onChange={() => {}} containerHeight="600px" />
                     <div className="flex items-center justify-between space-x-2 py-4">
                         <div className="text-sm text-muted-foreground">
                             Page {page} of {meta?.totalPages || 1}

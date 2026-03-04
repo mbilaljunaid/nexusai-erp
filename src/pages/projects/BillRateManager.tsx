@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -104,10 +104,11 @@ export default function BillRateManager() {
         rateMutation.mutate(rows);
     };
 
-    const schColumns: Column<BillRateSchedule>[] = [
+    const schColumns: SpreadsheetColumn<BillRateSchedule>[] = [
         {
+            id: "name",
             header: "Schedule Name",
-            accessorKey: "name",
+            width: "300px",
             cell: (item) => (
                 <div className="flex items-center gap-2 font-medium">
                     <DollarSign className="h-4 w-4 text-green-500" />
@@ -115,15 +116,17 @@ export default function BillRateManager() {
                 </div>
             )
         },
-        { header: "Currency", accessorKey: "currencyCode" },
+        { id: "currencyCode", header: "Currency", width: "150px", cell: (item) => <span>{item.currencyCode}</span> },
         {
+            id: "activeFlag",
             header: "Status",
-            accessorKey: "activeFlag",
+            width: "150px",
             cell: (item) => <Badge variant={item.activeFlag ? "default" : "secondary"}>{item.activeFlag ? "Active" : "Inactive"}</Badge>
         },
         {
+            id: "actions",
             header: "",
-            accessorKey: "id",
+            width: "200px",
             cell: (item) => (
                 <Button variant="ghost" size="sm" onClick={() => setSelectedSchedule(item)}>
                     Manage Rates <ChevronRight className="ml-2 h-4 w-4" />
@@ -264,8 +267,17 @@ export default function BillRateManager() {
                             <CardTitle>Bill Rate Schedules</CardTitle>
                             <CardDescription>Schedules are linked to projects and tasks to determine revenue and inter-project billing</CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <StandardTable data={schedules || []} columns={schColumns} isLoading={loadingSch} pageSize={10} />
+                        <CardContent className="h-[500px]">
+                            {loadingSch ? (
+                                <div className="p-4 text-center">Loading...</div>
+                            ) : (
+                                <InteractiveSpreadsheet
+                                    columns={schColumns}
+                                    data={schedules || []}
+                                    onChange={() => { }}
+                                    containerHeight="100%"
+                                />
+                            )}
                         </CardContent>
                     </Card>
                 )}

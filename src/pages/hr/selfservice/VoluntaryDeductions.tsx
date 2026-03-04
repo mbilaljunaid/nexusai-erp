@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -138,14 +138,14 @@ export default function VoluntaryDeductions() {
         });
     };
 
-    const deductionColumns: Column<VoluntaryDeduction>[] = [
+    const deductionColumns: SpreadsheetColumn<VoluntaryDeduction>[] = [
         {
-            accessorKey: "elementId",
+            id: "elementId", width: "150px",
             header: "Element",
             cell: (item: any) => elements?.find((e: any) => e.id === item.elementId)?.name || item.elementId
         },
         {
-            accessorKey: "amount",
+            id: "amount", width: "150px",
             header: "Amount",
             cell: (item: any) => (
                 <span className="font-mono font-medium text-destructive">
@@ -154,12 +154,12 @@ export default function VoluntaryDeductions() {
             )
         },
         {
-            accessorKey: "frequency",
+            id: "frequency", width: "150px",
             header: "Frequency",
             cell: (item: any) => <Badge variant="outline">{item.frequency}</Badge>
         },
         {
-            accessorKey: "startDate",
+            id: "startDate", width: "150px",
             header: "Effective From",
             cell: (item: any) => format(new Date(item.startDate), "PPP")
         },
@@ -174,17 +174,17 @@ export default function VoluntaryDeductions() {
         }
     ];
 
-    const retroColumns: Column<RetroPayResult>[] = [
+    const retroColumns: SpreadsheetColumn<RetroPayResult>[] = [
         {
-            accessorKey: "periodName",
+            id: "periodName", width: "150px",
             header: "Adjusted Period",
         },
         {
-            accessorKey: "elementName",
+            id: "elementName", width: "150px",
             header: "Pay Element",
         },
         {
-            accessorKey: "amount",
+            id: "amount", width: "150px",
             header: "Amount",
             cell: (item: any) => {
                 const isPositive = Number(item.amount) > 0;
@@ -203,7 +203,7 @@ export default function VoluntaryDeductions() {
             }
         },
         {
-            accessorKey: "createdAt",
+            id: "createdAt", width: "150px",
             header: "Processed On",
             cell: (item: any) => format(new Date(item.createdAt), "PPP")
         }
@@ -297,11 +297,11 @@ export default function VoluntaryDeductions() {
                             </Dialog>
                         </CardHeader>
                         <CardContent>
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={deductions || []}
                                 columns={deductionColumns}
                                 isLoading={isDeductionsLoading}
-                            />
+                             onChange={() => {}} containerHeight="600px" />
                             {deductions?.length === 0 && !isDeductionsLoading && (
                                 <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
                                     <ArrowUpRight className="w-12 h-12 mb-4 opacity-20 text-green-500" />
@@ -319,11 +319,11 @@ export default function VoluntaryDeductions() {
                             <CardDescription>Adjustments made to your pay from previous periods</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={retroPay || []}
                                 columns={retroColumns}
                                 isLoading={isRetroLoading}
-                            />
+                             onChange={() => {}} containerHeight="600px" />
                             {retroPay?.length === 0 && !isRetroLoading && (
                                 <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
                                     <History className="w-12 h-12 mb-4 opacity-20" />

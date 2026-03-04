@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Heart, Shield, Eye, Star, DollarSign, BarChart3, CheckCircle2, X } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 interface BenefitPlan {
     id: string;
     name: string;
@@ -95,6 +96,51 @@ export default function BenefitsEnrollment() {
 
     const enrolledPlanIds = new Set(enrollments.filter(e => !e.waived).map(e => e.plan_id));
 
+    const enrollmentColumns: SpreadsheetColumn<any>[] = [
+        { id: "plan", header: "Plan", width: "150px", cell: (row) => <span className="plan-cell">{row.plan_name}</span> },
+        { id: "type", header: "Type", width: "100px", cell: (row) => <span className="type-badge" style={{ background: (TYPE_COLORS[row.benefit_type] ?? '#9ca3af') + '20', color: TYPE_COLORS[row.benefit_type] ?? '#6b7280' }}>{row.benefit_type}</span> },
+        { id: "emp_cost", header: "Employee Cost", width: "120px", cell: (row) => <span>{fmt(row.employee_cost, row.currency_code)}</span> },
+        { id: "empr_cost", header: "Employer Cost", width: "120px", cell: (row) => <span>{fmt(row.employer_cost, row.currency_code)}</span> },
+        { id: "effective", header: "Effective", width: "100px", cell: (row) => <span className="date-cell">{row.effective_from}</span> },
+        { id: "status", header: "Status", width: "100px", cell: (row) => row.waived ? <span className="waived-badge">Waived</span> : <span className="active-badge">Active</span> },
+        {
+            id: "actions", header: "Actions", width: "150px", cell: (row) => !row.waived ? (
+                <>
+                    <button className="waive-btn" onClick={() => waiveMutation.mutate({ planId: row.plan_id })} aria-label={`Waive ${row.plan_name}`}>Waive</button>
+                    <button className="term-btn" onClick={() => terminateMutation.mutate(row.id)} aria-label={`Terminate ${row.plan_name}`}>Terminate</button>
+                </>
+            ) : null
+        }
+    ];
+
+    const summaryColumns: SpreadsheetColumn<any>[] = [
+        {
+            id: "type", header: "Benefit Type", width: "150px", cell: (row) => {
+                const color = TYPE_COLORS[row.benefit_type] ?? '#6b7280';
+                return <span className="type-badge" style={{ background: color + '20', color }}>{row.benefit_type}</span>;
+            }
+        },
+        { id: "enrolled", header: "Enrolled", width: "100px", cell: (row) => <span className="num-cell block w-full text-right">{Number(row.enrolled).toLocaleString()}</span> },
+        { id: "waived", header: "Waived", width: "100px", cell: (row) => <span className="num-cell block w-full text-right">{Number(row.waived).toLocaleString()}</span> },
+        { id: "emp_cost", header: "Employee Cost", width: "120px", cell: (row) => <span className="amt-cell block w-full text-right">{fmt(row.employee_cost_total ?? 0)}</span> },
+        { id: "empr_cost", header: "Employer Cost", width: "120px", cell: (row) => <span className="amt-cell block w-full text-right">{fmt(row.employer_cost_total ?? 0)}</span> },
+        {
+            id: "participation", header: "Participation %", width: "150px", cell: (row) => {
+                const total = Number(row.enrolled) + Number(row.waived);
+                const pct = total > 0 ? Math.round(Number(row.enrolled) / total * 100) : 0;
+                const color = TYPE_COLORS[row.benefit_type] ?? '#6b7280';
+                return (
+                    <div className="pct-row flex items-center gap-2">
+                        <div className="pct-bar-bg flex-1 h-1.5 bg-gray-200 rounded-full">
+                            <div className="pct-bar-fill h-full rounded-full" style={{ width: `${pct}%`, background: color }} />
+                        </div>
+                        <span className="pct-label text-xs min-w-[30px]">{pct}%</span>
+                    </div>
+                );
+            }
+        }
+    ];
+
     return (
         <StandardPage
             title="Benefits Enrollment"
@@ -154,35 +200,14 @@ export default function BenefitsEnrollment() {
                         />
                     </div>
                     {enrollments.length > 0 ? (
-                        <table className="be-table">
-                            <thead>
-                                <tr><th>Plan</th><th>Type</th><th>Employee Cost</th><th>Employer Cost</th><th>Effective</th><th>Status</th><th>Actions</th></tr>
-                            </thead>
-                            <tbody>
-                                {enrollments.map(e => (
-                                    <tr key={e.id} className="be-row">
-                                        <td className="plan-cell">{e.plan_name}</td>
-                                        <td><span className="type-badge" style={{ background: (TYPE_COLORS[e.benefit_type] ?? '#9ca3af') + '20', color: TYPE_COLORS[e.benefit_type] ?? '#6b7280' }}>{e.benefit_type}</span></td>
-                                        <td>{fmt(e.employee_cost, e.currency_code)}</td>
-                                        <td>{fmt(e.employer_cost, e.currency_code)}</td>
-                                        <td className="date-cell">{e.effective_from}</td>
-                                        <td>
-                                            {e.waived
-                                                ? <span className="waived-badge">Waived</span>
-                                                : <span className="active-badge">Active</span>}
-                                        </td>
-                                        <td>
-                                            {!e.waived && (
-                                                <>
-                                                    <button className="waive-btn" onClick={() => waiveMutation.mutate({ planId: e.plan_id })} aria-label={`Waive ${e.plan_name}`}>Waive</button>
-                                                    <button className="term-btn" onClick={() => terminateMutation.mutate(e.id)} aria-label={`Terminate ${e.plan_name}`}>Terminate</button>
-                                                </>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                        <div className="h-[400px]">
+                            <InteractiveSpreadsheet
+                                columns={enrollmentColumns}
+                                data={enrollments}
+                                onChange={() => { }}
+                                containerHeight="100%"
+                            />
+                        </div>
                     ) : employeeId ? (
                         <div className="empty-plans">No active enrollments for this employee</div>
                     ) : null}
@@ -190,38 +215,20 @@ export default function BenefitsEnrollment() {
             )}
 
             {activeTab === 'summary' && (
-                <div className="be-card">
-                    <h2 className="section-title">Benefits Participation Summary</h2>
-                    <table className="be-table">
-                        <thead>
-                            <tr><th>Benefit Type</th><th>Enrolled</th><th>Waived</th><th>Employee Cost</th><th>Employer Cost</th><th>Participation %</th></tr>
-                        </thead>
-                        <tbody>
-                            {summary.map(row => {
-                                const total = Number(row.enrolled) + Number(row.waived);
-                                const pct = total > 0 ? Math.round(Number(row.enrolled) / total * 100) : 0;
-                                const color = TYPE_COLORS[row.benefit_type] ?? '#6b7280';
-                                return (
-                                    <tr key={row.benefit_type} className="be-row">
-                                        <td><span className="type-badge" style={{ background: color + '20', color }}>{row.benefit_type}</span></td>
-                                        <td className="num-cell">{Number(row.enrolled).toLocaleString()}</td>
-                                        <td className="num-cell">{Number(row.waived).toLocaleString()}</td>
-                                        <td className="amt-cell">{fmt(row.employee_cost_total ?? 0)}</td>
-                                        <td className="amt-cell">{fmt(row.employer_cost_total ?? 0)}</td>
-                                        <td>
-                                            <div className="pct-row">
-                                                <div className="pct-bar-bg">
-                                                    <div className="pct-bar-fill" style={{ width: `${pct}%`, background: color }} />
-                                                </div>
-                                                <span className="pct-label">{pct}%</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                            {summary.length === 0 && <tr><td colSpan={6} className="empty-plans">No data available</td></tr>}
-                        </tbody>
-                    </table>
+                <div className="be-card pb-0 !p-0">
+                    <h2 className="section-title pt-4 px-4 pb-2 m-0 bg-white">Benefits Participation Summary</h2>
+                    <div className="h-[400px] bg-white">
+                        {summary.length === 0 ? (
+                            <div className="empty-plans h-full flex items-center justify-center">No data available</div>
+                        ) : (
+                            <InteractiveSpreadsheet
+                                columns={summaryColumns}
+                                data={summary}
+                                onChange={() => { }}
+                                containerHeight="100%"
+                            />
+                        )}
+                    </div>
                 </div>
             )}
 

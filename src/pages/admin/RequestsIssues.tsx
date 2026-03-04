@@ -9,12 +9,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Pagination } from '@/components/admin/Pagination';
 import { ViewModeToggle } from '@/components/admin/ViewModeToggle';
-import { DataTable, DataTableColumn } from '@/components/admin/DataTable';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from '@/components/ui/InteractiveSpreadsheet';
+import { Checkbox } from '@/components/ui/checkbox';
 import { BulkActionBar } from '@/components/admin/BulkActionBar';
 import { useSupportRequests, useCloseSupportRequest } from '@/hooks/admin/useAdminData';
 import CreateSupportRequestDialog from '@/components/admin/dialogs/CreateSupportRequestDialog';
 import EditSupportRequestDialog from '@/components/admin/dialogs/EditSupportRequestDialog';
 import { exportToCSV } from '@/utils/exportUtils';
+import { toast } from 'sonner';
 
 interface Request {
     id: string;
@@ -234,11 +236,17 @@ export default function RequestsIssues() {
     };
 
     // Table columns
-    const tableColumns: DataTableColumn<any>[] = [
+    const tableColumns: SpreadsheetColumn<any>[] = [
+        {
+            id: 'select',
+            header: <Checkbox checked={paginatedRequests.length > 0 && selectedIds.size === paginatedRequests.length} onCheckedChange={(checked) => handleSelectAll(checked as boolean)} />,
+            width: '50px',
+            cell: (req) => <Checkbox checked={selectedIds.has(req.id)} onCheckedChange={() => handleToggleSelect(req.id)} />
+        },
         {
             id: 'title',
             header: 'Title',
-            sortable: true,
+            width: '300px',
             cell: (req) => (
                 <div>
                     <div className="font-medium">{req.title}</div>
@@ -249,7 +257,7 @@ export default function RequestsIssues() {
         {
             id: 'priority',
             header: 'Priority',
-            sortable: true,
+            width: '120px',
             cell: (req) => (
                 <Badge variant={
                     req.priority === 'high' ? 'destructive' :
@@ -262,7 +270,7 @@ export default function RequestsIssues() {
         {
             id: 'status',
             header: 'Status',
-            sortable: true,
+            width: '120px',
             cell: (req) => (
                 <Badge variant={req.status === 'closed' ? 'secondary' : 'default'}>
                     {req.status}
@@ -272,12 +280,13 @@ export default function RequestsIssues() {
         {
             id: 'createdAt',
             header: 'Date',
-            sortable: true,
-            cell: (req) => new Date(req.createdAt).toLocaleDateString(),
+            width: '120px',
+            cell: (req) => <span>{new Date(req.createdAt).toLocaleDateString()}</span>,
         },
         {
             id: 'type',
             header: 'Type',
+            width: '120px',
             cell: (req) => (
                 <Badge variant="outline">
                     {req.type === 'feature' ? 'Feature' : 'Bug'}
@@ -368,7 +377,7 @@ export default function RequestsIssues() {
                 <EditSupportRequestDialog
                     open={editDialogOpen}
                     onOpenChange={setEditDialogOpen}
-                    request={selectedRequest}
+                    request={selectedRequest as any}
                 />
                 {/* Stats */}
                 {!isLoading && !error && (
@@ -535,16 +544,14 @@ export default function RequestsIssues() {
                                 {/* Requests List */}
                                 {!isLoading && !error && paginatedRequests.length > 0 && (
                                     viewMode === 'table' ? (
-                                        <DataTable
-                                            data={paginatedRequests}
-                                            columns={tableColumns}
-                                            sortConfig={sortConfig}
-                                            onSort={handleSort}
-                                            selectedIds={selectedIds}
-                                            onSelectAll={handleSelectAll}
-                                            onSelectRow={handleToggleSelect}
-                                            getRowId={getRowId}
-                                        />
+                                        <div className="h-[500px]">
+                                            <InteractiveSpreadsheet
+                                                columns={tableColumns}
+                                                data={paginatedRequests}
+                                                onChange={() => { }}
+                                                containerHeight="100%"
+                                            />
+                                        </div>
                                     ) : (
                                         <div className="space-y-3">
                                             {paginatedRequests.map((request) => (

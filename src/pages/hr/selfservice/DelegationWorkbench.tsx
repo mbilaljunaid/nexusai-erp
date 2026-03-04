@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -129,9 +129,9 @@ export default function DelegationWorkbench() {
         });
     };
 
-    const columns: Column<Delegation>[] = [
+    const columns: SpreadsheetColumn<Delegation>[] = [
         {
-            accessorKey: "proxyId",
+            id: "proxyId", width: "150px",
             header: "Proxy Name",
             cell: (item: any) => {
                 const emp = eligibleProxies?.find((e: any) => e.id === item.proxyId);
@@ -139,17 +139,17 @@ export default function DelegationWorkbench() {
             }
         },
         {
-            accessorKey: "startDate",
+            id: "startDate", width: "150px",
             header: "Start Date",
             cell: (item: any) => format(new Date(item.startDate), "PPP")
         },
         {
-            accessorKey: "endDate",
+            id: "endDate", width: "150px",
             header: "End Date",
             cell: (item: any) => item.endDate ? format(new Date(item.endDate), "PPP") : "No End Date"
         },
         {
-            accessorKey: "canApproveTransitions" as any,
+            id: "canApproveTransitions", width: "150px" as any,
             header: "Approve Authority",
             cell: (item: any) => (
                 <div className="flex items-center gap-2">
@@ -159,7 +159,7 @@ export default function DelegationWorkbench() {
             )
         },
         {
-            accessorKey: "canViewTeamAnalytics" as any,
+            id: "canViewTeamAnalytics", width: "150px" as any,
             header: "Analytics View",
             cell: (item: any) => (
                 <div className="flex items-center gap-2">
@@ -293,11 +293,11 @@ export default function DelegationWorkbench() {
                         </Dialog>
                     </CardHeader>
                     <CardContent>
-                        <StandardTable
+                        <InteractiveSpreadsheet
                             data={delegations || []}
                             columns={columns}
                             isLoading={isLoading}
-                        />
+                         onChange={() => {}} containerHeight="600px" />
                         {delegations?.length === 0 && !isLoading && (
                             <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
                                 <AlertCircle className="w-12 h-12 mb-4 opacity-20" />

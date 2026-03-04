@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Settings, Calendar, Lock, Unlock } from "lucide-react";
@@ -95,28 +95,28 @@ export default function APSystemConfig() {
         }
     });
 
-    const distSetColumns: Column<any>[] = [
-        { header: "BU", accessorKey: "businessUnitId", className: "text-muted-foreground font-mono text-xs w-20", cell: (row) => row.businessUnitId || "Default" },
-        { header: "Name", accessorKey: "name", className: "font-medium" },
-        { header: "Description", accessorKey: "description" },
-        { header: "Default Account", accessorKey: "defaultAccount", className: "font-mono" }
+    const distSetColumns: SpreadsheetColumn<any>[] = [
+        { header: "BU", id: "businessUnitId", width: "150px", cell: (row) => <span className="text-muted-foreground font-mono text-xs w-20">{row.businessUnitId || "Default"}</span> },
+        { header: "Name", id: "name", width: "150px", cell: (row) => <span className="font-medium">{row.name}</span> },
+        { header: "Description", id: "description", width: "150px", cell: (r) => r.description },
+        { header: "Default Account", id: "defaultAccount", width: "150px", cell: (row) => <span className="font-mono">{row.defaultAccount}</span> }
     ];
 
-    const periodColumns: Column<any>[] = [
-        { header: "Period Name", accessorKey: "periodName", className: "font-medium" },
+    const periodColumns: SpreadsheetColumn<any>[] = [
+        { header: "Period Name", id: "periodName", width: "150px", cell: (row) => <span className="font-medium">{row.periodName}</span> },
         {
             header: "Start Date",
-            accessorKey: "startDate",
+            id: "startDate", width: "150px",
             cell: (row) => new Date(row.startDate).toLocaleDateString()
         },
         {
             header: "End Date",
-            accessorKey: "endDate",
+            id: "endDate", width: "150px",
             cell: (row) => new Date(row.endDate).toLocaleDateString()
         },
         {
             header: "Status",
-            accessorKey: "status",
+            id: "status", width: "150px",
             cell: (row) => (
                 <Badge variant={row.status === "Open" ? "default" : "secondary"}>
                     {row.status}
@@ -124,7 +124,7 @@ export default function APSystemConfig() {
             )
         },
         {
-            id: "actions",
+            id: "actions", width: "150px",
             header: "Actions",
             cell: (row) => (
                 row.status === "Open" && (
@@ -268,16 +268,11 @@ export default function APSystemConfig() {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={distSets || []}
                                 columns={distSetColumns}
-                                totalItems={distSets?.length || 0}
-                                page={page}
-                                onPageChange={setPage}
-                                pageSize={pageSize}
                                 isLoading={distSetsLoading}
-                                filterColumn="name"
-                                filterPlaceholder="Search sets..."
+                                onChange={() => { }} containerHeight="600px"
                             />
                         </CardContent>
                     </Card>
@@ -296,16 +291,11 @@ export default function APSystemConfig() {
                             <CardDescription>Manage accounting periods and period close</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={periods || []}
                                 columns={periodColumns}
-                                totalItems={periods?.length || 0}
-                                page={1}
-                                onPageChange={() => { }}
-                                pageSize={100}
                                 isLoading={periodsLoading}
-                                filterColumn="periodName"
-                                filterPlaceholder="Search periods..."
+                                onChange={() => { }} containerHeight="600px"
                             />
                         </CardContent>
                     </Card>

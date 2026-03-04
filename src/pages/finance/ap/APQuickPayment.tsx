@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { ChevronRight, ChevronLeft, Save, Plus, ArrowRight, CheckCircle2, Loader2, Search } from "lucide-react";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function APQuickPayment() {
     const [, setLocation] = useLocation();
@@ -99,17 +99,17 @@ export default function APQuickPayment() {
         createPaymentMutation.mutate(payload);
     };
 
-    const invoiceColumns: Column<any>[] = [
+    const invoiceColumns: SpreadsheetColumn<any>[] = [
         {
             header: "Select",
-            accessorKey: "id",
+            id: "id", width: "150px",
             cell: (row) => <Checkbox checked={selectedInvoices.has(row.id)} onCheckedChange={() => toggleInvoice(row)} />,
             className: "w-12 text-center"
         },
-        { header: "Invoice Number", accessorKey: "invoiceNumber" },
-        { header: "Date", accessorKey: "invoiceDate", cell: (r) => new Date(r.invoiceDate).toLocaleDateString() },
-        { header: "Amount", accessorKey: "invoiceAmount", cell: (r) => `$${parseFloat(r.invoiceAmount).toLocaleString()}` },
-        { header: "Due Date", accessorKey: "dueDate", cell: (r) => r.dueDate ? new Date(r.dueDate).toLocaleDateString() : "-" }
+        { header: "Invoice Number", id: "invoiceNumber", width: "150px" },
+        { header: "Date", id: "invoiceDate", width: "150px", cell: (r) => new Date(r.invoiceDate).toLocaleDateString() },
+        { header: "Amount", id: "invoiceAmount", width: "150px", cell: (r) => `$${parseFloat(r.invoiceAmount).toLocaleString()}` },
+        { header: "Due Date", id: "dueDate", width: "150px", cell: (r) => r.dueDate ? new Date(r.dueDate).toLocaleDateString() : "-" }
     ];
 
     return (
@@ -228,13 +228,11 @@ export default function APQuickPayment() {
                                         <p>No supplier selected</p>
                                     </div>
                                 ) : (
-                                    <StandardTable
+                                    <InteractiveSpreadsheet
                                         data={supplierInvoices?.data || []}
                                         columns={invoiceColumns}
                                         isLoading={loadingInvoices}
-                                        filterColumn="invoiceNumber"
-                                        filterPlaceholder="Search invoice number..."
-                                    />
+                                     onChange={() => {}} containerHeight="600px" />
                                 )}
                             </CardContent>
                         </Card>

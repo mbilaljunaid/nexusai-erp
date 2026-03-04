@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -61,14 +61,14 @@ export default function PaymentTermsMaster() {
         saveMutation.mutate(formData);
     };
 
-    const columns: Column<ApPaymentTerm>[] = [
-        { header: "Term Name", accessorKey: "termName", className: "font-medium" },
-        { header: "Description", accessorKey: "description" },
-        { header: "Due Days", accessorKey: "dueDays" },
-        { header: "Discount Bracket", accessorKey: "discountDays", cell: (row) => row.discountDays ? `${row.discountPercent}% if paid in ${row.discountDays} Days` : "No Discount" },
+    const columns: SpreadsheetColumn<ApPaymentTerm>[] = [
+        { header: "Term Name", id: "termName", width: "150px", className: "font-medium" },
+        { header: "Description", id: "description", width: "150px" },
+        { header: "Due Days", id: "dueDays", width: "150px" },
+        { header: "Discount Bracket", id: "discountDays", width: "150px", cell: (row) => row.discountDays ? `${row.discountPercent}% if paid in ${row.discountDays} Days` : "No Discount" },
         {
             header: "Status",
-            accessorKey: "enabledFlag",
+            id: "enabledFlag", width: "150px",
             cell: (row) => (
                 <span className={`px-2 py-1 rounded-full text-xs font-semibold ${row.enabledFlag ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
                     {row.enabledFlag ? "Active" : "Inactive"}
@@ -116,13 +116,11 @@ export default function PaymentTermsMaster() {
                 </Button>
             </div>
 
-            <StandardTable
+            <InteractiveSpreadsheet
                 data={terms || []}
                 columns={columns}
                 isLoading={isLoading}
-                filterColumn="termName"
-                filterPlaceholder="Search terms..."
-            />
+             onChange={() => {}} containerHeight="600px" />
 
             <Dialog open={modalOpen} onOpenChange={setModalOpen}>
                 <DialogContent>

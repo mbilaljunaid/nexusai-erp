@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,31 +46,31 @@ export default function APReports() {
         }
     });
 
-    const agingColumns: Column<any>[] = [
-        { header: "Supplier", accessorKey: "supplierName", className: "font-medium" },
+    const agingColumns: SpreadsheetColumn<any>[] = [
+        { header: "Supplier", id: "supplierName", width: "150px", cell: (r) => <span className="font-medium">{r.supplierName}</span> },
         {
             header: "Current",
-            accessorKey: "current",
+            id: "current", width: "150px",
             cell: (row) => `$${parseFloat(row.current || 0).toLocaleString()}`
         },
         {
             header: "1-30 Days",
-            accessorKey: "days30",
+            id: "days30", width: "150px",
             cell: (row) => `$${parseFloat(row.days30 || 0).toLocaleString()}`
         },
         {
             header: "31-60 Days",
-            accessorKey: "days60",
+            id: "days60", width: "150px",
             cell: (row) => `$${parseFloat(row.days60 || 0).toLocaleString()}`
         },
         {
             header: "61-90 Days",
-            accessorKey: "days90",
+            id: "days90", width: "150px",
             cell: (row) => `$${parseFloat(row.days90 || 0).toLocaleString()}`
         },
         {
             header: "90+ Days",
-            accessorKey: "over90",
+            id: "over90", width: "150px",
             cell: (row) => (
                 <span className="font-semibold text-red-600">
                     ${parseFloat(row.over90 || 0).toLocaleString()}
@@ -79,7 +79,7 @@ export default function APReports() {
         },
         {
             header: "Total",
-            accessorKey: "total",
+            id: "total", width: "150px",
             cell: (row) => (
                 <span className="font-bold">
                     ${parseFloat(row.total || 0).toLocaleString()}
@@ -88,21 +88,21 @@ export default function APReports() {
         }
     ];
 
-    const auditColumns: Column<any>[] = [
+    const auditColumns: SpreadsheetColumn<any>[] = [
         {
             header: "Timestamp",
-            accessorKey: "timestamp",
+            id: "timestamp", width: "150px",
             cell: (row) => new Date(row.timestamp).toLocaleString()
         },
-        { header: "User", accessorKey: "userId" },
+        { header: "User", id: "userId", width: "150px", cell: (r) => r.userId },
         {
             header: "Action",
-            accessorKey: "action",
+            id: "action", width: "150px",
             cell: (row) => <Badge>{row.action}</Badge>
         },
-        { header: "Entity Type", accessorKey: "entityType" },
-        { header: "Entity ID", accessorKey: "entityId", className: "font-mono text-sm" },
-        { header: "Details", accessorKey: "details" }
+        { header: "Entity Type", id: "entityType", width: "150px", cell: (r) => r.entityType },
+        { header: "Entity ID", id: "entityId", width: "150px", cell: (r) => <span className="font-mono text-sm">{r.entityId}</span> },
+        { header: "Details", id: "details", width: "150px", cell: (r) => r.details }
     ];
 
     const exportAging = () => {
@@ -169,16 +169,11 @@ export default function APReports() {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={agingData || []}
                                 columns={agingColumns}
-                                totalItems={agingData?.length || 0}
-                                page={1}
-                                onPageChange={() => { }}
-                                pageSize={100}
                                 isLoading={agingLoading}
-                                filterColumn="supplierName"
-                                filterPlaceholder="Search supplier..."
+                                onChange={() => { }} containerHeight="600px"
                             />
                         </CardContent>
                     </Card>
@@ -270,14 +265,11 @@ export default function APReports() {
                                 </Button>
                             </div>
 
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={auditData || []}
                                 columns={auditColumns}
-                                totalItems={auditData?.length || 0}
-                                page={page}
-                                onPageChange={setPage}
-                                pageSize={pageSize}
                                 isLoading={auditLoading}
+                                onChange={() => { }} containerHeight="600px"
                             />
                         </CardContent>
                     </Card>

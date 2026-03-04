@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Shield, AlertTriangle, CheckCircle2, TrendingUp, TrendingDown, Search, Plus, Save, Loader2, Trash2 } from 'lucide-react';
-import { InteractiveSpreadsheet } from '@/components/ui/InteractiveSpreadsheet';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from '@/components/ui/InteractiveSpreadsheet';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
@@ -111,6 +111,17 @@ export default function HedgeEffectiveness() {
     const totalNotional = hedges.reduce((s, h) => s + Number(h.notional_amount), 0);
     const effectiveCount = hedges.filter(h => h.last_effectiveness === true).length;
     const breachCount = facilities.reduce((s, f) => s + Number(f.recent_breaches), 0);
+
+    const dueCovsnColumns: SpreadsheetColumn<any>[] = [
+        { id: "facility", header: "Facility", width: "150px", cell: (row) => <span className="fw">{row.facility_name}</span> },
+        { id: "lender", header: "Lender", width: "150px", cell: (row) => <span>{row.lender}</span> },
+        { id: "covenant", header: "Covenant", width: "150px", cell: (row) => <span>{row.metric_name}</span> },
+        { id: "type", header: "Type", width: "120px", cell: (row) => <span className="type-chip">{row.covenant_type}</span> },
+        { id: "min", header: "Min", width: "100px", cell: (row) => <span className="mono">{row.threshold_min ?? '—'}</span> },
+        { id: "max", header: "Max", width: "100px", cell: (row) => <span className="mono">{row.threshold_max ?? '—'}</span> },
+        { id: "next_test", header: "Next Test", width: "120px", cell: (row) => <span className="mono red">{row.next_test_date}</span> },
+        { id: "frequency", header: "Frequency", width: "120px", cell: (row) => <span className="freq-chip">{row.test_frequency}</span> }
+    ];
 
     return (
         <div className="he-container">
@@ -285,26 +296,20 @@ export default function HedgeEffectiveness() {
             )}
 
             {activeTab === 'covenants' && (
-                <div className="panel">
+                <div className="panel flex flex-col h-[500px]">
                     <h3 className="card-title">Covenants Due (Next 30 Days)</h3>
-                    <table className="he-table">
-                        <thead><tr><th>Facility</th><th>Lender</th><th>Covenant</th><th>Type</th><th>Min</th><th>Max</th><th>Next Test</th><th>Frequency</th></tr></thead>
-                        <tbody>
-                            {dueCovs.map(c => (
-                                <tr key={c.id} className="he-row">
-                                    <td className="fw">{c.facility_name}</td>
-                                    <td>{c.lender}</td>
-                                    <td>{c.metric_name}</td>
-                                    <td><span className="type-chip">{c.covenant_type}</span></td>
-                                    <td className="mono">{c.threshold_min ?? '—'}</td>
-                                    <td className="mono">{c.threshold_max ?? '—'}</td>
-                                    <td className="mono red">{c.next_test_date}</td>
-                                    <td><span className="freq-chip">{c.test_frequency}</span></td>
-                                </tr>
-                            ))}
-                            {dueCovs.length === 0 && <tr><td colSpan={8} className="empty">No covenants due in next 30 days</td></tr>}
-                        </tbody>
-                    </table>
+                    <div className="flex-1 mt-4">
+                        {dueCovs.length === 0 ? (
+                            <div className="p-8 text-center text-gray-500 h-full flex items-center justify-center">No covenants due in next 30 days</div>
+                        ) : (
+                            <InteractiveSpreadsheet
+                                columns={dueCovsnColumns}
+                                data={dueCovs}
+                                onChange={() => { }}
+                                containerHeight="100%"
+                            />
+                        )}
+                    </div>
                 </div>
             )}
 

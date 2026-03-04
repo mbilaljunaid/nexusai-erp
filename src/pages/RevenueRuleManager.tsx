@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
@@ -102,28 +102,28 @@ export default function RevenueRuleManager() {
     });
 
     // --- Columns ---
-    const idRuleColumns: Column<any>[] = [
-        { header: "Name", accessorKey: "name", cell: (item) => <span className="font-medium">{item.name}</span> },
-        { header: "Priority", accessorKey: "priority" },
+    const idRuleColumns: SpreadsheetColumn<any>[] = [
+        { header: "Name", id: "name", width: "150px", cell: (item) => <span className="font-medium">{item.name}</span> },
+        { header: "Priority", id: "priority", width: "150px" },
         {
             header: "Grouping Criteria",
-            accessorKey: "groupingCriteria",
+            id: "groupingCriteria", width: "150px",
             cell: (item) => (
                 <div className="flex gap-1">
                     {(item.groupingCriteria as string[]).map((c: string) => <Badge key={c} variant="secondary">{c}</Badge>)}
                 </div>
             )
         },
-        { header: "Status", accessorKey: "status", cell: (item) => <Badge>{item.status}</Badge> }
+        { header: "Status", id: "status", width: "150px", cell: (item) => <Badge>{item.status}</Badge> }
     ];
 
-    const pobRuleColumns: Column<any>[] = [
-        { header: "Name", accessorKey: "name", cell: (item) => <span className="font-medium">{item.name}</span> },
+    const pobRuleColumns: SpreadsheetColumn<any>[] = [
+        { header: "Name", id: "name", width: "150px", cell: (item) => <span className="font-medium">{item.name}</span> },
         { header: "Condition", cell: (item) => <span>If {item.attributeName} = {item.attributeValue}</span> },
-        { header: "POB Name", accessorKey: "pobName" },
-        { header: "Method", accessorKey: "satisfactionMethod" },
-        { header: "Duration", accessorKey: "defaultDurationMonths", cell: (item) => `${item.defaultDurationMonths} mo` },
-        { header: "Priority", accessorKey: "priority" }
+        { header: "POB Name", id: "pobName", width: "150px" },
+        { header: "Method", id: "satisfactionMethod", width: "150px" },
+        { header: "Duration", id: "defaultDurationMonths", width: "150px", cell: (item) => `${item.defaultDurationMonths} mo` },
+        { header: "Priority", id: "priority", width: "150px" }
     ];
 
     return (
@@ -191,7 +191,7 @@ export default function RevenueRuleManager() {
                             <CardDescription>Rules to determine Performance Obligations from source lines.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            {pobLoading ? <Skeleton className="h-48" /> : <StandardTable data={pobRules || []} columns={pobRuleColumns} />}
+                            {pobLoading ? <Skeleton className="h-48" /> : <InteractiveSpreadsheet data={pobRules || []} columns={pobRuleColumns}  onChange={() => {}} containerHeight="600px" />}
                         </CardContent>
                     </Card>
                 </TabsContent>
@@ -233,7 +233,7 @@ export default function RevenueRuleManager() {
                             <CardDescription>Rules to group source events into contracts.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            {idLoading ? <Skeleton className="h-48" /> : <StandardTable data={idRules || []} columns={idRuleColumns} />}
+                            {idLoading ? <Skeleton className="h-48" /> : <InteractiveSpreadsheet data={idRules || []} columns={idRuleColumns}  onChange={() => {}} containerHeight="600px" />}
                         </CardContent>
                     </Card>
                 </TabsContent>

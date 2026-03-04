@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FileText, CheckCircle2, Clock, Upload, Bell } from "lucide-react";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function SupplierPortal() {
@@ -32,37 +32,37 @@ export default function SupplierPortal() {
         }
     });
 
-    const invoiceColumns: Column<any>[] = [
-        { header: "Invoice #", accessorKey: "invoiceNumber", className: "font-mono font-medium" },
-        { header: "Date", accessorKey: "date" },
+    const invoiceColumns: SpreadsheetColumn<any>[] = [
+        { header: "Invoice #", id: "invoiceNumber", width: "150px", className: "font-mono font-medium" },
+        { header: "Date", id: "date", width: "150px" },
         {
             header: "Amount",
-            accessorKey: "amount",
+            id: "amount", width: "150px",
             cell: (row) => <span className="font-semibold text-primary">${row.amount.toLocaleString()}</span>
         },
         {
             header: "Status",
-            accessorKey: "status",
+            id: "status", width: "150px",
             cell: (row) => (
                 <Badge variant={row.status === "Paid" ? "default" : row.status === "Processing" ? "secondary" : "outline"}>
                     {row.status}
                 </Badge>
             )
         },
-        { header: "Payment Date", accessorKey: "paymentDate", cell: (row) => row.paymentDate || "-" }
+        { header: "Payment Date", id: "paymentDate", width: "150px", cell: (row) => row.paymentDate || "-" }
     ];
 
-    const poColumns: Column<any>[] = [
-        { header: "PO Number", accessorKey: "poNumber", className: "font-mono text-indigo-600 font-medium" },
-        { header: "Issue Date", accessorKey: "date" },
+    const poColumns: SpreadsheetColumn<any>[] = [
+        { header: "PO Number", id: "poNumber", width: "150px", className: "font-mono text-indigo-600 font-medium" },
+        { header: "Issue Date", id: "date", width: "150px" },
         {
             header: "Total Value",
-            accessorKey: "amount",
+            id: "amount", width: "150px",
             cell: (row) => <span className="font-semibold">${row.amount.toLocaleString()}</span>
         },
         {
             header: "Status",
-            accessorKey: "status",
+            id: "status", width: "150px",
             cell: (row) => <Badge variant={row.status === "Open" ? "default" : "secondary"}>{row.status}</Badge>
         }
     ];
@@ -131,13 +131,11 @@ export default function SupplierPortal() {
                             <CardDescription>Track the status of all submitted invoices</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={invoices || []}
                                 columns={invoiceColumns}
                                 isLoading={isLoading}
-                                filterColumn="invoiceNumber"
-                                filterPlaceholder="Search invoice #..."
-                            />
+                             onChange={() => {}} containerHeight="600px" />
                         </CardContent>
                     </Card>
                 </TabsContent>
@@ -149,13 +147,11 @@ export default function SupplierPortal() {
                             <CardDescription>Open and historical purchase orders assigned to you</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={purchaseOrders || []}
                                 columns={poColumns}
                                 isLoading={isLoading}
-                                filterColumn="poNumber"
-                                filterPlaceholder="Search PO #..."
-                            />
+                             onChange={() => {}} containerHeight="600px" />
                         </CardContent>
                     </Card>
                 </TabsContent>

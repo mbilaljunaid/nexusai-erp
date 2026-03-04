@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -99,20 +99,20 @@ export default function StandardOpLibrary() {
         }
     });
 
-    const columns: Column<StandardOp>[] = [
+    const columns: SpreadsheetColumn<StandardOp>[] = [
         {
             header: "Op Code",
-            accessorKey: "code",
+            id: "code", width: "150px",
             cell: (row: StandardOp) => <div className="font-mono font-bold text-xs">{row.code}</div>
         },
         {
             header: "Name",
-            accessorKey: "name",
+            id: "name", width: "150px",
             cell: (row: StandardOp) => <div className="font-medium">{row.name}</div>
         },
         {
             header: "Default Work Center",
-            accessorKey: "defaultWorkCenterId",
+            id: "defaultWorkCenterId", width: "150px",
             cell: (row: StandardOp) => {
                 const wc = workCenters.find((w) => w.id === row.defaultWorkCenterId);
                 return wc ? <Badge variant="outline">{wc.name}</Badge> : <span className="text-muted-foreground">-</span>;
@@ -120,7 +120,7 @@ export default function StandardOpLibrary() {
         },
         {
             header: "Std Times (Setup / Run)",
-            accessorKey: "defaultSetupTime",
+            id: "defaultSetupTime", width: "150px",
             cell: (row: StandardOp) => (
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Clock className="h-3 w-3" />
@@ -130,7 +130,7 @@ export default function StandardOpLibrary() {
         },
         {
             header: "Status",
-            accessorKey: "status",
+            id: "status", width: "150px",
             cell: (row: StandardOp) => (
                 <Badge variant={row.status === "active" ? "default" : "secondary"}>
                     {row.status}
@@ -290,17 +290,11 @@ export default function StandardOpLibrary() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <StandardTable
+                    <InteractiveSpreadsheet
                         data={operations}
                         columns={columns}
                         isLoading={isLoading}
-                        page={page}
-                        pageSize={10}
-                        totalItems={operations.length}
-                        onPageChange={setPage}
-                        filterColumn="name"
-                        filterPlaceholder="Filter by Name..."
-                    />
+                     onChange={() => {}} containerHeight="600px" />
                 </CardContent>
             </Card>
         </StandardPage>

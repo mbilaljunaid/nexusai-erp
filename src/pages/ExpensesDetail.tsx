@@ -35,7 +35,7 @@ import {
 } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { StandardTable, Column } from "@/components/tables/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function ExpensesDetail() {
   const [, params] = useRoute("/finance/expenses/:id");
@@ -315,28 +315,28 @@ export default function ExpensesDetail() {
     });
   };
 
-  const lineColumns: Column<any>[] = [
+  const lineColumns: SpreadsheetColumn<any>[] = [
     {
       header: "Date",
-      accessorKey: "date",
+      id: "date", width: "150px",
       cell: (line) => new Date(line.date).toLocaleDateString()
     },
     {
       header: "Category",
-      accessorKey: "category",
+      id: "category", width: "150px",
       cell: (line) => <Badge variant="outline">{line.category}</Badge>
     },
     {
       header: "Merchant",
-      accessorKey: "merchant"
+      id: "merchant", width: "150px"
     },
     {
       header: "Description",
-      accessorKey: "description"
+      id: "description", width: "150px"
     },
     {
       header: "Amount",
-      accessorKey: "amount",
+      id: "amount", width: "150px",
       cell: (line) => <span className="font-mono font-bold">${Number(line.amount).toFixed(2)}</span>
     }
   ];
@@ -344,20 +344,22 @@ export default function ExpensesDetail() {
   if (reportLoading) {
     return (
       <StandardPage
-      title="{report.title || `Expense Report ${report.reportNumber || report.id.slice(0, 8)}`}"
-      description="{report.description || "No description provided"}"
-      className="flex items-center justify-center h-64"
-    >
+        title={report.title || `Expense Report ${report.reportNumber || report.id.slice(0, 8)}`}
+        description={report.description || "No description provided"}
+        className="flex items-center justify-center h-64"
+      >
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
+      </StandardPage>
     );
   }
 
   if (!report) {
     return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">Expense report not found</p>
-      </div>
+      <StandardPage title="Expense Report Not Found">
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">Expense report not found</p>
+        </div>
+      </StandardPage>
     );
   }
 
@@ -365,7 +367,13 @@ export default function ExpensesDetail() {
     <div className="space-y-6 pb-20">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items- 8)}`}
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center">
+            <Receipt className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">
+              {report.title || `Expense Report ${report.reportNumber || report.id.slice(0, 8)}`}
             </h1>
             <p className="text-sm text-muted-foreground mt-0.5">
               {report.description || "No description provided"}
@@ -378,7 +386,7 @@ export default function ExpensesDetail() {
       </div>
 
       {/* Report Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      < div className="grid grid-cols-1 md:grid-cols-4 gap-4" >
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Amount</CardTitle>
@@ -411,55 +419,59 @@ export default function ExpensesDetail() {
             <Badge variant="outline" className="text-sm">{report.status}</Badge>
           </CardContent>
         </Card>
-      </div>
+      </div >
 
       {/* Workflow Actions */}
-      {report.status === 'DRAFT' && (
-        <div className="flex gap-2">
-          <Button onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending || lines.length === 0}>
-            {submitMutation.isPending ? (
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4 mr-2" />
+      {
+        report.status === 'DRAFT' && (
+          <div className="flex gap-2">
+            <Button onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending || lines.length === 0}>
+              {submitMutation.isPending ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4 mr-2" />
+              )}
+              Submit for Approval
+            </Button>
+            {lines.length === 0 && (
+              <p className="text-sm text-muted-foreground flex items-center gap-2 ml-2">
+                <AlertTriangle className="h-4 w-4" />
+                Add at least one expense line to submit
+              </p>
             )}
-            Submit for Approval
-          </Button>
-          {lines.length === 0 && (
-            <p className="text-sm text-muted-foreground flex items-center gap-2 ml-2">
-              <AlertTriangle className="h-4 w-4" />
-              Add at least one expense line to submit
-            </p>
-          )}
-        </div>
-      )}
+          </div>
+        )
+      }
 
-      {report.status === 'SUBMITTED' && (
-        <div className="flex gap-2">
-          <Button onClick={() => approveMutation.mutate()} disabled={approveMutation.isPending}>
-            {approveMutation.isPending ? (
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            ) : (
-              <CheckCircle className="h-4 w-4 mr-2" />
-            )}
-            Approve
-          </Button>
-          <Button
-            variant="destructive"
-            onClick={() => setIsRejectOpen(true)}
-            disabled={rejectMutation.isPending}
-          >
-            <XCircle className="h-4 w-4 mr-2" />
-            Reject
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => recallMutation.mutate()}
-            disabled={recallMutation.isPending}
-          >
-            Recall to Draft
-          </Button>
-        </div>
-      )}
+      {
+        report.status === 'SUBMITTED' && (
+          <div className="flex gap-2">
+            <Button onClick={() => approveMutation.mutate()} disabled={approveMutation.isPending}>
+              {approveMutation.isPending ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <CheckCircle className="h-4 w-4 mr-2" />
+              )}
+              Approve
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => setIsRejectOpen(true)}
+              disabled={rejectMutation.isPending}
+            >
+              <XCircle className="h-4 w-4 mr-2" />
+              Reject
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => recallMutation.mutate()}
+              disabled={recallMutation.isPending}
+            >
+              Recall to Draft
+            </Button>
+          </div>
+        )
+      }
 
       {/* Expense Lines */}
       <Card>
@@ -475,7 +487,7 @@ export default function ExpensesDetail() {
           </div>
         </CardHeader>
         <CardContent>
-          <StandardTable
+          <InteractiveSpreadsheet
             data={lines}
             columns={lineColumns}
             isLoading={linesLoading}
@@ -489,7 +501,7 @@ export default function ExpensesDetail() {
                 <Trash2 className="h-3 w-3 text-red-500" />
               </Button>
             ) : undefined}
-            pagination={{ currentPage: 1, totalPages: 1, onPageChange: () => { } }}
+            onChange={() => { }} containerHeight="600px"
           />
         </CardContent>
       </Card>
@@ -701,6 +713,6 @@ export default function ExpensesDetail() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </StandardPage>
+    </div>
   );
 }

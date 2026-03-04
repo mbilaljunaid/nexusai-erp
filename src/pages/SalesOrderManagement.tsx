@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -59,16 +59,16 @@ export default function SalesOrderManagement() {
     },
   });
 
-  const columns: Column<SalesOrder>[] = [
-    { header: "Order ID", accessorKey: "orderId", cell: (row: SalesOrder) => <span className="font-mono font-bold">{row.orderId}</span> },
-    { header: "Customer", accessorKey: "customer" },
+  const columns: SpreadsheetColumn<SalesOrder>[] = [
+    { header: "Order ID", id: "orderId", width: "150px", cell: (row: SalesOrder) => <span className="font-mono font-bold">{row.orderId}</span> },
+    { header: "Customer", id: "customer", width: "150px" },
     {
-      header: "Amount", accessorKey: "contractPrice", cell: (row: SalesOrder) => {
+      header: "Amount", id: "contractPrice", width: "150px", cell: (row: SalesOrder) => {
         const amt = (parseFloat(row.qty) || 0) * (parseFloat(row.contractPrice) || 0);
         return <span className="font-mono">${amt.toFixed(2)}</span>;
       }
     },
-    { header: "Status", accessorKey: "status", cell: (row: SalesOrder) => <Badge variant={row.status === "confirmed" ? "default" : "secondary"}>{row.status}</Badge> },
+    { header: "Status", id: "status", width: "150px", cell: (row: SalesOrder) => <Badge variant={row.status === "confirmed" ? "default" : "secondary"}>{row.status}</Badge> },
     {
       header: "Actions", id: "actions", cell: (row: SalesOrder) => (
         <div className="flex gap-2">
@@ -148,14 +148,11 @@ export default function SalesOrderManagement() {
         <Card className="p-4"><CardContent className="pt-0"><p className="text-sm text-muted-foreground">Pending</p><p className="text-2xl font-bold text-yellow-600">{orders.length - confirmed}</p></CardContent></Card>
       </div>
 
-      <StandardTable
+      <InteractiveSpreadsheet
         data={orders}
         columns={columns}
         isLoading={isLoading}
-        keyExtractor={(item) => item.id || Math.random().toString()}
-        filterColumn="orderId"
-        filterPlaceholder="Filter orders..."
-      />
+       onChange={() => {}} containerHeight="600px" />
     </StandardPage>
   );
 }

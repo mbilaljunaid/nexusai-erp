@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, CheckCircle, AlertCircle, FileText, Paperclip, Loader2 } from "lucide-react";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 
@@ -64,6 +65,12 @@ export default function APInvoiceDetail() {
     const mockDistributions = (lineValue: number) => [
         { account: "01-100-5100-0000", amount: (lineValue * 0.8).toFixed(2), description: "Primary Expense" },
         { account: "01-100-2400-0000", amount: (lineValue * 0.2).toFixed(2), description: "Tax / Freight Allocation" },
+    ];
+
+    const distributionColumns: SpreadsheetColumn<any>[] = [
+        { id: "account", header: "GL Account", width: "150px", cell: (row) => <span className="font-mono text-xs">{row.account}</span> },
+        { id: "description", header: "Description", width: "250px", cell: (row) => <span className="text-muted-foreground">{row.description}</span> },
+        { id: "amount", header: "Amount", width: "150px", cell: (row) => <span className="font-medium flex justify-end">${parseFloat(row.amount).toLocaleString()}</span> }
     ];
 
     return (
@@ -128,14 +135,14 @@ export default function APInvoiceDetail() {
                 </CardHeader>
                 <CardContent>
                     {lines && lines.length > 0 ? (
-                        <StandardTable<any>
+                        <InteractiveSpreadsheet<any>
                             data={lines}
                             columns={[
-                                { header: "Line #", accessorKey: "lineNumber", width: "10%" },
-                                { header: "Type", accessorKey: "lineType", width: "15%" },
-                                { header: "Description", accessorKey: "description", width: "35%" },
+                                { header: "Line #", id: "lineNumber", width: "150px", width: "10%" },
+                                { header: "Type", id: "lineType", width: "150px", width: "15%" },
+                                { header: "Description", id: "description", width: "150px", width: "35%" },
                                 { header: "Amount", cell: (r) => `$${parseFloat(r.amount || 0).toLocaleString()}`, width: "10%" },
-                                { header: "PO Header ID", accessorKey: "poHeaderId", width: "15%" },
+                                { header: "PO Header ID", id: "poHeaderId", width: "150px", width: "15%" },
                                 {
                                     header: "Actions",
                                     width: "15%",
@@ -154,7 +161,7 @@ export default function APInvoiceDetail() {
                                     )
                                 }
                             ]}
-                        />
+                         onChange={() => {}} containerHeight="600px" />
                     ) : (
                         <div className="text-center py-8 text-muted-foreground bg-slate-50 rounded-lg border border-dashed">
                             No lines found for this invoice.
@@ -209,30 +216,21 @@ export default function APInvoiceDetail() {
                     </DialogHeader>
                     <div className="space-y-4 pt-4">
                         {selectedLine && (
-                            <table className="w-full text-sm text-left">
-                                <thead className="bg-muted text-muted-foreground">
-                                    <tr>
-                                        <th className="px-4 py-2 rounded-tl-md font-medium">GL Account</th>
-                                        <th className="px-4 py-2 font-medium">Description</th>
-                                        <th className="px-4 py-2 rounded-tr-md font-medium text-right">Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {mockDistributions(parseFloat(selectedLine.amount || 0)).map((dist, idx) => (
-                                        <tr key={idx} className="border-b last:border-0 hover:bg-muted/50 transition-colors">
-                                            <td className="px-4 py-3 font-mono text-xs">{dist.account}</td>
-                                            <td className="px-4 py-3 text-muted-foreground">{dist.description}</td>
-                                            <td className="px-4 py-3 text-right font-medium">${parseFloat(dist.amount).toLocaleString()}</td>
-                                        </tr>
-                                    ))}
-                                    <tr className="bg-slate-50 border-t-2">
-                                        <td colSpan={2} className="px-4 py-2 font-semibold text-right">Total Line Amount:</td>
-                                        <td className="px-4 py-2 font-bold text-right text-green-700">
-                                            ${parseFloat(selectedLine.amount || 0).toLocaleString()}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div className="border rounded-md">
+                                <InteractiveSpreadsheet
+                                    columns={distributionColumns}
+                                    data={[
+                                        ...mockDistributions(parseFloat(selectedLine.amount || 0)),
+                                        {
+                                            account: "Total Line Amount:",
+                                            description: "",
+                                            amount: selectedLine.amount || 0
+                                        }
+                                    ]}
+                                    onChange={() => { }}
+                                    containerHeight="200px"
+                                />
+                            </div>
                         )}
                         <div className="flex justify-end pt-4">
                             <Button variant="outline" onClick={() => setDistributionsModalOpen(false)}>Close</Button>

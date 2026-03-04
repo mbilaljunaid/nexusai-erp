@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { FileText, Plus, MapPin, ShieldOff, LayoutDashboard, Calculator, Eye, Edit, Trash2, Landmark } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -145,6 +146,24 @@ function TaxCodesTab({ legalEntityId }: { legalEntityId: string | null }) {
     return jurisdiction?.name || 'N/A';
   };
 
+  const codeColumns: SpreadsheetColumn<any>[] = [
+    { id: "code", header: "Code", width: "150px", cell: (row) => <span className="font-medium">{row.code}</span> },
+    { id: "description", header: "Description", width: "200px", cell: (row) => <span className="text-sm text-muted-foreground">{row.description || '-'}</span> },
+    { id: "rate", header: "Rate", width: "100px", cell: (row) => <Badge variant="outline">{row.rate}%</Badge> },
+    { id: "type", header: "Type", width: "100px", cell: (row) => <span className="text-sm">{row.type}</span> },
+    { id: "jurisdiction", header: "Jurisdiction", width: "150px", cell: (row) => <span className="text-sm">{row.jurisdictionId ? getJurisdictionName(row.jurisdictionId) : '-'}</span> },
+    { id: "status", header: "Status", width: "100px", cell: (row) => <Badge variant={row.isActive ? 'default' : 'secondary'}>{row.isActive ? 'Active' : 'Inactive'}</Badge> },
+    {
+      id: "actions", header: "Actions", width: "150px", cell: (row) => (
+        <div className="flex justify-end gap-2 w-full">
+          <Button variant="ghost" size="sm" onClick={() => setModalState({ isOpen: true, mode: 'view', taxCode: row })}><Eye className="h-4 w-4" /></Button>
+          <Button variant="ghost" size="sm" onClick={() => setModalState({ isOpen: true, mode: 'edit', taxCode: row })}><Edit className="h-4 w-4" /></Button>
+          <Button variant="ghost" size="sm" disabled={!row.isActive} onClick={() => { if (confirm('Mark this tax code as inactive?')) { deleteMutation.mutate(row.id); } }}><Trash2 className="h-4 w-4" /></Button>
+        </div>
+      )
+    }
+  ];
+
   return (
     <div className="space-y-6">
       <Card>
@@ -191,86 +210,19 @@ function TaxCodesTab({ legalEntityId }: { legalEntityId: string | null }) {
           </div>
 
           {/* Table */}
-          <div className="border rounded-lg">
-            <table className="w-full">
-              <thead className="bg-muted/50">
-                <tr className="border-b">
-                  <th className="p-3 text-left font-medium">Code</th>
-                  <th className="p-3 text-left font-medium">Description</th>
-                  <th className="p-3 text-left font-medium">Rate</th>
-                  <th className="p-3 text-left font-medium">Type</th>
-                  <th className="p-3 text-left font-medium">Jurisdiction</th>
-                  <th className="p-3 text-left font-medium">Status</th>
-                  <th className="p-3 text-right font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={7} className="p-8 text-center text-muted-foreground">
-                      Loading tax codes...
-                    </td>
-                  </tr>
-                ) : filteredCodes.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="p-8 text-center text-muted-foreground">
-                      No tax codes found
-                    </td>
-                  </tr>
-                ) : (
-                  filteredCodes.map((code: any) => (
-                    <tr key={code.id} className="border-b hover:bg-muted/20">
-                      <td className="p-3 font-medium">{code.code}</td>
-                      <td className="p-3 text-sm text-muted-foreground">
-                        {code.description || '-'}
-                      </td>
-                      <td className="p-3">
-                        <Badge variant="outline">{code.rate}%</Badge>
-                      </td>
-                      <td className="p-3 text-sm">{code.type}</td>
-                      <td className="p-3 text-sm">
-                        {code.jurisdictionId ? getJurisdictionName(code.jurisdictionId) : '-'}
-                      </td>
-                      <td className="p-3">
-                        <Badge variant={code.isActive ? 'default' : 'secondary'}>
-                          {code.isActive ? 'Active' : 'Inactive'}
-                        </Badge>
-                      </td>
-                      <td className="p-3">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setModalState({ isOpen: true, mode: 'view', taxCode: code })}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setModalState({ isOpen: true, mode: 'edit', taxCode: code })}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              if (confirm('Mark this tax code as inactive?')) {
-                                deleteMutation.mutate(code.id);
-                              }
-                            }}
-                            disabled={!code.isActive}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+          <div style={{ height: 400 }}>
+            {isLoading ? (
+              <div className="p-8 text-center text-muted-foreground border rounded-lg h-full flex items-center justify-center">Loading tax codes...</div>
+            ) : filteredCodes.length === 0 ? (
+              <div className="p-8 text-center text-muted-foreground border rounded-lg h-full flex items-center justify-center">No tax codes found</div>
+            ) : (
+              <InteractiveSpreadsheet
+                columns={codeColumns}
+                data={filteredCodes}
+                onChange={() => { }}
+                containerHeight="100%"
+              />
+            )}
           </div>
         </CardContent>
       </Card>
@@ -339,6 +291,24 @@ function TaxJurisdictionsTab({ legalEntityId }: { legalEntityId: string | null }
     return parent ? `${parent.name} → ${jurisdiction.name}` : jurisdiction.name;
   };
 
+  const jurisdictionColumns: SpreadsheetColumn<any>[] = [
+    { id: "name", header: "Name", width: "150px", cell: (row) => <span className="font-medium">{row.name}</span> },
+    { id: "code", header: "Code", width: "100px", cell: (row) => row.code ? <Badge variant="outline">{row.code}</Badge> : <span className="text-muted-foreground">-</span> },
+    { id: "type", header: "Type", width: "120px", cell: (row) => <span className="text-sm">{row.type}</span> },
+    { id: "hierarchy", header: "Hierarchy", width: "200px", cell: (row) => <span className="text-sm text-muted-foreground">{getHierarchy(row) || '-'}</span> },
+    { id: "authority", header: "Authority", width: "150px", cell: (row) => <span className="text-sm">{row.taxAuthority || '-'}</span> },
+    { id: "currency", header: "Currency", width: "100px", cell: (row) => <Badge variant="secondary">{row.currency || 'USD'}</Badge> },
+    {
+      id: "actions", header: "Actions", width: "150px", cell: (row) => (
+        <div className="flex justify-end gap-2 w-full">
+          <Button variant="ghost" size="sm" onClick={() => setModalState({ isOpen: true, mode: 'view', jurisdiction: row })}><Eye className="h-4 w-4" /></Button>
+          <Button variant="ghost" size="sm" onClick={() => setModalState({ isOpen: true, mode: 'edit', jurisdiction: row })}><Edit className="h-4 w-4" /></Button>
+          <Button variant="ghost" size="sm" onClick={() => { if (confirm('Delete this jurisdiction? This cannot be undone.')) { deleteMutation.mutate(row.id); } }}><Trash2 className="h-4 w-4" /></Button>
+        </div>
+      )
+    }
+  ];
+
   return (
     <div className="space-y-6">
       <Card>
@@ -376,87 +346,19 @@ function TaxJurisdictionsTab({ legalEntityId }: { legalEntityId: string | null }
           </div>
 
           {/* Table */}
-          <div className="border rounded-lg">
-            <table className="w-full">
-              <thead className="bg-muted/50">
-                <tr className="border-b">
-                  <th className="p-3 text-left font-medium">Name</th>
-                  <th className="p-3 text-left font-medium">Code</th>
-                  <th className="p-3 text-left font-medium">Type</th>
-                  <th className="p-3 text-left font-medium">Hierarchy</th>
-                  <th className="p-3 text-left font-medium">Authority</th>
-                  <th className="p-3 text-left font-medium">Currency</th>
-                  <th className="p-3 text-right font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={7} className="p-8 text-center text-muted-foreground">
-                      Loading jurisdictions...
-                    </td>
-                  </tr>
-                ) : filteredJurisdictions.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="p-8 text-center text-muted-foreground">
-                      No jurisdictions found
-                    </td>
-                  </tr>
-                ) : (
-                  filteredJurisdictions.map((jurisdiction: any) => (
-                    <tr key={jurisdiction.id} className="border-b hover:bg-muted/20">
-                      <td className="p-3 font-medium">{jurisdiction.name}</td>
-                      <td className="p-3">
-                        {jurisdiction.code ? (
-                          <Badge variant="outline">{jurisdiction.code}</Badge>
-                        ) : (
-                          <span className="text-muted-foreground">-</span>
-                        )}
-                      </td>
-                      <td className="p-3 text-sm">{jurisdiction.type}</td>
-                      <td className="p-3 text-sm text-muted-foreground">
-                        {getHierarchy(jurisdiction) || '-'}
-                      </td>
-                      <td className="p-3 text-sm">
-                        {jurisdiction.taxAuthority || '-'}
-                      </td>
-                      <td className="p-3">
-                        <Badge variant="secondary">{jurisdiction.currency || 'USD'}</Badge>
-                      </td>
-                      <td className="p-3">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setModalState({ isOpen: true, mode: 'view', jurisdiction })}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setModalState({ isOpen: true, mode: 'edit', jurisdiction })}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              if (confirm('Delete this jurisdiction? This cannot be undone.')) {
-                                deleteMutation.mutate(jurisdiction.id);
-                              }
-                            }}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+          <div style={{ height: 400 }}>
+            {isLoading ? (
+              <div className="p-8 text-center text-muted-foreground border rounded-lg h-full flex items-center justify-center">Loading jurisdictions...</div>
+            ) : filteredJurisdictions.length === 0 ? (
+              <div className="p-8 text-center text-muted-foreground border rounded-lg h-full flex items-center justify-center">No jurisdictions found</div>
+            ) : (
+              <InteractiveSpreadsheet
+                columns={jurisdictionColumns}
+                data={filteredJurisdictions}
+                onChange={() => { }}
+                containerHeight="100%"
+              />
+            )}
           </div>
         </CardContent>
       </Card>

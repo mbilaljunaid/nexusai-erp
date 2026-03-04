@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -104,34 +104,34 @@ export default function APPaymentBatches() {
         }
     };
 
-    const columns: Column<any>[] = [
-        { header: "BU", accessorKey: "businessUnitId", className: "text-muted-foreground font-mono text-xs w-20", cell: (row) => row.businessUnitId || "Default" },
+    const columns: SpreadsheetColumn<any>[] = [
+        { header: "BU", id: "businessUnitId", width: "150px", className: "text-muted-foreground font-mono text-xs w-20", cell: (row) => row.businessUnitId || "Default" },
         {
             header: "Batch #",
-            accessorKey: "id",
+            id: "id", width: "150px",
             className: "font-mono font-medium",
             cell: (row: any) => row.id.substring(0, 8).toUpperCase()
         },
-        { header: "Batch Name", accessorKey: "batchName" },
+        { header: "Batch Name", id: "batchName", width: "150px" },
         {
             header: "Payment Date",
-            accessorKey: "checkDate",
+            id: "checkDate", width: "150px",
             cell: (row) => row.checkDate ? new Date(row.checkDate).toLocaleDateString() : "-"
         },
-        { header: "Payment Method", accessorKey: "paymentMethodCode" },
+        { header: "Payment Method", id: "paymentMethodCode", width: "150px" },
         {
             header: "Invoice Count",
-            accessorKey: "paymentCount",
+            id: "paymentCount", width: "150px",
             cell: (row) => row.paymentCount || 0
         },
         {
             header: "Total Amount",
-            accessorKey: "totalAmount",
+            id: "totalAmount", width: "150px",
             cell: (row) => `$${parseFloat(row.totalAmount || 0).toLocaleString()}`
         },
         {
             header: "Status",
-            accessorKey: "status",
+            id: "status", width: "150px",
             cell: (row) => {
                 const status = row.status?.toUpperCase();
                 const variant =
@@ -302,18 +302,12 @@ export default function APPaymentBatches() {
                         <CardDescription>Manage payment runs and generate payment files</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <StandardTable
+                        <InteractiveSpreadsheet
                             data={batches || []}
                             columns={columns}
-                            totalItems={batches?.length || 0}
-                            page={page}
-                            onPageChange={setPage}
-                            pageSize={pageSize}
                             isLoading={isLoading}
-                            filterColumn="batchName"
-                            filterPlaceholder="Search batches..."
                             onRowClick={(item) => setLocation(`/finance/ap/payments/${item.id}`)}
-                        />
+                         onChange={() => {}} containerHeight="600px" />
                     </CardContent>
                 </Card>
             </div>

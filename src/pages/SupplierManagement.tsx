@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -55,11 +55,11 @@ export default function SupplierManagement() {
     }
   });
 
-  const columns: Column<Supplier>[] = [
-    { header: "Name", accessorKey: "name", cell: (row: Supplier) => <span className="font-semibold">{row.name}</span> },
-    { header: "Category", accessorKey: "category" },
-    { header: "Email", accessorKey: "email", cell: (row: Supplier) => <span className="text-muted-foreground">{row.email}</span> },
-    { header: "Status", accessorKey: "status", cell: (row: Supplier) => <Badge variant={row.status === "active" ? "default" : "secondary"}>{row.status}</Badge> },
+  const columns: SpreadsheetColumn<Supplier>[] = [
+    { header: "Name", id: "name", width: "150px", cell: (row: Supplier) => <span className="font-semibold">{row.name}</span> },
+    { header: "Category", id: "category", width: "150px" },
+    { header: "Email", id: "email", width: "150px", cell: (row: Supplier) => <span className="text-muted-foreground">{row.email}</span> },
+    { header: "Status", id: "status", width: "150px", cell: (row: Supplier) => <Badge variant={row.status === "active" ? "default" : "secondary"}>{row.status}</Badge> },
     {
       header: "Actions", id: "actions", cell: (row: Supplier) => (
         <Button variant="ghost" size="sm" onClick={() => { setEditingSupplier(row); setIsSheetOpen(true); }}>
@@ -136,14 +136,11 @@ export default function SupplierManagement() {
         </Sheet>
       }
     >
-      <StandardTable
+      <InteractiveSpreadsheet
         data={suppliers}
         columns={columns}
         isLoading={isLoading}
-        keyExtractor={(item) => item.id || Math.random().toString()}
-        filterColumn="name"
-        filterPlaceholder="Filter suppliers..."
-      />
+       onChange={() => {}} containerHeight="600px" />
     </StandardPage>
   );
 }

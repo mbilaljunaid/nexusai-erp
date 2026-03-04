@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Plus, Trash2, Copy, Check, AlertCircle } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { ColumnDef } from "@tanstack/react-table";
 
 interface EnvironmentVariable {
@@ -103,7 +103,7 @@ export default function EnvironmentManagement() {
   const columns: any[] = [
     {
       header: "Key",
-      accessorKey: "key",
+      id: "key", width: "150px",
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <code className="font-mono font-semibold">{row.original.key}</code>
@@ -115,7 +115,7 @@ export default function EnvironmentManagement() {
     },
     {
       header: "Value",
-      accessorKey: "value",
+      id: "value", width: "150px",
       cell: ({ row }) => (
         <code className="text-xs text-muted-foreground">
           {row.original.isSecret ? "••••••••••" : row.original.value}
@@ -229,13 +229,11 @@ export default function EnvironmentManagement() {
         </Card>
 
         {/* Variables List */}
-        <StandardTable
+        <InteractiveSpreadsheet
           data={filtered}
           columns={columns}
-          keyExtractor={(item) => item.id}
-          filterColumn="key"
           filterPlaceholder={`Search ${selectedEnv} variables...`}
-        />
+         onChange={() => {}} containerHeight="600px" />
 
         {/* Security Warning */}
         <Card className="p-4 bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-900">
