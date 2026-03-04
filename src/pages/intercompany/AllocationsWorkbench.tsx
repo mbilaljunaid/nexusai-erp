@@ -9,6 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, Play, ChevronRight } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function AllocationsWorkbench() {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -71,12 +73,10 @@ export default function AllocationsWorkbench() {
     });
 
     return (
-        <div className="space-y-6 container mx-auto p-6 max-w-7xl">
+        <StandardPage title="Mass Allocations">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
-                        Mass Allocations
-                    </h1>
+                    
                     <p className="text-muted-foreground mt-2">Manage and execute recurring intercompany cost distributions.</p>
                 </div>
                 <CreateRuleDialog
@@ -146,7 +146,7 @@ export default function AllocationsWorkbench() {
                 onOpenChange={setIsRunOpen}
                 onSubmit={(amt: number, curr: string) => selectedRule && runAllocationMutation.mutate({ ruleId: selectedRule, amount: amt, currency: curr })}
             />
-        </div>
+        </StandardPage>
     );
 }
 

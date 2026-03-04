@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { FileUp, FileText, Calendar, Trash2, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function SupplierDocuments() {
     const token = localStorage.getItem("supplier_token");
@@ -60,9 +62,9 @@ export default function SupplierDocuments() {
     };
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Certifications & Documents">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Certifications & Documents</h1>
+                
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
@@ -171,6 +173,6 @@ export default function SupplierDocuments() {
                     </Table>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

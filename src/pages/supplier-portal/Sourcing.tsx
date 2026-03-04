@@ -13,6 +13,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function SupplierSourcing() {
     const { toast } = useToast();
@@ -85,12 +87,10 @@ export default function SupplierSourcing() {
     if (isLoading) return <div className="p-8">Loading sourcing opportunities...</div>;
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Sourcing Opportunities">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold flex items-center gap-2">
-                        <Gavel className="w-6 h-6 text-primary" /> Sourcing Opportunities
-                    </h1>
+                    
                     <p className="text-sm text-muted-foreground mt-1">Review active RFQs and submit your best quotes.</p>
                 </div>
             </div>
@@ -245,6 +245,6 @@ export default function SupplierSourcing() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

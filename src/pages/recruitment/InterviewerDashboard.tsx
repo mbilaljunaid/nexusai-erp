@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Video, Download } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function InterviewerDashboard() {
     const { user } = useAuth();
@@ -21,10 +23,10 @@ export default function InterviewerDashboard() {
     });
 
     return (
-        <div className="space-y-6 p-6">
+        <StandardPage title="My Reviews & Interviews">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">My Reviews & Interviews</h1>
+                    
                     <p className="text-muted-foreground mt-2">Manage your upcoming interview schedule and feedback.</p>
                 </div>
             </div>
@@ -88,6 +90,6 @@ export default function InterviewerDashboard() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

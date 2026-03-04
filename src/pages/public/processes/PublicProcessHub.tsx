@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 import { 
   ArrowRight,
   ShoppingCart, 
@@ -51,13 +53,13 @@ export default function PublicProcessHub() {
   ];
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Business Process Hub">
       <Header />
 
       <main className="flex-1">
         <section className="px-4 py-16 text-center max-w-5xl mx-auto">
           <Badge className="mb-4 bg-blue-600 text-white" data-testid="badge-process-hub">18 END-TO-END PROCESSES</Badge>
-          <h1 className="text-5xl font-bold mb-6" data-testid="text-page-title">Business Process Hub</h1>
+          
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             Explore NexusAIFirst's comprehensive suite of enterprise business processes designed to 
             streamline operations across finance, supply chain, HR, and manufacturing.
@@ -108,6 +110,6 @@ export default function PublicProcessHub() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

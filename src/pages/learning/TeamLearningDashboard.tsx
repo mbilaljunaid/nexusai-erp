@@ -3,6 +3,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Users, TrendingUp, Award, AlertCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface TeamMember {
     id: string;
@@ -27,10 +29,10 @@ export default function TeamLearningDashboard() {
     });
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Team Learning Dashboard">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold">Team Learning Dashboard</h1>
+                
                 <p className="text-muted-foreground">
                     Monitor your team's learning progress
                 </p>
@@ -147,6 +149,6 @@ export default function TeamLearningDashboard() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

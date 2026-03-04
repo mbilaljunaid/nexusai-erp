@@ -10,6 +10,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { Search, Merge, X, Check, AlertCircle, RefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface MatchCandidate {
     id: number;
@@ -98,10 +100,10 @@ export default function AdvancedMatchWorkbench() {
     };
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Advanced Match Workbench">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Advanced Match Workbench</h1>
+                    
                     <p className="text-muted-foreground">AI-powered duplicate detection and merge resolution</p>
                 </div>
                 <div className="flex gap-2">
@@ -276,6 +278,6 @@ export default function AdvancedMatchWorkbench() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

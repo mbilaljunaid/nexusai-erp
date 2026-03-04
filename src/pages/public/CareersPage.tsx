@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Search, Briefcase, MapPin, Upload } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function CareersPage() {
   const { toast } = useToast();
@@ -53,10 +55,10 @@ export default function CareersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <StandardPage title="Join Our Team">
       {/* Header */}
       <div className="bg-[#0F172A] text-white py-20 px-4 text-center">
-        <h1 className="text-4xl font-bold mb-4">Join Our Team</h1>
+        
         <p className="text-lg text-slate-300 max-w-2xl mx-auto">
           We are looking for talented individuals to help us build the future of enterprise software.
         </p>
@@ -147,7 +149,7 @@ export default function CareersPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </StandardPage>
   );
 }
 

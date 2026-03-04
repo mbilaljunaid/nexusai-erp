@@ -8,6 +8,8 @@ import { Progress } from "@/components/ui/progress";
 import { CheckCircle2, Circle, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function OnboardingWorkbench() {
     const { toast } = useToast();
@@ -40,10 +42,10 @@ export default function OnboardingWorkbench() {
     };
 
     return (
-        <div className="space-y-6 p-6">
+        <StandardPage title="Onboarding Workbench">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">Onboarding Workbench</h1>
+                    
                     <p className="text-muted-foreground mt-2">Track provisioning and setup for new hires.</p>
                 </div>
             </div>
@@ -121,6 +123,6 @@ export default function OnboardingWorkbench() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

@@ -7,6 +7,8 @@ import { useState } from "react";
 import { User, MoreHorizontal, Briefcase } from "lucide-react";
 import { KanbanBoard } from "@/components/ui/KanbanBoard";
 import { CandidateProfileDrawer } from "./CandidateProfileDrawer";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 const STAGES = ["NEW", "SCREENING", "INTERVIEW", "OFFER", "HIRED"];
 
@@ -28,12 +30,10 @@ export default function JobRequisitionDetail() {
     if (isLoading) return <div className="p-8">Loading Pipeline...</div>;
 
     return (
-        <div className="space-y-6 h-full flex flex-col">
+        <StandardPage title="Requisition {id?.substring(0, 8)}...">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold flex items-center gap-2">
-                        <Briefcase className="w-6 h-6" /> Requisition {id?.substring(0, 8)}...
-                    </h1>
+                    
                     <p className="text-muted-foreground">Pipeline View</p>
                 </div>
                 <Button>Add Candidate</Button>
@@ -80,6 +80,6 @@ export default function JobRequisitionDetail() {
                     applicationId={selectedCandidate.id}
                 />
             )}
-        </div>
+        </StandardPage>
     );
 }

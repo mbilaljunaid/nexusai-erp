@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 import { 
   Github, 
   Scale, 
@@ -47,16 +49,14 @@ export default function OpenSourcePage() {
   ];
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="NexusAIFirst is Open Source">
       <Header />
 
       <main className="flex-1">
         {/* Hero Section */}
         <section className="px-4 py-20 text-center max-w-5xl mx-auto">
           <Badge className="mb-4 bg-green-600 text-white">OPEN SOURCE</Badge>
-          <h1 className="text-5xl font-bold mb-6">
-            NexusAIFirst is Open Source
-          </h1>
+          
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             Built by the community, for the community. NexusAIFirst is licensed under the 
             GNU Affero General Public License v3.0 (AGPL-3.0), ensuring freedom to use, 
@@ -260,6 +260,6 @@ export default function OpenSourcePage() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

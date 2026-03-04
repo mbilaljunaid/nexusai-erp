@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Plus, Trash2, CreditCard } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function PointOfSale() {
   const { toast } = useToast();
@@ -39,12 +41,9 @@ export default function PointOfSale() {
   const cardSales = sales.filter((s: any) => s.tender === "card").length;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Point of Sale (POS) Terminal">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <CreditCard className="h-8 w-8" />
-          Point of Sale (POS) Terminal
-        </h1>
+        
         <p className="text-muted-foreground mt-2">In-store sales, tenders, receipts, and shift closure</p>
       </div>
 
@@ -116,6 +115,6 @@ export default function PointOfSale() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

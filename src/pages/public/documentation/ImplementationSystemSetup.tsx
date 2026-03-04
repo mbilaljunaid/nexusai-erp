@@ -5,6 +5,8 @@ import { Link } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
 import { Settings, ArrowLeft, CheckCircle, Server, Database, Shield, Users } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function ImplementationSystemSetup() {
   useEffect(() => {
@@ -19,7 +21,7 @@ export default function ImplementationSystemSetup() {
   ];
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="System Setup Guide">
       <Header />
       <main className="flex-1">
         <section className="px-4 py-16 max-w-5xl mx-auto">
@@ -34,7 +36,7 @@ export default function ImplementationSystemSetup() {
             </div>
             <div>
               <Badge className="mb-2">IMPLEMENTATION</Badge>
-              <h1 className="text-4xl font-bold" data-testid="text-page-title">System Setup Guide</h1>
+              
             </div>
           </div>
           <p className="text-xl text-muted-foreground mb-8">
@@ -90,6 +92,6 @@ export default function ImplementationSystemSetup() {
         </section>
       </main>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

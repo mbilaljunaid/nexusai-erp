@@ -6,6 +6,8 @@ import { Plus } from "lucide-react";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ContextualSearch } from "@/components/ContextualSearch";
 import { generateBreadcrumbs, getSearchFields } from "@/lib/pageConfig";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function AdminUsersDetail() {
   const [searchFilters, setSearchFilters] = useState<Record<string, string>>({});
@@ -25,11 +27,11 @@ export default function AdminUsersDetail() {
   const searchFields = getSearchFields("Admin");
 
   return (
-    <div className="space-y-6">
+    <StandardPage title="User Management">
       <Breadcrumbs items={breadcrumbs} />
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-semibold">User Management</h1>
+          
           <p className="text-muted-foreground text-sm">Manage system users</p>
         </div>
         <Button data-testid="button-new-user">
@@ -62,6 +64,6 @@ export default function AdminUsersDetail() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

@@ -6,6 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { InteractiveSpreadsheet } from '@/components/ui/InteractiveSpreadsheet';
 import PIMService from '@/services/pimService';
 import { Package, Upload, FileText } from 'lucide-react';
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function ProductCatalogDashboard() {
     const [products, setProducts] = useState<any[]>([]);
@@ -77,10 +79,10 @@ export default function ProductCatalogDashboard() {
     }
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Product Catalog (PIM)">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Product Catalog (PIM)</h1>
+                    
                     <p className="text-gray-500 mt-1">Product Information Management</p>
                 </div>
                 <div className="flex space-x-3">
@@ -196,6 +198,6 @@ export default function ProductCatalogDashboard() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

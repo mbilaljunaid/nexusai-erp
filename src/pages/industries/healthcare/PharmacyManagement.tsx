@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Pill, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function PharmacyManagement() {
   const { toast } = useToast();
@@ -39,12 +41,9 @@ export default function PharmacyManagement() {
   const administered = orders.filter((o: any) => o.status === "administered").length;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Pharmacy & Medication Management">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Pill className="h-8 w-8" />
-          Pharmacy & Medication Management
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Medication orders, eMAR, dispensing, administration, and interaction checks</p>
       </div>
 
@@ -109,6 +108,6 @@ export default function PharmacyManagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function OfferManagementWorkbench() {
     const { toast } = useToast();
@@ -44,13 +46,10 @@ export default function OfferManagementWorkbench() {
     });
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Offer Management">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-                        <Handshake className="h-8 w-8 text-primary" />
-                        Offer Management
-                    </h1>
+                    
                     <p className="text-muted-foreground mt-1">Manage the end-to-end offer lifecycle and internal approvals.</p>
                 </div>
                 <Button className="bg-primary hover:bg-primary/90">
@@ -140,7 +139,7 @@ export default function OfferManagementWorkbench() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }
 

@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search, ShoppingCart, Package, Truck, CreditCard, Users, TrendingUp, Star, BarChart3 } from "lucide-react";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface Product {
   id: string;
@@ -173,10 +175,10 @@ export default function Ecommerce() {
   ];
 
   return (
-    <div className="space-y-6">
+    <StandardPage title="E-Commerce">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold">E-Commerce</h1>
+          
           <p className="text-muted-foreground text-sm">Online store, products, orders, and customer management</p>
         </div>
         <Button data-testid="button-add-product">
@@ -366,6 +368,6 @@ export default function Ecommerce() {
           </CardContent>
         </Card>
       )}
-    </div>
+    </StandardPage>
   );
 }

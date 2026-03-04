@@ -12,6 +12,8 @@ import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Settings, Save, AlertCircle } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function KpiConfiguration() {
     const { toast } = useToast();
@@ -51,12 +53,9 @@ export default function KpiConfiguration() {
     ];
 
     return (
-        <div className="space-y-6 p-4">
+        <StandardPage title="KPI Configuration">
             <div>
-                <h1 className="text-3xl font-semibold flex items-center gap-2">
-                    <Settings className="w-8 h-8 text-gray-600" />
-                    KPI Configuration
-                </h1>
+                
                 <p className="text-muted-foreground text-sm mt-1">Manage definitions and logic for HR Metrics ("FastFormula" Editor)</p>
             </div>
 
@@ -131,6 +130,6 @@ export default function KpiConfiguration() {
                     </div>
                 </SheetContent>
             </Sheet>
-        </div>
+        </StandardPage>
     );
 }

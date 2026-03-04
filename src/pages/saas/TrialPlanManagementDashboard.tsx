@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { TrialManagementService, PlanManagementService } from '@/services/trialPlanService';
 import { Check, X } from 'lucide-react';
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function TrialPlanManagementDashboard() {
     const [trials, setTrials] = useState<any[]>([]);
@@ -40,8 +42,8 @@ export default function TrialPlanManagementDashboard() {
     }
 
     return (
-        <div className="space-y-6">
-            <h1 className="text-3xl font-bold">Trial & Plan Management</h1>
+        <StandardPage title="Trial & Plan Management">
+            
 
             {/* Metrics */}
             <div className="grid grid-cols-4 gap-4">
@@ -114,6 +116,6 @@ export default function TrialPlanManagementDashboard() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

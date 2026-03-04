@@ -220,9 +220,9 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
+      <StandardPage title="Platform Admin">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
+      </StandardPage>
     );
   }
 
@@ -385,6 +385,8 @@ interface Tenant {
 }
 
 import NexusAIToolRegistrySection from "@/components/admin/NexusAIToolRegistrySection";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function PlatformAdmin() {
   const { toast } = useToast();
@@ -545,7 +547,7 @@ export default function PlatformAdmin() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-semibold">Platform Admin</h1>
+        
         <p className="text-muted-foreground text-sm">Manage all tenants, system configuration, and platform health</p>
       </div>
 

@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function SLAServiceTierManagement() {
   const { toast } = useToast();
@@ -38,12 +40,9 @@ export default function SLAServiceTierManagement() {
   const met = slas.filter((s: any) => s.compliance === "met").length;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="SLA & Service Tier Management">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <CheckCircle className="h-8 w-8" />
-          SLA & Service Tier Management
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Service level agreements, uptime targets, and tier definitions</p>
       </div>
 
@@ -115,6 +114,6 @@ export default function SLAServiceTierManagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

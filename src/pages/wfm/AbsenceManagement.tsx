@@ -11,6 +11,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { Calendar as CalendarIcon, Check, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function AbsenceManagement() {
     const { toast } = useToast();
@@ -47,9 +49,9 @@ export default function AbsenceManagement() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Absence Management">
             <div>
-                <h1 className="text-3xl font-bold">Absence Management</h1>
+                
                 <p className="text-muted-foreground">Leave requests and approvals</p>
             </div>
 
@@ -153,6 +155,6 @@ export default function AbsenceManagement() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

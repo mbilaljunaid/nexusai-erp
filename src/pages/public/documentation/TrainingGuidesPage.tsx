@@ -22,6 +22,8 @@ import {
 } from "lucide-react";
 import { TrainingFilters, type SkillLevel, type TrainingModule } from "@/components/TrainingFilters";
 import { type EnterpriseRole } from "@/components/RBACContext";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface TrainingModuleData {
   icon: typeof Users;
@@ -168,13 +170,13 @@ export default function TrainingGuidesPage() {
   };
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Training Guides">
       <Header />
 
       <main className="flex-1">
         <section className="px-4 py-16 text-center max-w-5xl mx-auto">
           <Badge className="mb-4 bg-orange-600 text-white" data-testid="badge-training">TRAINING CENTER</Badge>
-          <h1 className="text-5xl font-bold mb-6" data-testid="text-page-title">Training Guides</h1>
+          
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             Comprehensive training resources to help you and your team master NexusAIFirst ERP. 
             From beginner tutorials to advanced certifications.
@@ -368,6 +370,6 @@ export default function TrainingGuidesPage() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

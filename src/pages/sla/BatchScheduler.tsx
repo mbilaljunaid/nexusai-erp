@@ -7,6 +7,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { Calendar, Play, Pause } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function BatchScheduler() {
     const { toast } = useToast();
@@ -28,9 +30,9 @@ export default function BatchScheduler() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="SLA Batch Job Scheduler">
             <div>
-                <h1 className="text-3xl font-bold">SLA Batch Job Scheduler</h1>
+                
                 <p className="text-muted-foreground">Schedule and monitor subledger accounting batches</p>
             </div>
 
@@ -84,6 +86,6 @@ export default function BatchScheduler() {
                     ))}
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

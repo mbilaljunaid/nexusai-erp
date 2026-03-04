@@ -6,6 +6,8 @@ import {
     AreaChart, Area, PieChart, Pie, Cell, LineChart, Line
 } from "recharts";
 import { Loader2, TrendingUp, Users, Target, Clock, Zap } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
@@ -35,10 +37,10 @@ export default function RecruitingAnalytics() {
     }).map(([source, count], index) => ({ name: source, value: count, color: COLORS[index % COLORS.length] }));
 
     return (
-        <div className="space-y-6 p-6">
+        <StandardPage title="Recruiting Intelligence">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Recruiting Intelligence</h1>
+                    
                     <p className="text-muted-foreground mt-2">NEXUS Insight Engine: Real-time visibility into hiring velocity and ROI.</p>
                 </div>
                 <div className="flex gap-2">
@@ -163,7 +165,7 @@ export default function RecruitingAnalytics() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }
 

@@ -10,6 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, DollarSign, Briefcase } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function CompensationDashboard() {
     const [activeTab, setActiveTab] = useState("salary-bases");
@@ -64,10 +66,10 @@ export default function CompensationDashboard() {
     if (isBasesLoading) return <div className="p-8">Loading Compensation Data...</div>;
 
     return (
-        <div className="p-8 space-y-6 bg-slate-50 min-h-screen">
+        <StandardPage title="Compensation Management">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Compensation Management</h1>
+                    
                     <p className="text-muted-foreground mt-1">Manage salary structures, plans, and worker pay.</p>
                 </div>
             </div>
@@ -193,6 +195,6 @@ export default function CompensationDashboard() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

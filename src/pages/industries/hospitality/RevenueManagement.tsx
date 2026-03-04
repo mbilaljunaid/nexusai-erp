@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function RevenueManagement() {
   const { data: metrics = [], isLoading } = useQuery({
@@ -14,12 +16,9 @@ export default function RevenueManagement() {
   const avgOccupancy = metrics.length > 0 ? (metrics.reduce((sum: number, m: any) => sum + (parseFloat(m.occupancy) || 0), 0) / metrics.length).toFixed(1) : 0;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Revenue Management & Pricing">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <TrendingUp className="h-8 w-8" />
-          Revenue Management & Pricing
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Dynamic pricing, demand forecasting, rate rules, and competitor analysis</p>
       </div>
 
@@ -75,6 +74,6 @@ export default function RevenueManagement() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </StandardPage>
   );
 }

@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, FunnelChart, Funnel, LabelList } from "recharts";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 interface Analytics {
     timeToHire: number;
     offerAcceptanceRate: number;
@@ -172,13 +174,10 @@ export default function RecruitmentAnalytics() {
     ];
 
     return (
-        <div className="space-y-6 p-4">
+        <StandardPage title="Recruitment Analytics">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold flex items-center gap-2">
-                        <BarChart3 className="h-8 w-8" />
-                        Recruitment Analytics
-                    </h1>
+                    
                     <p className="text-muted-foreground mt-2">
                         Insights and metrics for recruitment performance
                     </p>
@@ -376,6 +375,6 @@ export default function RecruitmentAnalytics() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

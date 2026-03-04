@@ -8,6 +8,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { Calendar, Users, Save, Copy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function ShiftPlanning() {
     const { toast } = useToast();
@@ -61,10 +63,10 @@ export default function ShiftPlanning() {
     ];
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Shift Planning & Scheduling">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Shift Planning & Scheduling</h1>
+                    
                     <p className="text-muted-foreground">AI-powered workforce scheduling and optimization</p>
                 </div>
                 <div className="flex gap-2">
@@ -153,6 +155,6 @@ export default function ShiftPlanning() {
                     </Card>
                 </>
             )}
-        </div>
+        </StandardPage>
     );
 }

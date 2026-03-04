@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Search } from 'lucide-react';
 import { Link } from 'wouter';
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface ProcessCard {
   id: string;
@@ -243,10 +245,10 @@ export default function ProcessHub() {
   const criticalities = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'];
 
   return (
-    <div className="p-8 space-y-8">
+    <StandardPage title="Processes Dashboard">
       {/* Header */}
       <div>
-        <h1 className="text-4xl font-bold text-foreground mb-2">Processes Dashboard</h1>
+        
         <p className="text-lg text-muted-foreground">All 18 End-to-End ERP Processes</p>
       </div>
 
@@ -407,6 +409,6 @@ export default function ProcessHub() {
           </div>
         </TabsContent>
       </Tabs>
-    </div>
+    </StandardPage>
   );
 }

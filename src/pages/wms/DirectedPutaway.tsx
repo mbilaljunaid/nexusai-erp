@@ -6,6 +6,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { MapPin, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function DirectedPutaway() {
     const [strategy, setStrategy] = useState("PROXIMITY");
@@ -16,10 +18,10 @@ export default function DirectedPutaway() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Directed Putaway Engine">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Directed Putaway Engine</h1>
+                    
                     <p className="text-muted-foreground">Optimize putaway location and task generation</p>
                 </div>
                 <Button variant="outline">
@@ -111,6 +113,6 @@ export default function DirectedPutaway() {
                     ))}
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

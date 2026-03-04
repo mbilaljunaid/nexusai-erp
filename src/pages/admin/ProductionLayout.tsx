@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'wouter';
 import { Shield, Activity, FileText, Lock, Database, ChevronRight } from 'lucide-react';
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 const adminNavItems = [
     { name: 'Health Dashboard', path: '/admin/production/health', icon: Activity },
@@ -13,14 +15,14 @@ export default function ProductionLayout({ children }: { children?: React.ReactN
     const [location] = useLocation();
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <StandardPage title="System Administration">
             {/* Header */}
             <div className="bg-white border-b sticky top-0 z-10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center gap-3">
                             <Shield className="w-6 h-6 text-red-600" />
-                            <h1 className="text-xl font-semibold text-gray-900">System Administration</h1>
+                            
                         </div>
                         <div className="flex items-center gap-4">
                             <span className="text-sm text-gray-500">v1.0.0</span>
@@ -85,6 +87,6 @@ export default function ProductionLayout({ children }: { children?: React.ReactN
                     </main>
                 </div>
             </div>
-        </div>
+        </StandardPage>
     );
 }

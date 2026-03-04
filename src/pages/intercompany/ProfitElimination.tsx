@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/queryClient";
 import { TrendingDown, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function ProfitElimination() {
     const { data: elimination } = useQuery({
@@ -12,9 +14,9 @@ export default function ProfitElimination() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Intercompany Profit Elimination">
             <div>
-                <h1 className="text-3xl font-bold">Intercompany Profit Elimination</h1>
+                
                 <p className="text-muted-foreground">Automated unrealized profit tracking and elimination</p>
             </div>
 
@@ -75,6 +77,6 @@ export default function ProfitElimination() {
                     ))}
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

@@ -8,6 +8,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Package, Truck, AlertCircle, CheckCircle2 } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import { SimpleBarChart } from "@/components/ui/simple-bar-chart";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function SupplierDashboard() {
     const token = localStorage.getItem("supplier_token");
@@ -92,9 +94,9 @@ export default function SupplierDashboard() {
     }
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Welcome, {supplier?.name}">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Welcome, {supplier?.name}</h1>
+                
                 <div className="flex gap-2">
                     <Link href="/portal/supplier/performance">
                         <Button variant="outline">View Performance</Button>
@@ -205,6 +207,6 @@ export default function SupplierDashboard() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Award, Download, Calendar, FileCheck } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface Certificate {
     id: string;
@@ -35,10 +37,10 @@ export default function CertificateManager() {
     const expiredCerts = certificates.filter((c: Certificate) => !c.isActive);
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="My Certificates">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold">My Certificates</h1>
+                
                 <p className="text-muted-foreground">
                     View and download your compliance certificates
                 </p>
@@ -183,6 +185,6 @@ export default function CertificateManager() {
                     </div>
                 </div>
             )}
-        </div>
+        </StandardPage>
     );
 }

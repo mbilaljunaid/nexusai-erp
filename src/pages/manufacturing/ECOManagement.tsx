@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { GitBranch, AlertTriangle, CheckCircle2, Clock } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface ECO {
     id: string; eco_number: string; title: string; change_type: string;
@@ -63,10 +65,10 @@ export default function ECOManagement() {
     ];
 
     return (
-        <div style={{ padding: 24, maxWidth: 1300, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
+        <StandardPage title="Engineering Change Orders">
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
                 <div>
-                    <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>Engineering Change Orders</h1>
+                    
                     <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Change lifecycle · Approval workflow · BOM impact tracking</p>
                 </div>
                 <button onClick={() => setShowNew(true)} style={{ padding: '8px 14px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>+ New ECO</button>
@@ -151,6 +153,6 @@ export default function ECOManagement() {
                     </div>
                 )}
             </div>
-        </div>
+        </StandardPage>
     );
 }

@@ -3,14 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function AutomotivePage() {
   const { data = [] } = useQuery<any[]>({ queryKey: ['/api/automotive-default'] });
 
   return (
-    <div className="space-y-6 p-6">
+    <StandardPage title="Automotive">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Automotive</h1>
+        
         <Button data-testid="button-add"><Plus className="w-4 h-4 mr-2" />Add</Button>
       </div>
 
@@ -31,6 +33,6 @@ export default function AutomotivePage() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

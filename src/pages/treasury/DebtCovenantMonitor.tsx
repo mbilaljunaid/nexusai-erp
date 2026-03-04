@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Shield, AlertTriangle, CheckCircle2, Search, RefreshCw, Eye } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface ScreeningResult {
     id: string;
@@ -158,9 +160,9 @@ export default function DebtCovenantMonitor() {
     ];
 
     return (
-        <div className="dcm-container">
+        <StandardPage title="Compliance Controls">
             <div className="dcm-header">
-                <h1 className="dcm-title">Compliance Controls</h1>
+                
                 <p className="dcm-sub">Sanctions Screening · Bank Reconciliation Sign-off</p>
             </div>
 
@@ -371,7 +373,7 @@ export default function DebtCovenantMonitor() {
                 .green { color: #059669; }
                 .red { color: #dc2626; }
             `}</style>
-        </div>
+        </StandardPage>
     );
 }
 

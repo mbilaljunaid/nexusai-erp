@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 import { 
   Rocket, 
   Settings, 
@@ -57,14 +59,14 @@ export default function ImplementationGuidelinesPage() {
   ];
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Implementation Guidelines">
       <Header />
 
       <main className="flex-1">
         {/* Hero Section */}
         <section className="px-4 py-16 text-center max-w-5xl mx-auto">
           <Badge className="mb-4 bg-green-600 text-white" data-testid="badge-implementation">IMPLEMENTATION GUIDE</Badge>
-          <h1 className="text-5xl font-bold mb-6" data-testid="text-page-title">Implementation Guidelines</h1>
+          
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             Step-by-step guidance for deploying NexusAIFirst ERP in your organization. 
             From initial setup to full production deployment.
@@ -228,6 +230,6 @@ export default function ImplementationGuidelinesPage() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

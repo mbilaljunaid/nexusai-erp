@@ -7,6 +7,8 @@ import { Header, Footer } from "@/components/Navigation";
 import { GraduationCap, ArrowLeft, ArrowRight, DollarSign, FileText, Calculator, PieChart, CreditCard, TrendingUp } from "lucide-react";
 import { TrainingFilters, type SkillLevel, getSkillLevelBadgeColor } from "@/components/TrainingFilters";
 import { type EnterpriseRole } from "@/components/RBACContext";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface ModuleData {
   icon: typeof DollarSign;
@@ -53,7 +55,7 @@ export default function TrainingGuideFinance() {
   };
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Finance Training Guide">
       <Header />
       <main className="flex-1">
         <section className="px-4 py-16 max-w-5xl mx-auto">
@@ -68,7 +70,7 @@ export default function TrainingGuideFinance() {
             </div>
             <div>
               <Badge className="mb-2">TRAINING</Badge>
-              <h1 className="text-4xl font-bold" data-testid="text-page-title">Finance Training Guide</h1>
+              
             </div>
           </div>
           <p className="text-xl text-muted-foreground mb-8">
@@ -146,6 +148,6 @@ export default function TrainingGuideFinance() {
         </section>
       </main>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

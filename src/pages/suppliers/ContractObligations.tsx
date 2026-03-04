@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle2, Clock, ArrowUp } from 'lucide-react';
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface Obligation {
     id: string;
@@ -62,10 +64,10 @@ export default function ContractObligations() {
     });
 
     return (
-        <div style={{ padding: 24, maxWidth: 1400, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
+        <StandardPage title="Contract Obligations">
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
                 <div>
-                    <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>Contract Obligations</h1>
+                    
                     <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Supplier compliance tracking · Evidence submission · Escalation management</p>
                 </div>
                 <button onClick={() => setShowNew(true)} style={{ padding: '8px 16px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 600, cursor: 'pointer' }}>+ Add Obligation</button>
@@ -179,6 +181,6 @@ export default function ContractObligations() {
                 })}
                 {obligations.length === 0 && <div style={{ textAlign: 'center', color: '#9ca3af', padding: 30 }}>No obligations found</div>}
             </div>
-        </div>
+        </StandardPage>
     );
 }

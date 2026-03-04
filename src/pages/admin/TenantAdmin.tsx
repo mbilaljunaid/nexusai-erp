@@ -28,6 +28,8 @@ import {
   CreditCard,
 } from "lucide-react";
 import InteractiveSpreadsheet, { SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface TenantUser {
   id: string;
@@ -122,9 +124,9 @@ export default function TenantAdmin() {
   ];
 
   return (
-    <div className="space-y-6">
+    <StandardPage title="Tenant Admin - {tenantName}">
       <div>
-        <h1 className="text-3xl font-semibold">Tenant Admin - {tenantName}</h1>
+        
         <p className="text-muted-foreground text-sm">Manage users, settings, and configuration for your organization</p>
       </div>
 
@@ -414,6 +416,6 @@ export default function TenantAdmin() {
           </Card>
         </div>
       )}
-    </div>
+    </StandardPage>
   );
 }

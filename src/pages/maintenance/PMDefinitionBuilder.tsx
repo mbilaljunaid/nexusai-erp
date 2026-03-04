@@ -11,6 +11,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Calendar, Repeat, Search, Save, ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function PMDefinitionBuilder() {
     const { toast } = useToast();
@@ -72,13 +74,13 @@ export default function PMDefinitionBuilder() {
     });
 
     return (
-        <div className="max-w-4xl mx-auto p-6 space-y-6">
+        <StandardPage title="Create Preventive Maintenance Plan">
             <div className="flex items-center gap-4 mb-6">
                 <Button variant="ghost" onClick={() => setLocation("/maintenance/pm")}>
                     <ArrowLeft className="mr-2 h-4 w-4" /> Back
                 </Button>
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Create Preventive Maintenance Plan</h1>
+                    
                     <p className="text-muted-foreground">Define recurring maintenance logic for assets.</p>
                 </div>
             </div>
@@ -258,6 +260,6 @@ export default function PMDefinitionBuilder() {
                     </Card>
                 </div>
             </div>
-        </div>
+        </StandardPage>
     );
 }

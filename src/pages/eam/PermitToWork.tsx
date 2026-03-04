@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { HardHat, AlertTriangle, Clock, CheckCircle2 } from 'lucide-react';
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface Permit { id: string; permit_number: string; permit_type: string; asset_id: string; location: string; description: string; status: string; requested_by: string; approved_by: string; contractor: string; start_datetime: string; end_datetime: string; events: PEvent[]; }
 interface PEvent { at: string; by: string; action: string; note: string; }
@@ -39,10 +41,10 @@ export default function PermitToWork() {
     };
 
     return (
-        <div style={{ padding: 24, maxWidth: 1400, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
+        <StandardPage title="Permit-to-Work">
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, alignItems: 'flex-start' }}>
                 <div>
-                    <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>Permit-to-Work</h1>
+                    
                     <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Hazardous work permits · Safety lifecycle · CBM alerts</p>
                 </div>
                 <button onClick={() => setShowNew(true)} style={{ padding: '7px 14px', background: '#dc2626', color: '#fff', border: 'none', borderRadius: 8, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>+ New Permit</button>
@@ -159,6 +161,6 @@ export default function PermitToWork() {
                     </div>
                 )}
             </div>
-        </div>
+        </StandardPage>
     );
 }

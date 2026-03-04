@@ -2,6 +2,8 @@ import React, { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DollarSign, Globe, FileCheck, Download, PlusCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface WHTRule {
     id: string;
@@ -143,10 +145,10 @@ export default function WHTRemittance() {
     ];
 
     return (
-        <div className="wht-workbench">
+        <StandardPage title="WHT Remittance Workbench">
             <div className="wht-header">
                 <div>
-                    <h1 className="wht-title">WHT Remittance Workbench</h1>
+                    
                     <p className="wht-subtitle">Withholding tax calculation, statutory XML generation & batch remittance filing</p>
                 </div>
                 <div className="wht-controls">
@@ -309,7 +311,7 @@ export default function WHTRemittance() {
                 .rule-input { padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; }
                 .save-rule-btn { grid-column: 3; padding: 8px 16px; background: #059669; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; align-self: end; }
             `}</style>
-        </div>
+        </StandardPage>
     );
 }
 

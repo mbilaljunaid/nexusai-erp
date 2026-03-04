@@ -9,6 +9,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Search, Plus, Package, Tag, Image as ImageIcon } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface Item {
     id: string;
@@ -76,11 +78,11 @@ export default function ItemMasterUI() {
     };
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Item Master (PIM)">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">Item Master (PIM)</h1>
+                    
                     <p className="text-muted-foreground">
                         Product Information Management
                     </p>
@@ -278,6 +280,6 @@ export default function ItemMasterUI() {
                     </DialogContent>
                 </Dialog>
             )}
-        </div>
+        </StandardPage>
     );
 }

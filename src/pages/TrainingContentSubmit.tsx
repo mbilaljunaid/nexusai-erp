@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface FiltersData {
   modules: { slug: string; name: string }[];
@@ -157,13 +159,13 @@ export default function TrainingContentSubmit() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white">
+      <StandardPage title="Submitted Successfully!">
         <Header />
         <main className="max-w-2xl mx-auto px-4 py-20 text-center">
           <div className="bg-green-500/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-green-400" />
           </div>
-          <h1 className="text-3xl font-bold mb-4">Submitted Successfully!</h1>
+          
           <p className="text-slate-400 mb-8">
             {isFilterRequest 
               ? "Your filter request has been submitted and will be reviewed by our team."
@@ -182,7 +184,7 @@ export default function TrainingContentSubmit() {
           </div>
         </main>
         <Footer />
-      </div>
+      </StandardPage>
     );
   }
 

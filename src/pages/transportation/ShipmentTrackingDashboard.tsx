@@ -13,6 +13,8 @@ import {
     MapPin, TrendingUp, AlertTriangle, CheckCircle2, Truck, Clock, Navigation, Target, Download
 } from "lucide-react";
 import { exportToExcel, exportToCSV } from "@/lib/exportUtils";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface ShipmentTracking {
     id: string;
@@ -135,10 +137,10 @@ export default function ShipmentTrackingDashboard() {
                 const now = new Date();
                 const hoursRemaining = Math.max(0, (eta.getTime() - now.getTime()) / (1000 * 60 * 60));
                 return (
-                    <div className="flex items-center gap-2">
+                    <StandardPage title="Shipment Tracking">
                         <Clock className="h-3 w-3 text-muted-foreground" />
                         <span className="text-sm">{Math.round(hoursRemaining)}h</span>
-                    </div>
+                    </StandardPage>
                 );
             },
         },
@@ -162,7 +164,7 @@ export default function ShipmentTrackingDashboard() {
     return (
         <div className="p-6 space-y-6">
             <div>
-                <h1 className="text-3xl font-bold">Shipment Tracking</h1>
+                
                 <p className="text-muted-foreground">Real-time shipment monitoring and ETA management</p>
             </div>
 

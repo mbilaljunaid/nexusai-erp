@@ -7,6 +7,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { TrendingUp, TrendingDown, AlertTriangle, Calendar, Download, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function CapacityPlanning() {
     const [workCenterId, setWorkCenterId] = useState("");
@@ -38,10 +40,10 @@ export default function CapacityPlanning() {
     };
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Capacity Planning Dashboard">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Capacity Planning Dashboard</h1>
+                    
                     <p className="text-muted-foreground">Resource capacity analysis and bottleneck identification</p>
                 </div>
                 <div className="flex gap-2">
@@ -180,6 +182,6 @@ export default function CapacityPlanning() {
                     </Card>
                 </>
             )}
-        </div>
+        </StandardPage>
     );
 }

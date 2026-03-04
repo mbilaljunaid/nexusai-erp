@@ -21,10 +21,10 @@ export default function ViolationsDashboard() {
     });
 
     return (
-        <div className="container mx-auto p-6 max-w-7xl space-y-6">
+        <StandardPage title="Time Anomalies">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Time Anomalies</h1>
+                    
                     <p className="text-muted-foreground">Monitor late-ins, early-outs, and policy violations.</p>
                 </div>
             </div>
@@ -102,9 +102,11 @@ export default function ViolationsDashboard() {
                     </Table>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }
 
 // Helper to keep concise
 import { Button } from "@/components/ui/button";
+import { StandardPage } from "@/components/layout/StandardPage";
+

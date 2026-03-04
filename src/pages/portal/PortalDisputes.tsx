@@ -10,6 +10,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { format } from "date-fns";
 import { AlertCircle, CheckCircle, Clock, XCircle, Upload, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function PortalDisputes() {
     const { toast } = useToast();
@@ -89,9 +91,9 @@ export default function PortalDisputes() {
 
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Dispute Management">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900">Dispute Management</h1>
+                
                 {!showForm && (
                     <Button onClick={() => setShowForm(true)} className="bg-amber-600 hover:bg-amber-700">
                         <AlertCircle className="mr-2 h-4 w-4" />
@@ -245,6 +247,6 @@ export default function PortalDisputes() {
                     )}
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

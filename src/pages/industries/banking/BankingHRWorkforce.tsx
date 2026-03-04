@@ -3,14 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function BankingPage() {
   const { data = [] } = useQuery<any[]>({ queryKey: ['/api/banking-default'] });
 
   return (
-    <div className="space-y-6 p-6">
+    <StandardPage title="Banking Module">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Banking Module</h1>
+        
         <Button data-testid="button-add"><Plus className="w-4 h-4 mr-2" />Add</Button>
       </div>
 
@@ -31,6 +33,6 @@ export default function BankingPage() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

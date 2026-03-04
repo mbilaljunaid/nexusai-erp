@@ -10,6 +10,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { Send, TrendingDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function LoadTendering() {
     const { toast } = useToast();
@@ -101,9 +103,9 @@ export default function LoadTendering() {
     ];
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Load Tendering & Carrier Selection">
             <div>
-                <h1 className="text-3xl font-bold">Load Tendering & Carrier Selection</h1>
+                
                 <p className="text-muted-foreground">Automated carrier selection and rate optimization</p>
             </div>
 
@@ -165,6 +167,6 @@ export default function LoadTendering() {
                     </CardContent>
                 </Card>
             )}
-        </div>
+        </StandardPage>
     );
 }

@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, GripVertical, X, BookMarked } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface LearningPath {
     id: string;
@@ -77,11 +79,11 @@ export default function LearningPathBuilder() {
     const selectedPath = paths.find((p: LearningPath) => p.id === selectedPathId);
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Learning Path Builder">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">Learning Path Builder</h1>
+                    
                     <p className="text-muted-foreground">
                         Create structured learning curricula
                     </p>
@@ -232,6 +234,6 @@ export default function LearningPathBuilder() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

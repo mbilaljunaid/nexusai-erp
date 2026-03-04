@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Download, RefreshCw, Trash2, Copy, Zap } from "lucide-react";
 import { Header, Footer } from "@/components/Navigation";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function DemoManagement() {
   const [industries, setIndustries] = useState<string[]>([]);
@@ -109,11 +111,11 @@ export default function DemoManagement() {
   };
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Demo Management">
       <Header />
       <div className="flex-1">
         <div className="max-w-6xl mx-auto px-4 py-20">
-          <h1 className="public-hero-title text-4xl font-bold mb-2">Demo Management</h1>
+          
           <p style={{ color: `hsl(var(--muted-foreground))` }} className="mb-8">Create and manage demo environments for all industries</p>
 
           <Tabs defaultValue="create" className="w-full">
@@ -235,6 +237,6 @@ export default function DemoManagement() {
         </div>
       </div>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

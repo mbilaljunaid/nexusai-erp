@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 import {
   Users, DollarSign, Briefcase, Factory, Package, BarChart3, Shield, Cog,
   ShoppingCart, Truck, Brain, Workflow, Bell, GraduationCap, TrendingUp,
@@ -400,7 +402,7 @@ export default function FeaturesPage() {
   const totalFeatures = modules.reduce((sum, m) => sum + m.features.length, 0);
 
   return (
-    <div className="min-h-screen bg-background">
+    <StandardPage title="Complete Feature Overview">
       <Header />
 
       <main className="pt-20">
@@ -408,9 +410,7 @@ export default function FeaturesPage() {
         <section className="py-16 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
           <div className="max-w-7xl mx-auto px-4 text-center">
             <Badge className="mb-4" variant="secondary">Enterprise Platform</Badge>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Complete Feature Overview
-            </h1>
+            
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
               Explore {totalFeatures}+ features across {modules.length} modules designed to transform your enterprise operations.
             </p>
@@ -642,6 +642,6 @@ export default function FeaturesPage() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

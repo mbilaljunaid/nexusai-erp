@@ -7,6 +7,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { format } from "date-fns";
 import { FileText, Download, CreditCard, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function PortalInvoices() {
     const { toast } = useToast();
@@ -38,8 +40,8 @@ export default function PortalInvoices() {
     if (isLoading) return <div>Loading invoices...</div>;
 
     return (
-        <div className="space-y-6">
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Invoices</h1>
+        <StandardPage title="Invoices">
+            
 
             <div className="space-y-4">
                 {invoices?.map((inv: any) => (
@@ -89,6 +91,6 @@ export default function PortalInvoices() {
                     </Card>
                 ))}
             </div>
-        </div>
+        </StandardPage>
     );
 }

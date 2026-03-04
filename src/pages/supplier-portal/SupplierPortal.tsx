@@ -7,6 +7,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { Upload, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function SupplierPortal() {
     const { toast } = useToast();
@@ -28,9 +30,9 @@ export default function SupplierPortal() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Supplier Portal">
             <div>
-                <h1 className="text-3xl font-bold">Supplier Portal</h1>
+                
                 <p className="text-muted-foreground">Purchase orders and shipment notifications</p>
             </div>
 
@@ -68,6 +70,6 @@ export default function SupplierPortal() {
                     ))}
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

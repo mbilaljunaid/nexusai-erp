@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import MRRAnalyticsService, { SaaSMetrics } from '@/services/mrrAnalyticsService';
 import { TrendingUp, DollarSign, Users, Target } from 'lucide-react';
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function MRRAnalyticsDashboard() {
     const [metrics, setMetrics] = useState<SaaSMetrics | null>(null);
@@ -33,16 +35,16 @@ export default function MRRAnalyticsDashboard() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-96">
+            <StandardPage title="MRR Analytics">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            </div>
+            </StandardPage>
         );
     }
 
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-bold">MRR Analytics</h1>
+                
                 <p className="text-gray-500 mt-1">Monthly Recurring Revenue & SaaS Metrics</p>
             </div>
 

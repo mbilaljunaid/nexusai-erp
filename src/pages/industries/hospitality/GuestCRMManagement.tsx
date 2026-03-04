@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Heart, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function GuestCRMManagement() {
   const { toast } = useToast();
@@ -38,12 +40,9 @@ export default function GuestCRMManagement() {
   const totalPoints = guests.reduce((sum: number, g: any) => sum + (parseInt(g.points) || 0), 0);
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Guest CRM & Loyalty Management">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Heart className="h-8 w-8" />
-          Guest CRM & Loyalty Management
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Guest profiles, preferences, loyalty programs, and personalization</p>
       </div>
 
@@ -108,6 +107,6 @@ export default function GuestCRMManagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

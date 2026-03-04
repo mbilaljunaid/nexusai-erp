@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Plus, Check, Archive, Eye } from 'lucide-react';
 import { format } from 'date-fns';
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function ScenarioManager() {
     // Mock Data
@@ -15,10 +17,10 @@ export default function ScenarioManager() {
     ]);
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Scenario Manager">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Scenario Manager</h1>
+                    
                     <p className="text-muted-foreground">Define and publish standard costs for inventory valuation.</p>
                 </div>
                 <Button>
@@ -71,6 +73,6 @@ export default function ScenarioManager() {
                     </Table>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function TelecomBIDashboard() {
   const { data: metrics = [], isLoading } = useQuery({
@@ -14,12 +16,9 @@ export default function TelecomBIDashboard() {
   const churnRate = metrics.length > 0 ? (metrics.reduce((sum: number, m: any) => sum + (parseFloat(m.churnRate) || 0), 0) / metrics.length).toFixed(1) : 0;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Telecom BI & Analytics Dashboard">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <TrendingUp className="h-8 w-8" />
-          Telecom BI & Analytics Dashboard
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Revenue, subscriber growth, churn, network utilization, and billing metrics</p>
       </div>
 
@@ -75,6 +74,6 @@ export default function TelecomBIDashboard() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </StandardPage>
   );
 }

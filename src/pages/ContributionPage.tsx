@@ -27,6 +27,8 @@ import {
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function ContributionPage() {
   useEffect(() => {
@@ -180,7 +182,7 @@ export default function ContributionPage() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <StandardPage title="Contribute to NexusAIFirst">
       <Header />
 
       <main className="flex-1">
@@ -188,9 +190,7 @@ export default function ContributionPage() {
           <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white mb-4">
             Join Our Community
           </Badge>
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            Contribute to <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">NexusAIFirst</span>
-          </h1>
+          
           <p className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
             Be part of building the world's most powerful open-source ERP platform.
             Your contributions help thousands of businesses while growing your expertise and earning rewards.
@@ -469,6 +469,6 @@ export default function ContributionPage() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

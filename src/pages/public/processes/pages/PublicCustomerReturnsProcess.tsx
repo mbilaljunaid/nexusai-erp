@@ -5,6 +5,8 @@ import { Link } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
 import { RotateCcw, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function PublicCustomerReturnsProcess() {
   useEffect(() => {
@@ -23,7 +25,7 @@ export default function PublicCustomerReturnsProcess() {
   ];
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Customer Returns (RMA)">
       <Header />
       <main className="flex-1">
         <section className="px-4 py-16 max-w-5xl mx-auto">
@@ -38,7 +40,7 @@ export default function PublicCustomerReturnsProcess() {
             </div>
             <div>
               <Badge className="mb-2">CUSTOMER SERVICE</Badge>
-              <h1 className="text-4xl font-bold" data-testid="text-page-title">Customer Returns (RMA)</h1>
+              
             </div>
           </div>
           <p className="text-xl text-muted-foreground mb-8">
@@ -82,6 +84,6 @@ export default function PublicCustomerReturnsProcess() {
         </section>
       </main>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

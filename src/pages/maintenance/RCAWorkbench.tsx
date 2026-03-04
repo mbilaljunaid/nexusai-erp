@@ -8,6 +8,8 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Search, Save, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface RCAAnalysis {
     id?: number;
@@ -112,10 +114,10 @@ export default function RCAWorkbench() {
     };
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Root Cause Analysis Workbench">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Root Cause Analysis Workbench</h1>
+                    
                     <p className="text-muted-foreground">Systematic failure analysis and corrective actions</p>
                 </div>
                 <Button onClick={saveRCA} disabled={saveMutation.isPending}>
@@ -281,6 +283,6 @@ export default function RCAWorkbench() {
                     </Card>
                 </div>
             )}
-        </div>
+        </StandardPage>
     );
 }

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { GitMerge, ChevronRight, AlertTriangle } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface Lot { id: string; lot_number: string; item_number: string; item_description: string; lot_type: string; quantity: number; unit_of_measure: string; status: string; expiry_date: string; supplier_lot: string; work_order_id: string; parent_lots: any[]; trace_events: any[]; created_at: string; }
 
@@ -48,10 +50,10 @@ export default function LotGenealogy() {
     ];
 
     return (
-        <div style={{ padding: 24, maxWidth: 1400, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
+        <StandardPage title="Lot Genealogy &amp; Traceability">
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
                 <div>
-                    <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>Lot Genealogy &amp; Traceability</h1>
+                    
                     <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Forward/backward traceability · JSONB trace events · Expiry management</p>
                 </div>
                 <button onClick={() => setShowNew(!showNew)} style={{ padding: '8px 14px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>+ New Lot</button>
@@ -152,6 +154,6 @@ export default function LotGenealogy() {
                     </div>
                 )}
             </div>
-        </div>
+        </StandardPage>
     );
 }

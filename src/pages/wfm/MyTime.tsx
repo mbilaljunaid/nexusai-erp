@@ -10,6 +10,8 @@ import { TimesheetGrid } from "@/components/wfm/TimesheetGrid";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { BulkTimeEntryModal } from "@/components/wfm/BulkTimeEntryModal";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 // MOCK USER for V1 - Need to get from context later
 const MOCK_USER = {
@@ -106,10 +108,10 @@ export default function MyTime() {
     if (isLoading) return <div className="p-8">Loading Timesheet...</div>;
 
     return (
-        <div className="container mx-auto p-6 max-w-7xl space-y-6">
+        <StandardPage title="My Time">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">My Time</h1>
+                    
                     <p className="text-muted-foreground">Manage your weekly time and leave balances.</p>
                 </div>
                 <div className="flex gap-4">
@@ -190,6 +192,6 @@ export default function MyTime() {
                     tenantId={MOCK_USER.tenantId}
                 />
             )}
-        </div>
+        </StandardPage>
     );
 }

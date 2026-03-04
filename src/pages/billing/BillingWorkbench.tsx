@@ -20,6 +20,8 @@ import {
 import { BillingEventDetailSheet } from "./components/BillingEventDetailSheet";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function BillingWorkbench() {
     const { toast } = useToast();
@@ -125,7 +127,7 @@ export default function BillingWorkbench() {
     ];
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Billing Workbench">
             <Breadcrumb>
                 <BreadcrumbList>
                     <BreadcrumbItem>
@@ -144,7 +146,7 @@ export default function BillingWorkbench() {
 
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Billing Workbench</h1>
+                    
                     <p className="text-muted-foreground">Manage unbilled events and generate invoices.</p>
                 </div>
                 <div className="flex gap-4 items-center">
@@ -212,6 +214,6 @@ export default function BillingWorkbench() {
                 open={!!selectedEvent}
                 onOpenChange={(open) => !open && setSelectedEvent(null)}
             />
-        </div>
+        </StandardPage>
     );
 }

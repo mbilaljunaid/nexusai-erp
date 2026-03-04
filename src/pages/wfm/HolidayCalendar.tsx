@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 const MOCK_TENANT_ID = "test-tenant-wfm-001";
 
@@ -45,9 +47,9 @@ export default function HolidayCalendar() {
     });
 
     return (
-        <div className="container mx-auto p-6 max-w-5xl space-y-6">
+        <StandardPage title="Public Holiday Calendar">
             <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold">Public Holiday Calendar</h1>
+                
                 <Select value={filterCountry} onValueChange={setFilterCountry}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Select Country" />
@@ -131,6 +133,6 @@ export default function HolidayCalendar() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

@@ -5,6 +5,8 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpen, Award, Clock, CheckCircle, PlayCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface Enrollment {
     id: string;
@@ -32,10 +34,10 @@ export default function MyLearning() {
     const notStarted = enrollments.filter((e: Enrollment) => e.status === "NOT_STARTED");
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="My Learning">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold">My Learning</h1>
+                
                 <p className="text-muted-foreground">
                     Track your learning progress and achievements
                 </p>
@@ -219,6 +221,6 @@ export default function MyLearning() {
                     )}
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

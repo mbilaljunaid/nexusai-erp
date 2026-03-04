@@ -20,6 +20,8 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -394,14 +396,11 @@ export default function CostAdjustmentApprovalWorkbench() {
     const rejected = history.filter((r) => r.status === "REJECTED").length;
 
     return (
-        <div className="p-6 max-w-5xl mx-auto space-y-6">
+        <StandardPage title="Cost Adjustment Approval Workbench">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-                        <ClipboardList className="h-6 w-6 text-primary" />
-                        Cost Adjustment Approval Workbench
-                    </h1>
+                    
                     <p className="text-sm text-muted-foreground mt-1">
                         Maker-checker workflow for cost adjustments — Oracle Fusion Cost Management parity (L11)
                     </p>
@@ -525,6 +524,6 @@ export default function CostAdjustmentApprovalWorkbench() {
                 onSubmit={(form) => createMutation.mutate(form)}
                 isLoading={createMutation.isPending}
             />
-        </div>
+        </StandardPage>
     );
 }

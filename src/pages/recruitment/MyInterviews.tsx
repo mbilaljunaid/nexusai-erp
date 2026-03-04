@@ -7,6 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Video, Phone, MapPin, User, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { InterviewFeedbackModal } from "@/components/recruitment/InterviewFeedbackModal";
 import { format } from "date-fns";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface Interview {
     id: string;
@@ -180,12 +182,9 @@ export default function MyInterviews() {
     };
 
     return (
-        <div className="space-y-6 p-4">
+        <StandardPage title="My Interviews">
             <div>
-                <h1 className="text-3xl font-bold flex items-center gap-2">
-                    <Calendar className="h-8 w-8" />
-                    My Interviews
-                </h1>
+                
                 <p className="text-muted-foreground mt-2">
                     Your scheduled and past interviews
                 </p>
@@ -299,6 +298,6 @@ export default function MyInterviews() {
                 jobTitle={feedbackModal.jobTitle}
                 interviewType={feedbackModal.interviewType}
             />
-        </div>
+        </StandardPage>
     );
 }

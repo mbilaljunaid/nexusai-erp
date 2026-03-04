@@ -10,6 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { TimesheetGrid } from "@/components/wfm/TimesheetGrid";
 import { format, parseISO } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 // MOCK MANAGER
 const MOCK_TENANT_ID = "test-tenant-wfm-001";
@@ -72,10 +74,10 @@ export default function ManagerApprovals() {
     });
 
     return (
-        <div className="container mx-auto p-6 max-w-6xl space-y-6">
+        <StandardPage title="Approvals">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Approvals</h1>
+                    
                     <p className="text-muted-foreground">Review and approve team timesheets.</p>
                 </div>
             </div>
@@ -175,6 +177,6 @@ export default function ManagerApprovals() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

@@ -7,6 +7,8 @@ import { Header, Footer } from "@/components/Navigation";
 import { GraduationCap, ArrowLeft, ArrowRight, BarChart3, PieChart, TrendingUp, LineChart, Table } from "lucide-react";
 import { TrainingFilters, type SkillLevel, getSkillLevelBadgeColor } from "@/components/TrainingFilters";
 import { type EnterpriseRole } from "@/components/RBACContext";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface ModuleData {
   icon: typeof BarChart3;
@@ -52,7 +54,7 @@ export default function TrainingGuideAnalytics() {
   };
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Analytics Training Guide">
       <Header />
       <main className="flex-1">
         <section className="px-4 py-16 max-w-5xl mx-auto">
@@ -67,7 +69,7 @@ export default function TrainingGuideAnalytics() {
             </div>
             <div>
               <Badge className="mb-2">TRAINING</Badge>
-              <h1 className="text-4xl font-bold" data-testid="text-page-title">Analytics Training Guide</h1>
+              
             </div>
           </div>
           <p className="text-xl text-muted-foreground mb-8">
@@ -145,6 +147,6 @@ export default function TrainingGuideAnalytics() {
         </section>
       </main>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

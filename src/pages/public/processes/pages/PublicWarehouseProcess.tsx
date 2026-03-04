@@ -5,6 +5,8 @@ import { Link } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
 import { Warehouse, ArrowRight, CheckCircle, ArrowLeft } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function PublicWarehouseProcess() {
   useEffect(() => {
@@ -23,7 +25,7 @@ export default function PublicWarehouseProcess() {
   ];
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Warehouse Management">
       <Header />
       <main className="flex-1">
         <section className="px-4 py-16 max-w-5xl mx-auto">
@@ -38,7 +40,7 @@ export default function PublicWarehouseProcess() {
             </div>
             <div>
               <Badge className="mb-2">LOGISTICS</Badge>
-              <h1 className="text-4xl font-bold" data-testid="text-page-title">Warehouse Management</h1>
+              
             </div>
           </div>
           <p className="text-xl text-muted-foreground mb-8">
@@ -82,6 +84,6 @@ export default function PublicWarehouseProcess() {
         </section>
       </main>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 import { 
   Search, Briefcase, Clock, DollarSign, ChevronLeft, ChevronRight,
   AlertCircle, Users, Calendar, ArrowUpDown, Filter
@@ -110,7 +112,7 @@ export default function MarketplaceJobs() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <StandardPage title="NexusAIFirst Job Board">
       <Header />
       <main className="flex-1">
         <div className="bg-muted/50 py-12 border-b">
@@ -119,9 +121,7 @@ export default function MarketplaceJobs() {
               <Badge className="mb-4" style={{ backgroundColor: `hsl(var(--primary) / 0.1)`, color: `hsl(var(--primary))` }}>
                 JOB BOARD
               </Badge>
-              <h1 className="text-4xl font-bold mb-4" data-testid="text-jobs-title">
-                NexusAIFirst Job Board
-              </h1>
+              
               <p className="text-xl text-muted-foreground mb-8" data-testid="text-jobs-description">
                 Find ERP consulting opportunities or post a job to hire experienced NexusAIFirst experts
               </p>
@@ -370,6 +370,6 @@ export default function MarketplaceJobs() {
         </div>
       </main>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import { useState, useMemo } from "react";
 import { CreateASNModal } from "@/components/supplier-portal/CreateASNModal";
 import { toast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function SupplierASNs() {
     const token = localStorage.getItem("supplier_token");
@@ -142,10 +144,10 @@ export default function SupplierASNs() {
     if (isLoading) return <div className="flex justify-center p-8"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>;
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Shipments (ASN)">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Shipments (ASN)</h1>
+                    
                     <p className="text-sm text-muted-foreground mt-1">
                         {filteredAsns.length} {filteredAsns.length === 1 ? 'shipment' : 'shipments'} found
                         {selectedAsns.size > 0 && ` • ${selectedAsns.size} selected`}
@@ -300,6 +302,6 @@ export default function SupplierASNs() {
             </Card>
 
             <CreateASNModal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
-        </div>
+        </StandardPage>
     );
 }

@@ -10,6 +10,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, Search, Shield } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function ICDataAccessManager() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -116,13 +118,10 @@ export default function ICDataAccessManager() {
     };
 
     return (
-        <div className="p-8 space-y-6">
+        <StandardPage title="IC Data Access Management">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-                        <Shield className="h-8 w-8 text-indigo-600" />
-                        IC Data Access Management
-                    </h1>
+                    
                     <p className="text-muted-foreground">Manage user access to Intercompany organizations</p>
                 </div>
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -268,6 +267,6 @@ export default function ICDataAccessManager() {
                     )}
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

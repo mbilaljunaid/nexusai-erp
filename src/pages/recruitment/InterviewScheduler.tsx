@@ -15,6 +15,8 @@ import {
     CheckCircle2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function InterviewScheduler() {
     const { toast } = useToast();
@@ -46,10 +48,10 @@ export default function InterviewScheduler() {
     });
 
     return (
-        <div className="max-w-4xl mx-auto p-6 space-y-8">
+        <StandardPage title="Interview Scheduler">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Interview Scheduler</h1>
+                    
                     <p className="text-muted-foreground mt-1">Coordinate interview panels and candidate availability</p>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -202,6 +204,6 @@ export default function InterviewScheduler() {
                     )}
                 </div>
             </div>
-        </div>
+        </StandardPage>
     );
 }

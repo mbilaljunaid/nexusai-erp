@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function HousekeepingManagement() {
   const { toast } = useToast();
@@ -39,12 +41,9 @@ export default function HousekeepingManagement() {
   const inProgress = tasks.filter((t: any) => t.status === "in-progress").length;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Housekeeping & Room Operations">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Sparkles className="h-8 w-8" />
-          Housekeeping & Room Operations
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Room status, turnover scheduling, lost & found, and mini-bar tracking</p>
       </div>
 
@@ -116,6 +115,6 @@ export default function HousekeepingManagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

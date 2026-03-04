@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function MobileWarehouse() {
     const { toast } = useToast();
@@ -50,7 +52,7 @@ export default function MobileWarehouse() {
 
     if (view === "menu") {
         return (
-            <div className="min-h-screen bg-slate-950 p-4 space-y-4">
+            <StandardPage title="{title}">
                 <Header title="WMS Mobile" />
 
                 <div className="grid grid-cols-1 gap-4">
@@ -80,7 +82,7 @@ export default function MobileWarehouse() {
                         <RefreshCcw className="w-4 h-4 mr-2" /> Daily Inventory Summary
                     </Button>
                 </div>
-            </div>
+            </StandardPage>
         );
     }
 
@@ -219,7 +221,7 @@ function Header({ title }: { title: string }) {
                 <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
                     <Package className="w-5 h-5 text-white" />
                 </div>
-                <h1 className="text-xl font-bold text-white">{title}</h1>
+                
             </div>
             <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />

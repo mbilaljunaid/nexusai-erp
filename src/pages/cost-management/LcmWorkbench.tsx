@@ -16,6 +16,8 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function LcmWorkbench() {
     const { toast } = useToast();
@@ -52,10 +54,10 @@ export default function LcmWorkbench() {
     });
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Landed Cost Workbench">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Landed Cost Workbench</h1>
+                    
                     <p className="text-muted-foreground">Manage Trade Operations, shipments, and cost allocations.</p>
                 </div>
                 <Sheet>
@@ -154,6 +156,6 @@ export default function LcmWorkbench() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

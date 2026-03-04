@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function ReservationBooking() {
   const { toast } = useToast();
@@ -39,12 +41,9 @@ export default function ReservationBooking() {
   const pending = reservations.filter((r: any) => r.status === "pending").length;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Reservations & Booking Engine">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Calendar className="h-8 w-8" />
-          Reservations & Booking Engine
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Channel management, rate parity, group blocks, and amendments</p>
       </div>
 
@@ -109,6 +108,6 @@ export default function ReservationBooking() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

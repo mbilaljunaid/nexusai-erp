@@ -11,6 +11,8 @@ import { getFormMetadata } from "@/lib/formMetadata";
 import { Calendar, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function AppointmentScheduling() {
   const { toast } = useToast();
@@ -45,12 +47,9 @@ export default function AppointmentScheduling() {
   const scheduled = appointments.filter((a: any) => a.status === "scheduled").length;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Appointment Scheduling">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Calendar className="h-8 w-8" />
-          Appointment Scheduling
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Clinic scheduling, pre-registration, waitlists, and patient notifications</p>
       </div>
 
@@ -115,6 +114,6 @@ export default function AppointmentScheduling() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

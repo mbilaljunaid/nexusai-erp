@@ -7,6 +7,8 @@ import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Receipt, CheckCircle2, AlertCircle, Zap, ArrowRight, DollarSign } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function FreightSettlementConsole() {
     const { toast } = useToast();
@@ -120,10 +122,10 @@ export default function FreightSettlementConsole() {
     ];
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Freight Settlement Console">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Freight Settlement Console</h1>
+                    
                     <p className="text-muted-foreground">Manage carrier billing, automated reconciliation, and AP integration.</p>
                 </div>
                 <div className="flex gap-2">
@@ -210,7 +212,7 @@ export default function FreightSettlementConsole() {
                     Reconcile GL
                 </Button>
             </div>
-        </div>
+        </StandardPage>
     );
 }
 

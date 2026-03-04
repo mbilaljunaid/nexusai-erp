@@ -17,6 +17,8 @@ import {
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface TrainingResource {
   id: string;
@@ -130,7 +132,7 @@ export default function TrainingContentAdmin() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+    <StandardPage title="Training Content Administration">
       <header className="bg-slate-900 border-b border-slate-700 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -140,7 +142,7 @@ export default function TrainingContentAdmin() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-xl font-bold">Training Content Administration</h1>
+              
               <p className="text-sm text-slate-400">Manage community training content submissions</p>
             </div>
           </div>
@@ -435,6 +437,6 @@ export default function TrainingContentAdmin() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </StandardPage>
   );
 }

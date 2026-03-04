@@ -29,6 +29,8 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function PricingPage() {
   const { toast } = useToast();
@@ -185,14 +187,14 @@ export default function PricingPage() {
   ];
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Open Source. Free Forever.">
       <Header />
 
       <main className="flex-1">
         {/* Hero */}
         <section className="px-4 py-20 text-center max-w-4xl mx-auto">
           <Badge className="mb-4 bg-green-600 text-white" data-testid="badge-free">100% FREE FOREVER</Badge>
-          <h1 className="text-5xl font-bold mb-6" data-testid="text-page-title">Open Source. Free Forever.</h1>
+          
           <p className="text-xl text-muted-foreground mb-8">
             NexusAIFirst ERP is and will always remain free and open source.
             Licensed under AGPL-3.0, you get the complete enterprise platform at no cost.
@@ -639,6 +641,6 @@ export default function PricingPage() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

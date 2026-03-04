@@ -4,6 +4,8 @@ import { Link } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
 import { Scale, FileText, Shield, AlertCircle, Globe, Mail } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function LegalPage() {
   useEffect(() => {
@@ -11,14 +13,14 @@ export default function LegalPage() {
   }, []);
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Legal Information">
       <Header />
 
       <main className="flex-1">
         {/* Hero */}
         <section className="px-4 py-16 text-center max-w-4xl mx-auto">
           <Badge className="mb-4 bg-slate-600 text-white" data-testid="badge-legal">LEGAL</Badge>
-          <h1 className="text-5xl font-bold mb-6" data-testid="text-page-title">Legal Information</h1>
+          
           <p className="text-xl text-muted-foreground">
             Important legal information about NexusAIFirst ERP, including licensing, terms, and policies.
           </p>
@@ -158,6 +160,6 @@ export default function LegalPage() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

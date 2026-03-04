@@ -5,6 +5,8 @@ import { Link } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
 import { Code2, ArrowLeft, Terminal, Key, Webhook, FileJson } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function TechnicalAPIReference() {
   useEffect(() => {
@@ -19,7 +21,7 @@ export default function TechnicalAPIReference() {
   ];
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="API Reference">
       <Header />
       <main className="flex-1">
         <section className="px-4 py-16 max-w-5xl mx-auto">
@@ -34,7 +36,7 @@ export default function TechnicalAPIReference() {
             </div>
             <div>
               <Badge className="mb-2">TECHNICAL</Badge>
-              <h1 className="text-4xl font-bold" data-testid="text-page-title">API Reference</h1>
+              
             </div>
           </div>
           <p className="text-xl text-muted-foreground mb-8">
@@ -86,6 +88,6 @@ curl https://api.nexusaifirst.cloud/v1/customers \\
         </section>
       </main>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

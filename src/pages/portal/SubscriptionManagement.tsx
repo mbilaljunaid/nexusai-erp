@@ -11,6 +11,8 @@ import { CreditCard, Calendar, Package, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function SubscriptionManagement() {
     const { toast } = useToast();
@@ -61,9 +63,9 @@ export default function SubscriptionManagement() {
     ];
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Subscription Management">
             <div>
-                <h1 className="text-3xl font-bold">Subscription Management</h1>
+                
                 <p className="text-muted-foreground">Manage your subscription plan and billing</p>
             </div>
 
@@ -153,6 +155,6 @@ export default function SubscriptionManagement() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

@@ -11,6 +11,8 @@ import { Plus, Save, Send, FileText, DollarSign, Calendar, Check, X } from "luci
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 interface CrossChargeInvoice {
     id?: number;
     invoiceNumber?: string;
@@ -265,10 +267,10 @@ export default function CrossChargeInvoicing() {
     };
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Cross-Charge Invoicing">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Cross-Charge Invoicing</h1>
+                    
                     <p className="text-muted-foreground">
                         Generate invoices for interproject cost transfers
                     </p>
@@ -426,6 +428,6 @@ export default function CrossChargeInvoicing() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

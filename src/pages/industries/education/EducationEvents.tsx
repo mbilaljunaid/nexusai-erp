@@ -2,6 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Calendar } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function EducationEvents() {
   const events = [
@@ -9,8 +11,8 @@ export default function EducationEvents() {
     { id: "EVT002", name: "Debate Championship", date: "2025-02-28", capacity: 100, registered: 67 },
   ];
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex justify-between items-center"><div><h1 className="text-3xl font-bold">Events & Activities</h1></div><Button data-testid="button-create-event"><Plus className="h-4 w-4 mr-2" /> Create Event</Button></div>
+    <StandardPage title="Events & Activities">
+      <div className="flex justify-between items-center"><div></div><Button data-testid="button-create-event"><Plus className="h-4 w-4 mr-2" /> Create Event</Button></div>
       <div className="grid gap-4">
         {events.map(e => (
           <Card key={e.id} className="hover-elevate" data-testid={`card-event-${e.id}`}>
@@ -18,6 +20,6 @@ export default function EducationEvents() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

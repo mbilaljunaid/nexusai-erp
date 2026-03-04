@@ -14,6 +14,8 @@ import { POAcknowledgeModal } from "@/components/supplier-portal/POAcknowledgeMo
 import { apiRequest } from "@/lib/queryClient";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 import {
     Table,
     TableBody,
@@ -244,10 +246,10 @@ export default function SupplierOrders() {
     };
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Purchase Orders">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Purchase Orders</h1>
+                    
                     <p className="text-sm text-muted-foreground mt-1">
                         {filteredOrders.length} {filteredOrders.length === 1 ? 'order' : 'orders'} found
                         {selectedOrders.size > 0 && ` • ${selectedOrders.size} selected`}
@@ -460,6 +462,6 @@ export default function SupplierOrders() {
                 isLoading={acknowledgeMutation.isPending}
                 poNumber={selectedPo?.poNumber}
             />
-        </div>
+        </StandardPage>
     );
 }

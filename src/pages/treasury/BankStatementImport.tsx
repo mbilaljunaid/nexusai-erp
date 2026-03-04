@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Upload, FileText, CheckCircle2, AlertCircle, Link2, BarChart3 } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface ImportRecord {
     id: string;
@@ -91,10 +93,10 @@ export default function BankStatementImport() {
     ];
 
     return (
-        <div className="bsi-container">
+        <StandardPage title="Bank Statement Import">
             <div className="bsi-header">
                 <div>
-                    <h1 className="bsi-title">Bank Statement Import</h1>
+                    
                     <p className="bsi-sub">BAI2 · MT940 · CAMT.053 (ISO 20022)</p>
                 </div>
             </div>
@@ -252,6 +254,6 @@ export default function BankStatementImport() {
                 .red { color: #dc2626; }
                 .blue { color: #1d4ed8; }
             `}</style>
-        </div>
+        </StandardPage>
     );
 }

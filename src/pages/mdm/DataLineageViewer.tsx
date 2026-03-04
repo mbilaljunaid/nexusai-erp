@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { apiRequest } from "@/lib/queryClient";
 import { GitBranch, Database, FileText, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function DataLineageViewer() {
     const [entityType, setEntityType] = useState("CUSTOMER");
@@ -25,10 +27,10 @@ export default function DataLineageViewer() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Data Lineage Viewer">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Data Lineage Viewer</h1>
+                    
                     <p className="text-muted-foreground">Track data transformations and dependencies</p>
                 </div>
                 <Button variant="outline">
@@ -170,6 +172,6 @@ export default function DataLineageViewer() {
                     </Card>
                 </div>
             )}
-        </div>
+        </StandardPage>
     );
 }

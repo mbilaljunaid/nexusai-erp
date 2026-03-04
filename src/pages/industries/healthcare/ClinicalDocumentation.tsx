@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { FileText, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function ClinicalDocumentation() {
   const { toast } = useToast();
@@ -36,12 +38,9 @@ export default function ClinicalDocumentation() {
 
   const finalized = notes.filter((n: any) => n.status === "finalized").length;
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Clinical Documentation & EMR/EHR">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <FileText className="h-8 w-8" />
-          Clinical Documentation & EMR/EHR
-        </h1>
+        
         <p className="text-muted-foreground mt-2">SOAP notes, progress notes, problem lists, care plans, and discharge summaries</p>
       </div>
 
@@ -106,6 +105,6 @@ export default function ClinicalDocumentation() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

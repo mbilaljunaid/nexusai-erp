@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { DollarSign, PieChart, TrendingUp, AlertTriangle, ArrowUpRight, ArrowDownRight, Activity } from "lucide-react";
 import { useQuery } from '@tanstack/react-query';
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function AccountingDashboard() {
     const { data: summary } = useQuery<any>({
@@ -22,10 +24,10 @@ export default function AccountingDashboard() {
     });
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Project Accounting">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Project Accounting</h1>
+                    
                     <p className="text-muted-foreground">Financial control center for project portfolio</p>
                 </div>
                 <div className="flex gap-2">
@@ -107,6 +109,6 @@ export default function AccountingDashboard() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

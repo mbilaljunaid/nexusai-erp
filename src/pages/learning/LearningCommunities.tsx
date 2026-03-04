@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, Users, BookOpen, FolderTree, ChevronRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface Community {
     id: string;
@@ -38,7 +40,7 @@ export default function LearningCommunities() {
         const selected = selectedCommunityId === community.id;
 
         return (
-            <div key={community.id}>
+            <StandardPage title="Learning Communities">
                 <div
                     className={`flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-colors ${selected ? "bg-primary text-primary-foreground" : "hover:bg-accent"
                         }`}
@@ -62,7 +64,7 @@ export default function LearningCommunities() {
                     </div>
                 </div>
                 {community.children && community.children.map((child) => renderCommunity(child, depth + 1))}
-            </div>
+            </StandardPage>
         );
     };
 
@@ -72,7 +74,7 @@ export default function LearningCommunities() {
         <div className="p-6 space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold">Learning Communities</h1>
+                
                 <p className="text-muted-foreground">
                     Browse courses by organizational hierarchy
                 </p>

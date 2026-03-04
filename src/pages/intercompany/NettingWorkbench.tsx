@@ -15,6 +15,8 @@ import { NettingProposalCard } from "@/components/netting/NettingProposalCard";
 import { SettlementExecutionModal } from "@/components/netting/SettlementExecutionModal";
 import { NettingAgreementWizard } from "@/components/netting/NettingAgreementWizard";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function NettingWorkbench() {
     const { toast } = useToast();
@@ -85,10 +87,10 @@ export default function NettingWorkbench() {
     };
 
     return (
-        <div className="space-y-6 container mx-auto p-6">
+        <StandardPage title="Intercompany Settlement">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Intercompany Settlement</h1>
+                    
                     <p className="text-muted-foreground">Manage Netting Agreements and Cashless Settlements.</p>
                 </div>
             </div>
@@ -320,6 +322,6 @@ export default function NettingWorkbench() {
                 onClose={() => setShowAgreementWizard(false)}
                 onSuccess={() => setShowAgreementWizard(false)}
             />
-        </div>
+        </StandardPage>
     );
 }

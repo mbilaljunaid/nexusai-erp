@@ -1,10 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function APILogs() {
   return (
-    <div className="space-y-6">
+    <StandardPage title="API Logs">
       <div>
-        <h1 className="text-3xl font-bold">API Logs</h1>
+        
         <p className="text-muted-foreground mt-1">View API request and response logs</p>
       </div>
       <Card>
@@ -21,6 +23,6 @@ export default function APILogs() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

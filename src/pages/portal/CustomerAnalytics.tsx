@@ -5,6 +5,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { TrendingUp, DollarSign, Package, FileText, Download, Calendar } from "lucide-react";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
@@ -22,10 +24,10 @@ export default function CustomerAnalytics() {
     ];
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Customer Analytics Dashboard">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Customer Analytics Dashboard</h1>
+                    
                     <p className="text-muted-foreground">Usage metrics, spending analysis, and insights</p>
                 </div>
                 <Button variant="outline">
@@ -144,6 +146,6 @@ export default function CustomerAnalytics() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

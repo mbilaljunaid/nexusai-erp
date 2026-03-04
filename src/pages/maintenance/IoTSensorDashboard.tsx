@@ -6,6 +6,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { Activity, Thermometer, Gauge, Download } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function IoTSensorDashboard() {
     const [assetId, setAssetId] = useState("");
@@ -24,10 +26,10 @@ export default function IoTSensorDashboard() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="IoT Sensor Dashboard">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">IoT Sensor Dashboard</h1>
+                    
                     <p className="text-muted-foreground">Real-time asset monitoring and telemetry</p>
                 </div>
                 <Button variant="outline">
@@ -148,6 +150,6 @@ export default function IoTSensorDashboard() {
                     </div>
                 </>
             )}
-        </div>
+        </StandardPage>
     );
 }

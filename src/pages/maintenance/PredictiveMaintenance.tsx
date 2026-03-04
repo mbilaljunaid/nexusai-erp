@@ -6,6 +6,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { AlertTriangle, TrendingDown, Settings, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function PredictiveMaintenance() {
     const [assetId, setAssetId] = useState("");
@@ -28,9 +30,9 @@ export default function PredictiveMaintenance() {
     };
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Predictive Maintenance Engine">
             <div>
-                <h1 className="text-3xl font-bold">Predictive Maintenance Engine</h1>
+                
                 <p className="text-muted-foreground">AI-powered failure prediction and maintenance scheduling</p>
             </div>
 
@@ -105,6 +107,6 @@ export default function PredictiveMaintenance() {
                     </CardContent>
                 </Card>
             )}
-        </div>
+        </StandardPage>
     );
 }

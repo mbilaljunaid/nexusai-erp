@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, CheckCircle, Sparkles, Zap, Target, BarChart3, Settings, Users } from "lucide-react";
 import { moduleData } from "@/lib/moduleData";
 import { useEffect } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function ModuleDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -19,11 +21,11 @@ export default function ModuleDetail() {
 
   if (!module) {
     return (
-      <div className="public-page min-h-screen flex flex-col">
+      <StandardPage title="Module Not Found">
         <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center max-w-md">
-            <h1 className="text-3xl font-bold mb-4">Module Not Found</h1>
+            
             <p style={{ color: `hsl(var(--muted-foreground))` }} className="mb-6">
               The module you're looking for doesn't exist.
             </p>
@@ -31,7 +33,7 @@ export default function ModuleDetail() {
           </div>
         </main>
         <Footer />
-      </div>
+      </StandardPage>
     );
   }
 

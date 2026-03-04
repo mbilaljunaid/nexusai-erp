@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
 import { Card } from "@/components/ui/card";
 import { Shield } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function PrivacyPage() {
   useEffect(() => {
@@ -9,12 +11,12 @@ export default function PrivacyPage() {
   }, []);
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Privacy Policy">
       <Header />
       <main className="flex-1">
         <section className="public-hero px-4 py-16 text-center max-w-4xl mx-auto">
           <Shield className="w-16 h-16 mx-auto mb-4 text-blue-500" />
-          <h1 className="public-hero-title text-5xl font-bold mb-4" data-testid="text-privacy-title">Privacy Policy</h1>
+          
           <p className="public-hero-subtitle text-xl text-muted-foreground">
             Your privacy is important to us. This policy explains how we handle your data.
           </p>
@@ -103,6 +105,6 @@ export default function PrivacyPage() {
         </section>
       </main>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

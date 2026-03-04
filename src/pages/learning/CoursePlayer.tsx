@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tantml:react-query";
 import { useParams } from "wouter";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface CourseContent {
     id: string;
@@ -91,12 +93,12 @@ export default function CoursePlayer() {
     };
 
     return (
-        <div className="h-screen flex flex-col">
+        <StandardPage title="{courseContent.courseTitle}">
             {/* Header */}
             <div className="border-b p-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold">{courseContent.courseTitle}</h1>
+                        
                         <p className="text-sm text-muted-foreground">
                             Module {currentModuleIndex + 1} of {modules.length}
                         </p>
@@ -247,6 +249,6 @@ export default function CoursePlayer() {
                     )}
                 </div>
             </div>
-        </div>
+        </StandardPage>
     );
 }

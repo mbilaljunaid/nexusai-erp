@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Key, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function FrontDeskOperations() {
   const { toast } = useToast();
@@ -39,12 +41,9 @@ export default function FrontDeskOperations() {
   const checkedOut = folios.filter((f: any) => f.status === "checked-out").length;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Front Desk & Guest Folios">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Key className="h-8 w-8" />
-          Front Desk & Guest Folios
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Check-in/check-out, guest folios, incidental charges, and settlements</p>
       </div>
 
@@ -109,6 +108,6 @@ export default function FrontDeskOperations() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

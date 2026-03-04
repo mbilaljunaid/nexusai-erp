@@ -5,6 +5,8 @@ import { Linkedin, Github, Twitter, Scale, Heart, Users, Shield, Code2, GitFork,
 import { Link } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function AboutPage() {
   useEffect(() => {
@@ -12,14 +14,14 @@ export default function AboutPage() {
   }, []);
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="About NexusAIFirst">
       <Header />
 
       <main className="flex-1">
       {/* Hero */}
       <section className="public-hero px-4 py-20 text-center max-w-4xl mx-auto">
         <Badge className="mb-4 bg-green-600 text-white">OPEN SOURCE</Badge>
-        <h1 className="public-hero-title text-5xl font-bold mb-6">About NexusAIFirst</h1>
+        
         <p className="public-hero-subtitle text-xl">An open source, AI-powered enterprise platform built by the community, for the community. Licensed under AGPL-3.0.</p>
       </section>
 
@@ -203,6 +205,6 @@ export default function AboutPage() {
       </section>
       </main>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

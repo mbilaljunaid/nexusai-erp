@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/select";
 import { Save } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface SurvivorshipRule {
     id: string;
@@ -89,9 +91,9 @@ export default function SurvivorshipRuleBuilder() {
     };
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Survivorship Rule Builder">
             <div>
-                <h1 className="text-3xl font-bold">Survivorship Rule Builder</h1>
+                
                 <p className="text-muted-foreground">
                     Define which field values survive during merge
                 </p>
@@ -244,6 +246,6 @@ export default function SurvivorshipRuleBuilder() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

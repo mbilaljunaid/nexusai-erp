@@ -9,6 +9,8 @@ import { CalendarIcon, TrendingUp, AlertTriangle, CheckCircle } from "lucide-rea
 import { format, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function AIWorkforceInsights() {
     const [date, setDate] = useState<Date>(new Date());
@@ -54,10 +56,10 @@ export default function AIWorkforceInsights() {
     }
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Labor Intelligence">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Labor Intelligence</h1>
+                    
                     <p className="text-muted-foreground">AI-driven workforce planning and risk prediction.</p>
                 </div>
                 <div className="flex gap-2">
@@ -163,6 +165,6 @@ export default function AIWorkforceInsights() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

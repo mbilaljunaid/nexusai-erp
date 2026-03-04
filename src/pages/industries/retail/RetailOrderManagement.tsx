@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { OrderToInvoiceForm } from "@/components/forms/OrderToInvoiceForm";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function Page() {
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
@@ -12,19 +14,19 @@ export default function Page() {
 
   if (selectedOrder) {
     return (
-      <div className="p-6">
+      <StandardPage title="Retail Orders & Invoicing">
         <OrderToInvoiceForm 
           order={selectedOrder}
           onClose={() => setSelectedOrder(null)}
         />
-      </div>
+      </StandardPage>
     );
   }
 
   return (
     <div className="space-y-6 p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Retail Orders & Invoicing</h1>
+        
         <Button data-testid="button-new"><Plus className="w-4 h-4 mr-2" />New Order</Button>
       </div>
       <Card className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">

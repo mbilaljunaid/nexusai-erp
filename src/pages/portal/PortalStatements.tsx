@@ -5,6 +5,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { format, parse } from "date-fns";
 import { Download, FileText } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function PortalStatements() {
     const { data: statements, isLoading } = useQuery({
@@ -17,16 +19,16 @@ export default function PortalStatements() {
 
     if (isLoading) {
         return (
-            <div className="space-y-6">
+            <StandardPage title="Account Statements">
                 <Skeleton className="h-10 w-48" />
                 <Skeleton className="h-96" />
-            </div>
+            </StandardPage>
         );
     }
 
     return (
         <div className="space-y-6">
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Account Statements</h1>
+            
 
             <Card>
                 <CardHeader>

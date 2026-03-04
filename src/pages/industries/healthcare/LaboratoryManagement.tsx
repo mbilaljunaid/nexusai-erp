@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Microscope, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function LaboratoryManagement() {
   const { toast } = useToast();
@@ -39,12 +41,9 @@ export default function LaboratoryManagement() {
   const pending = tests.filter((t: any) => t.status === "pending").length;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Laboratory Information System (LIS)">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Microscope className="h-8 w-8" />
-          Laboratory Information System (LIS)
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Test orders, specimen collection, result entry, QC, and critical value alerts</p>
       </div>
 
@@ -123,6 +122,6 @@ export default function LaboratoryManagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

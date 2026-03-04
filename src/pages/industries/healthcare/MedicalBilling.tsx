@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { CreditCard, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function MedicalBilling() {
   const { toast } = useToast();
@@ -39,12 +41,9 @@ export default function MedicalBilling() {
   const totalAmount = claims.reduce((sum: number, c: any) => sum + (parseFloat(c.amount) || 0), 0);
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Medical Billing & Revenue Cycle Management">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <CreditCard className="h-8 w-8" />
-          Medical Billing & Revenue Cycle Management
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Charge capture, claims, insurance verification, and payment posting</p>
       </div>
 
@@ -116,6 +115,6 @@ export default function MedicalBilling() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

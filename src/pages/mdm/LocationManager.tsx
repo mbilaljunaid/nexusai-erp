@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { MapPin, Plus, Building2 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 import {
     Select,
     SelectContent,
@@ -83,11 +85,11 @@ export default function LocationManager() {
     };
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Location Manager">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">Location Manager</h1>
+                    
                     <p className="text-muted-foreground">
                         Manage addresses and site uses
                     </p>
@@ -265,6 +267,6 @@ export default function LocationManager() {
                     )}
                 </div>
             )}
-        </div>
+        </StandardPage>
     );
 }

@@ -9,6 +9,8 @@ import PlanningBoard from "@/components/maintenance/PlanningBoard";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import CostAnalysisView from "@/components/maintenance/CostAnalysisView";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 import {
     EnterpriseContextSwitcher,
     buildScopeHeaders
@@ -36,14 +38,11 @@ export default function MaintenanceWorkbench({ initialTab = "overview" }: { init
     });
 
     return (
-        <div className="flex flex-col h-[calc(100vh-4rem)] bg-muted/10">
+        <StandardPage title="Maintenance Command Center">
             <div className="border-b bg-background p-4 flex flex-col gap-4">
                 <div className="flex justify-between items-center">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-                            <Wrench className="h-6 w-6 text-primary" />
-                            Maintenance Command Center
-                        </h1>
+                        
                         <p className="text-muted-foreground">Monitor asset health, dispatch work, and schedule maintenance.</p>
                     </div>
                     <div className="flex gap-4 items-center">
@@ -159,6 +158,6 @@ export default function MaintenanceWorkbench({ initialTab = "overview" }: { init
                     </TabsContent>
                 </Tabs>
             </div>
-        </div>
+        </StandardPage>
     );
 }

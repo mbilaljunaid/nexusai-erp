@@ -6,6 +6,8 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { FileText, DollarSign, AlertCircle, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function FreightAudit() {
     const { toast } = useToast();
@@ -41,9 +43,9 @@ export default function FreightAudit() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Freight Audit & Payment">
             <div>
-                <h1 className="text-3xl font-bold">Freight Audit & Payment</h1>
+                
                 <p className="text-muted-foreground">Automated freight invoice validation and discrepancy detection</p>
             </div>
 
@@ -213,6 +215,6 @@ export default function FreightAudit() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

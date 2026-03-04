@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { TrendingDown, DollarSign, Download, TrendingUp, Clock } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function RevenueWaterfall() {
     const { businessUnitId } = useEnterpriseStore();
@@ -23,10 +25,10 @@ export default function RevenueWaterfall() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Revenue Waterfall Visualization">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Revenue Waterfall Visualization</h1>
+                    
                     <p className="text-muted-foreground">Track revenue from booking to recognition</p>
                 </div>
                 <Button variant="outline">
@@ -102,6 +104,6 @@ export default function RevenueWaterfall() {
                     </ResponsiveContainer>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

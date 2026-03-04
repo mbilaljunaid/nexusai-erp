@@ -13,6 +13,8 @@ import PartRequirementList from "@/components/maintenance/PartRequirementList";
 import InspectionFormRunner from "@/components/maintenance/InspectionFormRunner";
 // Badge import removed (duplicate)
 import { Wifi, WifiOff } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function TechnicianTaskView() {
     const { toast } = useToast();
@@ -73,7 +75,7 @@ export default function TechnicianTaskView() {
 
     if (selectedTask) {
         return (
-            <div className="h-full flex flex-col bg-background">
+            <StandardPage title="Good Morning, Tech">
                 {/* Mobile Header */}
                 <div className="p-4 border-b flex items-center justify-between bg-muted/20">
                     <Button variant="ghost" onClick={() => setSelectedTask(null)}>← Back</Button>
@@ -168,7 +170,7 @@ export default function TechnicianTaskView() {
                         Complete Work Order
                     </Button>
                 </div>
-            </div>
+            </StandardPage>
         );
     }
 
@@ -176,7 +178,7 @@ export default function TechnicianTaskView() {
         <div className="max-w-md mx-auto h-full flex flex-col bg-muted/10 min-h-screen">
             <div className="p-4 bg-primary text-primary-foreground pt-12 pb-6 flex justify-between items-start">
                 <div>
-                    <h1 className="text-xl font-bold">Good Morning, Tech</h1>
+                    
                     <p className="text-primary-foreground/80 text-sm">You have {myTasks?.length || 0} active tasks today.</p>
                 </div>
                 <div className="flex flex-col items-end gap-2">

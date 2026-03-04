@@ -9,6 +9,8 @@ import { DollarSign, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function TelecomBillingRevenue() {
   const { businessUnitId } = useEnterpriseStore();
@@ -53,12 +55,9 @@ export default function TelecomBillingRevenue() {
   const totalRevenue = invoices.reduce((sum: number, i: any) => sum + (parseFloat(i.amount) || 0), 0);
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Billing & Revenue Management">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <DollarSign className="h-8 w-8" />
-          Billing & Revenue Management
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Rate plans, usage capture, invoicing, and payment processing</p>
       </div>
 
@@ -130,6 +129,6 @@ export default function TelecomBillingRevenue() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 import { 
   Code2, 
   Database, 
@@ -48,14 +50,14 @@ export default function TechnicalDocumentationPage() {
   ];
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Technical Documentation">
       <Header />
 
       <main className="flex-1">
         {/* Hero Section */}
         <section className="px-4 py-16 text-center max-w-5xl mx-auto">
           <Badge className="mb-4 bg-blue-600 text-white" data-testid="badge-technical">TECHNICAL DOCUMENTATION</Badge>
-          <h1 className="text-5xl font-bold mb-6" data-testid="text-page-title">Technical Documentation</h1>
+          
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             Comprehensive technical reference for developers building with NexusAIFirst ERP. 
             Explore our architecture, APIs, and integration guides.
@@ -202,6 +204,6 @@ export default function TechnicalDocumentationPage() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

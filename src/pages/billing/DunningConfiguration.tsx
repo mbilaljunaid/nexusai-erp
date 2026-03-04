@@ -8,6 +8,8 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertTriangle, Mail, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function DunningConfiguration() {
     const { businessUnitId } = useEnterpriseStore();
@@ -51,9 +53,9 @@ export default function DunningConfiguration() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Dunning Configuration">
             <div>
-                <h1 className="text-3xl font-bold">Dunning Configuration</h1>
+                
                 <p className="text-muted-foreground">Automated collections and payment reminders</p>
             </div>
 
@@ -160,6 +162,6 @@ export default function DunningConfiguration() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

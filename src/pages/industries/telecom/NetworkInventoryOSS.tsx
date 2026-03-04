@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Radio, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function NetworkInventoryOSS() {
   const { toast } = useToast();
@@ -38,12 +40,9 @@ export default function NetworkInventoryOSS() {
   const avgUtil = nodes.length > 0 ? (nodes.reduce((sum: number, n: any) => sum + (parseFloat(n.utilization) || 0), 0) / nodes.length).toFixed(1) : 0;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Network Inventory & OSS">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Radio className="h-8 w-8" />
-          Network Inventory & OSS
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Network elements, topology, capacity, and maintenance scheduling</p>
       </div>
 
@@ -108,6 +107,6 @@ export default function NetworkInventoryOSS() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

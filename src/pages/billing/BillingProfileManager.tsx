@@ -22,6 +22,8 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function BillingProfileManager() {
     const { businessUnitId } = useEnterpriseStore();
@@ -180,7 +182,7 @@ export default function BillingProfileManager() {
     ];
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Billing Profiles">
             <Breadcrumb>
                 <BreadcrumbList>
                     <BreadcrumbItem>
@@ -199,7 +201,7 @@ export default function BillingProfileManager() {
 
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Billing Profiles</h1>
+                    
                     <p className="text-muted-foreground">
                         Manage customer-specific billing preferences, payment terms, and currencies.
                     </p>
@@ -229,6 +231,6 @@ export default function BillingProfileManager() {
                     />
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

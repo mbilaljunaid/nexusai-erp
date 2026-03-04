@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface TrainingResource {
   id: string;
@@ -113,7 +115,7 @@ export default function TrainingContent() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+    <StandardPage title="{config.title}">
       <Header />
       
       <main className="max-w-7xl mx-auto px-4 py-12">
@@ -124,7 +126,7 @@ export default function TrainingContent() {
                 <Icon className="w-8 h-8" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold" data-testid="text-page-title">{config.title}</h1>
+                
                 <p className="text-slate-400">{config.description}</p>
               </div>
             </div>
@@ -434,6 +436,6 @@ export default function TrainingContent() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

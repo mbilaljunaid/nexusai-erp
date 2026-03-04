@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Building2, Users, Clock, TrendingUp } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function StoreOperationsDashboard() {
   const { data: stores = [], isLoading } = useQuery({
@@ -18,12 +20,9 @@ export default function StoreOperationsDashboard() {
   const staffCount = staffing.length;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Store Operations & Workforce">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Building2 className="h-8 w-8" />
-          Store Operations & Workforce
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Store scheduling, staffing, shift management, and opening/closing checklists</p>
       </div>
 
@@ -94,6 +93,6 @@ export default function StoreOperationsDashboard() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </StandardPage>
   );
 }

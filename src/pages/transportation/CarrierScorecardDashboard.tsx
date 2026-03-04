@@ -10,6 +10,8 @@ import {
     DollarSign, RefreshCw, Award, AlertCircle, CheckCircle2
 } from "lucide-react";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface Carrier {
     id: string;
@@ -126,11 +128,11 @@ export default function CarrierScorecardDashboard() {
     const selectedCarrierData = carriers.find(c => c.id === selectedCarrier);
 
     return (
-        <div className="p-8 space-y-6 bg-slate-50 min-h-screen">
+        <StandardPage title="Carrier Scorecard Dashboard">
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Carrier Scorecard Dashboard</h1>
+                    
                     <p className="text-muted-foreground mt-1">Monitor carrier performance, ratings, and KPIs</p>
                 </div>
                 <Button variant="outline" size="sm">
@@ -431,6 +433,6 @@ export default function CarrierScorecardDashboard() {
                     </Card>
                 </div>
             </div>
-        </div>
+        </StandardPage>
     );
 }

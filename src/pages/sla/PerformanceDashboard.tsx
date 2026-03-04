@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/queryClient";
 import { Activity, Download } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function PerformanceDashboard() {
     const { data: performance } = useQuery({
@@ -12,10 +14,10 @@ export default function PerformanceDashboard() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="SLA Performance Dashboard">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">SLA Performance Dashboard</h1>
+                    
                     <p className="text-muted-foreground">Processing metrics and optimization</p>
                 </div>
                 <Button variant="outline">
@@ -67,6 +69,6 @@ export default function PerformanceDashboard() {
                     </ResponsiveContainer>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

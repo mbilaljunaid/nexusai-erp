@@ -31,6 +31,8 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function BillingAnomalyDashboard() {
     const { businessUnitId } = useEnterpriseStore();
@@ -73,7 +75,7 @@ export default function BillingAnomalyDashboard() {
     });
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Billing Intelligence">
             <Breadcrumb>
                 <BreadcrumbList>
                     <BreadcrumbItem>
@@ -92,7 +94,7 @@ export default function BillingAnomalyDashboard() {
 
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Billing Intelligence</h1>
+                    
                     <p className="text-muted-foreground">
                         AI-powered anomaly detection for unbilled events and revenue leakage (Converged).
                     </p>
@@ -196,6 +198,6 @@ export default function BillingAnomalyDashboard() {
                     </Table>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

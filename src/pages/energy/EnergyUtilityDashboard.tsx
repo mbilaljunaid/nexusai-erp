@@ -9,6 +9,8 @@ import {
     ComplianceService
 } from '@/services/energyUtilityService';
 import { Zap, AlertTriangle, TrendingDown, FileCheck } from 'lucide-react';
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function EnergyUtilityDashboard() {
     const [gridHealth, setGridHealth] = useState<any>(null);
@@ -47,8 +49,8 @@ export default function EnergyUtilityDashboard() {
     }
 
     return (
-        <div className="space-y-6">
-            <h1 className="text-3xl font-bold">Energy & Utilities Platform</h1>
+        <StandardPage title="Energy & Utilities Platform">
+            
 
             {/* Stats */}
             <div className="grid grid-cols-4 gap-4">
@@ -199,6 +201,6 @@ export default function EnergyUtilityDashboard() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

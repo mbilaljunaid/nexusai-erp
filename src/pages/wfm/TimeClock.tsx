@@ -6,6 +6,8 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Clock, LogIn, LogOut, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function TimeClock() {
     const { toast } = useToast();
@@ -53,9 +55,9 @@ export default function TimeClock() {
     };
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Time Clock">
             <div>
-                <h1 className="text-3xl font-bold">Time Clock</h1>
+                
                 <p className="text-muted-foreground">GPS-enabled time tracking and attendance</p>
             </div>
 
@@ -106,6 +108,6 @@ export default function TimeClock() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

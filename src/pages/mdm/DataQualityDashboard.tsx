@@ -3,6 +3,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, AlertTriangle, CheckCircle, Database, FileSearch } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function DataQualityDashboard() {
     const { data: stats } = useQuery({
@@ -17,9 +19,9 @@ export default function DataQualityDashboard() {
     const scoreColor = qualityScore >= 90 ? "text-green-600" : qualityScore >= 75 ? "text-yellow-600" : "text-red-600";
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Data Quality Dashboard">
             <div>
-                <h1 className="text-3xl font-bold">Data Quality Dashboard</h1>
+                
                 <p className="text-muted-foreground">
                     Monitor master data health and quality metrics
                 </p>
@@ -190,6 +192,6 @@ export default function DataQualityDashboard() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

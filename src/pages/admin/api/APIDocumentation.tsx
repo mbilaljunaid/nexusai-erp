@@ -4,6 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function APIDocumentation() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -12,12 +14,12 @@ export default function APIDocumentation() {
   const formMetadata = getFormMetadata("apiDocumentation");
 
   return (
-    <div className="space-y-6">
+    <StandardPage title="API Documentation">
       <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
       <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={docs} onFilter={setFiltered} />
       
       <div>
-        <h1 className="text-3xl font-bold">API Documentation</h1>
+        
         <p className="text-muted-foreground mt-1">View and manage API documentation</p>
       </div>
       <div className="grid gap-4">
@@ -33,6 +35,6 @@ export default function APIDocumentation() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

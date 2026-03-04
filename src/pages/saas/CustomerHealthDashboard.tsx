@@ -6,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingUp, TrendingDown, AlertCircle, CheckCircle, Calendar, User } from 'lucide-react';
 import CustomerSuccessService, { CustomerHealthScore, RenewalForecast } from '@/services/customerSuccessService';
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface CustomerHealthDashboardProps {
     customerId?: string; // If provided, shows single customer view
@@ -227,9 +229,9 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-96">
+            <StandardPage title="Customer Health Dashboard">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            </div>
+            </StandardPage>
         );
     }
 
@@ -238,7 +240,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Customer Health Dashboard</h1>
+                    
                     <p className="text-gray-500 mt-1">
                         {customerId ? 'Customer Health Overview' : 'Portfolio Health & Risk Management'}
                     </p>

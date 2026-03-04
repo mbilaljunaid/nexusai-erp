@@ -11,6 +11,8 @@ import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Calendar, Plus, Mail } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function ReportScheduler() {
     const { toast } = useToast();
@@ -55,12 +57,9 @@ export default function ReportScheduler() {
     ];
 
     return (
-        <div className="space-y-6 p-4">
+        <StandardPage title="Report Scheduling">
             <div>
-                <h1 className="text-3xl font-semibold flex items-center gap-2">
-                    <Calendar className="w-8 h-8 text-indigo-600" />
-                    Report Scheduling
-                </h1>
+                
                 <p className="text-muted-foreground text-sm mt-1">Automate compliance report delivery.</p>
             </div>
 
@@ -119,6 +118,6 @@ export default function ReportScheduler() {
                     <InteractiveSpreadsheet data={schedules} columns={columns} onChange={() => { }} virtualized={true} containerHeight="400px" />
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

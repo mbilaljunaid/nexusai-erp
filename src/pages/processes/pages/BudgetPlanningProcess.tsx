@@ -1,11 +1,13 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function BudgetPlanningProcess() {
   return (
-    <div className="p-6 space-y-6">
+    <StandardPage title="Budget Planning Process">
       <div>
-        <h1 className="text-3xl font-bold">Budget Planning Process</h1>
+        
         <p className="text-muted-foreground mt-2">Enterprise module loaded</p>
       </div>
       <Card className="p-6">
@@ -17,6 +19,6 @@ export default function BudgetPlanningProcess() {
           <Badge variant="default">Ready</Badge>
         </div>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

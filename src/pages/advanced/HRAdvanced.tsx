@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Heart, DollarSign, Users, BookOpen, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 // Local type definitions since these are not yet in shared schema
 interface BenefitsPlan {
   id: string;
@@ -56,9 +58,9 @@ export default function HRAdvanced() {
   const { data: compensation = [] } = useQuery<CompensationPlan[]>({ queryKey: ["/api/hr/compensation-plans"] });
 
   return (
-    <div className="space-y-6 p-6">
+    <StandardPage title="Advanced HR Features">
       <div>
-        <h1 className="text-3xl font-bold">Advanced HR Features</h1>
+        
         <p className="text-muted-foreground">Benefits, payroll, succession, learning, compensation</p>
       </div>
 
@@ -239,6 +241,6 @@ export default function HRAdvanced() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </StandardPage>
   );
 }

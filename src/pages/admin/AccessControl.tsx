@@ -9,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Shield, AlertTriangle, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ROLES } from "@/types/erp-types";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function AccessControl() {
     const { toast } = useToast();
@@ -55,11 +57,11 @@ export default function AccessControl() {
     });
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-8">
+        <StandardPage title="Security & Compliance">
             <div className="flex items-center gap-4">
                 <Shield className="h-10 w-10 text-primary" />
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Security & Compliance</h1>
+                    
                     <p className="text-muted-foreground">Manage user access and review audit trails.</p>
                 </div>
             </div>
@@ -161,6 +163,6 @@ export default function AccessControl() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

@@ -7,6 +7,8 @@ import { Truck, Gauge, Wrench, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function FleetManagement() {
     const [filterStatus, setFilterStatus] = useState("ALL");
@@ -28,10 +30,10 @@ export default function FleetManagement() {
     };
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Fleet Management Dashboard">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Fleet Management Dashboard</h1>
+                    
                     <p className="text-muted-foreground">Vehicle tracking, utilization, and maintenance</p>
                 </div>
                 <Button variant="outline">
@@ -145,6 +147,6 @@ export default function FleetManagement() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

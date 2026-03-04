@@ -11,6 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Sparkles } from "lucide-react";
 import { AIScheduleOptimizer } from "@/components/wfm/AIScheduleOptimizer";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 // MOCK CONSTANTS
 const MOCK_TENANT_ID = "test-tenant-wfm-001";
@@ -105,9 +107,7 @@ export default function TeamSchedule() {
             cell: (person: any) => {
                 const assignment = getShiftForCell(person.id, day);
                 return (
-                    <div
-                        className="w-full h-full p-1 cursor-pointer hover:bg-accent transition-colors flex items-center justify-center min-h-[40px]"
-                        onClick={() => setSelectedCell({ personId: person.id, date: day })}
+                    <StandardPage title="Team Schedule"> setSelectedCell({ personId: person.id, date: day })}
                     >
                         {assignment ? (
                             <div
@@ -120,7 +120,7 @@ export default function TeamSchedule() {
                         ) : (
                             <div className="h-full w-full rounded hover:bg-slate-100 min-h-[24px]"></div>
                         )}
-                    </div>
+                    </StandardPage>
                 );
             }
         }))
@@ -130,7 +130,7 @@ export default function TeamSchedule() {
         <div className="container mx-auto p-6 max-w-6xl space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Team Schedule</h1>
+                    
                     <p className="text-muted-foreground">Manage shift assignments ({format(weekStart, "MMM d")} - {format(addDays(weekStart, 6), "MMM d")})</p>
                 </div>
                 <Button

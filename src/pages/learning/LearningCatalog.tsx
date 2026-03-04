@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, BookOpen, Clock, Users, Star, Play } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface Course {
     id: string;
@@ -59,10 +61,10 @@ export default function LearningCatalog() {
     const categories = ["ALL", "Technical", "Leadership", "Compliance", "Soft Skills"];
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Learning Catalog">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold">Learning Catalog</h1>
+                
                 <p className="text-muted-foreground">
                     Discover courses to advance your career
                 </p>
@@ -168,6 +170,6 @@ export default function LearningCatalog() {
                     ))
                 )}
             </div>
-        </div>
+        </StandardPage>
     );
 }

@@ -2,6 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, FileText } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function AdmissionsEnrollment() {
   const applications = [
@@ -9,8 +11,8 @@ export default function AdmissionsEnrollment() {
     { id: "APP002", name: "Neha Singh", program: "B.Tech ECE", status: "PENDING", appliedDate: "2025-01-16" },
   ];
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex justify-between items-center"><div><h1 className="text-3xl font-bold">Admissions & Enrollment</h1></div><Button data-testid="button-new-application"><Plus className="h-4 w-4 mr-2" /> New Application</Button></div>
+    <StandardPage title="Admissions & Enrollment">
+      <div className="flex justify-between items-center"><div></div><Button data-testid="button-new-application"><Plus className="h-4 w-4 mr-2" /> New Application</Button></div>
       <div className="grid gap-4">
         {applications.map(a => (
           <Card key={a.id} className="hover-elevate" data-testid={`card-application-${a.id}`}>
@@ -18,6 +20,6 @@ export default function AdmissionsEnrollment() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

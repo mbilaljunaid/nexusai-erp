@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function FaultPerformanceMonitoring() {
   const { toast } = useToast();
@@ -39,12 +41,9 @@ export default function FaultPerformanceMonitoring() {
   const resolved = faults.filter((f: any) => f.status === "resolved").length;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Fault & Performance Monitoring">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <AlertTriangle className="h-8 w-8" />
-          Fault & Performance Monitoring
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Event/alarm dashboard, SLA violations, and automated escalation</p>
       </div>
 
@@ -123,6 +122,6 @@ export default function FaultPerformanceMonitoring() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

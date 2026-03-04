@@ -8,6 +8,8 @@ import { Header, Footer } from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 import { 
   Mail, 
   Send,
@@ -73,11 +75,11 @@ export default function ContactPage() {
 
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Contact Us">
       <Header />
       <main className="flex-1">
         <section className="public-hero px-4 py-16 text-center max-w-4xl mx-auto">
-          <h1 className="public-hero-title text-5xl font-bold mb-4" data-testid="text-contact-title">Contact Us</h1>
+          
           <p className="public-hero-subtitle text-xl text-muted-foreground">
             Have questions about NexusAIFirst ERP? We're here to help. Send us a message and we'll respond as soon as possible.
           </p>
@@ -252,6 +254,6 @@ export default function ContactPage() {
         </section>
       </main>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

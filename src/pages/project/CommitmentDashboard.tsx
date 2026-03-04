@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertOctagon, Bell, TrendingDown, CheckCheck } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface BudgetAlert { id: string; project_id: string; alert_type: string; severity: string; budget_amount: number; actual_amount: number; variance_pct: number; description: string; is_acknowledged: boolean; created_at: string; }
 interface AlertSummary { critical: number; warnings: number; info: number; acknowledged: number; }
@@ -55,10 +57,10 @@ export default function CommitmentDashboard() {
     ];
 
     return (
-        <div style={{ padding: 24, maxWidth: 1300, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
+        <StandardPage title="Budget Exception &amp; Variance Dashboard">
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
                 <div>
-                    <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>Budget Exception &amp; Variance Dashboard</h1>
+                    
                     <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Cost overrun alerts · Resource plan vs actuals · Threshold detection</p>
                 </div>
                 <button onClick={() => detectMut.mutate()} disabled={detectMut.isPending} style={{ padding: '8px 14px', background: '#7c3aed', color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -144,6 +146,6 @@ export default function CommitmentDashboard() {
                     )}
                 </>
             )}
-        </div>
+        </StandardPage>
     );
 }

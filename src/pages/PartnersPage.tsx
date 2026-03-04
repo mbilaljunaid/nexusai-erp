@@ -25,6 +25,8 @@ import { Header, Footer } from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { Partner } from "@/types/erp-types";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 import { 
   Search, 
   Building2, 
@@ -121,13 +123,13 @@ export default function PartnersPage() {
   const totalPages = data?.totalPages || 1;
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Partners & Trainers">
       <Header />
 
       <main className="flex-1">
         <section className="px-4 py-20 text-center max-w-5xl mx-auto">
           <Badge className="mb-4 bg-blue-600 text-white">ECOSYSTEM</Badge>
-          <h1 className="text-5xl font-bold mb-6">Partners & Trainers</h1>
+          
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             Connect with our certified implementation partners and professional trainers 
             to accelerate your NexusAIFirst deployment and maximize your platform investment.
@@ -414,6 +416,6 @@ export default function PartnersPage() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

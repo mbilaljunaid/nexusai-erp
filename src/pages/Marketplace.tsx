@@ -27,6 +27,8 @@ import {
 import type { MarketplaceApp, MarketplaceCategory } from "@/types/erp-types";
 import { TutorialOverlay } from "@/components/TutorialOverlay";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface Industry {
   id: string;
@@ -794,12 +796,12 @@ export default function Marketplace() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <StandardPage title="App Marketplace">
       <Header />
       <main className="flex-1 p-6 space-y-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
-            <h1 className="text-3xl font-bold" data-testid="text-marketplace-title">App Marketplace</h1>
+            
             <p className="text-muted-foreground mt-1">
               Discover and install apps to extend your platform
             </p>
@@ -1183,6 +1185,6 @@ export default function Marketplace() {
         />
       </main>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

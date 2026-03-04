@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { FileText, ArrowRight, ArrowLeft, CheckCircle, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function ContractCreationWizard() {
     const [, setLocation] = useLocation();
@@ -73,13 +75,13 @@ export default function ContractCreationWizard() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 p-6">
+        <StandardPage title="Create New Contract">
             <div className="max-w-3xl mx-auto space-y-6">
                 {/* Header */}
                 <div className="text-center space-y-2">
                     <div className="flex items-center justify-center gap-2 mb-4">
                         <FileText className="h-8 w-8 text-blue-600" />
-                        <h1 className="text-3xl font-bold">Create New Contract</h1>
+                        
                     </div>
                     <p className="text-muted-foreground">Step {step} of {totalSteps}</p>
                     <Progress value={(step / totalSteps) * 100} className="mt-4" />
@@ -296,6 +298,6 @@ export default function ContractCreationWizard() {
                     )}
                 </div>
             </div>
-        </div>
+        </StandardPage>
     );
 }

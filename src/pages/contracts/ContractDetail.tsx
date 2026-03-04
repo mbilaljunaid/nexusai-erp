@@ -22,6 +22,8 @@ import { ClauseLibraryModal } from "@/components/contracts/ClauseLibraryModal";
 import { ContractAIAnalysisPanel } from "@/components/contracts/ContractAIAnalysisPanel";
 import { ESignatureModal } from "@/components/contracts/ESignatureModal";
 import { apiRequest } from "@/lib/queryClient";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function ContractDetail() {
     const [, params] = useRoute("/contracts/:id");
@@ -83,9 +85,9 @@ export default function ContractDetail() {
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
+            <StandardPage title="{contract.title}">
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            </div>
+            </StandardPage>
         );
     }
 
@@ -117,7 +119,7 @@ export default function ContractDetail() {
                     <div className="flex items-center gap-3">
                         <FileText className="h-8 w-8 text-blue-600" />
                         <div>
-                            <h1 className="text-3xl font-bold">{contract.title}</h1>
+                            
                             <p className="text-sm text-muted-foreground">Contract #{contract.contractNumber}</p>
                         </div>
                     </div>

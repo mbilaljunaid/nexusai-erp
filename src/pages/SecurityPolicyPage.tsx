@@ -15,6 +15,8 @@ import {
   ExternalLink
 } from "lucide-react";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function SecurityPolicyPage() {
   useEffect(() => {
@@ -53,14 +55,14 @@ export default function SecurityPolicyPage() {
   ];
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Security Policy">
       <Header />
 
       <main className="flex-1">
         {/* Hero */}
         <section className="px-4 py-16 text-center max-w-4xl mx-auto">
           <Badge className="mb-4 bg-red-600 text-white">SECURITY</Badge>
-          <h1 className="text-5xl font-bold mb-6">Security Policy</h1>
+          
           <p className="text-xl text-muted-foreground mb-8">
             We take security seriously. This page describes our security practices and
             how to responsibly report vulnerabilities.
@@ -186,6 +188,6 @@ export default function SecurityPolicyPage() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

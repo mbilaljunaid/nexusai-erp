@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, FileText, User, Calendar } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 import {
     Select,
     SelectContent,
@@ -52,10 +54,10 @@ export default function MDMAuditViewer() {
     };
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="MDM Audit Viewer">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold">MDM Audit Viewer</h1>
+                
                 <p className="text-muted-foreground">
                     Complete audit trail for all master data operations
                 </p>
@@ -237,6 +239,6 @@ export default function MDMAuditViewer() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

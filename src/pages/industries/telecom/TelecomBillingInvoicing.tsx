@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function TelecomPage() {
   const { businessUnitId } = useEnterpriseStore();
@@ -15,9 +17,9 @@ export default function TelecomPage() {
   });
 
   return (
-    <div className="space-y-6 p-6">
+    <StandardPage title="Telecom Module">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Telecom Module</h1>
+        
         <Button data-testid="button-add"><Plus className="w-4 h-4 mr-2" />Add</Button>
       </div>
 
@@ -38,6 +40,6 @@ export default function TelecomPage() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

@@ -3,14 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function Page() {
   const { data = [] } = useQuery<any[]>({ queryKey: [`/api/retail-${window.location.pathname}`] });
 
   return (
-    <div className="space-y-6 p-6">
+    <StandardPage title="Retail Management">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Retail Management</h1>
+        
         <Button data-testid="button-new"><Plus className="w-4 h-4 mr-2" />New</Button>
       </div>
       <div className="space-y-4">
@@ -30,6 +32,6 @@ export default function Page() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

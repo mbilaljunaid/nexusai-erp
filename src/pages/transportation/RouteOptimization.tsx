@@ -8,6 +8,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { MapPin, Navigation, TrendingDown, Clock, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function RouteOptimization() {
     const { toast } = useToast();
@@ -77,10 +79,10 @@ export default function RouteOptimization() {
     ];
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Route Optimization Engine">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Route Optimization Engine</h1>
+                    
                     <p className="text-muted-foreground">AI-powered route planning and optimization</p>
                 </div>
                 <div className="flex gap-2">
@@ -197,6 +199,6 @@ export default function RouteOptimization() {
                     )}
                 </>
             )}
-        </div>
+        </StandardPage>
     );
 }

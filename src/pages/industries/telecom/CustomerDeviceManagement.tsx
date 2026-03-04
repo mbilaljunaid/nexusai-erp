@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Smartphone, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function CustomerDeviceManagement() {
   const { toast } = useToast();
@@ -37,12 +39,9 @@ export default function CustomerDeviceManagement() {
   const inactive = devices.filter((d: any) => d.status === "inactive").length;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Customer Device & SIM Management">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Smartphone className="h-8 w-8" />
-          Customer Device & SIM Management
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Device provisioning, SIM activation, and equipment lifecycle</p>
       </div>
 
@@ -107,6 +106,6 @@ export default function CustomerDeviceManagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

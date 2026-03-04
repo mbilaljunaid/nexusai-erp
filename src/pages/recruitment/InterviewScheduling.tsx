@@ -7,6 +7,8 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Calendar, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function InterviewScheduling() {
     const { toast } = useToast();
@@ -31,9 +33,9 @@ export default function InterviewScheduling() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Interview Scheduling">
             <div>
-                <h1 className="text-3xl font-bold">Interview Scheduling</h1>
+                
                 <p className="text-muted-foreground">Calendar integration and panel coordination</p>
             </div>
 
@@ -103,6 +105,6 @@ export default function InterviewScheduling() {
                     ))}
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

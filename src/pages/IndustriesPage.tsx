@@ -5,6 +5,8 @@ import { Link } from "wouter";
 import { ArrowRight, Building2, Package, Headphones, Briefcase, Factory, CreditCard, Truck, Radio } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Header, Footer } from "@/components/Navigation";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function IndustriesPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -74,7 +76,7 @@ export default function IndustriesPage() {
     : industries.filter(ind => ind.category === selectedCategory);
 
   return (
-    <div className="public-page min-h-screen flex flex-col bg-background">
+    <StandardPage title="Enterprise Solutions for 41+ Industries">
       <Header />
       <main className="flex-1">
         {/* Hero */}
@@ -83,14 +85,7 @@ export default function IndustriesPage() {
             <Badge className="mb-4" style={{ backgroundColor: `hsl(var(--primary) / 0.1)`, color: `hsl(var(--primary))` }}>
               INDUSTRIES
             </Badge>
-            <h1 className="text-5xl font-bold mb-4" style={{ 
-              background: `linear-gradient(to right, hsl(var(--primary)), hsl(var(--chart-1)))`,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>
-              Enterprise Solutions for 41+ Industries
-            </h1>
+            
             <p className="text-xl text-muted-foreground max-w-3xl">
               Tailored ERP, CRM, and automation solutions designed for your industry's unique challenges
             </p>
@@ -178,6 +173,6 @@ export default function IndustriesPage() {
         </section>
       </main>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

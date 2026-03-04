@@ -6,6 +6,8 @@ import { Plus } from "lucide-react";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ContextualSearch } from "@/components/ContextualSearch";
 import { generateBreadcrumbs, getSearchFields } from "@/lib/pageConfig";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function HREmployeesDetail() {
   const [searchFilters, setSearchFilters] = useState<Record<string, string>>({});
@@ -26,11 +28,11 @@ export default function HREmployeesDetail() {
   const searchFields = getSearchFields("HR");
 
   return (
-    <div className="space-y-6">
+    <StandardPage title="Employees">
       <Breadcrumbs items={breadcrumbs} />
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-semibold">Employees</h1>
+          
           <p className="text-muted-foreground text-sm">Manage employee records and information</p>
         </div>
         <Button data-testid="button-new-employee">
@@ -63,6 +65,6 @@ export default function HREmployeesDetail() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

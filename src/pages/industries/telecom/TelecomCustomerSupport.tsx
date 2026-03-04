@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Headphones, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function TelecomCustomerSupport() {
   const { toast } = useToast();
@@ -39,12 +41,9 @@ export default function TelecomCustomerSupport() {
   const critical = tickets.filter((t: any) => t.priority === "critical").length;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Customer Support & Ticket Management">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Headphones className="h-8 w-8" />
-          Customer Support & Ticket Management
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Customer complaints, support tickets, and issue resolution</p>
       </div>
 
@@ -123,6 +122,6 @@ export default function TelecomCustomerSupport() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

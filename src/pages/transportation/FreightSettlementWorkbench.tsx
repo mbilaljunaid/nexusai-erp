@@ -14,6 +14,8 @@ import {
     FileCheck, Clock, ArrowUpRight, Ban
 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface FreightCharge {
     id: string;
@@ -246,10 +248,10 @@ export default function FreightSettlementWorkbench() {
     const pendingReconciliation = charges.filter(c => c.status === "ACCRUED");
 
     return (
-        <div className="p-8 space-y-6 bg-slate-50 min-h-screen">
+        <StandardPage title="Freight Settlement Workbench">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900">Freight Settlement Workbench</h1>
+                
                 <p className="text-muted-foreground mt-1">Reconcile carrier invoices and interface to Accounts Payable</p>
             </div>
 
@@ -668,6 +670,6 @@ export default function FreightSettlementWorkbench() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </StandardPage>
     );
 }

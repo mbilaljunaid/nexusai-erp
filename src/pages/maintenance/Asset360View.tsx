@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Activity, Thermometer, Gauge, Zap, AlertTriangle, FileText, Sparkles } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useNexusAI } from "@/contexts/NexusAIContext";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 
 
@@ -41,10 +43,10 @@ export default function Asset360View() {
     });
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="{asset?.assetNumber || "Loading..."}">
             <div className="flex justify-between items-start">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">{asset?.assetNumber || "Loading..."}</h1>
+                    
                     <p className="text-muted-foreground">{asset?.description}</p>
                 </div>
                 <Badge className={(asset?.healthScore ?? 0) > 80 ? "bg-green-500" : "bg-yellow-500"}>
@@ -160,6 +162,6 @@ export default function Asset360View() {
                     <Card><CardHeader><CardTitle>Work Order History</CardTitle></CardHeader><CardContent>Coming Soon...</CardContent></Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

@@ -9,6 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Trash2, Save, Play } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { CSPlaybook, PlaybookAction } from '@/services/customerSuccessService';
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function PlaybookBuilder() {
     const [playbooks, setPlaybooks] = useState<CSPlaybook[]>([]);
@@ -116,11 +118,11 @@ export default function PlaybookBuilder() {
     };
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Playbook Builder">
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Playbook Builder</h1>
+                    
                     <p className="text-gray-500 mt-1">
                         Create automated workflows for customer success
                     </p>
@@ -385,6 +387,6 @@ export default function PlaybookBuilder() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

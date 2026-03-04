@@ -1,11 +1,13 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function OrderToCashProcess() {
   return (
-    <div className="p-6 space-y-6">
+    <StandardPage title="Order To Cash Process">
       <div>
-        <h1 className="text-3xl font-bold">Order To Cash Process</h1>
+        
         <p className="text-muted-foreground mt-2">Enterprise module loaded</p>
       </div>
       <Card className="p-6">
@@ -17,6 +19,6 @@ export default function OrderToCashProcess() {
           <Badge variant="default">Ready</Badge>
         </div>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

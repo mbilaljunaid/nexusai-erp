@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { CheckCircle, X, AlertCircle, ArrowRight, BarChart3, Zap, Shield } from "lucide-react";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function FeaturesComparison() {
   const features = [
@@ -59,11 +61,11 @@ export default function FeaturesComparison() {
   ];
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Features & Functionality Comparison">
       <Header />
       <main className="flex-1">
         <section className="px-4 py-24 max-w-7xl mx-auto">
-          <h1 className="text-5xl font-bold mb-4">Features & Functionality Comparison</h1>
+          
           <p className="text-xl text-muted-foreground mb-8">
             How NexusAIFirst compares with leading ERP solutions. Discover why enterprises choose NexusAIFirst for faster implementation and AI-driven insights.
           </p>
@@ -167,6 +169,6 @@ export default function FeaturesComparison() {
         </section>
       </main>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

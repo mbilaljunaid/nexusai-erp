@@ -5,6 +5,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function IntercompanyReconciliation() {
     const { data: report, isLoading } = useQuery({
@@ -80,9 +82,9 @@ export default function IntercompanyReconciliation() {
     ];
 
     return (
-        <div className="p-8 space-y-6">
+        <StandardPage title="Intercompany Reconciliation">
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">Intercompany Reconciliation</h1>
+                
                 <p className="text-muted-foreground">Eliminations Monitor (Provider vs Receiver).</p>
             </div>
 
@@ -124,6 +126,6 @@ export default function IntercompanyReconciliation() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

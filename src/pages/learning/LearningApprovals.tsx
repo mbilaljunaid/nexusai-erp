@@ -5,6 +5,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, XCircle, Clock } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface EnrollmentRequest {
     id: string;
@@ -56,10 +58,10 @@ export default function LearningApprovals() {
     const rejected = requests.filter((r: EnrollmentRequest) => r.status === "REJECTED");
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Learning Approvals">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold">Learning Approvals</h1>
+                
                 <p className="text-muted-foreground">
                     Review enrollment requests from your team
                 </p>
@@ -238,6 +240,6 @@ export default function LearningApprovals() {
                     )}
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

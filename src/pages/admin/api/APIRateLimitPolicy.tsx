@@ -1,10 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function APIRateLimitPolicy() {
   return (
-    <div className="space-y-6">
+    <StandardPage title="API Rate Limit Policy">
       <div>
-        <h1 className="text-3xl font-bold">API Rate Limit Policy</h1>
+        
         <p className="text-muted-foreground mt-1">Configure API rate limits per tier</p>
       </div>
       <div className="grid gap-4">
@@ -20,6 +22,6 @@ export default function APIRateLimitPolicy() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

@@ -6,6 +6,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlayCircle, AlertTriangle, CheckCircle, XCircle, Users } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface DuplicateSet {
     id: string;
@@ -88,11 +90,11 @@ export default function DuplicateDetectionWorkbench() {
     const selectedSetData = duplicateSets.find((s: DuplicateSet) => s.id === selectedSet);
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Duplicate Detection">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">Duplicate Detection</h1>
+                    
                     <p className="text-muted-foreground">
                         Identify and resolve duplicate master records
                     </p>
@@ -269,6 +271,6 @@ export default function DuplicateDetectionWorkbench() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

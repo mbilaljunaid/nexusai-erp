@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MarketplaceService, ReturnsService, DAMService } from '@/services/ecommerceService';
 import { Store, Package, Image } from 'lucide-react';
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function EcommerceDashboard() {
     const [vendors, setVendors] = useState<any[]>([]);
@@ -40,8 +42,8 @@ export default function EcommerceDashboard() {
     }
 
     return (
-        <div className="space-y-6">
-            <h1 className="text-3xl font-bold">E-commerce Platform</h1>
+        <StandardPage title="E-commerce Platform">
+            
 
             {/* Stats */}
             <div className="grid grid-cols-4 gap-4">
@@ -129,6 +131,6 @@ export default function EcommerceDashboard() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

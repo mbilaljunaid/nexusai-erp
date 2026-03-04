@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Globe, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function OmniChannelOrders() {
   const { toast } = useToast();
@@ -39,12 +41,9 @@ export default function OmniChannelOrders() {
   const bopis = orders.filter((o: any) => o.fulfillmentType === "pickup").length;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Omnichannel Order Management">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Globe className="h-8 w-8" />
-          Omnichannel Order Management
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Web, mobile, POS, marketplace orders with ATP and fulfillment orchestration</p>
       </div>
 
@@ -131,6 +130,6 @@ export default function OmniChannelOrders() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

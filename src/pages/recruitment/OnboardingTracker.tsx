@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ClipboardList, CheckCircle2, Clock, AlertTriangle, User } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 interface OnboardingTask {
     id: string;
     taskName: string;
@@ -182,12 +184,9 @@ export default function OnboardingTracker() {
     ];
 
     return (
-        <div className="space-y-6 p-4">
+        <StandardPage title="Onboarding Tracker">
             <div>
-                <h1 className="text-3xl font-bold flex items-center gap-2">
-                    <ClipboardList className="h-8 w-8" />
-                    Onboarding Tracker
-                </h1>
+                
                 <p className="text-muted-foreground mt-2">
                     Monitor new hire onboarding progress and tasks
                 </p>
@@ -322,7 +321,7 @@ export default function OnboardingTracker() {
                     })
                 )}
             </div>
-        </div>
+        </StandardPage>
     );
 }
 

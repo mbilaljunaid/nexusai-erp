@@ -3,6 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, TrendingUp, Users, ArrowRightLeft } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 // Local type definitions since these are not yet in shared schema
 interface TaxRule {
   id: string;
@@ -36,9 +38,9 @@ export default function ERPAdvanced() {
   const { data: fxTranslations = [] } = useQuery<FxTranslation[]>({ queryKey: ["/api/erp/fx-translations"] });
 
   return (
-    <div className="space-y-6 p-6">
+    <StandardPage title="Advanced ERP Features">
       <div>
-        <h1 className="text-3xl font-bold">Advanced ERP Features</h1>
+        
         <p className="text-muted-foreground">Tax engine, multi-entity consolidation, FX translation</p>
       </div>
 
@@ -148,6 +150,6 @@ export default function ERPAdvanced() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </StandardPage>
   );
 }

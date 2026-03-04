@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Building2, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function InpatientManagement() {
   const { toast } = useToast();
@@ -38,12 +40,9 @@ export default function InpatientManagement() {
   const discharged = admissions.filter((a: any) => a.status === "discharged").length;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Inpatient Management & Ward Operations">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Building2 className="h-8 w-8" />
-          Inpatient Management & Ward Operations
-        </h1>
+        
         <p className="text-muted-foreground mt-2">ADT events, bed management, care rounds, and discharge planning</p>
       </div>
 
@@ -108,6 +107,6 @@ export default function InpatientManagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

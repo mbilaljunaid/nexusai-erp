@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { BarChart3, TrendingUp, TrendingDown, AlertTriangle, CheckCircle2, Minus } from 'lucide-react';
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface Quote { id: string; quote_number: string; customer_id: string; status: string; net_total: number; list_total: number; discount_pct: number; margin_pct: number | null; valid_until: string; currency: string; created_by: string; lines?: QuoteLine[]; }
 interface QuoteLine { id: string; line_number: number; product_id: string; description: string; quantity: number; unit_price: number; discount_pct: number; net_price: number; }
@@ -67,10 +69,10 @@ export default function CPQDashboard() {
     ];
 
     return (
-        <div style={{ padding: 24, maxWidth: 1400, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
+        <StandardPage title="CPQ & Revenue Intelligence">
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, alignItems: 'flex-end' }}>
                 <div>
-                    <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>CPQ & Revenue Intelligence</h1>
+                    
                     <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Configure-price-quote · Renewal management · EVM metrics</p>
                 </div>
                 <div style={{ display: 'flex', gap: 6 }}>
@@ -195,6 +197,6 @@ export default function CPQDashboard() {
                     {!evmBaseline && <div style={{ textAlign: 'center', color: '#9ca3af', padding: 32, background: '#fff', borderRadius: 10 }}>Enter a Baseline ID to view EVM metrics</div>}
                 </div>
             )}
-        </div>
+        </StandardPage>
     );
 }

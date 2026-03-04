@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Target, DollarSign, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 // Local type definitions since these are not yet in shared schema
 interface LeadScore {
   id: string;
@@ -38,9 +40,9 @@ export default function CRMAdvanced() {
   const { data: territories = [] } = useQuery<Territory[]>({ queryKey: ["/api/crm/territories"] });
 
   return (
-    <div className="space-y-6 p-6">
+    <StandardPage title="Advanced CRM Features">
       <div>
-        <h1 className="text-3xl font-bold">Advanced CRM Features</h1>
+        
         <p className="text-muted-foreground">AI lead scoring, dynamic CPQ, territory management</p>
       </div>
 
@@ -151,6 +153,6 @@ export default function CRMAdvanced() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </StandardPage>
   );
 }

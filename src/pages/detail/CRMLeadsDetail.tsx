@@ -8,6 +8,8 @@ import { Link } from "wouter";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ContextualSearch, SearchField } from "@/components/ContextualSearch";
 import { generateBreadcrumbs, getSearchFields } from "@/lib/pageConfig";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function CRMLeadsDetail() {
   const [searchFilters, setSearchFilters] = useState<Record<string, string>>({});
@@ -26,11 +28,11 @@ export default function CRMLeadsDetail() {
   const breadcrumbs = generateBreadcrumbs("CRM", "Leads");
 
   return (
-    <div className="space-y-6">
+    <StandardPage title="Leads">
       <Breadcrumbs items={breadcrumbs} />
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-semibold">Leads</h1>
+          
           <p className="text-muted-foreground text-sm">Manage sales leads and opportunities</p>
         </div>
         <Button data-testid="button-new-lead">
@@ -61,6 +63,6 @@ export default function CRMLeadsDetail() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

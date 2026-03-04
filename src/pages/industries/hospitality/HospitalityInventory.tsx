@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Box, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function HospitalityInventory() {
   const { toast } = useToast();
@@ -37,12 +39,9 @@ export default function HospitalityInventory() {
   const lowStock = items.filter((i: any) => (parseInt(i.quantity) || 0) < (parseInt(i.reorder) || 50)).length;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Inventory & Procurement">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Box className="h-8 w-8" />
-          Inventory & Procurement
-        </h1>
+        
         <p className="text-muted-foreground mt-2">F&B inventory, housekeeping supplies, par levels, and reorder management</p>
       </div>
 
@@ -107,6 +106,6 @@ export default function HospitalityInventory() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

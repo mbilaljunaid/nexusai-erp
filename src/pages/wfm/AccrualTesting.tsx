@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 const MOCK_TENANT_ID = "test-tenant-wfm-001";
 const MOCK_PERSON_ID = "3ebd9ddb-1566-418d-a0d6-9c773861acc4"; // Same as MyTime mock
@@ -67,8 +69,8 @@ export default function AccrualTesting() {
     });
 
     return (
-        <div className="container mx-auto p-6 max-w-4xl space-y-6">
-            <h1 className="text-3xl font-bold">Accrual Engine Testing</h1>
+        <StandardPage title="Accrual Engine Testing">
+            
             <p className="text-muted-foreground">Manually adjust leave balances for verification.</p>
 
             <div className="grid gap-6 md:grid-cols-2">
@@ -150,6 +152,6 @@ export default function AccrualTesting() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

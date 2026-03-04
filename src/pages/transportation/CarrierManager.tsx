@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function CarrierManager() {
     const { data: carriers, isLoading } = useQuery({
@@ -50,10 +52,10 @@ export default function CarrierManager() {
         }
     ];
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Carrier & Rate Management">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Carrier & Rate Management</h1>
+                    
                     <p className="text-muted-foreground">Manage transportation providers, service levels, and performance ratings.</p>
                 </div>
                 <Button variant="premium">
@@ -170,6 +172,6 @@ export default function CarrierManager() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

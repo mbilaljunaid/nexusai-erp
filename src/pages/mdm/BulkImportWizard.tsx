@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Upload, FileText, CheckCircle, AlertTriangle, ArrowRight } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 import {
     Select,
     SelectContent,
@@ -97,10 +99,10 @@ export default function BulkImportWizard() {
     const currentStepIndex = steps.findIndex((s) => s.id === currentStep);
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Bulk Import Wizard">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold">Bulk Import Wizard</h1>
+                
                 <p className="text-muted-foreground">
                     Import master data from CSV files
                 </p>
@@ -302,6 +304,6 @@ export default function BulkImportWizard() {
                     </CardContent>
                 </Card>
             )}
-        </div>
+        </StandardPage>
     );
 }

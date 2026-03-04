@@ -13,6 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, TrendingUp, FileText, Upload, DollarSign, Calculator, Download } from "lucide-react";
 import { exportToExcel, exportToCSV } from "@/lib/exportUtils";
 import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface CarrierRate {
     id: string;
@@ -225,9 +227,9 @@ export default function CarrierRateWorkbench() {
     ];
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Carrier Rate Management">
             <div>
-                <h1 className="text-3xl font-bold">Carrier Rate Management</h1>
+                
                 <p className="text-muted-foreground">Manage rate cards, generate quotes, and compare carrier pricing</p>
             </div>
 
@@ -557,6 +559,6 @@ export default function CarrierRateWorkbench() {
             </Dialog>
 
 
-        </div>
+        </StandardPage>
     );
 }

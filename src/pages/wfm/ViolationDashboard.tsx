@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/queryClient";
 import { AlertTriangle, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function ViolationDashboard() {
     const { data: violations } = useQuery({
@@ -12,10 +14,10 @@ export default function ViolationDashboard() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Compliance Violation Dashboard">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Compliance Violation Dashboard</h1>
+                    
                     <p className="text-muted-foreground">Overtime alerts and compliance tracking</p>
                 </div>
                 <Button variant="outline">
@@ -72,6 +74,6 @@ export default function ViolationDashboard() {
                     ))}
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

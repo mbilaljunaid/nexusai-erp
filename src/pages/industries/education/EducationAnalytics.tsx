@@ -1,5 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3, TrendingUp } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function EducationAnalytics() {
   const metrics = [
@@ -9,8 +11,8 @@ export default function EducationAnalytics() {
     { label: "Fee Collection", value: "₹3.67 Cr", trend: "+8%" },
   ];
   return (
-    <div className="space-y-6 p-6">
-      <div><h1 className="text-3xl font-bold">Analytics & BI</h1><p className="text-muted-foreground">Education platform metrics and insights</p></div>
+    <StandardPage title="Analytics & BI">
+      <div><p className="text-muted-foreground">Education platform metrics and insights</p></div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {metrics.map((m, i) => (
           <Card key={i} className="hover-elevate" data-testid={`card-metric-${m.label.toLowerCase().replace(/\s+/g, '-')}`}>
@@ -18,6 +20,6 @@ export default function EducationAnalytics() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

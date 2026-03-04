@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/select";
 import { Plus, Save, Trash2, ToggleLeft, ToggleRight } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface MatchRule {
     id: string;
@@ -94,9 +96,9 @@ export default function MatchRuleBuilder() {
     };
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Match Rule Builder">
             <div>
-                <h1 className="text-3xl font-bold">Match Rule Builder</h1>
+                
                 <p className="text-muted-foreground">
                     Configure duplicate detection rules
                 </p>
@@ -277,6 +279,6 @@ export default function MatchRuleBuilder() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

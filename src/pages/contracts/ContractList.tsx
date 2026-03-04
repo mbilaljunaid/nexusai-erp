@@ -12,6 +12,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Search, FileText, Filter } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function ContractWorkbench() {
   const [search, setSearch] = useState("");
@@ -38,13 +40,11 @@ export default function ContractWorkbench() {
   const totalPages = Math.ceil((response?.total || 0) / limit);
 
   return (
-    <div className="p-6 space-y-6 bg-slate-50 min-h-screen">
+    <StandardPage title="Contract Management">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-            Contract Management
-          </h1>
+          
           <p className="text-muted-foreground">Central Repository for Procurement, Sales, and Legal Agreements</p>
         </div>
         <Link href="/contracts/new">
@@ -188,6 +188,6 @@ export default function ContractWorkbench() {
           </div>
         </div>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

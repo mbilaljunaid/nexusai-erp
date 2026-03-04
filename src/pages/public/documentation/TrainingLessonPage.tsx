@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Link, useRoute } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 import {
   GraduationCap, ArrowLeft, ArrowRight, CheckCircle2, BookOpen,
   Clock, Target, AlertCircle, Lightbulb, Play, FileText,
@@ -2015,12 +2017,12 @@ export default function TrainingLessonPage() {
 
   if (!lesson) {
     return (
-      <div className="public-page min-h-screen flex flex-col">
+      <StandardPage title="Lesson Not Found">
         <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <AlertCircle className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-            <h1 className="text-2xl font-bold mb-2">Lesson Not Found</h1>
+            
             <p className="text-muted-foreground mb-6">The training lesson you're looking for doesn't exist.</p>
             <Link to="/docs/training-guides">
               <Button data-testid="button-back-to-guides">Back to Training Guides</Button>
@@ -2028,7 +2030,7 @@ export default function TrainingLessonPage() {
           </div>
         </main>
         <Footer />
-      </div>
+      </StandardPage>
     );
   }
 

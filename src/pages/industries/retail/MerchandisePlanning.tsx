@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Zap, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function MerchandisePlanning() {
   const { toast } = useToast();
@@ -39,12 +41,9 @@ export default function MerchandisePlanning() {
   const totalQty = plans.reduce((sum: number, p: any) => sum + (parseFloat(p.targetQty) || 0), 0);
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Merchandise Planning & Assortment">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Zap className="h-8 w-8" />
-          Merchandise Planning & Assortment
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Seasonal planning, assortment optimization, and replenishment recommendations</p>
       </div>
 
@@ -123,6 +122,6 @@ export default function MerchandisePlanning() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

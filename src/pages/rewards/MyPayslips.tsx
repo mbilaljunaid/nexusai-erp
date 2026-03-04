@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { FileText, Download, DollarSign, TrendingUp, TrendingDown } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function MyPayslips() {
     const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
@@ -39,7 +41,7 @@ export default function MyPayslips() {
     const netPay = totalEarnings - totalDeductions;
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="${netPay.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}">
             <div className="flex items-center justify-between">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight">My Payslips</h2>
@@ -88,7 +90,7 @@ export default function MyPayslips() {
                             {/* Net Pay Hero */}
                             <div className="bg-primary/5 p-6 rounded-lg text-center border border-primary/10">
                                 <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Net Pay</p>
-                                <h1 className="text-4xl font-bold text-primary mt-2">${netPay.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h1>
+                                
                             </div>
 
                             {/* Earnings Section */}
@@ -138,6 +140,6 @@ export default function MyPayslips() {
                     )}
                 </SheetContent>
             </Sheet>
-        </div>
+        </StandardPage>
     );
 }

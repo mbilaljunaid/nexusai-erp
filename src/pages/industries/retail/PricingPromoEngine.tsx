@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tag, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function PricingPromoEngine() {
   const { toast } = useToast();
@@ -39,12 +41,9 @@ export default function PricingPromoEngine() {
   const avgDiscount = promos.length > 0 ? (promos.reduce((sum: number, p: any) => sum + (parseFloat(p.discountPct) || 0), 0) / promos.length).toFixed(1) : 0;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Pricing & Promotion Engine">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Tag className="h-8 w-8" />
-          Pricing & Promotion Engine
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Price lists, discounts, BOGO, bundles, and promo scheduling</p>
       </div>
 
@@ -117,6 +116,6 @@ export default function PricingPromoEngine() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

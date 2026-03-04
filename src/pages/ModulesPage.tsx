@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 import { 
   Brain,
   Users,
@@ -204,7 +206,7 @@ export default function ModulesPage() {
   };
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Enterprise Modules Powered by AI">
       <Header />
 
       <main className="flex-1">
@@ -213,9 +215,7 @@ export default function ModulesPage() {
           <Badge className="mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white" data-testid="badge-ai-first">
             <Brain className="w-3 h-3 mr-1" /> AI-FIRST PLATFORM
           </Badge>
-          <h1 className="text-5xl font-bold mb-6" data-testid="text-page-title">
-            Enterprise Modules Powered by AI
-          </h1>
+          
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             NexusAIFirst delivers 16 comprehensive enterprise modules, each enhanced with artificial intelligence 
             to automate decisions, predict outcomes, and optimize operations across your entire organization.
@@ -400,6 +400,6 @@ export default function ModulesPage() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

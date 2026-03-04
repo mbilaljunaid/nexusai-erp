@@ -2,6 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, MessageSquare } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function EducationCRM() {
   const interactions = [
@@ -9,8 +11,8 @@ export default function EducationCRM() {
     { id: "INT002", student: "Priya Singh", type: "Complaint", status: "OPEN", date: "2025-01-21" },
   ];
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex justify-between items-center"><div><h1 className="text-3xl font-bold">Student Engagement & CRM</h1></div><Button data-testid="button-new-interaction"><Plus className="h-4 w-4 mr-2" /> New Interaction</Button></div>
+    <StandardPage title="Student Engagement & CRM">
+      <div className="flex justify-between items-center"><div></div><Button data-testid="button-new-interaction"><Plus className="h-4 w-4 mr-2" /> New Interaction</Button></div>
       <div className="grid gap-4">
         {interactions.map(i => (
           <Card key={i.id} className="hover-elevate" data-testid={`card-interaction-${i.id}`}>
@@ -18,6 +20,6 @@ export default function EducationCRM() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

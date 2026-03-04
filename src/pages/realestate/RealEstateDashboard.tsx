@@ -4,6 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { PropertyManagementService, LeaseManagementService, ListingPortalService } from '@/services/realEstateService';
 import { Building, FileText, Globe } from 'lucide-react';
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function RealEstateDashboard() {
     const [properties, setProperties] = useState<any[]>([]);
@@ -39,8 +41,8 @@ export default function RealEstateDashboard() {
     }
 
     return (
-        <div className="space-y-6">
-            <h1 className="text-3xl font-bold">Real Estate Platform</h1>
+        <StandardPage title="Real Estate Platform">
+            
 
             {/* Stats */}
             <div className="grid grid-cols-4 gap-4">
@@ -178,6 +180,6 @@ export default function RealEstateDashboard() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

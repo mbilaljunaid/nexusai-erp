@@ -6,6 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, XCircle, Clock, FileEdit } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface ChangeRequest {
     id: string;
@@ -54,10 +56,10 @@ export default function ChangeRequestWorkbench() {
     const filteredRequests = requests.filter((r: ChangeRequest) => r.status === activeTab);
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Change Request Workbench">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold">Change Request Workbench</h1>
+                
                 <p className="text-muted-foreground">
                     Review and approve master data changes
                 </p>
@@ -251,6 +253,6 @@ export default function ChangeRequestWorkbench() {
                     )}
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

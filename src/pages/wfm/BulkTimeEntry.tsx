@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export interface TimeEntryRow {
     id: number;
@@ -84,10 +86,10 @@ export default function BulkTimeEntry() {
     ];
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Bulk Time Entry">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Bulk Time Entry</h1>
+                    
                     <p className="text-muted-foreground">Spreadsheet-style time entry with templates</p>
                 </div>
                 <div className="flex gap-2">
@@ -120,6 +122,6 @@ export default function BulkTimeEntry() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { startOfMonth, endOfMonth, format } from "date-fns";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from "recharts";
 import { DollarSign, Clock, AlertTriangle, Users } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 const MOCK_TENANT_ID = "test-tenant-wfm-001";
 
@@ -24,10 +26,10 @@ export default function WfmAnalytics() {
     });
 
     return (
-        <div className="container mx-auto p-6 max-w-7xl space-y-6">
+        <StandardPage title="Workforce Analytics">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Workforce Analytics</h1>
+                    
                     <p className="text-muted-foreground">Labor Variance & Cost Analysis.</p>
                 </div>
                 <div className="flex gap-2">
@@ -112,6 +114,6 @@ export default function WfmAnalytics() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

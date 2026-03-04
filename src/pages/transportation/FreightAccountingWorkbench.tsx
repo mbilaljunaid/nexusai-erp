@@ -10,6 +10,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 import {
     DollarSign, FileText, Plus, CheckCircle2, AlertCircle,
     TrendingUp, Upload, Download, Filter
@@ -170,11 +172,11 @@ export default function FreightAccountingWorkbench() {
     const unpostedCount = charges.filter(c => !c.glPosted && (c.status === "ACCRUED" || c.status === "MATCHED")).length;
 
     return (
-        <div className="p-8 space-y-6 bg-slate-50 min-h-screen">
+        <StandardPage title="Freight Accounting Workbench">
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Freight Accounting Workbench</h1>
+                    
                     <p className="text-muted-foreground mt-1">Manage freight costs, accruals, and GL integration</p>
                 </div>
                 <div className="flex gap-2">
@@ -515,6 +517,6 @@ export default function FreightAccountingWorkbench() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

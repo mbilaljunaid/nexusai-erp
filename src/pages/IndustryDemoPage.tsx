@@ -5,6 +5,8 @@ import { Link } from "wouter";
 import { ArrowRight, CheckCircle, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Header, Footer } from "@/components/Navigation";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface IndustryDemoPageProps {
   industry: string;
@@ -62,7 +64,7 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
+    <StandardPage title="Experience NexusAIFirst for {industry}">
       <Header />
 
       <main className="flex-1">
@@ -72,9 +74,7 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
             <Badge className="mb-4 bg-blue-600/20 text-blue-300 border-blue-500/50">
               {industry.toUpperCase()} DEMO
             </Badge>
-            <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              Experience NexusAIFirst for {industry}
-            </h1>
+            
             <p className="text-xl text-slate-300 mb-8">
               Explore a fully configured demo environment with pre-populated {industry.toLowerCase()} data
             </p>
@@ -190,6 +190,6 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

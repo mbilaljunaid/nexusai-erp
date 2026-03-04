@@ -1,10 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function APIVersioning() {
   return (
-    <div className="space-y-6">
+    <StandardPage title="API Versioning">
       <div>
-        <h1 className="text-3xl font-bold">API Versioning</h1>
+        
         <p className="text-muted-foreground mt-1">Manage multiple API versions</p>
       </div>
       <div className="grid gap-4">
@@ -20,6 +22,6 @@ export default function APIVersioning() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

@@ -24,6 +24,8 @@ import {
   ArrowRight
 } from "lucide-react";
 import { Link } from "wouter";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function ContributingPage() {
   useEffect(() => {
@@ -82,14 +84,14 @@ export default function ContributingPage() {
   ];
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Contribute to NexusAIFirst">
       <Header />
 
       <main className="flex-1">
         {/* Hero */}
         <section className="px-4 py-16 text-center max-w-4xl mx-auto">
           <Badge className="mb-4 bg-purple-600 text-white">CONTRIBUTING GUIDE</Badge>
-          <h1 className="text-5xl font-bold mb-6">Contribute to NexusAIFirst</h1>
+          
           <p className="text-xl text-muted-foreground mb-8">
             Thank you for your interest in contributing! This guide will help you get started 
             with contributing to NexusAIFirst.
@@ -295,6 +297,6 @@ export default function ContributingPage() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

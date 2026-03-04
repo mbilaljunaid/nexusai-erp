@@ -6,6 +6,8 @@ import { Plus } from "lucide-react";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ContextualSearch } from "@/components/ContextualSearch";
 import { generateBreadcrumbs, getSearchFields } from "@/lib/pageConfig";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function CRMSettingsDetail() {
   const [searchFilters, setSearchFilters] = useState<Record<string, string>>({});
@@ -19,11 +21,11 @@ export default function CRMSettingsDetail() {
   const searchFields = getSearchFields("CRMSettings");
 
   return (
-    <div className="space-y-6">
+    <StandardPage title="Overview">
       <Breadcrumbs items={breadcrumbs} />
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-semibold">Overview</h1>
+          
           <p className="text-muted-foreground text-sm">Manage overview</p>
         </div>
         <Button data-testid="button-new-item">
@@ -48,6 +50,6 @@ export default function CRMSettingsDetail() {
           </Card>
         ))}
       </div>
-    </div>
+    </StandardPage>
   );
 }

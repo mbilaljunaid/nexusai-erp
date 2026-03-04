@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
 import { Scale, Download, ExternalLink } from "lucide-react";
 import { Link } from "wouter";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function LicensePage() {
   useEffect(() => {
@@ -11,14 +13,14 @@ export default function LicensePage() {
   }, []);
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="License">
       <Header />
 
       <main className="flex-1">
         <section className="px-4 py-12 max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <Scale className="w-12 h-12 mx-auto mb-4 text-blue-500" />
-            <h1 className="text-4xl font-bold mb-4">License</h1>
+            
             <p className="text-muted-foreground">
               NexusAIFirst is licensed under the GNU Affero General Public License v3.0
             </p>
@@ -89,6 +91,6 @@ export default function LicensePage() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

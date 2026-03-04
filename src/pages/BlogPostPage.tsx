@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, User, Bot, ShoppingCart, DollarSign, Lock, BarChart3, Users, Factory, Globe, Shield, Cpu, TrendingUp } from "lucide-react";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 const posts = [
   {
@@ -266,11 +268,11 @@ export default function BlogPostPage() {
 
   if (!post) {
     return (
-      <div className="public-page min-h-screen flex flex-col">
+      <StandardPage title="Post Not Found">
         <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Post Not Found</h1>
+            
             <Link to="/blog">
               <Button data-testid="button-back-to-blog">
                 <ArrowLeft className="w-4 h-4 mr-2" /> Back to Blog
@@ -279,7 +281,7 @@ export default function BlogPostPage() {
           </div>
         </main>
         <Footer />
-      </div>
+      </StandardPage>
     );
   }
 

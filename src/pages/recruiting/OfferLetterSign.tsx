@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { FileText, CheckCircle2, XCircle, PenLine, Eye } from 'lucide-react';
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface EsigDoc {
     id: string; document_type: string; applicant_id: string; candidate_name: string;
@@ -50,9 +52,9 @@ export default function OfferLetterSign() {
     const captureSignature = () => canvasRef.current?.toDataURL('image/png') ?? '';
 
     return (
-        <div style={{ padding: 24, maxWidth: 1300, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
+        <StandardPage title="E-Signature &amp; Offer Letters">
             <div style={{ marginBottom: 16 }}>
-                <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>E-Signature &amp; Offer Letters</h1>
+                
                 <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Digital signature collection · Audit trail · Expiry enforcement</p>
             </div>
 
@@ -181,6 +183,6 @@ export default function OfferLetterSign() {
                     )}
                 </div>
             )}
-        </div>
+        </StandardPage>
     );
 }

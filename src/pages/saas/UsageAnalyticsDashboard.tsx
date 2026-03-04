@@ -4,6 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import UsageAnalyticsService, { FeatureAdoptionMetric, StickinessStat } from '@/services/usageAnalyticsService';
 import { TrendingUp, Users, Activity, Target } from 'lucide-react';
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function UsageAnalyticsDashboard() {
     const [topFeatures, setTopFeatures] = useState<any[]>([]);
@@ -57,16 +59,16 @@ export default function UsageAnalyticsDashboard() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-96">
+            <StandardPage title="Usage Analytics">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            </div>
+            </StandardPage>
         );
     }
 
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-bold">Usage Analytics</h1>
+                
                 <p className="text-gray-500 mt-1">Product usage, feature adoption, and engagement metrics</p>
             </div>
 

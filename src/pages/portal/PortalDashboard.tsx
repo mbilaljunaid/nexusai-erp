@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function PortalDashboard() {
     const { data: profile, isLoading: profileLoading } = useQuery({
@@ -39,8 +41,8 @@ export default function PortalDashboard() {
     const hasOverdue = stats.overdue > 0;
 
     return (
-        <div className="space-y-6">
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Dashboard</h1>
+        <StandardPage title="Dashboard">
+            
 
             {/* Overdue Alert Banner */}
             {hasOverdue && (
@@ -173,7 +175,7 @@ export default function PortalDashboard() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }
 

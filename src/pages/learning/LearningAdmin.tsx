@@ -9,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, BookOpen, FileText, Users } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 import {
     Select,
     SelectContent,
@@ -86,11 +88,11 @@ export default function LearningAdmin() {
     const published = courses.filter((c: Course) => c.status === "PUBLISHED");
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Learning Administration">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">Learning Administration</h1>
+                    
                     <p className="text-muted-foreground">
                         Create and manage courses
                     </p>
@@ -331,6 +333,6 @@ export default function LearningAdmin() {
                     )}
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

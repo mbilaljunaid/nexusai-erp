@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Truck, Send, CheckCircle2, XCircle, Plus, FileCode } from 'lucide-react';
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface LoadTender {
     id: string;
@@ -68,10 +70,10 @@ export default function LoadTenderWorkbench() {
     const totalAccepted = tenders.filter(t => t.status === 'Accepted').reduce((s, t) => s + Number(t.freight_charge ?? 0), 0);
 
     return (
-        <div className="ltw-container">
+        <StandardPage title="Load Tender Workbench">
             <div className="ltw-header">
                 <div>
-                    <h1 className="ltw-title">Load Tender Workbench</h1>
+                    
                     <p className="ltw-sub">EDI 204 Load Tender / EDI 990 Response management</p>
                 </div>
                 <button className="add-btn" onClick={() => setShowNew(true)} aria-label="New tender"><Plus size={13} /> New Tender</button>
@@ -234,6 +236,6 @@ export default function LoadTenderWorkbench() {
                 .edi-pre { font-size: 10px; font-family: monospace; color: #d1fae5; white-space: pre-wrap; margin: 0; max-height: 300px; overflow-y: auto; }
                 .no-sel { display: flex; align-items: center; justify-content: center; height: 200px; color: #9ca3af; font-size: 14px; }
             `}</style>
-        </div>
+        </StandardPage>
     );
 }

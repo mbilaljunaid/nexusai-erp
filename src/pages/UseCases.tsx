@@ -2,6 +2,8 @@ import { Header, Footer } from "@/components/Navigation";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Rocket, TrendingUp, Settings, DollarSign, Globe, Lock } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function UseCases() {
   const useCases = [
@@ -38,11 +40,11 @@ export default function UseCases() {
   ];
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Use Cases">
       <Header />
       <main className="flex-1">
         <section className="public-hero px-4 py-24 max-w-7xl mx-auto">
-          <h1 className="public-hero-title text-5xl font-bold mb-6">Use Cases</h1>
+          
           <p className="public-hero-subtitle text-xl">
             Discover how NexusAIFirst solves real business challenges across industries
           </p>
@@ -64,6 +66,6 @@ export default function UseCases() {
         </section>
       </main>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

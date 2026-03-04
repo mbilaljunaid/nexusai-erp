@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { format, parseISO } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, CheckCircle, UploadCloud } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 // MOCK USER
 const MOCK_TENANT_ID = "test-tenant-wfm-001";
@@ -72,10 +74,10 @@ export default function PayrollTransfer() {
     });
 
     return (
-        <div className="container mx-auto p-6 max-w-5xl space-y-6">
+        <StandardPage title="Payroll Integration">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Payroll Integration</h1>
+                    
                     <p className="text-muted-foreground">Transfer approved time data to Payroll.</p>
                 </div>
             </div>
@@ -159,6 +161,6 @@ export default function PayrollTransfer() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

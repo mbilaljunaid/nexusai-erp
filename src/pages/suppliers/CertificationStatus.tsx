@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ShieldCheck, ShieldAlert, ShieldOff, AlertCircle } from 'lucide-react';
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface Cert { id: string; supplier_id: string; cert_type: string; cert_number: string; issuing_body: string; issue_date: string; expiry_date: string; status: string; verified_by: string; days_remaining?: number; }
 interface Portfolio { cert_type: string; suppliers_with_cert: number; active: number; expired: number; earliest_expiry: string; }
@@ -54,10 +56,10 @@ export default function CertificationStatus() {
     ];
 
     return (
-        <div style={{ padding: 24, maxWidth: 1400, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
+        <StandardPage title="Supplier Certifications">
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
                 <div>
-                    <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>Supplier Certifications</h1>
+                    
                     <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>ISO · SOC2 · GDPR · Custom — verification & expiry alerts</p>
                 </div>
                 <button onClick={() => setShowNew(true)} style={{ padding: '8px 16px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 600, cursor: 'pointer' }}>+ Add Certificate</button>
@@ -186,6 +188,6 @@ export default function CertificationStatus() {
                     {expiring.length === 0 && <div style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No certificates expiring within 60 days</div>}
                 </div>
             )}
-        </div>
+        </StandardPage>
     );
 }

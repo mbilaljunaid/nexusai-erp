@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Download } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function TenantSettings() {
     const { toast } = useToast();
@@ -55,9 +57,9 @@ export default function TenantSettings() {
     if (isLoading) return <div>Loading settings...</div>;
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Tenant Settings">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold">Tenant Settings</h1>
+                
                 <Button onClick={handleExport} variant="outline">
                     <Download className="mr-2 h-4 w-4" /> Export Data
                 </Button>
@@ -103,6 +105,6 @@ export default function TenantSettings() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

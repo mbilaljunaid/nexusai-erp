@@ -10,6 +10,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { Play, Save, Link2, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface ConstraintRule {
     id?: number;
@@ -83,10 +85,10 @@ export default function ConstraintScheduler() {
     ];
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Constraint-Based Scheduler">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Constraint-Based Scheduler</h1>
+                    
                     <p className="text-muted-foreground">Theory of Constraints (TOC) scheduling with Drum-Buffer-Rope</p>
                 </div>
                 <div className="flex gap-2">
@@ -206,6 +208,6 @@ export default function ConstraintScheduler() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </StandardPage>
     );
 }

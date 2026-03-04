@@ -52,6 +52,8 @@ import { UserProfile } from "@/components/UserProfile";
 import { FlagContentDialog } from "@/components/FlagContentDialog";
 import { ModerationQueue } from "@/components/ModerationQueue";
 import { ServiceMarketplace } from "@/components/ServiceMarketplace";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 interface PostWithComments extends CommunityPost {
   comments?: Array<{
@@ -271,14 +273,14 @@ export default function CommunityForum() {
 
   if (showMarketplace) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <StandardPage title="Community">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8">
           <Button variant="ghost" onClick={() => setShowMarketplace(false)} data-testid="button-back-from-marketplace">Back to Forum</Button>
           <ServiceMarketplace />
         </main>
         <Footer />
-      </div>
+      </StandardPage>
     );
   }
 
@@ -497,7 +499,7 @@ export default function CommunityForum() {
       <main className="flex-1 container mx-auto px-4 py-6">
         <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
           <div>
-            <h1 className="text-2xl font-bold" data-testid="text-page-title">Community</h1>
+            
             <p className="text-muted-foreground text-sm">Ask questions, share knowledge, earn reputation</p>
           </div>
           <div className="flex gap-2 flex-wrap">

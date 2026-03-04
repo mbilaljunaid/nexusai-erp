@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/queryClient";
 import { Upload, CheckCircle, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function ASNManagement() {
     const { data: asns } = useQuery({
@@ -12,10 +14,10 @@ export default function ASNManagement() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="ASN Management">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">ASN Management</h1>
+                    
                     <p className="text-muted-foreground">Advanced Shipping Notices</p>
                 </div>
                 <Button>
@@ -47,6 +49,6 @@ export default function ASNManagement() {
                     ))}
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

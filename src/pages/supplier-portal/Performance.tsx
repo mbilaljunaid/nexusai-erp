@@ -13,6 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
 import { useNexusAI } from "@/contexts/NexusAIContext";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function SupplierPerformance() {
     const { open } = useNexusAI();
@@ -43,10 +45,10 @@ export default function SupplierPerformance() {
     };
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Performance Scorecard">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Performance Scorecard</h1>
+                    
                     <p className="text-muted-foreground">Detailed breakdown of your performance metrics for the current period.</p>
                 </div>
                 <div className="flex items-center gap-6">
@@ -131,6 +133,6 @@ export default function SupplierPerformance() {
                     </Table>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

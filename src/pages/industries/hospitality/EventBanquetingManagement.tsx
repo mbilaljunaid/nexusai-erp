@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Zap, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function EventBanquetingManagement() {
   const { toast } = useToast();
@@ -38,12 +40,9 @@ export default function EventBanquetingManagement() {
   const executed = events.filter((e: any) => e.status === "executed").length;
 
   return (
-    <div className="space-y-6 p-4">
+    <StandardPage title="Events, Banqueting & MICE Management">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Zap className="h-8 w-8" />
-          Events, Banqueting & MICE Management
-        </h1>
+        
         <p className="text-muted-foreground mt-2">Event proposals, BEOs, resource booking, and event billing</p>
       </div>
 
@@ -108,6 +107,6 @@ export default function EventBanquetingManagement() {
           ))}
         </CardContent>
       </Card>
-    </div>
+    </StandardPage>
   );
 }

@@ -6,6 +6,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { Award, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function SkillTracking() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -16,9 +18,9 @@ export default function SkillTracking() {
     });
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
+        <StandardPage title="Skill Tracking & Certification">
             <div>
-                <h1 className="text-3xl font-bold">Skill Tracking & Certification</h1>
+                
                 <p className="text-muted-foreground">Employee competencies and certifications</p>
             </div>
 
@@ -79,6 +81,6 @@ export default function SkillTracking() {
                     </Card>
                 ))}
             </div>
-        </div>
+        </StandardPage>
     );
 }

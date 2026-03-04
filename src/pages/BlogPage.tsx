@@ -21,6 +21,8 @@ import {
 import { useState, useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
 import { Link } from "wouter";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -147,13 +149,13 @@ export default function BlogPage() {
     : posts.filter(p => p.category === selectedCategory);
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="NexusAIFirst Blog">
       <Header />
       <main className="flex-1">
 
       {/* Hero */}
       <section className="public-hero px-4 py-16 text-center max-w-4xl mx-auto">
-        <h1 className="public-hero-title text-5xl font-bold mb-4">NexusAIFirst Blog</h1>
+        
         <p className="public-hero-subtitle text-xl">Insights, best practices, and industry news for enterprise ERP</p>
       </section>
 
@@ -226,6 +228,6 @@ export default function BlogPage() {
       </section>
       </main>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

@@ -6,6 +6,8 @@ import { format } from "date-fns";
 import { CheckCircle, Download, ArrowRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 export default function PortalPayments() {
     const { data: payments, isLoading } = useQuery({
@@ -41,10 +43,10 @@ export default function PortalPayments() {
 
     if (isLoading) {
         return (
-            <div className="space-y-6">
+            <StandardPage title="Payment History">
                 <Skeleton className="h-10 w-48" />
                 <Skeleton className="h-96" />
-            </div>
+            </StandardPage>
         );
     }
 
@@ -67,7 +69,7 @@ export default function PortalPayments() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900">Payment History</h1>
+                
                 <Button onClick={exportToCSV} variant="outline">
                     <Download className="mr-2 h-4 w-4" />
                     Export CSV

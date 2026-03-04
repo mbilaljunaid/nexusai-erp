@@ -14,6 +14,8 @@ import TransferPricingRules from "./TransferPricingRules";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { StandardPage } from "@/components/layout/StandardPage";
+
 
 
 export default function IntercompanyWorkbench() {
@@ -157,10 +159,10 @@ export default function IntercompanyWorkbench() {
     ];
 
     return (
-        <div className="p-8 space-y-6">
+        <StandardPage title="Intercompany Workbench">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Intercompany Workbench</h1>
+                    
                     <p className="text-muted-foreground">Manage outbound charges and inbound approvals.</p>
                 </div>
                 <div className="flex gap-2 items-center">
@@ -223,6 +225,6 @@ export default function IntercompanyWorkbench() {
                     <TransferPricingRules />
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }
