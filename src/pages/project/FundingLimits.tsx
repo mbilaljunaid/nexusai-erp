@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, DollarSign, Activity } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface FundingLimit { id: string; project_id: string; funding_source: string; limit_amount: number; utilized_amount: number; available: number; utilization_pct: number; status: string; alert_threshold_pct: number; restrict_charges: boolean; }
 interface Commitment { id: string; project_id: string; commitment_type: string; reference_number: string; vendor_id: string; description: string; committed_amount: number; invoiced_amount: number; remaining_amount: number; status: string; commitment_date: string; }
@@ -40,9 +41,9 @@ export default function FundingLimits() {
     ];
 
     return (
-        <div style={{ padding: 24, maxWidth: 1300, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
+        <StandardPage title="Funding Limits &amp; Commitment Tracking">
             <div style={{ marginBottom: 16 }}>
-                <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>Funding Limits &amp; Commitment Tracking</h1>
+                
                 <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Funding source limits · PO &amp; subcontract commitments · Spending controls</p>
             </div>
 
@@ -171,6 +172,6 @@ export default function FundingLimits() {
                     )}
                 </>
             )}
-        </div>
+        </StandardPage>
     );
 }

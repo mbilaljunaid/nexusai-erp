@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle2, ShieldAlert, ClipboardList } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface BGCOrder {
     id: string; applicant_id: string; candidate_name: string; package_type: string;
@@ -55,7 +56,7 @@ export default function BackgroundCheckStatus() {
             id: "progress", header: "Progress", width: "200px", cell: (row) => {
                 const pct = row.total_components > 0 ? Math.round(Number(row.completed_components) / Number(row.total_components) * 100) : 0;
                 return (
-                    <div style={{ minWidth: 90 }}>
+                    <StandardPage title="Page Title">
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: '#6b7280' }}>
                             <span>{row.completed_components}/{row.total_components}</span>
                             {Number(row.hits) > 0 && <span style={{ color: '#dc2626', fontWeight: 700 }}>⚑ {row.hits} hit{Number(row.hits) > 1 ? 's' : ''}</span>}
@@ -63,7 +64,7 @@ export default function BackgroundCheckStatus() {
                         <div style={{ background: '#f3f4f6', borderRadius: 999, height: 5, marginTop: 2 }}>
                             <div style={{ width: pct + '%', background: pct === 100 ? '#059669' : '#1d4ed8', height: '100%', borderRadius: 999 }} />
                         </div>
-                    </div>
+                    </StandardPage>
                 );
             }
         },

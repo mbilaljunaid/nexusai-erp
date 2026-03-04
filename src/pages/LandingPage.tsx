@@ -31,6 +31,7 @@ import {
 } from "@/components/lovable";
 import { colors } from "@/lib/design-tokens";
 import { animations } from "@/lib/animations";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function LandingPage() {
   const [, setLocation] = useLocation();
@@ -152,7 +153,7 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <StandardPage title="Page Title">
       <Header />
 
       <main className="flex-1">
@@ -421,6 +422,6 @@ export default function LandingPage() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

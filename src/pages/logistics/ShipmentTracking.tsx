@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { MapPin, AlertTriangle, Package, Zap, TrendingUp } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface Shipment {
     id: string;
@@ -107,10 +108,10 @@ export default function ShipmentTracking() {
     ];
 
     return (
-        <div className="st-container">
+        <StandardPage title="Shipment Tracking">
             <div className="st-header">
                 <div>
-                    <h1 className="st-title">Shipment Tracking</h1>
+                    
                     <p className="st-sub">Real-time carrier visibility · EDI 214 · Mode Optimizer</p>
                 </div>
             </div>
@@ -331,6 +332,6 @@ export default function ShipmentTracking() {
                 .opt-table td { padding: 6px 10px; border-bottom: 1px solid #f3f4f6; }
                 .opt-rec { background: #f0fdf4; font-weight: 600; }
             `}</style>
-        </div>
+        </StandardPage>
     );
 }

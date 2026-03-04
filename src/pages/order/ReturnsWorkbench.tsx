@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Link } from "wouter";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 // Mock API
 const fetchRMAs = async () => {
@@ -40,10 +41,10 @@ export function ReturnsWorkbench() {
     ];
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Returns Management (RMA)">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Returns Management (RMA)</h1>
+                    
                     <p className="text-muted-foreground">Process Returns and Refunds.</p>
                 </div>
                 <Button>
@@ -75,6 +76,6 @@ export function ReturnsWorkbench() {
                     />
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

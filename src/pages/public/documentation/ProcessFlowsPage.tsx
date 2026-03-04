@@ -21,6 +21,7 @@ import {
   CheckCircle,
   ExternalLink
 } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function ProcessFlowsPage() {
   useEffect(() => {
@@ -53,14 +54,14 @@ export default function ProcessFlowsPage() {
   ];
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="Process Flows">
       <Header />
 
       <main className="flex-1">
         {/* Hero Section */}
         <section className="px-4 py-16 text-center max-w-5xl mx-auto">
           <Badge className="mb-4 bg-purple-600 text-white" data-testid="badge-process-flows">PROCESS DOCUMENTATION</Badge>
-          <h1 className="text-5xl font-bold mb-6" data-testid="text-page-title">Process Flows</h1>
+          
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             Explore NexusAIFirst's 18 end-to-end business processes designed to streamline 
             your enterprise operations across all departments.
@@ -210,6 +211,6 @@ export default function ProcessFlowsPage() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

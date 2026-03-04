@@ -14,6 +14,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 // Mock API for now - replace with real API call
 const fetchOrders = async () => {
@@ -63,10 +64,10 @@ export function OrderWorkbench() {
     ];
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Order Management">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Order Management</h1>
+                    
                     <p className="text-muted-foreground">Manage Sales Orders, Fulfillment, and Pricing.</p>
                 </div>
                 <Link href="/order-management/create">
@@ -106,6 +107,6 @@ export function OrderWorkbench() {
                     />
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

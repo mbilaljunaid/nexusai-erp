@@ -5,6 +5,7 @@ import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Percent, Layers } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface BurdenRule {
     id: string;
@@ -72,7 +73,7 @@ export default function BurdenManager() {
     ];
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Page Title">
             <div className="flex items-center justify-between">
                 <div>
                     <h2 className="text-2xl font-bold tracking-tight">Burden Schedules</h2>
@@ -146,6 +147,6 @@ export default function BurdenManager() {
                     </Card>
                 </div>
             </div>
-        </div>
+        </StandardPage>
     );
 }

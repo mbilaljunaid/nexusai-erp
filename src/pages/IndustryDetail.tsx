@@ -13,6 +13,7 @@ import educationHero from "@assets/stock_images/modern_education_uni_aed4c4fe.jp
 import governmentHero from "@assets/stock_images/government_building__65e1f24d.jpg";
 import automotiveHero from "@assets/stock_images/automotive_car_deale_62f1f498.jpg";
 import bankingHero from "@assets/stock_images/banking_finance_corp_f11367f7.jpg";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface IndustryInfo {
   name: string;
@@ -1736,7 +1737,7 @@ export default function IndustryDetail() {
   const aiIcons = [Bot, Sparkles, Brain, Zap];
 
   return (
-    <div className="public-page min-h-screen flex flex-col">
+    <StandardPage title="{industry.name} ERP">
       <Header />
       <main className="flex-1">
         {/* Hero Section with Image */}
@@ -1751,7 +1752,7 @@ export default function IndustryDetail() {
             <div className="relative z-10 h-full flex items-center px-4">
               <div className="max-w-7xl mx-auto w-full">
                 <Badge className="mb-4 bg-blue-600/80 text-white border-blue-400">INDUSTRY SOLUTION</Badge>
-                <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">{industry.name} ERP</h1>
+                
                 <p className="text-xl text-gray-200 max-w-2xl mb-6">{industry.description}</p>
                 <div className="flex flex-wrap gap-3">
                   <Link to={`/demo?industry=${industry.name}`}>
@@ -1910,6 +1911,6 @@ export default function IndustryDetail() {
         </section>
       </main>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

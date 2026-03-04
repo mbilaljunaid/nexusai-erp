@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowRight, Users, Package, TrendingUp, Database } from 'lucide-react';
 import { Header, Footer } from "@/components/Navigation";
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface ProcessFlowStep {
   label: string;
@@ -46,7 +47,7 @@ export function PublicProcessPageTemplate({
   const criticalityColor = criticality === 'CRITICAL' ? 'text-red-600 font-bold' : 'text-orange-600 font-bold';
   
   return (
-    <div className="flex flex-col min-h-screen">
+    <StandardPage title="{processName}">
       <Header />
       <main className="flex-1 bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
         <div className="max-w-6xl mx-auto px-4 pt-4">
@@ -63,7 +64,7 @@ export function PublicProcessPageTemplate({
                     {criticality}
                   </span>
                 </div>
-                <h1 className="text-4xl font-bold mb-2">{processName}</h1>
+                
                 <p className="text-blue-100 text-lg">{description}</p>
               </div>
             </div>
@@ -184,6 +185,6 @@ export function PublicProcessPageTemplate({
         </div>
       </main>
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface Facility {
     id: string;
@@ -124,10 +125,10 @@ export default function HedgeEffectiveness() {
     ];
 
     return (
-        <div className="he-container">
+        <StandardPage title="Treasury Risk & Compliance">
             <div className="he-header">
                 <div>
-                    <h1 className="he-title">Treasury Risk & Compliance</h1>
+                    
                     <p className="he-sub">Hedge Effectiveness (IFRS 9/ASC 815) · Debt Covenant Monitoring</p>
                 </div>
             </div>
@@ -405,7 +406,7 @@ export default function HedgeEffectiveness() {
                 .dc-amounts { display: flex; justify-content: space-between; font-size: 12px; color: #374151; margin: 8px 0; font-family: monospace; }
                 .dc-footer { display: flex; justify-content: space-between; font-size: 11px; color: #9ca3af; border-top: 1px solid #f3f4f6; padding-top: 8px; margin-top: 4px; }
             `}</style>
-        </div>
+        </StandardPage>
     );
 }
 

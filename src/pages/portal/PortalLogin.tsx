@@ -8,6 +8,7 @@ import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Loader2 } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function PortalLogin() {
     const [email, setEmail] = useState("");
@@ -40,7 +41,7 @@ export default function PortalLogin() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center p-4">
+        <StandardPage title="Page Title">
             <div className="flex items-center gap-2 mb-8">
                 <div className="h-10 w-10 bg-emerald-600 rounded-lg flex items-center justify-center">
                     <span className="text-white font-bold text-xl">N</span>
@@ -78,6 +79,6 @@ export default function PortalLogin() {
                     </form>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

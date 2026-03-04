@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { AlertCircle, Loader2, Link as LinkIcon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { apiRequest } from "@/lib/queryClient";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function SupplierPortalLogin() {
     const [, setLocation] = useLocation();
@@ -34,7 +35,7 @@ export default function SupplierPortalLogin() {
     };
 
     return (
-        <div className="min-h-screen grid items-center justify-center bg-slate-100 p-4">
+        <StandardPage title="Page Title">
             <Card className="w-full max-w-md">
                 <CardHeader className="space-y-1">
                     <div className="flex justify-center mb-4">
@@ -76,6 +77,6 @@ export default function SupplierPortalLogin() {
                     NexusAI ERP &copy; 2026
                 </CardFooter>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

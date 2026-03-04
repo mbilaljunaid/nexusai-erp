@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter, Download } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface ExpenditureItem {
     id: string;
@@ -73,7 +74,7 @@ export default function ExpenditureInquiry() {
     const totalPages = results ? Math.ceil(results.total / pageSize) : 0;
 
     return (
-        <div className="space-y-6">
+        <StandardPage title="Page Title">
             <div className="flex items-center justify-between">
                 <div>
                     <h2 className="text-2xl font-bold tracking-tight">Expenditure Inquiry</h2>
@@ -114,6 +115,6 @@ export default function ExpenditureInquiry() {
                     </div>
                 )}
             </Card>
-        </div>
+        </StandardPage>
     );
 }

@@ -5,6 +5,7 @@ import { Link } from "wouter";
 import { ArrowRight, TrendingUp, Users, BarChart3, Zap, Target, Lock, Coins, Workflow, Brain, Shield, FileCheck, Layers, Megaphone, Gauge, Factory, Briefcase, HeartHandshake, Banknote, ClipboardList, Database, Truck, Settings, PieChart, BookOpen, AlertCircle, GitBranch } from "lucide-react";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function UseCasesPage() {
   useEffect(() => {
@@ -245,7 +246,7 @@ export default function UseCasesPage() {
   const industryUseCases = useCases.filter(uc => uc.category === "Industry Pack");
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
+    <StandardPage title="Transform Your Business with NexusAIFirst">
       <Header />
 
       <main className="flex-1">
@@ -253,9 +254,7 @@ export default function UseCasesPage() {
         <section className="px-4 py-16 border-b border-slate-700">
           <div className="max-w-6xl mx-auto">
             <Badge className="mb-4 bg-blue-600/20 text-blue-300 border-blue-500/50">USE CASES</Badge>
-            <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              Transform Your Business with NexusAIFirst
-            </h1>
+            
             <p className="text-xl text-slate-300 max-w-3xl">
               Discover how enterprises across industries leverage NexusAIFirst's 28+ modules to drive efficiency, reduce costs, and accelerate growth
             </p>
@@ -386,6 +385,6 @@ export default function UseCasesPage() {
       </main>
 
       <Footer />
-    </div>
+    </StandardPage>
   );
 }

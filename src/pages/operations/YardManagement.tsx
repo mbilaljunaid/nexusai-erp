@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Truck, Clock, CheckCircle2 } from 'lucide-react';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface Dock {
     id: string;
@@ -57,10 +58,10 @@ export default function YardManagement() {
     });
 
     return (
-        <div style={{ padding: 24, maxWidth: 1400, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
+        <StandardPage title="Yard Management">
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
                 <div>
-                    <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>Yard Management</h1>
+                    
                     <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Dock scheduling · Carrier appointments</p>
                 </div>
                 {tab === 'appointments' && <button onClick={() => setShowNew(true)} style={{ padding: '8px 16px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 600, cursor: 'pointer' }}>+ Schedule</button>}
@@ -209,6 +210,6 @@ export default function YardManagement() {
                     </div>
                 </div>
             )}
-        </div>
+        </StandardPage>
     );
 }

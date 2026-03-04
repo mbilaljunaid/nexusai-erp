@@ -10,6 +10,7 @@ import { queryClient } from "@/lib/queryClient";
 import { ShipmentDetailSideSheet } from "@/components/transportation/ShipmentDetailSideSheet";
 import { LogisticsInsightsCard } from "@/components/transportation/LogisticsInsightsCard";
 import { RouteMapOverlay } from "@/components/transportation/RouteMapOverlay";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function RoutePlanningWorkbench() {
     const { toast } = useToast();
@@ -100,7 +101,7 @@ export default function RoutePlanningWorkbench() {
     ];
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Page Title">
             <ShipmentDetailSideSheet
                 shipmentId={selectedShipmentId}
                 open={isSideSheetOpen}
@@ -165,6 +166,6 @@ export default function RoutePlanningWorkbench() {
                     </Card>
                 </div>
             </div>
-        </div>
+        </StandardPage>
     );
 }

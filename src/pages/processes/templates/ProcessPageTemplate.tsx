@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Download, Share2, Printer } from 'lucide-react';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface ProcessPageProps {
   processId: string;
@@ -44,14 +45,14 @@ export function ProcessPageTemplate({
   };
 
   return (
-    <div className="flex gap-6 p-8 bg-background">
+    <StandardPage title="{processName}">
       {/* Main Content */}
       <div className="flex-1 min-w-0">
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h1 className="text-4xl font-bold text-foreground mb-2">{processName}</h1>
+              
               <p className="text-lg text-muted-foreground">{processCode}</p>
             </div>
             <Badge className={criticalityColor[criticality]}>{criticality}</Badge>
@@ -167,6 +168,6 @@ export function ProcessPageTemplate({
           </div>
         </Card>
       </div>
-    </div>
+    </StandardPage>
   );
 }

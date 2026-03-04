@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAdminMetrics } from '@/hooks/admin/useAdminData';
 import { useQueryClient } from '@tanstack/react-query';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 const systemServices = [
     { service: 'API Server', uptime: '99.98%' },
@@ -22,11 +23,11 @@ export default function AdminDashboard() {
     };
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Admin Dashboard">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+                    
                     <p className="text-muted-foreground">Overview of platform metrics and activity</p>
                 </div>
                 <Button variant="outline" onClick={handleRefresh} disabled={isLoading}>
@@ -159,6 +160,6 @@ export default function AdminDashboard() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

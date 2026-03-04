@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface GLStats {
     totalJournals: number;
@@ -29,7 +30,7 @@ export function GLMetrics() {
 
     if (isLoading) {
         return (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <StandardPage title="Page Title">
                 {[...Array(4)].map((_, i) => (
                     <Card key={i} className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
                         <CardContent className="p-6">
@@ -38,7 +39,7 @@ export function GLMetrics() {
                         </CardContent>
                     </Card>
                 ))}
-            </div>
+            </StandardPage>
         );
     }
 

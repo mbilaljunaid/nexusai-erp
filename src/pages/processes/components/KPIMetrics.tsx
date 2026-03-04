@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface KPICard {
   label: string;
@@ -31,7 +32,7 @@ export function KPIMetrics({ metrics, layout = 'grid' }: KPIMetricsProps) {
   const gridClass = layout === 'grid' ? 'grid-cols-3' : 'grid-cols-1';
 
   return (
-    <div className={`grid ${gridClass} gap-4`}>
+    <StandardPage title="Page Title">
       {metrics.map((metric, idx) => (
         <Card key={idx} className={`p-4 border-2 ${statusStyles[metric.status]}`} data-testid={`kpi-card-${idx}`}>
           <div className="flex justify-between items-start mb-2">
@@ -56,6 +57,6 @@ export function KPIMetrics({ metrics, layout = 'grid' }: KPIMetricsProps) {
           )}
         </Card>
       ))}
-    </div>
+    </StandardPage>
   );
 }

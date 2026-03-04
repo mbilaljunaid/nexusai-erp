@@ -14,6 +14,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 // Mock API for Shipments
 const fetchShipments = async () => {
@@ -49,10 +50,10 @@ export function ShipmentWorkbench() {
     ];
 
     return (
-        <div className="p-6 space-y-6">
+        <StandardPage title="Shipment Workbench">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Shipment Workbench</h1>
+                    
                     <p className="text-muted-foreground">Pick, Pack, and Ship Orders.</p>
                 </div>
             </div>
@@ -90,6 +91,6 @@ export function ShipmentWorkbench() {
                     />
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }
