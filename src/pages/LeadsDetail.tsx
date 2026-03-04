@@ -60,7 +60,7 @@ import {
   CheckCircle2,
   Clock,
 } from "lucide-react";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 // ... existing subcomponents ...
 function LeadConvertModal({ lead, onSuccess }: { lead: Lead; onSuccess: () => void }) {
@@ -232,12 +232,13 @@ export default function LeadsDetail() {
     { label: "Converted", value: leads.filter(l => l.status === 'converted').length, icon: CheckCircle2, color: "text-green-600" },
   ];
 
-  const columns: Column<Lead>[] = [
+  const columns: SpreadsheetColumn<any>[] = [
     {
+      id: "name",
       header: "Lead Name",
-      accessorKey: "name",
-      cell: (lead) => (
-        <div className="flex items-center gap-3">
+      width: "35%",
+      cell: (lead: any) => (
+        <div className="p-2 flex items-center gap-3">
           <Avatar className="h-8 w-8">
             <AvatarFallback className="bg-primary/5 text-primary text-xs">
               {lead.name.charAt(0).toUpperCase()}
@@ -251,27 +252,34 @@ export default function LeadsDetail() {
       )
     },
     {
+      id: "status",
       header: "Status",
-      accessorKey: "status",
-      cell: (lead) => (
-        <Badge variant={lead.status === 'converted' ? 'secondary' : 'default'} className={lead.status === 'converted' ? 'bg-green-100/50 text-green-700' : ''}>
-          {lead.status}
-        </Badge>
+      width: "20%",
+      cell: (lead: any) => (
+        <div className="p-2">
+          <Badge variant={lead.status === 'converted' ? 'secondary' : 'default'} className={lead.status === 'converted' ? 'bg-green-100/50 text-green-700' : ''}>
+            {lead.status}
+          </Badge>
+        </div>
       )
     },
     {
+      id: "contact",
       header: "Contact",
-      cell: (lead) => (
-        <div className="text-sm">
+      width: "30%",
+      cell: (lead: any) => (
+        <div className="p-2 text-sm">
           <div>{lead.email}</div>
           <div className="text-xs text-muted-foreground">{lead.phone}</div>
         </div>
       )
     },
     {
+      id: "actions",
       header: "Actions",
-      cell: (lead) => (
-        <div onClick={(e) => e.stopPropagation()}>
+      width: "15%",
+      cell: (lead: any) => (
+        <div className="p-2" onClick={(e) => e.stopPropagation()}>
           <LeadConvertModal
             lead={lead}
             onSuccess={() => {
@@ -331,15 +339,19 @@ export default function LeadsDetail() {
         ))}
       </div>
 
-      <StandardTable
-        data={leads}
-        columns={columns}
-        isLoading={isLoading}
-        onRowClick={setSelectedLead}
-        keyExtractor={(lead) => String(lead.id)}
-        filterColumn="name"
-        filterPlaceholder="Filter leads..."
-      />
+      {isLoading ? (
+        <div className="p-8 text-center text-muted-foreground">Loading...</div>
+      ) : (
+        <div className="border rounded-md">
+          <InteractiveSpreadsheet
+            data={leads}
+            columns={columns}
+            virtualized={true}
+            containerHeight="600px"
+            onChange={() => { }}
+          />
+        </div>
+      )}
 
       {/* Detail Sheet */}
       <Sheet open={!!selectedLead} onOpenChange={(open) => !open && setSelectedLead(null)}>

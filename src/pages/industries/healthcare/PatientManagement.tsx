@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Trash2 } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 import {
   Dialog,
@@ -48,39 +48,49 @@ export default function PatientManagement() {
     },
   });
 
-  const columns: Column<any>[] = [
+  const columns: SpreadsheetColumn<any>[] = [
     {
-      accessorKey: "mrn",
+      id: "mrn",
       header: "MRN",
-      cell: (item) => <span className="font-mono">{item.mrn}</span>
+      width: "15%",
+      cell: (item: any) => <div className="p-2 font-mono">{item.mrn}</div>
     },
     {
-      accessorKey: "name",
+      id: "name",
       header: "Patient Name",
-      cell: (item) => <span className="font-semibold">{item.name}</span>
+      width: "30%",
+      cell: (item: any) => <div className="p-2 font-semibold">{item.name}</div>
     },
     {
-      accessorKey: "dob",
+      id: "dob",
       header: "DOB",
+      width: "15%",
+      cell: (item: any) => <div className="p-2">{item.dob}</div>
     },
     {
-      accessorKey: "gender",
+      id: "gender",
       header: "Gender",
+      width: "15%",
+      cell: (item: any) => <div className="p-2">{item.gender}</div>
     },
     {
-      accessorKey: "status",
+      id: "status",
       header: "Status",
-      cell: (item) => (
-        <Badge variant={item.status === "active" ? "default" : "secondary"}>
-          {item.status}
-        </Badge>
+      width: "15%",
+      cell: (item: any) => (
+        <div className="p-2">
+          <Badge variant={item.status === "active" ? "default" : "secondary"}>
+            {item.status}
+          </Badge>
+        </div>
       )
     },
     {
       id: "actions",
       header: "Actions",
-      cell: (item) => (
-        <div className="flex gap-2 justify-end">
+      width: "10%",
+      cell: (item: any) => (
+        <div className="p-2 flex gap-2 justify-end">
           <Button
             size="icon"
             variant="ghost"
@@ -147,13 +157,19 @@ export default function PatientManagement() {
         </Dialog>
       }
     >
-      <StandardTable
-        data={patients}
-        columns={columns}
-        isLoading={isLoading}
-        filterColumn="name"
-        filterPlaceholder="Search patients..."
-      />
+      {isLoading ? (
+        <div className="p-8 text-center text-muted-foreground">Loading...</div>
+      ) : (
+        <div className="border rounded-md">
+          <InteractiveSpreadsheet
+            data={patients}
+            columns={columns}
+            virtualized={true}
+            containerHeight="600px"
+            onChange={() => { }}
+          />
+        </div>
+      )}
     </StandardPage>
   );
 }

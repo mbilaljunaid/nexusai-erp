@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -60,35 +60,39 @@ export default function ProjectTemplateManager() {
         }
     });
 
-    const columns: Column<ProjectTemplate>[] = [
+    const columns: SpreadsheetColumn<any>[] = [
         {
+            id: "name",
             header: "Template Name",
-            accessorKey: "name",
-            cell: (item) => (
-                <div className="flex items-center gap-2 font-medium">
+            width: "35%",
+            cell: (item: any) => (
+                <div className="p-2 flex items-center gap-2 font-medium">
                     <Layout className="h-4 w-4 text-blue-500" />
                     {item.name}
                 </div>
             )
         },
         {
+            id: "projectType",
             header: "Project Type",
-            accessorKey: "projectType",
-            cell: (item) => <Badge variant="outline">{item.projectType}</Badge>
+            width: "20%",
+            cell: (item: any) => <div className="p-2"><Badge variant="outline">{item.projectType}</Badge></div>
         },
         {
+            id: "defaultBurdenScheduleId",
             header: "Default Burden Schedule",
-            accessorKey: "defaultBurdenScheduleId",
-            cell: (item) => {
+            width: "30%",
+            cell: (item: any) => {
                 const sch = burdenSchedules?.find(s => s.id === item.defaultBurdenScheduleId);
-                return sch ? sch.name : "None";
+                return <div className="p-2">{sch ? sch.name : "None"}</div>;
             }
         },
         {
+            id: "activeFlag",
             header: "Status",
-            accessorKey: "activeFlag",
-            cell: (item) => (
-                <div className="flex items-center gap-1">
+            width: "15%",
+            cell: (item: any) => (
+                <div className="p-2 flex items-center gap-1">
                     {item.activeFlag ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <XCircle className="h-4 w-4 text-slate-400" />}
                     <span className={item.activeFlag ? "text-green-600" : "text-slate-500"}>{item.activeFlag ? "Active" : "Inactive"}</span>
                 </div>
@@ -173,12 +177,17 @@ export default function ProjectTemplateManager() {
             </div>
 
             <Card className="border-0 shadow-none bg-transparent">
-                <StandardTable
-                    data={templates || []}
-                    columns={columns}
-                    isLoading={isLoading}
-                    pageSize={10}
-                />
+                {isLoading ? (
+                    <div className="p-8 text-center text-muted-foreground">Loading...</div>
+                ) : (
+                    <InteractiveSpreadsheet
+                        data={templates || []}
+                        columns={columns}
+                        virtualized={true}
+                        containerHeight="600px"
+                        onChange={() => { }}
+                    />
+                )}
             </Card>
         </div>
     );

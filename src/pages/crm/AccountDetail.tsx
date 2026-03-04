@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Building2, Globe, Mail, Phone, MapPin, Users, Briefcase, MessageSquare, TrendingUp, MoreVertical } from "lucide-react";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import type { Account, Contact, Opportunity, Case } from "@/types/erp-types";
 import { Link } from "wouter";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -128,25 +128,31 @@ export default function AccountDetail() {
 
                             <div className="pt-6">
                                 <TabsContent value="opportunities">
-                                    <StandardTable
+                                    <InteractiveSpreadsheet
                                         data={opportunities}
                                         columns={[
-                                            { header: "Name", accessorKey: "name", cell: (o: Opportunity) => <span className="font-medium">{o.name}</span> },
-                                            { header: "Stage", accessorKey: "stage", cell: (o: Opportunity) => <Badge variant="outline">{o.stage}</Badge> },
-                                            { header: "Amount", accessorKey: "amount", cell: (o: Opportunity) => `$${Number(o.amount).toLocaleString()}` },
-                                            { header: "Close Date", accessorKey: "closeDate", cell: (o: Opportunity) => o.closeDate ? new Date(o.closeDate).toLocaleDateString() : '-' }
+                                            { id: "name", header: "Name", width: "40%", cell: (o: any) => <div className="p-2 font-medium">{o.name}</div> },
+                                            { id: "stage", header: "Stage", width: "20%", cell: (o: any) => <div className="p-2"><Badge variant="outline">{o.stage}</Badge></div> },
+                                            { id: "amount", header: "Amount", width: "20%", cell: (o: any) => <div className="p-2">${Number(o.amount).toLocaleString()}</div> },
+                                            { id: "closeDate", header: "Close Date", width: "20%", cell: (o: any) => <div className="p-2">{o.closeDate ? new Date(o.closeDate).toLocaleDateString() : '-'}</div> }
                                         ]}
+                                        virtualized={true}
+                                        containerHeight="400px"
+                                        onChange={() => { }}
                                     />
                                 </TabsContent>
 
                                 <TabsContent value="contacts">
-                                    <StandardTable
+                                    <InteractiveSpreadsheet
                                         data={(contacts as any).data || []}
                                         columns={[
-                                            { header: "Name", accessorKey: "name", cell: (c: any) => <span className="font-medium">{c.firstName} {c.lastName}</span> },
-                                            { header: "Email", accessorKey: "email" },
-                                            { header: "Role", accessorKey: "role", cell: () => "Decision Maker" } // Mock
+                                            { id: "name", header: "Name", width: "40%", cell: (c: any) => <div className="p-2 font-medium">{c.firstName} {c.lastName}</div> },
+                                            { id: "email", header: "Email", width: "40%", cell: (c: any) => <div className="p-2">{c.email}</div> },
+                                            { id: "role", header: "Role", width: "20%", cell: () => <div className="p-2">Decision Maker</div> } // Mock
                                         ]}
+                                        virtualized={true}
+                                        containerHeight="400px"
+                                        onChange={() => { }}
                                     />
                                 </TabsContent>
 

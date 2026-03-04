@@ -12,7 +12,7 @@ import {
   Clock,
   ShieldAlert
 } from "lucide-react";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { MetricCard } from "@/components/MetricCard";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Badge } from "@/components/ui/badge";
@@ -45,64 +45,74 @@ export default function ComplianceExceptions() {
   const pendingViolations = violations.filter(v => v.status === "open");
   const resolvedViolations = violations.filter(v => v.status === "resolved");
 
-  const columns: Column<Violation>[] = [
+  const columns = [
     {
+      id: "ruleName",
       header: "Rule / Exception Description",
-      accessorKey: "ruleName",
-      cell: (v) => (
-        <div className="flex flex-col">
+      width: "300px",
+      cell: (v: Violation) => (
+        <div className="px-2 h-full flex flex-col justify-center">
           <span className="font-bold text-slate-900">{v.ruleName}</span>
           <span className="text-xs text-muted-foreground truncate max-w-[400px]">{v.description}</span>
         </div>
       )
     },
     {
+      id: "severity",
       header: "Severity",
-      accessorKey: "severity",
-      cell: (v) => (
-        <Badge variant={v.severity === 'critical' ? 'destructive' : 'secondary'}>
-          {v.severity.toUpperCase()}
-        </Badge>
+      width: "150px",
+      cell: (v: Violation) => (
+        <div className="px-2 h-full flex items-center">
+          <Badge variant={v.severity === 'critical' ? 'destructive' : 'secondary'}>
+            {v.severity.toUpperCase()}
+          </Badge>
+        </div>
       )
     },
     {
+      id: "entityId",
       header: "Person / Entity",
-      accessorKey: "entityId",
-      cell: (v) => (
-        <div className="flex items-center gap-2">
+      width: "200px",
+      cell: (v: Violation) => (
+        <div className="px-2 h-full flex items-center gap-2">
           <Badge variant="outline" className="text-[10px] font-mono">{v.entityType}</Badge>
           <span className="text-sm font-medium">{v.entityId}</span>
         </div>
       )
     },
     {
+      id: "createdAt",
       header: "Detected On",
-      accessorKey: "createdAt",
-      cell: (v) => (
-        <span className="text-sm text-muted-foreground font-mono">
+      width: "200px",
+      cell: (v: Violation) => (
+        <div className="px-2 h-full flex items-center text-sm text-muted-foreground font-mono">
           {format(new Date(v.createdAt), 'MMM d, yyyy HH:mm')}
-        </span>
+        </div>
       )
     },
     {
+      id: "status",
       header: "Status",
-      accessorKey: "status",
-      cell: (v) => (
-        <Badge
-          className={
-            v.status === 'resolved' ? 'bg-green-100 text-green-700 border-green-200' :
-              'bg-orange-100 text-orange-700 border-orange-200'
-          }
-        >
-          {v.status.toUpperCase()}
-        </Badge>
+      width: "150px",
+      cell: (v: Violation) => (
+        <div className="px-2 h-full flex items-center">
+          <Badge
+            className={
+              v.status === 'resolved' ? 'bg-green-100 text-green-700 border-green-200' :
+                'bg-orange-100 text-orange-700 border-orange-200'
+            }
+          >
+            {v.status.toUpperCase()}
+          </Badge>
+        </div>
       )
     },
     {
-      header: "Actions",
       id: "actions",
-      cell: (v) => (
-        <div className="flex items-center gap-2">
+      header: "Actions",
+      width: "150px",
+      cell: (v: Violation) => (
+        <div className="px-2 h-full flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
@@ -183,12 +193,15 @@ export default function ComplianceExceptions() {
           </Button>
         </div>
 
-        <StandardTable
-          data={violations}
-          columns={columns}
-          isLoading={isLoading}
-          filterColumn="ruleName"
-        />
+        <div className="bg-card w-full rounded-md border-t h-[600px] mt-4">
+          <InteractiveSpreadsheet
+            data={violations}
+            columns={columns}
+            onChange={() => { }}
+            virtualized={true}
+            containerHeight="600px"
+          />
+        </div>
       </div>
 
       <RemediationSheet

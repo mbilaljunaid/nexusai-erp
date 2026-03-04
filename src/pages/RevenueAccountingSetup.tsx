@@ -26,7 +26,7 @@ import {
     CheckCircle2
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import {
     Dialog,
@@ -251,38 +251,45 @@ export default function RevenueAccountingSetup() {
                     </div>
 
                     <Card className="border-none shadow-sm overflow-hidden">
-                        <CardContent className="p-0">
-                            <StandardTable
+                        <CardContent className="p-0 h-[400px]">
+                            <InteractiveSpreadsheet
                                 data={pobRules}
                                 columns={[
-                                    { header: "Priority", accessorKey: "priority", cell: (info: any) => <Badge variant="secondary">{info.getValue()}</Badge> },
-                                    { header: "Rule Name", accessorKey: "name", cell: (info: any) => <span className="font-semibold text-slate-800">{info.getValue()}</span> },
+                                    { id: "priority", header: "Priority", width: "100px", cell: (info: any) => <div className="px-2 h-full flex items-center justify-center w-full"><Badge variant="secondary">{info.priority}</Badge></div> },
+                                    { id: "name", header: "Rule Name", width: "250px", cell: (info: any) => <div className="px-2 h-full flex items-center font-semibold text-slate-800">{info.name}</div> },
                                     {
-                                        header: "Condition", accessorKey: "attributeValue", cell: (info: any) => (
-                                            <div className="flex items-center gap-1 text-xs">
-                                                <span className="text-slate-400 font-mono italic">{info.row.original.attributeName}</span>
+                                        id: "attributeValue", header: "Condition", width: "300px", cell: (info: any) => (
+                                            <div className="px-2 h-full flex items-center gap-1 text-xs">
+                                                <span className="text-slate-400 font-mono italic">{info.attributeName}</span>
                                                 <span className="px-1 bg-slate-100 border text-slate-600">EQUALS</span>
-                                                <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 font-bold rounded">"{info.getValue()}"</span>
+                                                <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 font-bold rounded">"{info.attributeValue}"</span>
                                             </div>
                                         )
                                     },
                                     {
-                                        header: "Satisfaction", accessorKey: "satisfactionMethod", cell: (info: any) => (
-                                            <Badge className={info.getValue() === "Ratable" ? "bg-amber-100 text-amber-700 border-none" : "bg-emerald-100 text-emerald-700 border-none"}>
-                                                {info.getValue()}
-                                            </Badge>
+                                        id: "satisfactionMethod", header: "Satisfaction", width: "150px", cell: (info: any) => (
+                                            <div className="px-2 h-full flex items-center justify-center w-full">
+                                                <Badge className={info.satisfactionMethod === "Ratable" ? "bg-amber-100 text-amber-700 border-none" : "bg-emerald-100 text-emerald-700 border-none"}>
+                                                    {info.satisfactionMethod}
+                                                </Badge>
+                                            </div>
                                         )
                                     },
-                                    { header: "Duration", accessorKey: "defaultDurationMonths", cell: (info: any) => info.getValue() ? `${info.getValue()} Months` : "Point in Time" },
-                                    { header: "Status", accessorKey: "status", cell: (info: any) => <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">{info.getValue()}</Badge> },
+                                    { id: "defaultDurationMonths", header: "Duration", width: "150px", cell: (info: any) => <div className="px-2 h-full flex items-center">{info.defaultDurationMonths ? `${info.defaultDurationMonths} Months` : "Point in Time"}</div> },
+                                    { id: "status", header: "Status", width: "150px", cell: (info: any) => <div className="px-2 h-full flex items-center justify-center w-full"><Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">{info.status}</Badge></div> },
                                     {
-                                        header: "", id: "actions", cell: () => (
-                                            <Button variant="ghost" size="sm" className="text-slate-400 hover:text-red-600">
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
+                                        id: "actions", header: "Actions", width: "100px", cell: () => (
+                                            <div className="px-2 h-full flex items-center justify-end w-full">
+                                                <Button variant="ghost" size="sm" className="text-slate-400 hover:text-red-600">
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
                                         )
                                     }
                                 ]}
+                                onChange={() => { }}
+                                virtualized={true}
+                                containerHeight="400px"
                             />
                         </CardContent>
                     </Card>

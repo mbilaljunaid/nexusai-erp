@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -49,13 +49,12 @@ export default function ExpenditureTypeManager() {
         }
     });
 
-    const columns: Column<ExpenditureType>[] = [
-        { header: "Name", accessorKey: "name", cell: (item) => <div className="font-medium">{item.name}</div> },
-        { header: "UOM", accessorKey: "unitOfMeasure" },
-        { header: "Description", accessorKey: "description" },
+    const columns: SpreadsheetColumn<any>[] = [
+        { id: "name", header: "Name", width: "30%", cell: (item: any) => <div className="p-2 font-medium">{item.name}</div> },
+        { id: "unitOfMeasure", header: "UOM", width: "20%", cell: (item: any) => <div className="p-2">{item.unitOfMeasure}</div> },
+        { id: "description", header: "Description", width: "50%", cell: (item: any) => <div className="p-2">{item.description}</div> },
     ];
 
-    return (
     return (
         <StandardPage
             title="Expenditure Types"
@@ -127,12 +126,17 @@ export default function ExpenditureTypeManager() {
                 </div>
 
                 <Card className="border-0 shadow-none bg-transparent">
-                    <StandardTable
-                        data={types || []}
-                        columns={columns}
-                        isLoading={isLoading}
-                        pageSize={20}
-                    />
+                    {isLoading ? (
+                        <div className="p-8 text-center text-muted-foreground">Loading...</div>
+                    ) : (
+                        <InteractiveSpreadsheet
+                            data={types || []}
+                            columns={columns}
+                            virtualized={true}
+                            containerHeight="600px"
+                            onChange={() => { }}
+                        />
+                    )}
                 </Card>
             </div>
         </StandardPage>

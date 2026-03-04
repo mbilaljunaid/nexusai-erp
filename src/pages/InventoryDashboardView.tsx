@@ -6,7 +6,7 @@ import {
 
 import { StandardDashboard, DashboardWidget } from '@/components/layout/StandardDashboard';
 import { AnalyticsChart } from '@/components/AnalyticsChart';
-import { StandardTable, Column } from '@/components/ui/StandardTable';
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
@@ -81,18 +81,18 @@ const InventoryDashboard = () => {
     suggest: number;
   }
 
-  const transactionColumns: Column<Transaction>[] = [
-    { header: "Type", accessorKey: "type", cell: (item) => <Badge variant="secondary">{item.type}</Badge> },
-    { header: "Item", accessorKey: "item", cell: (item) => <span className="font-medium">{item.item}</span> },
-    { header: "Qty", accessorKey: "qty", cell: (item) => <span className={`font-bold ${item.qty > 0 ? 'text-green-600' : 'text-red-600'}`}>{item.qty > 0 ? '+' : ''}{item.qty}</span> },
-    { header: "Date", accessorKey: "date" },
-    { header: "Status", accessorKey: "status", cell: (item) => <Badge variant="outline">{item.status}</Badge> },
+  const transactionColumns: SpreadsheetColumn<any>[] = [
+    { id: "type", header: "Type", width: "20%", cell: (item: any) => <div className="p-2"><Badge variant="secondary">{item.type}</Badge></div> },
+    { id: "item", header: "Item", width: "35%", cell: (item: any) => <div className="p-2 font-medium">{item.item}</div> },
+    { id: "qty", header: "Qty", width: "15%", cell: (item: any) => <div className={`p-2 font-bold ${item.qty > 0 ? 'text-green-600' : 'text-red-600'}`}>{item.qty > 0 ? '+' : ''}{item.qty}</div> },
+    { id: "date", header: "Date", width: "15%", cell: (item: any) => <div className="p-2">{item.date}</div> },
+    { id: "status", header: "Status", width: "15%", cell: (item: any) => <div className="p-2"><Badge variant="outline">{item.status}</Badge></div> },
   ];
 
-  const replenishmentColumns: Column<ReplenishmentItem>[] = [
-    { header: "Item", accessorKey: "item", cell: (item) => <span className="font-medium">{item.item}</span> },
-    { header: "On Hand", accessorKey: "onHand", cell: (item) => <span className="text-red-600 font-bold">{item.onHand}</span> },
-    { header: "Suggestion", accessorKey: "suggest", cell: (item) => <Badge variant="outline" className="bg-blue-50 text-blue-700">{item.suggest}</Badge> },
+  const replenishmentColumns: SpreadsheetColumn<any>[] = [
+    { id: "item", header: "Item", width: "40%", cell: (item: any) => <div className="p-2 font-medium">{item.item}</div> },
+    { id: "onHand", header: "On Hand", width: "30%", cell: (item: any) => <div className="p-2 text-red-600 font-bold">{item.onHand}</div> },
+    { id: "suggest", header: "Suggestion", width: "30%", cell: (item: any) => <div className="p-2"><Badge variant="outline" className="bg-blue-50 text-blue-700">{item.suggest}</Badge></div> },
   ];
 
   return (
@@ -160,21 +160,27 @@ const InventoryDashboard = () => {
       </DashboardWidget>
 
       <DashboardWidget title="Replenishment Required" colSpan={2} className="min-h-[400px]">
-        <StandardTable
-          data={replenishment}
-          columns={replenishmentColumns}
-          keyExtractor={(i) => String(i.id)}
-          className="mt-4"
-        />
+        <div className="mt-4 border rounded-md">
+          <InteractiveSpreadsheet
+            data={replenishment}
+            columns={replenishmentColumns}
+            virtualized={true}
+            containerHeight="300px"
+            onChange={() => { }}
+          />
+        </div>
       </DashboardWidget>
 
       <DashboardWidget title="Recent Material Transactions" colSpan={4} className="min-h-[400px]">
-        <StandardTable
-          data={transactions}
-          columns={transactionColumns}
-          keyExtractor={(t) => String(t.id)}
-          className="mt-4"
-        />
+        <div className="mt-4 border rounded-md">
+          <InteractiveSpreadsheet
+            data={transactions}
+            columns={transactionColumns}
+            virtualized={true}
+            containerHeight="300px"
+            onChange={() => { }}
+          />
+        </div>
       </DashboardWidget>
 
     </StandardDashboard>

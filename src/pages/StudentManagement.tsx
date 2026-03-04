@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Users, Plus, Search } from "lucide-react";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function StudentManagement() {
@@ -14,33 +14,40 @@ export default function StudentManagement() {
     { id: "STU003", name: "Arjun Patel", email: "arjun@school.edu", status: "INACTIVE", program: "B.Tech ME" },
   ]);
 
-  const columns: Column<any>[] = [
+  const columns = [
     {
-      accessorKey: "id",
+      id: "id",
       header: "Student ID",
-      cell: (item) => <span className="font-mono text-xs">{item.id}</span>
+      width: "150px",
+      cell: (item: any) => <div className="px-2 h-full flex items-center font-mono text-xs">{item.id}</div>
     },
     {
-      accessorKey: "name",
+      id: "name",
       header: "Name",
-      cell: (item) => (
-        <div>
+      width: "250px",
+      cell: (item: any) => (
+        <div className="px-2 h-full flex flex-col justify-center">
           <div className="font-medium">{item.name}</div>
           <div className="text-xs text-muted-foreground">{item.email}</div>
         </div>
       )
     },
     {
-      accessorKey: "program",
+      id: "program",
       header: "Program",
+      width: "200px",
+      cell: (item: any) => <div className="px-2 h-full flex items-center">{item.program}</div>
     },
     {
-      accessorKey: "status",
+      id: "status",
       header: "Status",
-      cell: (item) => (
-        <Badge variant={item.status === "ACTIVE" ? "default" : "secondary"}>
-          {item.status}
-        </Badge>
+      width: "150px",
+      cell: (item: any) => (
+        <div className="px-2 h-full flex items-center">
+          <Badge variant={item.status === "ACTIVE" ? "default" : "secondary"}>
+            {item.status}
+          </Badge>
+        </div>
       )
     }
   ];
@@ -55,12 +62,15 @@ export default function StudentManagement() {
         </Button>
       }
     >
-      <StandardTable
-        data={students}
-        columns={columns}
-        filterColumn="name"
-        filterPlaceholder="Search students..."
-      />
+      <div className="bg-card w-full rounded-md border shadow-sm">
+        <InteractiveSpreadsheet
+          data={students}
+          columns={columns}
+          onChange={() => { }}
+          virtualized={true}
+          containerHeight="500px"
+        />
+      </div>
     </StandardPage>
   );
 }

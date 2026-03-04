@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -59,17 +59,19 @@ export default function UserManagement() {
     }
   });
 
-  const columns: Column<User>[] = [
-    { header: "Name", accessorKey: "name", cell: (row: User) => <div className="flex flex-col"><span className="font-semibold">{row.name}</span><span className="text-xs text-muted-foreground">{row.email}</span></div> },
-    { header: "Role", accessorKey: "role", cell: (row: User) => <Badge variant="outline">{row.role}</Badge> },
-    { header: "Department", accessorKey: "dept" },
-    { header: "MFA", accessorKey: "mfa", cell: (row: User) => row.mfa ? <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">Enabled</Badge> : <span className="text-muted-foreground">-</span> },
-    { header: "Status", accessorKey: "status", cell: (row: User) => <Badge variant={row.status === "active" ? "default" : "secondary"}>{row.status}</Badge> },
+  const columns: SpreadsheetColumn<any>[] = [
+    { id: "name", header: "Name", width: "25%", cell: (row: any) => <div className="p-2 flex flex-col"><span className="font-semibold">{row.name}</span><span className="text-xs text-muted-foreground">{row.email}</span></div> },
+    { id: "role", header: "Role", width: "15%", cell: (row: any) => <div className="p-2"><Badge variant="outline">{row.role}</Badge></div> },
+    { id: "dept", header: "Department", width: "20%", cell: (row: any) => <div className="p-2">{row.dept}</div> },
+    { id: "mfa", header: "MFA", width: "15%", cell: (row: any) => <div className="p-2">{row.mfa ? <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">Enabled</Badge> : <span className="text-muted-foreground">-</span>}</div> },
+    { id: "status", header: "Status", width: "15%", cell: (row: any) => <div className="p-2"><Badge variant={row.status === "active" ? "default" : "secondary"}>{row.status}</Badge></div> },
     {
-      header: "Actions", id: "actions", cell: (row: User) => (
-        <Button variant="ghost" size="sm" onClick={() => { setEditingUser(row); setIsSheetOpen(true); }}>
-          <Edit2 className="h-4 w-4" />
-        </Button>
+      id: "actions", header: "Actions", width: "10%", cell: (row: any) => (
+        <div className="p-2">
+          <Button variant="ghost" size="sm" onClick={() => { setEditingUser(row); setIsSheetOpen(true); }}>
+            <Edit2 className="h-4 w-4" />
+          </Button>
+        </div>
       )
     }
   ];
@@ -154,14 +156,19 @@ export default function UserManagement() {
         <Card className="p-4"><CardContent className="pt-0 flex items-center justify-between"><div><p className="text-sm text-muted-foreground">MFA Enabled</p><p className="text-2xl font-bold text-blue-600">{users.filter(u => u.mfa).length}</p></div><ShieldAlert className="text-blue-600 h-8 w-8 opacity-20" /></CardContent></Card>
       </div>
 
-      <StandardTable
-        data={users}
-        columns={columns}
-        isLoading={isLoading}
-        keyExtractor={(item) => item.id || Math.random().toString()}
-        filterColumn="name"
-        filterPlaceholder="Filter users..."
-      />
+      {isLoading ? (
+        <div className="p-8 text-center text-muted-foreground">Loading...</div>
+      ) : (
+        <div className="border rounded-md">
+          <InteractiveSpreadsheet
+            data={users}
+            columns={columns}
+            virtualized={true}
+            containerHeight="600px"
+            onChange={() => { }}
+          />
+        </div>
+      )}
     </StandardPage>
   );
 }

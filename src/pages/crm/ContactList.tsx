@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -48,22 +48,24 @@ export default function ContactList() {
         },
     });
 
-    const columns: Column<Contact>[] = [
-        { header: "Name", accessorKey: "name", cell: (row) => <div className="font-semibold">{row.name}<div className="text-xs text-muted-foreground">{row.title}</div></div> },
-        { header: "Company", accessorKey: "company" },
+    const columns: SpreadsheetColumn<any>[] = [
+        { id: "name", header: "Name", width: "30%", cell: (row: any) => <div className="p-2 font-semibold">{row.name}<div className="text-xs text-muted-foreground">{row.title}</div></div> },
+        { id: "company", header: "Company", width: "25%", cell: (row: any) => <div className="p-2">{row.company}</div> },
         {
-            header: "Contact", id: "contact", cell: (row) => (
-                <div className="flex flex-col text-xs">
+            id: "contact", header: "Contact", width: "35%", cell: (row: any) => (
+                <div className="p-2 flex flex-col text-xs">
                     {row.email && <div className="flex items-center gap-1"><Mail className="w-3 h-3" /> {row.email}</div>}
                     {row.phone && <div className="flex items-center gap-1"><Phone className="w-3 h-3" /> {row.phone}</div>}
                 </div>
             )
         },
         {
-            header: "Actions", id: "actions", cell: (row) => (
-                <Button variant="ghost" size="sm" onClick={() => deleteMutation.mutate(row.id)}>
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                </Button>
+            id: "actions", header: "Actions", width: "10%", cell: (row: any) => (
+                <div className="p-2">
+                    <Button variant="ghost" size="sm" onClick={() => deleteMutation.mutate(row.id)}>
+                        <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
+                </div>
             )
         }
     ];
@@ -92,14 +94,19 @@ export default function ContactList() {
                 </Sheet>
             }
         >
-            <StandardTable
-                data={contacts}
-                columns={columns}
-                isLoading={isLoading}
-                keyExtractor={(item) => item.id || Math.random().toString()}
-                filterColumn="name"
-                filterPlaceholder="Search contacts..."
-            />
+            {isLoading ? (
+                <div className="p-8 text-center text-muted-foreground">Loading...</div>
+            ) : (
+                <div className="border rounded-md">
+                    <InteractiveSpreadsheet
+                        data={contacts}
+                        columns={columns}
+                        virtualized={true}
+                        containerHeight="600px"
+                        onChange={() => { }}
+                    />
+                </div>
+            )}
         </StandardPage>
     );
 }

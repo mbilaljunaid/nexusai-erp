@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from '@tanstack/react-query';
 import { Card } from "@/components/ui/card";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -35,33 +35,37 @@ export default function ExpenditureInquiry() {
         queryKey: ['/api/ppm/expenditures', page, pageSize, searchQuery],
     });
 
-    const columns: Column<ExpenditureItem>[] = [
-        { header: "Date", accessorKey: "date", cell: (item) => new Date(item.date).toLocaleDateString() },
+    const columns = [
+        { id: "date", header: "Date", width: "150px", cell: (item: any) => <div className="px-2 h-full flex items-center">{new Date(item.date).toLocaleDateString()}</div> },
         {
-            header: "Project", accessorKey: "projectName", cell: (item) => (
-                <div>
+            id: "projectName", header: "Project", width: "250px", cell: (item: any) => (
+                <div className="px-2 h-full flex flex-col justify-center">
                     <div className="font-medium">{item.projectName}</div>
                     <div className="text-xs text-muted-foreground">{item.projectNumber}</div>
                 </div>
             )
         },
-        { header: "Task", accessorKey: "taskNumber" },
-        { header: "Exp Type", accessorKey: "expenditureType" },
-        { header: "Qty", accessorKey: "quantity", cell: (item) => parseFloat(item.quantity).toFixed(2) },
-        { header: "Raw Cost", accessorKey: "rawCost", cell: (item) => `$${parseFloat(item.rawCost).toLocaleString()}` },
-        { header: "Burdened", accessorKey: "burdenedCost", cell: (item) => item.burdenedCost ? `$${parseFloat(item.burdenedCost).toLocaleString()}` : '-' },
+        { id: "taskNumber", header: "Task", width: "150px", cell: (item: any) => <div className="px-2 h-full flex items-center">{item.taskNumber}</div> },
+        { id: "expenditureType", header: "Exp Type", width: "200px", cell: (item: any) => <div className="px-2 h-full flex items-center">{item.expenditureType}</div> },
+        { id: "quantity", header: "Qty", width: "100px", cell: (item: any) => <div className="px-2 h-full flex items-center justify-end w-full">{parseFloat(item.quantity).toFixed(2)}</div> },
+        { id: "rawCost", header: "Raw Cost", width: "150px", cell: (item: any) => <div className="px-2 h-full flex items-center justify-end font-medium w-full">${parseFloat(item.rawCost).toLocaleString()}</div> },
+        { id: "burdenedCost", header: "Burdened", width: "150px", cell: (item: any) => <div className="px-2 h-full flex items-center justify-end w-full">{item.burdenedCost ? `$${parseFloat(item.burdenedCost).toLocaleString()}` : '-'}</div> },
         {
-            header: "Status", accessorKey: "status", cell: (item) => (
-                <Badge variant={item.status === 'COSTED' || item.status === 'DISTRIBUTED' ? 'default' : 'secondary'}>
-                    {item.status}
-                </Badge>
+            id: "status", header: "Status", width: "150px", cell: (item: any) => (
+                <div className="px-2 h-full flex items-center">
+                    <Badge variant={item.status === 'COSTED' || item.status === 'DISTRIBUTED' ? 'default' : 'secondary'}>
+                        {item.status}
+                    </Badge>
+                </div>
             )
         },
         {
-            header: "Source", accessorKey: "source", cell: (item) => (
-                <Badge variant="outline" className="opacity-80">
-                    {item.source}
-                </Badge>
+            id: "source", header: "Source", width: "150px", cell: (item: any) => (
+                <div className="px-2 h-full flex items-center">
+                    <Badge variant="outline" className="opacity-80">
+                        {item.source}
+                    </Badge>
+                </div>
             )
         }
     ];
@@ -94,15 +98,15 @@ export default function ExpenditureInquiry() {
                     </div>
                 </div>
 
-                <StandardTable
-                    data={results?.items || []}
-                    columns={columns}
-                    isLoading={isLoading}
-                    page={page}
-                    pageSize={pageSize}
-                    totalItems={results?.total}
-                    onPageChange={setPage}
-                />
+                <div className="bg-card w-full rounded-md border shadow-sm">
+                    <InteractiveSpreadsheet
+                        data={results?.items || []}
+                        columns={columns}
+                        onChange={() => { }}
+                        virtualized={true}
+                        containerHeight="600px"
+                    />
+                </div>
 
                 {results && (
                     <div className="mt-4 text-xs text-muted-foreground text-center">

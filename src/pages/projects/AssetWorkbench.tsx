@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Building, ArrowUpRight, DollarSign, CheckCircle2 } from "lucide-react";
@@ -39,40 +39,44 @@ export default function AssetWorkbench() {
         }
     });
 
-    const columns: Column<ProjectAsset>[] = [
+    const columns: SpreadsheetColumn<any>[] = [
         {
-            header: "Asset Name", accessorKey: "description", cell: (item) => (
-                <div>
+            id: "description", header: "Asset Name", width: "30%", cell: (item: any) => (
+                <div className="p-2">
                     <div className="font-medium">{item.description}</div>
                     <div className="text-xs text-muted-foreground">{item.assetNumber}</div>
                 </div>
             )
         },
         {
-            header: "Status", accessorKey: "status", cell: (item) => (
-                <Badge variant={item.status === 'INTERFACED' ? 'default' : item.status === 'NEW' ? 'secondary' : 'outline'}>
-                    {item.status}
-                </Badge>
+            id: "status", header: "Status", width: "15%", cell: (item: any) => (
+                <div className="p-2">
+                    <Badge variant={item.status === 'INTERFACED' ? 'default' : item.status === 'NEW' ? 'secondary' : 'outline'}>
+                        {item.status}
+                    </Badge>
+                </div>
             )
         },
         {
-            header: "CIP Cost", accessorKey: "cost", cell: (item) => (
-                <div className="font-mono flex items-center gap-1">
+            id: "cost", header: "CIP Cost", width: "15%", cell: (item: any) => (
+                <div className="p-2 font-mono flex items-center gap-1">
                     <DollarSign className="h-3 w-3 text-muted-foreground" />
                     {parseFloat(item.cost).toLocaleString()}
                 </div>
             )
         },
-        { header: "In Service Date", accessorKey: "datePlacedInService", cell: (item) => item.datePlacedInService ? new Date(item.datePlacedInService).toLocaleDateString() : '-' },
+        { id: "datePlacedInService", header: "In Service Date", width: "20%", cell: (item: any) => <div className="p-2">{item.datePlacedInService ? new Date(item.datePlacedInService).toLocaleDateString() : '-'}</div> },
         {
-            header: "FA Interface", accessorKey: "faAssetId", cell: (item) => item.faAssetId ? (
-                <div className="flex items-center gap-1 text-xs text-blue-600">
-                    <Building className="h-3 w-3" />
-                    Interfaced
-                </div>
-            ) : (
-                <span className="text-xs text-muted-foreground">Pending</span>
-            )
+            id: "faAssetId", header: "FA Interface", width: "20%", cell: (item: any) => <div className="p-2">
+                {item.faAssetId ? (
+                    <div className="flex items-center gap-1 text-xs text-blue-600">
+                        <Building className="h-3 w-3" />
+                        Interfaced
+                    </div>
+                ) : (
+                    <span className="text-xs text-muted-foreground">Pending</span>
+                )}
+            </div>
         }
     ];
 
@@ -116,16 +120,17 @@ export default function AssetWorkbench() {
             </div>
 
             <Card className="border-0 shadow-none bg-transparent">
-                <StandardTable
-                    data={results?.items || []}
-                    columns={columns}
-                    isLoading={isLoading}
-                    page={page}
-                    pageSize={pageSize}
-                    totalItems={results?.total}
-                    onPageChange={setPage}
-                    onRowClick={(item) => console.log('View asset', item.id)}
-                />
+                {isLoading ? (
+                    <div className="p-8 text-center text-muted-foreground">Loading...</div>
+                ) : (
+                    <InteractiveSpreadsheet
+                        data={results?.items || []}
+                        columns={columns}
+                        virtualized={true}
+                        containerHeight="600px"
+                        onChange={() => { }}
+                    />
+                )}
             </Card>
         </div>
     );

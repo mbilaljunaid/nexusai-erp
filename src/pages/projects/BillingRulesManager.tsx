@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet";
@@ -90,12 +90,13 @@ export default function BillingRulesManager() {
         }
     });
 
-    const columns: Column<BillingRule>[] = [
+    const columns: SpreadsheetColumn<any>[] = [
         {
+            id: "ruleType",
             header: "Type",
-            accessorKey: "ruleType",
-            cell: (item) => (
-                <div className="flex items-center gap-2">
+            width: "30%",
+            cell: (item: any) => (
+                <div className="p-2 flex items-center gap-2">
                     {item.ruleType === "FIXED_PRICE" && <DollarSign className="h-4 w-4 text-green-500" />}
                     {item.ruleType === "TM" && <Clock className="h-4 w-4 text-blue-500" />}
                     {item.ruleType === "COST_PLUS" && <FileText className="h-4 w-4 text-purple-500" />}
@@ -104,24 +105,28 @@ export default function BillingRulesManager() {
             )
         },
         {
+            id: "contractAmount",
             header: "Terms",
-            accessorKey: "contractAmount",
-            cell: (item) => (
-                <div>
+            width: "25%",
+            cell: (item: any) => (
+                <div className="p-2">
                     {item.ruleType === "FIXED_PRICE" && `$${Number(item.contractAmount).toLocaleString()}`}
                     {item.ruleType === "COST_PLUS" && `Markup: ${item.markupPercentage}%`}
                     {item.ruleType === "TM" && "As Incurred"}
                 </div>
             )
         },
-        { header: "Description", accessorKey: "description" },
+        { id: "description", header: "Description", width: "35%", cell: (item: any) => <div className="p-2">{item.description}</div> },
         {
+            id: "actions",
             header: "Actions",
-            width: "100px",
-            cell: (item) => (
-                <Button variant="ghost" size="sm" onClick={() => deleteMutation.mutate(item.id)}>
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
+            width: "10%",
+            cell: (item: any) => (
+                <div className="p-2">
+                    <Button variant="ghost" size="sm" onClick={() => deleteMutation.mutate(item.id)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                </div>
             )
         }
     ];
@@ -167,12 +172,17 @@ export default function BillingRulesManager() {
                         <CardTitle className="text-sm">Active Rules</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <StandardTable
-                            data={rules}
-                            columns={columns}
-                            isLoading={isLoading}
-                            pageSize={10}
-                        />
+                        {isLoading ? (
+                            <div className="p-8 text-center text-muted-foreground">Loading...</div>
+                        ) : (
+                            <InteractiveSpreadsheet
+                                data={rules}
+                                columns={columns}
+                                virtualized={true}
+                                containerHeight="300px"
+                                onChange={() => { }}
+                            />
+                        )}
                     </CardContent>
                 </Card>
             ) : (

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -92,48 +92,54 @@ export default function RevenueContractDetail() {
     if (isLoading) return <div className="p-8"><Skeleton className="h-96 w-full" /></div>;
     if (!contract) return <div className="p-8 text-center">Contract not found</div>;
 
-    const pobColumns: any[] = [
-        { header: "Name", accessorKey: "name" },
-        { header: "Method", accessorKey: "satisfactionMethod" },
+    const pobColumns = [
+        { id: "name", header: "Name", width: "250px", cell: (info: any) => <div className="px-2 h-full flex items-center">{info.name}</div> },
+        { id: "satisfactionMethod", header: "Method", width: "150px", cell: (info: any) => <div className="px-2 h-full flex items-center">{info.satisfactionMethod}</div> },
         {
+            id: "allocatedPrice",
             header: "Allocated Price",
-            accessorKey: "allocatedPrice",
-            cell: (info: any) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(parseFloat(info.getValue() || "0"))
+            width: "150px",
+            cell: (info: any) => <div className="px-2 h-full flex items-center">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(parseFloat(info.allocatedPrice || "0"))}</div>
         },
         {
+            id: "dates",
             header: "Dates",
+            width: "250px",
             cell: (info: any) => {
-                const start = info.row.original.startDate;
-                const end = info.row.original.endDate;
-                return start ? `${format(new Date(start), "MMM yy")} - ${format(new Date(end), "MMM yy")}` : "N/A";
+                const start = info.startDate;
+                const end = info.endDate;
+                return <div className="px-2 h-full flex items-center">{start ? `${format(new Date(start), "MMM yy")} - ${format(new Date(end), "MMM yy")}` : "N/A"}</div>;
             }
         }
     ];
 
-    const recognitionColumns: any[] = [
-        { header: "Period", accessorKey: "periodName" },
+    const recognitionColumns = [
+        { id: "periodName", header: "Period", width: "150px", cell: (info: any) => <div className="px-2 h-full flex items-center">{info.periodName}</div> },
         {
+            id: "amount",
             header: "Amount",
-            accessorKey: "amount",
-            cell: (info: any) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(parseFloat(info.getValue() || "0"))
+            width: "150px",
+            cell: (info: any) => <div className="px-2 h-full flex items-center">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(parseFloat(info.amount || "0"))}</div>
         },
         {
+            id: "status",
             header: "Status",
-            accessorKey: "status",
-            cell: (info: any) => {
-                const status = info.getValue();
-                return <Badge variant={status === "Posted" ? "default" : "outline"}>{status}</Badge>
-            }
+            width: "150px",
+            cell: (info: any) => (
+                <div className="px-2 h-full flex items-center">
+                    <Badge variant={info.status === "Posted" ? "default" : "outline"}>{info.status}</Badge>
+                </div>
+            )
         },
-        { header: "Type", accessorKey: "eventType" }
+        { id: "eventType", header: "Type", width: "150px", cell: (info: any) => <div className="px-2 h-full flex items-center">{info.eventType}</div> }
     ];
 
     return (
         <StandardPage
-      title="RevenueContractDetail"
-      description=""
-      className="p-6 space-y-6 bg-slate-50/50 min-h-screen"
-    >
+            title="RevenueContractDetail"
+            description=""
+            className="p-6 space-y-6 bg-slate-50/50 min-h-screen"
+        >
             <div className="flex justify-between items-start">
                 <div>
                     <div className="flex items-center gap-2 mb-1">
@@ -232,10 +238,13 @@ export default function RevenueContractDetail() {
                             <CardTitle>Performance Obligations (POBs)</CardTitle>
                             <CardDescription>Unit level delivery items for this contract.</CardDescription>
                         </CardHeader>
-                        <CardContent className="p-0">
-                            <StandardTable
+                        <CardContent className="p-0 h-[400px]">
+                            <InteractiveSpreadsheet
                                 data={contract.performanceObligations || []}
                                 columns={pobColumns}
+                                onChange={() => { }}
+                                virtualized={true}
+                                containerHeight="400px"
                             />
                         </CardContent>
                     </Card>
@@ -247,10 +256,13 @@ export default function RevenueContractDetail() {
                             <CardTitle>Recognition Schedules</CardTitle>
                             <CardDescription>Scheduled revenue realization across fiscal periods.</CardDescription>
                         </CardHeader>
-                        <CardContent className="p-0">
-                            <StandardTable
+                        <CardContent className="p-0 h-[400px]">
+                            <InteractiveSpreadsheet
                                 data={contract.revenueRecognitions || []}
                                 columns={recognitionColumns}
+                                onChange={() => { }}
+                                virtualized={true}
+                                containerHeight="400px"
                             />
                         </CardContent>
                     </Card>
@@ -272,5 +284,5 @@ export default function RevenueContractDetail() {
                 </TabsContent>
             </Tabs>
         </StandardPage>
-  );
+    );
 }

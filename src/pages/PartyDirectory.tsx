@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -71,30 +71,37 @@ export default function PartyDirectory() {
         }
     });
 
-    const columns: Column<Party>[] = [
+    const columns = [
         {
+            id: "partyName",
             header: "Party Name",
-            accessorKey: "partyName",
+            width: "250px",
             cell: (row: Party) => (
-                <div className="flex items-center gap-2">
+                <div className="px-2 h-full flex items-center gap-2">
                     {row.partyType === "ORGANIZATION" ? <Building2 className="w-4 h-4 text-blue-500" /> : <User className="w-4 h-4 text-green-500" />}
                     <span className="font-medium">{row.partyName}</span>
                 </div>
             )
         },
-        { header: "Registry ID", accessorKey: "partyNumber" },
-        { header: "Type", accessorKey: "partyType", cell: (row) => <Badge variant="outline">{row.partyType}</Badge> },
-        { header: "Email", accessorKey: "email" },
+        { id: "partyNumber", header: "Registry ID", width: "150px", cell: (row: Party) => <div className="px-2 h-full flex items-center">{row.partyNumber}</div> },
+        { id: "partyType", header: "Type", width: "150px", cell: (row: Party) => <div className="px-2 h-full flex items-center"><Badge variant="outline">{row.partyType}</Badge></div> },
+        { id: "email", header: "Email", width: "200px", cell: (row: Party) => <div className="px-2 h-full flex items-center">{row.email || "-"}</div> },
         {
+            id: "status",
             header: "Status",
-            accessorKey: "status",
-            cell: (row) => <Badge variant={row.status === "A" ? "default" : "secondary"}>{row.status === "A" ? "Active" : "Inactive"}</Badge>
+            width: "150px",
+            cell: (row: Party) => <div className="px-2 h-full flex items-center"><Badge variant={row.status === "A" ? "default" : "secondary"}>{row.status === "A" ? "Active" : "Inactive"}</Badge></div>
         },
         {
-            header: "Actions", id: "actions", cell: (row: Party) => (
-                <Button variant="ghost" size="sm" onClick={() => setLocation(`/mdm/parties/${row.id}`)}>
-                    <Eye className="h-4 w-4 mr-2" /> View
-                </Button>
+            id: "actions",
+            header: "Actions",
+            width: "150px",
+            cell: (row: Party) => (
+                <div className="px-2 h-full flex items-center">
+                    <Button variant="ghost" size="sm" onClick={() => setLocation(`/mdm/parties/${row.id}`)}>
+                        <Eye className="h-4 w-4 mr-2" /> View
+                    </Button>
+                </div>
             )
         }
     ];
@@ -168,14 +175,15 @@ export default function PartyDirectory() {
                 </Sheet>
             }
         >
-            <StandardTable
-                data={parties}
-                columns={columns}
-                isLoading={isLoading}
-                keyExtractor={(item) => item.id}
-                filterColumn="partyName"
-                filterPlaceholder="Search parties..."
-            />
+            <div className="bg-card w-full rounded-md border shadow-sm">
+                <InteractiveSpreadsheet
+                    data={parties}
+                    columns={columns}
+                    onChange={() => { }}
+                    virtualized={true}
+                    containerHeight="600px"
+                />
+            </div>
         </StandardPage>
     );
 }

@@ -1,4 +1,4 @@
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,40 +11,46 @@ export default function RetailProductCatalog() {
     queryFn: () => fetch("/api/retail-products").then(r => r.json())
   });
 
-  const columns: any[] = [
+  const columns: SpreadsheetColumn<any>[] = [
     {
-      accessorKey: "name",
+      id: "name",
       header: "Product Name",
-      cell: ({ row }) => (
-        <div>
-          <div className="font-medium">{row.original.name}</div>
-          <div className="text-xs text-muted-foreground">{row.original.sku}</div>
+      width: "35%",
+      cell: (item: any) => (
+        <div className="p-2">
+          <div className="font-medium">{item.name}</div>
+          <div className="text-xs text-muted-foreground">{item.sku}</div>
         </div>
       )
     },
     {
-      accessorKey: "category",
+      id: "category",
       header: "Category",
+      width: "20%",
+      cell: (item: any) => <div className="p-2">{item.category}</div>
     },
     {
-      accessorKey: "price",
+      id: "price",
       header: "Price",
-      cell: ({ row }) => <span className="font-mono">₹{row.original.price}</span>
+      width: "15%",
+      cell: (item: any) => <div className="p-2 font-mono">₹{item.price}</div>
     },
     {
-      accessorKey: "quantity",
+      id: "quantity",
       header: "Stock",
-      cell: ({ row }) => (
-        <span className={row.original.quantity > 0 ? "text-green-600 font-medium" : "text-red-500 font-medium"}>
-          {row.original.quantity}
-        </span>
+      width: "20%",
+      cell: (item: any) => (
+        <div className={`p-2 font-medium ${item.quantity > 0 ? "text-green-600" : "text-red-500"}`}>
+          {item.quantity}
+        </div>
       )
     },
     {
       id: "actions",
       header: "Actions",
+      width: "10%",
       cell: () => (
-        <div className="flex gap-2 justify-end">
+        <div className="p-2 flex gap-2 justify-end">
           <Button size="icon" variant="ghost" className="h-8 w-8">
             <Edit2 className="h-4 w-4" />
           </Button>
@@ -66,13 +72,19 @@ export default function RetailProductCatalog() {
         </Button>
       }
     >
-      <StandardTable
-        data={products}
-        columns={columns}
-        isLoading={isLoading}
-        filterColumn="name"
-        filterPlaceholder="Search products by name..."
-      />
+      {isLoading ? (
+        <div className="p-8 text-center text-muted-foreground">Loading...</div>
+      ) : (
+        <div className="border rounded-md">
+          <InteractiveSpreadsheet
+            data={products}
+            columns={columns}
+            virtualized={true}
+            containerHeight="600px"
+            onChange={() => { }}
+          />
+        </div>
+      )}
     </StandardPage>
   );
 }

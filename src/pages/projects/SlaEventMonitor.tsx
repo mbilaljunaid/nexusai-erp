@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -42,39 +42,41 @@ export default function SlaEventMonitor() {
         }
     });
 
-    const columns: Column<CostDistribution>[] = [
-        { header: "Accounting Date", accessorKey: "accountingDate", cell: (item) => new Date(item.accountingDate).toLocaleDateString() },
+    const columns: SpreadsheetColumn<any>[] = [
+        { id: "accountingDate", header: "Accounting Date", width: "12%", cell: (item: any) => <div className="p-2">{new Date(item.accountingDate).toLocaleDateString()}</div> },
         {
-            header: "Line Type", accessorKey: "lineType", cell: (item) => (
-                <Badge variant="outline" className="font-mono">{item.lineType}</Badge>
+            id: "lineType", header: "Line Type", width: "12%", cell: (item: any) => (
+                <div className="p-2">
+                    <Badge variant="outline" className="font-mono">{item.lineType}</Badge>
+                </div>
             )
         },
         {
-            header: "Amount", accessorKey: "amount", cell: (item) => (
-                <span className="font-mono font-medium">${parseFloat(item.amount).toLocaleString()}</span>
+            id: "amount", header: "Amount", width: "12%", cell: (item: any) => (
+                <div className="p-2 font-mono font-medium">${parseFloat(item.amount).toLocaleString()}</div>
             )
         },
         {
-            header: "Debit Account", accessorKey: "drAccount", cell: (item) => (
-                <div className="font-mono text-[10px] break-all max-w-[200px]">{item.drAccount || 'Unassigned'}</div>
+            id: "drAccount", header: "Debit Account", width: "20%", cell: (item: any) => (
+                <div className="p-2 font-mono text-[10px] break-all">{item.drAccount || 'Unassigned'}</div>
             )
         },
         {
-            header: "Credit Account", accessorKey: "crAccount", cell: (item) => (
-                <div className="font-mono text-[10px] break-all max-w-[200px]">{item.crAccount || 'Unassigned'}</div>
+            id: "crAccount", header: "Credit Account", width: "20%", cell: (item: any) => (
+                <div className="p-2 font-mono text-[10px] break-all">{item.crAccount || 'Unassigned'}</div>
             )
         },
         {
-            header: "Status", accessorKey: "status", cell: (item) => (
-                <div className="flex items-center gap-1 text-green-600 text-xs font-medium">
+            id: "status", header: "Status", width: "10%", cell: (item: any) => (
+                <div className="p-2 flex items-center gap-1 text-green-600 text-xs font-medium">
                     <CheckCircle2 className="h-3 w-3" />
                     {item.status}
                 </div>
             )
         },
         {
-            header: "Source", cell: (item) => (
-                <div className="text-xs text-muted-foreground whitespace-nowrap">
+            id: "source", header: "Source", width: "14%", cell: (item: any) => (
+                <div className="p-2 text-xs text-muted-foreground whitespace-nowrap">
                     {item.projectName} / {item.taskNumber}
                 </div>
             )
@@ -136,15 +138,17 @@ export default function SlaEventMonitor() {
                         />
                     </div>
                 </div>
-                <StandardTable
-                    data={results?.items || []}
-                    columns={columns}
-                    isLoading={isLoading}
-                    page={page}
-                    pageSize={pageSize}
-                    totalItems={results?.total}
-                    onPageChange={setPage}
-                />
+                {isLoading ? (
+                    <div className="p-8 text-center text-muted-foreground">Loading...</div>
+                ) : (
+                    <InteractiveSpreadsheet
+                        data={results?.items || []}
+                        columns={columns}
+                        virtualized={true}
+                        containerHeight="600px"
+                        onChange={() => { }}
+                    />
+                )}
             </Card>
         </StandardPage>
     );

@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Loader2, Download, FileText } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -73,11 +73,13 @@ export default function HRReports() {
         setVisibleColumns(allKeys);
     }
 
-    const columns: Column<any>[] = allKeys
+    const columns = allKeys
         .filter(key => visibleColumns.includes(key))
         .map(key => ({
-            accessorKey: key,
-            header: key.replace(/([A-Z])/g, ' $1').trim() // CamelCase to Title Case
+            id: key,
+            header: key.replace(/([A-Z])/g, ' $1').trim(), // CamelCase to Title Case
+            width: "200px",
+            cell: (row: any) => <div className="px-2 h-full flex items-center">{row[key]}</div>
         }));
 
     return (
@@ -156,13 +158,17 @@ export default function HRReports() {
                             )}
                         </div>
                     </CardHeader>
-                    <CardContent>
-                        <StandardTable
+                    <CardContent className="h-[500px] p-0">
+                        <InteractiveSpreadsheet
                             data={reportData}
                             columns={columns}
-                            isLoading={isLoadingData}
+                            onChange={() => { }}
+                            virtualized={true}
+                            containerHeight="500px"
                         />
-                        <p className="text-xs text-muted-foreground mt-2">Showing max 500 records. Export to CSV for full results.</p>
+                        <div className="p-4 bg-muted/20 border-t">
+                            <p className="text-xs text-muted-foreground">Showing max 500 records. Export to CSV for full results.</p>
+                        </div>
                     </CardContent>
                 </Card>
             )}

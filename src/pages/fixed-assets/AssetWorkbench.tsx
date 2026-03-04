@@ -21,7 +21,7 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from '@/components/layout/StandardPage';
 
 interface FaAssetWithFinancials extends Omit<FaAsset, 'originalCost' | 'datePlacedInService'> {
@@ -48,48 +48,63 @@ export default function AssetWorkbench() {
     const assets = assetsData?.data || [];
     const totalCount = assetsData?.total || 0;
 
-    const columns: Column<FaAssetWithFinancials>[] = [
+    const columns: any[] = [
         {
+            id: "assetNumber",
             header: "Asset Number",
-            accessorKey: "assetNumber",
-            className: "font-medium"
+            width: "150px",
+            cell: (asset: FaAssetWithFinancials) => <div className="px-2 h-full flex items-center font-medium">{asset.assetNumber}</div>
         },
         {
+            id: "description",
             header: "Description",
-            accessorKey: "description"
+            width: "250px",
+            cell: (asset: FaAssetWithFinancials) => <div className="px-2 h-full flex items-center">{asset.description}</div>
         },
         {
+            id: "categoryId",
             header: "Category",
-            accessorKey: "categoryId"
+            width: "150px",
+            cell: (asset: FaAssetWithFinancials) => <div className="px-2 h-full flex items-center">{asset.categoryId}</div>
         },
         {
+            id: "datePlacedInService",
             header: "In Service Date",
-            cell: (asset) => new Date(asset.datePlacedInService).toLocaleDateString()
+            width: "150px",
+            cell: (asset: FaAssetWithFinancials) => <div className="px-2 h-full flex items-center">{new Date(asset.datePlacedInService).toLocaleDateString()}</div>
         },
         {
+            id: "originalCost",
             header: "Cost",
-            className: "text-right font-medium",
-            cell: (asset) => `$${Number(asset.originalCost).toLocaleString()}`
+            width: "150px",
+            cell: (asset: FaAssetWithFinancials) => <div className="px-2 h-full flex items-center justify-end font-medium w-full">${Number(asset.originalCost).toLocaleString()}</div>
         },
         {
+            id: "recoverableCost",
             header: "Recoverable",
-            className: "text-right",
-            cell: (asset) => `$${Number(asset.recoverableCost).toLocaleString()}`
+            width: "150px",
+            cell: (asset: FaAssetWithFinancials) => <div className="px-2 h-full flex items-center justify-end w-full">${Number(asset.recoverableCost).toLocaleString()}</div>
         },
         {
+            id: "status",
             header: "Status",
-            cell: (asset) => (
-                <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${asset.status === "ACTIVE" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                    }`}>
-                    {asset.status}
-                </span>
+            width: "150px",
+            cell: (asset: FaAssetWithFinancials) => (
+                <div className="px-2 h-full flex items-center">
+                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${asset.status === "ACTIVE" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}>
+                        {asset.status}
+                    </span>
+                </div>
             )
         },
         {
+            id: "actions",
             header: "Actions",
-            className: "text-right",
-            cell: (asset) => (
-                asset.status === "ACTIVE" && <RetireAssetDialog asset={asset as any} />
+            width: "100px",
+            cell: (asset: FaAssetWithFinancials) => (
+                <div className="px-2 h-full flex items-center justify-end w-full">
+                    {asset.status === "ACTIVE" && <RetireAssetDialog asset={asset as any} />}
+                </div>
             )
         }
     ];
@@ -122,17 +137,19 @@ export default function AssetWorkbench() {
                                     A list of all assets in the Corporate Book.
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent>
-                                <StandardTable
-                                    data={assets}
+                            <CardContent className="p-0 h-[500px]">
+                                <InteractiveSpreadsheet
+                                    data={assets as any[]}
                                     columns={columns}
-                                    isLoading={isLoadingAssets}
-                                    page={page}
-                                    pageSize={pageSize}
-                                    totalItems={totalCount}
-                                    onPageChange={setPage}
-                                    keyExtractor={(i) => i.id}
+                                    onChange={() => { }}
+                                    virtualized={true}
+                                    containerHeight="500px"
                                 />
+                                <div className="p-4 bg-muted/20 border-t flex justify-end gap-2 items-center">
+                                    <span className="text-xs text-muted-foreground mr-4">Page {page}</span>
+                                    <button disabled={page === 1} onClick={() => setPage(page - 1)} className="text-xs border px-2 py-1 rounded disabled:opacity-50">Prev</button>
+                                    <button disabled={assets.length < pageSize} onClick={() => setPage(page + 1)} className="text-xs border px-2 py-1 rounded disabled:opacity-50">Next</button>
+                                </div>
                             </CardContent>
                         </Card>
                     </TabsContent>

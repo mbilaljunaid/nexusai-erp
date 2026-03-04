@@ -11,7 +11,7 @@ import {
   Database,
   ArrowRightLeft
 } from "lucide-react";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { MetricCard } from "@/components/MetricCard";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Badge } from "@/components/ui/badge";
@@ -39,12 +39,13 @@ export default function AuditTrails() {
     queryFn: () => fetch("/api/hr/audit-logs").then(r => r.json()).catch(() => []),
   });
 
-  const columns: Column<AuditLog>[] = [
+  const columns: SpreadsheetColumn<any>[] = [
     {
+      id: "action",
       header: "Action / Event",
-      accessorKey: "action",
-      cell: (l) => (
-        <div className="flex items-center gap-2">
+      width: "25%",
+      cell: (l: any) => (
+        <div className="p-2 flex items-center gap-2">
           <Badge
             variant="outline"
             className={
@@ -60,25 +61,28 @@ export default function AuditTrails() {
       )
     },
     {
+      id: "entityId",
       header: "Entity ID",
-      accessorKey: "entityId",
-      cell: (l) => <span className="text-xs font-mono bg-slate-100 px-1.5 py-0.5 rounded">{l.entityId}</span>
+      width: "15%",
+      cell: (l: any) => <div className="p-2"><span className="text-xs font-mono bg-slate-100 px-1.5 py-0.5 rounded">{l.entityId}</span></div>
     },
     {
+      id: "actorId",
       header: "Performed By",
-      accessorKey: "actorId",
-      cell: (l) => (
-        <div className="flex items-center gap-2">
+      width: "20%",
+      cell: (l: any) => (
+        <div className="p-2 flex items-center gap-2">
           <User className="h-3 w-3 text-muted-foreground" />
           <span className="text-sm">{l.actorId}</span>
         </div>
       )
     },
     {
+      id: "timestamp",
       header: "Timestamp",
-      accessorKey: "timestamp",
-      cell: (l) => (
-        <div className="flex items-center gap-2 text-muted-foreground">
+      width: "25%",
+      cell: (l: any) => (
+        <div className="p-2 flex items-center gap-2 text-muted-foreground">
           <History className="h-3 w-3" />
           <span className="text-xs font-mono">
             {format(new Date(l.timestamp), 'MMM d, yyyy HH:mm:ss')}
@@ -87,18 +91,21 @@ export default function AuditTrails() {
       )
     },
     {
-      header: "Traceability",
       id: "actions",
-      cell: (l) => (
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 gap-2 text-primary hover:text-primary hover:bg-primary/5"
-          onClick={() => setSelectedEntry(l)}
-        >
-          <Database className="h-4 w-4" />
-          View Details
-        </Button>
+      header: "Traceability",
+      width: "15%",
+      cell: (l: any) => (
+        <div className="p-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 gap-2 text-primary hover:text-primary hover:bg-primary/5"
+            onClick={() => setSelectedEntry(l)}
+          >
+            <Database className="h-4 w-4" />
+            View Details
+          </Button>
+        </div>
       )
     }
   ];
@@ -160,12 +167,17 @@ export default function AuditTrails() {
           </div>
         </div>
 
-        <StandardTable
-          data={logs}
-          columns={columns}
-          isLoading={isLoading}
-          filterColumn="action"
-        />
+        {isLoading ? (
+          <div className="p-8 text-center text-muted-foreground">Loading...</div>
+        ) : (
+          <InteractiveSpreadsheet
+            data={logs.filter(log => log.action.toLowerCase().includes(searchTerm.toLowerCase()) || log.actorId.toLowerCase().includes(searchTerm.toLowerCase()) || log.entityId.toLowerCase().includes(searchTerm.toLowerCase()))}
+            columns={columns}
+            virtualized={true}
+            containerHeight="600px"
+            onChange={() => { }}
+          />
+        )}
       </div>
 
       <AuditDetailsSideSheet

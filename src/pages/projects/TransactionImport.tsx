@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -57,22 +57,24 @@ export default function TransactionImport() {
         setIsImporting(false);
     };
 
-    const columns: Column<PendingTransaction>[] = [
-        { header: "Date", accessorKey: "date", cell: (item) => new Date(item.date).toLocaleDateString() },
+    const columns = [
+        { id: "date", header: "Date", width: "150px", cell: (item: any) => <div className="px-2 h-full flex items-center">{new Date(item.date).toLocaleDateString()}</div> },
         {
-            header: "Source", accessorKey: "source", cell: (item) => (
-                <Badge variant="outline" className="font-mono">{item.source}</Badge>
+            id: "source", header: "Source", width: "150px", cell: (item: any) => (
+                <div className="px-2 h-full flex items-center">
+                    <Badge variant="outline" className="font-mono">{item.source}</Badge>
+                </div>
             )
         },
-        { header: "Description", accessorKey: "description" },
+        { id: "description", header: "Description", width: "300px", cell: (item: any) => <div className="px-2 h-full flex items-center">{item.description}</div> },
         {
-            header: "Amount", accessorKey: "amount", cell: (item) => (
-                <span className="font-mono font-medium">${parseFloat(item.amount).toLocaleString()} {item.currency}</span>
+            id: "amount", header: "Amount", width: "200px", cell: (item: any) => (
+                <div className="px-2 h-full flex items-center justify-end font-mono font-medium w-full">${parseFloat(item.amount).toLocaleString()} {item.currency}</div>
             )
         },
         {
-            header: "Project / Task", cell: (item) => (
-                <div className="text-xs text-muted-foreground">
+            id: "projectTask", header: "Project / Task", width: "250px", cell: (item: any) => (
+                <div className="px-2 h-full flex items-center text-xs text-muted-foreground w-full">
                     <span className="font-medium text-foreground">{item.projectName}</span>
                     <span className="mx-1">/</span>
                     {item.taskNumber}
@@ -142,12 +144,15 @@ export default function TransactionImport() {
             </div>
 
             <Card className="border-0 shadow-none bg-transparent">
-                <StandardTable
-                    data={transactions || []}
-                    columns={columns}
-                    isLoading={isLoading}
-                    pageSize={20}
-                />
+                <div className="bg-card w-full rounded-md border shadow-sm">
+                    <InteractiveSpreadsheet
+                        data={transactions || []}
+                        columns={columns}
+                        onChange={() => { }}
+                        virtualized={true}
+                        containerHeight="600px"
+                    />
+                </div>
             </Card>
         </StandardPage>
     );

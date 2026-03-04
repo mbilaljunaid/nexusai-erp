@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useQuery } from '@tanstack/react-query';
@@ -41,46 +41,53 @@ export default function ProjectList() {
         DELAYED: { label: "Delayed", variant: "destructive" },
     };
 
-    const columns: any[] = [
+    const columns = [
         {
+            id: "projectNumber",
             header: "Number",
-            accessorKey: "projectNumber",
-            cell: (proj: Project) => <span className="font-mono text-xs">{proj.projectNumber}</span>
+            width: "150px",
+            cell: (proj: Project) => <div className="px-2 h-full flex items-center font-mono text-xs">{proj.projectNumber}</div>
         },
         {
+            id: "name",
             header: "Project",
-            accessorKey: "name",
+            width: "300px",
             cell: (proj: Project) => (
-                <div>
+                <div className="px-2 h-full flex flex-col justify-center">
                     <div className="font-semibold">{proj.name}</div>
                     <div className="text-xs text-muted-foreground line-clamp-1">{proj.description}</div>
                 </div>
             )
         },
         {
+            id: "projectType",
             header: "Type",
-            accessorKey: "projectType",
-            cell: (proj: Project) => <Badge variant="outline">{proj.projectType}</Badge>
+            width: "150px",
+            cell: (proj: Project) => <div className="px-2 h-full flex items-center"><Badge variant="outline">{proj.projectType}</Badge></div>
         },
         {
+            id: "status",
             header: "Status",
-            accessorKey: "status",
+            width: "150px",
             cell: (proj: Project) => {
                 const config = statusConfig[proj.status] || { label: proj.status, variant: "secondary" };
                 return (
-                    <Badge variant={config.variant}>
-                        {config.label}
-                    </Badge>
+                    <div className="px-2 h-full flex items-center">
+                        <Badge variant={config.variant}>
+                            {config.label}
+                        </Badge>
+                    </div>
                 );
             }
         },
         {
+            id: "percentComplete",
             header: "Progress",
-            accessorKey: "percentComplete",
+            width: "200px",
             cell: (proj: Project) => {
                 const progress = parseFloat(proj.percentComplete || "0");
                 return (
-                    <div className="w-[120px] space-y-1">
+                    <div className="px-2 h-full flex flex-col justify-center w-[150px] space-y-1">
                         <div className="flex justify-between text-[10px]">
                             <span>{progress}%</span>
                         </div>
@@ -90,19 +97,21 @@ export default function ProjectList() {
             }
         },
         {
+            id: "budget",
             header: "Budget",
-            accessorKey: "budget",
+            width: "150px",
             cell: (proj: Project) => (
-                <span className="font-medium">
+                <div className="px-2 h-full flex items-center justify-end font-medium w-full">
                     ${parseFloat(proj.budget || "0").toLocaleString()}
-                </span>
+                </div>
             )
         },
         {
-            header: "Actions",
             id: "actions",
+            header: "Actions",
+            width: "100px",
             cell: (proj: Project) => (
-                <div className="flex gap-2">
+                <div className="px-2 h-full flex items-center gap-2">
                     <Link to={`/projects/analytics?id=${proj.id}`}>
                         <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                             <TrendingUp className="h-4 w-4 text-blue-500" />
@@ -131,14 +140,15 @@ export default function ProjectList() {
             }
         >
             <div className="space-y-4">
-                <StandardTable
-                    data={projects || []}
-                    columns={columns}
-                    keyExtractor={(p) => p.id}
-                    filterColumn="name"
-                    filterPlaceholder="Filter projects..."
-                    isLoading={isLoading}
-                />
+                <div className="bg-card w-full rounded-md border shadow-sm">
+                    <InteractiveSpreadsheet
+                        data={projects || []}
+                        columns={columns}
+                        onChange={() => { }}
+                        virtualized={true}
+                        containerHeight="600px"
+                    />
+                </div>
             </div>
         </StandardPage>
     );

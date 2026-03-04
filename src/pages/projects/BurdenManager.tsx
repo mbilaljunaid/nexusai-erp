@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Percent, Layers } from "lucide-react";
@@ -30,38 +30,40 @@ export default function BurdenManager() {
         queryKey: ['/api/ppm/burden-schedules'],
     });
 
-    const scheduleColumns: Column<BurdenSchedule>[] = [
+    const scheduleColumns: SpreadsheetColumn<any>[] = [
         {
-            header: "Schedule Name", accessorKey: "name", cell: (item) => (
-                <div className="font-medium">{item.name}</div>
+            id: "name", header: "Schedule Name", width: "30%", cell: (item: any) => (
+                <div className="p-2 font-medium">{item.name}</div>
             )
         },
         {
-            header: "Version", accessorKey: "version", cell: (item) => (
-                <Badge variant="outline">{item.version}</Badge>
+            id: "version", header: "Version", width: "15%", cell: (item: any) => (
+                <div className="p-2"><Badge variant="outline">{item.version}</Badge></div>
             )
         },
         {
-            header: "Status", accessorKey: "activeFlag", cell: (item) => (
-                <Badge variant={item.activeFlag ? 'default' : 'secondary'}>
-                    {item.activeFlag ? 'Active' : 'Inactive'}
-                </Badge>
+            id: "activeFlag", header: "Status", width: "15%", cell: (item: any) => (
+                <div className="p-2">
+                    <Badge variant={item.activeFlag ? 'default' : 'secondary'}>
+                        {item.activeFlag ? 'Active' : 'Inactive'}
+                    </Badge>
+                </div>
             )
         },
-        { header: "Created", accessorKey: "createdAt", cell: (item) => new Date(item.createdAt).toLocaleDateString() },
+        { id: "createdAt", header: "Created", width: "20%", cell: (item: any) => <div className="p-2">{new Date(item.createdAt).toLocaleDateString()}</div> },
         {
-            header: "Rules", cell: (item) => (
-                <span className="text-muted-foreground">{item.rules?.length || 0} rules</span>
+            id: "rules", header: "Rules", width: "20%", cell: (item: any) => (
+                <div className="p-2 text-muted-foreground">{item.rules?.length || 0} rules</div>
             )
         }
     ];
 
-    const ruleColumns: Column<BurdenRule>[] = [
-        { header: "Order", accessorKey: "precedence", width: "10%" },
-        { header: "Expenditure Type", accessorKey: "expenditureType" },
+    const ruleColumns: SpreadsheetColumn<any>[] = [
+        { id: "precedence", header: "Order", width: "10%", cell: (item: any) => <div className="p-2">{item.precedence}</div> },
+        { id: "expenditureType", header: "Expenditure Type", width: "60%", cell: (item: any) => <div className="p-2">{item.expenditureType}</div> },
         {
-            header: "Multiplier", accessorKey: "multiplier", cell: (item) => (
-                <div className="flex items-center gap-1 font-mono">
+            id: "multiplier", header: "Multiplier", width: "30%", cell: (item: any) => (
+                <div className="p-2 flex items-center gap-1 font-mono">
                     <Percent className="h-3 w-3 text-muted-foreground" />
                     {(parseFloat(item.multiplier) * 100).toFixed(2)}%
                 </div>
@@ -87,14 +89,17 @@ export default function BurdenManager() {
                             <CardDescription>Select a schedule to view details</CardDescription>
                         </CardHeader>
                         <CardContent className="p-0">
-                            <StandardTable
-                                data={schedules || []}
-                                columns={scheduleColumns}
-                                isLoading={isLoading}
-                                onRowClick={setSelectedSchedule}
-                                pageSize={10}
-                                className="border-0 shadow-none"
-                            />
+                            {isLoading ? (
+                                <div className="p-8 text-center text-muted-foreground">Loading...</div>
+                            ) : (
+                                <InteractiveSpreadsheet
+                                    data={schedules || []}
+                                    columns={scheduleColumns}
+                                    virtualized={true}
+                                    containerHeight="600px"
+                                    onChange={() => { }}
+                                />
+                            )}
                         </CardContent>
                     </Card>
                 </div>
@@ -121,11 +126,15 @@ export default function BurdenManager() {
                                         <Layers className="h-4 w-4" />
                                         <span>Cost Multipliers</span>
                                     </div>
-                                    <StandardTable
-                                        data={selectedSchedule.rules || []}
-                                        columns={ruleColumns}
-                                        pageSize={100} // Show all rules
-                                    />
+                                    <div className="border rounded-md">
+                                        <InteractiveSpreadsheet
+                                            data={selectedSchedule.rules || []}
+                                            columns={ruleColumns}
+                                            virtualized={true}
+                                            containerHeight="400px"
+                                            onChange={() => { }}
+                                        />
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="h-64 flex flex-col items-center justify-center text-muted-foreground bg-muted/10 rounded-lg border border-dashed">
