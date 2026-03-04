@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Package, Printer, Archive, Send } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 
 interface Manifest { id: string; manifest_number: string; carrier_scac: string; ship_date: string; total_packages: number; total_weight_kg: number; status: string; }
 interface ManifestPackage { id: string; tracking_number: string; customer_name: string; ship_to_city: string; ship_to_state: string; ship_to_zip: string; weight_kg: number; service_code: string; label_printed: boolean; label_zpl: string; }
@@ -115,69 +117,87 @@ export default function CarrierManifest() {
                                     {selected.status === 'Open' && <button onClick={() => closeMut.mutate(selected.id)} style={{ padding: '6px 12px', background: '#d97706', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}><Archive size={11} /> Close</button>}
                                     {selected.status === 'Closed' && <button onClick={() => tenderMut.mutate(selected.id)} style={{ padding: '6px 12px', background: '#059669', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}><Send size={11} /> Tender</button>}
                                 </div>
-                            </div>
-
-                            {/* Add Package form */}
-                            {showNewPkg && (
-                                <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 10, padding: 12, marginBottom: 12 }}>
-                                    <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 8 }}>Add Package</div>
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
-                                        {[['customerName', 'Customer Name', 'text'], ['address', 'Address', 'text'], ['city', 'City', 'text'], ['state', 'State', 'text'], ['zip', 'ZIP', 'text'], ['weightKg', 'Weight (kg)', 'number']].map(([k, l, t]) => (
-                                            <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                                <label style={{ fontSize: 10, fontWeight: 600 }}>{l}</label>
-                                                <input type={t} value={(newPkg as any)[k] ?? ''} onChange={e => setNewPkg(p => ({ ...p, [k]: t === 'number' ? parseFloat(e.target.value) || 0 : e.target.value }))} style={{ padding: '5px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label={l} />
-                                            </div>
-                                        ))}
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                            <label style={{ fontSize: 10, fontWeight: 600 }}>Service</label>
-                                            <select value={newPkg.serviceCode} onChange={e => setNewPkg(p => ({ ...p, serviceCode: e.target.value }))} style={{ padding: '5px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label="Service code">
-                                                <option>GROUND</option><option>EXPRESS</option><option>OVERNIGHT</option><option>LTL</option>
-                                            </select>
-                                        </div>
+                                <InteractiveSpreadsheet
+                                    data={packages}
+                                    columns={[
+                                        {
+                                            id: "tracking_number",
+                                            header: "Tracking #",
+                                            width: "150px",
+                                            cell: (row, index, updateRow) => (
+                                                <Input
+                                                    className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent font-mono font-semibold"
+                                                    value={row.tracking_number}
+                                                    onChange={(e) => updateRow("tracking_number", e.target.value)}
+                                                    placeholder="Tracking Number"
+                                                />
+                                            )
+                                        },
+                                        {
+                                            id: "customer_name",
+                                            header: "Customer",
+                                            width: "200px",
+                                            cell: (row, index, updateRow) => (
+                                                <Input
+                                                    className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent"
+                                                    value={row.customer_name || ''}
+                                                    onChange={(e) => updateRow("customer_name", e.target.value)}
+                                                    placeholder="Customer Name"
+                                                />
+                                            )
+                                        },
+                                        {
+                                            id: "destination",
+                                            header: "Destination (City, ST Zip)",
+                                            width: "250px",
+                                            cell: (row, index, updateRow) => (
+                                                <div className="flex gap-1 h-9 items-center px-2">
+                                                    <Input className="h-7 min-w-0 border-0 focus-visible:ring-1 bg-transparent px-1" value={row.ship_to_city || ''} onChange={(e) => updateRow("ship_to_city", e.target.value)} placeholder="City" />
+                                                    <Input className="h-7 w-12 border-0 focus-visible:ring-1 bg-transparent px-1 text-center" value={row.ship_to_state || ''} onChange={(e) => updateRow("ship_to_state", e.target.value)} placeholder="ST" maxLength={2} />
+                                                    <Input className="h-7 w-20 border-0 focus-visible:ring-1 bg-transparent px-1" value={row.ship_to_zip || ''} onChange={(e) => updateRow("ship_to_zip", e.target.value)} placeholder="Zip" />
+                                                </div>
+                                            )
+                                        },
+                                        {
+                                            id: "weight_kg",
+                                            header: "Weight (kg)",
+                                            width: "120px",
+                                            cell: (row, index, updateRow) => (
+                                                <Input
+                                                    type="number"
+                                                    step="0.1"
+                                                    min="0"
+                                                    className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent font-mono text-right"
+                                                    value={row.weight_kg || ''}
+                                                    onChange={(e) => updateRow("weight_kg", parseFloat(e.target.value) || 0)}
+                                                />
+                                            )
+                                        },
+                                        {
+                                            id: "service_code",
+                                            header: "Service",
+                                            width: "140px",
+                                            cell: (row, index, updateRow) => (
+                                                <select
+                                                    className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent px-2"
+                                                    value={row.service_code || 'GROUND'}
+                                                    onChange={(e) => updateRow("service_code", e.target.value)}
+                                                >
+                                                    <option value="GROUND">GROUND</option>
+                                                    <option value="EXPRESS">EXPRESS</option>
+                                                    <option value="OVERNIGHT">OVERNIGHT</option>
+                                                    <option value="LTL">LTL</option>
+                                                </select>
+                                    <div style={{ marginTop: 14, background: '#111827', borderRadius: 8, padding: 12 }}>
+                                        <div style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 5 }}><Printer size={11} /> ZPL II Label Payload</div>
+                                        <pre style={{ fontSize: 10, fontFamily: 'monospace', color: '#d1fae5', margin: 0, whiteSpace: 'pre-wrap', maxHeight: 300, overflowY: 'auto' }}>{zplPreview}</pre>
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 6, marginTop: 8 }}>
-                                        <button onClick={() => setShowNewPkg(false)} style={{ padding: '5px 10px', background: '#f3f4f6', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer' }}>Cancel</button>
-                                        <button disabled={addPkgMut.isPending} onClick={() => addPkgMut.mutate(newPkg)} style={{ padding: '5px 10px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>Add & Generate Label</button>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Packages table */}
-                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
-                                <thead><tr style={{ background: '#f9fafb' }}>
-                                    {['Tracking #', 'Customer', 'Destination', 'Weight', 'Service', 'Label', ''].map(h => <th key={h} style={{ padding: '7px 10px', textAlign: 'left', fontWeight: 600, color: '#374151', borderBottom: '2px solid #e5e7eb' }}>{h}</th>)}
-                                </tr></thead>
-                                <tbody>
-                                    {packages.map(p => (
-                                        <tr key={p.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                                            <td style={{ padding: '8px 10px', fontFamily: 'monospace', fontWeight: 700 }}>{p.tracking_number}</td>
-                                            <td style={{ padding: '8px 10px' }}>{p.customer_name || '—'}</td>
-                                            <td style={{ padding: '8px 10px' }}>{p.ship_to_city}, {p.ship_to_state} {p.ship_to_zip}</td>
-                                            <td style={{ padding: '8px 10px', fontFamily: 'monospace' }}>{Number(p.weight_kg).toFixed(2)} kg</td>
-                                            <td style={{ padding: '8px 10px' }}>{p.service_code}</td>
-                                            <td style={{ padding: '8px 10px' }}><span style={{ color: p.label_printed ? '#059669' : '#9ca3af', fontWeight: 600, fontSize: 10 }}>{p.label_printed ? '✓ Printed' : 'Pending'}</span></td>
-                                            <td style={{ padding: '8px 10px' }}>
-                                                <button onClick={() => printMut.mutate(p.id)} style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '4px 8px', background: '#111827', color: '#fff', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>
-                                                    <Printer size={10} /> Print ZPL
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {packages.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: 16 }}>No packages</td></tr>}
-                                </tbody>
-                            </table>
-
-                            {/* ZPL Preview */}
-                            {zplPreview && (
-                                <div style={{ marginTop: 14, background: '#111827', borderRadius: 8, padding: 12 }}>
-                                    <div style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 5 }}><Printer size={11} /> ZPL II Label Payload</div>
-                                    <pre style={{ fontSize: 10, fontFamily: 'monospace', color: '#d1fae5', margin: 0, whiteSpace: 'pre-wrap', maxHeight: 300, overflowY: 'auto' }}>{zplPreview}</pre>
-                                </div>
-                            )}
-                        </>
-                    ) : <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 200, color: '#9ca3af', fontSize: 14 }}>Select a manifest to view details</div>}
+                                            )
+                                        }
+                            </>
+                            ) : <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 200, color: '#9ca3af', fontSize: 14 }}>Select a manifest to view details</div>}
+                        </div>
                 </div>
             </div>
-        </div>
-    );
+            );
 }

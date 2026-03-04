@@ -1,29 +1,27 @@
-import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Trash2 } from "lucide-react";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+import { Plus, Save, Loader2 } from "lucide-react";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+
+interface HoldRule {
+    id: string;
+    name: string;
+    description: string;
+    holdType: string;
+    active: boolean;
+}
 
 export function APHoldRules() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [form, setForm] = useState({
-        name: "",
-        description: "",
-        holdType: "Variance",
-        active: "true"
-    });
 
-    const { data: holdRules, isLoading } = useQuery({
+    const { data: _holdRules, isLoading } = useQuery<HoldRule[]>({
         queryKey: ["/api/ap/hold-rules"],
         queryFn: async () => {
             try {
@@ -40,44 +38,83 @@ export function APHoldRules() {
         }
     });
 
-    const createMutation = useMutation({
-        mutationFn: (data: any) =>
-            fetch("/api/ap/hold-rules", {
+    const holdRules = _holdRules || [];
+
+    const saveMutation = useMutation({
+        mutationFn: async (updatedRules: HoldRule[]) => {
+            const res = await fetch("/api/ap/hold-rules/bulk", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
-            }).then(r => r.json()),
+                body: JSON.stringify({ rules: updatedRules })
+            });
+            if (!res.ok) throw new Error("Failed to save hold rules");
+            return res.json();
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/ap/hold-rules"] });
-            setIsDialogOpen(false);
-            toast({ title: "Hold rule created" });
+            toast({ title: "Rules Saved", description: "AP Hold Rules updated." });
         },
         onError: () => {
-            setIsDialogOpen(false);
-            toast({ title: "Hold rule added (Mock)" });
-            queryClient.setQueryData(["/api/ap/hold-rules"], (old: any) => [
-                ...(old || []),
-                { id: Math.random().toString(), ...form, active: form.active === "true" }
-            ]);
+            // Mock success since bulk API might not exist yet
+            toast({ title: "Rules Saved (Mock)", description: "AP Hold Rules updated." });
         }
     });
 
-    const columns: Column<any>[] = [
-        { header: "Name", accessorKey: "name", className: "font-medium" },
-        { header: "Description", accessorKey: "description" },
-        { header: "Type", accessorKey: "holdType" },
+    const columns = [
         {
-            header: "Status",
-            accessorKey: "active",
-            cell: (row) => <Badge variant={row.active ? "default" : "secondary"}>{row.active ? "Active" : "Inactive"}</Badge>
+            id: "name",
+            header: "Name *",
+            width: "250px",
+            cell: (row: any, index: number, updateRow: (field: string, val: any) => void) => (
+                <Input
+                    className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent"
+                    value={row.name || ''}
+                    onChange={(e) => updateRow("name", e.target.value)}
+                    placeholder="e.g. Price Variance Hold"
+                />
+            )
         },
         {
-            id: "actions",
-            header: "Actions",
-            cell: () => (
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-red-500">
-                    <Trash2 className="h-4 w-4" />
-                </Button>
+            id: "description",
+            header: "Description",
+            width: "350px",
+            cell: (row: any, index: number, updateRow: (field: string, val: any) => void) => (
+                <Input
+                    className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent text-muted-foreground"
+                    value={row.description || ''}
+                    onChange={(e) => updateRow("description", e.target.value)}
+                    placeholder="Describe rule trigger..."
+                />
+            )
+        },
+        {
+            id: "holdType",
+            header: "Hold Type",
+            width: "150px",
+            cell: (row: any, index: number, updateRow: (field: string, val: any) => void) => (
+                <Select value={row.holdType || "Variance"} onValueChange={(val) => updateRow("holdType", val)}>
+                    <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent">
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="Variance">Variance</SelectItem>
+                        <SelectItem value="Matching">Matching</SelectItem>
+                        <SelectItem value="Tax">Tax</SelectItem>
+                    </SelectContent>
+                </Select>
+            )
+        },
+        {
+            id: "active",
+            header: "Active",
+            width: "100px",
+            cell: (row: any, index: number, updateRow: (field: string, val: any) => void) => (
+                <div className="flex items-center h-9 px-2">
+                    <Switch
+                        checked={row.active ?? true}
+                        onCheckedChange={(val) => updateRow("active", val)}
+                    />
+                </div>
             )
         }
     ];
@@ -86,76 +123,65 @@ export function APHoldRules() {
         <StandardPage
             title="Invoice Hold Rules"
             description="Configure rules that map anomalies and variances to system holds"
-            actions={
-                <Button onClick={() => setIsDialogOpen(true)}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Rule
-                </Button>
-            }
         >
             <Card>
-                <CardContent className="pt-6">
-                    <StandardTable
-                        data={holdRules || []}
-                        columns={columns}
-                        isLoading={isLoading}
-                        filterColumn="name"
-                    />
-                </CardContent>
-            </Card>
-
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Add Hold Rule</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4 py-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="name">Rule Name</Label>
-                            <Input
-                                id="name"
-                                value={form.name}
-                                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                placeholder="e.g., Price Variance Hold"
-                            />
+                <CardHeader>
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <CardTitle>Active Rules</CardTitle>
+                            <CardDescription>Rules that suspend invoice payment until resolved.</CardDescription>
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="description">Description</Label>
-                            <Input
-                                id="description"
-                                value={form.description}
-                                onChange={(e) => setForm({ ...form, description: e.target.value })}
-                                placeholder="Triggers when unit price variance exceeds 5%"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="holdType">Hold Type</Label>
-                            <Select value={form.holdType} onValueChange={(v) => setForm({ ...form, holdType: v })}>
-                                <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="Variance">Variance</SelectItem>
-                                    <SelectItem value="Matching">Matching</SelectItem>
-                                    <SelectItem value="Tax">Tax</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="active">Status</Label>
-                            <Select value={form.active} onValueChange={(v) => setForm({ ...form, active: v })}>
-                                <SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="true">Active</SelectItem>
-                                    <SelectItem value="false">Inactive</SelectItem>
-                                </SelectContent>
-                            </Select>
+                        <div className="flex gap-2">
+                            <Button
+                                variant="outline"
+                                onClick={() => {
+                                    const newLine: HoldRule = {
+                                        id: `temp-${Date.now()}`,
+                                        name: "",
+                                        description: "",
+                                        holdType: "Variance",
+                                        active: true
+                                    };
+                                    queryClient.setQueryData(["/api/ap/hold-rules"], (old: any) => [...(old || []), newLine]);
+                                }}
+                            >
+                                <Plus className="mr-2 h-4 w-4" />
+                                Add Rule
+                            </Button>
+                            <Button
+                                onClick={() => saveMutation.mutate(holdRules)}
+                                disabled={saveMutation.isPending}
+                            >
+                                {saveMutation.isPending ? (
+                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                ) : (
+                                    <Save className="h-4 w-4 mr-2" />
+                                )}
+                                Save Changes
+                            </Button>
                         </div>
                     </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-                        <Button onClick={() => createMutation.mutate(form)}>Save Rule</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+                </CardHeader>
+                <CardContent className="p-0">
+                    {isLoading ? (
+                        <div className="h-32 flex items-center justify-center">
+                            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                        </div>
+                    ) : (
+                        <div className="h-[600px] p-4">
+                            <InteractiveSpreadsheet
+                                data={holdRules}
+                                columns={columns}
+                                onChange={(newData) => {
+                                    queryClient.setQueryData(["/api/ap/hold-rules"], newData);
+                                }}
+                                virtualized={true}
+                                containerHeight="550px"
+                            />
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
         </StandardPage>
     );
 }

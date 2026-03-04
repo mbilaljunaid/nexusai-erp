@@ -6,12 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { BookOpen, Plus, Edit, Trash2, DollarSign, Calendar, Globe } from "lucide-react";
+import { BookOpen, Plus, DollarSign, Calendar } from "lucide-react";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 
 interface SSPBook {
     id: string;
@@ -281,76 +280,127 @@ export default function RevenueSSPManager() {
                                 </CardDescription>
                             </div>
                             {selectedBook && (
-                                <Button onClick={openNewLine}>
-                                    <Plus className="h-4 w-4 mr-2" />
-                                    Add Line
-                                </Button>
+                                <div className="flex gap-2">
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => {
+                                            const newLines: any = [...lines, {
+                                                id: `temp-${Date.now()}`,
+                                                bookId: selectedBook.id,
+                                                itemId: "",
+                                                itemGroup: "",
+                                                sspValue: "0.00",
+                                                minQuantity: "0",
+                                                maxQuantity: "",
+                                                region: "Global"
+                                            }];
+                                            queryClient.setQueryData(["/api/revenue/ssp/lines", selectedBook.id], newLines);
+                                        }}
+                                    >
+                                        <Plus className="h-4 w-4 mr-2" />
+                                        Add Line
+                                    </Button>
+                                    <Button
+                                        onClick={() => saveLineMutation.mutate(lines)}
+                                        disabled={saveLineMutation.isPending}
+                                    >
+                                        {saveLineMutation.isPending ? "Saving..." : "Save Changes"}
+                                    </Button>
+                                </div>
                             )}
                         </div>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-0">
                         {!selectedBook ? (
-                            <p className="text-center py-12 text-muted-foreground">
-                                ← Select an SSP book from the left to view and manage prices
-                            </p>
+                            <div className="p-8 pb-12">
+                                <p className="text-center py-12 text-muted-foreground">
+                                    ← Select an SSP book from the left to view and manage prices
+                                </p>
+                            </div>
                         ) : linesLoading ? (
-                            <p className="text-center py-12 text-muted-foreground">Loading lines...</p>
-                        ) : lines.length === 0 ? (
-                            <p className="text-center py-12 text-muted-foreground">
-                                No SSP lines defined. Click "Add Line" to create pricing.
-                            </p>
+                            <div className="p-8 pb-12">
+                                <p className="text-center py-12 text-muted-foreground">Loading lines...</p>
+                            </div>
                         ) : (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Item ID</TableHead>
-                                        <TableHead>Item Group</TableHead>
-                                        <TableHead className="text-right">SSP Value</TableHead>
-                                        <TableHead>Min Qty</TableHead>
-                                        <TableHead>Region</TableHead>
-                                        <TableHead>Actions</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {lines.map((line) => (
-                                        <TableRow key={line.id}>
-                                            <TableCell className="font-mono text-sm">
-                                                {line.itemId || "-"}
-                                            </TableCell>
-                                            <TableCell>{line.itemGroup || "-"}</TableCell>
-                                            <TableCell className="text-right font-mono font-semibold">
-                                                {selectedBook.currency} {parseFloat(line.sspValue).toFixed(2)}
-                                            </TableCell>
-                                            <TableCell>{line.minQuantity || "0"}</TableCell>
-                                            <TableCell>
-                                                {line.region ? (
-                                                    <Badge variant="outline">{line.region}</Badge>
-                                                ) : (
-                                                    "-"
-                                                )}
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex gap-2">
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        onClick={() => openEditLine(line)}
-                                                    >
-                                                        <Edit className="h-3 w-3" />
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        onClick={() => deleteLineMutation.mutate(line.id)}
-                                                    >
-                                                        <Trash2 className="h-3 w-3 text-red-500" />
-                                                    </Button>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
+                            <InteractiveSpreadsheet
+                                data={lines}
+                                columns={[
+                                    {
+                                        id: "itemId",
+                                        header: "Item ID",
+                                        width: "150px",
+                                        cell: (row, index, updateRow) => (
+                                            <Input
+                                                className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent"
+                                                value={row.itemId || ''}
+                                                onChange={(e) => updateRow("itemId", e.target.value)}
+                                                placeholder="e.g. PROD-01"
+                                            />
+                                        )
+                                    },
+                                    {
+                                        id: "itemGroup",
+                                        header: "Item Group",
+                                        width: "150px",
+                                        cell: (row, index, updateRow) => (
+                                            <Input
+                                                className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent"
+                                                value={row.itemGroup || ''}
+                                                onChange={(e) => updateRow("itemGroup", e.target.value)}
+                                            />
+                                        )
+                                    },
+                                    {
+                                        id: "sspValue",
+                                        header: `SSP Value (${selectedBook.currency})`,
+                                        width: "140px",
+                                        cell: (row, index, updateRow) => (
+                                            <Input
+                                                type="number"
+                                                step="0.01"
+                                                className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent text-right font-mono font-semibold"
+                                                value={row.sspValue || ''}
+                                                onChange={(e) => updateRow("sspValue", e.target.value)}
+                                            />
+                                        )
+                                    },
+                                    {
+                                        id: "minQuantity",
+                                        header: "Min Qty",
+                                        width: "100px",
+                                        cell: (row, index, updateRow) => (
+                                            <Input
+                                                type="number"
+                                                step="0.01"
+                                                className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent"
+                                                value={row.minQuantity || ''}
+                                                onChange={(e) => updateRow("minQuantity", e.target.value)}
+                                            />
+                                        )
+                                    },
+                                    {
+                                        id: "region",
+                                        header: "Region",
+                                        width: "150px",
+                                        cell: (row, index, updateRow) => (
+                                            <Select value={row.region || "Global"} onValueChange={(val) => updateRow("region", val)}>
+                                                <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Global">Global</SelectItem>
+                                                    <SelectItem value="AMERICAS">AMERICAS</SelectItem>
+                                                    <SelectItem value="EMEA">EMEA</SelectItem>
+                                                    <SelectItem value="APAC">APAC</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        )
+                                    }
+                                ]}
+                                onChange={(newData) => {
+                                    queryClient.setQueryData(["/api/revenue/ssp/lines", selectedBook.id], newData);
+                                }}
+                            />
                         )}
                     </CardContent>
                 </Card>
@@ -419,106 +469,6 @@ export default function RevenueSSPManager() {
                 </DialogContent>
             </Dialog>
 
-            {/* Create/Edit Line Dialog */}
-            <Dialog open={isLineDialogOpen} onOpenChange={setIsLineDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>{editingLine ? "Edit" : "Add"} SSP Line</DialogTitle>
-                        <DialogDescription>
-                            Define the standalone selling price for an item or item group.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <form onSubmit={handleLineSubmit}>
-                        <div className="space-y-4 py-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="itemId">Item ID</Label>
-                                <Input
-                                    id="itemId"
-                                    name="itemId"
-                                    placeholder="e.g., PROD-001"
-                                    defaultValue={editingLine?.itemId || ""}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="itemGroup">Item Group</Label>
-                                <Input
-                                    id="itemGroup"
-                                    name="itemGroup"
-                                    placeholder="e.g., Software Licenses"
-                                    defaultValue={editingLine?.itemGroup || ""}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="sspValue">SSP Value *</Label>
-                                <Input
-                                    id="sspValue"
-                                    name="sspValue"
-                                    type="number"
-                                    step="0.01"
-                                    placeholder="0.00"
-                                    defaultValue={editingLine?.sspValue || ""}
-                                    required
-                                />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="minQuantity">Min Quantity</Label>
-                                    <Input
-                                        id="minQuantity"
-                                        name="minQuantity"
-                                        type="number"
-                                        step="0.01"
-                                        defaultValue={editingLine?.minQuantity || "0"}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="maxQuantity">Max Quantity</Label>
-                                    <Input
-                                        id="maxQuantity"
-                                        name="maxQuantity"
-                                        type="number"
-                                        step="0.01"
-                                        defaultValue={editingLine?.maxQuantity || ""}
-                                    />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="region">Region</Label>
-                                <Select name="region" defaultValue={editingLine?.region || ""}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select region (optional)" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="">Global (All Regions)</SelectItem>
-                                        <SelectItem value="AMERICAS">Americas</SelectItem>
-                                        <SelectItem value="EMEA">EMEA</SelectItem>
-                                        <SelectItem value="APAC">APAC</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-                        <DialogFooter>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => {
-                                    setIsLineDialogOpen(false);
-                                    setEditingLine(null);
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" disabled={saveLineMutation.isPending}>
-                                {saveLineMutation.isPending
-                                    ? "Saving..."
-                                    : editingLine
-                                        ? "Update Line"
-                                        : "Add Line"}
-                            </Button>
-                        </DialogFooter>
-                    </form>
-                </DialogContent>
-            </Dialog>
         </StandardPage>
     );
 }
