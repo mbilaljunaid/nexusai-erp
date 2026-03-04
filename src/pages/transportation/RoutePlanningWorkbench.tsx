@@ -4,7 +4,7 @@ import { Truck, MapPin, Navigation, Settings, AlertTriangle, Zap, Search } from 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { ShipmentDetailSideSheet } from "@/components/transportation/ShipmentDetailSideSheet";
@@ -33,46 +33,53 @@ export default function RoutePlanningWorkbench() {
     });
 
     const columns = [
-        { header: "Shipment #", accessorKey: "shipmentNumber" },
+        { id: "shipmentNumber", header: "Shipment #", width: "150px", cell: (info: any) => <div className="px-2 h-full flex items-center font-medium">{info.shipmentNumber}</div> },
         {
+            id: "status",
             header: "Status",
-            accessorKey: "status",
+            width: "120px",
             cell: (info: any) => (
-                <Badge variant={info.getValue() === "PLANNED" ? "outline" : "default"}>
-                    {info.getValue()}
-                </Badge>
+                <div className="px-2 h-full flex items-center">
+                    <Badge variant={info.status === "PLANNED" ? "outline" : "default"}>
+                        {info.status}
+                    </Badge>
+                </div>
             )
         },
         {
+            id: "carrierId",
             header: "Carrier",
-            accessorKey: "carrierId",
-            cell: (info: any) => info.getValue() ? (
-                <Badge variant="secondary">{info.getValue().slice(0, 8)}...</Badge>
-            ) : <span className="text-muted-foreground italic">Unassigned</span>
+            width: "150px",
+            cell: (info: any) => <div className="px-2 h-full flex items-center">{info.carrierId ? (
+                <Badge variant="secondary">{String(info.carrierId).slice(0, 8)}...</Badge>
+            ) : <span className="text-muted-foreground italic">Unassigned</span>}</div>
         },
         {
+            id: "laneId",
             header: "Lane",
-            accessorKey: "laneId",
-            cell: (info: any) => info.getValue() ? (
-                <span className="font-mono text-xs">{info.getValue().slice(0, 8)}...</span>
-            ) : <span className="text-muted-foreground">-</span>
+            width: "150px",
+            cell: (info: any) => <div className="px-2 h-full flex items-center">{info.laneId ? (
+                <span className="font-mono text-xs">{String(info.laneId).slice(0, 8)}...</span>
+            ) : <span className="text-muted-foreground">-</span>}</div>
         },
         {
+            id: "totalCost",
             header: "Est. Cost",
-            accessorKey: "totalCost",
-            cell: (info: any) => info.getValue() ? `$${Number(info.getValue()).toLocaleString()}` : "-"
+            width: "120px",
+            cell: (info: any) => <div className="px-2 h-full flex items-center">{info.totalCost ? `$${Number(info.totalCost).toLocaleString()}` : "-"}</div>
         },
         {
             id: "actions",
             header: "Optimization",
+            width: "200px",
             cell: (info: any) => (
-                <div className="flex space-x-2">
+                <div className="px-2 h-full flex items-center space-x-2">
                     <Button
                         size="sm"
                         variant="default"
                         className="h-7 text-xs bg-indigo-500 hover:bg-indigo-600 text-white"
-                        onClick={() => optimizeMutation.mutate(info.row.original.id)}
-                        disabled={info.row.original.status !== "PLANNED" || optimizeMutation.isPending}
+                        onClick={() => optimizeMutation.mutate(info.id)}
+                        disabled={info.status !== "PLANNED" || optimizeMutation.isPending}
                     >
                         <Zap className="mr-1 h-3 w-3" /> Auto-Plan
                     </Button>
@@ -81,7 +88,7 @@ export default function RoutePlanningWorkbench() {
                         variant="outline"
                         className="h-7 text-xs"
                         onClick={() => {
-                            setSelectedShipmentId(info.row.original.id);
+                            setSelectedShipmentId(info.id);
                             setIsSideSheetOpen(true);
                         }}
                     >
@@ -111,8 +118,14 @@ export default function RoutePlanningWorkbench() {
                                 <Search className="mr-2 h-4 w-4" /> Filter Shipments
                             </Button>
                         </CardHeader>
-                        <CardContent className="p-0">
-                            <StandardTable data={shipments || []} columns={columns} isLoading={isLoading} />
+                        <CardContent className="p-0 h-[400px]">
+                            <InteractiveSpreadsheet
+                                data={shipments || []}
+                                columns={columns}
+                                onChange={() => { }}
+                                virtualized={true}
+                                containerHeight="400px"
+                            />
                         </CardContent>
                     </Card>
 

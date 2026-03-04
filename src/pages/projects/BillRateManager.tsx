@@ -8,9 +8,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, DollarSign, Users, Briefcase, FileText, ChevronRight } from "lucide-react";
+import { Plus, DollarSign, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 
 interface BillRateSchedule {
     id: string;
@@ -57,7 +58,7 @@ export default function BillRateManager() {
         enabled: !!selectedSchedule,
     });
 
-    const { data: expTypes } = useQuery<any[]>({
+    const { data: expTypes = [] } = useQuery<any[]>({
         queryKey: ['/api/ppm/expenditure-types'],
     });
 
@@ -80,22 +81,28 @@ export default function BillRateManager() {
     });
 
     const rateMutation = useMutation({
-        mutationFn: async (data: any) => {
-            const res = await fetch("/api/ppm/bill-rates", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...data, scheduleId: selectedSchedule?.id })
+        mutationFn: async (rows: any[]) => {
+            const promises = rows.map(data => {
+                const payload = { ...data, scheduleId: selectedSchedule?.id };
+                return fetch("/api/ppm/bill-rates", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
             });
-            if (!res.ok) throw new Error(await res.text());
-            return res.json();
+            await Promise.all(promises);
+            return {};
         },
         onSuccess: () => {
-            toast({ title: "Success", description: "Rate added" });
+            toast({ title: "Success", description: "Rates saved successfully" });
             queryClient.invalidateQueries({ queryKey: [`/api/ppm/bill-rate-schedules/${selectedSchedule?.id}/rates`] });
             setIsRateOpen(false);
-            setRateForm({ jobTitle: "", expenditureTypeId: "", rate: "", startDate: new Date().toISOString().split('T')[0] });
         }
     });
+
+    const handleSaveRates = (rows: any[]) => {
+        rateMutation.mutate(rows);
+    };
 
     const schColumns: Column<BillRateSchedule>[] = [
         {
@@ -125,29 +132,75 @@ export default function BillRateManager() {
         }
     ];
 
-    const rateColumns: Column<BillRate>[] = [
+    const handleAddRow = () => {
+        const newRow = { id: `temp-${Date.now()}`, personId: "", jobTitle: "", expenditureTypeId: "", rate: "", startDate: new Date().toISOString().split('T')[0], endDate: "" };
+        queryClient.setQueryData([`/api/ppm/bill-rate-schedules/${selectedSchedule?.id}/rates`], (old: any) => [...(old || []), newRow]);
+    };
+
+    const columns = [
         {
-            header: "Type",
-            accessorKey: "id",
-            cell: (item) => {
-                if (item.personId) return <div className="flex items-center gap-2"><Users className="h-4 w-4" /> Person</div>;
-                if (item.jobTitle) return <div className="flex items-center gap-2"><Briefcase className="h-4 w-4" /> Job</div>;
-                return <div className="flex items-center gap-2"><FileText className="h-4 w-4" /> Expenditure Type</div>;
-            }
+            id: "personId",
+            header: "Person ID",
+            width: "150px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Input className="h-9 w-full bg-transparent border-0" value={row.personId || ""} onChange={e => updateRow("personId", e.target.value)} placeholder="Emp ID..." />
+            )
         },
         {
-            header: "Criteria",
-            accessorKey: "jobTitle",
-            cell: (item) => item.jobTitle || item.expenditureType || "N/A"
+            id: "jobTitle",
+            header: "Job Title",
+            width: "200px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Input className="h-9 w-full bg-transparent border-0" value={row.jobTitle || ""} onChange={e => updateRow("jobTitle", e.target.value)} placeholder="e.g. Senior Dev" />
+            )
         },
-        { header: "Rate", accessorKey: "rate", cell: (item) => <span className="font-mono font-bold">${parseFloat(item.rate).toFixed(2)}</span> },
-        { header: "Start Date", accessorKey: "startDate", cell: (item) => new Date(item.startDate).toLocaleDateString() },
+        {
+            id: "expenditureTypeId",
+            header: "Expenditure Type",
+            width: "250px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Select value={row.expenditureTypeId} onValueChange={(val) => updateRow("expenditureTypeId", val)}>
+                    <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent">
+                        <SelectValue placeholder="Select type..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {expTypes.map((t: any) => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+            )
+        },
+        {
+            id: "rate",
+            header: "Rate *",
+            width: "120px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Input type="number" className="h-9 w-full bg-transparent border-0 font-mono" value={row.rate || ""} onChange={e => updateRow("rate", e.target.value)} placeholder="0.00" />
+            )
+        },
+        {
+            id: "startDate",
+            header: "Start Date *",
+            width: "150px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Input type="date" className="h-9 w-full bg-transparent border-0" value={row.startDate ? new Date(row.startDate).toISOString().split('T')[0] : ""} onChange={e => updateRow("startDate", e.target.value)} />
+            )
+        },
+        {
+            id: "endDate",
+            header: "End Date",
+            width: "150px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Input type="date" className="h-9 w-full bg-transparent border-0" value={row.endDate ? new Date(row.endDate).toISOString().split('T')[0] : ""} onChange={e => updateRow("endDate", e.target.value)} />
+            )
+        }
     ];
+
+    const expTypeOptions = expTypes.map(t => ({ label: t.name, value: t.id }));
 
     return (
         <StandardPage
             title="Bill Rate Manager"
-            description="Manage revenue rates for projects and labor costing"
+            description="Manage client billing schedules and resource rates for projects and labor costing"
             actions={
                 !selectedSchedule ? (
                     <Dialog open={isSchOpen} onOpenChange={setIsSchOpen}>
@@ -184,49 +237,24 @@ export default function BillRateManager() {
                         </div>
 
                         <Card>
-                            <CardHeader className="flex flex-row items-center justify-between">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2">
                                 <div>
                                     <CardTitle>Schedule Rates</CardTitle>
                                     <CardDescription>Define Person, Job, or Expenditure Type specific bill rates</CardDescription>
                                 </div>
-                                <Dialog open={isRateOpen} onOpenChange={setIsRateOpen}>
-                                    <DialogTrigger asChild>
-                                        <Button size="sm"><Plus className="h-4 w-4 mr-2" /> Add Rate</Button>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                        <DialogHeader><DialogTitle>Add Bill Rate</DialogTitle></DialogHeader>
-                                        <div className="space-y-4 py-4">
-                                            <div className="space-y-2">
-                                                <Label>Job Title Override</Label>
-                                                <Input placeholder="e.g. Senior Architect" value={rateForm.jobTitle} onChange={(e) => setRateForm({ ...rateForm, jobTitle: e.target.value })} />
-                                            </div>
-                                            <div className="space-y-2 text-center text-xs text-muted-foreground">-- OR --</div>
-                                            <div className="space-y-2">
-                                                <Label>Expenditure Type Override</Label>
-                                                <Select value={rateForm.expenditureTypeId} onValueChange={(v) => setRateForm({ ...rateForm, expenditureTypeId: v })}>
-                                                    <SelectTrigger><SelectValue placeholder="Select type..." /></SelectTrigger>
-                                                    <SelectContent>
-                                                        {expTypes?.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div className="space-y-2">
-                                                    <Label>Rate ({selectedSchedule.currencyCode})</Label>
-                                                    <Input type="number" placeholder="0.00" value={rateForm.rate} onChange={(e) => setRateForm({ ...rateForm, rate: e.target.value })} />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <Label>Start Date</Label>
-                                                    <Input type="date" value={rateForm.startDate} onChange={(e) => setRateForm({ ...rateForm, startDate: e.target.value })} />
-                                                </div>
-                                            </div>
-                                            <Button className="w-full" onClick={() => rateMutation.mutate(rateForm)}>Add Rate</Button>
-                                        </div>
-                                    </DialogContent>
-                                </Dialog>
+                                <div className="flex gap-2">
+                                    <Button variant="outline" size="sm" onClick={handleAddRow}><Plus className="w-4 h-4 mr-2" /> Add Rate</Button>
+                                    <Button size="sm" onClick={() => handleSaveRates(rates || [])} disabled={rateMutation.isPending}>Save</Button>
+                                </div>
                             </CardHeader>
-                            <CardContent>
-                                <StandardTable data={rates || []} columns={rateColumns} isLoading={loadingRates} pageSize={10} />
+                            <CardContent className="h-[500px] p-0 border-t">
+                                <InteractiveSpreadsheet
+                                    data={rates || []}
+                                    columns={columns}
+                                    onChange={(newData) => queryClient.setQueryData([`/api/ppm/bill-rate-schedules/${selectedSchedule?.id}/rates`], () => newData)}
+                                    virtualized={true}
+                                    containerHeight="500px"
+                                />
                             </CardContent>
                         </Card>
                     </div>

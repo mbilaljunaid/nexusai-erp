@@ -1,7 +1,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -58,16 +58,22 @@ export default function ChangeRequestInbox() {
 
     const columns = [
         {
-            header: "Type", accessorKey: "requestType", cell: (row: any) => (
+            id: "requestType",
+            header: "Type",
+            width: "150px",
+            cell: (row: any) => (
                 <Badge variant="outline">{row.requestType}</Badge>
             )
         },
-        { header: "Entity Type", accessorKey: "entityType" },
-        { header: "Requested By", accessorKey: "requesterId" },
-        { header: "Date", accessorKey: "createdAt", cell: (row: any) => new Date(row.createdAt).toLocaleDateString() },
+        { id: "entityType", width: "200px", header: "Entity Type", cell: (row: any) => <div className="px-2 h-full flex items-center font-medium">{row.entityType}</div> },
+        { id: "requesterId", width: "200px", header: "Requested By", cell: (row: any) => <div className="px-2 h-full flex items-center text-muted-foreground">{row.requesterId}</div> },
+        { id: "createdAt", width: "150px", header: "Date", cell: (row: any) => <div className="px-2 h-full flex items-center text-muted-foreground">{new Date(row.createdAt).toLocaleDateString()}</div> },
         {
-            header: "Actions", id: "actions", cell: (row: any) => (
-                <div className="flex gap-2">
+            id: "actions",
+            header: "Actions",
+            width: "300px",
+            cell: (row: any) => (
+                <div className="flex gap-2 items-center h-full px-2">
                     <Button size="sm" variant="outline" className="text-green-600 border-green-200 hover:bg-green-50"
                         onClick={() => { setSelectedRequest(row); setActionType("APPROVE"); }}>
                         <Check className="w-4 h-4 mr-1" /> Approve
@@ -90,11 +96,15 @@ export default function ChangeRequestInbox() {
             description="Review and approve proposed changes to Master Data."
             breadcrumbs={[{ label: "MDM", href: "/mdm/governance" }, { label: "Change Requests" }]}
         >
-            <StandardTable
-                data={requests}
-                columns={columns}
-                isLoading={isLoading}
-            />
+            <div className="bg-card w-full rounded-md border shadow-sm">
+                <InteractiveSpreadsheet
+                    data={requests}
+                    columns={columns}
+                    onChange={() => { }}
+                    virtualized={true}
+                    containerHeight="600px"
+                />
+            </div>
 
             {/* Action Dialog */}
             <Dialog open={!!selectedRequest} onOpenChange={(open) => !open && setSelectedRequest(null)}>

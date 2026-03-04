@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { StandardTable } from '@/components/ui/standard-table';
+import { InteractiveSpreadsheet } from '@/components/ui/InteractiveSpreadsheet';
 import PIMService from '@/services/pimService';
 import { Package, Upload, FileText } from 'lucide-react';
 
@@ -33,37 +33,39 @@ export default function ProductCatalogDashboard() {
 
     const productColumns = [
         {
-            key: 'sku', header: 'SKU',
-            label: 'SKU',
-            render: (row: any) => <span className="font-mono text-sm">{row.sku}</span>
+            id: 'sku', header: 'SKU',
+            width: "150px",
+            cell: (row: any) => <div className="px-2 h-full flex items-center font-mono text-sm">{row.sku}</div>
         },
-        { key: 'name', header: 'Product', label: 'Product' },
+        { id: 'name', header: 'Product', width: "300px", cell: (row: any) => <div className="px-2 h-full flex items-center">{row.name}</div> },
         {
-            key: 'category',
+            id: 'category',
             header: 'Category',
-            label: 'Category',
-            render: (row: any) => <span>{row.pim_categories?.name || '-'}</span>
+            width: "200px",
+            cell: (row: any) => <div className="px-2 h-full flex items-center">{row.pim_categories?.name || '-'}</div>
         },
         {
-            key: 'brand',
+            id: 'brand',
             header: 'Brand',
-            label: 'Brand',
-            render: (row: any) => <span>{row.pim_brands?.name || '-'}</span>
+            width: "150px",
+            cell: (row: any) => <div className="px-2 h-full flex items-center">{row.pim_brands?.name || '-'}</div>
         },
         {
-            key: 'product_type',
+            id: 'product_type',
             header: 'Type',
-            label: 'Type',
-            render: (row: any) => <Badge variant="outline">{row.product_type}</Badge>
+            width: "150px",
+            cell: (row: any) => <div className="px-2 h-full flex items-center"><Badge variant="outline">{row.product_type}</Badge></div>
         },
         {
-            key: 'status',
+            id: 'status',
             header: 'Status',
-            label: 'Status',
-            render: (row: any) => (
-                <Badge variant={row.status === 'published' ? 'default' : 'secondary'}>
-                    {row.status}
-                </Badge>
+            width: "150px",
+            cell: (row: any) => (
+                <div className="px-2 h-full flex items-center">
+                    <Badge variant={row.status === 'published' ? 'default' : 'secondary'}>
+                        {row.status}
+                    </Badge>
+                </div>
             )
         }
     ];
@@ -150,11 +152,13 @@ export default function ProductCatalogDashboard() {
                         <CardHeader>
                             <CardTitle>Product Catalog</CardTitle>
                         </CardHeader>
-                        <CardContent>
-                            <StandardTable
+                        <CardContent className="p-0 h-[500px]">
+                            <InteractiveSpreadsheet
                                 columns={productColumns}
                                 data={products}
-                                pageSize={20}
+                                onChange={() => { }}
+                                virtualized={true}
+                                containerHeight="500px"
                             />
                         </CardContent>
                     </Card>

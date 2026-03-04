@@ -8,7 +8,7 @@ import {
     CardTitle,
     CardDescription
 } from "@/components/ui/card";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, TrendingUp, Sparkles, BrainCircuit, Activity } from "lucide-react";
@@ -26,54 +26,64 @@ export default function CostInsights() {
 
     const anomalyColumns = [
         {
+            id: "severity",
             header: "Severity",
-            accessorKey: "severity",
-            cell: (info: any) => {
-                const val = info.getValue();
+            width: "120px",
+            cell: (row: any) => {
+                const val = row.severity || "";
                 return (
-                    <Badge variant={val === "HIGH" ? "destructive" : val === "MEDIUM" ? "default" : "secondary"}>
-                        {val}
-                    </Badge>
+                    <div className="flex items-center h-full px-2">
+                        <Badge variant={val === "HIGH" ? "destructive" : val === "MEDIUM" ? "default" : "secondary"}>
+                            {val}
+                        </Badge>
+                    </div>
                 );
             }
         },
         {
+            id: "anomalyType",
             header: "Type",
-            accessorKey: "anomalyType",
-            cell: (info: any) => (
-                <div className="flex items-center gap-2">
+            width: "250px",
+            cell: (row: any) => (
+                <div className="flex items-center gap-2 h-full px-2">
                     <AlertCircle className="h-4 w-4 text-slate-400" />
-                    <span className="font-medium">{info.getValue().replace("_", " ")}</span>
+                    <span className="font-medium text-sm">{(row.anomalyType || "").replace("_", " ")}</span>
                 </div>
             )
         },
         {
+            id: "targetId",
             header: "Target",
-            accessorKey: "targetId",
-            cell: (info: any) => <span className="font-mono text-xs">{info.getValue().substring(0, 8)}...</span>
+            width: "150px",
+            cell: (row: any) => <div className="flex items-center h-full px-2 font-mono text-xs text-muted-foreground">{String(row.targetId || "").substring(0, 8)}...</div>
         },
         {
+            id: "description",
             header: "Description",
-            accessorKey: "description",
+            width: "350px",
+            cell: (row: any) => <div className="flex items-center h-full px-2 text-sm text-foreground">{row.description}</div>
         },
         {
+            id: "createdAt",
             header: "Detected",
-            accessorKey: "createdAt",
-            cell: (info: any) => format(new Date(info.getValue()), "MMM dd, HH:mm")
+            width: "150px",
+            cell: (row: any) => <div className="flex items-center h-full px-2 text-xs text-muted-foreground">{row.createdAt ? format(new Date(row.createdAt), "MMM dd, HH:mm") : ""}</div>
         }
     ];
 
     return (
         <StandardPage
-      title="Cost Management AI"
-      description="Proactive financial surveillance and predictive costing insights."
-      c          <p className="text-muted-foreground">Proactive financial surveillance and predictive costing insights.</p>
+            title="Cost Management AI"
+            description="Proactive financial surveillance and predictive costing insights."
+            actions={
+                <div className="flex items-center justify-between">
+                    <Badge variant="outline" className="px-3 py-1 bg-white">
+                        <Sparkles className="h-3 w-3 mr-2 text-amber-500 fill-amber-500" />
+                        AI Engine Active
+                    </Badge>
                 </div>
-                <Badge variant="outline" className="px-3 py-1 bg-white">
-                    <Sparkles className="h-3 w-3 mr-2 text-amber-500 fill-amber-500" />
-                    AI Engine Active
-                </Badge>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card className="bg-white border-none shadow-sm border-l-4 border-l-red-500">
@@ -118,14 +128,19 @@ export default function CostInsights() {
                                 <Skeleton className="h-12 w-full" />
                             </div>
                         ) : (
-                            <StandardTable
-                                data={anomalies || []}
-                                columns={anomalyColumns}
-                            />
+                            <div className="h-[500px]">
+                                <InteractiveSpreadsheet
+                                    data={anomalies || []}
+                                    columns={anomalyColumns}
+                                    onChange={() => { }}
+                                    virtualized={true}
+                                    containerHeight="500px"
+                                />
+                            </div>
                         )}
                     </CardContent>
                 </Card>
             </div>
         </StandardPage>
-  );
+    );
 }

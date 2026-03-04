@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Receipt, CheckCircle2, AlertCircle, Zap, ArrowRight, DollarSign } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
@@ -43,66 +43,73 @@ export default function FreightSettlementConsole() {
     });
 
     const columns = [
-        { header: "Charge ID", accessorKey: "id", cell: (info: any) => <span className="font-mono text-xs">{info.getValue().slice(0, 8)}</span> },
-        { header: "Shipment #", accessorKey: "shipmentId", cell: (info: any) => <Badge variant="outline">SHP-{info.getValue().slice(0, 6)}</Badge> },
+        { id: "id", header: "Charge ID", width: "100px", cell: (info: any) => <div className="px-2 h-full flex items-center font-mono text-xs">{String(info.id || "").slice(0, 8)}</div> },
+        { id: "shipmentId", header: "Shipment #", width: "150px", cell: (info: any) => <div className="px-2 h-full flex items-center"><Badge variant="outline">SHP-{String(info.shipmentId || "").slice(0, 6)}</Badge></div> },
         {
+            id: "plannedAmount",
             header: "Planned",
-            accessorKey: "plannedAmount",
-            cell: (info: any) => `$${Number(info.getValue()).toLocaleString()}`
+            width: "120px",
+            cell: (info: any) => <div className="px-2 h-full flex items-center">${Number(info.plannedAmount || 0).toLocaleString()}</div>
         },
         {
+            id: "actualAmount",
             header: "Actual",
-            accessorKey: "actualAmount",
-            cell: (info: any) => info.getValue() ? (
+            width: "120px",
+            cell: (info: any) => <div className="px-2 h-full flex items-center">{info.actualAmount ? (
                 <div className="flex items-center gap-2">
-                    <span className="font-semibold text-emerald-600">${Number(info.getValue()).toLocaleString()}</span>
+                    <span className="font-semibold text-emerald-600">${Number(info.actualAmount || 0).toLocaleString()}</span>
                 </div>
-            ) : <span className="text-muted-foreground italic">Awaiting Invoice</span>
+            ) : <span className="text-muted-foreground italic">Awaiting Invoice</span>}</div>
         },
         {
+            id: "varianceAmount",
             header: "Variance",
-            accessorKey: "varianceAmount",
-            cell: (info: any) => info.getValue() ? (
+            width: "120px",
+            cell: (info: any) => <div className="px-2 h-full flex items-center">{info.varianceAmount ? (
                 <span className={cn(
                     "font-bold",
-                    Number(info.getValue()) > 0 ? "text-amber-600" : "text-emerald-600"
+                    Number(info.varianceAmount) > 0 ? "text-amber-600" : "text-emerald-600"
                 )}>
-                    {Number(info.getValue()) > 0 ? "+" : ""}{Number(info.getValue()).toLocaleString()}
+                    {Number(info.varianceAmount) > 0 ? "+" : ""}{Number(info.varianceAmount).toLocaleString()}
                 </span>
-            ) : "-"
+            ) : "-"}</div>
         },
         {
+            id: "status",
             header: "Status",
-            accessorKey: "status",
+            width: "150px",
             cell: (info: any) => (
-                <Badge variant={
-                    info.getValue() === "MATCHED" ? "success" :
-                        info.getValue() === "DISPUTED" ? "destructive" :
-                            info.getValue() === "PAID" ? "default" : "secondary"
-                }>
-                    {info.getValue()}
-                </Badge>
+                <div className="px-2 h-full flex items-center">
+                    <Badge variant={
+                        info.status === "MATCHED" ? "success" :
+                            info.status === "DISPUTED" ? "destructive" :
+                                info.status === "PAID" ? "default" : "secondary"
+                    }>
+                        {info.status}
+                    </Badge>
+                </div>
             )
         },
         {
             id: "actions",
             header: "Actions",
+            width: "250px",
             cell: (info: any) => (
-                <div className="flex gap-2">
-                    {info.row.original.status === "ACCRUED" && (
+                <div className="px-2 h-full flex items-center gap-2">
+                    {info.status === "ACCRUED" && (
                         <Button
                             size="xs"
                             variant="glow"
-                            onClick={() => reconcileMutation.mutate({ id: info.row.original.id, amount: Number(info.row.original.plannedAmount) })}
+                            onClick={() => reconcileMutation.mutate({ id: info.id, amount: Number(info.plannedAmount) })}
                         >
                             Auto-Match
                         </Button>
                     )}
-                    {info.row.original.status === "MATCHED" && (
+                    {info.status === "MATCHED" && (
                         <Button
                             size="xs"
                             className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                            onClick={() => interfaceMutation.mutate(info.row.original.id)}
+                            onClick={() => interfaceMutation.mutate(info.id)}
                         >
                             Pay Carrier
                         </Button>
@@ -177,11 +184,13 @@ export default function FreightSettlementConsole() {
                         Freight Invoice Workbench
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="p-0">
-                    <StandardTable
+                <CardContent className="p-0 h-[400px]">
+                    <InteractiveSpreadsheet
                         data={charges || []}
                         columns={columns}
-                        isLoading={isLoading}
+                        onChange={() => { }}
+                        virtualized={true}
+                        containerHeight="400px"
                     />
                 </CardContent>
             </Card>

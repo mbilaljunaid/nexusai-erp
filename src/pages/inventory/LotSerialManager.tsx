@@ -6,10 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Plus, Search, QrCode, Barcode } from "lucide-react";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { api } from "@/lib/api";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -21,9 +19,8 @@ export function LotSerialManager() {
     const [activeTab, setActiveTab] = useState("lots");
     const [lotPage, setLotPage] = useState(1);
     const [serialPage, setSerialPage] = useState(1);
-    const [pageSize] = useState(25);
+    const [pageSize] = useState(100);
     const [search, setSearch] = useState("");
-    const [createOpen, setCreateOpen] = useState(false);
     const [activeInvOrgId, setActiveInvOrgId] = useState<string | undefined>(undefined);
 
     const scopeHeaders = buildScopeHeaders({
@@ -76,58 +73,161 @@ export function LotSerialManager() {
     });
 
     // Mutations
-    const createLotMutation = useMutation({
-        mutationFn: (data: any) => api.inventory.lots.create(data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["/api/inventory/lots"] });
-            setCreateOpen(false);
-            toast({ title: "Lot created successfully" });
-        }
-    });
-
-    const createSerialMutation = useMutation({
-        mutationFn: (data: any) => api.inventory.serials.create(data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["/api/inventory/serials"] });
-            setCreateOpen(false);
-            toast({ title: "Serial created successfully" });
-        }
-    });
-
-    // Form State
-    const [newItemId, setNewItemId] = useState("");
-    const [newNumber, setNewNumber] = useState("");
-    const [newQty, setNewQty] = useState("0");
-
-    const handleCreate = () => {
-        if (!newItemId || !newNumber) return;
-
-        const payload = {
-            inventoryId: newItemId,
-            quantity: parseFloat(newQty)
-        };
-
-        if (activeTab === "lots") {
-            createLotMutation.mutate({ ...payload, lotNumber: newNumber });
-        } else {
-            createSerialMutation.mutate({ ...payload, serialNumber: newNumber });
-        }
+    const handleSaveLots = (rows: any[]) => {
+        // Mock bulk save
+        rows.forEach(row => {
+            if (row.lotNumber && row.inventoryId && !row.id) {
+                api.inventory.lots.create({
+                    inventoryId: row.inventoryId,
+                    lotNumber: row.lotNumber,
+                    quantity: parseFloat(row.quantity) || 0
+                });
+            }
+        });
+        toast({ title: "Lots Updated", description: "Successfully saved bulk lots data." });
+        queryClient.invalidateQueries({ queryKey: ["/api/inventory/lots"] });
     };
 
-    // Columns
-    const lotColumns: Column<any>[] = [
-        { header: "Lot Number", accessorKey: "lotNumber", cell: (val) => <span className="font-mono font-bold">{val}</span> },
-        { header: "Item", accessorKey: "item", cell: (item) => item?.itemName || "Unknown" },
-        { header: "Status", accessorKey: "status", cell: (status) => <Badge variant={status === "Active" ? "default" : "secondary"}>{status}</Badge> },
-        { header: "Expiration", accessorKey: "expirationDate", cell: (date) => date ? new Date(date).toLocaleDateString() : "-" },
-        { header: "Quantity", accessorKey: "quantity", className: "text-right", cell: (q) => <span className="font-mono">{q}</span> },
+    const handleSaveSerials = (rows: any[]) => {
+        // Mock bulk save
+        rows.forEach(row => {
+            if (row.serialNumber && row.inventoryId && !row.id) {
+                api.inventory.serials.create({
+                    inventoryId: row.inventoryId,
+                    serialNumber: row.serialNumber
+                });
+            }
+        });
+        toast({ title: "Serials Updated", description: "Successfully saved bulk serials data." });
+        queryClient.invalidateQueries({ queryKey: ["/api/inventory/serials"] });
+    };
+
+    const itemOptions = items.map((i: any) => ({ label: `${i.itemName} (${i.sku})`, value: i.id }));
+
+    const handleAddLot = () => {
+        const newRow = { id: `temp-${Date.now()}`, lotNumber: "", inventoryId: "", status: "Active", quantity: 0, expirationDate: "" };
+        const oldLots = (lotsData?.data || []).map((lot: any) => ({ ...lot, inventoryId: lot.item?.id || lot.inventoryId }));
+        queryClient.setQueryData(["/api/inventory/lots"], { ...lotsData, data: [...oldLots, newRow] });
+    };
+
+    const handleAddSerial = () => {
+        const newRow = { id: `temp-${Date.now()}`, serialNumber: "", inventoryId: "", status: "Active", currentLocatorId: "" };
+        const oldSerials = (serialsData?.data || []).map((serial: any) => ({ ...serial, inventoryId: serial.item?.id || serial.inventoryId }));
+        queryClient.setQueryData(["/api/inventory/serials"], { ...serialsData, data: [...oldSerials, newRow] });
+    };
+
+    const handleUpdateLotData = (newData: any[]) => {
+        queryClient.setQueryData(["/api/inventory/lots"], { ...lotsData, data: newData });
+    };
+
+    const handleUpdateSerialData = (newData: any[]) => {
+        queryClient.setQueryData(["/api/inventory/serials"], { ...serialsData, data: newData });
+    };
+
+    const lotColumns = [
+        {
+            id: "lotNumber",
+            header: "Lot Number *",
+            width: "200px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Input className="h-9 w-full bg-transparent border-0" value={row.lotNumber || ""} onChange={e => updateRow("lotNumber", e.target.value)} placeholder="L-2024..." />
+            )
+        },
+        {
+            id: "inventoryId",
+            header: "Item *",
+            width: "250px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Select value={row.inventoryId} onValueChange={(val) => updateRow("inventoryId", val)}>
+                    <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent">
+                        <SelectValue placeholder="Select Item" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {itemOptions.map((o: any) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+            )
+        },
+        {
+            id: "status",
+            header: "Status",
+            width: "120px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Select value={row.status || "Active"} onValueChange={(val) => updateRow("status", val)}>
+                    <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent">
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {["Active", "Hold", "Expired"].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+            )
+        },
+        {
+            id: "quantity",
+            header: "Quantity",
+            width: "120px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Input type="number" className="h-9 w-full bg-transparent border-0" value={row.quantity || ""} onChange={e => updateRow("quantity", e.target.value)} />
+            )
+        },
+        {
+            id: "expirationDate",
+            header: "Expiration Date",
+            width: "150px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Input type="date" className="h-9 w-full bg-transparent border-0" value={row.expirationDate ? new Date(row.expirationDate).toISOString().split('T')[0] : ""} onChange={e => updateRow("expirationDate", e.target.value)} />
+            )
+        }
     ];
 
-    const serialColumns: Column<any>[] = [
-        { header: "Serial Number", accessorKey: "serialNumber", cell: (val) => <span className="font-mono font-bold text-blue-600">{val}</span> },
-        { header: "Item", accessorKey: "item", cell: (item) => item?.itemName || "Unknown" },
-        { header: "Status", accessorKey: "status", cell: (status) => <Badge variant="outline">{status}</Badge> },
-        { header: "Current Locator", accessorKey: "currentLocatorId", cell: (loc) => loc || "Unassigned" },
+    const serialColumns = [
+        {
+            id: "serialNumber",
+            header: "Serial Number *",
+            width: "250px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Input className="h-9 w-full bg-transparent border-0" value={row.serialNumber || ""} onChange={e => updateRow("serialNumber", e.target.value)} placeholder="SN..." />
+            )
+        },
+        {
+            id: "inventoryId",
+            header: "Item *",
+            width: "250px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Select value={row.inventoryId} onValueChange={(val) => updateRow("inventoryId", val)}>
+                    <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent">
+                        <SelectValue placeholder="Select Item" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {itemOptions.map((o: any) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+            )
+        },
+        {
+            id: "status",
+            header: "Status",
+            width: "150px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Select value={row.status || "Active"} onValueChange={(val) => updateRow("status", val)}>
+                    <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent">
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {["Active", "Defective", "In Transit"].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+            )
+        },
+        {
+            id: "currentLocatorId",
+            header: "Locator",
+            width: "150px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Input className="h-9 w-full bg-transparent border-0" value={row.currentLocatorId || ""} onChange={e => updateRow("currentLocatorId", e.target.value)} />
+            )
+        }
     ];
 
     return (
@@ -141,48 +241,6 @@ export function LotSerialManager() {
                         value={activeInvOrgId}
                         onChange={setActiveInvOrgId}
                     />
-
-                    <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-                        <DialogTrigger asChild>
-                            <Button>
-                                <Plus className="h-4 w-4 mr-2" />
-                                Create {activeTab === "lots" ? "Lot" : "Serial"}
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Create New {activeTab === "lots" ? "Lot" : "Serial"}</DialogTitle>
-                            </DialogHeader>
-                            <div className="space-y-4 py-4">
-                                <div className="space-y-2">
-                                    <Label>Select Item</Label>
-                                    <Select value={newItemId} onValueChange={setNewItemId}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Choose item..." />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {items.map((i: any) => (
-                                                <SelectItem key={i.id} value={i.id}>{i.itemName} ({i.sku})</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>{activeTab === "lots" ? "Lot Number" : "Serial Number"}</Label>
-                                    <Input value={newNumber} onChange={(e) => setNewNumber(e.target.value)} placeholder={activeTab === "lots" ? "L-2024-001" : "SN-99999"} />
-                                </div>
-                                {activeTab === "lots" && (
-                                    <div className="space-y-2">
-                                        <Label>Quantity</Label>
-                                        <Input type="number" value={newQty} onChange={(e) => setNewQty(e.target.value)} />
-                                    </div>
-                                )}
-                                <Button className="w-full" onClick={handleCreate} disabled={!newItemId || !newNumber}>
-                                    Create Record
-                                </Button>
-                            </div>
-                        </DialogContent>
-                    </Dialog>
                 </div>
             }
         >
@@ -218,17 +276,20 @@ export function LotSerialManager() {
                                 <CardTitle className="text-base">Active Lots</CardTitle>
                                 <CardDescription>Expiration and quantity tracking by lot.</CardDescription>
                             </CardHeader>
-                            <CardContent>
-                                <StandardTable
-                                    data={lotsData?.data || []}
+                            <div className="flex justify-between items-center px-4 py-2 border-t">
+                                <Button variant="outline" size="sm" onClick={handleAddLot}><Plus className="w-4 h-4 mr-2" /> Add Lot</Button>
+                                <Button size="sm" onClick={() => handleSaveLots((lotsData?.data || []).map((lot: any) => ({ ...lot, inventoryId: lot.item?.id || lot.inventoryId })))}>Save Lots</Button>
+                            </div>
+                            <CardContent className="h-[500px] p-0 border-t">
+                                <InteractiveSpreadsheet
+                                    data={(lotsData?.data || []).map((lot: any) => ({
+                                        ...lot,
+                                        inventoryId: lot.item?.id || lot.inventoryId
+                                    }))}
                                     columns={lotColumns}
-                                    isLoading={lotsLoading}
-                                    page={lotPage}
-                                    pageSize={pageSize}
-                                    totalItems={lotsData?.total || 0}
-                                    onPageChange={setLotPage}
-                                    filterColumn="lotNumber"
-                                    filterPlaceholder="Filter lots..."
+                                    onChange={handleUpdateLotData}
+                                    virtualized={true}
+                                    containerHeight="500px"
                                 />
                             </CardContent>
                         </Card>
@@ -240,23 +301,26 @@ export function LotSerialManager() {
                                 <CardTitle className="text-base">Serial Registry</CardTitle>
                                 <CardDescription>Individual unit tracking and lifecycle.</CardDescription>
                             </CardHeader>
-                            <CardContent>
-                                <StandardTable
-                                    data={serialsData?.data || []}
+                            <div className="flex justify-between items-center px-4 py-2 border-t">
+                                <Button variant="outline" size="sm" onClick={handleAddSerial}><Plus className="w-4 h-4 mr-2" /> Add Serial</Button>
+                                <Button size="sm" onClick={() => handleSaveSerials((serialsData?.data || []).map((serial: any) => ({ ...serial, inventoryId: serial.item?.id || serial.inventoryId })))}>Save Serials</Button>
+                            </div>
+                            <CardContent className="h-[500px] p-0 border-t">
+                                <InteractiveSpreadsheet
+                                    data={(serialsData?.data || []).map((serial: any) => ({
+                                        ...serial,
+                                        inventoryId: serial.item?.id || serial.inventoryId
+                                    }))}
                                     columns={serialColumns}
-                                    isLoading={serialsLoading}
-                                    page={serialPage}
-                                    pageSize={pageSize}
-                                    totalItems={serialsData?.total || 0}
-                                    onPageChange={setSerialPage}
-                                    filterColumn="serialNumber"
-                                    filterPlaceholder="Filter serials..."
+                                    onChange={handleUpdateSerialData}
+                                    virtualized={true}
+                                    containerHeight="500px"
                                 />
                             </CardContent>
                         </Card>
                     </TabsContent>
                 </Tabs>
-            </div>
-        </StandardPage>
+            </div >
+        </StandardPage >
     );
 }

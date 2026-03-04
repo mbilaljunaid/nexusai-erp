@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -52,15 +52,20 @@ export default function ClientManagement() {
         }
     });
 
-    const columns: Column<Client>[] = [
-        { header: "Client ID", accessorKey: "clientId", cell: (row: Client) => <span className="font-semibold">{row.clientId}</span> },
-        { header: "Region", accessorKey: "region" },
-        { header: "Status", accessorKey: "status", cell: (row: Client) => <Badge variant={row.status === "active" ? "default" : "secondary"}>{row.status}</Badge> },
+    const columns = [
+        { id: "clientId", header: "Client ID", width: "200px", cell: (row: Client) => <div className="px-2 h-full flex items-center font-semibold">{row.clientId}</div> },
+        { id: "region", header: "Region", width: "200px", cell: (row: Client) => <div className="px-2 h-full flex items-center">{row.region}</div> },
+        { id: "status", header: "Status", width: "150px", cell: (row: Client) => <div className="px-2 h-full flex items-center"><Badge variant={row.status === "active" ? "default" : "secondary"}>{row.status}</Badge></div> },
         {
-            header: "Actions", id: "actions", cell: (row: Client) => (
-                <Button variant="ghost" size="sm" onClick={() => { setEditingClient(row); setIsSheetOpen(true); }}>
-                    <Edit2 className="h-4 w-4" />
-                </Button>
+            id: "actions",
+            header: "Actions",
+            width: "150px",
+            cell: (row: Client) => (
+                <div className="px-2 h-full flex items-center">
+                    <Button variant="ghost" size="sm" onClick={() => { setEditingClient(row); setIsSheetOpen(true); }}>
+                        <Edit2 className="h-4 w-4" />
+                    </Button>
+                </div>
             )
         }
     ];
@@ -119,14 +124,15 @@ export default function ClientManagement() {
                 </Sheet>
             }
         >
-            <StandardTable
-                data={clients}
-                columns={columns}
-                isLoading={isLoading}
-                keyExtractor={(item) => item.id || Math.random().toString()}
-                filterColumn="clientId"
-                filterPlaceholder="Filter clients..."
-            />
+            <div className="bg-card w-full rounded-md border shadow-sm">
+                <InteractiveSpreadsheet
+                    data={clients}
+                    columns={columns}
+                    onChange={() => { }}
+                    virtualized={true}
+                    containerHeight="500px"
+                />
+            </div>
         </StandardPage>
     );
 }

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -70,12 +70,23 @@ export function ShipmentWorkbench() {
                 </div>
             </div>
 
-            <Card>
-                <CardContent className="p-0">
-                    <StandardTable
+            <Card className="vanguard-card">
+                <CardHeader className="flex flex-row items-center justify-between pb-2 border-b">
+                    <div>
+                        <CardTitle>Shipment Queue</CardTitle>
+                        <CardDescription>View and manage pending shipments</CardDescription>
+                    </div>
+                    <Button size="sm">
+                        <Truck className="mr-2 h-4 w-4" /> Pick Wave
+                    </Button>
+                </CardHeader>
+                <CardContent className="h-[500px] p-0">
+                    <InteractiveSpreadsheet
                         data={shipments || []}
                         columns={columns}
-                        isLoading={isLoading}
+                        onChange={() => { }}
+                        virtualized={true}
+                        containerHeight="500px"
                     />
                 </CardContent>
             </Card>

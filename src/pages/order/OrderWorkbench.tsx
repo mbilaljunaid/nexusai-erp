@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -89,12 +89,20 @@ export function OrderWorkbench() {
                 </div>
             </div>
 
-            <Card>
-                <CardContent className="p-0">
-                    <StandardTable
+            <Card className="vanguard-card">
+                <CardHeader className="flex flex-row items-center justify-between pb-2 border-b">
+                    <div>
+                        <CardTitle>Sales Orders</CardTitle>
+                        <CardDescription>View and manage your order pipeline</CardDescription>
+                    </div>
+                </CardHeader>
+                <CardContent className="h-[500px] p-0">
+                    <InteractiveSpreadsheet
                         data={orders || []}
                         columns={columns}
-                        isLoading={isLoading}
+                        onChange={() => { }}
+                        virtualized={true}
+                        containerHeight="500px"
                     />
                 </CardContent>
             </Card>

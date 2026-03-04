@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Link } from "wouter";
 
 // Mock API
@@ -64,12 +64,14 @@ export function ReturnsWorkbench() {
                 </div>
             </div>
 
-            <Card>
-                <CardContent className="p-0">
-                    <StandardTable
+            <Card className="vanguard-card">
+                <CardContent className="h-[500px] p-0">
+                    <InteractiveSpreadsheet
                         data={rmas || []}
                         columns={columns}
-                        isLoading={isLoading}
+                        onChange={() => { }}
+                        virtualized={true}
+                        containerHeight="500px"
                     />
                 </CardContent>
             </Card>

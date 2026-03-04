@@ -4,7 +4,7 @@ import { Shield, Star, Globe, Phone, Mail, Award, TrendingUp, Search } from "luc
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
 
 export default function CarrierManager() {
@@ -14,23 +14,25 @@ export default function CarrierManager() {
     });
 
     const columns = [
-        { header: "SCAC", accessorKey: "scacCode" },
-        { header: "Carrier Name", accessorKey: "name", cell: (row: any) => <span className="font-semibold">{row.name}</span> },
-        { header: "Mode", accessorKey: "mode", cell: (row: any) => <Badge variant="outline">{row.mode}</Badge> },
+        { id: "scacCode", header: "SCAC", width: "120px", cell: (row: any) => <div className="px-2 h-full flex items-center">{row.scacCode}</div> },
+        { id: "name", header: "Carrier Name", width: "300px", cell: (row: any) => <div className="px-2 h-full flex items-center font-semibold">{row.name}</div> },
+        { id: "mode", header: "Mode", width: "150px", cell: (row: any) => <div className="px-2 h-full flex items-center"><Badge variant="outline">{row.mode}</Badge></div> },
         {
+            id: "serviceLevel",
             header: "Service Level",
-            accessorKey: "serviceLevel",
+            width: "200px",
             cell: (row: any) => (
-                <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                <div className="px-2 h-full flex items-center span className=text-xs uppercase tracking-wider text-muted-foreground font-medium">
                     {row.serviceLevel || "Standard"}
-                </span>
+                </div>
             )
         },
         {
+            id: "rating",
             header: "Rating",
-            accessorKey: "rating",
+            width: "150px",
             cell: (row: any) => (
-                <div className="flex items-center text-amber-500">
+                <div className="flex items-center text-amber-500 px-2 h-full">
                     <Star className="h-4 w-4 fill-current mr-1" />
                     <span className="font-bold">{row.rating}</span>
                 </div>
@@ -38,9 +40,12 @@ export default function CarrierManager() {
         },
         {
             id: "actions",
-            header: "",
+            header: "Actions",
+            width: "150px",
             cell: () => (
-                <Button size="xs" variant="outline">Details</Button>
+                <div className="px-2 h-full flex items-center">
+                    <Button size="xs" variant="outline">Details</Button>
+                </div>
             )
         }
     ];
@@ -102,11 +107,13 @@ export default function CarrierManager() {
             </div>
 
             <Card className="border-none shadow-premium overflow-hidden">
-                <CardContent className="p-0">
-                    <StandardTable
+                <CardContent className="p-0 h-[400px]">
+                    <InteractiveSpreadsheet
                         data={carriers || []}
                         columns={columns}
-                        isLoading={isLoading}
+                        onChange={() => { }}
+                        virtualized={true}
+                        containerHeight="400px"
                     />
                 </CardContent>
             </Card>

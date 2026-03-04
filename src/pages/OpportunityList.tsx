@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function OpportunityList() {
   const { toast } = useToast();
@@ -50,32 +50,45 @@ export default function OpportunityList() {
     return colors[stage] || "bg-gray-100 text-gray-800";
   };
 
-  const columns: Column<any>[] = [
+  const columns = [
     {
+      id: "name",
       header: "Name",
-      accessorKey: "name",
-      className: "font-medium text-blue-600"
+      width: "250px",
+      cell: (opp: any) => <div className="font-medium text-blue-600 px-2 h-full flex items-center">{opp.name}</div>
     },
     {
+      id: "account",
       header: "Account",
-      accessorKey: "account"
+      width: "200px",
+      cell: (opp: any) => <div className="px-2 h-full flex items-center">{opp.account}</div>
     },
     {
+      id: "value",
       header: "Value",
-      accessorKey: "value",
-      cell: (opp) => <span className="font-bold">${opp.value}</span>
+      width: "150px",
+      cell: (opp: any) => <div className="font-bold px-2 h-full flex items-center">${opp.value}</div>
     },
     {
+      id: "stage",
       header: "Stage",
-      accessorKey: "stage",
-      cell: (opp) => <Badge className={getStageColor(opp.stage)}>{opp.stage}</Badge>
+      width: "150px",
+      cell: (opp: any) => (
+        <div className="px-2 h-full flex items-center">
+          <Badge className={getStageColor(opp.stage)}>{opp.stage}</Badge>
+        </div>
+      )
     },
     {
+      id: "actions",
       header: "Actions",
-      cell: (opp) => (
-        <Button size="icon" variant="ghost" onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(opp.id); }}>
-          <Trash2 className="w-4 h-4 text-red-500" />
-        </Button>
+      width: "100px",
+      cell: (opp: any) => (
+        <div className="px-2 h-full flex items-center">
+          <Button size="icon" variant="ghost" onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(opp.id); }}>
+            <Trash2 className="w-4 h-4 text-red-500" />
+          </Button>
+        </div>
       )
     }
   ];
@@ -84,9 +97,7 @@ export default function OpportunityList() {
     <StandardPage
       title="Opportunities"
       description="Manage your sales pipeline and forecast revenue"
-        <p className="text-muted-foreground mt-1">Manage your sales pipeline and forecast revenue</p>
-        </div>
-      </div>
+    >
 
       <Card data-testid="card-new-opportunity">
         <CardHeader><CardTitle className="text-base">Create Opportunity</CardTitle></CardHeader>
@@ -111,14 +122,15 @@ export default function OpportunityList() {
         </CardContent>
       </Card>
 
-      <StandardTable
-        data={opportunities}
-        columns={columns}
-        isLoading={isLoading}
-        keyExtractor={(item) => item.id}
-        filterColumn="name"
-        filterPlaceholder="Search opportunities..."
-      />
-    </StandardPage>
+      <div className="bg-card w-full rounded-md border shadow-sm">
+        <InteractiveSpreadsheet
+          data={opportunities}
+          columns={columns}
+          onChange={() => { }}
+          virtualized={true}
+          containerHeight="500px"
+        />
+      </div>
+    </StandardPage >
   );
 }

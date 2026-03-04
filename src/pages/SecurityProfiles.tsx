@@ -23,7 +23,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Lock, Shield, MapPin, Building2, Briefcase, Plus, User } from "lucide-react";
 
@@ -98,11 +98,11 @@ export default function SecurityProfiles() {
         return organizations.map(o => ({ id: o.id, name: o.name }));
     };
 
-    const columns: Column<Aor>[] = [
+    const columns = [
         {
+            id: "name",
             header: "Role / Profile Name",
-            accessorKey: "name",
-            cell: (r) => (
+            cell: (r: any) => (
                 <div className="flex items-center gap-2">
                     <div className="bg-indigo-100 p-1.5 rounded-md">
                         <Shield className="h-4 w-4 text-indigo-600" />
@@ -112,9 +112,9 @@ export default function SecurityProfiles() {
             )
         },
         {
+            id: "personId",
             header: "Assigned User ID",
-            accessorKey: "personId",
-            cell: (r) => (
+            cell: (r: any) => (
                 <div className="flex items-center gap-2 text-muted-foreground">
                     <User className="h-4 w-4" />
                     <span className="font-mono text-xs">{r.personId}</span>
@@ -122,9 +122,9 @@ export default function SecurityProfiles() {
             )
         },
         {
+            id: "scopeType",
             header: "Scope Type",
-            accessorKey: "scopeType",
-            cell: (r) => {
+            cell: (r: any) => {
                 const icon = r.scopeType === 'LOCATION' ? MapPin : r.scopeType === 'DEPARTMENT' ? Building2 : Briefcase;
                 const IconComp = icon;
                 return (
@@ -136,6 +136,7 @@ export default function SecurityProfiles() {
             }
         },
         {
+            id: "coverage",
             header: "Coverage",
             cell: (r: any) => (
                 <div className="flex items-center gap-1">
@@ -145,14 +146,14 @@ export default function SecurityProfiles() {
             )
         },
         {
+            id: "scopeValueId",
             header: "Scope Value ID",
-            accessorKey: "scopeValueId",
-            cell: (r) => <span className="font-mono text-xs text-slate-500">{r.scopeValueId}</span>
+            cell: (r: any) => <span className="font-mono text-xs text-slate-500">{r.scopeValueId}</span>
         },
         {
+            id: "isActive",
             header: "Status",
-            accessorKey: "isActive",
-            cell: (r) => (
+            cell: (r: any) => (
                 <Badge variant={r.isActive ? "default" : "secondary"} className={r.isActive ? "bg-green-100 text-green-700 hover:bg-green-100" : ""}>
                     {r.isActive ? "Active" : "Inactive"}
                 </Badge>
@@ -162,10 +163,10 @@ export default function SecurityProfiles() {
 
     return (
         <StandardPage
-      title="SecurityProfiles"
-      description=""
-      className="space-y-6 container mx-auto py-6"
-    >
+            title="SecurityProfiles"
+            description=""
+            className="space-y-6 container mx-auto py-6"
+        >
             <div>
                 <Breadcrumb items={[{ label: "HR", path: "/hr" }, { label: "Compliance", path: "/compliance/dashboard" }, { label: "Security Profiles", path: "/compliance/security" }]} />
                 <h1 className="text-3xl font-bold tracking-tight mt-2 flex items-center gap-2">
@@ -278,13 +279,16 @@ export default function SecurityProfiles() {
                         </SheetContent>
                     </Sheet>
                 </div>
-                <StandardTable
-                    data={aors}
-                    columns={columns}
-                    isLoading={isLoading}
-                    filterColumn="name"
-                />
+                <div className="h-[500px]">
+                    <InteractiveSpreadsheet
+                        data={aors}
+                        columns={columns}
+                        onChange={() => { }}
+                        virtualized={true}
+                        containerHeight="500px"
+                    />
+                </div>
             </div>
         </StandardPage>
-  );
+    );
 }

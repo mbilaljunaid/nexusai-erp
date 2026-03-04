@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Plus, Edit2, Shield } from "lucide-react";
+import { Plus, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Role {
@@ -20,46 +18,94 @@ interface Role {
 export default function RoleManagement() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [editingRole, setEditingRole] = useState<Partial<Role> | null>(null);
 
-  // Mock data since API might be sparse
   const roles: Role[] = [
     { id: "1", name: "Administrator", permissions: 150, users: 2, description: "Full system access" },
     { id: "2", name: "Manager", permissions: 80, users: 5, description: "Approvals and reporting" },
     { id: "3", name: "User", permissions: 20, users: 120, description: "Basic access" },
   ];
 
+  const [localRoles, setLocalRoles] = useState<Role[]>(roles);
+
   const mutation = useMutation({
-    mutationFn: async (data: Partial<Role>) => {
+    mutationFn: async (data: Role[]) => {
       // Mock
       return {};
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/roles"] });
-      setIsSheetOpen(false);
-      setEditingRole(null);
-      toast({ title: "Success", description: "Role saved successfully" });
+      toast({ title: "Success", description: "Roles saved successfully" });
     }
   });
 
-  const columns: Column<Role>[] = [
-    { header: "Role Name", accessorKey: "name", cell: (row: Role) => <div className="flex items-center gap-2"><Shield className="w-4 h-4 text-muted-foreground" /><span className="font-semibold">{row.name}</span></div> },
-    { header: "Description", accessorKey: "description" },
-    { header: "Users", accessorKey: "users", cell: (row: Role) => <span className="font-mono">{row.users}</span> },
-    { header: "Permissions", accessorKey: "permissions", cell: (row: Role) => <span className="font-mono">{row.permissions}</span> },
+  const columns = [
     {
-      header: "Actions", id: "actions", cell: (row: Role) => (
-        <Button variant="ghost" size="sm" onClick={() => { setEditingRole(row); setIsSheetOpen(true); }}>
-          <Edit2 className="h-4 w-4" />
-        </Button>
+      id: "name",
+      header: "Role Name *",
+      width: "250px",
+      cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+        <div className="flex items-center gap-2 h-full w-full px-2">
+          <Shield className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+          <Input
+            className="h-9 border-0 bg-transparent focus-visible:ring-0 p-0 font-semibold w-full"
+            value={row.name || ""}
+            onChange={(e) => updateRow("name", e.target.value)}
+            placeholder="Role Name"
+          />
+        </div>
+      )
+    },
+    {
+      id: "description",
+      header: "Description",
+      width: "350px",
+      cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+        <Input
+          className="h-9 border-0 bg-transparent focus-visible:ring-0 w-full"
+          value={row.description || ""}
+          onChange={(e) => updateRow("description", e.target.value)}
+          placeholder="Role Description"
+        />
+      )
+    },
+    {
+      id: "users",
+      header: "Users",
+      width: "120px",
+      cell: (row: any) => (
+        <div className="flex items-center h-full px-2 font-mono text-sm text-muted-foreground">
+          {row.users || 0}
+        </div>
+      )
+    },
+    {
+      id: "permissions",
+      header: "Permissions",
+      width: "120px",
+      cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+        <Input
+          type="number"
+          className="h-9 border-0 bg-transparent focus-visible:ring-0 font-mono w-full"
+          value={row.permissions || 0}
+          onChange={(e) => updateRow("permissions", parseInt(e.target.value) || 0)}
+        />
       )
     }
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    mutation.mutate({});
+  const handleAddRole = () => {
+    const newRole = {
+      id: `temp-${Date.now()}`,
+      name: "",
+      permissions: 0,
+      users: 0,
+      description: ""
+    };
+    setLocalRoles([...localRoles, newRole]);
+  };
+
+  const handleSaveRoles = () => {
+    mutation.mutate(localRoles);
   };
 
   return (
@@ -68,41 +114,25 @@ export default function RoleManagement() {
       description="Define roles, permissions, and access levels"
       breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Roles" }]}
       actions={
-        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-          <SheetTrigger asChild>
-            <Button onClick={() => setEditingRole(null)}>
-              <Plus className="mr-2 h-4 w-4" /> New Role
-            </Button>
-          </SheetTrigger>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>{editingRole ? 'Edit' : 'Create'} Role</SheetTitle>
-            </SheetHeader>
-            <form onSubmit={handleSubmit} className="space-y-4 mt-6">
-              <div className="space-y-2">
-                <Label htmlFor="name">Role Name</Label>
-                <Input id="name" defaultValue={editingRole?.name} required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="desc">Description</Label>
-                <Input id="desc" defaultValue={editingRole?.description} />
-              </div>
-              <Button type="submit" className="w-full">
-                Save Role
-              </Button>
-            </form>
-          </SheetContent>
-        </Sheet>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleAddRole}>
+            <Plus className="mr-2 h-4 w-4" /> Add Role
+          </Button>
+          <Button onClick={handleSaveRoles} disabled={mutation.isPending}>
+            Save Roles
+          </Button>
+        </div>
       }
     >
-      <StandardTable
-        data={roles}
-        columns={columns}
-        isLoading={false}
-        keyExtractor={(item) => item.id}
-        filterColumn="name"
-        filterPlaceholder="Filter roles..."
-      />
+      <div className="bg-card w-full rounded-md border shadow-sm">
+        <InteractiveSpreadsheet
+          data={localRoles}
+          columns={columns}
+          onChange={(newData) => setLocalRoles(newData)}
+          virtualized={true}
+          containerHeight="600px"
+        />
+      </div>
     </StandardPage>
   );
 }

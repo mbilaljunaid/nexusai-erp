@@ -8,38 +8,11 @@ import {
     CardTitle
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { StandardTable } from "@/components/ui/StandardTable";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow
-} from "@/components/ui/table";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Save, AlertCircle } from "lucide-react";
-import { CustomerPicker } from "@/components/shared/CustomerPicker";
-import { Badge } from "@/components/ui/badge";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -88,87 +61,123 @@ export default function BillingProfileManager() {
         return c ? c.name : id;
     };
 
-    // --- Form State ---
-    const [formData, setFormData] = useState({
-        customerId: "",
-        currency: "USD",
-        paymentTerms: "Net 30",
-        taxExempt: false,
-        taxExemptionNumber: "",
-        emailInvoices: true
-    });
-
-    const handleEdit = (profile: any) => {
-        setEditingProfile(profile);
-        setFormData({
-            customerId: profile.customerId,
-            currency: profile.currency || "USD",
-            paymentTerms: profile.paymentTerms || "Net 30",
-            taxExempt: profile.taxExempt || false,
-            taxExemptionNumber: profile.taxExemptionNumber || "",
-            emailInvoices: profile.emailInvoices !== false
-        });
-        setIsDialogOpen(true);
-    };
-
-    const handleCreate = () => {
-        setEditingProfile(null);
-        setFormData({
-            customerId: "",
-            currency: "USD",
-            paymentTerms: "Net 30",
-            taxExempt: false,
-            taxExemptionNumber: "",
-            emailInvoices: true
-        });
-        setIsDialogOpen(true);
-    };
-
-    // --- Mutations ---
     const saveMutation = useMutation({
-        mutationFn: async (data: any) => {
-            const url = editingProfile
-                ? `/api/billing/profiles/${editingProfile.id}`
-                : `/api/billing/profiles`;
+        mutationFn: async (rows: any[]) => {
+            const promises = rows.map((data: any) => {
+                const url = data.id
+                    ? `/api/billing/profiles/${data.id}`
+                    : `/api/billing/profiles`;
+                const method = data.id ? "PATCH" : "POST";
 
-            const method = editingProfile ? "PATCH" : "POST";
-
-            const res = await fetch(url, {
-                method,
-                headers: {
-                    "Content-Type": "application/json",
-                    ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {})
-                },
-                body: JSON.stringify({ ...data, entBusinessUnitId: businessUnitId })
+                return fetch(url, {
+                    method,
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...(businessUnitId ? { "x-business-unit-id": businessUnitId } : {})
+                    },
+                    body: JSON.stringify({ ...data, entBusinessUnitId: businessUnitId })
+                });
             });
-
-            if (!res.ok) throw new Error("Failed to save profile");
-            return res.json();
+            await Promise.all(promises);
+            return {};
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["billing-profiles"] });
-            setIsDialogOpen(false);
-            toast({ title: "Success", description: "Billing Profile saved." });
+            toast({ title: "Success", description: "Billing Profiles saved." });
         },
         onError: () => {
             toast({
                 title: "Error",
-                description: "Could not save profile. Backend endpoint might be missing.",
+                description: "Could not save profiles. Backend endpoint might be missing.",
                 variant: "destructive"
             });
         }
     });
 
-    const handleSave = () => {
-        if (!formData.customerId) {
-            toast({ title: "Validation Error", description: "Customer is required", variant: "destructive" });
-            return;
-        }
-        saveMutation.mutate(formData);
+    const handleSave = (rows: any[]) => {
+        saveMutation.mutate(rows);
     };
 
-    const TERMS_OPTIONS = ["Immediate", "Net 15", "Net 30", "Net 45", "Net 60", "Net 90"];
-    const CURRENCY_OPTIONS = ["USD", "EUR", "GBP", "CAD", "AUD", "SGD"];
+    const handleAddRow = () => {
+        const newRow = { id: `temp-${Date.now()}`, customerId: "", currency: "USD", paymentTerms: "Net 30", taxExempt: false, taxExemptionNumber: "", emailInvoices: true };
+        queryClient.setQueryData(["billing-profiles"], (old: any) => [...(old || []), newRow]);
+    };
+
+    const columns = [
+        {
+            id: "customerId",
+            header: "Customer *",
+            width: "250px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Select value={row.customerId} onValueChange={(val) => updateRow("customerId", val)}>
+                    <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent">
+                        <SelectValue placeholder="Select Customer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {customers.map((c: any) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+            )
+        },
+        {
+            id: "currency",
+            header: "Currency",
+            width: "120px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Select value={row.currency || "USD"} onValueChange={(val) => updateRow("currency", val)}>
+                    <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent">
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {CURRENCY_OPTIONS.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+            )
+        },
+        {
+            id: "paymentTerms",
+            header: "Payment Terms",
+            width: "150px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Select value={row.paymentTerms || "Net 30"} onValueChange={(val) => updateRow("paymentTerms", val)}>
+                    <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent">
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {TERMS_OPTIONS.map(t => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+            )
+        },
+        {
+            id: "taxExempt",
+            header: "Tax Exempt",
+            width: "100px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <div className="flex justify-center pt-2">
+                    <input type="checkbox" className="h-4 w-4 rounded border-gray-300" checked={row.taxExempt || false} onChange={e => updateRow("taxExempt", e.target.checked)} />
+                </div>
+            )
+        },
+        {
+            id: "taxExemptionNumber",
+            header: "Exemption Number",
+            width: "200px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Input className="h-9 w-full bg-transparent border-0" value={row.taxExemptionNumber || ""} onChange={e => updateRow("taxExemptionNumber", e.target.value)} disabled={!row.taxExempt} />
+            )
+        },
+        {
+            id: "emailInvoices",
+            header: "Auto-Email",
+            width: "100px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <div className="flex justify-center pt-2">
+                    <input type="checkbox" className="h-4 w-4 rounded border-gray-300" checked={row.emailInvoices ?? true} onChange={e => updateRow("emailInvoices", e.target.checked)} />
+                </div>
+            )
+        }
+    ];
 
     return (
         <div className="space-y-6">
@@ -195,150 +204,31 @@ export default function BillingProfileManager() {
                         Manage customer-specific billing preferences, payment terms, and currencies.
                     </p>
                 </div>
-                <Button onClick={handleCreate}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    New Profile
-                </Button>
             </div>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Customer Profiles</CardTitle>
-                    <CardDescription>
-                        {profiles.length} active billing profiles configured.
-                    </CardDescription>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <div>
+                        <CardTitle>Master List</CardTitle>
+                        <CardDescription>
+                            {profiles.length} active billing profiles configured.
+                        </CardDescription>
+                    </div>
+                    <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={handleAddRow}><Plus className="w-4 h-4 mr-2" /> Add Profile</Button>
+                        <Button size="sm" onClick={() => handleSave(profiles || [])} disabled={saveMutation.isPending}>Save Profiles</Button>
+                    </div>
                 </CardHeader>
-                <CardContent>
-                    <StandardTable
+                <CardContent className="h-[600px] p-0 border-t">
+                    <InteractiveSpreadsheet
                         data={profiles || []}
-                        columns={[
-                            { header: "Customer", accessorKey: "customerId", cell: (item: any) => <div className="font-medium">{getCustomerName(item.customerId)}</div> },
-                            { header: "Currency", accessorKey: "currency" },
-                            { header: "Payment Terms", accessorKey: "paymentTerms", cell: (item: any) => <Badge variant="outline">{item.paymentTerms}</Badge> },
-                            {
-                                header: "Tax Status",
-                                accessorKey: "taxExempt",
-                                cell: (item: any) => item.taxExempt ? (
-                                    <Badge variant="secondary" className="bg-green-100 text-green-800">
-                                        Exempt ({item.taxExemptionNumber})
-                                    </Badge>
-                                ) : (
-                                    <span className="text-muted-foreground text-sm">Standard</span>
-                                )
-                            },
-                            {
-                                header: "Actions",
-                                cell: (item: any) => (
-                                    <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); handleEdit(item); }}>
-                                        <Pencil className="h-4 w-4" />
-                                    </Button>
-                                )
-                            }
-                        ]}
-                        keyExtractor={(item) => item.id}
-                        isLoading={isLoading}
-                        onRowClick={(item) => handleEdit(item)}
-                        filterColumn="customerId"
-                        filterPlaceholder="Search profiles..."
+                        columns={columns}
+                        onChange={(newData) => queryClient.setQueryData(["billing-profiles"], newData)}
+                        virtualized={true}
+                        containerHeight="600px"
                     />
                 </CardContent>
             </Card>
-
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="sm:max-w-[500px]">
-                    <DialogHeader>
-                        <DialogTitle>{editingProfile ? "Edit Profile" : "Create Billing Profile"}</DialogTitle>
-                        <DialogDescription>
-                            Configure defaults for this customer. These settings trigger automated billing rules.
-                        </DialogDescription>
-                    </DialogHeader>
-
-                    <div className="grid gap-4 py-4">
-                        <div className="grid gap-2">
-                            <Label>Customer</Label>
-                            {editingProfile ? (
-                                <Input value={getCustomerName(formData.customerId)} disabled />
-                            ) : (
-                                <CustomerPicker
-                                    value={formData.customerId}
-                                    onChange={(val) => setFormData({ ...formData, customerId: val })}
-                                />
-                            )}
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="grid gap-2">
-                                <Label>Currency</Label>
-                                <Select
-                                    value={formData.currency}
-                                    onValueChange={(val) => setFormData({ ...formData, currency: val })}
-                                >
-                                    <SelectTrigger><SelectValue /></SelectTrigger>
-                                    <SelectContent>
-                                        {CURRENCY_OPTIONS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="grid gap-2">
-                                <Label>Payment Terms</Label>
-                                <Select
-                                    value={formData.paymentTerms}
-                                    onValueChange={(val) => setFormData({ ...formData, paymentTerms: val })}
-                                >
-                                    <SelectTrigger><SelectValue /></SelectTrigger>
-                                    <SelectContent>
-                                        {TERMS_OPTIONS.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center space-x-2 border p-3 rounded-md">
-                            <Checkbox
-                                id="taxExempt"
-                                checked={formData.taxExempt}
-                                onCheckedChange={(checked) => setFormData({ ...formData, taxExempt: checked === true })}
-                            />
-                            <div className="grid gap-1.5 leading-none">
-                                <Label htmlFor="taxExempt" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                    Tax Exempt
-                                </Label>
-                                <p className="text-sm text-muted-foreground">
-                                    Customer is exempt from sales tax / VAT.
-                                </p>
-                            </div>
-                        </div>
-
-                        {formData.taxExempt && (
-                            <div className="grid gap-2 pl-6 border-l-2">
-                                <Label>Exemption Certificate Number</Label>
-                                <Input
-                                    value={formData.taxExemptionNumber}
-                                    onChange={(e) => setFormData({ ...formData, taxExemptionNumber: e.target.value })}
-                                    placeholder="e.g. TE-2024-001"
-                                />
-                            </div>
-                        )}
-
-                        <div className="flex items-center space-x-2">
-                            <Checkbox
-                                id="emailInvoices"
-                                checked={formData.emailInvoices}
-                                onCheckedChange={(checked) => setFormData({ ...formData, emailInvoices: checked === true })}
-                            />
-                            <Label htmlFor="emailInvoices">Auto-Email Invoices on Finalization</Label>
-                        </div>
-
-                    </div>
-
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-                        <Button onClick={handleSave} disabled={saveMutation.isPending}>
-                            {saveMutation.isPending ? "Saving..." : "Save Profile"}
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </div>
     );
 }

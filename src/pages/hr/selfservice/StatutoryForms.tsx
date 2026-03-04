@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -100,51 +100,108 @@ export default function StatutoryForms() {
         });
     };
 
-    const columns: Column<ComplianceForm>[] = [
+    const handleAddRow = () => {
+        const newRow = {
+            id: `temp-${Date.now()}`,
+            documentName: "",
+            documentType: "TAX_FORM",
+            createdAt: "",
+            verificationStatus: "NEW",
+            attachmentUrl: ""
+        };
+        queryClient.setQueryData(["/api/hr-self-service/me/compliance/forms"], (old: any) => [...(old || []), newRow]);
+    };
+
+    const handleSaveForms = (data: any[]) => {
+        const validDocs = data.map(d => ({
+            ...d,
+            createdAt: d.createdAt || new Date().toISOString(),
+            verificationStatus: d.verificationStatus === "NEW" ? "PENDING" : d.verificationStatus
+        }));
+        queryClient.setQueryData(["/api/hr-self-service/me/compliance/forms"], validDocs);
+        toast({ title: "Forms Updated", description: "Your statutory forms have been saved successfully." });
+    };
+
+    const columns = [
         {
-            accessorKey: "documentName",
-            header: "Form Name",
-            cell: (item) => (
-                <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-primary" />
-                    <span className="font-medium">{item.documentName}</span>
+            id: "documentName",
+            header: "Form Name / Type *",
+            width: "300px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Select value={row.documentName} onValueChange={(val) => updateRow("documentName", val)}>
+                    <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent">
+                        <SelectValue placeholder="Select template..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {AVAILABLE_FORM_TEMPLATES.map(t => (
+                            <SelectItem key={t.id} value={t.name}>{t.name} ({t.region})</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            )
+        },
+        {
+            id: "createdAt",
+            header: "Submitted On",
+            width: "150px",
+            cell: (row: any) => (
+                <div className="h-9 flex items-center px-2 text-sm">
+                    {row.createdAt ? format(new Date(row.createdAt), "PPP") : "-"}
                 </div>
             )
         },
         {
-            accessorKey: "createdAt",
-            header: "Submitted On",
-            cell: (item) => format(new Date(item.createdAt), "PPP")
-        },
-        {
-            accessorKey: "verificationStatus",
+            id: "verificationStatus",
             header: "Status",
-            cell: (item) => {
+            width: "150px",
+            cell: (row: any) => {
                 const colorMap: any = {
                     "PENDING": "bg-yellow-100 text-yellow-700 border-yellow-200",
                     "VERIFIED": "bg-green-100 text-green-700 border-green-200",
-                    "REJECTED": "bg-red-100 text-red-700 border-red-200"
+                    "REJECTED": "bg-red-100 text-red-700 border-red-200",
+                    "NEW": "bg-blue-100 text-blue-700 border-blue-200"
                 };
+                const status = row.verificationStatus || "NEW";
                 return (
-                    <Badge variant="outline" className={colorMap[item.verificationStatus]}>
-                        {item.verificationStatus === "VERIFIED" && <CheckCircle2 className="w-3 h-3 mr-1" />}
-                        {item.verificationStatus === "PENDING" && <Clock className="w-3 h-3 mr-1" />}
-                        {item.verificationStatus === "REJECTED" && <AlertTriangle className="w-3 h-3 mr-1" />}
-                        {item.verificationStatus}
-                    </Badge>
+                    <div className="flex items-center h-full px-2">
+                        <Badge variant="outline" className={colorMap[status]}>
+                            {status === "VERIFIED" && <CheckCircle2 className="w-3 h-3 mr-1" />}
+                            {status === "PENDING" && <Clock className="w-3 h-3 mr-1" />}
+                            {status === "REJECTED" && <AlertTriangle className="w-3 h-3 mr-1" />}
+                            {status === "NEW" && <Plus className="w-3 h-3 mr-1" />}
+                            {status}
+                        </Badge>
+                    </div>
                 );
             }
         },
         {
-            accessorKey: "attachmentUrl",
-            header: "Actions",
-            cell: (item) => (
-                <Button variant="ghost" size="sm" asChild>
-                    <a href={item.attachmentUrl || "#"} target="_blank" rel="noreferrer">
-                        <Download className="w-4 h-4 mr-1" />
-                        Download
-                    </a>
-                </Button>
+            id: "attachmentUrl",
+            header: "Attachment",
+            width: "250px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                row.attachmentUrl ? (
+                    <div className="flex items-center h-full px-2 gap-2">
+                        <Button variant="ghost" size="sm" asChild className="h-8">
+                            <a href={row.attachmentUrl} target="_blank" rel="noreferrer">
+                                <Download className="w-4 h-4 mr-1" /> Download
+                            </a>
+                        </Button>
+                        {row.verificationStatus === "NEW" && (
+                            <Button variant="ghost" size="sm" className="h-8 text-red-600 hover:text-red-700" onClick={() => updateRow("attachmentUrl", "")}>
+                                Remove
+                            </Button>
+                        )}
+                    </div>
+                ) : (
+                    <div className="flex items-center h-full px-2">
+                        <Input type="file" className="h-8 text-xs w-full" onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                                updateRow("attachmentUrl", "#mock-upload-url");
+                            }
+                        }} />
+                    </div>
+                )
             )
         }
     ];
@@ -161,67 +218,28 @@ export default function StatutoryForms() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 space-y-6">
                     <Card className="vanguard-card">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardHeader className="flex flex-row items-center justify-between pb-2 border-b">
                             <div>
                                 <CardTitle>Submitted Forms</CardTitle>
-                                <CardDescription>Tracking your active compliance documents</CardDescription>
+                                <CardDescription>Manage and upload your active compliance documents</CardDescription>
                             </div>
-                            <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
-                                <DialogTrigger asChild>
-                                    <Button className="vanguard-button">
-                                        <Upload className="w-4 h-4 mr-2" />
-                                        Upload Form
-                                    </Button>
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>Submit Statutory Form</DialogTitle>
-                                        <DialogDescription>
-                                            Upload a completed form for HR verification.
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                    <div className="grid gap-4 py-4">
-                                        <div className="grid gap-2">
-                                            <Label>Select Form Type</Label>
-                                            <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select template..." />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {AVAILABLE_FORM_TEMPLATES.map(t => (
-                                                        <SelectItem key={t.id} value={t.id}>{t.name} ({t.region})</SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                        <div className="grid gap-2">
-                                            <Label>File Upload</Label>
-                                            <Input type="file" className="cursor-pointer" />
-                                            <p className="text-[10px] text-muted-foreground italic">
-                                                Accepted formats: PDF, JPEG, PNG. Max size: 5MB.
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <DialogFooter>
-                                        <Button onClick={handleUpload} disabled={!selectedTemplate || uploadMutation.isPending}>
-                                            {uploadMutation.isPending ? "Uploading..." : "Submit for Verification"}
-                                        </Button>
-                                    </DialogFooter>
-                                </DialogContent>
-                            </Dialog>
+                            <div className="flex items-center gap-2">
+                                <Button variant="outline" size="sm" onClick={handleAddRow}>
+                                    <Plus className="w-4 h-4 mr-2" /> Add Form
+                                </Button>
+                                <Button size="sm" onClick={() => handleSaveForms(submittedForms || [])}>
+                                    <Upload className="w-4 h-4 mr-2" /> Save & Submit
+                                </Button>
+                            </div>
                         </CardHeader>
-                        <CardContent>
-                            <StandardTable
+                        <CardContent className="h-[400px] p-0">
+                            <InteractiveSpreadsheet
                                 data={submittedForms || []}
                                 columns={columns}
-                                isLoading={isLoading}
+                                onChange={(newData) => queryClient.setQueryData(["/api/hr-self-service/me/compliance/forms"], () => newData)}
+                                virtualized={true}
+                                containerHeight="400px"
                             />
-                            {submittedForms?.length === 0 && !isLoading && (
-                                <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-                                    <FileText className="w-12 h-12 mb-4 opacity-20" />
-                                    <p>No forms submitted yet.</p>
-                                </div>
-                            )}
                         </CardContent>
                     </Card>
                 </div>

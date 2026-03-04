@@ -13,10 +13,10 @@ import {
 import {
     Dialog, DialogContent, DialogHeader, DialogTitle
 } from "@/components/ui/dialog";
-import {
-    Table, TableBody, TableCell, TableHead, TableHeader, TableRow
-} from "@/components/ui/table";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Settings, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -27,16 +27,6 @@ import type { GlCoaStructure, GlSegment, GlValueSet } from "@/types/erp-types";
 function SegmentManager({ structureId, structureName }: { structureId: string, structureName: string }) {
     const { toast } = useToast();
     const queryClient = useQueryClient();
-
-    // Form State for new Segment
-    const [newSegment, setNewSegment] = useState({
-        segmentName: "",
-        segmentNumber: 1,
-        columnName: "segment1",
-        valueSetId: "",
-        prompt: "",
-        displayWidth: 20
-    });
 
     // Fetch Segments
     const { data: segments = [], isLoading } = useQuery<GlSegment[]>({
@@ -57,98 +47,112 @@ function SegmentManager({ structureId, structureName }: { structureId: string, s
     });
 
     const createSegmentMutation = useMutation({
-        mutationFn: async (data: any) => {
-            const payload = { ...data, coaStructureId: structureId, segmentNumber: parseInt(data.segmentNumber), displayWidth: parseInt(data.displayWidth) };
-            return apiRequest("POST", "/api/finance/gl/segments", payload);
+        mutationFn: async (rows: any[]) => {
+            // Simulate bulk insert/update
+            const promises = rows.map(data => {
+                const payload = { ...data, coaStructureId: structureId, segmentNumber: parseInt(data.segmentNumber) || 1, displayWidth: parseInt(data.displayWidth) || 20 };
+                return apiRequest("POST", "/api/finance/gl/segments", payload);
+            });
+            await Promise.all(promises);
+            return {};
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/finance/gl/segments", structureId] });
-            setNewSegment({ segmentName: "", segmentNumber: segments.length + 2, columnName: `segment${segments.length + 2}`, valueSetId: "", prompt: "", displayWidth: 20 });
-            toast({ title: "Segment Added", description: "Segment definition created." });
+            toast({ title: "Segments Saved", description: "Segment definitions updated successfully." });
         }
     });
 
-    const handleAddSegment = () => {
-        if (!newSegment.segmentName || !newSegment.valueSetId) {
-            toast({ title: "Validation Error", description: "Name and Value Set are required.", variant: "destructive" });
+    const handleSaveSegments = (rows: any[]) => {
+        const invalidRows = rows.filter(r => !r.segmentName || !r.valueSetId);
+        if (invalidRows.length > 0) {
+            toast({ title: "Validation Error", description: "Name and Value Set are required for all rows.", variant: "destructive" });
             return;
         }
-        createSegmentMutation.mutate(newSegment);
+        createSegmentMutation.mutate(rows);
     };
 
+    const handleAddRow = () => {
+        const newRow = { id: `temp-${Date.now()}`, segmentNumber: segments.length + 1, segmentName: "", columnName: `segment${segments.length + 1}`, valueSetId: "", prompt: "", displayWidth: 20 };
+        queryClient.setQueryData(["/api/finance/gl/segments", structureId], [...segments, newRow]);
+    };
+
+    const columns = [
+        {
+            id: "segmentNumber",
+            header: "Segment #",
+            width: "100px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Input type="number" className="h-9 w-full bg-transparent border-0" value={row.segmentNumber} onChange={e => updateRow("segmentNumber", e.target.value)} />
+            )
+        },
+        {
+            id: "segmentName",
+            header: "Segment Name *",
+            width: "200px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Input className="h-9 w-full bg-transparent border-0" value={row.segmentName} onChange={e => updateRow("segmentName", e.target.value)} placeholder="e.g. Cost Center" />
+            )
+        },
+        {
+            id: "columnName",
+            header: "DB Column",
+            width: "150px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Input className="h-9 w-full bg-transparent border-0" value={row.columnName} onChange={e => updateRow("columnName", e.target.value)} disabled />
+            )
+        },
+        {
+            id: "valueSetId",
+            header: "Value Set *",
+            width: "250px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Select value={row.valueSetId} onValueChange={(val) => updateRow("valueSetId", val)}>
+                    <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent">
+                        <SelectValue placeholder="Select..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {valueSets.map(vs => <SelectItem key={vs.id} value={vs.id}>{vs.name}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+            )
+        },
+        {
+            id: "prompt",
+            header: "Prompt Label",
+            width: "150px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Input className="h-9 w-full bg-transparent border-0" value={row.prompt} onChange={e => updateRow("prompt", e.target.value)} />
+            )
+        },
+        {
+            id: "displayWidth",
+            header: "Display Width",
+            width: "120px",
+            cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
+                <Input type="number" className="h-9 w-full bg-transparent border-0" value={row.displayWidth} onChange={e => updateRow("displayWidth", e.target.value)} />
+            )
+        }
+    ];
+
     return (
-        <div className="space-y-6">
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border space-y-4">
-                <h3 className="font-medium flex items-center gap-2">
-                    <Plus className="h-4 w-4" /> Add New Segment
-                </h3>
-                <div className="grid grid-cols-2 gap-4">
-                    <Input
-                        placeholder="Segment Name (e.g. Company)"
-                        value={newSegment.segmentName}
-                        onChange={(e) => setNewSegment({ ...newSegment, segmentName: e.target.value })}
-                    />
-                    <Input
-                        placeholder="Prompt (Label)"
-                        value={newSegment.prompt}
-                        onChange={(e) => setNewSegment({ ...newSegment, prompt: e.target.value })}
-                    />
-                    <Input
-                        type="number"
-                        placeholder="Segment #"
-                        value={newSegment.segmentNumber}
-                        onChange={(e) => setNewSegment({ ...newSegment, segmentNumber: parseInt(e.target.value) })}
-                    />
-                    <Select
-                        value={newSegment.valueSetId}
-                        onValueChange={(val) => setNewSegment({ ...newSegment, valueSetId: val })}
-                    >
-                        <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select Value Set" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {valueSets.map(vs => (
-                                <SelectItem key={vs.id} value={vs.id}>{vs.name}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-                <Button onClick={handleAddSegment} disabled={createSegmentMutation.isPending} className="w-full">
-                    Add Segment
+        <div className="space-y-4 pt-4 h-[600px] flex flex-col">
+            <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-900 border px-4 py-2 rounded-t-md">
+                <Button variant="outline" size="sm" onClick={handleAddRow}>
+                    <Plus className="w-4 h-4 mr-2" /> Add Segment
+                </Button>
+                <Button size="sm" onClick={() => handleSaveSegments(segments)} disabled={createSegmentMutation.isPending}>
+                    Save Segments
                 </Button>
             </div>
-
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>#</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Column</TableHead>
-                        <TableHead>Value Set</TableHead>
-                        <TableHead>Prompt</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {isLoading ? (
-                        <TableRow><TableCell colSpan={5}>Loading segments...</TableCell></TableRow>
-                    ) : segments.length === 0 ? (
-                        <TableRow><TableCell colSpan={5}>No segments defined.</TableCell></TableRow>
-                    ) : (
-                        segments.sort((a, b) => a.segmentNumber - b.segmentNumber).map((seg) => {
-                            const vsName = valueSets.find(v => v.id === seg.valueSetId)?.name || seg.valueSetId;
-                            return (
-                                <TableRow key={seg.id}>
-                                    <TableCell>{seg.segmentNumber}</TableCell>
-                                    <TableCell className="font-medium">{seg.segmentName}</TableCell>
-                                    <TableCell>{seg.columnName}</TableCell>
-                                    <TableCell><Badge variant="secondary">{vsName}</Badge></TableCell>
-                                    <TableCell>{seg.prompt}</TableCell>
-                                </TableRow>
-                            );
-                        })
-                    )}
-                </TableBody>
-            </Table>
+            <div className="flex-1 border rounded-b-md overflow-hidden bg-white">
+                <InteractiveSpreadsheet
+                    data={segments}
+                    columns={columns}
+                    onChange={(newData) => queryClient.setQueryData(["/api/finance/gl/segments", structureId], newData)}
+                    virtualized={true}
+                    containerHeight="500px"
+                />
+            </div>
         </div>
     );
 }
@@ -272,12 +276,15 @@ export default function CoaStructureSetup() {
 
             {/* Manage Segments Dialog */}
             <Dialog open={!!selectedStructure} onOpenChange={(open) => !open && setSelectedStructure(null)}>
-                <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+                <DialogContent className="max-w-6xl max-h-[85vh] overflow-hidden flex flex-col">
                     <DialogHeader>
-                        <DialogTitle>Manage Structure: {selectedStructure?.name}</DialogTitle>
+                        <DialogTitle>Manage CoA Structure: {selectedStructure?.name}</DialogTitle>
+                        <p className="text-sm text-muted-foreground">Define chart of account dimensions and map to value sets inline.</p>
                     </DialogHeader>
                     {selectedStructure && (
-                        <SegmentManager structureId={selectedStructure.id} structureName={selectedStructure.name} />
+                        <div className="flex-1 overflow-auto min-h-[500px]">
+                            <SegmentManager structureId={selectedStructure.id} structureName={selectedStructure.name} />
+                        </div>
                     )}
                 </DialogContent>
             </Dialog>
