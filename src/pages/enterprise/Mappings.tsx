@@ -8,6 +8,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowRightLeft, BookOpen, Building, Building2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
+import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 export default function EnterpriseMappings() {
     const { toast } = useToast();
@@ -118,14 +119,13 @@ export default function EnterpriseMappings() {
                             <ArrowRightLeft className="h-5 w-5 mb-2 text-muted-foreground shrink-0" />
                             <div className="flex-1 space-y-2">
                                 <label className="text-sm font-medium">Business Unit</label>
-                                <Select value={selectedBuForLg} onValueChange={setSelectedBuForLg}>
-                                    <SelectTrigger><SelectValue placeholder="Select Business Unit" /></SelectTrigger>
-                                    <SelectContent>
-                                        {businessUnits?.map((b: any) => (
-                                            <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <div className="pb-1 min-h-[40px] flex flex-col justify-end">
+                                    <EnterpriseContextSwitcher
+                                        type="business-unit"
+                                        value={selectedBuForLg || undefined}
+                                        onChange={(val) => setSelectedBuForLg(val || "")}
+                                    />
+                                </div>
                             </div>
                             <Button
                                 onClick={() => lgBuMutation.mutate({ legalGroupId: selectedLegalGroup, businessUnitId: selectedBuForLg })}
@@ -173,26 +173,24 @@ export default function EnterpriseMappings() {
                         <div className="flex items-end gap-3 p-4 border rounded-lg bg-slate-50">
                             <div className="flex-1 space-y-2">
                                 <label className="text-sm font-medium">Business Unit</label>
-                                <Select value={selectedBuForLedger} onValueChange={setSelectedBuForLedger}>
-                                    <SelectTrigger><SelectValue placeholder="Select Business Unit" /></SelectTrigger>
-                                    <SelectContent>
-                                        {businessUnits?.map((b: any) => (
-                                            <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <div className="pb-1 min-h-[40px] flex flex-col justify-end">
+                                    <EnterpriseContextSwitcher
+                                        type="business-unit"
+                                        value={selectedBuForLedger || undefined}
+                                        onChange={(val) => setSelectedBuForLedger(val || "")}
+                                    />
+                                </div>
                             </div>
                             <ArrowRightLeft className="h-5 w-5 mb-2 text-muted-foreground shrink-0" />
                             <div className="flex-1 space-y-2">
                                 <label className="text-sm font-medium">GL Ledger</label>
-                                <Select value={selectedLedger} onValueChange={setSelectedLedger}>
-                                    <SelectTrigger><SelectValue placeholder="Select GL Ledger" /></SelectTrigger>
-                                    <SelectContent>
-                                        {ledgers?.map((l: any) => (
-                                            <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <div className="pb-1 min-h-[40px] flex flex-col justify-end">
+                                    <EnterpriseContextSwitcher
+                                        type="ledger"
+                                        value={selectedLedger || undefined}
+                                        onChange={(val) => setSelectedLedger(val || "")}
+                                    />
+                                </div>
                             </div>
                             <Button
                                 onClick={() => buLedgerMutation.mutate({ businessUnitId: selectedBuForLedger, ledgerId: selectedLedger })}

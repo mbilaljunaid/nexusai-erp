@@ -248,7 +248,7 @@ export default function TenantAdmin() {
             </Button>
           </div>
 
-          <div style={{ height: '400px' }}>
+          <div className="h-[400px]">
             <InteractiveSpreadsheet
               columns={userColumns}
               data={users}

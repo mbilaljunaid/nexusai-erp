@@ -58,6 +58,6 @@ export default function TasksDetail() {
           <TaskEntryForm />
         </div>
       </div>
-    </StandardPage >
+    </div>
   );
 }

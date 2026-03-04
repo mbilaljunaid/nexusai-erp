@@ -7,7 +7,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 interface BudgetAlert { id: string; project_id: string; alert_type: string; severity: string; budget_amount: number; actual_amount: number; variance_pct: number; description: string; is_acknowledged: boolean; created_at: string; }
 interface AlertSummary { critical: number; warnings: number; info: number; acknowledged: number; }
-interface VarRow { resource_id: string; resource_type: string; role: string; period_start: string; period_end: string; planned_hours: number; actual_hours: number; hour_variance: number; planned_cost: number; actual_cost: number; cost_variance: number; variance_pct: number; }
+interface VarRow { id: string; resource_id: string; resource_type: string; role: string; period_start: string; period_end: string; planned_hours: number; actual_hours: number; hour_variance: number; planned_cost: number; actual_cost: number; cost_variance: number; variance_pct: number; }
 
 function fmt(n: any) { return Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
 function fmtDate(d: string) { return d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'; }
@@ -39,90 +39,103 @@ export default function CommitmentDashboard() {
     });
 
     const varColumns: SpreadsheetColumn<VarRow>[] = [
-        { id: "resource", header: "Resource", width: "150px", cell: (v) => <span style={{ fontWeight: 600 }}>{v.resource_id}</span> },
-        { id: "type", header: "Type", width: "150px", cell: (v) => <span style={{ fontSize: 10, fontFamily: 'monospace', color: '#6b7280' }}>{v.resource_type}</span> },
-        { id: "period", header: "Period", width: "100px", cell: (v) => <span style={{ color: '#6b7280', whiteSpace: 'nowrap' }}>{fmtDate(v.period_start)}</span> },
-        { id: "planHrs", header: "Plan Hrs", width: "100px", cell: (v) => <span style={{ fontFamily: 'monospace' }}>{v.planned_hours}</span> },
-        { id: "actHrs", header: "Act Hrs", width: "100px", cell: (v) => <span style={{ fontFamily: 'monospace' }}>{v.actual_hours}</span> },
-        { id: "delHrs", header: "Δ Hrs", width: "100px", cell: (v) => <span style={{ fontFamily: 'monospace', color: v.hour_variance < 0 ? '#dc2626' : '#059669' }}>{v.hour_variance > 0 ? '+' : ''}{v.hour_variance}</span> },
-        { id: "planCost", header: "Plan Cost", width: "120px", cell: (v) => <span style={{ fontFamily: 'monospace' }}>{fmt(v.planned_cost)}</span> },
-        { id: "actCost", header: "Act Cost", width: "120px", cell: (v) => <span style={{ fontFamily: 'monospace' }}>{fmt(v.actual_cost)}</span> },
-        { id: "delCost", header: "Δ Cost", width: "120px", cell: (v) => <span style={{ fontFamily: 'monospace', color: v.cost_variance < 0 ? '#dc2626' : '#059669' }}>{v.cost_variance > 0 ? '+' : ''}{fmt(v.cost_variance)}</span> },
+        { id: "resource", header: "Resource", width: "150px", cell: (v) => <span className="font-semibold">{v.resource_id}</span> },
+        { id: "type", header: "Type", width: "150px", cell: (v) => <span className="text-[10px] font-mono text-gray-500">{v.resource_type}</span> },
+        { id: "period", header: "Period", width: "100px", cell: (v) => <span className="text-gray-500 whitespace-nowrap">{fmtDate(v.period_start)}</span> },
+        { id: "planHrs", header: "Plan Hrs", width: "100px", cell: (v) => <span className="font-mono">{v.planned_hours}</span> },
+        { id: "actHrs", header: "Act Hrs", width: "100px", cell: (v) => <span className="font-mono">{v.actual_hours}</span> },
+        { id: "delHrs", header: "Δ Hrs", width: "100px", cell: (v) => <span className={`font-mono ${v.hour_variance < 0 ? 'text-red-600' : 'text-emerald-600'}`}>{v.hour_variance > 0 ? '+' : ''}{v.hour_variance}</span> },
+        { id: "planCost", header: "Plan Cost", width: "120px", cell: (v) => <span className="font-mono">{fmt(v.planned_cost)}</span> },
+        { id: "actCost", header: "Act Cost", width: "120px", cell: (v) => <span className="font-mono">{fmt(v.actual_cost)}</span> },
+        { id: "delCost", header: "Δ Cost", width: "120px", cell: (v) => <span className={`font-mono ${v.cost_variance < 0 ? 'text-red-600' : 'text-emerald-600'}`}>{v.cost_variance > 0 ? '+' : ''}{fmt(v.cost_variance)}</span> },
         {
             id: "varPct", header: "Var %", width: "100px", cell: (v) => {
                 const overBudget = Number(v.variance_pct) > 0;
-                return <span style={{ fontWeight: 700, color: overBudget ? '#dc2626' : '#059669' }}>{overBudget ? '+' : ''}{Number(v.variance_pct).toFixed(1)}%</span>;
+                return <span className={`font-bold ${overBudget ? 'text-red-600' : 'text-emerald-600'}`}>{overBudget ? '+' : ''}{Number(v.variance_pct).toFixed(1)}%</span>;
             }
         },
     ];
 
     return (
         <StandardPage title="Budget Exception &amp; Variance Dashboard">
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+            <div className="flex justify-between mb-4">
                 <div>
-                    
-                    <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Cost overrun alerts · Resource plan vs actuals · Threshold detection</p>
+
+                    <p className="text-[13px] text-gray-500 mt-1 mb-0">Cost overrun alerts · Resource plan vs actuals · Threshold detection</p>
                 </div>
-                <button onClick={() => detectMut.mutate()} disabled={detectMut.isPending} style={{ padding: '8px 14px', background: '#7c3aed', color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+                <button onClick={() => detectMut.mutate()} disabled={detectMut.isPending} className="py-2 px-3.5 bg-purple-600 text-white border-none rounded-lg text-xs font-semibold cursor-pointer flex items-center gap-1 disabled:opacity-50">
                     <TrendingDown size={13} /> Run Exception Detection
                 </button>
             </div>
 
             {/* Global KPIs */}
             {summary && (
-                <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
-                    {[['Critical', summary.critical, '#dc2626'], ['Warnings', summary.warnings, '#d97706'], ['Info', summary.info, '#1d4ed8'], ['Acknowledged', summary.acknowledged, '#059669']].map(([l, v, c]) => (
-                        <div key={l as string} style={{ background: '#fff', border: '1px solid #e5e7eb', borderLeft: `4px solid ${c}`, borderRadius: 10, padding: '10px 18px', flex: 1 }}>
-                            <div style={{ fontSize: 22, fontWeight: 800, fontFamily: 'monospace', color: c as string }}>{v}</div>
-                            <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 1 }}>{l}</div>
+                <div className="flex gap-2.5 mb-3.5">
+                    {(
+                        [
+                            ['Critical', summary.critical, '#dc2626'],
+                            ['Warnings', summary.warnings, '#d97706'],
+                            ['Info', summary.info, '#1d4ed8'],
+                            ['Acknowledged', summary.acknowledged, '#059669']
+                        ] as const
+                    ).map(([l, v, c]) => (
+                        /* eslint-disable-next-line react/forbid-dom-props */
+                        <div key={l as string} className="bg-white border border-gray-200 rounded-xl py-2.5 px-4 flex-1" style={{ borderLeft: `4px solid ${c as string}` }}>
+                            {/* eslint-disable-next-line react/forbid-dom-props */}
+                            <div className="text-[22px] font-extrabold font-mono" style={{ color: c as string }}>{v as number}</div>
+                            <div className="text-[11px] text-gray-400 mt-0.5">{l as string}</div>
                         </div>
                     ))}
                 </div>
             )}
 
             {/* Project picker */}
-            <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-                <input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} style={{ padding: '7px 12px', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 12, minWidth: 220 }} aria-label="Project ID" />
-                <button disabled={!projectId} onClick={() => setActiveProject(projectId)} style={{ padding: '7px 16px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>Load</button>
+            <div className="flex gap-2 mb-3">
+                <input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="py-1.5 px-3 border border-gray-300 rounded-lg text-xs min-w-[220px]" aria-label="Project ID" />
+                <button disabled={!projectId} onClick={() => setActiveProject(projectId)} className="py-1.5 px-4 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50">Load</button>
             </div>
 
             {activeProject && (
                 <>
                     {/* Tabs */}
-                    <div style={{ display: 'flex', gap: 4, marginBottom: 12 }}>
-                        {(['alerts', 'variance'] as const).map(t => (
-                            <button key={t} onClick={() => setTab(t)} style={{ padding: '7px 18px', border: '1px solid #e5e7eb', borderRadius: 8, background: tab === t ? '#111827' : '#fff', color: tab === t ? '#fff' : '#6b7280', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                                {t === 'alerts' ? `Budget Alerts (${alerts.length})` : 'Resource Variance'}
-                            </button>
-                        ))}
+                    <div className="flex gap-1 mb-3">
+                        <div className="flex gap-1">
+                            {(['alerts', 'variance'] as const).map(t => (
+                                <button key={t} onClick={() => setTab(t)} className={`py-1.5 px-4 border border-gray-200 rounded-lg text-xs font-semibold cursor-pointer ${tab === t ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`}>
+                                    {t === 'alerts' ? `Budget Alerts (${alerts.length})` : 'Resource Variance'}
+                                </button>
+                            ))}
+                        </div>
                         {tab === 'alerts' && (
-                            <label style={{ display: 'flex', alignItems: 'center', gap: 5, marginLeft: 'auto', fontSize: 11, cursor: 'pointer' }}>
-                                <input type="checkbox" checked={showAck} onChange={e => setShowAck(e.target.checked)} />
+                            <label className="flex items-center gap-1.5 ml-auto text-[11px] cursor-pointer">
+                                <input type="checkbox" checked={showAck} onChange={e => setShowAck(e.target.checked)} className="m-0" />
                                 Show acknowledged
                             </label>
                         )}
                     </div>
 
                     {tab === 'alerts' && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        <div className="flex flex-col gap-1.5">
                             {alerts.map(a => {
                                 const cfg = SEV_CFG[a.severity] ?? SEV_CFG.Info;
                                 const Icon = cfg.icon;
                                 return (
-                                    <div key={a.id} style={{ background: cfg.bg, border: `1px solid ${cfg.color}30`, borderLeft: `4px solid ${cfg.color}`, borderRadius: 10, padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    /* eslint-disable-next-line react/forbid-dom-props */
+                                    <div key={a.id} className="rounded-xl p-2.5 px-3.5 flex justify-between items-center" style={{ background: cfg.bg, border: `1px solid ${cfg.color}30`, borderLeft: `4px solid ${cfg.color}` }}>
                                         <div>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+                                            <div className="flex items-center gap-1.5 mb-0.5">
                                                 <Icon size={13} color={cfg.color} />
-                                                <span style={{ fontSize: 12, fontWeight: 700, color: '#111827' }}>{a.alert_type.replace(/_/g, ' ')}</span>
-                                                <span style={{ fontSize: 10, fontWeight: 700, color: cfg.color }}>{a.severity}</span>
+                                                <span className="text-xs font-bold text-gray-900">{a.alert_type.replace(/_/g, ' ')}</span>
+                                                {/* eslint-disable-next-line react/forbid-dom-props */}
+                                                <span className="text-[10px] font-bold" style={{ color: cfg.color }}>{a.severity}</span>
                                             </div>
-                                            <div style={{ fontSize: 11, color: '#374151' }}>{a.description}</div>
-                                            {a.budget_amount && <div style={{ fontSize: 10, color: '#6b7280', marginTop: 2 }}>Budget: {fmt(a.budget_amount)} · Actual: {fmt(a.actual_amount)} · Variance: {Number(a.variance_pct).toFixed(1)}%</div>}
+                                            <div className="text-[11px] text-gray-700">{a.description}</div>
+                                            {a.budget_amount && <div className="text-[10px] text-gray-500 mt-0.5">Budget: {fmt(a.budget_amount)} · Actual: {fmt(a.actual_amount)} · Variance: {Number(a.variance_pct).toFixed(1)}%</div>}
                                         </div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                            <span style={{ fontSize: 10, color: '#9ca3af' }}>{fmtDate(a.created_at)}</span>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[10px] text-gray-400">{fmtDate(a.created_at)}</span>
                                             {!a.is_acknowledged && (
-                                                <button onClick={() => ackMut.mutate(a.id)} style={{ padding: '4px 10px', background: '#059669', color: '#fff', border: 'none', borderRadius: 5, fontSize: 10, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3 }}>
+                                                <button onClick={() => ackMut.mutate(a.id)} className="py-1 px-2.5 bg-emerald-600 text-white border-none rounded-md text-[10px] font-semibold cursor-pointer flex items-center gap-1">
                                                     <CheckCheck size={10} /> Acknowledge
                                                 </button>
                                             )}
@@ -130,12 +143,12 @@ export default function CommitmentDashboard() {
                                     </div>
                                 );
                             })}
-                            {alerts.length === 0 && <div style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>{showAck ? 'No acknowledged alerts' : '✓ No open budget alerts'}</div>}
+                            {alerts.length === 0 && <div className="text-center text-gray-400 p-6">{showAck ? 'No acknowledged alerts' : '✓ No open budget alerts'}</div>}
                         </div>
                     )}
 
                     {tab === 'variance' && (
-                        <div style={{ minHeight: '400px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 12 }}>
+                        <div className="min-h-[400px] h-full border border-gray-200 rounded-xl">
                             <InteractiveSpreadsheet
                                 columns={varColumns}
                                 data={variance}

@@ -107,9 +107,9 @@ export default function TeamSchedule() {
             cell: (person: any) => {
                 const assignment = getShiftForCell(person.id, day);
                 return (
-                    <StandardPage title="Team Schedule"> setSelectedCell({ personId: person.id, date: day })}
-                    >
+                    <div className="cursor-pointer h-full w-full flex items-center justify-center p-1" onClick={() => setSelectedCell({ personId: person.id, date: day })}>
                         {assignment ? (
+                            // eslint-disable-next-line react/forbid-dom-props
                             <div
                                 className="text-xs font-medium px-2 py-1 rounded text-white truncate w-full text-center"
                                 style={{ backgroundColor: assignment.shift.color }}
@@ -120,7 +120,7 @@ export default function TeamSchedule() {
                         ) : (
                             <div className="h-full w-full rounded hover:bg-slate-100 min-h-[24px]"></div>
                         )}
-                    </StandardPage>
+                    </div>
                 );
             }
         }))
@@ -130,7 +130,7 @@ export default function TeamSchedule() {
         <div className="container mx-auto p-6 max-w-6xl space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground">Manage shift assignments ({format(weekStart, "MMM d")} - {format(addDays(weekStart, 6), "MMM d")})</p>
                 </div>
                 <Button
@@ -177,6 +177,7 @@ export default function TeamSchedule() {
                                 <SelectContent>
                                     {shifts?.map((s: any) => (
                                         <SelectItem key={s.id} value={s.id}>
+                                            {/* eslint-disable-next-line react/forbid-dom-props */}
                                             <span className="inline-block w-3 h-3 rounded-full mr-2" style={{ backgroundColor: s.color }}></span>
                                             {s.name} ({s.startTime}-{s.endTime})
                                         </SelectItem>

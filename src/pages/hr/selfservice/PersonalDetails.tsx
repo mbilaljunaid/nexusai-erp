@@ -368,7 +368,7 @@ export default function PersonalDetails() {
                             </Button>
                         </div>
 
-                        <div style={{ minHeight: '300px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 8 }}>
+                        <div className="min-h-[300px] h-full border border-gray-200 rounded-lg">
                             <InteractiveSpreadsheet
                                 columns={documentColumns}
                                 data={documents}

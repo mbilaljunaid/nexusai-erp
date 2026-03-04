@@ -305,7 +305,7 @@ export default function FSGBuilder() {
                                         </div>
 
                                         {/* Rows Table */}
-                                        <div style={{ minHeight: '300px', height: '100%', borderTop: '1px solid #e5e7eb' }}>
+                                        <div className="min-h-[300px] h-full border-t border-gray-200">
                                             <InteractiveSpreadsheet
                                                 columns={rowColumns}
                                                 data={activeRows || []}
@@ -416,7 +416,7 @@ export default function FSGBuilder() {
                                         </div>
 
                                         {/* Cols Table */}
-                                        <div style={{ minHeight: '300px', height: '100%', borderTop: '1px solid #e5e7eb' }}>
+                                        <div className="min-h-[300px] h-full border-t border-gray-200">
                                             <InteractiveSpreadsheet
                                                 columns={colColumns}
                                                 data={activeCols || []}

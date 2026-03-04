@@ -26,7 +26,7 @@ interface Analytics {
     sourceEffectiveness: Array<{ source: string; count: number; hires: number }>;
     pipelineFunnel: Array<{ stage: string; count: number }>;
     hiresOverTime: Array<{ month: string; count: number }>;
-    interviewerPerformance: Array<{ name: string; interviews: number; avgRating: number; avgFeedbackTime: number }>;
+    interviewerPerformance: Array<{ id: string; name: string; interviews: number; avgRating: number; avgFeedbackTime: number }>;
 }
 
 const COLORS = ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#ec4899'];
@@ -68,10 +68,10 @@ export default function RecruitmentAnalytics() {
                         { month: 'Feb', count: 22 }
                     ],
                     interviewerPerformance: [
-                        { name: 'John Smith', interviews: 45, avgRating: 4.2, avgFeedbackTime: 1.5 },
-                        { name: 'Sarah Johnson', interviews: 38, avgRating: 4.5, avgFeedbackTime: 0.8 },
-                        { name: 'Michael Chen', interviews: 32, avgRating: 3.9, avgFeedbackTime: 2.1 },
-                        { name: 'Emily Davis', interviews: 28, avgRating: 4.7, avgFeedbackTime: 0.5 }
+                        { id: '1', name: 'John Smith', interviews: 45, avgRating: 4.2, avgFeedbackTime: 1.5 },
+                        { id: '2', name: 'Sarah Johnson', interviews: 38, avgRating: 4.5, avgFeedbackTime: 0.8 },
+                        { id: '3', name: 'Michael Chen', interviews: 32, avgRating: 3.9, avgFeedbackTime: 2.1 },
+                        { id: '4', name: 'Emily Davis', interviews: 28, avgRating: 4.7, avgFeedbackTime: 0.5 }
                     ]
                 };
             }
@@ -102,7 +102,7 @@ export default function RecruitmentAnalytics() {
         return <div className="p-8 text-center text-muted-foreground">No analytics data available</div>;
     }
 
-    const interviewerColumns: SpreadsheetColumn[] = [
+    const interviewerColumns: SpreadsheetColumn<any>[] = [
         {
             id: "name",
             header: "Interviewer",
@@ -276,6 +276,7 @@ export default function RecruitmentAnalytics() {
                                             <span>{stage.count} ({percentage}%)</span>
                                         </div>
                                         <div className="w-full bg-muted rounded-full h-6 relative overflow-hidden">
+                                            {/* eslint-disable-next-line react/forbid-dom-props */}
                                             <div
                                                 className="h-full flex items-center justify-end px-2 text-xs font-semibold text-white transition-all"
                                                 style={{
@@ -356,8 +357,9 @@ export default function RecruitmentAnalytics() {
                         <InteractiveSpreadsheet
                             data={analytics.interviewerPerformance}
                             columns={interviewerColumns}
-                            containerHeight={300}
+                            containerHeight="300px"
                             virtualized={true}
+                            onChange={() => { }}
                         />
                     </div>
                 </CardContent>

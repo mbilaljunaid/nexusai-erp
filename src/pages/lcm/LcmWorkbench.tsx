@@ -8,6 +8,7 @@ import { Plus, Ship, Calendar, DollarSign, ExternalLink, Filter, Search, MoreHor
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { StandardPage } from '@/components/layout/StandardPage';
+import { ContextualSearch } from "@/components/ContextualSearch";
 import {
     Sheet,
     SheetContent,
@@ -188,9 +189,12 @@ export default function LcmWorkbench() {
                                 <CardTitle>Trade Operations</CardTitle>
                                 <CardDescription>Track shipments from departure to final landed cost closure.</CardDescription>
                             </div>
-                            <div className="relative w-64">
-                                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                                <Input placeholder="Search operations..." className="pl-8" />
+                            <div className="w-64">
+                                <ContextualSearch
+                                    placeholder="Search operations..."
+                                    fields={[{ key: "query", label: "Search", type: "text" }]}
+                                    onSearch={() => { }}
+                                />
                             </div>
                         </div>
                     </CardHeader>

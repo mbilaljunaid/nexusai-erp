@@ -24,6 +24,19 @@ import {
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { StandardPage } from "@/components/layout/StandardPage";
 
+const CURRENCY_OPTIONS = [
+    { value: "USD", label: "USD - US Dollar" },
+    { value: "EUR", label: "EUR - Euro" },
+    { value: "GBP", label: "GBP - British Pound" }
+];
+
+const TERMS_OPTIONS = [
+    { value: "Immediate", label: "Immediate" },
+    { value: "Net 15", label: "Net 15" },
+    { value: "Net 30", label: "Net 30" },
+    { value: "Net 45", label: "Net 45" },
+    { value: "Net 60", label: "Net 60" }
+];
 
 export default function BillingProfileManager() {
     const { businessUnitId } = useEnterpriseStore();
@@ -157,7 +170,7 @@ export default function BillingProfileManager() {
             width: "100px",
             cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
                 <div className="flex justify-center pt-2">
-                    <input type="checkbox" className="h-4 w-4 rounded border-gray-300" checked={row.taxExempt || false} onChange={e => updateRow("taxExempt", e.target.checked)} />
+                    <input type="checkbox" aria-label="Tax Exempt" title="Tax Exempt" className="h-4 w-4 rounded border-gray-300" checked={row.taxExempt || false} onChange={e => updateRow("taxExempt", e.target.checked)} />
                 </div>
             )
         },
@@ -175,7 +188,7 @@ export default function BillingProfileManager() {
             width: "100px",
             cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
                 <div className="flex justify-center pt-2">
-                    <input type="checkbox" className="h-4 w-4 rounded border-gray-300" checked={row.emailInvoices ?? true} onChange={e => updateRow("emailInvoices", e.target.checked)} />
+                    <input type="checkbox" aria-label="Auto-Email Invoices" title="Auto-Email Invoices" className="h-4 w-4 rounded border-gray-300" checked={row.emailInvoices ?? true} onChange={e => updateRow("emailInvoices", e.target.checked)} />
                 </div>
             )
         }
@@ -201,7 +214,7 @@ export default function BillingProfileManager() {
 
             <div className="flex items-center justify-between">
                 <div>
-                    
+
                     <p className="text-muted-foreground">
                         Manage customer-specific billing preferences, payment terms, and currencies.
                     </p>

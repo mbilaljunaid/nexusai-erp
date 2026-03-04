@@ -178,7 +178,7 @@ export default function Ecommerce() {
     <StandardPage title="E-Commerce">
       <div className="flex items-center justify-between gap-4">
         <div>
-          
+
           <p className="text-muted-foreground text-sm">Online store, products, orders, and customer management</p>
         </div>
         <Button data-testid="button-add-product">
@@ -315,7 +315,7 @@ export default function Ecommerce() {
           </div>
           <Card>
             <CardContent className="p-0">
-              <div style={{ height: '500px' }}>
+              <div className="h-[500px]">
                 <InteractiveSpreadsheet
                   columns={productColumns}
                   data={filteredProducts}
@@ -331,7 +331,7 @@ export default function Ecommerce() {
       {selectedTab === "orders" && (
         <Card>
           <CardContent className="p-0">
-            <div style={{ height: '500px' }}>
+            <div className="h-[500px]">
               <InteractiveSpreadsheet
                 columns={orderColumns}
                 data={orders}
@@ -346,7 +346,7 @@ export default function Ecommerce() {
       {selectedTab === "customers" && (
         <Card>
           <CardContent className="p-0">
-            <div style={{ height: '500px' }}>
+            <div className="h-[500px]">
               <InteractiveSpreadsheet
                 columns={customerColumns}
                 data={customers}

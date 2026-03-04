@@ -10,12 +10,12 @@ interface QuoteLine { id: string; line_number: number; product_id: string; descr
 interface Renewal { id: string; contract_number: string; customer_id: string; renewal_date: string; status: string; auto_renew: boolean; mrr: number; days_until_renewal: number; }
 interface EVMMetric { wbs_code: string; description: string; pv: number; ev: number; ac: number; sv: number; cv: number; cpi: number; spi: number; }
 
-const STATUS_CLR: Record<string, string> = { Draft: '#9ca3af', Pending_Approval: '#d97706', Approved: '#1d4ed8', Presented: '#7c3aed', Won: '#059669', Lost: '#dc2626', Expired: '#6b7280', Pending: '#d97706', Renewed: '#059669', Churned: '#dc2626', On_Hold: '#f59e0b' };
-const ACTIONS: Record<string, { a: string; label: string; clr: string }[]> = {
-    Draft: [{ a: 'SUBMIT', label: 'Submit', clr: '#1d4ed8' }],
-    Pending_Approval: [{ a: 'APPROVE', label: 'Approve', clr: '#059669' }, { a: 'LOSE', label: 'Decline', clr: '#dc2626' }],
-    Approved: [{ a: 'PRESENT', label: 'Mark Presented', clr: '#7c3aed' }],
-    Presented: [{ a: 'WIN', label: 'Won!', clr: '#059669' }, { a: 'LOSE', label: 'Lost', clr: '#dc2626' }],
+const STATUS_CLR: Record<string, string> = { Draft: 'bg-gray-100 text-gray-400 border-l-gray-400', Pending_Approval: 'bg-amber-100 text-amber-600 border-l-amber-600', Approved: 'bg-blue-100 text-blue-700 border-l-blue-700', Presented: 'bg-purple-100 text-purple-600 border-l-purple-600', Won: 'bg-emerald-100 text-emerald-600 border-l-emerald-600', Lost: 'bg-red-100 text-red-600 border-l-red-600', Expired: 'bg-gray-100 text-gray-500 border-l-gray-500', Pending: 'bg-amber-100 text-amber-600 border-l-amber-600', Renewed: 'bg-emerald-100 text-emerald-600 border-l-emerald-600', Churned: 'bg-red-100 text-red-600 border-l-red-600', On_Hold: 'bg-amber-100 text-amber-500 border-l-amber-500' };
+const ACTIONS: Record<string, { a: string; label: string; textClass: string; bgClass: string }[]> = {
+    Draft: [{ a: 'SUBMIT', label: 'Submit', textClass: 'text-blue-700', bgClass: 'bg-blue-50 hover:bg-blue-100' }],
+    Pending_Approval: [{ a: 'APPROVE', label: 'Approve', textClass: 'text-emerald-600', bgClass: 'bg-emerald-50 hover:bg-emerald-100' }, { a: 'LOSE', label: 'Decline', textClass: 'text-red-600', bgClass: 'bg-red-50 hover:bg-red-100' }],
+    Approved: [{ a: 'PRESENT', label: 'Mark Presented', textClass: 'text-purple-600', bgClass: 'bg-purple-50 hover:bg-purple-100' }],
+    Presented: [{ a: 'WIN', label: 'Won!', textClass: 'text-emerald-600', bgClass: 'bg-emerald-50 hover:bg-emerald-100' }, { a: 'LOSE', label: 'Lost', textClass: 'text-red-600', bgClass: 'bg-red-50 hover:bg-red-100' }],
 };
 
 export default function CPQDashboard() {
@@ -38,107 +38,107 @@ export default function CPQDashboard() {
     const pending = quotes.filter(q => ['Draft', 'Pending_Approval', 'Presented'].includes(q.status)).length;
     const pipeline = quotes.filter(q => q.status !== 'Lost' && q.status !== 'Expired').reduce((s, q) => s + Number(q.net_total ?? 0), 0);
 
-    const kpiC = (val: number, gd = 1) => val >= gd ? '#059669' : val >= gd * 0.8 ? '#d97706' : '#dc2626';
+    const kpiC = (val: number, gd = 1) => val >= gd ? 'text-emerald-600' : val >= gd * 0.8 ? 'text-amber-600' : 'text-red-600';
 
     const renewalColumns: SpreadsheetColumn<any>[] = [
-        { id: "contract", header: "Contract", width: "150px", cell: (ren: any) => <span style={{ fontWeight: 600 }}>{ren.contract_number}</span> },
+        { id: "contract", header: "Contract", width: "150px", cell: (ren: any) => <span className="font-semibold">{ren.contract_number}</span> },
         { id: "customer", header: "Customer", width: "150px", cell: (ren: any) => <span>{ren.customer_id}</span> },
         { id: "renewal_date", header: "Renewal Date", width: "120px", cell: (ren: any) => <span>{ren.renewal_date}</span> },
-        { id: "days", header: "Days", width: "80px", cell: (ren: any) => <span style={{ color: Number(ren.days_until_renewal) <= 7 ? '#dc2626' : Number(ren.days_until_renewal) <= 14 ? '#d97706' : '#059669', fontWeight: 700 }}>{ren.days_until_renewal}d</span> },
-        { id: "mrr", header: "MRR", width: "100px", cell: (ren: any) => <span style={{ fontFamily: 'monospace' }}>${Number(ren.mrr ?? 0).toLocaleString()}</span> },
-        { id: "auto_renew", header: "Auto-Renew", width: "100px", cell: (ren: any) => <span style={{ fontSize: 9, padding: '2px 5px', borderRadius: 3, background: ren.auto_renew ? '#d1fae5' : '#f3f4f6', color: ren.auto_renew ? '#059669' : '#9ca3af' }}>{ren.auto_renew ? 'AUTO' : 'MANUAL'}</span> },
+        { id: "days", header: "Days", width: "80px", cell: (ren: any) => <span className={`font-bold ${Number(ren.days_until_renewal) <= 7 ? 'text-red-600' : Number(ren.days_until_renewal) <= 14 ? 'text-amber-600' : 'text-emerald-600'}`}>{ren.days_until_renewal}d</span> },
+        { id: "mrr", header: "MRR", width: "100px", cell: (ren: any) => <span className="font-mono">${Number(ren.mrr ?? 0).toLocaleString()}</span> },
+        { id: "auto_renew", header: "Auto-Renew", width: "100px", cell: (ren: any) => <span className={`text-[9px] px-1.5 py-0.5 rounded-sm ${ren.auto_renew ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400'}`}>{ren.auto_renew ? 'AUTO' : 'MANUAL'}</span> },
         {
             id: "status", header: "Status", width: "120px", cell: (ren: any) => {
-                const clr = STATUS_CLR[ren.status] ?? '#6b7280';
-                return <span style={{ fontSize: 9, padding: '2px 5px', borderRadius: 3, background: clr + '18', color: clr }}>{ren.status}</span>;
+                const clss = STATUS_CLR[ren.status] ?? 'bg-gray-100 text-gray-500';
+                return <span className={`text-[9px] px-1.5 py-0.5 rounded-sm ${clss}`}>{ren.status}</span>;
             }
         },
-        { id: "action", header: "", width: "100px", cell: (ren: any) => ren.status === 'Pending' ? <button onClick={() => renewMut.mutate(ren.id)} style={{ padding: '3px 8px', background: '#059669', color: '#fff', border: 'none', borderRadius: 5, fontSize: 9, cursor: 'pointer', fontWeight: 700 }}>Renew</button> : null }
+        { id: "action", header: "", width: "100px", cell: (ren: any) => ren.status === 'Pending' ? <button onClick={() => renewMut.mutate(ren.id)} className="px-2 py-1 bg-emerald-600 text-white border-none rounded-[5px] text-[9px] cursor-pointer font-bold">Renew</button> : null }
     ];
 
     const evmColumns: SpreadsheetColumn<any>[] = [
-        { id: "wbs", header: "WBS", width: "120px", cell: (ca: any) => <span style={{ fontFamily: 'monospace', fontSize: 10, fontWeight: 600 }}>{ca.wbs_code}</span> },
-        { id: "desc", header: "Description", width: "200px", cell: (ca: any) => <span style={{ color: '#6b7280' }}>{ca.description ?? '—'}</span> },
-        { id: "pv", header: "PV", width: "100px", cell: (ca: any) => <span style={{ fontFamily: 'monospace' }}>${Number(ca.pv ?? 0).toLocaleString()}</span> },
-        { id: "ev", header: "EV", width: "100px", cell: (ca: any) => <span style={{ fontFamily: 'monospace' }}>${Number(ca.ev ?? 0).toLocaleString()}</span> },
-        { id: "ac", header: "AC", width: "100px", cell: (ca: any) => <span style={{ fontFamily: 'monospace' }}>${Number(ca.ac ?? 0).toLocaleString()}</span> },
-        { id: "sv", header: "SV", width: "100px", cell: (ca: any) => <span style={{ fontFamily: 'monospace', color: Number(ca.sv ?? 0) >= 0 ? '#059669' : '#dc2626', fontWeight: 700 }}>{Number(ca.sv ?? 0) >= 0 ? '+' : ''}{Number(ca.sv ?? 0).toLocaleString()}</span> },
-        { id: "cv", header: "CV", width: "100px", cell: (ca: any) => <span style={{ fontFamily: 'monospace', color: Number(ca.cv ?? 0) >= 0 ? '#059669' : '#dc2626', fontWeight: 700 }}>{Number(ca.cv ?? 0) >= 0 ? '+' : ''}{Number(ca.cv ?? 0).toLocaleString()}</span> },
-        { id: "cpi", header: "CPI", width: "80px", cell: (ca: any) => <span style={{ color: kpiC(Number(ca.cpi ?? 1)), fontWeight: 700 }}>{Number(ca.cpi ?? 0).toFixed(2)}</span> },
-        { id: "spi", header: "SPI", width: "80px", cell: (ca: any) => <span style={{ color: kpiC(Number(ca.spi ?? 1)), fontWeight: 700 }}>{Number(ca.spi ?? 0).toFixed(2)}</span> }
+        { id: "wbs", header: "WBS", width: "120px", cell: (ca: any) => <span className="font-mono text-[10px] font-semibold">{ca.wbs_code}</span> },
+        { id: "desc", header: "Description", width: "200px", cell: (ca: any) => <span className="text-gray-500">{ca.description ?? '—'}</span> },
+        { id: "pv", header: "PV", width: "100px", cell: (ca: any) => <span className="font-mono">${Number(ca.pv ?? 0).toLocaleString()}</span> },
+        { id: "ev", header: "EV", width: "100px", cell: (ca: any) => <span className="font-mono">${Number(ca.ev ?? 0).toLocaleString()}</span> },
+        { id: "ac", header: "AC", width: "100px", cell: (ca: any) => <span className="font-mono">${Number(ca.ac ?? 0).toLocaleString()}</span> },
+        { id: "sv", header: "SV", width: "100px", cell: (ca: any) => <span className={`font-mono font-bold ${Number(ca.sv ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{Number(ca.sv ?? 0) >= 0 ? '+' : ''}{Number(ca.sv ?? 0).toLocaleString()}</span> },
+        { id: "cv", header: "CV", width: "100px", cell: (ca: any) => <span className={`font-mono font-bold ${Number(ca.cv ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{Number(ca.cv ?? 0) >= 0 ? '+' : ''}{Number(ca.cv ?? 0).toLocaleString()}</span> },
+        { id: "cpi", header: "CPI", width: "80px", cell: (ca: any) => <span className={`font-bold ${kpiC(Number(ca.cpi ?? 1))}`}>{Number(ca.cpi ?? 0).toFixed(2)}</span> },
+        { id: "spi", header: "SPI", width: "80px", cell: (ca: any) => <span className={`font-bold ${kpiC(Number(ca.spi ?? 1))}`}>{Number(ca.spi ?? 0).toFixed(2)}</span> }
     ];
 
     return (
         <StandardPage title="CPQ & Revenue Intelligence">
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, alignItems: 'flex-end' }}>
+            <div className="flex justify-between mb-4 items-end">
                 <div>
-                    
-                    <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Configure-price-quote · Renewal management · EVM metrics</p>
+
+                    <p className="text-[13px] text-gray-500 mt-1 mb-0">Configure-price-quote · Renewal management · EVM metrics</p>
                 </div>
-                <div style={{ display: 'flex', gap: 6 }}>
+                <div className="flex gap-1.5">
                     {[['cpq', 'Quotes'], ['renewal', 'Renewals'], ['evm', 'EVM']].map(([v, lbl]) => (
-                        <button key={v} onClick={() => setView(v as any)} style={{ padding: '7px 14px', border: 'none', borderRadius: 8, fontWeight: 700, fontSize: 11, cursor: 'pointer', background: view === v ? '#111827' : '#f3f4f6', color: view === v ? '#fff' : '#6b7280' }}>{lbl}</button>
+                        <button key={v} onClick={() => setView(v as any)} className={`px-3.5 py-1.5 border-none rounded-lg font-bold text-[11px] cursor-pointer ${view === v ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500'}`}>{lbl}</button>
                     ))}
                 </div>
             </div>
 
             {view === 'cpq' && (
                 <>
-                    <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
-                        {[{ lbl: 'Pipeline', val: `$${(pipeline / 1000).toFixed(0)}K`, clr: '#1d4ed8' }, { lbl: 'Won', val: won, clr: '#059669' }, { lbl: 'Lost', val: lost, clr: '#dc2626' }, { lbl: 'Open', val: pending, clr: '#d97706' }].map(k => (
-                            <div key={k.lbl} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 10, padding: '10px 16px', minWidth: 100 }}>
-                                <div style={{ fontSize: 20, fontWeight: 800, color: k.clr }}>{k.val}</div>
-                                <div style={{ fontSize: 10, color: '#9ca3af' }}>{k.lbl}</div>
+                    <div className="flex gap-2.5 mb-3.5">
+                        {[{ lbl: 'Pipeline', val: `$${(pipeline / 1000).toFixed(0)}K`, clr: 'text-blue-700' }, { lbl: 'Won', val: won, clr: 'text-emerald-600' }, { lbl: 'Lost', val: lost, clr: 'text-red-600' }, { lbl: 'Open', val: pending, clr: 'text-amber-600' }].map(k => (
+                            <div key={k.lbl} className="bg-white border border-gray-200 rounded-xl px-4 py-2.5 min-w-[100px]">
+                                <div className={`text-xl font-extrabold ${k.clr}`}>{k.val}</div>
+                                <div className="text-[10px] text-gray-400">{k.lbl}</div>
                             </div>
                         ))}
                     </div>
-                    <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
+                    <div className="flex gap-1.5 mb-2.5">
                         {['', 'Draft', 'Pending_Approval', 'Approved', 'Presented', 'Won', 'Lost'].map(s => (
-                            <button key={s} onClick={() => setStatusFilter(s)} style={{ padding: '5px 10px', border: '1px solid #e5e7eb', borderRadius: 6, background: statusFilter === s ? '#111827' : '#fff', color: statusFilter === s ? '#fff' : '#6b7280', fontSize: 10, fontWeight: 600, cursor: 'pointer' }}>{s || 'All'}</button>
+                            <button key={s} onClick={() => setStatusFilter(s)} className={`px-2.5 py-1.5 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`}>{s || 'All'}</button>
                         ))}
                     </div>
-                    <div style={{ display: 'flex', gap: 14 }}>
-                        <div style={{ flex: 1 }}>
+                    <div className="flex gap-3.5">
+                        <div className="flex-1">
                             {quotes.map(q => {
-                                const clr = STATUS_CLR[q.status] ?? '#6b7280';
+                                const statusClass = STATUS_CLR[q.status] ?? 'bg-gray-100 text-gray-400 border-l-gray-400';
                                 const acts = ACTIONS[q.status] ?? [];
                                 return (
-                                    <div key={q.id} onClick={() => setSelected(selected?.id === q.id ? null : q)} style={{ background: '#fff', border: `1px solid ${selected?.id === q.id ? '#1d4ed8' : '#e5e7eb'}`, borderLeft: `4px solid ${clr}`, borderRadius: 10, padding: '10px 14px', marginBottom: 6, cursor: 'pointer' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
-                                            <div style={{ fontWeight: 700, fontSize: 13 }}>{q.quote_number} — {q.customer_id}</div>
-                                            <span style={{ fontSize: 9, padding: '2px 6px', borderRadius: 4, fontWeight: 700, background: clr + '18', color: clr }}>{q.status}</span>
+                                    <div key={q.id} onClick={() => setSelected(selected?.id === q.id ? null : q)} className={`bg-white border hover:shadow-sm cursor-pointer border-l-[4px] rounded-xl px-3.5 py-2.5 mb-1.5 ${selected?.id === q.id ? 'border-blue-700' : 'border-gray-200'} ${statusClass.split(' ').find(c => c.startsWith('border-l-'))}`}>
+                                        <div className="flex justify-between mb-1">
+                                            <div className="font-bold text-[13px]">{q.quote_number} — {q.customer_id}</div>
+                                            <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${statusClass.replace(/border-l-\S+/, '')}`}>{q.status}</span>
                                         </div>
-                                        <div style={{ display: 'flex', gap: 12, fontSize: 10, color: '#6b7280', marginBottom: 4 }}>
-                                            <span>List: <strong style={{ color: '#374151' }}>${Number(q.list_total).toLocaleString()}</strong></span>
-                                            <span>Net: <strong style={{ color: '#059669' }}>${Number(q.net_total).toLocaleString()}</strong></span>
+                                        <div className="flex gap-3 text-[10px] text-gray-500 mb-1">
+                                            <span>List: <strong className="text-gray-700">${Number(q.list_total).toLocaleString()}</strong></span>
+                                            <span>Net: <strong className="text-emerald-600">${Number(q.net_total).toLocaleString()}</strong></span>
                                             <span>Disc: <strong>{Number(q.discount_pct)}%</strong></span>
                                             {q.valid_until && <span>Valid until: <strong>{q.valid_until}</strong></span>}
                                         </div>
                                         {acts.length > 0 && (
-                                            <div style={{ display: 'flex', gap: 4, marginTop: 4 }}>
-                                                {acts.map(a => <button key={a.a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: q.id, action: a.a }); }} style={{ padding: '2px 7px', background: a.clr + '12', border: 'none', borderRadius: 4, fontSize: 9, cursor: 'pointer', color: a.clr, fontWeight: 700 }}>{a.label}</button>)}
+                                            <div className="flex gap-1 mt-1">
+                                                {acts.map(a => <button key={a.a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: q.id, action: a.a }); }} className={`px-[7px] py-[2px] border-none rounded font-bold text-[9px] cursor-pointer ${a.textClass} ${a.bgClass}`}>{a.label}</button>)}
                                             </div>
                                         )}
                                     </div>
                                 );
                             })}
-                            {quotes.length === 0 && <div style={{ textAlign: 'center', color: '#9ca3af', padding: 32, background: '#fff', borderRadius: 10 }}>No quotes</div>}
+                            {quotes.length === 0 && <div className="text-center text-gray-400 p-8 bg-white rounded-xl">No quotes</div>}
                         </div>
                         {selected && (
-                            <div style={{ width: 280, flexShrink: 0, background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: 14 }}>
-                                <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 8 }}>{selected.quote_number}</div>
-                                <div style={{ fontSize: 11, fontWeight: 700, marginBottom: 5 }}>Line Items</div>
+                            <div className="w-[280px] flex-shrink-0 bg-white border border-gray-200 rounded-xl p-3.5 h-fit sticky top-4">
+                                <div className="font-bold text-[13px] mb-2">{selected.quote_number}</div>
+                                <div className="text-[11px] font-bold mb-1.5">Line Items</div>
                                 {(selected.lines ?? []).map(l => (
-                                    <div key={l.id} style={{ borderBottom: '1px solid #f3f4f6', paddingBottom: 4, marginBottom: 4, fontSize: 10 }}>
-                                        <div style={{ fontWeight: 600 }}>#{l.line_number} {l.product_id}</div>
-                                        <div style={{ color: '#6b7280' }}>{l.description}</div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <div key={l.id} className="border-b border-gray-100 pb-1 mb-1 text-[10px]">
+                                        <div className="font-semibold">#{l.line_number} {l.product_id}</div>
+                                        <div className="text-gray-500">{l.description}</div>
+                                        <div className="flex justify-between mt-0.5">
                                             <span>{l.quantity} × ${Number(l.unit_price).toFixed(2)}</span>
-                                            <span style={{ fontWeight: 700, color: '#059669' }}>${Number(l.net_price).toFixed(2)}</span>
+                                            <span className="font-bold text-emerald-600">${Number(l.net_price).toFixed(2)}</span>
                                         </div>
                                     </div>
                                 ))}
-                                {!selected.lines?.length && <div style={{ color: '#9ca3af', fontSize: 10 }}>No lines</div>}
+                                {!selected.lines?.length && <div className="text-gray-400 text-[10px]">No lines</div>}
                             </div>
                         )}
                     </div>
@@ -148,11 +148,11 @@ export default function CPQDashboard() {
             {view === 'renewal' && (
                 <div>
                     {upcoming.length > 0 && (
-                        <div style={{ background: '#fef3c7', border: '1px solid #fcd34d', borderRadius: 8, padding: '8px 12px', marginBottom: 12, fontSize: 11 }}>
+                        <div className="bg-amber-50 border border-amber-300 rounded-lg px-3 py-2 mb-3 text-[11px]">
                             <strong>⚠️ {upcoming.length} contract(s)</strong> renewing within 30 days
                         </div>
                     )}
-                    <div style={{ background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)', border: '1px solid #e5e7eb' }}>
+                    <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
                         {renewals.length > 0 ? (
                             <InteractiveSpreadsheet
                                 data={renewals}
@@ -162,7 +162,7 @@ export default function CPQDashboard() {
                                 onChange={() => { }}
                             />
                         ) : (
-                            <div style={{ padding: 24, textAlign: 'center', color: '#9ca3af' }}>No pending renewals</div>
+                            <div className="p-6 text-center text-gray-400">No pending renewals</div>
                         )}
                     </div>
                 </div>
@@ -170,21 +170,21 @@ export default function CPQDashboard() {
 
             {view === 'evm' && (
                 <div>
-                    <div style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center' }}>
-                        <input value={evmBaseline} onChange={e => setEvmBaseline(e.target.value)} placeholder="Paste Baseline ID..." style={{ padding: '6px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12, width: 300 }} aria-label="Baseline ID" />
+                    <div className="flex gap-2 mb-3 items-center">
+                        <input value={evmBaseline} onChange={e => setEvmBaseline(e.target.value)} placeholder="Paste Baseline ID..." className="px-2.5 py-1.5 border border-gray-300 rounded-md text-xs w-[300px]" aria-label="Baseline ID" />
                         {evmMetrics && (
-                            <div style={{ display: 'flex', gap: 8 }}>
-                                {[{ lbl: 'SPI', val: Number(evmMetrics.totals.ev / (evmMetrics.totals.pv || 1)).toFixed(2), gd: 1 }, { lbl: 'CPI', val: Number(evmMetrics.totals.ev / (evmMetrics.totals.ac || 1)).toFixed(2), gd: 1 }, { lbl: 'EAC', val: `$${Number(evmMetrics.eac / 1000).toFixed(0)}K`, clr: '#1d4ed8' }].map(k => (
-                                    <div key={k.lbl} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 8, padding: '6px 12px' }}>
-                                        <div style={{ fontSize: 14, fontWeight: 800, color: (k as any).clr ?? kpiC(Number(k.val)) }}>{k.val}</div>
-                                        <div style={{ fontSize: 9, color: '#9ca3af' }}>{k.lbl}</div>
+                            <div className="flex gap-2">
+                                {[{ lbl: 'SPI', val: Number(evmMetrics.totals.ev / (evmMetrics.totals.pv || 1)).toFixed(2), gd: 1 }, { lbl: 'CPI', val: Number(evmMetrics.totals.ev / (evmMetrics.totals.ac || 1)).toFixed(2), gd: 1 }, { lbl: 'EAC', val: `$${Number(evmMetrics.eac / 1000).toFixed(0)}K`, clr: 'text-blue-700' }].map(k => (
+                                    <div key={k.lbl} className="bg-white border border-gray-200 rounded-lg px-3 py-1.5">
+                                        <div className={`text-sm font-extrabold ${(k as any).clr ?? kpiC(Number(k.val))}`}>{k.val}</div>
+                                        <div className="text-[9px] text-gray-400">{k.lbl}</div>
                                     </div>
                                 ))}
                             </div>
                         )}
                     </div>
                     {evmMetrics && (
-                        <div style={{ background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)', border: '1px solid #e5e7eb' }}>
+                        <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
                             <InteractiveSpreadsheet
                                 data={evmMetrics.controlAccounts}
                                 columns={evmColumns}
@@ -194,7 +194,7 @@ export default function CPQDashboard() {
                             />
                         </div>
                     )}
-                    {!evmBaseline && <div style={{ textAlign: 'center', color: '#9ca3af', padding: 32, background: '#fff', borderRadius: 10 }}>Enter a Baseline ID to view EVM metrics</div>}
+                    {!evmBaseline && <div className="text-center text-gray-400 p-8 bg-white rounded-xl">Enter a Baseline ID to view EVM metrics</div>}
                 </div>
             )}
         </StandardPage>

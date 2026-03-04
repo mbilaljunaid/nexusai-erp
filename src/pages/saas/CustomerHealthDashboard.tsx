@@ -56,6 +56,20 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
         return 'bg-red-100 text-red-800';
     };
 
+    const getWidthClass = (val: number) => {
+        if (val >= 100) return "w-full";
+        if (val >= 90) return "w-[90%]";
+        if (val >= 80) return "w-[80%]";
+        if (val >= 70) return "w-[70%]";
+        if (val >= 60) return "w-[60%]";
+        if (val >= 50) return "w-[50%]";
+        if (val >= 40) return "w-[40%]";
+        if (val >= 30) return "w-[30%]";
+        if (val >= 20) return "w-[20%]";
+        if (val >= 10) return "w-[10%]";
+        return "w-[5%]";
+    };
+
     const getTrendIcon = (trend: string) => {
         switch (trend) {
             case 'improving':
@@ -185,8 +199,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
                     <div
                         className={`absolute left-0 top-0 h-2.5 rounded-full ${row.renewal_probability > 70 ? 'bg-green-600' :
                             row.renewal_probability > 50 ? 'bg-yellow-600' : 'bg-red-600'
-                            }`}
-                        style={{ width: `${row.renewal_probability}%` }}
+                            } ${getWidthClass(row.renewal_probability)}`}
                     />
                     <span className="text-xs absolute -right-8 -top-1">{row.renewal_probability}%</span>
                 </div>
@@ -240,7 +253,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-gray-500 mt-1">
                         {customerId ? 'Customer Health Overview' : 'Portfolio Health & Risk Management'}
                     </p>

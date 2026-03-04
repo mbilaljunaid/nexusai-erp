@@ -8,8 +8,9 @@ interface ESGGoal { id: string; goal_code: string; goal_name: string; category: 
 interface Actual { actual_value: number; period: string; data_source: string; }
 interface VarianceRow { cost_center: string; gl_account: string; budget_amount: number; actual_amount: number; committed_amount: number; available: number; utilization_pct: number; control_action: string; }
 
-const CATEGORY_CLR: Record<string, string> = { ENVIRONMENTAL: '#059669', SOCIAL: '#3b82f6', GOVERNANCE: '#7c3aed' };
-const STATUS_CLR: Record<string, string> = { On_Track: '#059669', At_Risk: '#d97706', Off_Track: '#dc2626', Achieved: '#7c3aed', Active: '#6b7280', Draft: '#9ca3af' };
+const CATEGORY_CLR: Record<string, string> = { ENVIRONMENTAL: 'bg-emerald-600', SOCIAL: 'bg-blue-500', GOVERNANCE: 'bg-purple-600' };
+const BORDER_CLR: Record<string, string> = { ENVIRONMENTAL: 'border-l-emerald-600', SOCIAL: 'border-l-blue-500', GOVERNANCE: 'border-l-purple-600' };
+const STATUS_CLR: Record<string, string> = { On_Track: 'bg-emerald-100 text-emerald-600', At_Risk: 'bg-amber-100 text-amber-600', Off_Track: 'bg-red-100 text-red-600', Achieved: 'bg-purple-100 text-purple-600', Active: 'bg-gray-100 text-gray-500', Draft: 'bg-gray-100 text-gray-400' };
 
 export default function ESGPlanning() {
     const [tab, setTab] = useState<'goals' | 'budget'>('goals');
@@ -35,27 +36,29 @@ export default function ESGPlanning() {
     const onTrack = goals.filter(g => g.status === 'On_Track' || g.status === 'Achieved').length;
 
     const varianceColumns: SpreadsheetColumn<any>[] = [
-        { id: "cost_center", header: "Cost Center", width: "150px", cell: (v: any) => <span style={{ fontWeight: 600 }}>{v.cost_center}</span> },
-        { id: "gl_account", header: "GL Account", width: "150px", cell: (v: any) => <span style={{ fontFamily: 'monospace', fontSize: 10, color: '#6b7280' }}>{v.gl_account}</span> },
-        { id: "budget", header: "Budget", width: "120px", cell: (v: any) => <span style={{ fontFamily: 'monospace' }}>${Number(v.budget_amount).toLocaleString()}</span> },
-        { id: "actual", header: "Actual", width: "120px", cell: (v: any) => <span style={{ fontFamily: 'monospace' }}>${Number(v.actual_amount).toLocaleString()}</span> },
-        { id: "committed", header: "Committed", width: "120px", cell: (v: any) => <span style={{ fontFamily: 'monospace', color: '#d97706' }}>${Number(v.committed_amount).toLocaleString()}</span> },
-        { id: "available", header: "Available", width: "120px", cell: (v: any) => <span style={{ fontFamily: 'monospace', color: Number(v.available) < 0 ? '#dc2626' : '#059669', fontWeight: 700 }}>${Number(v.available).toLocaleString()}</span> },
+        { id: "cost_center", header: "Cost Center", width: "150px", cell: (v: any) => <span className="font-semibold">{v.cost_center}</span> },
+        { id: "gl_account", header: "GL Account", width: "150px", cell: (v: any) => <span className="font-mono text-[10px] text-gray-500">{v.gl_account}</span> },
+        { id: "budget", header: "Budget", width: "120px", cell: (v: any) => <span className="font-mono">${Number(v.budget_amount).toLocaleString()}</span> },
+        { id: "actual", header: "Actual", width: "120px", cell: (v: any) => <span className="font-mono">${Number(v.actual_amount).toLocaleString()}</span> },
+        { id: "committed", header: "Committed", width: "120px", cell: (v: any) => <span className="font-mono text-amber-600">${Number(v.committed_amount).toLocaleString()}</span> },
+        { id: "available", header: "Available", width: "120px", cell: (v: any) => <span className={`font-mono font-bold ${Number(v.available) < 0 ? 'text-red-600' : 'text-emerald-600'}`}>${Number(v.available).toLocaleString()}</span> },
         {
             id: "utilization", header: "Utilization", width: "150px", cell: (v: any) => {
                 const pct = Number(v.utilization_pct ?? 0);
-                const barClr = pct >= 100 ? '#dc2626' : pct >= 90 ? '#f59e0b' : '#059669';
+                const barClr = pct >= 100 ? 'bg-red-600 text-red-600' : pct >= 90 ? 'bg-amber-500 text-amber-500' : 'bg-emerald-600 text-emerald-600';
+                const p = Math.min(100, Math.floor(pct / 10) * 10);
+                const wcls = p >= 100 ? 'w-full' : p >= 90 ? 'w-[90%]' : p >= 80 ? 'w-[80%]' : p >= 70 ? 'w-[70%]' : p >= 60 ? 'w-[60%]' : p >= 50 ? 'w-[50%]' : p >= 40 ? 'w-[40%]' : p >= 30 ? 'w-[30%]' : p >= 20 ? 'w-[20%]' : p >= 10 ? 'w-[10%]' : 'w-0';
                 return (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                        <div style={{ width: 60, background: '#f3f4f6', height: 5, borderRadius: 999 }}>
-                            <div style={{ width: Math.min(100, pct) + '%', background: barClr, height: '100%', borderRadius: 999 }} />
+                    <div className="flex items-center gap-[5px]">
+                        <div className="w-[60px] bg-gray-100 h-[5px] rounded-full">
+                            <div className={`${wcls} ${barClr.split(' ')[0]} h-full rounded-full`} />
                         </div>
-                        <span style={{ color: barClr, fontWeight: 700 }}>{pct.toFixed(1)}%</span>
+                        <span className={`${barClr.split(' ')[1]} font-bold`}>{pct.toFixed(1)}%</span>
                     </div>
                 );
             }
         },
-        { id: "control", header: "Control", width: "120px", cell: (v: any) => <span style={{ padding: '2px 5px', borderRadius: 3, fontSize: 9, background: v.control_action === 'HARD_STOP' ? '#fee2e2' : v.control_action === 'HOLD' ? '#fef9c3' : '#f3f4f6', color: v.control_action === 'HARD_STOP' ? '#dc2626' : '#6b7280' }}>{v.control_action}</span> },
+        { id: "control", header: "Control", width: "120px", cell: (v: any) => <span className={`px-[5px] py-[2px] rounded-[3px] text-[9px] ${v.control_action === 'HARD_STOP' ? 'bg-red-100 text-red-600' : v.control_action === 'HOLD' ? 'bg-yellow-100 text-gray-500' : 'bg-gray-100 text-gray-500'}`}>{v.control_action}</span> },
         {
             id: "status", header: "Status", width: "80px", cell: (v: any) => {
                 const pct = Number(v.utilization_pct ?? 0);
@@ -69,8 +72,8 @@ export default function ESGPlanning() {
             title="ESG & Performance Planning"
             description="ESG goal tracking · Budgetary control · Variance analysis"
             actions={
-                <div style={{ display: 'flex', gap: 6 }}>
-                    {['goals', 'budget'].map(t => <button key={t} onClick={() => setTab(t as any)} style={{ padding: '7px 14px', border: 'none', borderRadius: 8, fontWeight: 700, fontSize: 11, cursor: 'pointer', background: tab === t ? '#111827' : '#f3f4f6', color: tab === t ? '#fff' : '#6b7280' }}>{t === 'goals' ? 'ESG Goals' : 'Budget Control'}</button>)}
+                <div className="flex gap-1.5">
+                    {['goals', 'budget'].map(t => <button key={t} onClick={() => setTab(t as any)} className={`px-3.5 py-[7px] border-none rounded-lg font-bold text-[11px] cursor-pointer ${tab === t ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500'}`}>{t === 'goals' ? 'ESG Goals' : 'Budget Control'}</button>)}
                 </div>
             }
         >
@@ -78,102 +81,106 @@ export default function ESGPlanning() {
             {tab === 'goals' && (
                 <>
                     {/* KPIs */}
-                    <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
-                        {[{ lbl: 'Environmental', val: env, clr: '#059669', icon: '🌱' }, { lbl: 'Social', val: social, clr: '#3b82f6', icon: '👥' }, { lbl: 'Governance', val: gov, clr: '#7c3aed', icon: '⚖️' }, { lbl: 'On Track', val: onTrack, clr: '#059669', icon: '✓' }].map(k => (
-                            <div key={k.lbl} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 10, padding: '10px 16px', minWidth: 100 }}>
-                                <div style={{ fontSize: 16 }}>{k.icon}</div>
-                                <div style={{ fontSize: 20, fontWeight: 800, color: k.clr }}>{k.val}</div>
-                                <div style={{ fontSize: 10, color: '#9ca3af' }}>{k.lbl}</div>
+                    <div className="flex gap-2.5 mb-3.5">
+                        {[{ lbl: 'Environmental', val: env, clr: 'text-emerald-600', icon: '🌱' }, { lbl: 'Social', val: social, clr: 'text-blue-500', icon: '👥' }, { lbl: 'Governance', val: gov, clr: 'text-purple-600', icon: '⚖️' }, { lbl: 'On Track', val: onTrack, clr: 'text-emerald-600', icon: '✓' }].map(k => (
+                            <div key={k.lbl} className="bg-white border border-gray-200 rounded-xl px-4 py-2.5 min-w-[100px]">
+                                <div className="text-base">{k.icon}</div>
+                                <div className={`text-xl font-extrabold ${k.clr}`}>{k.val}</div>
+                                <div className="text-[10px] text-gray-400">{k.lbl}</div>
                             </div>
                         ))}
                     </div>
 
                     {/* Category filter + New */}
-                    <div style={{ display: 'flex', gap: 6, marginBottom: 10, justifyContent: 'space-between' }}>
-                        <div style={{ display: 'flex', gap: 6 }}>
-                            {['', 'ENVIRONMENTAL', 'SOCIAL', 'GOVERNANCE'].map(c => <button key={c} onClick={() => setCatFilter(c)} style={{ padding: '5px 10px', border: '1px solid #e5e7eb', borderRadius: 6, background: catFilter === c ? '#111827' : '#fff', color: catFilter === c ? '#fff' : '#6b7280', fontSize: 10, fontWeight: 600, cursor: 'pointer' }}>{c || 'All'}</button>)}
+                    <div className="flex gap-1.5 mb-2.5 justify-between">
+                        <div className="flex gap-1.5">
+                            {['', 'ENVIRONMENTAL', 'SOCIAL', 'GOVERNANCE'].map(c => <button key={c} onClick={() => setCatFilter(c)} className={`px-2.5 py-1.5 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${catFilter === c ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`}>{c || 'All'}</button>)}
                         </div>
-                        <button onClick={() => setShowNew(true)} style={{ padding: '5px 12px', background: '#059669', color: '#fff', border: 'none', borderRadius: 7, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>+ New Goal</button>
+                        <button onClick={() => setShowNew(true)} className="px-3 py-1.5 bg-emerald-600 text-white border-none rounded-md text-[11px] font-bold cursor-pointer">+ New Goal</button>
                     </div>
 
                     {showNew && (
-                        <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 10, padding: 14, marginBottom: 12 }}>
-                            <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 8 }}>Create ESG Goal</div>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 8 }}>
+                        <div className="bg-green-50 border border-green-200 rounded-xl p-3.5 mb-3">
+                            <div className="font-bold text-xs mb-2">Create ESG Goal</div>
+                            <div className="grid grid-cols-4 gap-2 mb-2">
                                 {[['Code', 'goalCode', 'text'], ['Name', 'goalName', 'text'], ['Unit', 'unit', 'text'], ['Owner', 'owner', 'text'], ['Baseline', 'baselineValue', 'number'], ['Target', 'targetValue', 'number'], ['Target Year', 'targetYear', 'number'], ['Subcategory', 'subcategory', 'text']].map(([lbl, key, type]) => (
-                                    <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                        <label style={{ fontSize: 10, fontWeight: 700 }}>{lbl}</label>
-                                        <input type={type} value={(goalForm as any)[key]} onChange={e => setGoalForm(p => ({ ...p, [key]: e.target.value }))} style={{ padding: '5px 8px', border: '1px solid #bbf7d0', borderRadius: 6, fontSize: 11 }} aria-label={lbl} />
+                                    <div key={key} className="flex flex-col gap-0.5">
+                                        <label className="text-[10px] font-bold">{lbl}</label>
+                                        <input type={type} value={(goalForm as any)[key]} onChange={e => setGoalForm(p => ({ ...p, [key]: e.target.value }))} className="px-2 py-1.5 border border-green-200 rounded-md text-[11px]" aria-label={lbl} />
                                     </div>
                                 ))}
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                    <label style={{ fontSize: 10, fontWeight: 700 }}>Category</label>
-                                    <select value={goalForm.category} onChange={e => setGoalForm(p => ({ ...p, category: e.target.value }))} style={{ padding: '5px 8px', border: '1px solid #bbf7d0', borderRadius: 6, fontSize: 11 }} aria-label="Category">{['ENVIRONMENTAL', 'SOCIAL', 'GOVERNANCE'].map(c => <option key={c}>{c}</option>)}</select>
+                                <div className="flex flex-col gap-0.5">
+                                    <label className="text-[10px] font-bold">Category</label>
+                                    <select value={goalForm.category} onChange={e => setGoalForm(p => ({ ...p, category: e.target.value }))} className="px-2 py-1.5 border border-green-200 rounded-md text-[11px]" aria-label="Category">{['ENVIRONMENTAL', 'SOCIAL', 'GOVERNANCE'].map(c => <option key={c}>{c}</option>)}</select>
                                 </div>
                             </div>
-                            <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                                <button onClick={() => setShowNew(false)} style={{ padding: '5px 12px', background: '#e5e7eb', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer' }}>Cancel</button>
-                                <button disabled={!goalForm.goalCode || !goalForm.goalName} onClick={() => createGoalMut.mutate({ ...goalForm, baselineValue: parseFloat(goalForm.baselineValue) || null, targetValue: parseFloat(goalForm.targetValue) || null, targetYear: parseInt(goalForm.targetYear) || null })} style={{ padding: '5px 12px', background: '#059669', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>Save</button>
+                            <div className="flex gap-1.5 justify-end">
+                                <button onClick={() => setShowNew(false)} className="px-3 py-1.5 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
+                                <button disabled={!goalForm.goalCode || !goalForm.goalName} onClick={() => createGoalMut.mutate({ ...goalForm, baselineValue: parseFloat(goalForm.baselineValue) || null, targetValue: parseFloat(goalForm.targetValue) || null, targetYear: parseInt(goalForm.targetYear) || null })} className="px-3 py-1.5 bg-emerald-600 text-white border-none rounded-md text-[11px] font-bold cursor-pointer hover:bg-emerald-700 disabled:opacity-50">Save</button>
                             </div>
                         </div>
                     )}
 
-                    <div style={{ display: 'flex', gap: 14 }}>
+                    <div className="flex gap-3.5">
                         {/* Goals list */}
-                        <div style={{ flex: 1 }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        <div className="flex-1">
+                            <div className="flex flex-col gap-1.5">
                                 {goals.map(g => {
-                                    const clr = STATUS_CLR[g.status] ?? '#6b7280';
-                                    const catClr = CATEGORY_CLR[g.category] ?? '#6b7280';
+                                    const clr = STATUS_CLR[g.status] ?? 'bg-gray-100 text-gray-500';
+                                    const catClr = CATEGORY_CLR[g.category] ?? 'bg-gray-500';
+                                    const bdrClr = BORDER_CLR[g.category] ?? 'border-l-gray-500';
                                     const pct = g.target_value && g.baseline_value
                                         ? Math.min(100, Math.round(((Number(g.baseline_value)) / Number(g.target_value)) * 100))
                                         : 0;
+                                    const p = Math.min(100, Math.floor(pct / 10) * 10);
+                                    const wcls = p >= 100 ? 'w-full' : p >= 90 ? 'w-[90%]' : p >= 80 ? 'w-[80%]' : p >= 70 ? 'w-[70%]' : p >= 60 ? 'w-[60%]' : p >= 50 ? 'w-[50%]' : p >= 40 ? 'w-[40%]' : p >= 30 ? 'w-[30%]' : p >= 20 ? 'w-[20%]' : p >= 10 ? 'w-[10%]' : 'w-0';
+
                                     return (
-                                        <div key={g.id} onClick={() => { setSelectedGoal(selectedGoal?.id === g.id ? null : g); setActualForm(a => ({ ...a, goalId: g.id })); }} style={{ background: '#fff', border: `1px solid ${selectedGoal?.id === g.id ? '#059669' : '#e5e7eb'}`, borderLeft: `4px solid ${catClr}`, borderRadius: 10, padding: '10px 14px', cursor: 'pointer' }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
-                                                <div style={{ fontWeight: 700, fontSize: 13 }}>{g.goal_name}</div>
-                                                <span style={{ fontSize: 9, padding: '2px 6px', borderRadius: 4, fontWeight: 700, background: clr + '18', color: clr }}>{g.status}</span>
+                                        <div key={g.id} onClick={() => { setSelectedGoal(selectedGoal?.id === g.id ? null : g); setActualForm(a => ({ ...a, goalId: g.id })); }} className={`bg-white border hover:shadow-sm cursor-pointer border-l-[4px] rounded-xl px-3.5 py-2.5 ${selectedGoal?.id === g.id ? 'border-emerald-600' : 'border-gray-200'} ${bdrClr}`}>
+                                            <div className="flex justify-between mb-1">
+                                                <div className="font-bold text-[13px]">{g.goal_name}</div>
+                                                <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${clr}`}>{g.status}</span>
                                             </div>
-                                            <div style={{ fontSize: 10, color: '#9ca3af', marginBottom: 5 }}>{g.goal_code} · {g.category} · {g.unit} · Owner: {g.owner ?? '—'}</div>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                                                <div style={{ flex: 1, background: '#f3f4f6', height: 5, borderRadius: 999 }}>
-                                                    <div style={{ width: pct + '%', background: catClr, height: '100%', borderRadius: 999 }} />
+                                            <div className="text-[10px] text-gray-400 mb-1.5">{g.goal_code} · {g.category} · {g.unit} · Owner: {g.owner ?? '—'}</div>
+                                            <div className="flex items-center gap-1.5">
+                                                <div className="flex-1 bg-gray-100 h-1.5 rounded-full overflow-hidden">
+                                                    <div className={`${wcls} ${catClr} h-full rounded-full`} />
                                                 </div>
-                                                <div style={{ fontSize: 9, color: '#9ca3af', whiteSpace: 'nowrap' }}>Target: {g.target_value ?? '—'} {g.unit} by {g.target_year}</div>
+                                                <div className="text-[9px] text-gray-400 whitespace-nowrap">Target: {g.target_value ?? '—'} {g.unit} by {g.target_year}</div>
                                             </div>
                                         </div>
                                     );
                                 })}
-                                {goals.length === 0 && <div style={{ textAlign: 'center', color: '#9ca3af', padding: 32, background: '#fff', borderRadius: 10 }}>No ESG goals — create one</div>}
+                                {goals.length === 0 && <div className="text-center text-gray-400 p-8 bg-white rounded-xl">No ESG goals — create one</div>}
                             </div>
                         </div>
 
                         {/* Detail + Record actual */}
                         {selectedGoal && (
-                            <div style={{ width: 280, flexShrink: 0 }}>
-                                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: 14, marginBottom: 10 }}>
-                                    <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 8 }}>{selectedGoal.goal_name}</div>
-                                    <div style={{ fontSize: 11, lineHeight: 1.7, color: '#374151' }}>
+                            <div className="w-[280px] flex-shrink-0">
+                                <div className="bg-white border border-gray-200 rounded-xl p-3.5 mb-2.5">
+                                    <div className="font-bold text-[13px] mb-2">{selectedGoal.goal_name}</div>
+                                    <div className="text-[11px] leading-relaxed text-gray-700">
                                         Baseline: <strong>{selectedGoal.baseline_value ?? '—'} {selectedGoal.unit}</strong><br />
                                         Target: <strong>{selectedGoal.target_value ?? '—'} {selectedGoal.unit}</strong> by <strong>{selectedGoal.target_year}</strong>
                                     </div>
-                                    <div style={{ marginTop: 10, fontSize: 11, fontWeight: 700, marginBottom: 5 }}>Actuals</div>
+                                    <div className="mt-2.5 text-[11px] font-bold mb-1.5">Actuals</div>
                                     {(performance?.actuals ?? []).map((a, i) => (
-                                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, borderBottom: '1px solid #f3f4f6', paddingBottom: 2, marginBottom: 2 }}>
-                                            <span style={{ color: '#6b7280' }}>{a.period}</span>
-                                            <span style={{ fontWeight: 700 }}>{Number(a.actual_value).toFixed(2)} {selectedGoal.unit}</span>
+                                        <div key={i} className="flex justify-between text-[10px] border-b border-gray-100 pb-0.5 mb-0.5">
+                                            <span className="text-gray-500">{a.period}</span>
+                                            <span className="font-bold">{Number(a.actual_value).toFixed(2)} {selectedGoal.unit}</span>
                                         </div>
                                     ))}
                                 </div>
-                                <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 10, padding: 12 }}>
-                                    <div style={{ fontSize: 11, fontWeight: 700, marginBottom: 7 }}>Record Actual</div>
+                                <div className="bg-green-50 border border-green-200 rounded-xl p-3">
+                                    <div className="text-[11px] font-bold mb-2">Record Actual</div>
                                     {[['Period', 'period', 'text'], ['Value', 'actualValue', 'number'], ['Source', 'dataSource', 'text']].map(([lbl, key, type]) => (
-                                        <div key={key} style={{ marginBottom: 5 }}>
-                                            <label style={{ fontSize: 9, fontWeight: 700, display: 'block' }}>{lbl}</label>
-                                            <input type={type} value={(actualForm as any)[key]} onChange={e => setActualForm(p => ({ ...p, [key]: e.target.value }))} style={{ width: '100%', padding: '4px 7px', border: '1px solid #bbf7d0', borderRadius: 5, fontSize: 11, boxSizing: 'border-box' }} aria-label={lbl} />
+                                        <div key={key} className="mb-1.5">
+                                            <label className="text-[9px] font-bold block mb-0.5">{lbl}</label>
+                                            <input type={type} value={(actualForm as any)[key]} onChange={e => setActualForm(p => ({ ...p, [key]: e.target.value }))} className="w-full px-2 py-1 border border-green-200 rounded-[5px] text-[11px] box-border" aria-label={lbl} />
                                         </div>
                                     ))}
-                                    <button disabled={!actualForm.actualValue} onClick={() => recordActualMut.mutate({ goalId: selectedGoal.id, period: actualForm.period, actualValue: parseFloat(actualForm.actualValue), dataSource: actualForm.dataSource || null })} style={{ width: '100%', padding: '5px', background: '#059669', color: '#fff', border: 'none', borderRadius: 6, fontSize: 10, cursor: 'pointer', fontWeight: 700 }}>Record</button>
+                                    <button disabled={!actualForm.actualValue} onClick={() => recordActualMut.mutate({ goalId: selectedGoal.id, period: actualForm.period, actualValue: parseFloat(actualForm.actualValue), dataSource: actualForm.dataSource || null })} className="w-full py-1.5 bg-emerald-600 text-white border-none rounded-md text-[10px] cursor-pointer font-bold disabled:opacity-50 hover:bg-emerald-700">Record</button>
                                 </div>
                             </div>
                         )}
@@ -183,11 +190,11 @@ export default function ESGPlanning() {
 
             {tab === 'budget' && (
                 <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                        <input value={budgetPeriod} onChange={e => setBudgetPeriod(e.target.value)} placeholder="YYYY-MM" style={{ padding: '6px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12 }} aria-label="Budget period" />
-                        <span style={{ fontSize: 11, color: '#9ca3af' }}>Approved budget variance by cost center / GL account</span>
+                    <div className="flex items-center gap-2 mb-3">
+                        <input value={budgetPeriod} onChange={e => setBudgetPeriod(e.target.value)} placeholder="YYYY-MM" className="px-2.5 py-1.5 border border-gray-300 rounded-md text-xs" aria-label="Budget period" />
+                        <span className="text-[11px] text-gray-400">Approved budget variance by cost center / GL account</span>
                     </div>
-                    <div style={{ background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)', border: '1px solid #e5e7eb' }}>
+                    <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
                         {variance.length > 0 ? (
                             <InteractiveSpreadsheet
                                 data={variance}
@@ -197,7 +204,7 @@ export default function ESGPlanning() {
                                 onChange={() => { }}
                             />
                         ) : (
-                            <div style={{ padding: 24, textAlign: 'center', color: '#9ca3af' }}>No approved budget controls for {budgetPeriod}</div>
+                            <div className="p-6 text-center text-gray-400">No approved budget controls for {budgetPeriod}</div>
                         )}
                     </div>
                 </div>

@@ -40,98 +40,123 @@ export default function RevenueRecognition() {
     const pctNum = summary ? Math.min(100, Math.round(Number(summary.pct_recognized))) : 0;
 
     const revColumns: SpreadsheetColumn<RevEvent>[] = [
-        { id: "period", header: "Period", width: "160px", cell: (e) => <span style={{ whiteSpace: 'nowrap' }}>{fmtDate(e.period_start)} – {fmtDate(e.period_end)}</span> },
+        { id: "period", header: "Period", width: "160px", cell: (e) => <span className="whitespace-nowrap">{fmtDate(e.period_start)} – {fmtDate(e.period_end)}</span> },
         { id: "pctComplete", header: "% Complete", width: "100px", cell: (e) => <span>{(Number(e.pct_complete) * 100).toFixed(1)}%</span> },
-        { id: "costsIncurred", header: "Costs Incurred", width: "120px", cell: (e) => <span style={{ fontFamily: 'monospace' }}>{fmt(e.costs_incurred)}</span> },
-        { id: "costsToComplete", header: "Costs to Complete", width: "130px", cell: (e) => <span style={{ fontFamily: 'monospace' }}>{fmt(e.costs_to_complete)}</span> },
-        { id: "recognized", header: "Recognized", width: "110px", cell: (e) => <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#059669' }}>{fmt(e.revenue_recognized)}</span> },
-        { id: "cumulative", header: "Cumulative", width: "110px", cell: (e) => <span style={{ fontFamily: 'monospace', color: '#6b7280' }}>{fmt(e.cumulative_revenue)}</span> },
-        { id: "gl", header: "GL", width: "100px", cell: (e) => e.gl_posted ? <span style={{ display: 'flex', alignItems: 'center', gap: 3, color: '#059669', fontSize: 10, fontWeight: 700 }}><CheckCircle2 size={11} /> Posted</span> : <span style={{ fontSize: 10, color: '#d97706', fontWeight: 600 }}>Pending</span> },
-        { id: "actions", header: "", width: "100px", cell: (e) => !e.gl_posted ? <button onClick={() => postGLMut.mutate({ id: e.id })} style={{ padding: '3px 8px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>Post GL</button> : null }
+        { id: "costsIncurred", header: "Costs Incurred", width: "120px", cell: (e) => <span className="font-mono">{fmt(e.costs_incurred)}</span> },
+        { id: "costsToComplete", header: "Costs to Complete", width: "130px", cell: (e) => <span className="font-mono">{fmt(e.costs_to_complete)}</span> },
+        { id: "recognized", header: "Recognized", width: "110px", cell: (e) => <span className="font-mono font-bold text-emerald-600">{fmt(e.revenue_recognized)}</span> },
+        { id: "cumulative", header: "Cumulative", width: "110px", cell: (e) => <span className="font-mono text-gray-500">{fmt(e.cumulative_revenue)}</span> },
+        { id: "gl", header: "GL", width: "100px", cell: (e) => e.gl_posted ? <span className="flex items-center gap-1 text-emerald-600 text-[10px] font-bold"><CheckCircle2 size={11} /> Posted</span> : <span className="text-[10px] text-amber-600 font-semibold">Pending</span> },
+        { id: "actions", header: "", width: "100px", cell: (e) => !e.gl_posted ? <button onClick={() => postGLMut.mutate({ id: e.id })} className="py-1 px-2 bg-blue-700 text-white border-none rounded-md text-[10px] cursor-pointer">Post GL</button> : null }
     ];
 
     return (
         <StandardPage title="Revenue Recognition">
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+            <div className="flex justify-between mb-4">
                 <div>
-                    
-                    <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>POC · Milestone · Time &amp; Materials · Completed Contract — ASC 606/IFRS 15</p>
+
+                    <p className="text-[13px] text-gray-500 mt-1 mb-0">POC · Milestone · Time &amp; Materials · Completed Contract — ASC 606/IFRS 15</p>
                 </div>
             </div>
 
             {/* Project picker */}
-            <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
-                <input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} style={{ padding: '7px 12px', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 12, minWidth: 220 }} aria-label="Project ID" />
-                <button disabled={!projectId} onClick={() => setActiveProject(projectId)} style={{ padding: '7px 16px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>Load Project</button>
-                {activeProject && <button onClick={() => setShowSetup(true)} style={{ padding: '7px 14px', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: 8, fontSize: 12, cursor: 'pointer' }}>⚙ Setup Method</button>}
-                {activeProject && summary && <button onClick={() => setShowRecognize(true)} style={{ padding: '7px 14px', background: '#059669', color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>+ Recognize Revenue</button>}
+            <div className="flex gap-2 mb-3.5">
+                <input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="py-1.5 px-3 border border-gray-300 rounded-lg text-xs min-w-[220px]" aria-label="Project ID" />
+                <button disabled={!projectId} onClick={() => setActiveProject(projectId)} className="py-1.5 px-4 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50">Load Project</button>
+                {activeProject && <button onClick={() => setShowSetup(true)} className="py-1.5 px-3.5 bg-gray-100 border border-gray-200 rounded-lg text-xs cursor-pointer">⚙ Setup Method</button>}
+                {activeProject && summary && <button onClick={() => setShowRecognize(true)} className="py-1.5 px-3.5 bg-emerald-600 text-white border-none rounded-lg text-xs font-semibold cursor-pointer">+ Recognize Revenue</button>}
             </div>
 
             {activeProject && summary && (
                 <>
                     {/* Summary bar */}
-                    <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: 16, marginBottom: 14 }}>
-                        <div style={{ display: 'flex', gap: 20, marginBottom: 10 }}>
-                            {[['Method', summary.method], ['Contract Value', 'USD ' + fmt(summary.contract_value)], ['Recognized', 'USD ' + fmt(summary.total_recognized)], ['Remaining', 'USD ' + fmt(summary.remaining)], ['Periods', summary.period_count], ['GL Posted', summary.gl_posted_count + '/' + summary.period_count]].map(([l, v]) => (
+                    <div className="bg-white border border-gray-200 rounded-xl p-4 mb-3.5">
+                        <div className="flex gap-5 mb-2.5">
+                            {(
+                                [
+                                    ['Method', summary.method],
+                                    ['Contract Value', 'USD ' + fmt(summary.contract_value)],
+                                    ['Recognized', 'USD ' + fmt(summary.total_recognized)],
+                                    ['Remaining', 'USD ' + fmt(summary.remaining)],
+                                    ['Periods', summary.period_count],
+                                    ['GL Posted', summary.gl_posted_count + '/' + summary.period_count]
+                                ] as const
+                            ).map(([l, v]) => (
                                 <div key={l as string}>
-                                    <div style={{ fontSize: 17, fontWeight: 800, fontFamily: 'monospace' }}>{v}</div>
-                                    <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 1 }}>{l}</div>
+                                    <div className="text-[17px] font-extrabold font-mono">{v as React.ReactNode}</div>
+                                    <div className="text-[10px] text-gray-400 mt-0.5">{l as string}</div>
                                 </div>
                             ))}
                         </div>
                         {/* progress bar */}
-                        <div style={{ background: '#f3f4f6', borderRadius: 999, height: 10, overflow: 'hidden' }}>
-                            <div style={{ width: pctNum + '%', background: pctNum >= 90 ? '#059669' : '#1d4ed8', height: '100%', borderRadius: 999, transition: 'width .4s' }} />
+                        <div className="bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                            {/* eslint-disable-next-line react/forbid-dom-props */}
+                            <div className={`h-full rounded-full transition-all duration-400 ${pctNum >= 90 ? 'bg-emerald-600' : 'bg-blue-700'}`} style={{ width: pctNum + '%' }} />
                         </div>
-                        <div style={{ fontSize: 11, color: '#6b7280', marginTop: 3 }}>{pctNum}% recognized of contract value</div>
+                        <div className="text-[11px] text-gray-500 mt-1">{pctNum}% recognized of contract value</div>
                     </div>
 
                     {/* Setup form */}
                     {showSetup && (
-                        <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 10, padding: 12, marginBottom: 10 }}>
-                            <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 8 }}>Setup Recognition Method — Project {activeProject}</div>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                    <label style={{ fontSize: 10, fontWeight: 600 }}>Method</label>
-                                    <select value={setup.method} onChange={e => setSetup(p => ({ ...p, method: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label="Revenue method">
+                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 mb-2.5">
+                            <div className="text-xs font-bold mb-2">Setup Recognition Method — Project {activeProject}</div>
+                            <div className="grid grid-cols-3 gap-2">
+                                <div className="flex flex-col gap-0.5">
+                                    <label className="text-[10px] font-semibold">Method</label>
+                                    <select value={setup.method} onChange={e => setSetup(p => ({ ...p, method: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px]" aria-label="Revenue method">
                                         {METHODS.map(m => <option key={m}>{m}</option>)}
                                     </select>
                                 </div>
-                                {[['contractValue', 'Contract Value', 'number'], ['startDate', 'Start Date', 'date'], ['endDate', 'End Date', 'date']].map(([k, l, t]) => (
-                                    <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                        <label style={{ fontSize: 10, fontWeight: 600 }}>{l}</label>
-                                        <input type={t} value={(setup as any)[k]} onChange={e => setSetup(p => ({ ...p, [k]: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label={l} />
+                                {(
+                                    [
+                                        ['contractValue', 'Contract Value', 'number'],
+                                        ['startDate', 'Start Date', 'date'],
+                                        ['endDate', 'End Date', 'date']
+                                    ] as const
+                                ).map(([k, l, t]) => (
+                                    <div key={k as string} className="flex flex-col gap-0.5">
+                                        <label className="text-[10px] font-semibold">{l as string}</label>
+                                        <input type={t as string} value={(setup as any)[k as string]} onChange={e => setSetup(p => ({ ...p, [k as string]: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px]" aria-label={l as string} />
                                     </div>
                                 ))}
                             </div>
-                            <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', marginTop: 8 }}>
-                                <button onClick={() => setShowSetup(false)} style={{ padding: '5px 12px', background: '#e5e7eb', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer' }}>Cancel</button>
-                                <button disabled={!setup.contractValue} onClick={() => setupMut.mutate({ ...setup, projectId: activeProject })} style={{ padding: '5px 12px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>Save Method</button>
+                            <div className="flex gap-1.5 justify-end mt-2">
+                                <button onClick={() => setShowSetup(false)} className="py-1 px-3 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
+                                <button disabled={!setup.contractValue} onClick={() => setupMut.mutate({ ...setup, projectId: activeProject })} className="py-1 px-3 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer disabled:opacity-50">Save Method</button>
                             </div>
                         </div>
                     )}
 
                     {/* Recognize form */}
                     {showRecognize && (
-                        <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 10, padding: 12, marginBottom: 10 }}>
-                            <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 8 }}>Recognize Revenue — {summary.method}</div>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
-                                {[['periodStart', 'Period Start', 'date'], ['periodEnd', 'Period End', 'date'], ['costsIncurred', 'Costs Incurred', 'number'], ['costsToComplete', 'Costs to Complete', 'number'], ...(summary.method === 'POC' ? [['pctCompleteOverride', '% Complete Override', 'number']] : []), ...(summary.method === 'MILESTONE' ? [['milestoneAmount', 'Milestone Amount', 'number']] : [])].map(([k, l, t]) => (
-                                    <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                        <label style={{ fontSize: 10, fontWeight: 600 }}>{l}</label>
-                                        <input type={t} value={(recognize as any)[k] ?? ''} onChange={e => setRecognize(p => ({ ...p, [k]: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label={l} />
+                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 mb-2.5">
+                            <div className="text-xs font-bold mb-2">Recognize Revenue — {summary.method}</div>
+                            <div className="grid grid-cols-3 gap-2">
+                                {(
+                                    [
+                                        ['periodStart', 'Period Start', 'date'],
+                                        ['periodEnd', 'Period End', 'date'],
+                                        ['costsIncurred', 'Costs Incurred', 'number'],
+                                        ['costsToComplete', 'Costs to Complete', 'number'],
+                                        ...(summary.method === 'POC' ? [['pctCompleteOverride', '% Complete Override', 'number']] : []),
+                                        ...(summary.method === 'MILESTONE' ? [['milestoneAmount', 'Milestone Amount', 'number']] : [])
+                                    ] as const
+                                ).map(([k, l, t]) => (
+                                    <div key={k as string} className="flex flex-col gap-0.5">
+                                        <label className="text-[10px] font-semibold">{l as string}</label>
+                                        <input type={t as string} value={(recognize as any)[k as string] ?? ''} onChange={e => setRecognize(p => ({ ...p, [k as string]: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px]" aria-label={l as string} />
                                     </div>
                                 ))}
                             </div>
-                            <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', marginTop: 8 }}>
-                                <button onClick={() => setShowRecognize(false)} style={{ padding: '5px 12px', background: '#e5e7eb', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer' }}>Cancel</button>
-                                <button disabled={!recognize.periodStart || recognizeMut.isPending} onClick={() => recognizeMut.mutate({ ...recognize, projectId: activeProject })} style={{ padding: '5px 12px', background: '#059669', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>Recognize</button>
+                            <div className="flex gap-1.5 justify-end mt-2">
+                                <button onClick={() => setShowRecognize(false)} className="py-1 px-3 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
+                                <button disabled={!recognize.periodStart || recognizeMut.isPending} onClick={() => recognizeMut.mutate({ ...recognize, projectId: activeProject })} className="py-1 px-3 bg-emerald-600 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer disabled:opacity-50">Recognize</button>
                             </div>
                         </div>
                     )}
 
                     {/* Events table */}
-                    <div style={{ minHeight: '400px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 12 }}>
+                    <div className="min-h-[400px] h-full border border-gray-200 rounded-xl">
                         <InteractiveSpreadsheet
                             columns={revColumns}
                             data={events}
@@ -143,9 +168,9 @@ export default function RevenueRecognition() {
             )}
 
             {!activeProject && (
-                <div style={{ textAlign: 'center', padding: 60, color: '#9ca3af' }}>
-                    <BarChart2 size={32} style={{ marginBottom: 8, opacity: .4 }} />
-                    <p style={{ fontSize: 13 }}>Enter a project ID to load revenue recognition schedule</p>
+                <div className="text-center p-14 text-gray-400">
+                    <BarChart2 size={32} className="mb-2 opacity-40 mx-auto" />
+                    <p className="text-[13px]">Enter a project ID to load revenue recognition schedule</p>
                 </div>
             )}
         </StandardPage>

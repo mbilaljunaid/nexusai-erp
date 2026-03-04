@@ -100,7 +100,7 @@ export default function ModuleIndustryMapping() {
                             </p>
                         </CardHeader>
                         <CardContent>
-                            <div className="overflow-x-auto" style={{ height: '500px' }}>
+                            <div className="overflow-x-auto h-[500px]">
                                 <InteractiveSpreadsheet
                                     columns={mappingColumns}
                                     data={mappingData}

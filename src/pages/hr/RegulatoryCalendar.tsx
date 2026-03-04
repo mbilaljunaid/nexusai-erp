@@ -57,6 +57,7 @@ export default function RegulatoryCalendar() {
                 return (
                     <div className="progress-bar-container w-full">
                         <div className="progress-bar-bg flex-grow">
+                            {/* eslint-disable-next-line react/forbid-dom-props */}
                             <div className={`progress-bar-fill ${pct >= 90 ? 'progress-safe' : pct >= 70 ? 'progress-warn' : 'progress-danger'}`} style={{ width: pct + '%' }} />
                         </div>
                         <span className="progress-bar-text w-12 text-right">{pct}%</span>
@@ -162,7 +163,7 @@ export default function RegulatoryCalendar() {
                     <div className="fcpa-header">
                         <button onClick={() => fcpaSweepMut.mutate()} className="btn-sweep"><RefreshCw size={11} /> Sweep Overdue</button>
                     </div>
-                    <div style={{ minHeight: '300px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 8 }}>
+                    <div className="min-h-[300px] h-full border border-gray-200 rounded-lg">
                         <InteractiveSpreadsheet
                             columns={fcpaColumns}
                             data={fcpaSummary}

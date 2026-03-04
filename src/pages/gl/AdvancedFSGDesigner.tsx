@@ -92,13 +92,13 @@ export default function AdvancedFSGDesigner() {
     // Fetch FSG reports
     const { data: reports, isLoading } = useQuery({
         queryKey: ["/api/gl/fsg-reports"],
-        queryFn: () => apiRequest("/api/gl/fsg-reports"),
+        queryFn: () => apiRequest("GET", "/api/gl/fsg-reports"),
     });
 
     // Fetch single report
     const { data: reportData } = useQuery({
         queryKey: ["/api/gl/fsg-reports", selectedReport],
-        queryFn: () => apiRequest(`/api/gl/fsg-reports/${selectedReport}`),
+        queryFn: () => apiRequest("GET", `/api/gl/fsg-reports/${selectedReport}`),
         enabled: !!selectedReport,
     });
 
@@ -106,14 +106,8 @@ export default function AdvancedFSGDesigner() {
     const saveMutation = useMutation({
         mutationFn: (data: Partial<FSGReport>) =>
             selectedReport
-                ? apiRequest(`/api/gl/fsg-reports/${selectedReport}`, {
-                    method: "PUT",
-                    body: JSON.stringify(data),
-                })
-                : apiRequest("/api/gl/fsg-reports", {
-                    method: "POST",
-                    body: JSON.stringify(data),
-                }),
+                ? apiRequest("PUT", `/api/gl/fsg-reports/${selectedReport}`, data)
+                : apiRequest("POST", "/api/gl/fsg-reports", data),
         onSuccess: () => {
             toast({
                 title: "Success",
@@ -126,7 +120,7 @@ export default function AdvancedFSGDesigner() {
     // Run report mutation
     const runMutation = useMutation({
         mutationFn: (reportId: number) =>
-            apiRequest(`/api/gl/fsg-reports/${reportId}/run`, { method: "POST" }),
+            apiRequest("POST", `/api/gl/fsg-reports/${reportId}/run`),
         onSuccess: (data) => {
             toast({
                 title: "Report Generated",
@@ -139,7 +133,7 @@ export default function AdvancedFSGDesigner() {
     // Delete report mutation
     const deleteMutation = useMutation({
         mutationFn: (reportId: number) =>
-            apiRequest(`/api/gl/fsg-reports/${reportId}`, { method: "DELETE" }),
+            apiRequest("DELETE", `/api/gl/fsg-reports/${reportId}`),
         onSuccess: () => {
             toast({
                 title: "Deleted",
@@ -278,6 +272,7 @@ export default function AdvancedFSGDesigner() {
     const previewColumns: SpreadsheetColumn<any>[] = [
         {
             id: "account", header: "Account", width: "250px", cell: (row) => (
+                /* eslint-disable-next-line react/forbid-dom-props */
                 <div
                     style={{ paddingLeft: `${(row.indent || 0) * 20}px` }}
                     className={`${row.rowType === "HEADER" ? "font-semibold text-muted-foreground" : ""} ${row.rowType === "TOTAL" ? "font-bold" : ""}`}
@@ -406,7 +401,7 @@ export default function AdvancedFSGDesigner() {
                                     </Button>
                                 </div>
 
-                                <div style={{ minHeight: '300px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 8 }}>
+                                <div className="min-h-[300px] h-full border border-gray-200 rounded-lg">
                                     <InteractiveSpreadsheet
                                         columns={rowColumns}
                                         data={rows}
@@ -517,7 +512,7 @@ export default function AdvancedFSGDesigner() {
                                             Export to Excel
                                         </Button>
                                     </div>
-                                    <div style={{ minHeight: '300px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 8 }}>
+                                    <div className="min-h-[300px] h-full border border-gray-200 rounded-lg">
                                         <InteractiveSpreadsheet
                                             columns={previewColumns}
                                             data={rows}

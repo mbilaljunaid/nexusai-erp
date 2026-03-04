@@ -225,7 +225,7 @@ export default function Analytics() {
             <CardContent className="space-y-3">
               <div>
                 <label className="text-sm font-medium">Report Type</label>
-                <select className="w-full p-2 border rounded mt-1" data-testid="select-report-type">
+                <select className="w-full p-2 border rounded mt-1" data-testid="select-report-type" aria-label="Report Type">
                   <option>Financial Summary</option>
                   <option>Sales Analysis</option>
                   <option>Customer Metrics</option>
@@ -234,7 +234,7 @@ export default function Analytics() {
               </div>
               <div>
                 <label className="text-sm font-medium">Format</label>
-                <select className="w-full p-2 border rounded mt-1" data-testid="select-report-format">
+                <select className="w-full p-2 border rounded mt-1" data-testid="select-report-format" aria-label="Report Format">
                   <option>PDF</option>
                   <option>Excel</option>
                   <option>HTML</option>
@@ -254,7 +254,7 @@ export default function Analytics() {
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
-                <div style={{ minHeight: '300px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 12 }}>
+                <div className="min-h-[300px] h-full border border-gray-200 rounded-xl">
                   <InteractiveSpreadsheet
                     columns={analyticsColumns}
                     data={dashboardData}

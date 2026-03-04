@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, Save } from "lucide-react";
+import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 interface JournalLine {
     id: number;
@@ -126,9 +127,12 @@ export default function ManualJournalEntry() {
                             <Label>GL Date</Label>
                             <Input type="date" value={glDate} onChange={e => setGlDate(e.target.value)} />
                         </div>
-                        <div className="space-y-2">
-                            <Label>Ledger</Label>
-                            <Input value={ledgerId} onChange={e => setLedgerId(e.target.value)} />
+                        <div className="flex flex-col space-y-2 justify-end pb-1">
+                            <EnterpriseContextSwitcher
+                                type="ledger"
+                                value={ledgerId || undefined}
+                                onChange={(v) => setLedgerId(v || "PRIMARY")}
+                            />
                         </div>
                         <div className="space-y-2">
                             <Label>Currency</Label>

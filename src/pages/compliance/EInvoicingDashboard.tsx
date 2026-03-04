@@ -95,150 +95,154 @@ export default function EInvoicingDashboard() {
                 const cfg = STATUS_CFG[d.status];
                 const Icon = cfg.icon;
                 return (
-                    <span className="status-pill" style={{ background: cfg.bg, color: cfg.color }}>
-                        <Icon size={12} /> {d.status}
-                    </span>
+                    {/* eslint-disable-next-line react/forbid-dom-props */ }
+                    < span className = "status-pill" style = {{ background: cfg.bg, color: cfg.color }
+            }>
+        <Icon size={12} /> { d.status }
+                    </span >
                 );
-            }
+}
         },
-        { id: "submitted", header: "Submitted", width: "120px", cell: (d) => d.submitted_at ? new Date(d.submitted_at).toLocaleDateString() : '—' },
-        {
-            id: "actions", header: "Actions", width: "120px", cell: (d) => ['Submitted', 'Accepted'].includes(d.status) ? (
-                <button
-                    className="cancel-btn"
-                    onClick={() => cancelMutation.mutate({ id: d.id, reason: 'User initiated cancellation' })}
-                    aria-label={`Cancel e-invoice ${d.uuid}`}
-                >
-                    Cancel
-                </button>
-            ) : null
-        }
+{ id: "submitted", header: "Submitted", width: "120px", cell: (d) => d.submitted_at ? new Date(d.submitted_at).toLocaleDateString() : '—' },
+{
+    id: "actions", header: "Actions", width: "120px", cell: (d) => ['Submitted', 'Accepted'].includes(d.status) ? (
+        <button
+            className="cancel-btn"
+            onClick={() => cancelMutation.mutate({ id: d.id, reason: 'User initiated cancellation' })}
+            aria-label={`Cancel e-invoice ${d.uuid}`}
+        >
+            Cancel
+        </button>
+    ) : null
+}
     ];
 
-    return (
-        <div className="einvoice-dashboard">
-            {/* Header */}
-            <div className="einv-header">
-                <div>
-                    <h1 className="einv-title">E-Invoicing Compliance</h1>
-                    <p className="einv-subtitle">ZATCA · SDI · CFDI · GST IRN · PEPPOL — multi-standard submission portal</p>
-                </div>
-                <button className="submit-btn" onClick={() => setShowSubmitModal(true)} aria-label="Submit new e-invoice">
-                    <Send size={15} /> Submit Invoice
-                </button>
+return (
+    <div className="einvoice-dashboard">
+        {/* Header */}
+        <div className="einv-header">
+            <div>
+                <h1 className="einv-title">E-Invoicing Compliance</h1>
+                <p className="einv-subtitle">ZATCA · SDI · CFDI · GST IRN · PEPPOL — multi-standard submission portal</p>
             </div>
+            <button className="submit-btn" onClick={() => setShowSubmitModal(true)} aria-label="Submit new e-invoice">
+                <Send size={15} /> Submit Invoice
+            </button>
+        </div>
 
-            {/* KPI Strip */}
-            <div className="einv-kpis">
-                <KPICard label="Accepted" value={totalAccepted} icon={<CheckCircle2 size={18} />} color="#059669" bg="#d1fae5" />
-                <KPICard label="Rejected" value={totalRejected} icon={<XCircle size={18} />} color="#dc2626" bg="#fee2e2" />
-                <KPICard label="Pending" value={totalPending} icon={<Clock size={18} />} color="#d97706" bg="#fef3c7" />
-            </div>
+        {/* KPI Strip */}
+        <div className="einv-kpis">
+            <KPICard label="Accepted" value={totalAccepted} icon={<CheckCircle2 size={18} />} color="#059669" bg="#d1fae5" />
+            <KPICard label="Rejected" value={totalRejected} icon={<XCircle size={18} />} color="#dc2626" bg="#fee2e2" />
+            <KPICard label="Pending" value={totalPending} icon={<Clock size={18} />} color="#d97706" bg="#fef3c7" />
+        </div>
 
-            {/* Standard Matrix */}
-            <div className="standard-matrix">
-                <h2 className="section-title">Acceptance Rate by Standard</h2>
-                <div className="matrix-grid">
-                    {STANDARDS.map(std => {
-                        const accepted = pivot[std]?.Accepted ?? 0;
-                        const total = Object.values(pivot[std] ?? {}).reduce((a, b) => a + b, 0);
-                        const pct = total > 0 ? Math.round(accepted / total * 100) : 0;
-                        return (
-                            <div key={std} className="std-card" onClick={() => setStandardFilter(std)}>
-                                <div className="std-name">{std}</div>
-                                <div className="std-pct" style={{ color: pct >= 90 ? '#059669' : pct >= 60 ? '#d97706' : '#dc2626' }}>
-                                    {pct}%
-                                </div>
-                                <div className="std-bar-bg">
-                                    <div className="std-bar-fill" style={{
-                                        width: `${pct}%`,
-                                        background: pct >= 90 ? '#059669' : pct >= 60 ? '#d97706' : '#dc2626'
-                                    }} />
-                                </div>
-                                <div className="std-total">{total} docs</div>
+        {/* Standard Matrix */}
+        <div className="standard-matrix">
+            <h2 className="section-title">Acceptance Rate by Standard</h2>
+            <div className="matrix-grid">
+                {STANDARDS.map(std => {
+                    const accepted = pivot[std]?.Accepted ?? 0;
+                    const total = Object.values(pivot[std] ?? {}).reduce((a, b) => a + b, 0);
+                    const pct = total > 0 ? Math.round(accepted / total * 100) : 0;
+                    return (
+                        <div key={std} className="std-card" onClick={() => setStandardFilter(std)}>
+                            <div className="std-name">{std}</div>
+                            {/* eslint-disable-next-line react/forbid-dom-props */}
+                            <div className="std-pct" style={{ color: pct >= 90 ? '#059669' : pct >= 60 ? '#d97706' : '#dc2626' }}>
+                                {pct}%
                             </div>
-                        );
-                    })}
-                </div>
-            </div>
-
-            {/* Filters + Table */}
-            <div className="einv-table-card">
-                <div className="table-toolbar">
-                    <div className="filter-row">
-                        {['', 'Pending', 'Submitted', 'Accepted', 'Rejected', 'Cancelled'].map(s => (
-                            <button
-                                key={s}
-                                className={`filter-pill ${statusFilter === s ? 'active' : ''}`}
-                                onClick={() => setStatusFilter(s)}
-                                aria-pressed={statusFilter === s}
-                            >
-                                {s || 'All'}
-                            </button>
-                        ))}
-                    </div>
-                    <select
-                        value={standardFilter}
-                        onChange={e => setStandardFilter(e.target.value)}
-                        className="std-select"
-                        aria-label="Filter by standard"
-                    >
-                        <option value="">All Standards</option>
-                        {STANDARDS.map(s => <option key={s} value={s}>{s}</option>)}
-                    </select>
-                </div>
-
-                <div style={{ height: '500px', width: '100%' }}>
-                    {isLoading ? (
-                        <div className="center-cell">Loading documents…</div>
-                    ) : docs.length === 0 ? (
-                        <div className="center-cell">No documents found</div>
-                    ) : (
-                        <InteractiveSpreadsheet
-                            columns={docColumns}
-                            data={docs}
-                            onChange={() => { }}
-                            containerHeight="500px"
-                        />
-                    )}
-                </div>
-            </div>
-
-            {/* Submit Modal */}
-            {showSubmitModal && (
-                <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="Submit e-invoice">
-                    <div className="modal-box">
-                        <h2 className="modal-title">Submit E-Invoice</h2>
-                        {(['invoiceId', 'invoiceType', 'standard', 'countryCode'] as const).map(field => (
-                            <div key={field} className="modal-field">
-                                <label className="modal-label" htmlFor={`einv-${field}`}>
-                                    {field.replace(/([A-Z])/g, ' $1').trim()}
-                                </label>
-                                <input
-                                    id={`einv-${field}`}
-                                    className="modal-input"
-                                    value={submitForm[field]}
-                                    onChange={e => setSubmitForm(f => ({ ...f, [field]: e.target.value }))}
-                                    placeholder={field === 'invoiceId' ? 'Invoice UUID' : ''}
-                                />
+                            <div className="std-bar-bg">
+                                {/* eslint-disable-next-line react/forbid-dom-props */}
+                                <div className="std-bar-fill" style={{
+                                    width: `${pct}%`,
+                                    background: pct >= 90 ? '#059669' : pct >= 60 ? '#d97706' : '#dc2626'
+                                }} />
                             </div>
-                        ))}
-                        <div className="modal-actions">
-                            <button className="modal-cancel-btn" onClick={() => setShowSubmitModal(false)}>Cancel</button>
-                            <button
-                                className="modal-submit-btn"
-                                onClick={() => submitMutation.mutate({ ...submitForm })}
-                                disabled={submitMutation.isPending}
-                                aria-label="Confirm submit e-invoice"
-                            >
-                                {submitMutation.isPending ? 'Submitting…' : 'Submit'}
-                            </button>
+                            <div className="std-total">{total} docs</div>
                         </div>
+                    );
+                })}
+            </div>
+        </div>
+
+        {/* Filters + Table */}
+        <div className="einv-table-card">
+            <div className="table-toolbar">
+                <div className="filter-row">
+                    {['', 'Pending', 'Submitted', 'Accepted', 'Rejected', 'Cancelled'].map(s => (
+                        <button
+                            key={s}
+                            className={`filter-pill ${statusFilter === s ? 'active' : ''}`}
+                            onClick={() => setStatusFilter(s)}
+                            aria-pressed={statusFilter === s ? "true" : "false"}
+                        >
+                            {s || 'All'}
+                        </button>
+                    ))}
+                </div>
+                <select
+                    value={standardFilter}
+                    onChange={e => setStandardFilter(e.target.value)}
+                    className="std-select"
+                    aria-label="Filter by standard"
+                >
+                    <option value="">All Standards</option>
+                    {STANDARDS.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+            </div>
+
+            <div className="h-[500px] w-full">
+                {isLoading ? (
+                    <div className="center-cell">Loading documents…</div>
+                ) : docs.length === 0 ? (
+                    <div className="center-cell">No documents found</div>
+                ) : (
+                    <InteractiveSpreadsheet
+                        columns={docColumns}
+                        data={docs}
+                        onChange={() => { }}
+                        containerHeight="500px"
+                    />
+                )}
+            </div>
+        </div>
+
+        {/* Submit Modal */}
+        {showSubmitModal && (
+            <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="Submit e-invoice">
+                <div className="modal-box">
+                    <h2 className="modal-title">Submit E-Invoice</h2>
+                    {(['invoiceId', 'invoiceType', 'standard', 'countryCode'] as const).map(field => (
+                        <div key={field} className="modal-field">
+                            <label className="modal-label" htmlFor={`einv-${field}`}>
+                                {field.replace(/([A-Z])/g, ' $1').trim()}
+                            </label>
+                            <input
+                                id={`einv-${field}`}
+                                className="modal-input"
+                                value={submitForm[field]}
+                                onChange={e => setSubmitForm(f => ({ ...f, [field]: e.target.value }))}
+                                placeholder={field === 'invoiceId' ? 'Invoice UUID' : ''}
+                            />
+                        </div>
+                    ))}
+                    <div className="modal-actions">
+                        <button className="modal-cancel-btn" onClick={() => setShowSubmitModal(false)}>Cancel</button>
+                        <button
+                            className="modal-submit-btn"
+                            onClick={() => submitMutation.mutate({ ...submitForm })}
+                            disabled={submitMutation.isPending}
+                            aria-label="Confirm submit e-invoice"
+                        >
+                            {submitMutation.isPending ? 'Submitting…' : 'Submit'}
+                        </button>
                     </div>
                 </div>
-            )}
+            </div>
+        )}
 
-            <style>{`
+        <style>{`
                 .einvoice-dashboard { padding: 24px; max-width: 1400px; margin: 0 auto; font-family: 'Inter', sans-serif; }
                 .einv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
                 .einv-title { font-size: 22px; font-weight: 700; color: #111827; margin: 0; }
@@ -282,17 +286,20 @@ export default function EInvoicingDashboard() {
                 .modal-submit-btn { padding: 8px 20px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
                 .modal-submit-btn:disabled { background: #9ca3af; }
             `}</style>
-        </div>
-    );
+    </div>
+);
 }
 
 function KPICard({ label, value, icon, color, bg }: { label: string; value: number; icon: React.ReactNode; color: string; bg: string }) {
     return (
-        <div style={{ background: bg, border: `1px solid ${color}30`, borderRadius: 12, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14, minWidth: 140 }}>
+        // eslint-disable-next-line react/forbid-dom-props
+        <div className="rounded-xl px-5 py-4 flex items-center gap-3.5 min-w-[140px]" style={{ background: bg, border: `1px solid ${color}30` }}>
+            {/* eslint-disable-next-line react/forbid-dom-props */}
             <div style={{ color }}>{icon}</div>
             <div>
-                <div style={{ fontSize: 26, fontWeight: 800, color }}>{value}</div>
-                <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>{label}</div>
+                {/* eslint-disable-next-line react/forbid-dom-props */}
+                <div className="text-[26px] font-extrabold" style={{ color }}>{value}</div>
+                <div className="text-xs text-gray-500 mt-0.5">{label}</div>
             </div>
         </div>
     );

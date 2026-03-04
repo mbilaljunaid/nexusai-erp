@@ -11,6 +11,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import {
@@ -77,11 +78,7 @@ export default function TransferRuleBuilder() {
         queryFn: () => apiRequest("/api/gl/transfer-rules"),
     });
 
-    // Fetch ledgers
-    const { data: ledgers } = useQuery({
-        queryKey: ["/api/gl/ledgers"],
-        queryFn: () => apiRequest("/api/gl/ledgers"),
-    });
+    // Fetch ledgers - handled by EnterpriseContextSwitcher
 
     // Save rule mutation
     const saveMutation = useMutation({
@@ -280,38 +277,24 @@ export default function TransferRuleBuilder() {
                         <div className="border-t pt-4">
                             <h3 className="font-semibold mb-4">Transfer Configuration</h3>
                             <div className="grid grid-cols-3 gap-4">
-                                <div>
+                                <div className="flex flex-col space-y-2 justify-end pb-1">
                                     <Label>Source Ledger</Label>
-                                    <Select value={sourceLedger} onValueChange={setSourceLedger}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select ledger" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {ledgers?.map((ledger: any) => (
-                                                <SelectItem key={ledger.id} value={ledger.id.toString()}>
-                                                    {ledger.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                    <EnterpriseContextSwitcher
+                                        type="ledger"
+                                        value={sourceLedger || undefined}
+                                        onChange={(v) => setSourceLedger(v || "")}
+                                    />
                                 </div>
-                                <div className="flex items-end justify-center">
+                                <div className="flex items-end justify-center pb-2">
                                     <ArrowRight className="h-6 w-6 text-muted-foreground" />
                                 </div>
-                                <div>
+                                <div className="flex flex-col space-y-2 justify-end pb-1">
                                     <Label>Target Ledger</Label>
-                                    <Select value={targetLedger} onValueChange={setTargetLedger}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select ledger" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {ledgers?.map((ledger: any) => (
-                                                <SelectItem key={ledger.id} value={ledger.id.toString()}>
-                                                    {ledger.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                    <EnterpriseContextSwitcher
+                                        type="ledger"
+                                        value={targetLedger || undefined}
+                                        onChange={(v) => setTargetLedger(v || "")}
+                                    />
                                 </div>
                             </div>
 

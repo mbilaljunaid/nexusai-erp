@@ -41,17 +41,18 @@ export default function NineBoxGrid() {
     const boxEntries = (perf: number, pot: number) => grid.filter(e => e.performance === perf && e.potential === pot);
 
     const gridColumns: SpreadsheetColumn<any>[] = [
-        { id: "employee_id", header: "Employee", width: "150px", cell: (row) => <span style={{ fontWeight: 600 }}>{row.employee_id}</span> },
+        { id: "employee_id", header: "Employee", width: "150px", cell: (row) => <span className="font-semibold">{row.employee_id}</span> },
         {
             id: "box_label", header: "Box", width: "150px", cell: (row) => {
                 const cfg = BOX_CONFIG[row.box_label] ?? { bg: '#f9fafb', border: '#e5e7eb', label: row.box_label };
-                return <span style={{ padding: '2px 6px', borderRadius: 4, background: cfg.bg, border: `1px solid ${cfg.border}`, fontSize: 9, fontWeight: 700 }}>{cfg.label}</span>
+                /* eslint-disable-next-line react/forbid-dom-props */
+                return <span className="px-1.5 py-0.5 rounded text-[9px] font-bold" style={{ background: cfg.bg, border: `1px solid ${cfg.border}` }}>{cfg.label}</span>
             }
         },
         { id: "performance", header: "Performance", width: "100px", cell: (row) => ['', '🔴 Low', '🟡 Medium', '🟢 High'][row.performance] },
         { id: "potential", header: "Potential", width: "100px", cell: (row) => ['', '🔴 Low', '🟡 Medium', '🟢 High'][row.potential] },
-        { id: "assessed_by", header: "Assessed By", width: "150px", cell: (row) => <span style={{ color: '#6b7280' }}>{row.assessed_by || '—'}</span> },
-        { id: "notes", header: "Notes", width: "250px", cell: (row) => <span style={{ color: '#6b7280', display: 'block', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{row.notes || '—'}</span> }
+        { id: "assessed_by", header: "Assessed By", width: "150px", cell: (row) => <span className="text-gray-500">{row.assessed_by || '—'}</span> },
+        { id: "notes", header: "Notes", width: "250px", cell: (row) => <span className="text-gray-500 block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap">{row.notes || '—'}</span> }
     ];
 
     return (
@@ -59,67 +60,69 @@ export default function NineBoxGrid() {
             title="Nine-Box Talent Grid"
             description="Performance × Potential · Cascading goal alignment · GDPR-compliant"
             actions={
-                <div style={{ display: 'flex', gap: 8 }}>
-                    <input value={period} onChange={e => setPeriod(e.target.value)} placeholder="YYYY" style={{ padding: '6px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12, width: 80 }} aria-label="Year" />
-                    <button onClick={() => setShowAdd(true)} style={{ padding: '6px 12px', background: '#7c3aed', color: '#fff', border: 'none', borderRadius: 8, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>+ Add Assessment</button>
-                    <button onClick={() => purgeMut.mutate()} style={{ padding: '6px 12px', background: '#f3f4f6', color: '#6b7280', border: 'none', borderRadius: 8, fontSize: 11, cursor: 'pointer' }} title="GDPR purge expired records">🔒 GDPR Purge</button>
+                <div className="flex gap-2">
+                    <input value={period} onChange={e => setPeriod(e.target.value)} placeholder="YYYY" className="px-2.5 py-1.5 border border-gray-300 rounded-[7px] text-xs w-20" aria-label="Year" />
+                    <button onClick={() => setShowAdd(true)} className="px-3 py-1.5 bg-violet-600 text-white border-none rounded-lg text-[11px] font-bold cursor-pointer hover:bg-violet-700">+ Add Assessment</button>
+                    <button onClick={() => purgeMut.mutate()} className="px-3 py-1.5 bg-gray-100 text-gray-500 border-none rounded-lg text-[11px] cursor-pointer hover:bg-gray-200" title="GDPR purge expired records">🔒 GDPR Purge</button>
                 </div>
             }
         >
 
             {showAdd && (
-                <div style={{ background: '#faf5ff', border: '1px solid #e9d5ff', borderRadius: 10, padding: 14, marginBottom: 16 }}>
-                    <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 8 }}>New Assessment — {period}</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8, marginBottom: 8 }}>
+                <div className="bg-purple-50 border border-purple-200 rounded-[10px] p-3.5 mb-4">
+                    <div className="font-bold text-xs mb-2">New Assessment — {period}</div>
+                    <div className="grid grid-cols-5 gap-2 mb-2">
                         {[['Employee ID', 'employeeId', 'text'], ['Assessed By', 'assessedBy', 'text']].map(([lbl, key, type]) => (
-                            <div key={key}><label style={{ fontSize: 10, fontWeight: 700, display: 'block' }}>{lbl}</label>
-                                <input type={type} value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} style={{ width: '100%', padding: '5px 8px', border: '1px solid #e9d5ff', borderRadius: 6, fontSize: 11, boxSizing: 'border-box' }} aria-label={lbl} />
+                            <div key={key}><label className="text-[10px] font-bold block">{lbl}</label>
+                                <input type={type} value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="w-full px-2 py-1 border border-purple-200 rounded-md text-[11px] box-border" aria-label={lbl} />
                             </div>
                         ))}
                         {[['Performance', 'performance'], ['Potential', 'potential']].map(([lbl, key]) => (
-                            <div key={key}><label style={{ fontSize: 10, fontWeight: 700, display: 'block' }}>{lbl}</label>
-                                <select value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} style={{ width: '100%', padding: '5px 8px', border: '1px solid #e9d5ff', borderRadius: 6, fontSize: 11 }} aria-label={lbl}>
+                            <div key={key}><label className="text-[10px] font-bold block">{lbl}</label>
+                                <select value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="w-full px-2 py-1 border border-purple-200 rounded-md text-[11px]" aria-label={lbl}>
                                     <option value="1">1 — Low</option><option value="2">2 — Medium</option><option value="3">3 — High</option>
                                 </select>
                             </div>
                         ))}
-                        <div><label style={{ fontSize: 10, fontWeight: 700, display: 'block' }}>Notes</label>
-                            <input value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} style={{ width: '100%', padding: '5px 8px', border: '1px solid #e9d5ff', borderRadius: 6, fontSize: 11, boxSizing: 'border-box' }} aria-label="Notes" />
+                        <div><label className="text-[10px] font-bold block">Notes</label>
+                            <input value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} className="w-full px-2 py-1 border border-purple-200 rounded-md text-[11px] box-border" aria-label="Notes" />
                         </div>
                     </div>
-                    <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                        <button onClick={() => setShowAdd(false)} style={{ padding: '5px 12px', background: '#e5e7eb', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer' }}>Cancel</button>
-                        <button disabled={!form.employeeId} onClick={() => addMut.mutate({ employeeId: form.employeeId, period, performance: parseInt(form.performance), potential: parseInt(form.potential), assessedBy: form.assessedBy || null, notes: form.notes || null })} style={{ padding: '5px 12px', background: '#7c3aed', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>Save</button>
+                    <div className="flex gap-1.5 justify-end">
+                        <button onClick={() => setShowAdd(false)} className="px-3 py-1 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer hover:bg-gray-300">Cancel</button>
+                        <button disabled={!form.employeeId} onClick={() => addMut.mutate({ employeeId: form.employeeId, period, performance: parseInt(form.performance), potential: parseInt(form.potential), assessedBy: form.assessedBy || null, notes: form.notes || null })} className="px-3 py-1 bg-violet-600 text-white border-none rounded-md text-[11px] font-bold cursor-pointer hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed">Save</button>
                     </div>
                 </div>
             )}
 
             {/* Axis labels */}
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div className="flex gap-2">
                 {/* Performance Y-label */}
-                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 28 }}>
-                    <span style={{ fontSize: 9, color: '#6b7280', writingMode: 'vertical-rl', transform: 'rotate(180deg)', letterSpacing: 2 }}>PERFORMANCE ↑</span>
+                <div className="flex flex-col justify-center items-center w-7">
+                    <span className="text-[9px] text-gray-500 [writing-mode:vertical-rl] rotate-180 tracking-[2px]">PERFORMANCE ↑</span>
                 </div>
-                <div style={{ flex: 1 }}>
+                <div className="flex-1">
                     {/* Potential X-label */}
-                    <div style={{ textAlign: 'center', fontSize: 9, color: '#6b7280', marginBottom: 4, letterSpacing: 2 }}>← LOW · POTENTIAL · HIGH →</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+                    <div className="text-center text-[9px] text-gray-500 mb-1 tracking-[2px]">← LOW · POTENTIAL · HIGH →</div>
+                    <div className="grid grid-cols-3 gap-2">
                         {GRID_MAP.map((cell, i) => {
                             const entries = boxEntries(cell.perf, cell.pot);
                             const cfg = BOX_CONFIG[cell.key] ?? { bg: '#f9fafb', border: '#e5e7eb', label: cell.key };
                             return (
-                                <div key={i} style={{ background: cfg.bg, border: `2px solid ${cfg.border}`, borderRadius: 12, padding: 10, minHeight: 100 }}>
-                                    <div style={{ fontSize: 10, fontWeight: 800, color: '#374151', marginBottom: 6 }}>{cfg.label}</div>
-                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                                /* eslint-disable-next-line react/forbid-dom-props */
+                                <div key={i} className="rounded-xl p-2.5 min-h-[100px]" style={{ background: cfg.bg, border: `2px solid ${cfg.border}` }}>
+                                    <div className="text-[10px] font-extrabold text-gray-700 mb-1.5">{cfg.label}</div>
+                                    <div className="flex flex-wrap gap-1">
                                         {entries.map((e, j) => (
-                                            <div key={j} style={{ background: '#fff', border: `1px solid ${cfg.border}`, borderRadius: 6, padding: '3px 6px', fontSize: 9 }}>
-                                                <div style={{ fontWeight: 700 }}>{e.employee_id}</div>
-                                                {e.assessed_by && <div style={{ color: '#9ca3af' }}>by {e.assessed_by}</div>}
+                                            /* eslint-disable-next-line react/forbid-dom-props */
+                                            <div key={j} className="bg-white rounded-md px-1.5 py-[3px] text-[9px]" style={{ border: `1px solid ${cfg.border}` }}>
+                                                <div className="font-bold">{e.employee_id}</div>
+                                                {e.assessed_by && <div className="text-gray-400">by {e.assessed_by}</div>}
                                             </div>
                                         ))}
-                                        {entries.length === 0 && <div style={{ color: '#d1d5db', fontSize: 9, fontStyle: 'italic' }}>empty</div>}
+                                        {entries.length === 0 && <div className="text-gray-300 text-[9px] italic">empty</div>}
                                     </div>
-                                    <div style={{ marginTop: 4, fontSize: 8, color: '#9ca3af' }}>P={cell.perf} × pt={cell.pot}</div>
+                                    <div className="mt-1 text-[8px] text-gray-400">P={cell.perf} × pt={cell.pot}</div>
                                 </div>
                             );
                         })}
@@ -128,14 +131,14 @@ export default function NineBoxGrid() {
             </div>
 
             {/* Summary table */}
-            <div style={{ marginTop: 20, background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, overflow: 'hidden', height: 400 }}>
+            <div className="mt-5 bg-white border border-gray-200 rounded-xl overflow-hidden h-[400px]">
                 <InteractiveSpreadsheet
                     columns={gridColumns}
                     data={grid}
                     onChange={() => { }}
                     containerHeight="400px"
                 />
-                {grid.length === 0 && <div style={{ padding: 24, textAlign: 'center', color: '#9ca3af', borderTop: '1px solid #e5e7eb' }}>No assessments for {period}</div>}
+                {grid.length === 0 && <div className="p-6 text-center text-gray-400 border-t border-gray-200">No assessments for {period}</div>}
             </div>
         </StandardPage>
     );

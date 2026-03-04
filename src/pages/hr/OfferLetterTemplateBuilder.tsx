@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 import { useToast } from "@/hooks/use-toast";
 import {
     FileText,
@@ -125,15 +126,12 @@ The NexusAI Talent Team`);
                             </CardHeader>
                             <CardContent className="pt-4 space-y-4">
                                 <div className="space-y-1.5">
-                                    <Label className="text-xs font-semibold text-muted-foreground uppercase">Legal Entity</Label>
-                                    <Select value={legalEntity} onValueChange={setLegalEntity}>
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="NEXUS_US_CORP">NexusAI US Corp</SelectItem>
-                                            <SelectItem value="NEXUS_UK_LTD">NexusAI UK Ltd.</SelectItem>
-                                            <SelectItem value="NEXUS_GMBH">NexusAI GmbH (Germany)</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <Label className="text-xs font-semibold text-muted-foreground uppercase pb-1 block">Legal Entity</Label>
+                                    <EnterpriseContextSwitcher
+                                        type="legal-entity"
+                                        value={legalEntity || undefined}
+                                        onChange={(val) => setLegalEntity(val || "NEXUS_US_CORP")}
+                                    />
                                 </div>
                                 <div className="space-y-1.5">
                                     <Label className="text-xs font-semibold text-muted-foreground uppercase">Worker Type Restriction</Label>

@@ -27,6 +27,10 @@ export interface InteractiveSpreadsheetProps<T> {
 
     // Paste
     onPasteFromClipboard?: () => void;
+
+    // Selection Features
+    activeRow?: string | number | null;
+    onRowSelect?: (row: T) => void;
 }
 
 export function InteractiveSpreadsheet<T extends { id?: string | number, lineNumber?: number }>({
@@ -37,7 +41,9 @@ export function InteractiveSpreadsheet<T extends { id?: string | number, lineNum
     rowHeight = 45,
     containerHeight = "500px",
     footer,
-    onPasteFromClipboard
+    onPasteFromClipboard,
+    activeRow,
+    onRowSelect
 }: InteractiveSpreadsheetProps<T>) {
 
     const parentRef = useRef<HTMLDivElement>(null);
@@ -76,15 +82,22 @@ export function InteractiveSpreadsheet<T extends { id?: string | number, lineNum
                             </tr>
                         </thead>
                         <tbody>
-                            {data.map((row, index) => (
-                                <tr key={row.id || row.lineNumber || index} className="border-b group hover:bg-slate-50/50 transition-colors">
-                                    {columns.map(col => (
-                                        <td key={`${row.id || index}-${col.id}`} className={`p-2 align-top ${col.cellClassName || ''}`}>
-                                            {col.cell(row, index, (field, val) => handleUpdateRow(index, field, val))}
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
+                            {data.map((row, index) => {
+                                const isSelected = activeRow !== undefined && (activeRow === row.id || activeRow === row.lineNumber);
+                                return (
+                                    <tr
+                                        key={row.id || row.lineNumber || index}
+                                        className={`border-b group transition-colors ${isSelected ? 'bg-slate-100' : 'hover:bg-slate-50/50'} ${onRowSelect ? 'cursor-pointer' : ''}`}
+                                        onClick={() => onRowSelect && onRowSelect(row)}
+                                    >
+                                        {columns.map(col => (
+                                            <td key={`${row.id || index}-${col.id}`} className={`p-2 align-top ${col.cellClassName || ''}`}>
+                                                {col.cell(row, index, (field, val) => handleUpdateRow(index, field, val))}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                );
+                            })}
                             {data.length === 0 && (
                                 <tr>
                                     <td colSpan={columns.length} className="p-8 text-center text-muted-foreground">
@@ -127,10 +140,12 @@ export function InteractiveSpreadsheet<T extends { id?: string | number, lineNum
                     <div className="w-full relative" style={{ height: `${rowVirtualizer.getTotalSize()}px` }}>
                         {rowVirtualizer.getVirtualItems().map((virtualRow) => {
                             const row = data[virtualRow.index];
+                            const isSelected = activeRow !== undefined && (activeRow === row.id || activeRow === row.lineNumber);
                             return (
                                 <div
                                     key={row.id || virtualRow.index}
-                                    className="grid gap-2 p-1 px-3 items-center hover:bg-slate-50 border-b border-slate-50 absolute top-0 left-0 w-full"
+                                    className={`grid gap-2 p-1 px-3 items-center border-b border-slate-50 absolute top-0 left-0 w-full ${isSelected ? 'bg-slate-100' : 'hover:bg-slate-50'} ${onRowSelect ? 'cursor-pointer' : ''}`}
+                                    onClick={() => onRowSelect && onRowSelect(row)}
                                     style={{
                                         height: `${virtualRow.size}px`,
                                         transform: `translateY(${virtualRow.start}px)`,

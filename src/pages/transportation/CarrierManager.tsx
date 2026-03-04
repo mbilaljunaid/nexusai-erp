@@ -160,7 +160,7 @@ export default function CarrierManager() {
                     <CardContent>
                         <div className="h-48 flex items-end justify-between px-4 pb-2 border-b border-l">
                             {[45, 60, 55, 75, 80, 70, 90].map((h, i) => (
-                                <div key={i} className="w-8 bg-emerald-500/20 hover:bg-emerald-500 transition-all rounded-t-sm cursor-help" style={{ height: `${h}%` }} title={`Month ${i + 1}: $${h * 10}`}></div>
+                                <div key={i} className={`w-8 bg-emerald-500/20 hover:bg-emerald-500 transition-all rounded-t-sm cursor-help h-[${h}%]`} title={`Month ${i + 1}: $${h * 10}`}></div>
                             ))}
                         </div>
                         <div className="flex justify-between mt-2 text-[10px] text-muted-foreground uppercase tracking-widest px-2">

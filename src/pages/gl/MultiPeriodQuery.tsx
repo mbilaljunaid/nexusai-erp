@@ -11,7 +11,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { apiRequest } from "@/lib/queryClient";
+import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 import {
     Download,
     TrendingUp,
@@ -47,16 +47,12 @@ export default function MultiPeriodQuery() {
     const [showVariance, setShowVariance] = useState(true);
     const [showTrend, setShowTrend] = useState(true);
 
-    // Fetch ledgers
-    const { data: ledgers } = useQuery({
-        queryKey: ["/api/gl/ledgers"],
-        queryFn: () => apiRequest("/api/gl/ledgers"),
-    });
+    // Fetch ledgers - handled by EnterpriseContextSwitcher
 
     // Fetch periods
     const { data: periods } = useQuery({
         queryKey: ["/api/gl/periods"],
-        queryFn: () => apiRequest("/api/gl/periods?status=OPEN,CLOSED"),
+        queryFn: () => fetch("/api/gl/periods?status=OPEN,CLOSED").then(r => r.json()),
     });
 
     // Fetch multi-period data
@@ -70,8 +66,9 @@ export default function MultiPeriodQuery() {
             comparisonType,
         ],
         queryFn: () =>
-            apiRequest("/api/gl/multi-period-query", {
+            fetch("/api/gl/multi-period-query", {
                 method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     ledgerId: parseInt(ledgerId),
                     accountFrom,
@@ -81,7 +78,7 @@ export default function MultiPeriodQuery() {
                     includeVariance: showVariance,
                     includeTrend: showTrend,
                 }),
-            }),
+            }).then(r => r.json()),
         enabled: !!ledgerId && selectedPeriods.length > 0,
     });
 
@@ -229,20 +226,12 @@ export default function MultiPeriodQuery() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-4 gap-4">
-                        <div>
-                            <Label>Ledger</Label>
-                            <Select value={ledgerId} onValueChange={setLedgerId}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select ledger" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {ledgers?.map((ledger: any) => (
-                                        <SelectItem key={ledger.id} value={ledger.id.toString()}>
-                                            {ledger.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                        <div className="flex flex-col space-y-2 justify-end pb-1">
+                            <EnterpriseContextSwitcher
+                                type="ledger"
+                                value={ledgerId || undefined}
+                                onChange={(v) => setLedgerId(v || "")}
+                            />
                         </div>
                         <div>
                             <Label>Account From</Label>
@@ -316,7 +305,7 @@ export default function MultiPeriodQuery() {
                         <CardTitle>Analysis Results</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div style={{ minHeight: '400px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 8 }}>
+                        <div className="min-h-[400px] h-full border border-gray-200 rounded-lg">
                             <InteractiveSpreadsheet
                                 columns={queryColumns}
                                 data={tableData}

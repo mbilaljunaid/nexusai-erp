@@ -48,6 +48,7 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select";
+import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 const accountSchema = z.object({
     revenueAccountCCID: z.string().min(1, "Revenue Account is required"),
@@ -179,18 +180,15 @@ export default function RevenueAccountingSetup() {
             title="Revenue Policy Center"
             description="Configure ASC 606 identification, allocation, and recognition rules."
             actions={
-                <div className="bg-white p-1 rounded-lg border shadow-sm flex items-center gap-2">
+                <div className="bg-white p-1 rounded-lg border shadow-sm flex items-center gap-2 pr-2">
                     <span className="text-xs font-bold text-slate-500 px-2 uppercase">Ledger context</span>
-                    <Select value={ledgerId} onValueChange={setLedgerId}>
-                        <SelectTrigger className="w-[200px] border-none shadow-none focus:ring-0">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="PRIMARY">Americas Ledger (USD)</SelectItem>
-                            <SelectItem value="EMEA">Europe Ledger (EUR)</SelectItem>
-                            <SelectItem value="APAC">Vision Corp (JPY)</SelectItem>
-                        </SelectContent>
-                    </Select>
+                    <div className="w-[200px] flex flex-col justify-center">
+                        <EnterpriseContextSwitcher
+                            type="ledger"
+                            value={ledgerId || undefined}
+                            onChange={(val) => setLedgerId(val || "PRIMARY")}
+                        />
+                    </div>
                 </div>
             }
         >

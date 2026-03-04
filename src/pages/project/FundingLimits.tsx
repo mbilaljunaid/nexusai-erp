@@ -30,92 +30,103 @@ export default function FundingLimits() {
     const closeCommitMut = useMutation({ mutationFn: (id: string) => fetch(`/api/project/commitments/${id}/close`, { method: 'POST' }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['commits', activeProject] }) });
 
     const commitColumns: SpreadsheetColumn<Commitment>[] = [
-        { id: "type", header: "Type", width: "120px", cell: (c) => <span style={{ fontWeight: 700, fontSize: 10, fontFamily: 'monospace' }}>{c.commitment_type}</span> },
-        { id: "reference", header: "Reference", width: "150px", cell: (c) => <span style={{ color: '#6b7280' }}>{c.reference_number ?? '—'}</span> },
+        { id: "type", header: "Type", width: "120px", cell: (c) => <span className="font-bold text-[10px] font-mono">{c.commitment_type}</span> },
+        { id: "reference", header: "Reference", width: "150px", cell: (c) => <span className="text-gray-500">{c.reference_number ?? '—'}</span> },
         { id: "vendor", header: "Vendor", width: "150px", cell: (c) => <span>{c.vendor_id ?? '—'}</span> },
-        { id: "committed", header: "Committed", width: "120px", cell: (c) => <span style={{ fontFamily: 'monospace' }}>{fmt(c.committed_amount)}</span> },
-        { id: "invoiced", header: "Invoiced", width: "120px", cell: (c) => <span style={{ fontFamily: 'monospace' }}>{fmt(c.invoiced_amount)}</span> },
-        { id: "remaining", header: "Remaining", width: "120px", cell: (c) => <span style={{ fontFamily: 'monospace', color: '#059669', fontWeight: 700 }}>{fmt(c.remaining_amount)}</span> },
-        { id: "status", header: "Status", width: "120px", cell: (c) => <span style={{ padding: '2px 6px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: (STATUS_CLR[c.status] ?? '#6b7280') + '18', color: STATUS_CLR[c.status] ?? '#6b7280' }}>{c.status}</span> },
-        { id: "actions", header: "", width: "100px", cell: (c) => c.status !== 'Closed' && c.status !== 'Cancelled' ? <button onClick={() => closeCommitMut.mutate(c.id)} style={{ padding: '3px 8px', background: '#f3f4f6', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>Close</button> : null }
+        { id: "committed", header: "Committed", width: "120px", cell: (c) => <span className="font-mono">{fmt(c.committed_amount)}</span> },
+        { id: "invoiced", header: "Invoiced", width: "120px", cell: (c) => <span className="font-mono">{fmt(c.invoiced_amount)}</span> },
+        { id: "remaining", header: "Remaining", width: "120px", cell: (c) => <span className="font-mono text-emerald-600 font-bold">{fmt(c.remaining_amount)}</span> },
+        { id: "status", header: "Status", width: "120px", cell: (c) => <span className="py-0.5 px-1.5 rounded-sm text-[10px] font-bold" style={{ background: (STATUS_CLR[c.status] ?? '#6b7280') + '18', color: STATUS_CLR[c.status] ?? '#6b7280' }}>{c.status}</span> },
+        { id: "actions", header: "", width: "100px", cell: (c) => c.status !== 'Closed' && c.status !== 'Cancelled' ? <button onClick={() => closeCommitMut.mutate(c.id)} className="py-1 px-2 bg-gray-100 border-none rounded-md text-[10px] cursor-pointer">Close</button> : null }
     ];
 
     return (
         <StandardPage title="Funding Limits &amp; Commitment Tracking">
-            <div style={{ marginBottom: 16 }}>
-                
-                <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Funding source limits · PO &amp; subcontract commitments · Spending controls</p>
+            <div className="mb-4">
+
+                <p className="text-[13px] text-gray-500 mt-1 mb-0">Funding source limits · PO &amp; subcontract commitments · Spending controls</p>
             </div>
 
             {/* Project selector */}
-            <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
-                <input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} style={{ padding: '7px 12px', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 12, minWidth: 220 }} aria-label="Project ID" />
-                <button disabled={!projectId} onClick={() => setActiveProject(projectId)} style={{ padding: '7px 16px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>Load</button>
+            <div className="flex gap-2 mb-3.5">
+                <input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="py-1.5 px-3 border border-gray-300 rounded-lg text-xs min-w-[220px]" aria-label="Project ID" />
+                <button disabled={!projectId} onClick={() => setActiveProject(projectId)} className="py-1.5 px-4 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50">Load</button>
             </div>
 
             {activeProject && (
                 <>
                     {/* Tabs */}
-                    <div style={{ display: 'flex', gap: 4, marginBottom: 12 }}>
-                        {(['funding', 'commitments'] as const).map(t => (
-                            <button key={t} onClick={() => setTab(t)} style={{ padding: '7px 18px', border: '1px solid #e5e7eb', borderRadius: 8, background: tab === t ? '#111827' : '#fff', color: tab === t ? '#fff' : '#6b7280', fontSize: 12, fontWeight: 600, cursor: 'pointer', textTransform: 'capitalize' }}>{t === 'funding' ? `Funding Limits (${fundingLimits.length})` : `Commitments (${commitments.length})`}</button>
-                        ))}
-                        <button onClick={() => tab === 'funding' ? setShowNewFL(true) : setShowNewCommit(true)} style={{ marginLeft: 'auto', padding: '7px 14px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>+ Add</button>
+                    <div className="flex gap-1 mb-3">
+                        <div className="flex gap-1">
+                            {/* eslint-disable-next-line react/forbid-dom-props */}
+                            {(['funding', 'commitments'] as const).map(t => (
+                                <button key={t} onClick={() => setTab(t)} className={`py-1.5 px-4 border border-gray-200 rounded-lg text-xs font-semibold cursor-pointer capitalize ${tab === t ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`}>{t === 'funding' ? `Funding Limits (${fundingLimits.length})` : `Commitments (${commitments.length})`}</button>
+                            ))}
+                        </div>
+                        <button onClick={() => tab === 'funding' ? setShowNewFL(true) : setShowNewCommit(true)} className="ml-auto py-1.5 px-3.5 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer">+ Add</button>
                     </div>
 
                     {/* Funding Limits */}
                     {tab === 'funding' && (
                         <>
                             {showNewFL && (
-                                <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 10, padding: 12, marginBottom: 10 }}>
-                                    <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 8 }}>Add Funding Limit</div>
-                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                            <label style={{ fontSize: 10, fontWeight: 600 }}>Source</label>
-                                            <select value={flForm.fundingSource} onChange={e => setFlForm(p => ({ ...p, fundingSource: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label="Funding source">
+                                <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 mb-2.5">
+                                    <div className="text-xs font-bold mb-2">Add Funding Limit</div>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        <div className="flex flex-col gap-0.5">
+                                            <label className="text-[10px] font-semibold">Source</label>
+                                            <select value={flForm.fundingSource} onChange={e => setFlForm(p => ({ ...p, fundingSource: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px]" aria-label="Funding source">
                                                 {['GRANT', 'CONTRACT', 'INTERNAL', 'LOAN', 'EQUITY'].map(s => <option key={s}>{s}</option>)}
                                             </select>
                                         </div>
-                                        {[['limitAmount', 'Limit Amount', 'number'], ['alertThresholdPct', 'Alert at %', 'number']].map(([k, l, t]) => (
-                                            <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                                <label style={{ fontSize: 10, fontWeight: 600 }}>{l}</label>
-                                                <input type={t} value={(flForm as any)[k]} onChange={e => setFlForm(p => ({ ...p, [k]: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label={l} />
+                                        {(
+                                            [
+                                                ['limitAmount', 'Limit Amount', 'number'],
+                                                ['alertThresholdPct', 'Alert at %', 'number']
+                                            ] as const
+                                        ).map(([k, l, t]) => (
+                                            <div key={k as string} className="flex flex-col gap-0.5">
+                                                <label className="text-[10px] font-semibold">{l as string}</label>
+                                                <input type={t as string} value={(flForm as any)[k as string]} onChange={e => setFlForm(p => ({ ...p, [k as string]: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px]" aria-label={l as string} />
                                             </div>
                                         ))}
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, paddingTop: 14 }}>
-                                            <input type="checkbox" id="restrict_charges" checked={flForm.restrictCharges} onChange={e => setFlForm(p => ({ ...p, restrictCharges: e.target.checked }))} />
-                                            <label htmlFor="restrict_charges" style={{ fontSize: 11 }}>Block charges when exceeded</label>
+                                        <div className="flex items-center gap-1.5 pt-3.5">
+                                            <input type="checkbox" id="restrict_charges" checked={flForm.restrictCharges} onChange={e => setFlForm(p => ({ ...p, restrictCharges: e.target.checked }))} className="m-0" />
+                                            <label htmlFor="restrict_charges" className="text-[11px]">Block charges when exceeded</label>
                                         </div>
                                     </div>
-                                    <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', marginTop: 8 }}>
-                                        <button onClick={() => setShowNewFL(false)} style={{ padding: '5px 12px', background: '#e5e7eb', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer' }}>Cancel</button>
-                                        <button disabled={!flForm.limitAmount} onClick={() => addFLMut.mutate({ ...flForm, projectId: activeProject })} style={{ padding: '5px 12px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>Add</button>
+                                    <div className="flex gap-1.5 justify-end mt-2">
+                                        <button onClick={() => setShowNewFL(false)} className="py-1 px-3 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
+                                        <button disabled={!flForm.limitAmount} onClick={() => addFLMut.mutate({ ...flForm, projectId: activeProject })} className="py-1 px-3 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer disabled:opacity-50">Add</button>
                                     </div>
                                 </div>
                             )}
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                            <div className="flex flex-col gap-2">
                                 {fundingLimits.map(fl => {
                                     const pct = Math.min(100, Number(fl.utilization_pct));
                                     return (
-                                        <div key={fl.id} style={{ background: '#fff', border: `1px solid ${fl.status === 'Exhausted' ? '#fca5a5' : '#e5e7eb'}`, borderLeft: `4px solid ${STATUS_CLR[fl.status] ?? '#6b7280'}`, borderRadius: 10, padding: '12px 16px' }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                                                <div style={{ fontWeight: 700, fontSize: 13 }}>{fl.funding_source} <span style={{ fontFamily: 'monospace', color: '#6b7280', fontSize: 12, fontWeight: 400 }}>(Limit: {fmt(fl.limit_amount)})</span></div>
-                                                <span style={{ fontSize: 10, padding: '2px 7px', borderRadius: 5, background: STATUS_CLR[fl.status] + '20', color: STATUS_CLR[fl.status] ?? '#6b7280', fontWeight: 700 }}>{fl.status}</span>
+                                        /* eslint-disable-next-line react/forbid-dom-props */
+                                        <div key={fl.id} className="bg-white rounded-xl p-3 px-4 border" style={{ borderColor: fl.status === 'Exhausted' ? '#fca5a5' : '#e5e7eb', borderLeft: `4px solid ${STATUS_CLR[fl.status] ?? '#6b7280'}` }}>
+                                            <div className="flex justify-between mb-1.5">
+                                                <div className="font-bold text-[13px]">{fl.funding_source} <span className="font-mono text-gray-500 text-xs font-normal">(Limit: {fmt(fl.limit_amount)})</span></div>
+                                                {/* eslint-disable-next-line react/forbid-dom-props */}
+                                                <span className="text-[10px] py-0.5 px-1.5 rounded-sm font-bold" style={{ background: (STATUS_CLR[fl.status] ?? '#6b7280') + '20', color: STATUS_CLR[fl.status] ?? '#6b7280' }}>{fl.status}</span>
                                             </div>
-                                            <div style={{ display: 'flex', gap: 16, fontSize: 11, color: '#6b7280', marginBottom: 6 }}>
+                                            <div className="flex gap-4 text-[11px] text-gray-500 mb-1.5">
                                                 <span>Utilized: <strong>{fmt(fl.utilized_amount)}</strong></span>
-                                                <span>Available: <strong style={{ color: '#059669' }}>{fmt(fl.available)}</strong></span>
+                                                <span>Available: <strong className="text-emerald-600">{fmt(fl.available)}</strong></span>
                                                 <span>Alert at: {fl.alert_threshold_pct}%</span>
-                                                {fl.restrict_charges && <span style={{ color: '#d97706', fontWeight: 600 }}>⚑ Charges blocked at 100%</span>}
+                                                {fl.restrict_charges && <span className="text-amber-600 font-semibold">⚑ Charges blocked at 100%</span>}
                                             </div>
-                                            <div style={{ background: '#f3f4f6', borderRadius: 999, height: 8 }}>
-                                                <div style={{ width: pct + '%', background: pct >= 100 ? '#dc2626' : pct >= fl.alert_threshold_pct ? '#d97706' : '#059669', height: '100%', borderRadius: 999, transition: 'width .3s' }} />
+                                            <div className="bg-gray-100 rounded-full h-2">
+                                                {/* eslint-disable-next-line react/forbid-dom-props */}
+                                                <div className={`h-full rounded-full transition-all duration-300 ${pct >= 100 ? 'bg-red-600' : pct >= fl.alert_threshold_pct ? 'bg-amber-600' : 'bg-emerald-600'}`} style={{ width: pct + '%' }} />
                                             </div>
-                                            <div style={{ fontSize: 10, color: '#6b7280', marginTop: 2 }}>{pct.toFixed(1)}% utilized</div>
+                                            <div className="text-[10px] text-gray-500 mt-0.5">{pct.toFixed(1)}% utilized</div>
                                         </div>
                                     );
                                 })}
-                                {fundingLimits.length === 0 && <div style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No funding limits defined</div>}
+                                {fundingLimits.length === 0 && <div className="text-center text-gray-400 p-6">No funding limits defined</div>}
                             </div>
                         </>
                     )}
@@ -125,42 +136,50 @@ export default function FundingLimits() {
                         <>
                             {/* Summary by type */}
                             {commitSummary.length > 0 && (
-                                <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+                                <div className="flex gap-2 mb-2.5">
                                     {commitSummary.map(s => (
-                                        <div key={s.commitment_type} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 10, padding: '10px 16px', flex: 1 }}>
-                                            <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 2 }}>{s.commitment_type}</div>
-                                            <div style={{ fontSize: 15, fontWeight: 800, fontFamily: 'monospace' }}>{fmt(s.total_committed)}</div>
-                                            <div style={{ fontSize: 10, color: '#059669' }}>Remaining: {fmt(s.total_remaining)}</div>
+                                        <div key={s.commitment_type} className="bg-white border border-gray-200 rounded-xl py-2.5 px-4 flex-1">
+                                            <div className="text-[11px] text-gray-500 mb-0.5">{s.commitment_type}</div>
+                                            <div className="text-[15px] font-extrabold font-mono">{fmt(s.total_committed)}</div>
+                                            <div className="text-[10px] text-emerald-600">Remaining: {fmt(s.total_remaining)}</div>
                                         </div>
                                     ))}
                                 </div>
                             )}
 
                             {showNewCommit && (
-                                <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 10, padding: 12, marginBottom: 10 }}>
-                                    <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 8 }}>Add Commitment</div>
-                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                            <label style={{ fontSize: 10, fontWeight: 600 }}>Type</label>
-                                            <select value={commitForm.commitmentType} onChange={e => setCommitForm(p => ({ ...p, commitmentType: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label="Commitment type">
+                                <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 mb-2.5">
+                                    <div className="text-xs font-bold mb-2">Add Commitment</div>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        <div className="flex flex-col gap-0.5">
+                                            <label className="text-[10px] font-semibold">Type</label>
+                                            <select value={commitForm.commitmentType} onChange={e => setCommitForm(p => ({ ...p, commitmentType: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px]" aria-label="Commitment type">
                                                 {['PO', 'CONTRACT', 'SUBCONTRACT', 'PRELIM_ESTIMATE'].map(t => <option key={t}>{t}</option>)}
                                             </select>
                                         </div>
-                                        {[['referenceNumber', 'Reference #', 'text'], ['vendorId', 'Vendor ID', 'text'], ['committedAmount', 'Amount', 'number'], ['description', 'Description', 'text'], ['commitmentDate', 'Date', 'date']].map(([k, l, t]) => (
-                                            <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                                <label style={{ fontSize: 10, fontWeight: 600 }}>{l}</label>
-                                                <input type={t} value={(commitForm as any)[k]} onChange={e => setCommitForm(p => ({ ...p, [k]: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label={l} />
+                                        {(
+                                            [
+                                                ['referenceNumber', 'Reference #', 'text'],
+                                                ['vendorId', 'Vendor ID', 'text'],
+                                                ['committedAmount', 'Amount', 'number'],
+                                                ['description', 'Description', 'text'],
+                                                ['commitmentDate', 'Date', 'date']
+                                            ] as const
+                                        ).map(([k, l, t]) => (
+                                            <div key={k as string} className="flex flex-col gap-0.5">
+                                                <label className="text-[10px] font-semibold">{l as string}</label>
+                                                <input type={t as string} value={(commitForm as any)[k as string]} onChange={e => setCommitForm(p => ({ ...p, [k as string]: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px]" aria-label={l as string} />
                                             </div>
                                         ))}
                                     </div>
-                                    <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', marginTop: 8 }}>
-                                        <button onClick={() => setShowNewCommit(false)} style={{ padding: '5px 12px', background: '#e5e7eb', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer' }}>Cancel</button>
-                                        <button disabled={!commitForm.committedAmount} onClick={() => addCommitMut.mutate({ ...commitForm, projectId: activeProject })} style={{ padding: '5px 12px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>Add</button>
+                                    <div className="flex gap-1.5 justify-end mt-2">
+                                        <button onClick={() => setShowNewCommit(false)} className="py-1 px-3 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
+                                        <button disabled={!commitForm.committedAmount} onClick={() => addCommitMut.mutate({ ...commitForm, projectId: activeProject })} className="py-1 px-3 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer disabled:opacity-50">Add</button>
                                     </div>
                                 </div>
                             )}
 
-                            <div style={{ minHeight: '400px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 12 }}>
+                            <div className="min-h-[400px] h-full border border-gray-200 rounded-xl">
                                 <InteractiveSpreadsheet
                                     columns={commitColumns}
                                     data={commitments}

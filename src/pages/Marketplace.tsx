@@ -574,7 +574,7 @@ function CompareDialog({
         </DialogHeader>
 
         <ScrollArea className="flex-1 -mx-6 px-6">
-          <div style={{ minHeight: '400px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 8 }}>
+          <div className="min-h-[400px] h-full border border-gray-200 rounded-lg">
             <InteractiveSpreadsheet
               columns={compareColumns}
               data={compareData}
@@ -801,7 +801,7 @@ export default function Marketplace() {
       <main className="flex-1 p-6 space-y-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
-            
+
             <p className="text-muted-foreground mt-1">
               Discover and install apps to extend your platform
             </p>
@@ -945,6 +945,7 @@ export default function Marketplace() {
                     onClick={() => toggleCompareApp(app)}
                     className="ml-1 hover:text-destructive"
                     data-testid={`button-remove-compare-${app.id}`}
+                    aria-label={`Remove ${app.name} from comparison`}
                   >
                     <X className="w-3 h-3" />
                   </button>

@@ -162,7 +162,7 @@ export default function IntercompanyWorkbench() {
         <StandardPage title="Intercompany Workbench">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground">Manage outbound charges and inbound approvals.</p>
                 </div>
                 <div className="flex gap-2 items-center">
@@ -188,7 +188,7 @@ export default function IntercompanyWorkbench() {
                             {isLoadingBatches ? (
                                 <div className="text-center py-4 text-muted-foreground">Loading outbound charges...</div>
                             ) : (
-                                <div style={{ height: '400px' }}>
+                                <div className="h-[400px]">
                                     <InteractiveSpreadsheet
                                         columns={outboundColumns}
                                         data={outboundBatches}
@@ -208,7 +208,7 @@ export default function IntercompanyWorkbench() {
                             {inboundLoading ? (
                                 <div className="text-center py-4 text-muted-foreground">Loading inbound...</div>
                             ) : (
-                                <div style={{ height: '400px' }}>
+                                <div className="h-[400px]">
                                     <InteractiveSpreadsheet
                                         columns={inboundColumns}
                                         data={inboundTransactions || []}
