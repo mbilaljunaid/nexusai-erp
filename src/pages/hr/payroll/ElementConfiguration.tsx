@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Save, Settings2, ShieldCheck, Link as LinkIcon, AlertCircle, PlayCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 export default function ElementConfiguration() {
     const [selectedTab, setSelectedTab] = useState("elements");
@@ -67,7 +68,13 @@ export default function ElementConfiguration() {
                                 <CardDescription>All defined payroll components and their classifications.</CardDescription>
                             </div>
                             <div className="flex gap-2">
-                                <Input placeholder="Search elements..." className="w-64 h-9" />
+                                <div className="w-64">
+                                    <ContextualSearch
+                                        placeholder="Search elements..."
+                                        fields={[{ key: "query", label: "Search", type: "text" }]}
+                                        onSearch={() => { }}
+                                    />
+                                </div>
                                 <Select defaultValue="all">
                                     <SelectTrigger className="w-[140px] h-9">
                                         <SelectValue placeholder="Classification" />

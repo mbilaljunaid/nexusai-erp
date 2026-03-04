@@ -21,6 +21,7 @@ import { Progress } from "@/components/ui/progress";
 import { useLedger } from "@/context/LedgerContext";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 // Types
 interface BudgetBalance {
@@ -162,12 +163,15 @@ export default function BudgetManager() {
                                 </CardTitle>
                                 <CardDescription className="text-gray-400">Real-time status of budget vs actuals by account combination.</CardDescription>
                             </div>
-                            <div className="flex gap-2">
-                                <div className="relative">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-                                    <Input placeholder="Search account..." className="pl-9 bg-white/5 border-white/10 w-64 h-10" />
-                                </div>
-                                <Button variant="outline" className="border-white/10 bg-white/5"><Filter className="h-4 w-4 mr-2" /> Filter</Button>
+                            <div className="flex gap-2 w-80">
+                                <ContextualSearch
+                                    placeholder="Search account..."
+                                    fields={[
+                                        { key: "account", label: "Account CCID", type: "text" },
+                                        { key: "minBudget", label: "Min Budget", type: "number" }
+                                    ]}
+                                    onSearch={() => { }}
+                                />
                             </div>
                         </CardHeader>
                         <CardContent className="p-0">

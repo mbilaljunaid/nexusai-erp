@@ -11,6 +11,24 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Plus, DollarSign, Briefcase } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const basisSchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    code: z.string().min(1, "Code is required"),
+    frequency: z.enum(["ANNUALLY", "HOURLY", "MONTHLY"]).default("ANNUALLY"),
+});
 
 
 export default function CompensationDashboard() {
@@ -18,6 +36,15 @@ export default function CompensationDashboard() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [isBasisOpen, setIsBasisOpen] = useState(false);
+
+    const form = useForm<z.infer<typeof basisSchema>>({
+        resolver: zodResolver(basisSchema),
+        defaultValues: {
+            name: "",
+            code: "",
+            frequency: "ANNUALLY"
+        }
+    });
 
     // === QUERIES ===
     const { data: salaryBases, isLoading: isBasesLoading } = useQuery({
@@ -46,19 +73,16 @@ export default function CompensationDashboard() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["salary-bases"] });
             setIsBasisOpen(false);
+            form.reset();
             toast({ title: "Salary Basis Created" });
         },
     });
 
-    const handleCreateBasis = (e: React.FormEvent) => {
-        e.preventDefault();
-        const formData = new FormData(e.target as HTMLFormElement);
+    const onSubmit = (values: z.infer<typeof basisSchema>) => {
         createBasisMutation.mutate({
-            name: formData.get("name"),
-            code: formData.get("code"),
-            frequency: formData.get("frequency"),
+            ...values,
             currency: "USD", // Default for V1
-            annualizationFactor: formData.get("frequency") === "HOURLY" ? "2080" : "1.0",
+            annualizationFactor: values.frequency === "HOURLY" ? "2080" : "1.0",
             status: "ACTIVE"
         });
     };
@@ -69,7 +93,7 @@ export default function CompensationDashboard() {
         <StandardPage title="Compensation Management">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground mt-1">Manage salary structures, plans, and worker pay.</p>
                 </div>
             </div>
@@ -123,7 +147,10 @@ export default function CompensationDashboard() {
 
                 <TabsContent value="salary-bases" className="space-y-4">
                     <div className="flex justify-end">
-                        <Dialog open={isBasisOpen} onOpenChange={setIsBasisOpen}>
+                        <Dialog open={isBasisOpen} onOpenChange={(open) => {
+                            setIsBasisOpen(open);
+                            if (!open) form.reset();
+                        }}>
                             <DialogTrigger asChild>
                                 <Button><Plus className="mr-2 h-4 w-4" /> New Basis</Button>
                             </DialogTrigger>
@@ -131,25 +158,59 @@ export default function CompensationDashboard() {
                                 <DialogHeader>
                                     <DialogTitle>Create Salary Basis</DialogTitle>
                                 </DialogHeader>
-                                <form onSubmit={handleCreateBasis} className="space-y-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="name">Name</Label>
-                                        <Input id="name" name="name" placeholder="e.g. US Annual Salaried" required />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="code">Code</Label>
-                                        <Input id="code" name="code" placeholder="US_ANN_SAL" required />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="frequency">Frequency</Label>
-                                        <select id="frequency" name="frequency" aria-label="Salary frequency" className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-                                            <option value="ANNUALLY">Annually</option>
-                                            <option value="HOURLY">Hourly</option>
-                                            <option value="MONTHLY">Monthly</option>
-                                        </select>
-                                    </div>
-                                    <Button type="submit" className="w-full">Create</Button>
-                                </form>
+                                <Form {...form}>
+                                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                        <FormField
+                                            control={form.control}
+                                            name="name"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Name</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="e.g. US Annual Salaried" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="code"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Code</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="US_ANN_SAL" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="frequency"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Frequency</FormLabel>
+                                                    <Select onValueChange={field.onChange} value={field.value}>
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            <SelectItem value="ANNUALLY">Annually</SelectItem>
+                                                            <SelectItem value="HOURLY">Hourly</SelectItem>
+                                                            <SelectItem value="MONTHLY">Monthly</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <Button type="submit" className="w-full">Create</Button>
+                                    </form>
+                                </Form>
                             </DialogContent>
                         </Dialog>
                     </div>

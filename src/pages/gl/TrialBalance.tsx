@@ -19,6 +19,7 @@ import { useLedger } from "@/context/LedgerContext";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { ExportButton } from "@/components/ExportButton";
 
 interface TrialBalanceRow {
     ccid: string;
@@ -51,31 +52,20 @@ export default function TrialBalance() {
         }
     });
 
-    const handleExportCSV = async () => {
-        try {
-            // Fetch without limit to get full dataset for export
-            const res = await fetch(`/api/gl/reporting/trial-balance?periodId=${selectedPeriod}&ledgerId=${currentLedgerId}&accountType=${accountTypeFilter}&limit=10000`);
-            if (!res.ok) throw new Error("Failed to export");
-            const data = await res.json();
+    const fetchExportData = async () => {
+        const res = await fetch(`/api/gl/reporting/trial-balance?periodId=${selectedPeriod}&ledgerId=${currentLedgerId}&accountType=${accountTypeFilter}&limit=10000`);
+        if (!res.ok) throw new Error("Failed to export");
+        const data = await res.json();
 
-            const headers = ["Code Combination", "Segment2", "Segment3", "Type", "Debit", "Credit", "Net Balance"];
-            const csvRows = data.rows.map((r: TrialBalanceRow) => {
-                return `"${r.code}","${r.segment2}","${r.segment3}","${r.accountType}",${r.totalDebit},${r.totalCredit},${r.netBalance}`;
-            });
-
-            const csvContent = [headers.join(","), ...csvRows].join("\n");
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", `trial_balance_${selectedPeriod}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } catch (error) {
-            console.error("Export failed:", error);
-        }
+        return data.rows.map((r: TrialBalanceRow) => ({
+            "Code Combination": r.code,
+            "Segment2": r.segment2,
+            "Segment3": r.segment3,
+            "Type": r.accountType,
+            "Debit": r.totalDebit,
+            "Credit": r.totalCredit,
+            "Net Balance": r.netBalance
+        }));
     };
 
 
@@ -106,7 +96,10 @@ export default function TrialBalance() {
             description="Detailed balances by Code Combination for the selected period."
             actions={
                 <div className="flex gap-2">
-                    <Button variant="outline" onClick={handleExportCSV}><Download className="mr-2 h-4 w-4" /> Export CSV</Button>
+                    <ExportButton
+                        fetchData={fetchExportData}
+                        filename={`trial_balance_${selectedPeriod}`}
+                    />
                     <Button variant="outline"><Download className="mr-2 h-4 w-4" /> Export PDF</Button>
                     <Button><Filter className="mr-2 h-4 w-4" /> Multi-Period</Button>
                 </div>
@@ -295,7 +288,7 @@ export default function TrialBalance() {
                                     {
                                         header: "",
                                         width: "5%",
-                                        cell: () => <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity"  onChange={() => {}} containerHeight="600px" />
+                                        cell: () => <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" onChange={() => { }} containerHeight="600px" />
                                     }
                                 ]}
                             />

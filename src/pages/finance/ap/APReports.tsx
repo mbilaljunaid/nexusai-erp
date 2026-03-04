@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { FileText, Download, Filter, Building2 } from "lucide-react";
+import { ExportButton } from "@/components/ExportButton";
 
 function useActiveBu() {
     return useMemo(() => ({
@@ -105,27 +106,15 @@ export default function APReports() {
         { header: "Details", id: "details", width: "150px", cell: (r) => r.details }
     ];
 
-    const exportAging = () => {
-        const csv = [
-            ["Supplier", "Current", "1-30 Days", "31-60 Days", "61-90 Days", "90+ Days", "Total"],
-            ...(agingData || []).map((row: any) => [
-                row.supplierName,
-                row.current,
-                row.days30,
-                row.days60,
-                row.days90,
-                row.over90,
-                row.total
-            ])
-        ].map(row => row.join(",")).join("\n");
-
-        const blob = new Blob([csv], { type: "text/csv" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `ap-aging-${new Date().toISOString().split("T")[0]}.csv`;
-        a.click();
-    };
+    const exportData = (agingData || []).map((row: any) => ({
+        "Supplier": row.supplierName,
+        "Current": row.current,
+        "1-30 Days": row.days30,
+        "31-60 Days": row.days60,
+        "61-90 Days": row.days90,
+        "90+ Days": row.over90,
+        "Total": row.total
+    }));
 
     return (
         <StandardPage
@@ -162,10 +151,10 @@ export default function APReports() {
                                     <CardTitle>AP Aging Summary</CardTitle>
                                     <CardDescription>Outstanding payables by aging bucket</CardDescription>
                                 </div>
-                                <Button onClick={exportAging} variant="outline">
-                                    <Download className="mr-2 h-4 w-4" />
-                                    Export CSV
-                                </Button>
+                                <ExportButton
+                                    data={exportData}
+                                    filename={`ap-aging-${new Date().toISOString().split("T")[0]}`}
+                                />
                             </div>
                         </CardHeader>
                         <CardContent>

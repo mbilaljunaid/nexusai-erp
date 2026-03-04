@@ -30,20 +30,34 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
+const contactSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  company: z.string().optional(),
+  message: z.string().min(1, "Message is required"),
+});
 
 export default function PricingPage() {
   const { toast } = useToast();
   const [customAmount, setCustomAmount] = useState("");
   const [sponsoringAmount, setSponsoringAmount] = useState<number | null>(null);
-  const [contactForm, setContactForm] = useState({
-    name: "",
-    email: "",
-    company: "",
-    message: ""
-  });
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const form = useForm<z.infer<typeof contactSchema>>({
+    resolver: zodResolver(contactSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      company: "",
+      message: ""
+    }
+  });
 
   const serviceOptions = [
     { id: "hosting", label: "Hosting Setup", icon: Server },
@@ -129,8 +143,7 @@ export default function PricingPage() {
     handleSponsor(amount);
   };
 
-  const handleContactSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleContactSubmit = async (data: z.infer<typeof contactSchema>) => {
     setIsSubmitting(true);
 
     try {
@@ -139,18 +152,18 @@ export default function PricingPage() {
         .filter(Boolean);
 
       const response = await apiRequest("POST", "/api/contact", {
-        ...contactForm,
+        ...data,
         subject: "Services Request",
         services: selectedServiceLabels
       });
-      const data = await response.json();
+      const responseData = await response.json();
 
       toast({
         title: "Request Submitted",
-        description: data.message || "We'll get back to you within 24-48 hours.",
+        description: responseData.message || "We'll get back to you within 24-48 hours.",
       });
 
-      setContactForm({ name: "", email: "", company: "", message: "" });
+      form.reset();
       setSelectedServices([]);
     } catch (error: any) {
       toast({
@@ -194,7 +207,7 @@ export default function PricingPage() {
         {/* Hero */}
         <section className="px-4 py-20 text-center max-w-4xl mx-auto">
           <Badge className="mb-4 bg-green-600 text-white" data-testid="badge-free">100% FREE FOREVER</Badge>
-          
+
           <p className="text-xl text-muted-foreground mb-8">
             NexusAIFirst ERP is and will always remain free and open source.
             Licensed under AGPL-3.0, you get the complete enterprise platform at no cost.
@@ -396,86 +409,88 @@ export default function PricingPage() {
             {/* Contact Form */}
             <Card className="p-8 max-w-2xl mx-auto" id="contact-form">
               <h3 className="text-xl font-bold mb-6 text-center">Request Professional Services</h3>
-              <form onSubmit={handleContactSubmit} className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleContactSubmit)} className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <FormField control={form.control} name="name" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Your Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="John Doe" {...field} data-testid="input-contact-name" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={form.control} name="email" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input type="email" placeholder="john@company.com" {...field} data-testid="input-contact-email" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                  </div>
+                  <FormField control={form.control} name="company" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Acme Inc." {...field} data-testid="input-contact-company" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
                   <div>
-                    <label className="text-sm font-medium mb-1 block">Your Name</label>
-                    <Input
-                      placeholder="John Doe"
-                      value={contactForm.name}
-                      onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                      required
-                      data-testid="input-contact-name"
-                    />
+                    <label className="text-sm font-medium mb-2 block">Services Needed (select all that apply)</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {serviceOptions.map((service) => {
+                        const IconComponent = service.icon;
+                        const isChecked = selectedServices.includes(service.id);
+                        return (
+                          <label
+                            key={service.id}
+                            htmlFor={service.id}
+                            className="flex items-center space-x-3 p-3 rounded-lg border hover-elevate cursor-pointer"
+                            data-testid={`checkbox-service-${service.id}`}
+                          >
+                            <Checkbox
+                              id={service.id}
+                              checked={isChecked}
+                              onCheckedChange={() => toggleService(service.id)}
+                            />
+                            <IconComponent className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                            <span className="text-sm flex-1">
+                              {service.label}
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
                   </div>
-                  <div>
-                    <label className="text-sm font-medium mb-1 block">Email</label>
-                    <Input
-                      type="email"
-                      placeholder="john@company.com"
-                      value={contactForm.email}
-                      onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                      required
-                      data-testid="input-contact-email"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium mb-1 block">Company Name</label>
-                  <Input
-                    placeholder="Acme Inc."
-                    value={contactForm.company}
-                    onChange={(e) => setContactForm({ ...contactForm, company: e.target.value })}
-                    data-testid="input-contact-company"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Services Needed (select all that apply)</label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {serviceOptions.map((service) => {
-                      const IconComponent = service.icon;
-                      const isChecked = selectedServices.includes(service.id);
-                      return (
-                        <label
-                          key={service.id}
-                          htmlFor={service.id}
-                          className="flex items-center space-x-3 p-3 rounded-lg border hover-elevate cursor-pointer"
-                          data-testid={`checkbox-service-${service.id}`}
-                        >
-                          <Checkbox
-                            id={service.id}
-                            checked={isChecked}
-                            onCheckedChange={() => toggleService(service.id)}
-                          />
-                          <IconComponent className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                          <span className="text-sm flex-1">
-                            {service.label}
-                          </span>
-                        </label>
-                      );
-                    })}
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium mb-1 block">How can we help?</label>
-                  <Textarea
-                    placeholder="Tell us about your needs, timeline, and any specific requirements..."
-                    value={contactForm.message}
-                    onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                    required
-                    className="min-h-[120px]"
-                    data-testid="input-contact-message"
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={isSubmitting}
-                  data-testid="button-submit-contact"
-                >
-                  {isSubmitting ? "Sending..." : "Submit Request"}
-                </Button>
-              </form>
+                  <FormField control={form.control} name="message" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>How can we help?</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Tell us about your needs, timeline, and any specific requirements..."
+                          {...field}
+                          className="min-h-[120px]"
+                          data-testid="input-contact-message"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={isSubmitting}
+                    data-testid="button-submit-contact"
+                  >
+                    {isSubmitting ? "Sending..." : "Submit Request"}
+                  </Button>
+                </form>
+              </Form>
             </Card>
           </div>
         </section>

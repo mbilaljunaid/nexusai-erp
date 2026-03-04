@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -33,6 +37,13 @@ interface SSPLine {
     region?: string;
     createdAt: string;
 }
+
+const sspBookSchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    currency: z.string().min(1, "Currency is required"),
+    effectiveFrom: z.string().min(1, "Effective From is required"),
+    effectiveTo: z.string().optional()
+});
 
 export default function RevenueSSPManager() {
     const { toast } = useToast();
@@ -79,12 +90,37 @@ export default function RevenueSSPManager() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/revenue/ssp/books"] });
             setIsBookDialogOpen(false);
+            form.reset();
             toast({ title: "SSP Book Created", description: "New SSP book has been created successfully." });
         },
         onError: () => {
             toast({ title: "Error", description: "Failed to create SSP book.", variant: "destructive" });
         }
     });
+
+    const form = useForm<z.infer<typeof sspBookSchema>>({
+        resolver: zodResolver(sspBookSchema),
+        defaultValues: {
+            name: "",
+            currency: "USD",
+            effectiveFrom: "",
+            effectiveTo: ""
+        }
+    });
+
+    useEffect(() => {
+        if (!isBookDialogOpen) {
+            form.reset();
+        }
+    }, [isBookDialogOpen, form]);
+
+    const onBookSubmit = (values: z.infer<typeof sspBookSchema>) => {
+        createBookMutation.mutate({
+            ...values,
+            effectiveTo: values.effectiveTo || null,
+            status: "Active"
+        });
+    };
 
     // Create/Update Line Mutation
     const saveLineMutation = useMutation({
@@ -132,40 +168,7 @@ export default function RevenueSSPManager() {
         }
     });
 
-    const handleBookSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        createBookMutation.mutate({
-            name: formData.get("name"),
-            currency: formData.get("currency"),
-            effectiveFrom: formData.get("effectiveFrom"),
-            effectiveTo: formData.get("effectiveTo") || null,
-            status: "Active"
-        });
-    };
 
-    const handleLineSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        saveLineMutation.mutate({
-            itemId: formData.get("itemId") || null,
-            itemGroup: formData.get("itemGroup") || null,
-            sspValue: formData.get("sspValue"),
-            minQuantity: formData.get("minQuantity") || "0",
-            maxQuantity: formData.get("maxQuantity") || null,
-            region: formData.get("region") || null
-        });
-    };
-
-    const openEditLine = (line: SSPLine) => {
-        setEditingLine(line);
-        setIsLineDialogOpen(true);
-    };
-
-    const openNewLine = () => {
-        setEditingLine(null);
-        setIsLineDialogOpen(true);
-    };
 
     return (
         <StandardPage
@@ -415,57 +418,83 @@ export default function RevenueSSPManager() {
                             Define a new SSP book for a fiscal year, region, or currency.
                         </DialogDescription>
                     </DialogHeader>
-                    <form onSubmit={handleBookSubmit}>
-                        <div className="space-y-4 py-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="name">Book Name *</Label>
-                                <Input
-                                    id="name"
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onBookSubmit)}>
+                            <div className="space-y-4 py-4">
+                                <FormField
+                                    control={form.control}
                                     name="name"
-                                    placeholder="e.g., FY2026 Global SSP"
-                                    required
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Book Name *</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="e.g., FY2026 Global SSP" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
                                 />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="currency">Currency *</Label>
-                                <Select name="currency" defaultValue="USD" required>
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="USD">USD</SelectItem>
-                                        <SelectItem value="EUR">EUR</SelectItem>
-                                        <SelectItem value="GBP">GBP</SelectItem>
-                                        <SelectItem value="JPY">JPY</SelectItem>
-                                        <SelectItem value="CAD">CAD</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="effectiveFrom">Effective From *</Label>
-                                    <Input
-                                        id="effectiveFrom"
+                                <FormField
+                                    control={form.control}
+                                    name="currency"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Currency *</FormLabel>
+                                            <Select value={field.value} onValueChange={field.onChange}>
+                                                <FormControl>
+                                                    <SelectTrigger><SelectValue /></SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="USD">USD</SelectItem>
+                                                    <SelectItem value="EUR">EUR</SelectItem>
+                                                    <SelectItem value="GBP">GBP</SelectItem>
+                                                    <SelectItem value="JPY">JPY</SelectItem>
+                                                    <SelectItem value="CAD">CAD</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <FormField
+                                        control={form.control}
                                         name="effectiveFrom"
-                                        type="date"
-                                        required
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Effective From *</FormLabel>
+                                                <FormControl>
+                                                    <Input type="date" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="effectiveTo"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Effective To</FormLabel>
+                                                <FormControl>
+                                                    <Input type="date" {...field} value={field.value || ""} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="effectiveTo">Effective To</Label>
-                                    <Input id="effectiveTo" name="effectiveTo" type="date" />
-                                </div>
                             </div>
-                        </div>
-                        <DialogFooter>
-                            <Button type="button" variant="outline" onClick={() => setIsBookDialogOpen(false)}>
-                                Cancel
-                            </Button>
-                            <Button type="submit" disabled={createBookMutation.isPending}>
-                                {createBookMutation.isPending ? "Creating..." : "Create Book"}
-                            </Button>
-                        </DialogFooter>
-                    </form>
+                            <DialogFooter>
+                                <Button type="button" variant="outline" onClick={() => setIsBookDialogOpen(false)}>
+                                    Cancel
+                                </Button>
+                                <Button type="submit" disabled={createBookMutation.isPending}>
+                                    {createBookMutation.isPending ? "Creating..." : "Create Book"}
+                                </Button>
+                            </DialogFooter>
+                        </form>
+                    </Form>
                 </DialogContent>
             </Dialog>
 

@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import InteractiveSpreadsheet, { SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 
 interface TenantUser {
@@ -97,7 +98,7 @@ export default function TenantAdmin() {
     plan: "Enterprise",
   };
 
-  const userColumns: SpreadsheetColumn[] = [
+  const userColumns: SpreadsheetColumn<any>[] = [
     { id: "name", header: "Name", width: 200, cell: (item) => <span className="font-medium">{item.name}</span> },
     { id: "email", header: "Email", width: 250, cell: (item) => <span className="text-muted-foreground">{item.email}</span> },
     { id: "role", header: "Role", width: 150, cell: (item) => <span className="text-xs">{item.role}</span> },
@@ -126,7 +127,7 @@ export default function TenantAdmin() {
   return (
     <StandardPage title="Tenant Admin - {tenantName}">
       <div>
-        
+
         <p className="text-muted-foreground text-sm">Manage users, settings, and configuration for your organization</p>
       </div>
 
@@ -233,7 +234,14 @@ export default function TenantAdmin() {
       {activeNav === "users" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between gap-4">
-            <Input placeholder="Search users..." className="max-w-sm" data-testid="input-search-users" />
+            <div className="w-80">
+              <ContextualSearch
+                placeholder="Search users..."
+                fields={[{ key: "query", label: "Search", type: "text" }]}
+                onSearch={() => { }}
+                testId="search-users"
+              />
+            </div>
             <Button data-testid="button-add-user">
               <UserPlus className="h-4 w-4 mr-2" />
               Add User

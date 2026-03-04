@@ -15,6 +15,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { ExportButton } from "@/components/ExportButton";
 
 import {
     Table,
@@ -164,37 +165,14 @@ export default function SupplierOrders() {
         return filtered;
     }, [orders, statusFilter, searchQuery, dateRange, sortField, sortDirection]);
 
-    // CSV Export function
-    const handleExportCSV = () => {
-        if (!filteredOrders || filteredOrders.length === 0) {
-            toast({ title: "No Data", description: "No orders to export", variant: "destructive" });
-            return;
-        }
-
-        const headers = ["PO Number", "Date", "Status", "Total Amount", "Currency"];
-        const rows = filteredOrders.map((po: any) => [
-            po.poNumber || po.orderNumber,
-            po.orderDate ? format(new Date(po.orderDate), 'yyyy-MM-dd') : '',
-            po.status,
-            Number(po.totalAmount).toFixed(2),
-            po.currency || 'USD'
-        ]);
-
-        const csvContent = [
-            headers.join(","),
-            ...rows.map(row => row.join(","))
-        ].join("\n");
-
-        const blob = new Blob([csvContent], { type: "text/csv" });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `supplier-orders-${format(new Date(), 'yyyy-MM-dd')}.csv`;
-        a.click();
-        window.URL.revokeObjectURL(url);
-
-        toast({ title: "Export Successful", description: `${filteredOrders.length} orders exported` });
-    };
+    // Data mapping for export
+    const exportData = (selectedOrders.size > 0 ? filteredOrders.filter((po: any) => selectedOrders.has(po.id)) : filteredOrders).map((po: any) => ({
+        "PO Number": po.poNumber || po.orderNumber,
+        "Date": po.orderDate ? format(new Date(po.orderDate), 'yyyy-MM-dd') : '',
+        "Status": po.status,
+        "Total Amount": Number(po.totalAmount).toFixed(2),
+        "Currency": po.currency || 'USD'
+    }));
 
     const toggleOrderSelection = (orderId: string) => {
         const newSelection = new Set(selectedOrders);
@@ -249,7 +227,7 @@ export default function SupplierOrders() {
         <StandardPage title="Purchase Orders">
             <div className="flex items-center justify-between">
                 <div>
-                    
+
                     <p className="text-sm text-muted-foreground mt-1">
                         {filteredOrders.length} {filteredOrders.length === 1 ? 'order' : 'orders'} found
                         {selectedOrders.size > 0 && ` • ${selectedOrders.size} selected`}
@@ -267,10 +245,10 @@ export default function SupplierOrders() {
                             </Button>
                         </>
                     )}
-                    <Button onClick={handleExportCSV} variant="outline" className="gap-2">
-                        <Download className="h-4 w-4" />
-                        {selectedOrders.size > 0 ? `Export Selected (${selectedOrders.size})` : 'Export CSV'}
-                    </Button>
+                    <ExportButton
+                        data={exportData}
+                        filename={`supplier-orders-${format(new Date(), 'yyyy-MM-dd')}`}
+                    />
                 </div>
             </div>
 

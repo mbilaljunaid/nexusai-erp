@@ -11,18 +11,23 @@ import { useToast } from "@/hooks/use-toast";
 import ExcelJS from "exceljs";
 
 interface ExportButtonProps {
-  data: any[];
+  data?: any[];
+  fetchData?: () => Promise<any[]>;
   filename?: string;
   columns?: { key: string; header: string }[];
 }
 
-export function ExportButton({ data, filename = "export", columns }: ExportButtonProps) {
+export function ExportButton({ data, fetchData, filename = "export", columns }: ExportButtonProps) {
   const [isExporting, setIsExporting] = useState(false);
   const { toast } = useToast();
 
-  const getExportData = () => {
-    if (!columns) return data;
-    return data.map((row) => {
+  const getExportData = async () => {
+    let rawData = data || [];
+    if (fetchData) {
+      rawData = await fetchData();
+    }
+    if (!columns) return rawData;
+    return rawData.map((row) => {
       const exportRow: Record<string, any> = {};
       columns.forEach((col) => {
         exportRow[col.header] = row[col.key];
@@ -34,7 +39,7 @@ export function ExportButton({ data, filename = "export", columns }: ExportButto
   const exportToExcel = async () => {
     setIsExporting(true);
     try {
-      const exportData = getExportData();
+      const exportData = await getExportData();
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("Data");
 
@@ -56,7 +61,7 @@ export function ExportButton({ data, filename = "export", columns }: ExportButto
 
       toast({
         title: "Export successful",
-        description: `Exported ${data.length} records to Excel`,
+        description: `Exported ${exportData.length} records to Excel`,
       });
     } catch (error) {
       toast({
@@ -72,8 +77,8 @@ export function ExportButton({ data, filename = "export", columns }: ExportButto
   const exportToCSV = async () => {
     setIsExporting(true);
     try {
-      const exportData = getExportData();
-      
+      const exportData = await getExportData();
+
       if (exportData.length === 0) {
         toast({
           title: "No data to export",
@@ -86,7 +91,7 @@ export function ExportButton({ data, filename = "export", columns }: ExportButto
       const headers = Object.keys(exportData[0]);
       const csvRows = [
         headers.join(","),
-        ...exportData.map((row: any) => 
+        ...exportData.map((row: any) =>
           headers.map(h => {
             const value = row[h];
             if (value === null || value === undefined) return "";
@@ -108,7 +113,7 @@ export function ExportButton({ data, filename = "export", columns }: ExportButto
       URL.revokeObjectURL(link.href);
       toast({
         title: "Export successful",
-        description: `Exported ${data.length} records to CSV`,
+        description: `Exported ${exportData.length} records to CSV`,
       });
     } catch (error) {
       toast({
@@ -121,10 +126,10 @@ export function ExportButton({ data, filename = "export", columns }: ExportButto
     }
   };
 
-  const exportToJSON = () => {
+  const exportToJSON = async () => {
     setIsExporting(true);
     try {
-      const exportData = getExportData();
+      const exportData = await getExportData();
       const json = JSON.stringify(exportData, null, 2);
       const blob = new Blob([json], { type: "application/json" });
       const link = document.createElement("a");
@@ -134,7 +139,7 @@ export function ExportButton({ data, filename = "export", columns }: ExportButto
       URL.revokeObjectURL(link.href);
       toast({
         title: "Export successful",
-        description: `Exported ${data.length} records to JSON`,
+        description: `Exported ${exportData.length} records to JSON`,
       });
     } catch (error) {
       toast({
@@ -158,7 +163,7 @@ export function ExportButton({ data, filename = "export", columns }: ExportButto
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" disabled={isExporting || data.length === 0} data-testid="button-export">
+        <Button variant="outline" size="sm" disabled={isExporting || (!fetchData && (!data || data.length === 0))} data-testid="button-export">
           {isExporting ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
           ) : (

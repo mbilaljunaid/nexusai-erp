@@ -12,6 +12,15 @@ import { FileUp, FileText, Calendar, Trash2, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+const documentSchema = z.object({
+    documentType: z.string().min(1, "Document type is required"),
+    expiryDate: z.string().optional(),
+});
 
 
 export default function SupplierDocuments() {
@@ -19,6 +28,15 @@ export default function SupplierDocuments() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [uploading, setUploading] = useState(false);
+    const [file, setFile] = useState<File | null>(null);
+
+    const form = useForm<z.infer<typeof documentSchema>>({
+        resolver: zodResolver(documentSchema),
+        defaultValues: {
+            documentType: "OTHER",
+            expiryDate: "",
+        }
+    });
 
     // Fetch Documents
     const { data: documents, isLoading } = useQuery({
@@ -54,17 +72,27 @@ export default function SupplierDocuments() {
         }
     });
 
-    const handleUpload = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const onSubmit = (data: z.infer<typeof documentSchema>) => {
+        if (!file) {
+            toast({ title: "Error", description: "Please select a file to upload.", variant: "destructive" });
+            return;
+        }
+
         setUploading(true);
-        const formData = new FormData(e.currentTarget);
+        const formData = new FormData();
+        formData.append("documentType", data.documentType);
+        if (data.expiryDate) {
+            formData.append("expiryDate", data.expiryDate);
+        }
+        formData.append("file", file);
+
         uploadMutation.mutate(formData);
     };
 
     return (
         <StandardPage title="Certifications & Documents">
             <div className="flex items-center justify-between">
-                
+
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
@@ -76,33 +104,54 @@ export default function SupplierDocuments() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={handleUpload} className="space-y-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="documentType">Document Type</Label>
-                                <Select name="documentType" defaultValue="OTHER">
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select type" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="W-9">W-9 Form</SelectItem>
-                                        <SelectItem value="INSURANCE">Insurance Certificate</SelectItem>
-                                        <SelectItem value="CERTIFICATION">Industry Certification</SelectItem>
-                                        <SelectItem value="OTHER">Other Business Document</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="expiryDate">Expiry Date (Optional)</Label>
-                                <Input type="date" name="expiryDate" id="expiryDate" />
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="file">File</Label>
-                                <Input type="file" name="file" id="file" required />
-                            </div>
-                            <Button type="submit" className="w-full" disabled={uploading}>
-                                {uploading ? "Uploading..." : "Upload Document"}
-                            </Button>
-                        </form>
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                <FormField control={form.control} name="documentType" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Document Type</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select type" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="W-9">W-9 Form</SelectItem>
+                                                <SelectItem value="INSURANCE">Insurance Certificate</SelectItem>
+                                                <SelectItem value="CERTIFICATION">Industry Certification</SelectItem>
+                                                <SelectItem value="OTHER">Other Business Document</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+
+                                <FormField control={form.control} name="expiryDate" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Expiry Date (Optional)</FormLabel>
+                                        <FormControl>
+                                            <Input type="date" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+
+                                <FormItem>
+                                    <FormLabel>File *</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="file"
+                                            onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
+                                            required
+                                        />
+                                    </FormControl>
+                                </FormItem>
+
+                                <Button type="submit" className="w-full" disabled={uploading}>
+                                    {uploading ? "Uploading..." : "Upload Document"}
+                                </Button>
+                            </form>
+                        </Form>
                     </CardContent>
                 </Card>
 

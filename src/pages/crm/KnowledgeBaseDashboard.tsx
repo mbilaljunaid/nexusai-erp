@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 export default function KnowledgeBaseDashboard() {
     const { toast } = useToast();
@@ -51,9 +52,12 @@ export default function KnowledgeBaseDashboard() {
             }
         >
 
-            <div className="flex items-center gap-2 max-w-md">
-                <Search className="h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Search articles..." value={search} onChange={e => setSearch(e.target.value)} />
+            <div className="max-w-md mb-6">
+                <ContextualSearch
+                    placeholder="Search articles..."
+                    fields={[{ key: "query", label: "Search", type: "text" }]}
+                    onSearch={(filters) => setSearch(filters.query || "")}
+                />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

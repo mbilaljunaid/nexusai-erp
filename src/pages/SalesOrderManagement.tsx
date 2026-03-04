@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { useEffect } from "react";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Trash2, Edit2 } from "lucide-react";
@@ -18,6 +22,13 @@ interface SalesOrder {
   contractPrice: string;
   status: "pending" | "confirmed" | "shipped";
 }
+
+const salesOrderSchema = z.object({
+  orderId: z.string().min(1, "Order ID is required"),
+  customer: z.string().min(1, "Customer is required"),
+  qty: z.string().min(1, "Quantity is required"),
+  contractPrice: z.string().min(1, "Contract Price is required")
+});
 
 export default function SalesOrderManagement() {
   const { toast } = useToast();
@@ -51,6 +62,43 @@ export default function SalesOrderManagement() {
     }
   });
 
+  const form = useForm<z.infer<typeof salesOrderSchema>>({
+    resolver: zodResolver(salesOrderSchema),
+    defaultValues: {
+      orderId: "",
+      customer: "",
+      qty: "",
+      contractPrice: ""
+    }
+  });
+
+  useEffect(() => {
+    if (isSheetOpen) {
+      if (editingOrder) {
+        form.reset({
+          orderId: editingOrder.orderId || "",
+          customer: editingOrder.customer || "",
+          qty: editingOrder.qty || "",
+          contractPrice: editingOrder.contractPrice || ""
+        });
+      } else {
+        form.reset({
+          orderId: "",
+          customer: "",
+          qty: "",
+          contractPrice: ""
+        });
+      }
+    }
+  }, [isSheetOpen, editingOrder, form]);
+
+  const onSubmit = (values: z.infer<typeof salesOrderSchema>) => {
+    mutation.mutate({
+      ...values,
+      status: editingOrder?.status || "pending"
+    });
+  };
+
   const deleteMutation = useMutation({
     mutationFn: (id: string) => fetch(`/api/sales-orders/${id}`, { method: "DELETE" }),
     onSuccess: () => {
@@ -83,18 +131,7 @@ export default function SalesOrderManagement() {
     }
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const data = {
-      orderId: formData.get("orderId") as string,
-      customer: formData.get("customer") as string,
-      qty: formData.get("qty") as string,
-      contractPrice: formData.get("contractPrice") as string,
-      status: "pending" as const
-    };
-    mutation.mutate(data);
-  };
+
 
   const confirmed = orders.filter((o: any) => o.status === "confirmed").length;
   const totalValue = orders.reduce((sum: number, o: any) => sum + ((parseFloat(o.qty) || 0) * (parseFloat(o.contractPrice) || 0)), 0);
@@ -116,27 +153,65 @@ export default function SalesOrderManagement() {
             <SheetHeader>
               <SheetTitle>{editingOrder ? 'Edit' : 'Create'} Order</SheetTitle>
             </SheetHeader>
-            <form onSubmit={handleSubmit} className="space-y-4 mt-6">
-              <div className="space-y-2">
-                <Label htmlFor="orderId">Order ID</Label>
-                <Input id="orderId" name="orderId" defaultValue={editingOrder?.orderId} required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="customer">Customer</Label>
-                <Input id="customer" name="customer" defaultValue={editingOrder?.customer} required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="qty">Quantity</Label>
-                <Input id="qty" name="qty" type="number" defaultValue={editingOrder?.qty} required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="contractPrice">Contract Price</Label>
-                <Input id="contractPrice" name="contractPrice" type="number" defaultValue={editingOrder?.contractPrice} required />
-              </div>
-              <Button type="submit" className="w-full" disabled={mutation.isPending}>
-                {mutation.isPending ? "Saving..." : "Save Order"}
-              </Button>
-            </form>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-6">
+                <FormField
+                  control={form.control}
+                  name="orderId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Order ID</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="customer"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Customer</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="qty"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Quantity</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="contractPrice"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Contract Price</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full" disabled={mutation.isPending}>
+                  {mutation.isPending ? "Saving..." : "Save Order"}
+                </Button>
+              </form>
+            </Form>
           </SheetContent>
         </Sheet>
       }
@@ -152,7 +227,7 @@ export default function SalesOrderManagement() {
         data={orders}
         columns={columns}
         isLoading={isLoading}
-       onChange={() => {}} containerHeight="600px" />
+        onChange={() => { }} containerHeight="600px" />
     </StandardPage>
   );
 }

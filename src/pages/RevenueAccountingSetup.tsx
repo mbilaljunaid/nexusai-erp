@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import {
     Card,
     CardContent,
@@ -45,6 +49,13 @@ import {
     SelectValue
 } from "@/components/ui/select";
 
+const accountSchema = z.object({
+    revenueAccountCCID: z.string().min(1, "Revenue Account is required"),
+    deferredRevenueAccountCCID: z.string().min(1, "Deferred Revenue Account is required"),
+    contractAssetAccountCCID: z.string().optional(),
+    clearingAccountCCID: z.string().optional()
+});
+
 export default function RevenueAccountingSetup() {
     const { toast } = useToast();
     const [ledgerId, setLedgerId] = useState("PRIMARY");
@@ -86,6 +97,25 @@ export default function RevenueAccountingSetup() {
         contractAssetAccountCCID: "",
         clearingAccountCCID: ""
     };
+
+    const form = useForm<z.infer<typeof accountSchema>>({
+        resolver: zodResolver(accountSchema),
+        defaultValues: {
+            revenueAccountCCID: activeConfig.revenueAccountCCID || "",
+            deferredRevenueAccountCCID: activeConfig.deferredRevenueAccountCCID || "",
+            contractAssetAccountCCID: activeConfig.contractAssetAccountCCID || "",
+            clearingAccountCCID: activeConfig.clearingAccountCCID || ""
+        }
+    });
+
+    useEffect(() => {
+        form.reset({
+            revenueAccountCCID: activeConfig.revenueAccountCCID || "",
+            deferredRevenueAccountCCID: activeConfig.deferredRevenueAccountCCID || "",
+            contractAssetAccountCCID: activeConfig.contractAssetAccountCCID || "",
+            clearingAccountCCID: activeConfig.clearingAccountCCID || ""
+        });
+    }, [ledgerId, configs, form]);
 
     const saveAccountMutation = useMutation({
         mutationFn: async (data: any) => {
@@ -136,15 +166,8 @@ export default function RevenueAccountingSetup() {
         }
     });
 
-    const handleAccountSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        saveAccountMutation.mutate({
-            revenueAccountCCID: formData.get("revAcc"),
-            deferredRevenueAccountCCID: formData.get("defAcc"),
-            contractAssetAccountCCID: formData.get("assetAcc"),
-            clearingAccountCCID: formData.get("clearAcc")
-        });
+    const handleAccountSubmit = (data: z.infer<typeof accountSchema>) => {
+        saveAccountMutation.mutate(data);
     };
 
     if (isLoadingConfig || isLoadingPob || isLoadingId) {
@@ -197,36 +220,74 @@ export default function RevenueAccountingSetup() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="pt-8">
-                            <form onSubmit={handleAccountSubmit} className="space-y-8">
-                                <div className="grid grid-cols-2 gap-x-12 gap-y-6">
-                                    <div className="space-y-3">
-                                        <Label htmlFor="revAcc" className="text-slate-600">Revenue Account (Credit)</Label>
-                                        <Input id="revAcc" name="revAcc" defaultValue={activeConfig.revenueAccountCCID} placeholder="e.g. 4000-00-000" className="border-slate-200 focus:ring-indigo-500" required />
-                                        <p className="text-[10px] text-slate-400 italic">Used for realized revenue recognized in period.</p>
+                            <Form {...form}>
+                                <form onSubmit={form.handleSubmit(handleAccountSubmit)} className="space-y-8">
+                                    <div className="grid grid-cols-2 gap-x-12 gap-y-6">
+                                        <FormField
+                                            control={form.control}
+                                            name="revenueAccountCCID"
+                                            render={({ field }) => (
+                                                <FormItem className="space-y-3">
+                                                    <FormLabel className="text-slate-600">Revenue Account (Credit)</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="e.g. 4000-00-000" className="border-slate-200 focus:ring-indigo-500" {...field} />
+                                                    </FormControl>
+                                                    <p className="text-[10px] text-slate-400 italic mt-1">Used for realized revenue recognized in period.</p>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="deferredRevenueAccountCCID"
+                                            render={({ field }) => (
+                                                <FormItem className="space-y-3">
+                                                    <FormLabel className="text-slate-600">Deferred Revenue (Liability)</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="e.g. 2100-00-000" className="border-slate-200 focus:ring-indigo-500" {...field} />
+                                                    </FormControl>
+                                                    <p className="text-[10px] text-slate-400 italic mt-1">Holds unearned revenue balances.</p>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="contractAssetAccountCCID"
+                                            render={({ field }) => (
+                                                <FormItem className="space-y-3">
+                                                    <FormLabel className="text-slate-600">Contract Asset (Unbilled)</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="e.g. 1200-00-000" className="border-slate-200 focus:ring-indigo-500" {...field} />
+                                                    </FormControl>
+                                                    <p className="text-[10px] text-slate-400 italic mt-1">Balances recognized but not yet invoiced.</p>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="clearingAccountCCID"
+                                            render={({ field }) => (
+                                                <FormItem className="space-y-3">
+                                                    <FormLabel className="text-slate-600">Clearing Account</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="e.g. 1900-00-000" className="border-slate-200 focus:ring-indigo-500" {...field} />
+                                                    </FormControl>
+                                                    <p className="text-[10px] text-slate-400 italic mt-1">Temporary account for inter-module reconciliation.</p>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
                                     </div>
-                                    <div className="space-y-3">
-                                        <Label htmlFor="defAcc" className="text-slate-600">Deferred Revenue (Liability)</Label>
-                                        <Input id="defAcc" name="defAcc" defaultValue={activeConfig.deferredRevenueAccountCCID} placeholder="e.g. 2100-00-000" className="border-slate-200 focus:ring-indigo-500" required />
-                                        <p className="text-[10px] text-slate-400 italic">Holds unearned revenue balances.</p>
-                                    </div>
-                                    <div className="space-y-3">
-                                        <Label htmlFor="assetAcc" className="text-slate-600">Contract Asset (Unbilled)</Label>
-                                        <Input id="assetAcc" name="assetAcc" defaultValue={activeConfig.contractAssetAccountCCID} placeholder="e.g. 1200-00-000" className="border-slate-200 focus:ring-indigo-500" />
-                                        <p className="text-[10px] text-slate-400 italic">Balances recognized but not yet invoiced.</p>
-                                    </div>
-                                    <div className="space-y-3">
-                                        <Label htmlFor="clearAcc" className="text-slate-600">Clearing Account</Label>
-                                        <Input id="clearAcc" name="clearAcc" defaultValue={activeConfig.clearingAccountCCID} placeholder="e.g. 1900-00-000" className="border-slate-200 focus:ring-indigo-500" />
-                                        <p className="text-[10px] text-slate-400 italic">Temporary account for inter-module reconciliation.</p>
-                                    </div>
-                                </div>
 
-                                <div className="pt-4 border-t flex justify-end">
-                                    <Button type="submit" disabled={saveAccountMutation.isPending} className="bg-indigo-600 hover:bg-indigo-700 min-w-[140px]">
-                                        {saveAccountMutation.isPending ? "Saving..." : <><Save className="h-4 w-4 mr-2" /> Save Config</>}
-                                    </Button>
-                                </div>
-                            </form>
+                                    <div className="pt-4 border-t flex justify-end">
+                                        <Button type="submit" disabled={saveAccountMutation.isPending} className="bg-indigo-600 hover:bg-indigo-700 min-w-[140px]">
+                                            {saveAccountMutation.isPending ? "Saving..." : <><Save className="h-4 w-4 mr-2" /> Save Config</>}
+                                        </Button>
+                                    </div>
+                                </form>
+                            </Form>
                         </CardContent>
                     </Card>
 

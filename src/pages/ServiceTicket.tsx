@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search } from "lucide-react";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 export default function ServiceTicket() {
   const { data: tickets = [] } = useQuery<any[]>({ queryKey: ["/api/service-tickets"] });
@@ -18,10 +19,13 @@ export default function ServiceTicket() {
         <Button data-testid="button-new-ticket"><Plus className="h-4 w-4 mr-2" />New Ticket</Button>
       </div>
 
-      <div className="flex gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search tickets..." className="pl-10" data-testid="input-search" />
+      <div className="flex gap-2 mb-4">
+        <div className="flex-1">
+          <ContextualSearch
+            placeholder="Search tickets..."
+            fields={[{ key: "query", label: "Search", type: "text" }]}
+            onSearch={() => { }}
+          />
         </div>
       </div>
 

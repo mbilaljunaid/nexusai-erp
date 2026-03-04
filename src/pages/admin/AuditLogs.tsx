@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { useAuditLogs } from '@/hooks/admin/useAdminData';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { ExportButton } from "@/components/ExportButton";
 
 const actionTypes = [
     { value: 'all', label: 'All Actions' },
@@ -46,25 +47,13 @@ export default function AuditLogs() {
     const logs: any[] = data?.data ?? [];
     const meta = data?.meta ?? { total: 0, totalPages: 1 };
 
-    const handleExport = () => {
-        const csv = [
-            ['Timestamp', 'Actor', 'Action', 'Resource', 'Details'].join(','),
-            ...logs.map((l: any) => [
-                l.created_at ?? l.createdAt ?? '',
-                l.actor_email ?? l.actorEmail ?? '',
-                l.action ?? '',
-                l.resource_type ?? l.resourceType ?? '',
-                `"${(l.details ?? '').replace(/"/g, '""')}"`,
-            ].join(','))
-        ].join('\n');
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `audit-logs-${new Date().toISOString().split('T')[0]}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
-    };
+    const exportData = logs.map((l: any) => ({
+        "Timestamp": l.created_at ?? l.createdAt ?? '',
+        "Actor": l.actor_email ?? l.actorEmail ?? '',
+        "Action": l.action ?? '',
+        "Resource": l.resource_type ?? l.resourceType ?? '',
+        "Details": l.details ?? ''
+    }));
 
     return (
         <AdminLayout>
@@ -72,10 +61,10 @@ export default function AuditLogs() {
                 title="Audit & Logs"
                 description="Track all admin actions and system events"
                 actions={
-                    <Button variant="outline" onClick={handleExport} disabled={logs.length === 0}>
-                        <Download className="w-4 h-4 mr-2" />
-                        Export Logs
-                    </Button>
+                    <ExportButton
+                        data={exportData}
+                        filename={`audit-logs-${new Date().toISOString().split('T')[0]}`}
+                    />
                 }
             >
                 {isError && (

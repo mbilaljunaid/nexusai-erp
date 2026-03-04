@@ -19,6 +19,16 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+const lifeEventSchema = z.object({
+    eventDate: z.string().min(1, "Event Date is required"),
+    effectivity: z.string().min(1, "Effective Date is required"),
+    description: z.string().optional()
+});
 
 export default function LifeEvents() {
     const { toast } = useToast();
@@ -32,8 +42,16 @@ export default function LifeEvents() {
         { id: "relocation", title: "Relocation", icon: Home, color: "text-amber-500", bg: "bg-amber-500/10" }
     ];
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const form = useForm<z.infer<typeof lifeEventSchema>>({
+        resolver: zodResolver(lifeEventSchema),
+        defaultValues: {
+            eventDate: "",
+            effectivity: "",
+            description: ""
+        }
+    });
+
+    const onSubmit = async (values: z.infer<typeof lifeEventSchema>) => {
         setIsSubmitting(true);
         // Simulate API call
         setTimeout(() => {
@@ -42,6 +60,7 @@ export default function LifeEvents() {
                 title: "Life Event Submitted",
                 description: "Your documentation is under review. You will be notified when your enrollment window opens.",
             });
+            form.reset();
             setSelectedEvent(null);
         }, 1500);
     };
@@ -99,47 +118,76 @@ export default function LifeEvents() {
                                 <CardDescription>Submit details and required proof to verify your event.</CardDescription>
                             </div>
                         </CardHeader>
-                        <form onSubmit={handleSubmit}>
-                            <CardContent className="space-y-6 pt-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="eventDate" className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Date of Event <span className="text-red-500">*</span></Label>
-                                        <div className="relative">
-                                            <CalendarDays className="absolute left-3 top-3 h-4 w-4 text-zinc-400" />
-                                            <Input id="eventDate" type="date" required className="pl-10" />
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)}>
+                                <CardContent className="space-y-6 pt-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <FormField
+                                            control={form.control}
+                                            name="eventDate"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Date of Event *</FormLabel>
+                                                    <div className="relative">
+                                                        <CalendarDays className="absolute left-3 top-3 h-4 w-4 text-zinc-400" />
+                                                        <FormControl>
+                                                            <Input type="date" className="pl-10" {...field} />
+                                                        </FormControl>
+                                                    </div>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="effectivity"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Desired Effective Date *</FormLabel>
+                                                    <div className="relative">
+                                                        <CalendarDays className="absolute left-3 top-3 h-4 w-4 text-zinc-400" />
+                                                        <FormControl>
+                                                            <Input type="date" className="pl-10" {...field} />
+                                                        </FormControl>
+                                                    </div>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+
+                                    <FormField
+                                        control={form.control}
+                                        name="description"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Additional Details</FormLabel>
+                                                <FormControl>
+                                                    <Textarea placeholder="Provide any necessary context for HR..." className="min-h-[100px]" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <div className="space-y-3">
+                                        <Label className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Supporting Documentation <span className="text-red-500">*</span></Label>
+                                        <div className="border-2 border-dashed border-zinc-200 dark:border-zinc-700 rounded-xl p-8 text-center bg-zinc-50 dark:bg-zinc-900/50 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer">
+                                            <UploadCloud className="mx-auto h-10 w-10 text-zinc-400 mb-4" />
+                                            <p className="text-sm font-medium">Click to upload or drag and drop</p>
+                                            <p className="text-xs text-muted-foreground mt-1">PDF, JPG, PNG (Max 10MB)</p>
+                                            <p className="text-xs font-medium text-teal-600 mt-2">Required: Marriage Certificate, Birth Certificate, etc.</p>
                                         </div>
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="effectivity" className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Desired Effective Date <span className="text-red-500">*</span></Label>
-                                        <div className="relative">
-                                            <CalendarDays className="absolute left-3 top-3 h-4 w-4 text-zinc-400" />
-                                            <Input id="effectivity" type="date" required className="pl-10" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="description" className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Additional Details</Label>
-                                    <Textarea id="description" placeholder="Provide any necessary context for HR..." className="min-h-[100px]" />
-                                </div>
-
-                                <div className="space-y-3">
-                                    <Label className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Supporting Documentation <span className="text-red-500">*</span></Label>
-                                    <div className="border-2 border-dashed border-zinc-200 dark:border-zinc-700 rounded-xl p-8 text-center bg-zinc-50 dark:bg-zinc-900/50 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer">
-                                        <UploadCloud className="mx-auto h-10 w-10 text-zinc-400 mb-4" />
-                                        <p className="text-sm font-medium">Click to upload or drag and drop</p>
-                                        <p className="text-xs text-muted-foreground mt-1">PDF, JPG, PNG (Max 10MB)</p>
-                                        <p className="text-xs font-medium text-teal-600 mt-2">Required: Marriage Certificate, Birth Certificate, etc.</p>
-                                    </div>
-                                </div>
-                            </CardContent>
-                            <CardFooter className="flex justify-between border-t border-zinc-100 dark:border-zinc-800 pt-6">
-                                <Button type="button" variant="outline" onClick={() => setSelectedEvent(null)}>Cancel</Button>
-                                <Button type="submit" className="bg-teal-600 hover:bg-teal-700" disabled={isSubmitting}>
-                                    {isSubmitting ? "Submitting Event..." : "Submit for HR Verification"}
-                                </Button>
-                            </CardFooter>
-                        </form>
+                                </CardContent>
+                                <CardFooter className="flex justify-between border-t border-zinc-100 dark:border-zinc-800 pt-6">
+                                    <Button type="button" variant="outline" onClick={() => setSelectedEvent(null)}>Cancel</Button>
+                                    <Button type="submit" className="bg-teal-600 hover:bg-teal-700" disabled={isSubmitting}>
+                                        {isSubmitting ? "Submitting Event..." : "Submit for HR Verification"}
+                                    </Button>
+                                </CardFooter>
+                            </form>
+                        </Form>
                     </Card>
                 )}
             </div>

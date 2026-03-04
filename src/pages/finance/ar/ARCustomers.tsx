@@ -3,10 +3,12 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Users, Building, MapPin, Contact2 } from "lucide-react";
@@ -44,20 +46,58 @@ export default function ARCustomers() {
     enabled: !!selectedCustomerId,
   });
 
+  // Schemas
+  const customerSchema = z.object({
+    businessUnitId: z.string().min(1, "Business Unit is required"),
+    name: z.string().min(1, "Name is required"),
+    customerType: z.string().min(1, "Customer Type is required"),
+    taxId: z.string().optional(),
+    contactEmail: z.string().email("Invalid email").optional().or(z.literal("")),
+  });
+
+  const accountSchema = z.object({
+    accountName: z.string().min(1, "Account Name is required"),
+    accountNumber: z.string().min(1, "Account Number is required"),
+    riskCategory: z.string().min(1, "Risk category is required"),
+    creditLimit: z.string().min(1, "Credit limit is required"),
+  });
+
+  const siteSchema = z.object({
+    orgId: z.string().min(1, "BU is required"),
+    siteName: z.string().min(1, "Site Name is required"),
+    address: z.string().min(1, "Address is required"),
+    isBillTo: z.boolean(),
+    isShipTo: z.boolean(),
+  });
+
+  const contactSchema = z.object({
+    firstName: z.string().min(1, "First Name is required"),
+    lastName: z.string().min(1, "Last Name is required"),
+    email: z.string().email("Invalid email").optional().or(z.literal("")),
+    phone: z.string().optional(),
+    role: z.string().min(1, "Role is required"),
+    isPrimary: z.boolean(),
+    siteId: z.string().optional(),
+  });
+
   // Forms
-  const customerForm = useForm({
+  const customerForm = useForm<z.infer<typeof customerSchema>>({
+    resolver: zodResolver(customerSchema),
     defaultValues: { businessUnitId: "", name: "", customerType: "Commercial", taxId: "", contactEmail: "" }
   });
 
-  const accountForm = useForm({
+  const accountForm = useForm<z.infer<typeof accountSchema>>({
+    resolver: zodResolver(accountSchema),
     defaultValues: { accountName: "", accountNumber: "", riskCategory: "Low", creditLimit: "10000" }
   });
 
-  const siteForm = useForm({
+  const siteForm = useForm<z.infer<typeof siteSchema>>({
+    resolver: zodResolver(siteSchema),
     defaultValues: { orgId: "1", siteName: "", address: "", isBillTo: true, isShipTo: false }
   });
 
-  const contactForm = useForm({
+  const contactForm = useForm<z.infer<typeof contactSchema>>({
+    resolver: zodResolver(contactSchema),
     defaultValues: { firstName: "", lastName: "", email: "", phone: "", role: "BILLING", isPrimary: false, siteId: "" }
   });
 
@@ -159,10 +199,11 @@ export default function ARCustomers() {
                             <SelectItem value="BU_EU">EU Operations</SelectItem>
                           </SelectContent>
                         </Select>
+                        <FormMessage />
                       </FormItem>
                     )} />
                     <FormField control={customerForm.control} name="name" render={({ field }) => (
-                      <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
+                      <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
                     <Button type="submit">Save</Button>
                   </form>
@@ -190,10 +231,10 @@ export default function ARCustomers() {
                 <Form {...accountForm}>
                   <form onSubmit={accountForm.handleSubmit((d) => createAccount.mutate(d))} className="space-y-4">
                     <FormField control={accountForm.control} name="accountName" render={({ field }) => (
-                      <FormItem><FormLabel>Account Name</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
+                      <FormItem><FormLabel>Account Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
                     <FormField control={accountForm.control} name="accountNumber" render={({ field }) => (
-                      <FormItem><FormLabel>Account Number</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
+                      <FormItem><FormLabel>Account Number</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
                     <Button type="submit">Save</Button>
                   </form>
@@ -234,13 +275,14 @@ export default function ARCustomers() {
                             <SelectItem value="2">EU Operations (BU_EU)</SelectItem>
                           </SelectContent>
                         </Select>
+                        <FormMessage />
                       </FormItem>
                     )} />
                     <FormField control={siteForm.control} name="siteName" render={({ field }) => (
-                      <FormItem><FormLabel>Site Name (Code)</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
+                      <FormItem><FormLabel>Site Name (Code)</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
                     <FormField control={siteForm.control} name="address" render={({ field }) => (
-                      <FormItem><FormLabel>Address (Standard/IBAN)</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
+                      <FormItem><FormLabel>Address (Standard/IBAN)</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
                     <Button type="submit">Save</Button>
                   </form>
@@ -273,17 +315,17 @@ export default function ARCustomers() {
                   <form onSubmit={contactForm.handleSubmit((d) => createContact.mutate({ ...d, siteId: d.siteId || undefined }))} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <FormField control={contactForm.control} name="firstName" render={({ field }) => (
-                        <FormItem><FormLabel>First Name</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
+                        <FormItem><FormLabel>First Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                       )} />
                       <FormField control={contactForm.control} name="lastName" render={({ field }) => (
-                        <FormItem><FormLabel>Last Name</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
+                        <FormItem><FormLabel>Last Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                       )} />
                     </div>
                     <FormField control={contactForm.control} name="email" render={({ field }) => (
-                      <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field} /></FormControl></FormItem>
+                      <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
                     <FormField control={contactForm.control} name="phone" render={({ field }) => (
-                      <FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
+                      <FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
                     <FormField control={contactForm.control} name="role" render={({ field }) => (
                       <FormItem>
@@ -297,6 +339,7 @@ export default function ARCustomers() {
                             <SelectItem value="PRIMARY">Primary Contact</SelectItem>
                           </SelectContent>
                         </Select>
+                        <FormMessage />
                       </FormItem>
                     )} />
                     <Button type="submit">Save</Button>

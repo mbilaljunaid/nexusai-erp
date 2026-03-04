@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Search, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 export default function AccountDirectory() {
   const { toast } = useToast();
@@ -40,8 +41,8 @@ export default function AccountDirectory() {
       title="Accounts"
       description="Manage customer accounts and relationships"
    <p className="text-muted-foreground mt-1">Manage customer accounts and relationships</p>
-        </div>
-      </div>
+        </div >
+      </div >
 
       <Card data-testid="card-new-account">
         <CardHeader><CardTitle className="text-base">Add Account</CardTitle></CardHeader>
@@ -58,10 +59,16 @@ export default function AccountDirectory() {
         </CardContent>
       </Card>
 
-      <div className="flex gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search accounts..." className="pl-10" data-testid="input-search" />
+      <div className="flex gap-2 mb-4">
+        <div className="w-full md:w-96">
+          <ContextualSearch
+            placeholder="Search accounts..."
+            fields={[
+              { key: "name", label: "Account Name", type: "text" },
+              { key: "industry", label: "Industry", type: "text" }
+            ]}
+            onSearch={(filters) => console.log('Search filters:', filters)}
+          />
         </div>
       </div>
 
@@ -86,6 +93,6 @@ export default function AccountDirectory() {
           </Card>
         )))}
       </div>
-    </StandardPage>
+    </StandardPage >
   );
 }

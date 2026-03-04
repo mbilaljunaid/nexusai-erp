@@ -7,9 +7,19 @@ import { Button } from "@/components/ui/button";
 import { Plus, Edit2 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
 
 interface Resource {
     id: string;
@@ -21,11 +31,30 @@ interface Resource {
     costPerHour: number;
 }
 
+const resourceSchema = z.object({
+    resourceCode: z.string().min(1, "Resource Code is required"),
+    name: z.string().min(1, "Name is required"),
+    type: z.enum(["LABOR", "MACHINE", "TOOL"]),
+    capacityPerHour: z.coerce.number().min(0, "Capacity must be positive"),
+    costPerHour: z.coerce.number().min(0, "Cost must be positive"),
+});
+
 export default function ResourceManager() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [editingResource, setEditingResource] = useState<Partial<Resource> | null>(null);
+
+    const form = useForm<z.infer<typeof resourceSchema>>({
+        resolver: zodResolver(resourceSchema),
+        defaultValues: {
+            resourceCode: "",
+            name: "",
+            type: "LABOR",
+            capacityPerHour: 0,
+            costPerHour: 0,
+        }
+    });
 
     const { data: resources = [], isLoading } = useQuery<Resource[]>({
         queryKey: ["/api/manufacturing/resources"],
@@ -44,6 +73,7 @@ export default function ResourceManager() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/manufacturing/resources"] });
             setIsSheetOpen(false);
+            form.reset();
             toast({ title: "Success", description: "Resource saved successfully" });
         }
     });
@@ -91,18 +121,11 @@ export default function ResourceManager() {
         }
     ];
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        const formData = new FormData(e.target as HTMLFormElement);
-        const data: Partial<Resource> = {
-            resourceCode: formData.get("resourceCode") as string,
-            name: formData.get("name") as string,
-            type: formData.get("type") as Resource["type"],
-            capacityPerHour: parseFloat(formData.get("capacity") as string),
-            costPerHour: parseFloat(formData.get("cost") as string),
+    const onSubmit = (values: z.infer<typeof resourceSchema>) => {
+        mutation.mutate({
+            ...values,
             status: "active"
-        };
-        mutation.mutate(data);
+        });
     };
 
     return (
@@ -110,9 +133,15 @@ export default function ResourceManager() {
             title="Manufacturing Resources"
             breadcrumbs={[{ label: "Manufacturing", href: "/manufacturing" }, { label: "Setup" }, { label: "Resources" }]}
             actions={
-                <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                <Sheet open={isSheetOpen} onOpenChange={(open) => {
+                    setIsSheetOpen(open);
+                    if (!open) { setEditingResource(null); form.reset(); }
+                }}>
                     <SheetTrigger asChild>
-                        <Button onClick={() => setEditingResource(null)}>
+                        <Button onClick={() => {
+                            setEditingResource(null);
+                            form.reset({ resourceCode: "", name: "", type: "LABOR", capacityPerHour: 0, costPerHour: 0 });
+                        }}>
                             <Plus className="mr-2 h-4 w-4" /> Add Resource
                         </Button>
                     </SheetTrigger>
@@ -120,42 +149,91 @@ export default function ResourceManager() {
                         <SheetHeader>
                             <SheetTitle>Add Manufacturing Resource</SheetTitle>
                         </SheetHeader>
-                        <form onSubmit={handleSubmit} className="space-y-4 mt-6">
-                            <div className="space-y-2">
-                                <Label htmlFor="resourceCode">Resource Code</Label>
-                                <Input id="resourceCode" name="resourceCode" placeholder="LABOR-01" required />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="name">Name</Label>
-                                <Input id="name" name="name" placeholder="Skilled Assembly Tech" required />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="type">Type</Label>
-                                <Select name="type" defaultValue="LABOR">
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="LABOR">Labor</SelectItem>
-                                        <SelectItem value="MACHINE">Machine</SelectItem>
-                                        <SelectItem value="TOOL">Tool</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="capacity">Capacity (units/hr)</Label>
-                                    <Input id="capacity" name="capacity" type="number" required />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="cost">Cost ($/hr)</Label>
-                                    <Input id="cost" name="cost" type="number" step="0.01" required />
-                                </div>
-                            </div>
-                            <Button type="submit" className="w-full" disabled={mutation.isPending}>
-                                {mutation.isPending ? "Saving..." : "Save Resource"}
-                            </Button>
-                        </form>
+                        <div className="mt-6">
+                            <Form {...form}>
+                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="resourceCode"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Resource Code</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="LABOR-01" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="name"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Name</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="Skilled Assembly Tech" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="type"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Type</FormLabel>
+                                                <Select onValueChange={field.onChange} value={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="LABOR">Labor</SelectItem>
+                                                        <SelectItem value="MACHINE">Machine</SelectItem>
+                                                        <SelectItem value="TOOL">Tool</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <FormField
+                                            control={form.control}
+                                            name="capacityPerHour"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Capacity (units/hr)</FormLabel>
+                                                    <FormControl>
+                                                        <Input type="number" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="costPerHour"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Cost ($/hr)</FormLabel>
+                                                    <FormControl>
+                                                        <Input type="number" step="0.01" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                    <Button type="submit" className="w-full" disabled={mutation.isPending}>
+                                        {mutation.isPending ? "Saving..." : "Save Resource"}
+                                    </Button>
+                                </form>
+                            </Form>
+                        </div>
                     </SheetContent>
                 </Sheet>
             }

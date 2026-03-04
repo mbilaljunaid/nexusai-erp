@@ -11,6 +11,36 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Calculator, Calendar, Layers, Activity, Play, Plus, CheckCircle, BrainCircuit, FileText } from "lucide-react";
 import PayrollRunDetails from "./PayrollRunDetails";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const runSchema = z.object({
+    payGroupId: z.string().min(1, "Pay Group is required"),
+    periodName: z.string().min(1, "Period Name is required"),
+    periodStartDate: z.string().min(1, "Start Date is required"),
+    periodEndDate: z.string().min(1, "End Date is required"),
+    paymentDate: z.string().min(1, "Payment Date is required"),
+});
+
+const groupSchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    frequency: z.string().min(1, "Frequency is required"),
+});
+
+const elementSchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    classification: z.enum(["EARNINGS", "DEDUCTION"]).default("EARNINGS"),
+});
 
 export default function PayrollWorkbench() {
     const [activeTab, setActiveTab] = useState("runs");
@@ -23,6 +53,33 @@ export default function PayrollWorkbench() {
     const [isAuditOpen, setIsAuditOpen] = useState(false);
     const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
+    const runForm = useForm<z.infer<typeof runSchema>>({
+        resolver: zodResolver(runSchema),
+        defaultValues: {
+            payGroupId: "",
+            periodName: "",
+            periodStartDate: "",
+            periodEndDate: "",
+            paymentDate: ""
+        }
+    });
+
+    const groupForm = useForm<z.infer<typeof groupSchema>>({
+        resolver: zodResolver(groupSchema),
+        defaultValues: {
+            name: "",
+            frequency: ""
+        }
+    });
+
+    const elementForm = useForm<z.infer<typeof elementSchema>>({
+        resolver: zodResolver(elementSchema),
+        defaultValues: {
+            name: "",
+            classification: "EARNINGS"
+        }
+    });
 
     // === QUERIES ===
     const { data: runs, isLoading: isRunsLoading } = useQuery({
@@ -49,7 +106,7 @@ export default function PayrollWorkbench() {
             if (!res.ok) throw new Error("Failed");
             return res.json();
         },
-        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["pay-groups"] }); setIsGroupOpen(false); toast({ title: "Pay Group Created" }); }
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["pay-groups"] }); setIsGroupOpen(false); groupForm.reset(); toast({ title: "Pay Group Created" }); }
     });
 
     const createElementMutation = useMutation({
@@ -60,7 +117,7 @@ export default function PayrollWorkbench() {
             if (!res.ok) throw new Error("Failed");
             return res.json();
         },
-        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["pay-elements"] }); setIsElementOpen(false); toast({ title: "Element Created" }); }
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["pay-elements"] }); setIsElementOpen(false); elementForm.reset(); toast({ title: "Element Created" }); }
     });
 
     const createRunMutation = useMutation({
@@ -71,7 +128,7 @@ export default function PayrollWorkbench() {
             if (!res.ok) throw new Error("Failed");
             return res.json();
         },
-        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["payroll-runs"] }); setIsRunOpen(false); toast({ title: "Run Created" }); }
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["payroll-runs"] }); setIsRunOpen(false); runForm.reset(); toast({ title: "Run Created" }); }
     });
 
     const calculateRunMutation = useMutation({
@@ -112,24 +169,15 @@ export default function PayrollWorkbench() {
         }
     });
 
-    // === HANDLERS (Simplified) ===
-    const handleGroupSubmit = (e: any) => {
-        e.preventDefault(); const fd = new FormData(e.target);
-        createGroupMutation.mutate({ name: fd.get("name"), frequency: fd.get("frequency") });
+    // === HANDLERS ===
+    const onGroupSubmit = (values: z.infer<typeof groupSchema>) => {
+        createGroupMutation.mutate(values);
     };
-    const handleElementSubmit = (e: any) => {
-        e.preventDefault(); const fd = new FormData(e.target);
-        createElementMutation.mutate({ name: fd.get("name"), classification: fd.get("classification"), inputType: "CALCULATED" });
+    const onElementSubmit = (values: z.infer<typeof elementSchema>) => {
+        createElementMutation.mutate({ ...values, inputType: "CALCULATED" });
     };
-    const handleRunSubmit = (e: any) => {
-        e.preventDefault(); const fd = new FormData(e.target);
-        createRunMutation.mutate({
-            payGroupId: fd.get("payGroupId"),
-            periodName: fd.get("periodName"),
-            periodStartDate: fd.get("periodStartDate"),
-            periodEndDate: fd.get("periodEndDate"),
-            paymentDate: fd.get("paymentDate")
-        });
+    const onRunSubmit = (values: z.infer<typeof runSchema>) => {
+        createRunMutation.mutate(values);
     };
 
     if (isRunsLoading) return <div className="p-8">Loading Payroll...</div>;
@@ -145,26 +193,41 @@ export default function PayrollWorkbench() {
                     <Button variant="outline">
                         <Activity className="mr-2 h-4 w-4" /> Reports
                     </Button>
-                    <Dialog open={isRunOpen} onOpenChange={setIsRunOpen}>
+                    <Dialog open={isRunOpen} onOpenChange={(open) => { setIsRunOpen(open); if (!open) runForm.reset(); }}>
                         <DialogTrigger asChild><Button><Play className="mr-2 h-4 w-4" /> Run Payroll</Button></DialogTrigger>
                         <DialogContent>
                             <DialogHeader><DialogTitle>New Payroll Run</DialogTitle></DialogHeader>
-                            <form onSubmit={handleRunSubmit} className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label>Pay Group</Label>
-                                    <select name="payGroupId" aria-label="Select pay group" className="w-full h-10 border rounded-md px-3" required>
-                                        <option value="">Select Group</option>
-                                        {groups?.map((g: any) => <option key={g.id} value={g.id}>{g.name}</option>)}
-                                    </select>
-                                </div>
-                                <div className="space-y-2"><Label>Period Name</Label><Input name="periodName" placeholder="2024-01 Monthly" required /></div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2"><Label>Start Date</Label><Input type="date" name="periodStartDate" required /></div>
-                                    <div className="space-y-2"><Label>End Date</Label><Input type="date" name="periodEndDate" required /></div>
-                                </div>
-                                <div className="space-y-2"><Label>Payment Date</Label><Input type="date" name="paymentDate" required /></div>
-                                <Button type="submit" className="w-full">Initialize Run</Button>
-                            </form>
+                            <Form {...runForm}>
+                                <form onSubmit={runForm.handleSubmit(onRunSubmit)} className="space-y-4">
+                                    <FormField
+                                        control={runForm.control}
+                                        name="payGroupId"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Pay Group</FormLabel>
+                                                <Select onValueChange={field.onChange} value={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select Group" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {groups?.map((g: any) => <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>)}
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField control={runForm.control} name="periodName" render={({ field }) => <FormItem><FormLabel>Period Name</FormLabel><FormControl><Input placeholder="2024-01 Monthly" {...field} /></FormControl><FormMessage /></FormItem>} />
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <FormField control={runForm.control} name="periodStartDate" render={({ field }) => <FormItem><FormLabel>Start Date</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>} />
+                                        <FormField control={runForm.control} name="periodEndDate" render={({ field }) => <FormItem><FormLabel>End Date</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>} />
+                                    </div>
+                                    <FormField control={runForm.control} name="paymentDate" render={({ field }) => <FormItem><FormLabel>Payment Date</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>} />
+                                    <Button type="submit" className="w-full">Initialize Run</Button>
+                                </form>
+                            </Form>
                         </DialogContent>
                     </Dialog>
                 </div>
@@ -264,15 +327,17 @@ export default function PayrollWorkbench() {
 
                 <TabsContent value="groups" className="space-y-4">
                     <div className="flex justify-end">
-                        <Dialog open={isGroupOpen} onOpenChange={setIsGroupOpen}>
+                        <Dialog open={isGroupOpen} onOpenChange={(open) => { setIsGroupOpen(open); if (!open) groupForm.reset(); }}>
                             <DialogTrigger asChild><Button variant="outline"><Plus className="mr-2 h-4 w-4" /> Add Group</Button></DialogTrigger>
                             <DialogContent>
                                 <DialogHeader><DialogTitle>New Pay Group</DialogTitle></DialogHeader>
-                                <form onSubmit={handleGroupSubmit} className="space-y-4">
-                                    <div className="space-y-2"><Label>Name</Label><Input name="name" required /></div>
-                                    <div className="space-y-2"><Label>Frequency</Label><Input name="frequency" placeholder="MONTHLY" required /></div>
-                                    <Button type="submit" className="w-full">Save</Button>
-                                </form>
+                                <Form {...groupForm}>
+                                    <form onSubmit={groupForm.handleSubmit(onGroupSubmit)} className="space-y-4">
+                                        <FormField control={groupForm.control} name="name" render={({ field }) => <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>} />
+                                        <FormField control={groupForm.control} name="frequency" render={({ field }) => <FormItem><FormLabel>Frequency</FormLabel><FormControl><Input placeholder="MONTHLY" {...field} /></FormControl><FormMessage /></FormItem>} />
+                                        <Button type="submit" className="w-full">Save</Button>
+                                    </form>
+                                </Form>
                             </DialogContent>
                         </Dialog>
                     </div>
@@ -290,20 +355,29 @@ export default function PayrollWorkbench() {
 
                 <TabsContent value="elements" className="space-y-4">
                     <div className="flex justify-end">
-                        <Dialog open={isElementOpen} onOpenChange={setIsElementOpen}>
+                        <Dialog open={isElementOpen} onOpenChange={(open) => { setIsElementOpen(open); if (!open) elementForm.reset(); }}>
                             <DialogTrigger asChild><Button variant="outline"><Plus className="mr-2 h-4 w-4" /> Add Element</Button></DialogTrigger>
                             <DialogContent>
                                 <DialogHeader><DialogTitle>New Pay Element</DialogTitle></DialogHeader>
-                                <form onSubmit={handleElementSubmit} className="space-y-4">
-                                    <div className="space-y-2"><Label>Name</Label><Input name="name" required /></div>
-                                    <div className="space-y-2"><Label>Classification</Label>
-                                        <select name="classification" aria-label="Select element classification" className="w-full h-10 border rounded-md px-3">
-                                            <option value="EARNINGS">Earnings</option>
-                                            <option value="DEDUCTION">Deduction</option>
-                                        </select>
-                                    </div>
-                                    <Button type="submit" className="w-full">Save</Button>
-                                </form>
+                                <Form {...elementForm}>
+                                    <form onSubmit={elementForm.handleSubmit(onElementSubmit)} className="space-y-4">
+                                        <FormField control={elementForm.control} name="name" render={({ field }) => <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>} />
+                                        <FormField control={elementForm.control} name="classification" render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Classification</FormLabel>
+                                                <Select onValueChange={field.onChange} value={field.value}>
+                                                    <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="EARNINGS">Earnings</SelectItem>
+                                                        <SelectItem value="DEDUCTION">Deduction</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )} />
+                                        <Button type="submit" className="w-full">Save</Button>
+                                    </form>
+                                </Form>
                             </DialogContent>
                         </Dialog>
                     </div>

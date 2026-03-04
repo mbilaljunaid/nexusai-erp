@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 function TaskEntryForm() {
   return (
@@ -15,7 +16,7 @@ function TaskEntryForm() {
       className="border rounded bg-muted/50 border-dashed text-center"
     >
       <p className="text-muted-foreground">Task Entry Form Placeholder</p>
-    </div>
+    </StandardPage>
   );
 }
 
@@ -27,13 +28,22 @@ export default function TasksDetail() {
     <div className="space-y-6">
       <div className="flex items-center gap-2">
         <Link to="/projects">
-          <Button vasName="text-muted-foreground text-sm">Manage project tasks and assignments</p>
-        </div>
+          <Button variant="ghost" size="sm" className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Projects
+          </Button>
+        </Link>
       </div>
 
       <div className="space-y-4">
         <div className="flex gap-2 items-center">
-          <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search tasks..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
+          <div className="flex-1">
+            <ContextualSearch
+              placeholder="Search tasks..."
+              fields={[{ key: "query", label: "Search", type: "text" }]}
+              onSearch={(filters) => setSearchQuery(filters.query || "")}
+            />
+          </div>
           <Button>+ New Task</Button>
         </div>
 
@@ -48,6 +58,6 @@ export default function TasksDetail() {
           <TaskEntryForm />
         </div>
       </div>
-    </StandardPage>
+    </StandardPage >
   );
 }

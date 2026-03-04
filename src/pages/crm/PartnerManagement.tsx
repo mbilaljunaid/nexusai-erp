@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Users, Award, TrendingUp, DollarSign, Building, CheckCircle, Clock } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 interface Partner {
     id: string;
@@ -154,8 +155,14 @@ export default function PartnerManagement() {
 
                 {/* Action Bar */}
                 <div className="flex items-center justify-between bg-card p-4 rounded-lg border">
-                    <div className="flex items-center gap-4">
-                        <Input placeholder="Search partners..." className="w-64" />
+                    <div className="flex items-center gap-4 flex-1">
+                        <div className="w-72">
+                            <ContextualSearch
+                                placeholder="Search partners..."
+                                fields={[{ key: "query", label: "Search", type: "text" }]}
+                                onSearch={() => { }}
+                            />
+                        </div>
                         <Select defaultValue="all">
                             <SelectTrigger className="w-40">
                                 <SelectValue />

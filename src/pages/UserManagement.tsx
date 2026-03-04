@@ -8,9 +8,28 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Edit2, ShieldAlert, User, ShieldCheck } from "lucide-react";
+import { Plus, Edit2, ShieldAlert, User as UserIcon, ShieldCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+const userSchema = z.object({
+  name: z.string().min(1, "Full Name is required"),
+  email: z.string().email("Invalid email").min(1, "Email is required"),
+  role: z.string().min(1, "Role is required"),
+  dept: z.string().optional(),
+  status: z.enum(["active", "inactive"]).default("active"),
+});
 
 interface User {
   id: string;
@@ -27,6 +46,17 @@ export default function UserManagement() {
   const queryClient = useQueryClient();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<Partial<User> | null>(null);
+
+  const form = useForm<z.infer<typeof userSchema>>({
+    resolver: zodResolver(userSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      role: "User",
+      dept: "",
+      status: "active"
+    }
+  });
 
   const { data: users = [], isLoading } = useQuery<User[]>({
     queryKey: ["/api/users"],
@@ -49,7 +79,7 @@ export default function UserManagement() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/users"] });
       setIsSheetOpen(false);
-      setEditingUser(null);
+      form.reset();
       toast({ title: "Success", description: "User saved successfully" });
     },
     onError: () => {
@@ -68,7 +98,17 @@ export default function UserManagement() {
     {
       id: "actions", header: "Actions", width: "10%", cell: (row: any) => (
         <div className="p-2">
-          <Button variant="ghost" size="sm" onClick={() => { setEditingUser(row); setIsSheetOpen(true); }}>
+          <Button variant="ghost" size="sm" onClick={() => {
+            setEditingUser(row);
+            form.reset({
+              name: row.name || "",
+              email: row.email || "",
+              role: row.role || "User",
+              dept: row.dept || "",
+              status: row.status as "active" | "inactive" || "active"
+            });
+            setIsSheetOpen(true);
+          }}>
             <Edit2 className="h-4 w-4" />
           </Button>
         </div>
@@ -76,17 +116,8 @@ export default function UserManagement() {
     }
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const data = {
-      name: formData.get("name") as string,
-      email: formData.get("email") as string,
-      role: formData.get("role") as string,
-      dept: formData.get("dept") as string,
-      status: formData.get("status") as any || "active"
-    };
-    mutation.mutate(data);
+  const onSubmit = (values: z.infer<typeof userSchema>) => {
+    mutation.mutate(values as Partial<User>);
   };
 
   const activeUsers = users.filter((u: any) => u.status === "active").length;
@@ -97,9 +128,18 @@ export default function UserManagement() {
       description="Manage system access, roles, and security policies"
       breadcrumbs={[{ label: "Admin", href: "/admin" }, { label: "Users" }]}
       actions={
-        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <Sheet open={isSheetOpen} onOpenChange={(open) => {
+          setIsSheetOpen(open);
+          if (!open) {
+            setEditingUser(null);
+            form.reset({ name: "", email: "", role: "User", dept: "", status: "active" });
+          }
+        }}>
           <SheetTrigger asChild>
-            <Button onClick={() => setEditingUser(null)}>
+            <Button onClick={() => {
+              setEditingUser(null);
+              form.reset({ name: "", email: "", role: "User", dept: "", status: "active" });
+            }}>
               <Plus className="mr-2 h-4 w-4" /> Add User
             </Button>
           </SheetTrigger>
@@ -107,51 +147,100 @@ export default function UserManagement() {
             <SheetHeader>
               <SheetTitle>{editingUser ? 'Edit' : 'Add'} User</SheetTitle>
             </SheetHeader>
-            <form onSubmit={handleSubmit} className="space-y-4 mt-6">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input id="name" name="name" defaultValue={editingUser?.name} required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" name="email" type="email" defaultValue={editingUser?.email} required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="role">Role</Label>
-                <Select name="role" defaultValue={editingUser?.role || "User"}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Administrator">Administrator</SelectItem>
-                    <SelectItem value="Manager">Manager</SelectItem>
-                    <SelectItem value="User">User</SelectItem>
-                    <SelectItem value="Viewer">Viewer</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="dept">Department</Label>
-                <Input id="dept" name="dept" defaultValue={editingUser?.dept} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="status">Status</Label>
-                <Select name="status" defaultValue={editingUser?.status || "active"}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <Button type="submit" className="w-full" disabled={mutation.isPending}>
-                {mutation.isPending ? "Saving..." : "Save User"}
-              </Button>
-            </form>
+            <div className="mt-6">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Full Name</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input type="email" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="role"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Role</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger><SelectValue /></SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Administrator">Administrator</SelectItem>
+                            <SelectItem value="Manager">Manager</SelectItem>
+                            <SelectItem value="User">User</SelectItem>
+                            <SelectItem value="Viewer">Viewer</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="dept"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Department</FormLabel>
+                        <FormControl>
+                          <Input {...field} value={field.value || ""} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger><SelectValue /></SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="active">Active</SelectItem>
+                            <SelectItem value="inactive">Inactive</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" className="w-full" disabled={mutation.isPending}>
+                    {mutation.isPending ? "Saving..." : "Save User"}
+                  </Button>
+                </form>
+              </Form>
+            </div>
           </SheetContent>
         </Sheet>
       }
     >
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <Card className="p-4"><CardContent className="pt-0 flex items-center justify-between"><div><p className="text-sm text-muted-foreground">Total Users</p><p className="text-2xl font-bold">{users.length}</p></div><User className="text-muted-foreground h-8 w-8 opacity-20" /></CardContent></Card>
+        <Card className="p-4"><CardContent className="pt-0 flex items-center justify-between"><div><p className="text-sm text-muted-foreground">Total Users</p><p className="text-2xl font-bold">{users.length}</p></div><UserIcon className="text-muted-foreground h-8 w-8 opacity-20" /></CardContent></Card>
         <Card className="p-4"><CardContent className="pt-0 flex items-center justify-between"><div><p className="text-sm text-muted-foreground">Active</p><p className="text-2xl font-bold text-green-600">{activeUsers}</p></div><ShieldCheck className="text-green-600 h-8 w-8 opacity-20" /></CardContent></Card>
         <Card className="p-4"><CardContent className="pt-0 flex items-center justify-between"><div><p className="text-sm text-muted-foreground">MFA Enabled</p><p className="text-2xl font-bold text-blue-600">{users.filter(u => u.mfa).length}</p></div><ShieldAlert className="text-blue-600 h-8 w-8 opacity-20" /></CardContent></Card>
       </div>

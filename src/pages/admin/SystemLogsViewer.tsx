@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FileText, Download, Search, Filter, X } from 'lucide-react';
 import LogEntry from '../../components/admin/LogEntry';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { ExportButton } from "@/components/ExportButton";
 
 interface Log {
     id: string;
@@ -57,30 +58,13 @@ export default function SystemLogsViewer() {
         fetchLogs();
     }, [filters.level, filters.user, filters.endpoint, count]);
 
-    const exportLogs = () => {
-        const csv = [
-            ['Timestamp', 'Level', 'Message', 'User', 'Endpoint'].join(','),
-            ...logs.map(log =>
-                [
-                    log.timestamp,
-                    log.level,
-                    `"${log.message.replace(/"/g, '""')}"`,
-                    log.user || '',
-                    log.endpoint || '',
-                ].join(',')
-            ),
-        ].join('\n');
-
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `system-logs-${new Date().toISOString()}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    };
+    const exportData = logs.map(log => ({
+        "Timestamp": log.timestamp,
+        "Level": log.level,
+        "Message": log.message,
+        "User": log.user || '',
+        "Endpoint": log.endpoint || ''
+    }));
 
     const clearFilters = () => {
         setFilters({
@@ -114,14 +98,10 @@ export default function SystemLogsViewer() {
             description="Search and filter application logs"
             actions={
                 <div className="flex items-center gap-3">
-                    <button
-                        onClick={exportLogs}
-                        disabled={logs.length === 0}
-                        className="px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-md border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                    >
-                        <Download className="w-4 h-4" />
-                        Export CSV
-                    </button>
+                    <ExportButton
+                        data={exportData}
+                        filename={`system-logs-${new Date().toISOString()}`}
+                    />
                     <button
                         onClick={fetchLogs}
                         className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"

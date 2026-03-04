@@ -9,9 +9,28 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
-import { 
-  Mail, 
+const contactSchema = z.object({
+  name: z.string().min(1, "Full Name is required"),
+  email: z.string().email("Invalid email address"),
+  company: z.string().optional(),
+  subject: z.string().min(1, "Subject is required"),
+  message: z.string().min(1, "Message is required"),
+});
+
+import {
+  Mail,
   Send,
   Building2,
   MessageSquare,
@@ -22,12 +41,16 @@ import {
 export default function ContactPage() {
   const { toast } = useToast();
   const [submitted, setSubmitted] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    company: "",
-    subject: "",
-    message: ""
+
+  const form = useForm<z.infer<typeof contactSchema>>({
+    resolver: zodResolver(contactSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      company: "",
+      subject: "",
+      message: ""
+    }
   });
 
   useEffect(() => {
@@ -35,7 +58,7 @@ export default function ContactPage() {
   }, []);
 
   const submitMutation = useMutation({
-    mutationFn: async (data: typeof formData) => {
+    mutationFn: async (data: z.infer<typeof contactSchema>) => {
       const response = await apiRequest("POST", "/api/contact", data);
       return response.json();
     },
@@ -45,7 +68,7 @@ export default function ContactPage() {
         title: "Message Sent",
         description: data.message || "Thank you for contacting us. We'll respond shortly.",
       });
-      setFormData({ name: "", email: "", company: "", subject: "", message: "" });
+      form.reset();
     },
     onError: (error: any) => {
       toast({
@@ -56,21 +79,8 @@ export default function ContactPage() {
     }
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
-      toast({
-        title: "Missing Fields",
-        description: "Please fill in all required fields.",
-        variant: "destructive",
-      });
-      return;
-    }
-    submitMutation.mutate(formData);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  const onSubmit = (values: z.infer<typeof contactSchema>) => {
+    submitMutation.mutate(values);
   };
 
 
@@ -79,7 +89,7 @@ export default function ContactPage() {
       <Header />
       <main className="flex-1">
         <section className="public-hero px-4 py-16 text-center max-w-4xl mx-auto">
-          
+
           <p className="public-hero-subtitle text-xl text-muted-foreground">
             Have questions about NexusAIFirst ERP? We're here to help. Send us a message and we'll respond as soon as possible.
           </p>
@@ -101,104 +111,133 @@ export default function ContactPage() {
                     </Button>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="flex items-center gap-3 mb-6">
-                      <MessageSquare className="w-6 h-6 text-blue-500" />
-                      <h2 className="text-2xl font-bold">Send us a Message</h2>
-                    </div>
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                      <div className="flex items-center gap-3 mb-6">
+                        <MessageSquare className="w-6 h-6 text-blue-500" />
+                        <h2 className="text-2xl font-bold">Send us a Message</h2>
+                      </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Full Name *</Label>
-                        <Input 
-                          id="name"
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
                           name="name"
-                          value={formData.name}
-                          onChange={handleChange}
-                          placeholder="John Doe"
-                          required
-                          data-testid="input-contact-name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Full Name *</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="John Doe"
+                                  {...field}
+                                  data-testid="input-contact-name"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
                         />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email Address *</Label>
-                        <Input 
-                          id="email"
+                        <FormField
+                          control={form.control}
                           name="email"
-                          type="email"
-                          value={formData.email}
-                          onChange={handleChange}
-                          placeholder="john@company.com"
-                          required
-                          data-testid="input-contact-email"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Email Address *</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="email"
+                                  placeholder="john@company.com"
+                                  {...field}
+                                  data-testid="input-contact-email"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
                         />
                       </div>
-                    </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="company">Company Name</Label>
-                        <div className="relative">
-                          <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                          <Input 
-                            id="company"
-                            name="company"
-                            value={formData.company}
-                            onChange={handleChange}
-                            placeholder="Acme Inc."
-                            className="pl-10"
-                            data-testid="input-contact-company"
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="subject">Subject *</Label>
-                        <Input 
-                          id="subject"
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="company"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Company Name</FormLabel>
+                              <FormControl>
+                                <div className="relative">
+                                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                  <Input
+                                    placeholder="Acme Inc."
+                                    className="pl-10"
+                                    {...field}
+                                    value={field.value || ""}
+                                    data-testid="input-contact-company"
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
                           name="subject"
-                          value={formData.subject}
-                          onChange={handleChange}
-                          placeholder="How can we help?"
-                          required
-                          data-testid="input-contact-subject"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Subject *</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="How can we help?"
+                                  {...field}
+                                  data-testid="input-contact-subject"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
                         />
                       </div>
-                    </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="message">Message *</Label>
-                      <Textarea 
-                        id="message"
+                      <FormField
+                        control={form.control}
                         name="message"
-                        value={formData.message}
-                        onChange={handleChange}
-                        placeholder="Tell us more about your inquiry..."
-                        rows={6}
-                        required
-                        data-testid="input-contact-message"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Message *</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Tell us more about your inquiry..."
+                                rows={6}
+                                {...field}
+                                data-testid="input-contact-message"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
-                    </div>
 
-                    <Button 
-                      type="submit" 
-                      size="lg" 
-                      className="w-full"
-                      disabled={submitMutation.isPending}
-                      data-testid="button-submit-contact"
-                    >
-                      {submitMutation.isPending ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Sending...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="w-4 h-4 mr-2" />
-                          Send Message
-                        </>
-                      )}
-                    </Button>
-                  </form>
+                      <Button
+                        type="submit"
+                        size="lg"
+                        className="w-full"
+                        disabled={submitMutation.isPending}
+                        data-testid="button-submit-contact"
+                      >
+                        {submitMutation.isPending ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            <Send className="w-4 h-4 mr-2" />
+                            Send Message
+                          </>
+                        )}
+                      </Button>
+                    </form>
+                  </Form>
                 )}
               </Card>
             </div>

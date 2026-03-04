@@ -22,6 +22,7 @@ import { Loader2, RefreshCw, PenTool, Download } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { ExportButton } from "@/components/ExportButton";
 
 interface LeaseSchedule {
     period: number;
@@ -100,41 +101,18 @@ export default function LeaseSchedulesView({ leaseId }: { leaseId: string }) {
         });
     };
 
-    const handleExportCSV = () => {
-        if (!schedules || schedules.length === 0) {
-            toast({ title: "No Data", description: "No schedule data to export", variant: "destructive" });
-            return;
-        }
-
-        const headers = ["Period", "Date", "Opening Liability", "Payment", "Interest", "Principal", "Closing Liability", "Opening ROU", "Amortization", "Closing ROU"];
-        const rows = schedules.map((row) => [
-            row.period,
-            format(new Date(row.date), 'yyyy-MM-dd'),
-            parseFloat(row.openingLiability).toFixed(2),
-            parseFloat(row.paymentAmount).toFixed(2),
-            parseFloat(row.interestExpense).toFixed(2),
-            (parseFloat(row.paymentAmount) - parseFloat(row.interestExpense)).toFixed(2),
-            parseFloat(row.closingLiability).toFixed(2),
-            parseFloat(row.rouOpeningBalance).toFixed(2),
-            parseFloat(row.amortizationExpense).toFixed(2),
-            parseFloat(row.rouClosingBalance).toFixed(2)
-        ]);
-
-        const csvContent = [
-            headers.join(","),
-            ...rows.map(row => row.join(","))
-        ].join("\n");
-
-        const blob = new Blob([csvContent], { type: "text/csv" });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `Lease_Schedule_${leaseId}_${format(new Date(), 'yyyy-MM-dd')}.csv`;
-        a.click();
-        window.URL.revokeObjectURL(url);
-
-        toast({ title: "Export Successful", description: `${schedules.length} schedule periods exported` });
-    };
+    const exportData = schedules.map((row) => ({
+        "Period": row.period,
+        "Date": format(new Date(row.date), 'yyyy-MM-dd'),
+        "Opening Liability": parseFloat(row.openingLiability).toFixed(2),
+        "Payment": parseFloat(row.paymentAmount).toFixed(2),
+        "Interest": parseFloat(row.interestExpense).toFixed(2),
+        "Principal": (parseFloat(row.paymentAmount) - parseFloat(row.interestExpense)).toFixed(2),
+        "Closing Liability": parseFloat(row.closingLiability).toFixed(2),
+        "Opening ROU": parseFloat(row.rouOpeningBalance).toFixed(2),
+        "Amortization": parseFloat(row.amortizationExpense).toFixed(2),
+        "Closing ROU": parseFloat(row.rouClosingBalance).toFixed(2)
+    }));
 
     if (isLoading) {
         return <div className="p-8 text-center text-muted-foreground">Loading schedules...</div>;
@@ -174,14 +152,10 @@ export default function LeaseSchedulesView({ leaseId }: { leaseId: string }) {
                                     )}
                                     Regenerate Schedule
                                 </Button>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={handleExportCSV}
-                                >
-                                    <Download className="mr-2 h-4 w-4" />
-                                    Export CSV
-                                </Button>
+                                <ExportButton
+                                    data={exportData}
+                                    filename={`Lease_Schedule_${leaseId}_${format(new Date(), 'yyyy-MM-dd')}`}
+                                />
                                 <PDFExportButton
                                     endpoint={`/api/lease/leases/${leaseId}/schedules/pdf`}
                                     label="Download PDF"

@@ -16,6 +16,26 @@ import { toast } from "@/hooks/use-toast";
 import { CandidateComparisonModal, RemoveCandidateDialog } from "@/components/succession/CandidateManagementDialogs";
 import { ReadinessAssessmentDialog } from "@/components/succession/ReadinessAssessmentDialog";
 import { NineBoxMatrix } from "@/components/succession/NineBoxMatrix";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+const createPoolSchema = z.object({
+  poolName: z.string().min(1, "Pool Name is required"),
+  poolDescription: z.string().optional()
+});
+
+const createPlanSchema = z.object({
+  name: z.string().min(1, "Plan Name is required"),
+  target: z.string().min(1, "Target Role is required")
+});
+
+const addCandidateSchema = z.object({
+  personId: z.string().min(1, "Employee ID is required"),
+  readiness: z.string().min(1, "Readiness is required"),
+  potential: z.string().min(1, "Potential is required")
+});
 
 export default function SuccessionPlanning() {
   const [activeTab, setActiveTab] = useState("plans");
@@ -40,6 +60,21 @@ export default function SuccessionPlanning() {
     isOpen: boolean;
     candidate: any | null;
   }>({ isOpen: false, candidate: null });
+
+  const planForm = useForm<z.infer<typeof createPlanSchema>>({
+    resolver: zodResolver(createPlanSchema),
+    defaultValues: { name: "", target: "" }
+  });
+
+  const poolForm = useForm<z.infer<typeof createPoolSchema>>({
+    resolver: zodResolver(createPoolSchema),
+    defaultValues: { poolName: "", poolDescription: "" }
+  });
+
+  const candidateForm = useForm<z.infer<typeof addCandidateSchema>>({
+    resolver: zodResolver(addCandidateSchema),
+    defaultValues: { personId: "", readiness: "", potential: "" }
+  });
 
   // Fetch Plans
   const { data: plans = [], isLoading: isPlansLoading } = useQuery({
@@ -164,6 +199,7 @@ export default function SuccessionPlanning() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/succession/plans"] });
       setCreatePlanOpen(false);
+      planForm.reset();
       toast({ title: "Success", description: "Succession plan created successfully" });
     },
     onError: () => {
@@ -185,6 +221,7 @@ export default function SuccessionPlanning() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/succession/pools"] });
       setCreatePoolOpen(false);
+      poolForm.reset();
       toast({ title: "Success", description: "Talent pool created successfully" });
     },
     onError: () => {
@@ -205,6 +242,7 @@ export default function SuccessionPlanning() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/succession/plans/candidates", candidateModal.planId] });
+      candidateForm.reset();
       toast({ title: "Success", description: "Candidate added to succession plan" });
     },
     onError: () => {
@@ -295,39 +333,28 @@ export default function SuccessionPlanning() {
     }
   });
 
-  const handleCreatePlan = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
+  const onPlanSubmit = (values: z.infer<typeof createPlanSchema>) => {
     createPlanMutation.mutate({
-      name: formData.get("name"),
-      targetJobId: formData.get("target"),
+      name: values.name,
+      targetJobId: values.target,
       status: "DRAFT",
       reviewDate: new Date().toISOString(),
     });
   };
 
-  const handleCreatePool = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
+  const onPoolSubmit = (values: z.infer<typeof createPoolSchema>) => {
     createPoolMutation.mutate({
-      name: formData.get("poolName"),
-      description: formData.get("poolDescription"),
+      name: values.poolName,
+      description: values.poolDescription,
       status: "ACTIVE"
     });
   };
 
-  const handleAddCandidate = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
+  const onCandidateSubmit = (values: z.infer<typeof addCandidateSchema>) => {
     if (!candidateModal.planId) return;
-
     addCandidateMutation.mutate({
       planId: candidateModal.planId,
-      data: {
-        personId: formData.get("personId"),
-        readiness: formData.get("readiness"),
-        potential: formData.get("potential")
-      }
+      data: values
     });
   };
 
@@ -351,24 +378,44 @@ export default function SuccessionPlanning() {
                 <DialogTitle>Create Talent Pool</DialogTitle>
                 <DialogDescription>Group high-potential employees for succession planning</DialogDescription>
               </DialogHeader>
-              <form onSubmit={handleCreatePool} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="poolName">Pool Name *</Label>
-                  <Input id="poolName" name="poolName" placeholder="e.g., Executive Leadership Pipeline" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="poolDescription">Description</Label>
-                  <Textarea id="poolDescription" name="poolDescription" placeholder="Purpose and criteria for this talent pool" />
-                </div>
-                <DialogFooter>
-                  <Button type="button" variant="outline" onClick={() => setCreatePoolOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button type="submit" disabled={createPoolMutation.isPending}>
-                    Create Pool
-                  </Button>
-                </DialogFooter>
-              </form>
+              <Form {...poolForm}>
+                <form onSubmit={poolForm.handleSubmit(onPoolSubmit)} className="space-y-4">
+                  <FormField
+                    control={poolForm.control}
+                    name="poolName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Pool Name *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g., Executive Leadership Pipeline" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={poolForm.control}
+                    name="poolDescription"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Purpose and criteria for this talent pool" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <DialogFooter>
+                    <Button type="button" variant="outline" onClick={() => setCreatePoolOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button type="submit" disabled={createPoolMutation.isPending}>
+                      Create Pool
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </Form>
             </DialogContent>
           </Dialog>
 
@@ -383,24 +430,44 @@ export default function SuccessionPlanning() {
                 <DialogTitle>Create New Succession Plan</DialogTitle>
                 <DialogDescription>Define a succession strategy for a critical role</DialogDescription>
               </DialogHeader>
-              <form onSubmit={handleCreatePlan} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Plan Name *</Label>
-                  <Input id="name" name="name" placeholder="e.g., CFO Succession 2026" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="target">Target Role *</Label>
-                  <Input id="target" name="target" placeholder="Role being planned for" required />
-                </div>
-                <DialogFooter>
-                  <Button type="button" variant="outline" onClick={() => setCreatePlanOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button type="submit" disabled={createPlanMutation.isPending}>
-                    Create Plan
-                  </Button>
-                </DialogFooter>
-              </form>
+              <Form {...planForm}>
+                <form onSubmit={planForm.handleSubmit(onPlanSubmit)} className="space-y-4">
+                  <FormField
+                    control={planForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Plan Name *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g., CFO Succession 2026" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={planForm.control}
+                    name="target"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Target Role *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Role being planned for" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <DialogFooter>
+                    <Button type="button" variant="outline" onClick={() => setCreatePlanOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button type="submit" disabled={createPlanMutation.isPending}>
+                      Create Plan
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </Form>
             </DialogContent>
           </Dialog>
         </div>
@@ -624,46 +691,75 @@ export default function SuccessionPlanning() {
 
             {/* Add New Candidate Form */}
             <div className="border-t pt-4">
-              <form onSubmit={handleAddCandidate} className="space-y-4">
-                <h4 className="font-medium">Add New Candidate</h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="personId">Employee ID *</Label>
-                    <Input id="personId" name="personId" placeholder="e.g., EMP-101" required />
+              <Form {...candidateForm}>
+                <form onSubmit={candidateForm.handleSubmit(onCandidateSubmit)} className="space-y-4">
+                  <h4 className="font-medium">Add New Candidate</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={candidateForm.control}
+                      name="personId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Employee ID *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g., EMP-101" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={candidateForm.control}
+                      name="readiness"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Readiness *</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select readiness" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Ready Now">Ready Now</SelectItem>
+                              <SelectItem value="1-2 Years">1-2 Years</SelectItem>
+                              <SelectItem value="2-3 Years">2-3 Years</SelectItem>
+                              <SelectItem value="3+ Years">3+ Years</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={candidateForm.control}
+                      name="potential"
+                      render={({ field }) => (
+                        <FormItem className="col-span-2">
+                          <FormLabel>Potential Level *</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select potential" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="High">High</SelectItem>
+                              <SelectItem value="Medium">Medium</SelectItem>
+                              <SelectItem value="Low">Low</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="readiness">Readiness *</Label>
-                    <Select name="readiness" required>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select readiness" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Ready Now">Ready Now</SelectItem>
-                        <SelectItem value="1-2 Years">1-2 Years</SelectItem>
-                        <SelectItem value="2-3 Years">2-3 Years</SelectItem>
-                        <SelectItem value="3+ Years">3+ Years</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2 col-span-2">
-                    <Label htmlFor="potential">Potential Level *</Label>
-                    <Select name="potential" required>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select potential" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="High">High</SelectItem>
-                        <SelectItem value="Medium">Medium</SelectItem>
-                        <SelectItem value="Low">Low</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <Button type="submit" disabled={addCandidateMutation.isPending}>
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Add Candidate
-                </Button>
-              </form>
+                  <Button type="submit" disabled={addCandidateMutation.isPending}>
+                    <UserPlus className="h-4 w-4 mr-2" />
+                    Add Candidate
+                  </Button>
+                </form>
+              </Form>
             </div>
           </div>
         </DialogContent>

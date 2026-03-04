@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
-import { Input } from "@/components/ui/input";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 
 export default function CarrierManager() {
@@ -55,7 +55,7 @@ export default function CarrierManager() {
         <StandardPage title="Carrier & Rate Management">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground">Manage transportation providers, service levels, and performance ratings.</p>
                 </div>
                 <Button variant="premium">
@@ -99,9 +99,12 @@ export default function CarrierManager() {
             </div>
 
             <div className="flex items-center space-x-2">
-                <div className="relative flex-1 max-w-sm">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Search carriers by SCAC or Name..." className="pl-8 h-9 shadow-sm" />
+                <div className="flex-1 max-w-sm">
+                    <ContextualSearch
+                        placeholder="Search carriers by SCAC or Name..."
+                        fields={[{ key: "query", label: "Search", type: "text" }]}
+                        onSearch={() => { }}
+                    />
                 </div>
                 <Button variant="outline" size="sm">
                     <Globe className="mr-2 h-4 w-4" /> All Lanes

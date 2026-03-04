@@ -12,6 +12,17 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
 
 interface Territory {
     id: string;
@@ -28,11 +39,30 @@ interface Rule {
     priority: number;
 }
 
+const territorySchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    description: z.string().optional(),
+});
+
+const ruleSchema = z.object({
+    field: z.string().min(1, "Field is required"),
+    operator: z.string().min(1, "Operator is required"),
+    value: z.string().min(1, "Value is required"),
+});
+
 export default function TerritoryManager() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [selectedTerritory, setSelectedTerritory] = useState<Territory | null>(null);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
+
+    const form = useForm<z.infer<typeof territorySchema>>({
+        resolver: zodResolver(territorySchema),
+        defaultValues: {
+            name: "",
+            description: "",
+        },
+    });
 
     // Fetch Territories
     const { data: territories, isLoading } = useQuery<Territory[]>({
@@ -53,9 +83,14 @@ export default function TerritoryManager() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/crm/territories"] });
             setIsCreateOpen(false);
+            form.reset();
             toast({ title: "Territory Created" });
         },
     });
+
+    const onSubmit = (values: z.infer<typeof territorySchema>) => {
+        createTerritory.mutate(values);
+    };
 
     return (
         <StandardPage
@@ -71,28 +106,41 @@ export default function TerritoryManager() {
                             <DialogTitle>Create Territory</DialogTitle>
                             <DialogDescription>Define a new sales territory region.</DialogDescription>
                         </DialogHeader>
-                        <form onSubmit={(e) => {
-                            e.preventDefault();
-                            const formData = new FormData(e.currentTarget);
-                            createTerritory.mutate({
-                                name: formData.get("name"),
-                                description: formData.get("description"),
-                            });
-                        }}>
-                            <div className="space-y-4 py-4">
-                                <div className="grid gap-2">
-                                    <Label>Name</Label>
-                                    <Input name="name" placeholder="e.g. East Coast" required />
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)}>
+                                <div className="space-y-4 py-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="name"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Name</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="e.g. East Coast" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="description"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Description</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="Optional description" {...field} value={field.value || ""} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
                                 </div>
-                                <div className="grid gap-2">
-                                    <Label>Description</Label>
-                                    <Input name="description" placeholder="Optional description" />
-                                </div>
-                            </div>
-                            <DialogFooter>
-                                <Button type="submit">Create</Button>
-                            </DialogFooter>
-                        </form>
+                                <DialogFooter>
+                                    <Button type="submit" disabled={createTerritory.isPending}>Create</Button>
+                                </DialogFooter>
+                            </form>
+                        </Form>
                     </DialogContent>
                 </Dialog>
             }
@@ -144,6 +192,15 @@ function TerritoryRulesEditor({ territory }: { territory: Territory }) {
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
+    const form = useForm<z.infer<typeof ruleSchema>>({
+        resolver: zodResolver(ruleSchema),
+        defaultValues: {
+            field: "billingState",
+            operator: "equals",
+            value: "",
+        },
+    });
+
     // Fetch Rules
     const { data: rules } = useQuery<Rule[]>({
         queryKey: ["/api/crm/territories", territory.id, "rules"],
@@ -165,9 +222,17 @@ function TerritoryRulesEditor({ territory }: { territory: Territory }) {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/crm/territories", territory.id, "rules"] });
+            form.reset();
             toast({ title: "Rule Added" });
         }
     });
+
+    const onSubmit = (values: z.infer<typeof ruleSchema>) => {
+        addRule.mutate({
+            ...values,
+            priority: 1
+        });
+    };
 
     return (
         <Card>
@@ -211,47 +276,66 @@ function TerritoryRulesEditor({ territory }: { territory: Territory }) {
                 {/* Add Rule Form */}
                 <div className="p-4 bg-muted/30 rounded-lg border space-y-4">
                     <h4 className="text-sm font-semibold">Add New Rule</h4>
-                    <form onSubmit={(e) => {
-                        e.preventDefault();
-                        const formData = new FormData(e.currentTarget);
-                        addRule.mutate({
-                            field: formData.get("field"),
-                            operator: formData.get("operator"),
-                            value: formData.get("value"),
-                            priority: 1
-                        });
-                        (e.target as HTMLFormElement).reset();
-                    }} className="flex gap-4 items-end">
-                        <div className="space-y-2 flex-1">
-                            <Label>Field</Label>
-                            <Select name="field" defaultValue="billingState">
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="billingState">Billing State</SelectItem>
-                                    <SelectItem value="industry">Industry</SelectItem>
-                                    <SelectItem value="annualRevenue">Annual Revenue</SelectItem>
-                                    <SelectItem value="numberOfEmployees">Employees</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2 w-[150px]">
-                            <Label>Operator</Label>
-                            <Select name="operator" defaultValue="equals">
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="equals">Equals</SelectItem>
-                                    <SelectItem value="contains">Contains</SelectItem>
-                                    <SelectItem value="gt">Greater Than</SelectItem>
-                                    <SelectItem value="lt">Less Than</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2 flex-1">
-                            <Label>Value</Label>
-                            <Input name="value" placeholder="Value to match..." required />
-                        </div>
-                        <Button type="submit" disabled={addRule.isPending}>Add Rule</Button>
-                    </form>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-4 items-end">
+                            <FormField
+                                control={form.control}
+                                name="field"
+                                render={({ field }) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>Field</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger><SelectValue /></SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="billingState">Billing State</SelectItem>
+                                                <SelectItem value="industry">Industry</SelectItem>
+                                                <SelectItem value="annualRevenue">Annual Revenue</SelectItem>
+                                                <SelectItem value="numberOfEmployees">Employees</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="operator"
+                                render={({ field }) => (
+                                    <FormItem className="w-[150px]">
+                                        <FormLabel>Operator</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger><SelectValue /></SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="equals">Equals</SelectItem>
+                                                <SelectItem value="contains">Contains</SelectItem>
+                                                <SelectItem value="gt">Greater Than</SelectItem>
+                                                <SelectItem value="lt">Less Than</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="value"
+                                render={({ field }) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>Value</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Value to match..." {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <Button type="submit" disabled={addRule.isPending}>Add Rule</Button>
+                        </form>
+                    </Form>
                 </div>
             </CardContent>
         </Card>

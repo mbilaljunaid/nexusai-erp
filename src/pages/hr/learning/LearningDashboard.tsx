@@ -22,6 +22,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+const courseSchema = z.object({
+  title: z.string().min(1, "Course Title is required"),
+  description: z.string().optional()
+});
 
 export default function LearningManagement() {
   const { open, sendMessage } = useNexusAI();
@@ -84,9 +93,27 @@ export default function LearningManagement() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["learning-courses"] });
       setIsCreateOpen(false);
+      form.reset();
       toast({ title: "Course Created" });
     },
   });
+
+  const form = useForm<z.infer<typeof courseSchema>>({
+    resolver: zodResolver(courseSchema),
+    defaultValues: {
+      title: "",
+      description: ""
+    }
+  });
+
+  const onSubmit = (values: z.infer<typeof courseSchema>) => {
+    createCourseMutation.mutate({
+      title: values.title,
+      description: values.description,
+      provider: "Internal",
+      durationMinutes: 60
+    });
+  };
 
   // Enroll / Request Mutation
   const enrollMutation = useMutation({
@@ -156,16 +183,7 @@ export default function LearningManagement() {
     },
   });
 
-  const handleCreateCourse = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    createCourseMutation.mutate({
-      title: formData.get("title"),
-      description: formData.get("description"),
-      provider: "Internal",
-      durationMinutes: 60
-    });
-  };
+
 
   if (isCatalogLoading) return <div className="p-8">Loading Learning Catalog...</div>;
 
@@ -192,17 +210,37 @@ export default function LearningManagement() {
               <DialogHeader>
                 <DialogTitle>Add New Course</DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleCreateCourse} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="title">Course Title</Label>
-                  <Input id="title" name="title" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
-                  <Input id="description" name="description" />
-                </div>
-                <Button type="submit" className="w-full">Publish Course</Button>
-              </form>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Course Title</FormLabel>
+                        <FormControl>
+                          <Input required {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                          <Input {...field} value={field.value || ""} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" className="w-full">Publish Course</Button>
+                </form>
+              </Form>
             </DialogContent>
           </Dialog>
         </div>

@@ -13,6 +13,7 @@ import { useState, useMemo } from "react";
 import { CreateASNModal } from "@/components/supplier-portal/CreateASNModal";
 import { toast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { ExportButton } from "@/components/ExportButton";
 
 
 export default function SupplierASNs() {
@@ -73,41 +74,13 @@ export default function SupplierASNs() {
         return filtered;
     }, [asns, searchQuery, dateRange, sortField, sortDirection]);
 
-    // CSV Export
-    const handleExportCSV = () => {
-        const dataToExport = selectedAsns.size > 0
-            ? filteredAsns.filter((asn: any) => selectedAsns.has(asn.id))
-            : filteredAsns;
-
-        if (!dataToExport || dataToExport.length === 0) {
-            toast({ title: "No Data", description: "No shipments to export", variant: "destructive" });
-            return;
-        }
-
-        const headers = ["ASN Number", "PO Number", "Shipped Date", "Status"];
-        const rows = dataToExport.map((asn: any) => [
-            asn.asnNumber,
-            asn.poNumber,
-            asn.shippedDate ? format(new Date(asn.shippedDate), 'yyyy-MM-dd') : '',
-            asn.status
-        ]);
-
-        const csvContent = [
-            headers.join(","),
-            ...rows.map(row => row.join(","))
-        ].join("\n");
-
-        const blob = new Blob([csvContent], { type: "text/csv" });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `supplier-asns-${format(new Date(), 'yyyy-MM-dd')}.csv`;
-        a.click();
-        window.URL.revokeObjectURL(url);
-
-        const count = selectedAsns.size > 0 ? selectedAsns.size : dataToExport.length;
-        toast({ title: "Export Successful", description: `${count} shipments exported` });
-    };
+    // Data mapping for export
+    const exportData = (selectedAsns.size > 0 ? filteredAsns.filter((asn: any) => selectedAsns.has(asn.id)) : filteredAsns).map((asn: any) => ({
+        "ASN Number": asn.asnNumber,
+        "PO Number": asn.poNumber,
+        "Shipped Date": asn.shippedDate ? format(new Date(asn.shippedDate), 'yyyy-MM-dd') : '',
+        "Status": asn.status
+    }));
 
     const toggleAsnSelection = (asnId: string) => {
         const newSelection = new Set(selectedAsns);
@@ -147,7 +120,7 @@ export default function SupplierASNs() {
         <StandardPage title="Shipments (ASN)">
             <div className="flex items-center justify-between">
                 <div>
-                    
+
                     <p className="text-sm text-muted-foreground mt-1">
                         {filteredAsns.length} {filteredAsns.length === 1 ? 'shipment' : 'shipments'} found
                         {selectedAsns.size > 0 && ` • ${selectedAsns.size} selected`}
@@ -159,10 +132,10 @@ export default function SupplierASNs() {
                             <X className="h-4 w-4" />
                         </Button>
                     )}
-                    <Button onClick={handleExportCSV} variant="outline" className="gap-2">
-                        <Download className="h-4 w-4" />
-                        {selectedAsns.size > 0 ? `Export Selected (${selectedAsns.size})` : 'Export CSV'}
-                    </Button>
+                    <ExportButton
+                        data={exportData}
+                        filename={`supplier-asns-${format(new Date(), 'yyyy-MM-dd')}`}
+                    />
                     <Button onClick={() => setIsCreateOpen(true)}>
                         <Plus className="mr-2 h-4 w-4" />
                         Create ASN

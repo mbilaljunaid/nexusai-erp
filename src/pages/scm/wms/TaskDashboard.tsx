@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 export default function TaskDashboard() {
     const { data: tasksData = { data: [] }, isLoading } = useQuery({
@@ -85,9 +86,12 @@ export default function TaskDashboard() {
                         <CardDescription>Live views of picking, putaway, and counting tasks</CardDescription>
                     </div>
                     <div className="flex gap-2">
-                        <div className="relative">
-                            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-                            <Input placeholder="Search tasks..." className="pl-9 w-64 bg-slate-950 border-slate-800" />
+                        <div className="w-64">
+                            <ContextualSearch
+                                placeholder="Search tasks..."
+                                fields={[{ key: "query", label: "Search", type: "text" }]}
+                                onSearch={() => { }}
+                            />
                         </div>
                         <Button variant="outline" className="border-slate-800 bg-slate-950">
                             <Filter className="w-4 h-4 mr-2" /> Filter

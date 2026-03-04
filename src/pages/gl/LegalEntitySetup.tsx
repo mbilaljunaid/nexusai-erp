@@ -12,88 +12,129 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Plus, Building2, ShieldCheck, CreditCard } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+const legalEntitySchema = z.object({
+    name: z.string().min(1, "Entity Name is required"),
+    taxId: z.string().optional(),
+    ledgerId: z.string().min(1, "Primary Ledger is required"),
+    countryCode: z.string().min(2, "Country Code required").max(2),
+    addressLine1: z.string().optional()
+});
 
 function EntityForm({ onSubmit, ledgers, isLoading }: { onSubmit: (data: any) => void, ledgers: any[], isLoading: boolean }) {
-    const [formData, setFormData] = useState({
-        name: "",
-        taxId: "",
-        ledgerId: "",
-        countryCode: "US", // Default
-        addressLine1: "",
-        city: ""
+    const form = useForm<z.infer<typeof legalEntitySchema>>({
+        resolver: zodResolver(legalEntitySchema),
+        defaultValues: {
+            name: "",
+            taxId: "",
+            ledgerId: "",
+            countryCode: "US", // Default
+            addressLine1: ""
+        }
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        onSubmit(formData);
+    const handleSubmit = (values: z.infer<typeof legalEntitySchema>) => {
+        onSubmit(values);
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 py-4">
-            <div className="space-y-2">
-                <Label htmlFor="name">Entity Name</Label>
-                <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={e => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="e.g. Nexus Corp - USA"
-                    required
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 py-4">
+                <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Entity Name *</FormLabel>
+                            <FormControl>
+                                <Input placeholder="e.g. Nexus Corp - USA" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
                 />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                    <Label htmlFor="taxId">Tax / VAT ID</Label>
-                    <Input
-                        id="taxId"
-                        value={formData.taxId}
-                        onChange={e => setFormData({ ...formData, taxId: e.target.value })}
-                        placeholder="XX-XXXXXXX"
+
+                <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                        control={form.control}
+                        name="taxId"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Tax / VAT ID</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="XX-XXXXXXX" {...field} value={field.value || ""} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="countryCode"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Jurisdiction</FormLabel>
+                                <FormControl>
+                                    <Input maxLength={2} placeholder="US" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
                     />
                 </div>
-                <div className="space-y-2">
-                    <Label htmlFor="country">Jurisdiction</Label>
-                    <Input
-                        id="country"
-                        value={formData.countryCode}
-                        onChange={e => setFormData({ ...formData, countryCode: e.target.value })}
-                        maxLength={2}
-                        placeholder="US"
-                    />
-                </div>
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="address">Registered Address</Label>
-                <Input
-                    id="address"
-                    value={formData.addressLine1}
-                    onChange={e => setFormData({ ...formData, addressLine1: e.target.value })}
-                    placeholder="123 Corporate Blvd"
+
+                <FormField
+                    control={form.control}
+                    name="addressLine1"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Registered Address</FormLabel>
+                            <FormControl>
+                                <Input placeholder="123 Corporate Blvd" {...field} value={field.value || ""} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
                 />
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="ledger">Primary Ledger</Label>
-                <Select
-                    value={formData.ledgerId}
-                    onValueChange={(val) => setFormData({ ...formData, ledgerId: val })}
-                >
-                    <SelectTrigger>
-                        <SelectValue placeholder="Select Ledger" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {ledgers.map(l => (
-                            <SelectItem key={l.id} value={l.id.toString()}>{l.name}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-                <p className="text-[10px] text-muted-foreground">The primary ledger dictates the chart of accounts and currency.</p>
-            </div>
-            <DialogFooter>
-                <Button type="submit" disabled={isLoading} className="w-full">
-                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                    Register Entity
-                </Button>
-            </DialogFooter>
-        </form>
+
+                <FormField
+                    control={form.control}
+                    name="ledgerId"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Primary Ledger *</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select Ledger" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {ledgers.map(l => (
+                                        <SelectItem key={l.id} value={l.id.toString()}>{l.name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <p className="text-[10px] text-muted-foreground mt-1">
+                                The primary ledger dictates the chart of accounts and currency.
+                            </p>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <DialogFooter>
+                    <Button type="submit" disabled={isLoading} className="w-full">
+                        {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                        Register Entity
+                    </Button>
+                </DialogFooter>
+            </form>
+        </Form>
     );
 }
 

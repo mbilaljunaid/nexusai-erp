@@ -8,6 +8,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Loader2, Folder, FolderOpen, ChevronRight, Home, Book } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+
+const communitySchema = z.object({
+    title: z.string().min(1, "Title is required")
+});
 
 export default function CommunityBrowser() {
     const { toast } = useToast();
@@ -56,8 +64,20 @@ export default function CommunityBrowser() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["communities"] });
             toast({ title: "Community Created" });
+            form.reset();
         }
     });
+
+    const form = useForm<z.infer<typeof communitySchema>>({
+        resolver: zodResolver(communitySchema),
+        defaultValues: {
+            title: ""
+        }
+    });
+
+    const onSubmit = (values: z.infer<typeof communitySchema>) => {
+        createMutation.mutate(values.title);
+    };
 
     return (
         <StandardPage
@@ -91,17 +111,25 @@ export default function CommunityBrowser() {
                     <Card className="md:col-span-1">
                         <CardHeader><CardTitle className="text-sm">Quick Add</CardTitle></CardHeader>
                         <CardContent>
-                            <form onSubmit={(e) => {
-                                e.preventDefault();
-                                const fd = new FormData(e.currentTarget);
-                                createMutation.mutate(fd.get("title") as string);
-                                e.currentTarget.reset();
-                            }} className="space-y-2">
-                                <Input name="title" placeholder="New Sub-community..." required />
-                                <Button type="submit" size="sm" className="w-full" disabled={createMutation.isPending}>
-                                    <Folder className="mr-2 h-4 w-4" /> Create
-                                </Button>
-                            </form>
+                            <Form {...form}>
+                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+                                    <FormField
+                                        control={form.control}
+                                        name="title"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormControl>
+                                                    <Input placeholder="New Sub-community..." {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <Button type="submit" size="sm" className="w-full" disabled={createMutation.isPending}>
+                                        <Folder className="mr-2 h-4 w-4" /> Create
+                                    </Button>
+                                </form>
+                            </Form>
                         </CardContent>
                     </Card>
 

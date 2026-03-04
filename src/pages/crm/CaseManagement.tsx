@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, Clock, CheckCircle, XCircle, TrendingUp, User, MessageSquare } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 interface ServiceCase {
     id: string;
@@ -179,8 +180,14 @@ export default function CaseManagement() {
 
                 {/* Action Bar */}
                 <div className="flex items-center justify-between bg-card p-4 rounded-lg border">
-                    <div className="flex items-center gap-4">
-                        <Input placeholder="Search cases..." className="w-64" />
+                    <div className="flex items-center gap-4 flex-1">
+                        <div className="w-72">
+                            <ContextualSearch
+                                placeholder="Search cases..."
+                                fields={[{ key: "query", label: "Search", type: "text" }]}
+                                onSearch={() => { }}
+                            />
+                        </div>
                         <Select defaultValue="all">
                             <SelectTrigger className="w-40">
                                 <SelectValue />

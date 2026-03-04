@@ -9,10 +9,25 @@ import { GlassmorphismCard } from "@/components/lovable"; // Premium card
 import { useRBAC } from "@/components/RBACContext";
 import { colors } from "@/lib/design-tokens";
 import { animations } from "@/lib/animations";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
+  rememberMe: z.boolean().optional(),
+});
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -30,8 +45,16 @@ export default function LoginPage() {
     }
   }, [isLoading, isAuthenticated, navigate]);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      rememberMe: false,
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     setLoading(true);
     setError("");
 
@@ -40,7 +63,7 @@ export default function LoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: values.email, password: values.password }),
       });
 
       if (res.ok) {
@@ -171,76 +194,107 @@ export default function LoginPage() {
                   <p className="text-muted-foreground">Redirecting...</p>
                 </div>
               ) : (
-                <form onSubmit={handleLogin} className="space-y-6">
-                  {error && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-sm text-center"
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    {error && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-sm text-center"
+                      >
+                        {error}
+                      </motion.div>
+                    )}
+
+                    <div className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="ml-1">Email</FormLabel>
+                            <FormControl>
+                              <div className="relative group">
+                                <Mail className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                                <Input
+                                  type="email"
+                                  placeholder="name@company.com"
+                                  className="pl-10 h-11 bg-white/5 border-white/10 focus:border-primary/50 transition-all"
+                                  {...field}
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="ml-1">Password</FormLabel>
+                            <FormControl>
+                              <div className="relative group">
+                                <Lock className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                                <Input
+                                  type={showPassword ? "text" : "password"}
+                                  placeholder="••••••••"
+                                  className="pl-10 h-11 bg-white/5 border-white/10 focus:border-primary/50 transition-all"
+                                  {...field}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => setShowPassword(!showPassword)}
+                                  className="absolute right-3 top-3 text-muted-foreground hover:text-white transition-colors"
+                                >
+                                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                </button>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between text-sm">
+                      <FormField
+                        control={form.control}
+                        name="rememberMe"
+                        render={({ field }) => (
+                          <FormItem className="flex items-center gap-2 space-y-0">
+                            <FormControl>
+                              <input
+                                type="checkbox"
+                                className="rounded bg-white/10 border-white/20"
+                                checked={field.value}
+                                onChange={field.onChange}
+                              />
+                            </FormControl>
+                            <FormLabel className="cursor-pointer text-muted-foreground hover:text-white transition-colors font-normal">
+                              Remember me
+                            </FormLabel>
+                          </FormItem>
+                        )}
+                      />
+                      <Link to="/forgot-password">
+                        <span className="text-primary hover:text-primary/80 cursor-pointer">Forgot password?</span>
+                      </Link>
+                    </div>
+
+                    <Button
+                      type="submit"
+                      className="w-full h-11 text-base font-semibold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all"
+                      disabled={loading}
+                      size="lg"
                     >
-                      {error}
-                    </motion.div>
-                  )}
-
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-1.5 ml-1">Email</label>
-                      <div className="relative group">
-                        <Mail className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                        <Input
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="name@company.com"
-                          className="pl-10 h-11 bg-white/5 border-white/10 focus:border-primary/50 transition-all"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1.5 ml-1">Password</label>
-                      <div className="relative group">
-                        <Lock className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          placeholder="••••••••"
-                          className="pl-10 h-11 bg-white/5 border-white/10 focus:border-primary/50 transition-all"
-                          required
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-3 text-muted-foreground hover:text-white transition-colors"
-                        >
-                          {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between text-sm">
-                    <label className="flex items-center gap-2 cursor-pointer text-muted-foreground hover:text-white transition-colors">
-                      <input type="checkbox" className="rounded bg-white/10 border-white/20" />
-                      <span>Remember me</span>
-                    </label>
-                    <Link to="/forgot-password">
-                      <span className="text-primary hover:text-primary/80 cursor-pointer">Forgot password?</span>
-                    </Link>
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="w-full h-11 text-base font-semibold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all"
-                    disabled={loading}
-                    size="lg"
-                  >
-                    {loading ? "Signing in..." : "Sign In"}
-                    {!loading && <ArrowRight className="ml-2 w-4 h-4" />}
-                  </Button>
-                </form>
+                      {loading ? "Signing in..." : "Sign In"}
+                      {!loading && <ArrowRight className="ml-2 w-4 h-4" />}
+                    </Button>
+                  </form>
+                </Form>
               )}
 
               <div className="mt-8 pt-6 border-t border-white/10 text-center space-y-4">

@@ -12,6 +12,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Edit2, Search, Building2, User, Eye, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
 
 interface Party {
     id: string;
@@ -23,6 +34,14 @@ interface Party {
     createdAt: string;
 }
 
+const partySchema = z.object({
+    partyType: z.enum(["ORGANIZATION", "PERSON"]),
+    name: z.string().min(1, "Name is required"),
+    email: z.string().email("Invalid email").optional().or(z.literal("")),
+    phone: z.string().optional(),
+    idNumber: z.string().optional(),
+});
+
 export default function PartyDirectory() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
@@ -32,6 +51,17 @@ export default function PartyDirectory() {
     // Basic Search Party fetch
     const { data: parties = [], isLoading } = useQuery<Party[]>({
         queryKey: ["/api/mdm/parties"],
+    });
+
+    const form = useForm<z.infer<typeof partySchema>>({
+        resolver: zodResolver(partySchema),
+        defaultValues: {
+            partyType: "ORGANIZATION",
+            name: "",
+            email: "",
+            phone: "",
+            idNumber: ""
+        }
     });
 
     // Create Mutation
@@ -64,6 +94,7 @@ export default function PartyDirectory() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/mdm/parties"] });
             setIsSheetOpen(false);
+            form.reset();
             toast({ title: "Success", description: "Party created successfully" });
         },
         onError: () => {
@@ -106,17 +137,8 @@ export default function PartyDirectory() {
         }
     ];
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        const formData = new FormData(e.target as HTMLFormElement);
-        const data = {
-            name: formData.get("name") as string,
-            partyType: formData.get("partyType") as string,
-            email: formData.get("email") as string,
-            phone: formData.get("phone") as string,
-            idNumber: formData.get("idNumber") as string
-        };
-        mutation.mutate(data);
+    const onSubmit = (values: z.infer<typeof partySchema>) => {
+        mutation.mutate(values);
     };
 
     return (
@@ -125,7 +147,10 @@ export default function PartyDirectory() {
             description="Centralized registry for all Organizations and People (TCA)"
             breadcrumbs={[{ label: "MDM", href: "/mdm/governance" }, { label: "Registry" }]}
             actions={
-                <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                <Sheet open={isSheetOpen} onOpenChange={(open) => {
+                    setIsSheetOpen(open);
+                    if (!open) form.reset();
+                }}>
                     <div className="flex gap-2">
                         <Button variant="outline" onClick={() => setLocation("/mdm/import")}>
                             <Upload className="mr-2 h-4 w-4" /> Bulk Import
@@ -140,37 +165,86 @@ export default function PartyDirectory() {
                         <SheetHeader>
                             <SheetTitle>Create New Party</SheetTitle>
                         </SheetHeader>
-                        <form onSubmit={handleSubmit} className="space-y-4 mt-6">
-                            <div className="space-y-2">
-                                <Label htmlFor="partyType">Party Type</Label>
-                                <Select name="partyType" defaultValue="ORGANIZATION">
-                                    <SelectTrigger><SelectValue /></SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="ORGANIZATION">Organization</SelectItem>
-                                        <SelectItem value="PERSON">Person</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="name">Name</Label>
-                                <Input id="name" name="name" placeholder="Company or Full Name" required />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="email">Email</Label>
-                                <Input id="email" name="email" type="email" />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="phone">Phone</Label>
-                                <Input id="phone" name="phone" />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="idNumber">Registry ID / DUNS</Label>
-                                <Input id="idNumber" name="idNumber" placeholder="Optional" />
-                            </div>
-                            <Button type="submit" className="w-full" disabled={mutation.isPending}>
-                                {mutation.isPending ? "Creating..." : "Create Record"}
-                            </Button>
-                        </form>
+                        <div className="mt-6">
+                            <Form {...form}>
+                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="partyType"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Party Type</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="ORGANIZATION">Organization</SelectItem>
+                                                        <SelectItem value="PERSON">Person</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="name"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Name</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="Company or Full Name" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="email"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Email</FormLabel>
+                                                <FormControl>
+                                                    <Input type="email" {...field} value={field.value || ""} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="phone"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Phone</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} value={field.value || ""} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="idNumber"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Registry ID / DUNS</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="Optional" {...field} value={field.value || ""} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <Button type="submit" className="w-full" disabled={mutation.isPending}>
+                                        {mutation.isPending ? "Creating..." : "Create Record"}
+                                    </Button>
+                                </form>
+                            </Form>
+                        </div>
                     </SheetContent>
                 </Sheet>
             }

@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { ContextualSearch } from "@/components/ContextualSearch";
 import {
     GitMerge,
     TrendingUp,
@@ -204,9 +205,12 @@ export default function WorkforceStructureSetup() {
                             <CardContent>
 
                                 <div className="flex gap-4 mb-6">
-                                    <div className="relative flex-1">
-                                        <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                        <Input placeholder="Search Grade Ladders..." className="pl-9" />
+                                    <div className="flex-1">
+                                        <ContextualSearch
+                                            placeholder="Search Grade Ladders..."
+                                            fields={[{ key: "query", label: "Search", type: "text" }]}
+                                            onSearch={() => { }}
+                                        />
                                     </div>
                                     <Select defaultValue="active">
                                         <SelectTrigger className="w-[180px]">

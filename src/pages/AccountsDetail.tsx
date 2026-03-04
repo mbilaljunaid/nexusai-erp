@@ -41,6 +41,14 @@ type InsertAccount = z.infer<typeof insertAccountSchema>;
 import type { Account } from "@/types/erp-types";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
 
 function AccountEntryForm({ onSuccess }: { onSuccess?: () => void }) {
     const { toast } = useToast();
@@ -78,46 +86,101 @@ function AccountEntryForm({ onSuccess }: { onSuccess?: () => void }) {
 
     return (
         <div className="space-y-6 pt-4">
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <div className="grid grid-cols-1 gap-4">
-                    {/* Core Info */}
-                    <div className="space-y-2">
-                        <Label htmlFor="name">Account Name *</Label>
-                        <Input id="name" {...form.register("name")} placeholder="Acme Corp" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="phone">Phone</Label>
-                            <Input id="phone" {...form.register("phone")} placeholder="+1 555..." />
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <div className="grid grid-cols-1 gap-4">
+                        <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Account Name *</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Acme Corp" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <div className="grid grid-cols-2 gap-4">
+                            <FormField
+                                control={form.control}
+                                name="phone"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Phone</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="+1 555..." {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="website"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Website</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="https://..." {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="website">Website</Label>
-                            <Input id="website" {...form.register("website")} placeholder="https://..." />
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <FormField
+                                control={form.control}
+                                name="type"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Type</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Customer, Partner..." {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="industry"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Industry</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Tech, Retail..." {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                         </div>
+
+                        <FormField
+                            control={form.control}
+                            name="description"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Description</FormLabel>
+                                    <FormControl>
+                                        <Textarea placeholder="Account details..." {...field} value={field.value || ""} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="type">Type</Label>
-                            <Input id="type" {...form.register("type")} placeholder="Customer, Partner..." />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="industry">Industry</Label>
-                            <Input id="industry" {...form.register("industry")} placeholder="Tech, Retail..." />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="description">Description</Label>
-                        <Textarea id="description" {...form.register("description")} placeholder="Account details..." />
-                    </div>
-                </div>
-
-                <Button type="submit" disabled={createMutation.isPending} className="w-full">
-                    {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Create Account
-                </Button>
-            </form>
+                    <Button type="submit" disabled={createMutation.isPending} className="w-full">
+                        {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Create Account
+                    </Button>
+                </form>
+            </Form>
         </div>
     );
 }

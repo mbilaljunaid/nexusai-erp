@@ -28,6 +28,24 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+
+const calendarSchema = z.object({
+    calendarCode: z.string().min(1, "Calendar Code is required"),
+    description: z.string().optional(),
+    weekendDays: z.string().min(1, "Weekend Days are required"),
+    status: z.enum(["active", "draft", "archived"]).default("active"),
+});
 
 interface Calendar {
     id: string;
@@ -45,12 +63,14 @@ export default function CalendarManager() {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
 
-    // Form State
-    const [formData, setFormData] = useState({
-        calendarCode: "",
-        description: "",
-        weekendDays: "SAT,SUN",
-        status: "active"
+    const form = useForm<z.infer<typeof calendarSchema>>({
+        resolver: zodResolver(calendarSchema),
+        defaultValues: {
+            calendarCode: "",
+            description: "",
+            weekendDays: "SAT,SUN",
+            status: "active"
+        }
     });
 
     const { data: calendars, isLoading } = useQuery<Calendar[]>({
@@ -70,7 +90,7 @@ export default function CalendarManager() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/manufacturing/calendars"] });
             setIsSheetOpen(false);
-            setFormData({ calendarCode: "", description: "", weekendDays: "SAT,SUN", status: "active" });
+            form.reset();
             toast({ title: "Success", description: "Production Calendar created successfully." });
         },
         onError: (error: Error) => {
@@ -125,9 +145,8 @@ export default function CalendarManager() {
         }
     ];
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        createMutation.mutate(formData);
+    const onSubmit = (values: z.infer<typeof calendarSchema>) => {
+        createMutation.mutate(values);
     };
 
     return (
@@ -149,70 +168,91 @@ export default function CalendarManager() {
                                 Establish a new working calendar for resources and work centers.
                             </SheetDescription>
                         </SheetHeader>
-                        <form onSubmit={handleSubmit} className="space-y-6 mt-6">
-                            <div className="space-y-4">
-                                <div className="grid gap-2">
-                                    <Label htmlFor="code">Calendar Code</Label>
-                                    <Input
-                                        id="code"
-                                        placeholder="e.g. FACTORY-MAIN-2026"
-                                        value={formData.calendarCode}
-                                        onChange={(e) => setFormData({ ...formData, calendarCode: e.target.value })}
-                                        required
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-6">
+                                <div className="space-y-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="calendarCode"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Calendar Code</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="e.g. FACTORY-MAIN-2026" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="description"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Description</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="Main shift calendar for assembly line" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="weekendDays"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Weekend Policy</FormLabel>
+                                                <Select onValueChange={field.onChange} value={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="SAT,SUN">Saturday & Sunday</SelectItem>
+                                                        <SelectItem value="SUN">Sunday Only</SelectItem>
+                                                        <SelectItem value="FRI,SAT">Friday & Saturday</SelectItem>
+                                                        <SelectItem value="NONE">No Weekends (24/7)</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="status"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Status</FormLabel>
+                                                <Select onValueChange={field.onChange} value={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="active">Active</SelectItem>
+                                                        <SelectItem value="draft">Draft</SelectItem>
+                                                        <SelectItem value="archived">Archived</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
                                     />
                                 </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="desc">Description</Label>
-                                    <Input
-                                        id="desc"
-                                        placeholder="Main shift calendar for assembly line"
-                                        value={formData.description}
-                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    />
+                                <div className="flex justify-end gap-3 pt-4">
+                                    <Button variant="outline" type="button" onClick={() => setIsSheetOpen(false)}>
+                                        Cancel
+                                    </Button>
+                                    <Button type="submit" disabled={createMutation.isPending}>
+                                        {createMutation.isPending ? "Creating..." : "Create Calendar"}
+                                    </Button>
                                 </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="weekends">Weekend Policy</Label>
-                                    <Select
-                                        value={formData.weekendDays}
-                                        onValueChange={(val) => setFormData({ ...formData, weekendDays: val })}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="SAT,SUN">Saturday & Sunday</SelectItem>
-                                            <SelectItem value="SUN">Sunday Only</SelectItem>
-                                            <SelectItem value="FRI,SAT">Friday & Saturday</SelectItem>
-                                            <SelectItem value="NONE">No Weekends (24/7)</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="status">Status</Label>
-                                    <Select
-                                        value={formData.status}
-                                        onValueChange={(val) => setFormData({ ...formData, status: val })}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="active">Active</SelectItem>
-                                            <SelectItem value="draft">Draft</SelectItem>
-                                            <SelectItem value="archived">Archived</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-                            <div className="flex justify-end gap-3 pt-4">
-                                <Button variant="outline" type="button" onClick={() => setIsSheetOpen(false)}>
-                                    Cancel
-                                </Button>
-                                <Button type="submit" disabled={createMutation.isPending}>
-                                    {createMutation.isPending ? "Creating..." : "Create Calendar"}
-                                </Button>
-                            </div>
-                        </form>
+                            </form>
+                        </Form>
                     </SheetContent>
                 </Sheet>
             }

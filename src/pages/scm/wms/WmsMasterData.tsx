@@ -16,6 +16,7 @@ import {
     Edit2
 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 export default function WmsMasterData() {
     return (
@@ -79,7 +80,13 @@ export default function WmsMasterData() {
                                 <CardDescription>Specific aisle, bay, level, and bin locations</CardDescription>
                             </div>
                             <div className="flex gap-2">
-                                <Input placeholder="Search locators..." className="w-64 bg-slate-950 border-slate-800" />
+                                <div className="w-64">
+                                    <ContextualSearch
+                                        placeholder="Search locators..."
+                                        fields={[{ key: "query", label: "Search", type: "text" }]}
+                                        onSearch={() => { }}
+                                    />
+                                </div>
                                 <Button className="bg-blue-600 hover:bg-blue-500">
                                     <Plus className="w-4 h-4 mr-2" /> Add Locator
                                 </Button>

@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -127,24 +127,28 @@ export default function Planning() {
                     <FormItem>
                       <FormLabel>Forecast Name</FormLabel>
                       <FormControl><Input {...field} placeholder="Q1 2025 Forecast" data-testid="input-forecast-name" /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={forecastForm.control} name="forecastPeriod" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Period</FormLabel>
                       <FormControl><Input {...field} placeholder="Q1 2025" data-testid="input-forecast-period" /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={forecastForm.control} name="baselineRevenue" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Baseline Revenue</FormLabel>
                       <FormControl><Input {...field} type="number" placeholder="1000000" data-testid="input-baseline-revenue" /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={forecastForm.control} name="forecastRevenue" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Forecast Revenue</FormLabel>
                       <FormControl><Input {...field} type="number" placeholder="1200000" data-testid="input-forecast-revenue" /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                   <Button type="submit" disabled={createForecastMutation.isPending} className="w-full" data-testid="button-create-forecast">
@@ -193,18 +197,21 @@ export default function Planning() {
                     <FormItem>
                       <FormLabel>Department</FormLabel>
                       <FormControl><Input {...field} placeholder="Engineering" data-testid="input-department" /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={budgetForm.control} name="year" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Year</FormLabel>
                       <FormControl><Input {...field} type="number" data-testid="input-budget-year" /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={budgetForm.control} name="budgetAmount" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Budget Amount</FormLabel>
                       <FormControl><Input {...field} type="number" placeholder="500000" data-testid="input-budget-amount" /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
                   <Button type="submit" disabled={createBudgetMutation.isPending} className="w-full" data-testid="button-create-budget">

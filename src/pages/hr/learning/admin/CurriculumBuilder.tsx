@@ -9,6 +9,15 @@ import { Loader2, Plus, Trash, ArrowRight, BookOpen } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+
+const curriculumSchema = z.object({
+    title: z.string().min(1, "Title is required"),
+    description: z.string().optional()
+});
 
 export default function CurriculumBuilder() {
     const { toast } = useToast();
@@ -25,9 +34,8 @@ export default function CurriculumBuilder() {
         }
     });
 
-    // Create Mutation
     const createMutation = useMutation({
-        mutationFn: async (data: any) => {
+        mutationFn: async (data: z.infer<typeof curriculumSchema>) => {
             const res = await fetch("/api/learning/curricula", {
                 method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data)
             });
@@ -37,8 +45,21 @@ export default function CurriculumBuilder() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["curricula"] });
             toast({ title: "Curriculum Created" });
+            form.reset();
         }
     });
+
+    const form = useForm<z.infer<typeof curriculumSchema>>({
+        resolver: zodResolver(curriculumSchema),
+        defaultValues: {
+            title: "",
+            description: ""
+        }
+    });
+
+    const onSubmit = (values: z.infer<typeof curriculumSchema>) => {
+        createMutation.mutate(values);
+    };
 
     return (
         <StandardPage
@@ -58,19 +79,38 @@ export default function CurriculumBuilder() {
                         <CardTitle>Create New Path</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={(e) => {
-                            e.preventDefault();
-                            const fd = new FormData(e.currentTarget);
-                            createMutation.mutate({ title: fd.get("title"), description: fd.get("description") });
-                            e.currentTarget.reset();
-                        }} className="flex gap-4">
-                            <Input name="title" placeholder="Path Title (e.g. Onboarding)" required />
-                            <Input name="description" placeholder="Description" />
-                            <Button type="submit" disabled={createMutation.isPending}>
-                                {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                Create
-                            </Button>
-                        </form>
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-4">
+                                <FormField
+                                    control={form.control}
+                                    name="title"
+                                    render={({ field }) => (
+                                        <FormItem className="flex-1">
+                                            <FormControl>
+                                                <Input placeholder="Path Title (e.g. Onboarding)" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="description"
+                                    render={({ field }) => (
+                                        <FormItem className="flex-1">
+                                            <FormControl>
+                                                <Input placeholder="Description" {...field} value={field.value || ""} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button type="submit" disabled={createMutation.isPending}>
+                                    {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                    Create
+                                </Button>
+                            </form>
+                        </Form>
                     </CardContent>
                 </Card>
 

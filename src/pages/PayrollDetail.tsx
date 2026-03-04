@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 import PayrollForm from "@/components/forms/PayrollForm";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 export default function PayrollDetail() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,7 +27,13 @@ export default function PayrollDetail() {
 
       <div className="space-y-4">
         <div className="flex gap-2 items-center">
-          <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search payrolls..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
+          <div className="flex-1">
+            <ContextualSearch
+              placeholder="Search payrolls..."
+              fields={[{ key: "query", label: "Search", type: "text" }]}
+              onSearch={(filters) => setSearchQuery(filters.query || "")}
+            />
+          </div>
           <Button>+ New Payroll</Button>
         </div>
 

@@ -14,8 +14,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { 
-  MessageSquare, ThumbsUp, ThumbsDown, Eye, CheckCircle, 
+import {
+  MessageSquare, ThumbsUp, ThumbsDown, Eye, CheckCircle,
   Plus, Search, TrendingUp, Clock, Award, Users, Hash, Trophy, Star, Shield, User, Flag,
   Flame, ArrowUp, Sparkles, ChevronDown, Bell, BellOff, Home, History, Bookmark,
   LayoutGrid, Filter, X, Settings, Store, FileText, Plug, DollarSign, Building, Bug,
@@ -53,6 +53,7 @@ import { FlagContentDialog } from "@/components/FlagContentDialog";
 import { ModerationQueue } from "@/components/ModerationQueue";
 import { ServiceMarketplace } from "@/components/ServiceMarketplace";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 
 interface PostWithComments extends CommunityPost {
@@ -114,9 +115,9 @@ export default function CommunityForum() {
     else newSubs.delete(spaceId);
     setSubscribedSpaces(newSubs);
     localStorage.setItem("subscribedSpaces", JSON.stringify(Array.from(newSubs)));
-    toast({ 
-      title: subscribe ? "Subscribed!" : "Unsubscribed", 
-      description: subscribe ? "You'll see posts from this space in your feed" : "Removed from your subscriptions" 
+    toast({
+      title: subscribe ? "Subscribed!" : "Unsubscribed",
+      description: subscribe ? "You'll see posts from this space in your feed" : "Removed from your subscriptions"
     });
   };
 
@@ -133,8 +134,8 @@ export default function CommunityForum() {
   const { data: posts, isLoading: postsLoading } = useQuery<CommunityPost[]>({
     queryKey: ["/api/community/posts", selectedSpace],
     queryFn: async () => {
-      const url = selectedSpace 
-        ? `/api/community/posts?spaceId=${selectedSpace}` 
+      const url = selectedSpace
+        ? `/api/community/posts?spaceId=${selectedSpace}`
         : "/api/community/posts";
       const res = await fetch(url);
       if (!res.ok) throw new Error("Failed to fetch posts");
@@ -235,7 +236,7 @@ export default function CommunityForum() {
     }
   };
 
-  let filteredPosts = posts?.filter(p => 
+  let filteredPosts = posts?.filter(p =>
     (p.title.toLowerCase().includes(searchQuery.toLowerCase()) || p.content.toLowerCase().includes(searchQuery.toLowerCase())) &&
     (filterByPostType === "all" || p.postType === filterByPostType) &&
     (!filterBySubscribed || subscribedSpaces.has(p.spaceId))
@@ -418,7 +419,7 @@ export default function CommunityForum() {
         <CardContent className="pt-0">
           <ScrollArea className="h-[300px]">
             <div className="space-y-1">
-              {spacesLoading ? [1,2,3].map(i => <Skeleton key={i} className="h-8 w-full" />) : spaces?.map(space => (
+              {spacesLoading ? [1, 2, 3].map(i => <Skeleton key={i} className="h-8 w-full" />) : spaces?.map(space => (
                 <div key={space.id} className="flex items-center gap-1">
                   <Button variant={selectedSpace === space.id ? "secondary" : "ghost"} className="flex-1 justify-start text-sm" onClick={() => { setSelectedSpace(space.id); setFilterBySubscribed(false); addToRecent(space.id); }} data-testid={`button-space-${space.slug}`}>
                     {getSpaceIcon(space.icon)} <span className="ml-2">{space.name}</span>
@@ -499,11 +500,11 @@ export default function CommunityForum() {
       <main className="flex-1 container mx-auto px-4 py-6">
         <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
           <div>
-            
+
             <p className="text-muted-foreground text-sm">Ask questions, share knowledge, earn reputation</p>
           </div>
           <div className="flex gap-2 flex-wrap">
-                        <Button variant="outline" size="sm" onClick={() => setShowModeration(true)} data-testid="button-moderation"><Shield className="w-4 h-4 mr-2" /> Moderation</Button>
+            <Button variant="outline" size="sm" onClick={() => setShowModeration(true)} data-testid="button-moderation"><Shield className="w-4 h-4 mr-2" /> Moderation</Button>
             <Dialog open={isNewPostOpen} onOpenChange={setIsNewPostOpen}>
               <DialogTrigger asChild><Button size="sm" data-testid="button-new-post"><Plus className="w-4 h-4 mr-2" /> New Post</Button></DialogTrigger>
               <DialogContent className="max-w-2xl">
@@ -545,9 +546,12 @@ export default function CommunityForum() {
 
           <div className="lg:col-span-6 space-y-4">
             <div className="flex items-center gap-2 flex-wrap">
-              <div className="relative flex-1 min-w-[200px]">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input placeholder="Search posts..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" data-testid="input-search" />
+              <div className="flex-1 min-w-[200px]">
+                <ContextualSearch
+                  placeholder="Search posts..."
+                  fields={[{ key: "query", label: "Search", type: "text" }]}
+                  onSearch={(filters) => setSearchQuery(filters.query || "")}
+                />
               </div>
               <Button variant="outline" size="icon" className="lg:hidden" onClick={() => setShowMobileFilters(!showMobileFilters)} data-testid="button-mobile-filters"><Filter className="w-4 h-4" /></Button>
             </div>
@@ -601,7 +605,7 @@ export default function CommunityForum() {
             )}
 
             {postsLoading ? (
-              <div className="space-y-4">{[1,2,3].map(i => <Card key={i}><CardContent className="pt-6"><Skeleton className="h-6 w-3/4 mb-2" /><Skeleton className="h-4 w-full mb-2" /><Skeleton className="h-4 w-1/2" /></CardContent></Card>)}</div>
+              <div className="space-y-4">{[1, 2, 3].map(i => <Card key={i}><CardContent className="pt-6"><Skeleton className="h-6 w-3/4 mb-2" /><Skeleton className="h-4 w-full mb-2" /><Skeleton className="h-4 w-1/2" /></CardContent></Card>)}</div>
             ) : filteredPosts.length === 0 ? (
               <Card><CardContent className="pt-6 text-center text-muted-foreground"><MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" /><p>No posts found. {filterBySubscribed ? "Subscribe to some spaces to see posts here!" : "Be the first to start a discussion!"}</p></CardContent></Card>
             ) : (

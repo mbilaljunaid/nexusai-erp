@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { StandardPage } from "@/components/layout/StandardPage"; import { Input } from "@/components/ui/input"; import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; import { Badge } from "@/components/ui/badge"; import { Search, Grid3x3, List } from "lucide-react"; import { Link } from "wouter";
+import { StandardPage } from "@/components/layout/StandardPage"; import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; import { Badge } from "@/components/ui/badge"; import { Search, Grid3x3, List } from "lucide-react"; import { Link } from "wouter"; import { ContextualSearch } from "@/components/ContextualSearch";
 
 const PAGES_BY_PACK = [
   { pack: "Core Modules", pages: ["Dashboard", "UserProfile", "Settings", "Notifications"] },
@@ -44,13 +44,16 @@ export default function PagesIndex() {
   return (
     <StandardPage
       title="Pages Explorer"
-      description="Browse all {PAGES_BY_PACK.redu      <p className="text-muted-foreground mt-1">Browse all {PAGES_BY_PACK.reduce((sum, p) => sum + p.pages.length, 0)} pages across {PAGES_BY_PACK.length} industry packs</p>
-        </div>
+      description="Browse all {PAGES_BY_PACK.redu      <p className=" text-muted-foreground mt-1">Browse all {PAGES_BY_PACK.reduce((sum, p) => sum + p.pages.length, 0)} pages across {PAGES_BY_PACK.length} industry packs</p>
+        </div >
 
         <div className="flex gap-2 items-center">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search pages..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" data-testid="input-search-pages" />
+          <div className="flex-1">
+            <ContextualSearch 
+                placeholder="Search pages..."
+                fields={[{ key: "query", label: "Search", type: "text" }]}
+                onSearch={(filters) => setSearch(filters.query || "")}
+            />
           </div>
           <div className="flex gap-1">
             <button className={`p-2 rounded ${viewMode === "grid" ? "bg-accent" : "bg-secondary"}`} data-testid="button-view-grid"><Grid3x3 className="h-4 w-4" /></button>
@@ -62,46 +65,46 @@ export default function PagesIndex() {
           <Badge variant="default">{totalPages} Pages</Badge>
           <Badge variant="secondary">{filteredPacks.length} Packs</Badge>
         </div>
-      </div>
+      </div >
 
-      <div className="space-y-4">
-        {filteredPacks.map(pack => (
-          <Card key={pack.pack} className="overflow-hidden" data-testid={`pack-${pack.pack.replace(/\s+/g, "-").toLowerCase()}`}>
-            <CardHeader className="pb-3 cursor-pointer hover-elevate" onClick={() => togglePack(pack.pack)}>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">{pack.pack}</CardTitle>
-                <Badge variant="outline">{pack.pages.length} pages</Badge>
-              </div>
-            </CardHeader>
+    <div className="space-y-4">
+      {filteredPacks.map(pack => (
+        <Card key={pack.pack} className="overflow-hidden" data-testid={`pack-${pack.pack.replace(/\s+/g, "-").toLowerCase()}`}>
+          <CardHeader className="pb-3 cursor-pointer hover-elevate" onClick={() => togglePack(pack.pack)}>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg">{pack.pack}</CardTitle>
+              <Badge variant="outline">{pack.pages.length} pages</Badge>
+            </div>
+          </CardHeader>
 
-            {expandedPacks.has(pack.pack) && (
-              <CardContent>
-                {viewMode === "grid" ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                    {pack.pages.map(page => (
-                      <Link key={page} to={pageToUrl(page)}>
-                        <a className="p-3 border rounded hover-elevate transition block text-sm font-medium text-center" data-testid={`link-${page.toLowerCase()}`}>
-                          <span className="line-clamp-2">{page}</span>
-                        </a>
-                      </Link>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="space-y-1">
-                    {pack.pages.map(page => (
-                      <Link key={page} to={pageToUrl(page)}>
-                        <a className="p-2 border rounded hover-elevate transition flex items-center text-sm" data-testid={`link-${page.toLowerCase()}`}>
-                          {page}
-                        </a>
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            )}
-          </Card>
-        ))}
-      </div>
-    </StandardPage>
+          {expandedPacks.has(pack.pack) && (
+            <CardContent>
+              {viewMode === "grid" ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                  {pack.pages.map(page => (
+                    <Link key={page} to={pageToUrl(page)}>
+                      <a className="p-3 border rounded hover-elevate transition block text-sm font-medium text-center" data-testid={`link-${page.toLowerCase()}`}>
+                        <span className="line-clamp-2">{page}</span>
+                      </a>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  {pack.pages.map(page => (
+                    <Link key={page} to={pageToUrl(page)}>
+                      <a className="p-2 border rounded hover-elevate transition flex items-center text-sm" data-testid={`link-${page.toLowerCase()}`}>
+                        {page}
+                      </a>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          )}
+        </Card>
+      ))}
+    </div>
+    </StandardPage >
   );
 }

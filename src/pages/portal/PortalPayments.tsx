@@ -7,6 +7,7 @@ import { CheckCircle, Download, ArrowRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { ExportButton } from "@/components/ExportButton";
 
 
 export default function PortalPayments() {
@@ -17,30 +18,14 @@ export default function PortalPayments() {
             return res.json();
         }
     });
-
-    const exportToCSV = () => {
-        if (!payments || payments.length === 0) return;
-
-        const headers = ["Receipt Number", "Date", "Invoice Number", "Amount", "Payment Method", "Status"];
-        const rows = payments.map((p: any) => [
-            p.receiptNumber,
-            format(new Date(p.receiptDate), "yyyy-MM-dd"),
-            p.invoiceNumber || "N/A",
-            p.amount,
-            p.paymentMethod,
-            p.status
-        ]);
-
-        const csvContent = [headers, ...rows].map(row => row.join(",")).join("\n");
-        const blob = new Blob([csvContent], { type: "text/csv" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `payments_${format(new Date(), "yyyy-MM-dd")}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
-    };
-
+    const exportData = payments?.map((p: any) => ({
+        "Receipt Number": p.receiptNumber,
+        "Date": format(new Date(p.receiptDate), "yyyy-MM-dd"),
+        "Invoice Number": p.invoiceNumber || "N/A",
+        "Amount": p.amount,
+        "Payment Method": p.paymentMethod,
+        "Status": p.status
+    })) || [];
     if (isLoading) {
         return (
             <StandardPage title="Payment History">
@@ -69,11 +54,11 @@ export default function PortalPayments() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                
-                <Button onClick={exportToCSV} variant="outline">
-                    <Download className="mr-2 h-4 w-4" />
-                    Export CSV
-                </Button>
+
+                <ExportButton
+                    data={exportData}
+                    filename={`payments_${format(new Date(), "yyyy-MM-dd")}`}
+                />
             </div>
 
             <Card>

@@ -9,20 +9,38 @@ import { AlertCircle, Loader2, Link as LinkIcon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { apiRequest } from "@/lib/queryClient";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+
+const loginSchema = z.object({
+    token: z.string().min(1, "Access token is required"),
+});
 
 export default function SupplierPortalLogin() {
     const [, setLocation] = useLocation();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [token, setToken] = useState("");
 
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const form = useForm<z.infer<typeof loginSchema>>({
+        resolver: zodResolver(loginSchema),
+        defaultValues: { token: "" },
+    });
+
+    const onSubmit = async (values: z.infer<typeof loginSchema>) => {
         setLoading(true);
         setError("");
 
         try {
-            const res = await apiRequest("POST", "/api/portal/supplier/login", { token });
+            const res = await apiRequest("POST", "/api/portal/supplier/login", { token: values.token });
             const data = await res.json();
 
             localStorage.setItem("supplier_token", data.token);
@@ -49,29 +67,37 @@ export default function SupplierPortalLogin() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleLogin} className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="token">Access Token</Label>
-                            <Input
-                                id="token"
-                                placeholder="skl_..."
-                                value={token}
-                                onChange={(e) => setToken(e.target.value)}
-                                autoComplete="off"
-                                required
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                            <FormField
+                                control={form.control}
+                                name="token"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Access Token</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="skl_..."
+                                                autoComplete="off"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
                             />
-                        </div>
-                        {error && (
-                            <Alert variant="destructive">
-                                <AlertCircle className="h-4 w-4" />
-                                <AlertDescription>{error}</AlertDescription>
-                            </Alert>
-                        )}
-                        <Button className="w-full" type="submit" disabled={loading}>
-                            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                            Access Portal
-                        </Button>
-                    </form>
+                            {error && (
+                                <Alert variant="destructive">
+                                    <AlertCircle className="h-4 w-4" />
+                                    <AlertDescription>{error}</AlertDescription>
+                                </Alert>
+                            )}
+                            <Button className="w-full" type="submit" disabled={loading}>
+                                {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                                Access Portal
+                            </Button>
+                        </form>
+                    </Form>
                 </CardContent>
                 <CardFooter className="text-xs text-center text-muted-foreground">
                     NexusAI ERP &copy; 2026

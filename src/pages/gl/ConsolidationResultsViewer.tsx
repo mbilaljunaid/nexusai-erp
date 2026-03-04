@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { FileSpreadsheet, ChevronRight, DollarSign } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ExportButton } from "@/components/ExportButton";
 
 interface ConsolidatedBalance {
     account: string;
@@ -83,6 +84,13 @@ export default function ConsolidationResultsViewer() {
     const totalEliminations = balances.reduce((sum, b) => sum + Math.abs(b.eliminations), 0);
     const totalFxImpact = adjustments.reduce((sum, a) => sum + a.fxGainLoss, 0);
 
+    const exportData = balances.map(b => ({
+        Account: b.account,
+        "Pre-Elimination": b.preElimination,
+        Eliminations: b.eliminations,
+        Consolidated: b.consolidated
+    }));
+
     return (
         <StandardPage
             title={`Consolidation Results - Run #${runId?.substring(0, 8)}`}
@@ -143,28 +151,10 @@ export default function ConsolidationResultsViewer() {
                                         </CardTitle>
                                         <CardDescription>Hierarchical account view with entity drill-down</CardDescription>
                                     </div>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={async () => {
-                                            try {
-                                                const response = await fetch(`/api/gl/consolidation/results/${runId}/export`);
-                                                const blob = await response.blob();
-                                                const url = window.URL.createObjectURL(blob);
-                                                const a = document.createElement('a');
-                                                a.href = url;
-                                                a.download = `consolidation-${runId}.xlsx`;
-                                                document.body.appendChild(a);
-                                                a.click();
-                                                document.body.removeChild(a);
-                                                window.URL.revokeObjectURL(url);
-                                            } catch (error) {
-                                                console.error('Export failed:', error);
-                                            }
-                                        }}
-                                    >
-                                        <FileSpreadsheet className="h-4 w-4 mr-2" /> Export Excel
-                                    </Button>
+                                    <ExportButton
+                                        data={exportData}
+                                        filename={`consolidation-${runId}`}
+                                    />
 
                                 </div>
                             </CardHeader>

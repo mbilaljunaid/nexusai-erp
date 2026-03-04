@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 
 export default function LcmWorkbench() {
@@ -57,7 +58,7 @@ export default function LcmWorkbench() {
         <StandardPage title="Landed Cost Workbench">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground">Manage Trade Operations, shipments, and cost allocations.</p>
                 </div>
                 <Sheet>
@@ -93,8 +94,12 @@ export default function LcmWorkbench() {
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            <div className="flex gap-2">
-                                <Input className="max-w-sm" placeholder="Search by Operation # or Vessel..." />
+                            <div className="max-w-sm">
+                                <ContextualSearch
+                                    placeholder="Search by Operation # or Vessel..."
+                                    fields={[{ key: "query", label: "Search", type: "text" }]}
+                                    onSearch={() => { }}
+                                />
                             </div>
 
                             <div className="rounded-md border">

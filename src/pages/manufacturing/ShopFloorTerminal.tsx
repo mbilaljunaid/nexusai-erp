@@ -9,6 +9,17 @@ import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
 
 interface WorkOrder {
     id: string;
@@ -23,13 +34,29 @@ export default function ShopFloorTerminal() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [operator, setOperator] = useState<string | null>(null);
-    const [loginId, setLoginId] = useState("");
     const [selectedOrder, setSelectedOrder] = useState<WorkOrder | null>(null);
     const [isTrxDialogOpen, setIsTrxDialogOpen] = useState(false);
     const [trxType, setTrxType] = useState<"COMPLETE" | "SCRAP">("COMPLETE");
-    const [trxQty, setTrxQty] = useState(0);
     const [page, setPage] = useState(0);
     const limit = 50;
+
+    const loginSchema = z.object({
+        loginId: z.string().min(1, "Operator ID is required")
+    });
+
+    const trxSchema = z.object({
+        trxQty: z.coerce.number().min(0, "Quantity must be positive")
+    });
+
+    const loginForm = useForm<z.infer<typeof loginSchema>>({
+        resolver: zodResolver(loginSchema),
+        defaultValues: { loginId: "" }
+    });
+
+    const trxForm = useForm<z.infer<typeof trxSchema>>({
+        resolver: zodResolver(trxSchema),
+        defaultValues: { trxQty: 0 }
+    });
 
     const { data: woData, isLoading } = useQuery<{ items: WorkOrder[] }>({
         queryKey: ["/api/manufacturing/work-orders", "active", page],
@@ -55,6 +82,7 @@ export default function ShopFloorTerminal() {
             queryClient.invalidateQueries({ queryKey: ["/api/manufacturing/work-orders"] });
             setIsTrxDialogOpen(false);
             setSelectedOrder(null);
+            trxForm.reset();
             toast({ title: "Recorded", description: "Production transaction saved." });
         }
     });
@@ -70,27 +98,25 @@ export default function ShopFloorTerminal() {
 
     const handleComplete = (wo: WorkOrder, type: "COMPLETE" | "SCRAP") => {
         setTrxType(type);
-        setTrxQty(wo.quantity);
+        trxForm.setValue("trxQty", wo.quantity);
         setSelectedOrder(wo);
         setIsTrxDialogOpen(true);
     };
 
-    const submitTrx = () => {
+    const onSubmitTrx = (values: z.infer<typeof trxSchema>) => {
         if (!selectedOrder) return;
         trxMutation.mutate({
             productionOrderId: selectedOrder.id,
             transactionType: trxType,
-            quantity: trxQty,
+            quantity: values.trxQty,
             transactionDate: new Date()
         });
     };
 
-    const handleLogin = (e: React.FormEvent) => {
-        e.preventDefault();
-        // In a real system, this would validate against an HR/Security system
-        if (loginId.trim()) {
-            setOperator(loginId);
-            toast({ title: "Logged In", description: `Operator ${loginId} session active.` });
+    const onLoginSubmit = (values: z.infer<typeof loginSchema>) => {
+        if (values.loginId.trim()) {
+            setOperator(values.loginId);
+            toast({ title: "Logged In", description: `Operator ${values.loginId} session active.` });
         }
     };
 
@@ -108,21 +134,26 @@ export default function ShopFloorTerminal() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <form onSubmit={handleLogin} className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="login">Operator Badge ID / Name</Label>
-                                    <Input
-                                        id="login"
-                                        placeholder="Enter ID or swipe badge..."
-                                        value={loginId}
-                                        onChange={(e) => setLoginId(e.target.value)}
-                                        autoFocus
+                            <Form {...loginForm}>
+                                <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
+                                    <FormField
+                                        control={loginForm.control}
+                                        name="loginId"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Operator Badge ID / Name</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="Enter ID or swipe badge..." autoFocus {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
                                     />
-                                </div>
-                                <Button type="submit" className="w-full" disabled={!loginId.trim()}>
-                                    Access Terminal
-                                </Button>
-                            </form>
+                                    <Button type="submit" className="w-full">
+                                        Access Terminal
+                                    </Button>
+                                </form>
+                            </Form>
                         </CardContent>
                     </Card>
                 </div>
@@ -219,19 +250,32 @@ export default function ShopFloorTerminal() {
                 </div>
             </div>
 
-            <Dialog open={isTrxDialogOpen} onOpenChange={setIsTrxDialogOpen}>
+            <Dialog open={isTrxDialogOpen} onOpenChange={(open) => { setIsTrxDialogOpen(open); if (!open) trxForm.reset(); }}>
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Record {trxType === "COMPLETE" ? "Production Completion" : "Scrap / Rejection"}</DialogTitle>
                     </DialogHeader>
-                    <div className="space-y-4 py-4">
-                        <div className="space-y-2">
-                            <Label>Quantity to {trxType === "COMPLETE" ? "Report" : "Scrap"}</Label>
-                            <Input type="number" value={trxQty} onChange={e => setTrxQty(parseFloat(e.target.value))} />
-                        </div>
-                        <Button className="w-full" onClick={submitTrx} disabled={trxMutation.isPending}>
-                            Confirm Transaction
-                        </Button>
+                    <div className="py-4">
+                        <Form {...trxForm}>
+                            <form onSubmit={trxForm.handleSubmit(onSubmitTrx)} className="space-y-4">
+                                <FormField
+                                    control={trxForm.control}
+                                    name="trxQty"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Quantity to {trxType === "COMPLETE" ? "Report" : "Scrap"}</FormLabel>
+                                            <FormControl>
+                                                <Input type="number" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button type="submit" className="w-full" disabled={trxMutation.isPending}>
+                                    Confirm Transaction
+                                </Button>
+                            </form>
+                        </Form>
                     </div>
                 </DialogContent>
             </Dialog>

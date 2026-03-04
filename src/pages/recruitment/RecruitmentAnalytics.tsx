@@ -16,6 +16,7 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, FunnelChart, Funnel, LabelList } from "recharts";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { ExportButton } from "@/components/ExportButton";
 
 interface Analytics {
     timeToHire: number;
@@ -78,34 +79,20 @@ export default function RecruitmentAnalytics() {
         }
     });
 
-    const exportData = () => {
-        if (!analytics) return;
-
-        const csv = [
-            ['Metric', 'Value'],
-            ['Time to Hire (days)', analytics.timeToHire],
-            ['Offer Acceptance Rate (%)', analytics.offerAcceptanceRate],
-            ['Cost per Hire ($)', analytics.costPerHire],
-            ['Active Requisitions', analytics.activeRequisitions],
-            [''],
-            ['Source Effectiveness'],
-            ['Source', 'Applications', 'Hires', 'Conversion Rate'],
-            ...analytics.sourceEffectiveness.map(s => [
-                s.source,
-                s.count,
-                s.hires,
-                `${((s.hires / s.count) * 100).toFixed(1)}%`
-            ])
-        ].map(row => row.join(',')).join('\n');
-
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `recruitment-analytics-${new Date().toISOString().split('T')[0]}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
-    };
+    const exportData = analytics ? [
+        { Metric: 'Time to Hire (days)', Value: analytics.timeToHire, Source: '', Applications: '', Hires: '', 'Conversion Rate': '' },
+        { Metric: 'Offer Acceptance Rate (%)', Value: analytics.offerAcceptanceRate, Source: '', Applications: '', Hires: '', 'Conversion Rate': '' },
+        { Metric: 'Cost per Hire ($)', Value: analytics.costPerHire, Source: '', Applications: '', Hires: '', 'Conversion Rate': '' },
+        { Metric: 'Active Requisitions', Value: analytics.activeRequisitions, Source: '', Applications: '', Hires: '', 'Conversion Rate': '' },
+        ...analytics.sourceEffectiveness.map(s => ({
+            Metric: 'Source Effectiveness',
+            Value: '',
+            Source: s.source,
+            Applications: s.count,
+            Hires: s.hires,
+            'Conversion Rate': `${((s.hires / s.count) * 100).toFixed(1)}%`
+        }))
+    ] : [];
 
     if (isLoading) {
         return <div className="p-8 text-center text-muted-foreground">Loading analytics...</div>;
@@ -177,7 +164,7 @@ export default function RecruitmentAnalytics() {
         <StandardPage title="Recruitment Analytics">
             <div className="flex items-center justify-between">
                 <div>
-                    
+
                     <p className="text-muted-foreground mt-2">
                         Insights and metrics for recruitment performance
                     </p>
@@ -194,10 +181,10 @@ export default function RecruitmentAnalytics() {
                             <SelectItem value="365">Last Year</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Button onClick={exportData} variant="outline">
-                        <Download className="h-4 w-4 mr-2" />
-                        Export CSV
-                    </Button>
+                    <ExportButton
+                        data={exportData}
+                        filename={`recruitment-analytics-${new Date().toISOString().split('T')[0]}`}
+                    />
                 </div>
             </div>
 

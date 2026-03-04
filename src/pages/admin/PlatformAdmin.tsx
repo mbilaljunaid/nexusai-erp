@@ -54,6 +54,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { Partner } from "@/types/erp-types";
 import { useToast } from "@/hooks/use-toast";
 import { useTenants, useAdminMetrics } from "@/hooks/admin/useAdminData";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToast>["toast"] }) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -142,7 +143,7 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
     updatePartnerMutation.mutate({ id: partner.id, data: { tier: newTier } });
   };
 
-  const partnerColumns: SpreadsheetColumn[] = [
+  const partnerColumns: SpreadsheetColumn<any>[] = [
     {
       id: "partner", header: "Partner", width: 200, cell: (item) => (
         <div>
@@ -320,34 +321,20 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between gap-4 flex-wrap">
-            <Input
-              placeholder="Search partners..."
-              className="max-w-sm"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              data-testid="input-search-partners"
-            />
-            <div className="flex gap-2">
-              <Select value={filterType} onValueChange={setFilterType}>
-                <SelectTrigger className="w-32" data-testid="select-filter-type">
-                  <SelectValue placeholder="Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="partner">Partners</SelectItem>
-                  <SelectItem value="trainer">Trainers</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger className="w-32" data-testid="select-filter-status">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="w-80">
+              <ContextualSearch
+                placeholder="Search partners..."
+                fields={[
+                  { key: "query", label: "Search", type: "text" },
+                  { key: "type", label: "Type", type: "select", options: [{ value: "partner", label: "Partner" }, { value: "trainer", label: "Trainer" }] },
+                  { key: "status", label: "Status", type: "select", options: [{ value: "active", label: "Active" }, { value: "inactive", label: "Inactive" }] }
+                ]}
+                onSearch={(filters) => {
+                  setSearchQuery(filters.query || "");
+                  if (filters.type) setFilterType(filters.type);
+                  if (filters.status) setFilterStatus(filters.status);
+                }}
+              />
             </div>
           </div>
 
@@ -472,7 +459,7 @@ export default function PlatformAdmin() {
     inactive: { bg: "bg-red-500/10", text: "text-red-600", label: "Inactive" },
   };
 
-  const tenantColumns: SpreadsheetColumn[] = [
+  const tenantColumns: SpreadsheetColumn<any>[] = [
     {
       id: "tenant", header: "Tenant", width: 250, cell: (item) => (
         <div>
@@ -502,7 +489,7 @@ export default function PlatformAdmin() {
     }
   ];
 
-  const adminUserColumns: SpreadsheetColumn[] = [
+  const adminUserColumns: SpreadsheetColumn<any>[] = [
     {
       id: "user", header: "User", width: 250, cell: (item) => (
         <div>
@@ -523,7 +510,7 @@ export default function PlatformAdmin() {
     }
   ];
 
-  const contractColumns: SpreadsheetColumn[] = [
+  const contractColumns: SpreadsheetColumn<any>[] = [
     { id: "client", header: "Client", width: 200, cell: (item) => <span className="font-medium text-sm">{item.client}</span> },
     { id: "serviceType", header: "Service Type", width: 200, cell: (item) => <span className="text-sm">{item.service}</span> },
     { id: "value", header: "Value", width: 120, cell: (item) => <span className="font-mono text-sm">{item.value}</span> },
@@ -547,7 +534,7 @@ export default function PlatformAdmin() {
   return (
     <div className="space-y-6">
       <div>
-        
+
         <p className="text-muted-foreground text-sm">Manage all tenants, system configuration, and platform health</p>
       </div>
 
@@ -649,7 +636,14 @@ export default function PlatformAdmin() {
       {activeNav === "tenants" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between gap-4">
-            <Input placeholder="Search tenants..." className="max-w-sm" data-testid="input-search-tenants" />
+            <div className="w-80">
+              <ContextualSearch
+                placeholder="Search tenants..."
+                fields={[{ key: "query", label: "Search", type: "text" }]}
+                onSearch={() => { }}
+                testId="search-tenants"
+              />
+            </div>
             <Button data-testid="button-add-tenant">
               <Plus className="h-4 w-4 mr-2" />
               Add Tenant
@@ -670,24 +664,27 @@ export default function PlatformAdmin() {
       {activeNav === "users" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between gap-4">
-            <Input placeholder="Search users..." className="max-w-sm" data-testid="input-search-users" />
-            <div className="flex gap-2">
-              <Select defaultValue="all">
-                <SelectTrigger className="w-40" data-testid="select-user-type">
-                  <SelectValue placeholder="User Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Users</SelectItem>
-                  <SelectItem value="tenant-admin">Tenant Admins</SelectItem>
-                  <SelectItem value="tenant-user">Tenant Users</SelectItem>
-                  <SelectItem value="individual">Individual Users</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button data-testid="button-add-user">
-                <Plus className="h-4 w-4 mr-2" />
-                Add User
-              </Button>
+            <div className="w-80">
+              <ContextualSearch
+                placeholder="Search users..."
+                fields={[
+                  { key: "query", label: "Search", type: "text" },
+                  {
+                    key: "type", label: "User Type", type: "select", options: [
+                      { value: "tenant-admin", label: "Tenant Admin" },
+                      { value: "tenant-user", label: "Tenant User" },
+                      { value: "individual", label: "Individual" }
+                    ]
+                  }
+                ]}
+                onSearch={() => { }}
+                testId="search-users"
+              />
             </div>
+            <Button data-testid="button-add-user">
+              <Plus className="h-4 w-4 mr-2" />
+              Add User
+            </Button>
           </div>
 
           <div className="grid gap-4">

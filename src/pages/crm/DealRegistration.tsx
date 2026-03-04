@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { FileText, Clock, CheckCircle, XCircle, AlertCircle, DollarSign } from "lucide-react";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 interface DealRegistration {
     id: string;
@@ -172,8 +173,14 @@ export default function DealRegistration() {
 
                 {/* Action Bar */}
                 <div className="flex items-center justify-between bg-card p-4 rounded-lg border">
-                    <div className="flex items-center gap-4">
-                        <Input placeholder="Search deals..." className="w-64" />
+                    <div className="flex items-center gap-4 flex-1">
+                        <div className="w-72">
+                            <ContextualSearch
+                                placeholder="Search deals..."
+                                fields={[{ key: "query", label: "Search", type: "text" }]}
+                                onSearch={() => { }}
+                            />
+                        </div>
                         <Select defaultValue="all">
                             <SelectTrigger className="w-40">
                                 <SelectValue />

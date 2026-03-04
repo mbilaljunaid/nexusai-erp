@@ -11,6 +11,25 @@ import { format } from "date-fns";
 import { AlertCircle, CheckCircle, Clock, XCircle, Upload, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const disputeSchema = z.object({
+    invoiceId: z.string().min(1, "Invoice ID is required"),
+    disputeReason: z.string().min(1, "Reason is required"),
+    disputedAmount: z.string().optional(),
+    description: z.string().min(1, "Description is required"),
+});
 
 
 export default function PortalDisputes() {
@@ -18,11 +37,15 @@ export default function PortalDisputes() {
     const queryClient = useQueryClient();
     const [showForm, setShowForm] = useState(false);
     const [files, setFiles] = useState<File[]>([]);
-    const [formData, setFormData] = useState({
-        invoiceId: "",
-        disputeReason: "",
-        disputedAmount: "",
-        description: ""
+
+    const form = useForm<z.infer<typeof disputeSchema>>({
+        resolver: zodResolver(disputeSchema),
+        defaultValues: {
+            invoiceId: "",
+            disputeReason: "",
+            disputedAmount: "",
+            description: ""
+        }
     });
 
     const { data: invoices } = useQuery({
@@ -56,7 +79,7 @@ export default function PortalDisputes() {
             queryClient.invalidateQueries({ queryKey: ["/api/portal/disputes"] });
             toast({ title: "Dispute Created", description: "We will review your dispute and respond shortly." });
             setShowForm(false);
-            setFormData({ invoiceId: "", disputeReason: "", disputedAmount: "", description: "" });
+            form.reset();
             setFiles([]);
         },
         onError: (err: any) => {
@@ -64,13 +87,12 @@ export default function PortalDisputes() {
         }
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const onSubmit = (values: z.infer<typeof disputeSchema>) => {
         const formDataToSend = new FormData();
-        formDataToSend.append("invoiceId", formData.invoiceId);
-        formDataToSend.append("disputeReason", formData.disputeReason);
-        if (formData.disputedAmount) formDataToSend.append("disputedAmount", formData.disputedAmount);
-        formDataToSend.append("description", formData.description);
+        formDataToSend.append("invoiceId", values.invoiceId);
+        formDataToSend.append("disputeReason", values.disputeReason);
+        if (values.disputedAmount) formDataToSend.append("disputedAmount", values.disputedAmount);
+        formDataToSend.append("description", values.description);
         files.forEach((file) => formDataToSend.append("attachments", file));
         createDisputeMutation.mutate(formDataToSend);
     };
@@ -93,7 +115,7 @@ export default function PortalDisputes() {
     return (
         <StandardPage title="Dispute Management">
             <div className="flex items-center justify-between">
-                
+
                 {!showForm && (
                     <Button onClick={() => setShowForm(true)} className="bg-amber-600 hover:bg-amber-700">
                         <AlertCircle className="mr-2 h-4 w-4" />
@@ -112,99 +134,124 @@ export default function PortalDisputes() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-6">
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <Label htmlFor="invoiceId">Select Invoice *</Label>
-                                <select
-                                    id="invoiceId"
-                                    aria-label="Select invoice to dispute"
-                                    className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md"
-                                    value={formData.invoiceId}
-                                    onChange={(e) => setFormData({ ...formData, invoiceId: e.target.value })}
-                                    required
-                                >
-                                    <option value="">Choose an invoice...</option>
-                                    {invoices?.filter((inv: any) => inv.status !== "Paid").map((inv: any) => (
-                                        <option key={inv.id} value={inv.id}>
-                                            {inv.invoiceNumber} - ${Number(inv.totalAmount).toLocaleString()} ({inv.status})
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div>
-                                <Label htmlFor="disputeReason">Dispute Reason *</Label>
-                                <Input
-                                    id="disputeReason"
-                                    placeholder="e.g., Incorrect amount, service not received..."
-                                    value={formData.disputeReason}
-                                    onChange={(e) => setFormData({ ...formData, disputeReason: e.target.value })}
-                                    required
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                <FormField
+                                    control={form.control}
+                                    name="invoiceId"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Select Invoice *</FormLabel>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger aria-label="Select invoice to dispute">
+                                                        <SelectValue placeholder="Choose an invoice..." />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {invoices?.filter((inv: any) => inv.status !== "Paid").map((inv: any) => (
+                                                        <SelectItem key={inv.id} value={inv.id}>
+                                                            {inv.invoiceNumber} - ${Number(inv.totalAmount).toLocaleString()} ({inv.status})
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
                                 />
-                            </div>
 
-                            <div>
-                                <Label htmlFor="disputedAmount">Disputed Amount (optional)</Label>
-                                <Input
-                                    id="disputedAmount"
-                                    type="number"
-                                    step="0.01"
-                                    placeholder="Leave blank to dispute full amount"
-                                    value={formData.disputedAmount}
-                                    onChange={(e) => setFormData({ ...formData, disputedAmount: e.target.value })}
+                                <FormField
+                                    control={form.control}
+                                    name="disputeReason"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Dispute Reason *</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="e.g., Incorrect amount, service not received..." {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
                                 />
-                            </div>
 
-                            <div>
-                                <Label htmlFor="description">Description *</Label>
-                                <Textarea
-                                    id="description"
-                                    placeholder="Please provide details about your dispute..."
-                                    value={formData.description}
-                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    rows={4}
-                                    required
+                                <FormField
+                                    control={form.control}
+                                    name="disputedAmount"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Disputed Amount (optional)</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type="number"
+                                                    step="0.01"
+                                                    placeholder="Leave blank to dispute full amount"
+                                                    {...field}
+                                                    value={field.value || ""}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
                                 />
-                            </div>
 
-                            <div>
-                                <Label htmlFor="attachments">Attachments (max 5 files, 5MB each)</Label>
-                                <Input
-                                    id="attachments"
-                                    type="file"
-                                    multiple
-                                    accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
-                                    onChange={handleFileChange}
-                                    className="mt-1"
+                                <FormField
+                                    control={form.control}
+                                    name="description"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Description *</FormLabel>
+                                            <FormControl>
+                                                <Textarea
+                                                    placeholder="Please provide details about your dispute..."
+                                                    rows={4}
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
                                 />
-                                {files.length > 0 && (
-                                    <div className="mt-2 space-y-2">
-                                        {files.map((file, index) => (
-                                            <div key={index} className="flex items-center justify-between text-sm bg-slate-50 p-2 rounded">
-                                                <span className="truncate">{file.name} ({(file.size / 1024).toFixed(1)} KB)</span>
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => removeFile(index)}
-                                                >
-                                                    <X className="h-4 w-4" />
-                                                </Button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
 
-                            <div className="flex gap-3">
-                                <Button type="submit" disabled={createDisputeMutation.isPending}>
-                                    {createDisputeMutation.isPending ? "Submitting..." : "Submit Dispute"}
-                                </Button>
-                                <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
-                                    Cancel
-                                </Button>
-                            </div>
-                        </form>
+                                <div>
+                                    <Label htmlFor="attachments">Attachments (max 5 files, 5MB each)</Label>
+                                    <Input
+                                        id="attachments"
+                                        type="file"
+                                        multiple
+                                        accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
+                                        onChange={handleFileChange}
+                                        className="mt-1"
+                                    />
+                                    {files.length > 0 && (
+                                        <div className="mt-2 space-y-2">
+                                            {files.map((file, index) => (
+                                                <div key={index} className="flex items-center justify-between text-sm bg-slate-50 p-2 rounded">
+                                                    <span className="truncate">{file.name} ({(file.size / 1024).toFixed(1)} KB)</span>
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => removeFile(index)}
+                                                    >
+                                                        <X className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="flex gap-3">
+                                    <Button type="submit" disabled={createDisputeMutation.isPending}>
+                                        {createDisputeMutation.isPending ? "Submitting..." : "Submit Dispute"}
+                                    </Button>
+                                    <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                                        Cancel
+                                    </Button>
+                                </div>
+                            </form>
+                        </Form>
                     </CardContent>
                 </Card>
             )}

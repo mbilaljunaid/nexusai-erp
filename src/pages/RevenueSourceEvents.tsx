@@ -25,6 +25,20 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+const revenueEventSchema = z.object({
+    sourceSystem: z.string().min(1, "Source System is required"),
+    sourceId: z.string().min(1, "Source ID is required"),
+    eventType: z.string().min(1, "Event Type is required"),
+    eventDate: z.string().min(1, "Event Date is required"),
+    amount: z.coerce.number().min(0.01, "Amount must be greater than 0"),
+    currency: z.string().min(1, "Currency is required"),
+    itemId: z.string().optional()
+});
 
 interface SourceEvent {
     id: string;
@@ -46,6 +60,19 @@ export default function RevenueSourceEvents() {
     const queryClient = useQueryClient();
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
     const [filterStatus, setFilterStatus] = useState<string>("all");
+
+    const form = useForm<z.infer<typeof revenueEventSchema>>({
+        resolver: zodResolver(revenueEventSchema),
+        defaultValues: {
+            sourceSystem: "API",
+            sourceId: "",
+            eventType: "Booking",
+            eventDate: format(new Date(), "yyyy-MM-dd"),
+            amount: 0,
+            currency: "USD",
+            itemId: ""
+        }
+    });
 
     // Fetch source events
     const { data: events = [], isLoading } = useQuery<SourceEvent[]>({
@@ -99,6 +126,7 @@ export default function RevenueSourceEvents() {
             });
             queryClient.invalidateQueries({ queryKey: ["/api/revenue/events"] });
             setIsCreateDialogOpen(false);
+            form.reset();
         },
         onError: () => {
             toast({
@@ -109,348 +137,385 @@ export default function RevenueSourceEvents() {
         }
     });
 
-    const handleCreateEvent = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        createEventMutation.mutate({
-            sourceSystem: formData.get("sourceSystem"),
-            sourceId: formData.get("sourceId"),
-            eventType: formData.get("eventType"),
-            itemId: formData.get("itemId") || null,
-            amount: formData.get("amount"),
-            currency: formData.get("currency"),
-            eventDate: formData.get("eventDate")
-        });
-    };
+};
 
-    const filteredEvents = events.filter(event =>
-        filterStatus === "all" || event.processingStatus === filterStatus
-    );
+const onSubmit = (values: z.infer<typeof revenueEventSchema>) => {
+    createEventMutation.mutate({
+        ...values,
+        itemId: values.itemId || null
+    });
+};
 
-    const statusCounts = {
-        total: events.length,
-        pending: events.filter(e => e.processingStatus === "Pending").length,
-        processed: events.filter(e => e.processingStatus === "Processed").length,
-        error: events.filter(e => e.processingStatus === "Error").length
-    };
+const filteredEvents = events.filter(event =>
+    filterStatus === "all" || event.processingStatus === filterStatus
+);
 
-    return (
-        <StandardPage
-            title="Revenue Source Events"
-            description="Ingest and process revenue events from operational systems"
-            actions={
-                <div className="flex gap-2">
-                    <Button
-                        variant="outline"
-                        onClick={() => processEventsMutation.mutate()}
-                        disabled={processEventsMutation.isPending || statusCounts.pending === 0}
-                    >
-                        <Play className="h-4 w-4 mr-2" />
-                        Process Queue ({statusCounts.pending})
-                    </Button>
-                    <Button onClick={() => setIsCreateDialogOpen(true)}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Manual Event
-                    </Button>
-                </div>
-            }
-        >
+const statusCounts = {
+    total: events.length,
+    pending: events.filter(e => e.processingStatus === "Pending").length,
+    processed: events.filter(e => e.processingStatus === "Processed").length,
+    error: events.filter(e => e.processingStatus === "Error").length
+};
 
-            {/* Summary Metrics */}
-            <div className="grid gap-4 md:grid-cols-4">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Events</CardTitle>
-                        <FileText className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{statusCounts.total}</div>
-                        <p className="text-xs text-muted-foreground">All time</p>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Pending</CardTitle>
-                        <Clock className="h-4 w-4 text-yellow-500" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-yellow-600">{statusCounts.pending}</div>
-                        <p className="text-xs text-muted-foreground">Awaiting processing</p>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Processed</CardTitle>
-                        <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-green-600">{statusCounts.processed}</div>
-                        <p className="text-xs text-muted-foreground">Successfully processed</p>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Errors</CardTitle>
-                        <AlertCircle className="h-4 w-4 text-red-500" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-red-600">{statusCounts.error}</div>
-                        <p className="text-xs text-muted-foreground">Require attention</p>
-                    </CardContent>
-                </Card>
+return (
+    <StandardPage
+        title="Revenue Source Events"
+        description="Ingest and process revenue events from operational systems"
+        actions={
+            <div className="flex gap-2">
+                <Button
+                    variant="outline"
+                    onClick={() => processEventsMutation.mutate()}
+                    disabled={processEventsMutation.isPending || statusCounts.pending === 0}
+                >
+                    <Play className="h-4 w-4 mr-2" />
+                    Process Queue ({statusCounts.pending})
+                </Button>
+                <Button onClick={() => setIsCreateDialogOpen(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Manual Event
+                </Button>
             </div>
+        }
+    >
 
-            {/* Main Content */}
+        {/* Summary Metrics */}
+        <div className="grid gap-4 md:grid-cols-4">
             <Card>
-                <CardHeader>
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <CardTitle>Event Queue</CardTitle>
-                            <CardDescription>
-                                Revenue events from billing, order management, and usage systems
-                            </CardDescription>
-                        </div>
-                        <div className="flex gap-2 items-center">
-                            <Filter className="h-4 w-4 text-muted-foreground" />
-                            <select
-                                className="border rounded-md px-3 py-1.5 text-sm"
-                                value={filterStatus}
-                                onChange={(e) => setFilterStatus(e.target.value)}
-                            >
-                                <option value="all">All Statuses</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Processed">Processed</option>
-                                <option value="Error">Error</option>
-                                <option value="Ignored">Ignored</option>
-                            </select>
-                        </div>
-                    </div>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Events</CardTitle>
+                    <FileText className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <Tabs defaultValue="list">
-                        <TabsList>
-                            <TabsTrigger value="list">Event List</TabsTrigger>
-                            <TabsTrigger value="upload">Bulk Upload</TabsTrigger>
-                            <TabsTrigger value="mapping">Field Mapping</TabsTrigger>
-                        </TabsList>
-
-                        <TabsContent value="list" className="mt-4">
-                            {isLoading ? (
-                                <div className="space-y-3">
-                                    <Skeleton className="h-12 w-full" />
-                                    <Skeleton className="h-12 w-full" />
-                                    <Skeleton className="h-12 w-full" />
-                                </div>
-                            ) : filteredEvents.length === 0 ? (
-                                <div className="text-center py-12 text-muted-foreground">
-                                    <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                                    <p>No events found</p>
-                                    <p className="text-sm mt-1">
-                                        {filterStatus !== "all"
-                                            ? "Try changing the filter"
-                                            : "Create a manual event or upload a batch to get started"}
-                                    </p>
-                                </div>
-                            ) : (
-                                <div className="border rounded-lg overflow-hidden">
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow className="bg-slate-50">
-                                                <TableHead>Source</TableHead>
-                                                <TableHead>Source ID</TableHead>
-                                                <TableHead>Event Type</TableHead>
-                                                <TableHead>Event Date</TableHead>
-                                                <TableHead className="text-right">Amount</TableHead>
-                                                <TableHead>Contract</TableHead>
-                                                <TableHead>Status</TableHead>
-                                                <TableHead>Actions</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {filteredEvents.map((event) => (
-                                                <TableRow key={event.id} className="hover:bg-slate-50">
-                                                    <TableCell>
-                                                        <Badge variant="outline">{event.sourceSystem}</Badge>
-                                                    </TableCell>
-                                                    <TableCell className="font-mono text-sm">
-                                                        {event.sourceId}
-                                                    </TableCell>
-                                                    <TableCell>{event.eventType}</TableCell>
-                                                    <TableCell className="text-sm">
-                                                        {format(new Date(event.eventDate), "MMM dd, yyyy")}
-                                                    </TableCell>
-                                                    <TableCell className="text-right font-mono">
-                                                        {event.currency} {parseFloat(event.amount).toLocaleString()}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {event.contractId ? (
-                                                            <Badge variant="secondary">{event.contractId.slice(0, 8)}</Badge>
-                                                        ) : (
-                                                            <span className="text-muted-foreground text-sm">-</span>
-                                                        )}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Badge
-                                                            variant={
-                                                                event.processingStatus === "Processed"
-                                                                    ? "default"
-                                                                    : event.processingStatus === "Pending"
-                                                                        ? "secondary"
-                                                                        : event.processingStatus === "Error"
-                                                                            ? "destructive"
-                                                                            : "outline"
-                                                            }
-                                                        >
-                                                            {event.processingStatus === "Pending" && <Clock className="h-3 w-3 mr-1" />}
-                                                            {event.processingStatus === "Processed" && <CheckCircle2 className="h-3 w-3 mr-1" />}
-                                                            {event.processingStatus === "Error" && <AlertCircle className="h-3 w-3 mr-1" />}
-                                                            {event.processingStatus}
-                                                        </Badge>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {event.processingStatus === "Error" && (
-                                                            <Button variant="ghost" size="sm" title={event.errorMessage || "View error"}>
-                                                                <AlertCircle className="h-4 w-4 text-red-500" />
-                                                            </Button>
-                                                        )}
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </div>
-                            )}
-                        </TabsContent>
-
-                        <TabsContent value="upload" className="mt-4">
-                            <div className="text-center py-12 border-2 border-dashed rounded-lg">
-                                <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                                <p className="font-medium mb-2">Bulk Event Upload</p>
-                                <p className="text-sm text-muted-foreground mb-4">
-                                    Upload CSV/Excel file with revenue events from Order Management or Billing systems
-                                </p>
-                                <Button variant="outline">
-                                    <Upload className="h-4 w-4 mr-2" />
-                                    Select File
-                                </Button>
-                            </div>
-                        </TabsContent>
-
-                        <TabsContent value="mapping" className="mt-4">
-                            <div className="text-center py-12 text-muted-foreground">
-                                <RefreshCw className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                                <p>Field Mapping Configuration</p>
-                                <p className="text-sm mt-1">
-                                    Map source system fields to revenue event attributes
-                                </p>
-                            </div>
-                        </TabsContent>
-                    </Tabs>
+                    <div className="text-2xl font-bold">{statusCounts.total}</div>
+                    <p className="text-xs text-muted-foreground">All time</p>
                 </CardContent>
             </Card>
 
-            {/* Create Event Dialog */}
-            <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-                <DialogContent className="max-w-2xl">
-                    <DialogHeader>
-                        <DialogTitle>Create Manual Revenue Event</DialogTitle>
-                        <DialogDescription>
-                            Manually create a revenue source event for processing
-                        </DialogDescription>
-                    </DialogHeader>
-                    <form onSubmit={handleCreateEvent}>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Pending</CardTitle>
+                    <Clock className="h-4 w-4 text-yellow-500" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold text-yellow-600">{statusCounts.pending}</div>
+                    <p className="text-xs text-muted-foreground">Awaiting processing</p>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Processed</CardTitle>
+                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold text-green-600">{statusCounts.processed}</div>
+                    <p className="text-xs text-muted-foreground">Successfully processed</p>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Errors</CardTitle>
+                    <AlertCircle className="h-4 w-4 text-red-500" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold text-red-600">{statusCounts.error}</div>
+                    <p className="text-xs text-muted-foreground">Require attention</p>
+                </CardContent>
+            </Card>
+        </div>
+
+        {/* Main Content */}
+        <Card>
+            <CardHeader>
+                <div className="flex justify-between items-center">
+                    <div>
+                        <CardTitle>Event Queue</CardTitle>
+                        <CardDescription>
+                            Revenue events from billing, order management, and usage systems
+                        </CardDescription>
+                    </div>
+                    <div className="flex gap-2 items-center">
+                        <Filter className="h-4 w-4 text-muted-foreground" />
+                        <select
+                            className="border rounded-md px-3 py-1.5 text-sm"
+                            value={filterStatus}
+                            onChange={(e) => setFilterStatus(e.target.value)}
+                        >
+                            <option value="all">All Statuses</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Processed">Processed</option>
+                            <option value="Error">Error</option>
+                            <option value="Ignored">Ignored</option>
+                        </select>
+                    </div>
+                </div>
+            </CardHeader>
+            <CardContent>
+                <Tabs defaultValue="list">
+                    <TabsList>
+                        <TabsTrigger value="list">Event List</TabsTrigger>
+                        <TabsTrigger value="upload">Bulk Upload</TabsTrigger>
+                        <TabsTrigger value="mapping">Field Mapping</TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="list" className="mt-4">
+                        {isLoading ? (
+                            <div className="space-y-3">
+                                <Skeleton className="h-12 w-full" />
+                                <Skeleton className="h-12 w-full" />
+                                <Skeleton className="h-12 w-full" />
+                            </div>
+                        ) : filteredEvents.length === 0 ? (
+                            <div className="text-center py-12 text-muted-foreground">
+                                <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                                <p>No events found</p>
+                                <p className="text-sm mt-1">
+                                    {filterStatus !== "all"
+                                        ? "Try changing the filter"
+                                        : "Create a manual event or upload a batch to get started"}
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="border rounded-lg overflow-hidden">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow className="bg-slate-50">
+                                            <TableHead>Source</TableHead>
+                                            <TableHead>Source ID</TableHead>
+                                            <TableHead>Event Type</TableHead>
+                                            <TableHead>Event Date</TableHead>
+                                            <TableHead className="text-right">Amount</TableHead>
+                                            <TableHead>Contract</TableHead>
+                                            <TableHead>Status</TableHead>
+                                            <TableHead>Actions</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {filteredEvents.map((event) => (
+                                            <TableRow key={event.id} className="hover:bg-slate-50">
+                                                <TableCell>
+                                                    <Badge variant="outline">{event.sourceSystem}</Badge>
+                                                </TableCell>
+                                                <TableCell className="font-mono text-sm">
+                                                    {event.sourceId}
+                                                </TableCell>
+                                                <TableCell>{event.eventType}</TableCell>
+                                                <TableCell className="text-sm">
+                                                    {format(new Date(event.eventDate), "MMM dd, yyyy")}
+                                                </TableCell>
+                                                <TableCell className="text-right font-mono">
+                                                    {event.currency} {parseFloat(event.amount).toLocaleString()}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {event.contractId ? (
+                                                        <Badge variant="secondary">{event.contractId.slice(0, 8)}</Badge>
+                                                    ) : (
+                                                        <span className="text-muted-foreground text-sm">-</span>
+                                                    )}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge
+                                                        variant={
+                                                            event.processingStatus === "Processed"
+                                                                ? "default"
+                                                                : event.processingStatus === "Pending"
+                                                                    ? "secondary"
+                                                                    : event.processingStatus === "Error"
+                                                                        ? "destructive"
+                                                                        : "outline"
+                                                        }
+                                                    >
+                                                        {event.processingStatus === "Pending" && <Clock className="h-3 w-3 mr-1" />}
+                                                        {event.processingStatus === "Processed" && <CheckCircle2 className="h-3 w-3 mr-1" />}
+                                                        {event.processingStatus === "Error" && <AlertCircle className="h-3 w-3 mr-1" />}
+                                                        {event.processingStatus}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell>
+                                                    {event.processingStatus === "Error" && (
+                                                        <Button variant="ghost" size="sm" title={event.errorMessage || "View error"}>
+                                                            <AlertCircle className="h-4 w-4 text-red-500" />
+                                                        </Button>
+                                                    )}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
+                        )}
+                    </TabsContent>
+
+                    <TabsContent value="upload" className="mt-4">
+                        <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                            <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                            <p className="font-medium mb-2">Bulk Event Upload</p>
+                            <p className="text-sm text-muted-foreground mb-4">
+                                Upload CSV/Excel file with revenue events from Order Management or Billing systems
+                            </p>
+                            <Button variant="outline">
+                                <Upload className="h-4 w-4 mr-2" />
+                                Select File
+                            </Button>
+                        </div>
+                    </TabsContent>
+
+                    <TabsContent value="mapping" className="mt-4">
+                        <div className="text-center py-12 text-muted-foreground">
+                            <RefreshCw className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                            <p>Field Mapping Configuration</p>
+                            <p className="text-sm mt-1">
+                                Map source system fields to revenue event attributes
+                            </p>
+                        </div>
+                    </TabsContent>
+                </Tabs>
+            </CardContent>
+        </Card>
+
+        {/* Create Event Dialog */}
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogContent className="max-w-2xl">
+                <DialogHeader>
+                    <DialogTitle>Create Manual Revenue Event</DialogTitle>
+                    <DialogDescription>
+                        Manually create a revenue source event for processing
+                    </DialogDescription>
+                </DialogHeader>
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)}>
                         <div className="grid grid-cols-2 gap-4 py-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="sourceSystem">Source System *</Label>
-                                <Select name="sourceSystem" defaultValue="API" required>
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="API">API / Manual</SelectItem>
-                                        <SelectItem value="OrderManagement">Order Management</SelectItem>
-                                        <SelectItem value="Billing">Billing System</SelectItem>
-                                        <SelectItem value="Usage">Usage Tracking</SelectItem>
-                                        <SelectItem value="Subscription">Subscription Platform</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                            <FormField
+                                control={form.control}
+                                name="sourceSystem"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                        <FormLabel>Source System *</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="API">API / Manual</SelectItem>
+                                                <SelectItem value="OrderManagement">Order Management</SelectItem>
+                                                <SelectItem value="Billing">Billing System</SelectItem>
+                                                <SelectItem value="Usage">Usage Tracking</SelectItem>
+                                                <SelectItem value="Subscription">Subscription Platform</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                            <div className="space-y-2">
-                                <Label htmlFor="sourceId">Source ID *</Label>
-                                <Input
-                                    id="sourceId"
-                                    name="sourceId"
-                                    placeholder="e.g., SO-12345"
-                                    required
-                                />
-                            </div>
+                            <FormField
+                                control={form.control}
+                                name="sourceId"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                        <FormLabel>Source ID *</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="e.g., SO-12345" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                            <div className="space-y-2">
-                                <Label htmlFor="eventType">Event Type *</Label>
-                                <Select name="eventType" defaultValue="Booking" required>
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="Booking">Booking</SelectItem>
-                                        <SelectItem value="Shipment">Shipment</SelectItem>
-                                        <SelectItem value="Consumption">Consumption</SelectItem>
-                                        <SelectItem value="Invoice">Invoice</SelectItem>
-                                        <SelectItem value="Usage">Usage</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                            <FormField
+                                control={form.control}
+                                name="eventType"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                        <FormLabel>Event Type *</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="Booking">Booking</SelectItem>
+                                                <SelectItem value="Shipment">Shipment</SelectItem>
+                                                <SelectItem value="Consumption">Consumption</SelectItem>
+                                                <SelectItem value="Invoice">Invoice</SelectItem>
+                                                <SelectItem value="Usage">Usage</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                            <div className="space-y-2">
-                                <Label htmlFor="eventDate">Event Date *</Label>
-                                <Input
-                                    id="eventDate"
-                                    name="eventDate"
-                                    type="date"
-                                    defaultValue={format(new Date(), "yyyy-MM-dd")}
-                                    required
-                                />
-                            </div>
+                            <FormField
+                                control={form.control}
+                                name="eventDate"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                        <FormLabel>Event Date *</FormLabel>
+                                        <FormControl>
+                                            <Input type="date" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                            <div className="space-y-2">
-                                <Label htmlFor="amount">Amount *</Label>
-                                <Input
-                                    id="amount"
-                                    name="amount"
-                                    type="number"
-                                    step="0.01"
-                                    placeholder="0.00"
-                                    required
-                                />
-                            </div>
+                            <FormField
+                                control={form.control}
+                                name="amount"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                        <FormLabel>Amount *</FormLabel>
+                                        <FormControl>
+                                            <Input type="number" step="0.01" placeholder="0.00" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                            <div className="space-y-2">
-                                <Label htmlFor="currency">Currency *</Label>
-                                <Select name="currency" defaultValue="USD" required>
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="USD">USD</SelectItem>
-                                        <SelectItem value="EUR">EUR</SelectItem>
-                                        <SelectItem value="GBP">GBP</SelectItem>
-                                        <SelectItem value="JPY">JPY</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                            <FormField
+                                control={form.control}
+                                name="currency"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                        <FormLabel>Currency *</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="USD">USD</SelectItem>
+                                                <SelectItem value="EUR">EUR</SelectItem>
+                                                <SelectItem value="GBP">GBP</SelectItem>
+                                                <SelectItem value="JPY">JPY</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                            <div className="space-y-2 col-span-2">
-                                <Label htmlFor="itemId">Item ID (Optional)</Label>
-                                <Input
-                                    id="itemId"
-                                    name="itemId"
-                                    placeholder="e.g., PROD-001"
-                                />
-                            </div>
+                            <FormField
+                                control={form.control}
+                                name="itemId"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2 col-span-2">
+                                        <FormLabel>Item ID (Optional)</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="e.g., PROD-001" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                         </div>
                         <DialogFooter>
                             <Button
@@ -465,8 +530,9 @@ export default function RevenueSourceEvents() {
                             </Button>
                         </DialogFooter>
                     </form>
-                </DialogContent>
-            </Dialog>
-        </StandardPage>
-    );
+                </Form>
+            </DialogContent>
+        </Dialog>
+    </StandardPage>
+);
 }

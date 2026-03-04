@@ -8,12 +8,30 @@ import { Header, Footer } from "@/components/Navigation";
 import { GlassmorphismCard } from "@/components/lovable";
 import { colors } from "@/lib/design-tokens";
 import { animations } from "@/lib/animations";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+const signupSchema = z.object({
+  name: z.string().min(2, "Name is required"),
+  email: z.string().email("Valid email is required"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  confirmPassword: z.string(),
+  terms: z.boolean().refine((val) => val === true, "You must agree to the terms"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
 
 export default function SignupPage() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -23,27 +41,26 @@ export default function SignupPage() {
     document.title = "Sign Up | NexusAI";
   }, []);
 
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const form = useForm<z.infer<typeof signupSchema>>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      terms: false,
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof signupSchema>) => {
     setError("");
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters");
-      return;
-    }
-
     setLoading(true);
 
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name: values.name, email: values.email, password: values.password }),
       });
 
       if (res.ok) {
@@ -146,100 +163,147 @@ export default function SignupPage() {
                   <p className="text-muted-foreground">Redirecting to login...</p>
                 </div>
               ) : (
-                <form onSubmit={handleSignup} className="space-y-5">
-                  {error && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-sm text-center"
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                    {error && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-sm text-center"
+                      >
+                        {error}
+                      </motion.div>
+                    )}
+
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="ml-1">Full Name</FormLabel>
+                          <FormControl>
+                            <div className="relative group">
+                              <User className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
+                              <Input
+                                placeholder="John Doe"
+                                className="pl-10 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
+                                {...field}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="ml-1">Email</FormLabel>
+                          <FormControl>
+                            <div className="relative group">
+                              <Mail className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
+                              <Input
+                                type="email"
+                                placeholder="your@company.com"
+                                className="pl-10 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
+                                {...field}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="ml-1">Password</FormLabel>
+                            <FormControl>
+                              <div className="relative group">
+                                <Lock className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
+                                <Input
+                                  type={showPassword ? "text" : "password"}
+                                  placeholder="••••••••"
+                                  className="pl-10 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
+                                  {...field}
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="confirmPassword"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="ml-1">Confirm</FormLabel>
+                            <FormControl>
+                              <div className="relative group">
+                                <Input
+                                  type={showPassword ? "text" : "password"}
+                                  placeholder="••••••••"
+                                  className="pl-4 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
+                                  {...field}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => setShowPassword(!showPassword)}
+                                  className="absolute right-3 top-3 text-muted-foreground hover:text-white transition-colors"
+                                >
+                                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                </button>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="terms"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start gap-2 pt-2 space-y-0">
+                          <FormControl>
+                            <input
+                              type="checkbox"
+                              className="mt-1 rounded bg-white/10 border-white/20"
+                              checked={field.value}
+                              onChange={field.onChange}
+                            />
+                          </FormControl>
+                          <div className="leading-none">
+                            <FormLabel className="text-sm text-muted-foreground font-normal cursor-pointer">
+                              I agree to the <a href="#" className="text-blue-400 hover:text-blue-300">Terms</a> and <a href="#" className="text-blue-400 hover:text-blue-300">Privacy Policy</a>
+                            </FormLabel>
+                            <FormMessage />
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button
+                      type="submit"
+                      className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-base font-semibold shadow-lg shadow-blue-900/20"
+                      disabled={loading}
+                      size="lg"
                     >
-                      {error}
-                    </motion.div>
-                  )}
-
-                  <div>
-                    <label className="block text-sm font-medium mb-1.5 ml-1">Full Name</label>
-                    <div className="relative group">
-                      <User className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
-                      <Input
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="John Doe"
-                        className="pl-10 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-1.5 ml-1">Email</label>
-                    <div className="relative group">
-                      <Mail className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
-                      <Input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="your@company.com"
-                        className="pl-10 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-1.5 ml-1">Password</label>
-                      <div className="relative group">
-                        <Lock className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          placeholder="••••••••"
-                          className="pl-10 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-1.5 ml-1">Confirm</label>
-                      <div className="relative group">
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          placeholder="••••••••"
-                          className="pl-4 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
-                          required
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-3 text-muted-foreground hover:text-white transition-colors"
-                        >
-                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-2 pt-2">
-                    <input type="checkbox" className="mt-1 rounded bg-white/10 border-white/20" required />
-                    <span className="text-sm text-muted-foreground">
-                      I agree to the <a href="#" className="text-blue-400 hover:text-blue-300">Terms</a> and <a href="#" className="text-blue-400 hover:text-blue-300">Privacy Policy</a>
-                    </span>
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-base font-semibold shadow-lg shadow-blue-900/20"
-                    disabled={loading}
-                    size="lg"
-                  >
-                    {loading ? "Creating..." : "Create Account"}
-                    {!loading && <ArrowRight className="ml-2 w-4 h-4" />}
-                  </Button>
-                </form>
+                      {loading ? "Creating..." : "Create Account"}
+                      {!loading && <ArrowRight className="ml-2 w-4 h-4" />}
+                    </Button>
+                  </form>
+                </Form>
               )}
 
               <div className="mt-8 pt-6 border-t border-white/10 text-center">

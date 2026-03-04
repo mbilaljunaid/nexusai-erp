@@ -20,6 +20,10 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
 // Local types (differ from API types - see mappers below)
 interface Meter {
@@ -72,12 +76,12 @@ const mapApiReading = (apiReading: MeterReadingType): MeterReading => ({
     notes: apiReading.notes
 });
 
-interface ReadingFormData {
-    meterId: string;
-    value: string;
-    notes: string;
-    captureLocation: boolean;
-}
+const readingSchema = z.object({
+    meterId: z.string().min(1, "Select a meter"),
+    value: z.string().min(1, "Reading value is required"),
+    notes: z.string().optional(),
+    captureLocation: z.boolean().default(true),
+});
 
 export function MeterReadingModule() {
     const [meters, setMeters] = useState<Meter[]>([]);
@@ -86,12 +90,14 @@ export function MeterReadingModule() {
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
 
-    // Form state
-    const [formData, setFormData] = useState<ReadingFormData>({
-        meterId: "",
-        value: "",
-        notes: "",
-        captureLocation: true
+    const form = useForm<z.infer<typeof readingSchema>>({
+        resolver: zodResolver(readingSchema),
+        defaultValues: {
+            meterId: "",
+            value: "",
+            notes: "",
+            captureLocation: true
+        }
     });
 
     // Filters
@@ -133,14 +139,13 @@ export function MeterReadingModule() {
         }
     };
 
-    const handleSubmitReading = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmitReading = async (data: z.infer<typeof readingSchema>) => {
         setSubmitting(true);
 
         try {
             // Capture GPS location if requested
             let gpsLocation;
-            if (formData.captureLocation && navigator.geolocation) {
+            if (data.captureLocation && navigator.geolocation) {
                 const position = await new Promise<GeolocationPosition>((resolve, reject) => {
                     navigator.geolocation.getCurrentPosition(resolve, reject);
                 });
@@ -149,14 +154,12 @@ export function MeterReadingModule() {
 
             // ✅ LIVE API CALL - Submit meter reading
             await meterService.submitReading({
-                meterId: formData.meterId,
-                readingValue: parseFloat(formData.value),
+                meterId: data.meterId,
+                readingValue: parseFloat(data.value),
                 readingDate: new Date().toISOString(),
-                notes: formData.notes || undefined,
+                notes: data.notes || undefined,
                 gpsLocation
             });
-
-            // TODO: Show success toast
 
             // Refresh meters and readings
             await loadMeters();
@@ -165,12 +168,7 @@ export function MeterReadingModule() {
             }
 
             // Reset form
-            setFormData({
-                meterId: "",
-                value: "",
-                notes: "",
-                captureLocation: true
-            });
+            form.reset();
         } catch (error) {
             console.error("Failed to submit reading:", error);
             // TODO: Show error toast
@@ -328,72 +326,79 @@ export function MeterReadingModule() {
                             <CardTitle className="text-base">Record Meter Reading</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <form onSubmit={handleSubmitReading} className="space-y-4">
-                                <div>
-                                    <label className="text-sm font-medium mb-2 block">Select Meter</label>
-                                    <Select
-                                        value={formData.meterId}
-                                        onValueChange={(value) => setFormData({ ...formData, meterId: value })}
-                                        required
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Choose meter..." />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {meters.map(m => (
-                                                <SelectItem key={m.id} value={m.id}>
-                                                    {m.assetName} - {m.meterName} ({m.currentValue} {m.uom})
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
+                            <Form {...form}>
+                                <form onSubmit={form.handleSubmit(handleSubmitReading)} className="space-y-4">
+                                    <FormField control={form.control} name="meterId" render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Select Meter</FormLabel>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Choose meter..." />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {meters.map(m => (
+                                                        <SelectItem key={m.id} value={m.id}>
+                                                            {m.assetName} - {m.meterName} ({m.currentValue} {m.uom})
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )} />
 
-                                <div>
-                                    <label className="text-sm font-medium mb-2 block">Reading Value</label>
-                                    <Input
-                                        type="number"
-                                        placeholder="Enter current meter value..."
-                                        value={formData.value}
-                                        onChange={(e) => setFormData({ ...formData, value: e.target.value })}
-                                        required
-                                        step="0.1"
-                                    />
-                                </div>
+                                    <FormField control={form.control} name="value" render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Reading Value</FormLabel>
+                                            <FormControl>
+                                                <Input type="number" step="0.1" placeholder="Enter current meter value..." {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )} />
 
-                                <div>
-                                    <label className="text-sm font-medium mb-2 block">Notes (Optional)</label>
-                                    <Input
-                                        placeholder="Any additional notes..."
-                                        value={formData.notes}
-                                        onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                                    />
-                                </div>
+                                    <FormField control={form.control} name="notes" render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Notes (Optional)</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Any additional notes..." {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )} />
 
-                                <div className="flex items-center gap-2">
-                                    <input
-                                        type="checkbox"
-                                        id="location"
-                                        checked={formData.captureLocation}
-                                        onChange={(e) => setFormData({ ...formData, captureLocation: e.target.checked })}
-                                        className="h-4 w-4"
-                                    />
-                                    <label htmlFor="location" className="text-sm flex items-center gap-1">
-                                        <MapPin className="h-4 w-4" />
-                                        Capture GPS location
-                                    </label>
-                                </div>
+                                    <FormField control={form.control} name="captureLocation" render={({ field }) => (
+                                        <FormItem className="flex flex-row items-center gap-2 space-y-0">
+                                            <FormControl>
+                                                <input
+                                                    type="checkbox"
+                                                    id="location"
+                                                    checked={field.value}
+                                                    onChange={field.onChange}
+                                                    className="h-4 w-4"
+                                                />
+                                            </FormControl>
+                                            <FormLabel htmlFor="location" className="text-sm flex items-center gap-1 font-normal cursor-pointer">
+                                                <MapPin className="h-4 w-4" />
+                                                Capture GPS location
+                                            </FormLabel>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )} />
 
-                                <div className="flex gap-2">
-                                    <Button type="submit" disabled={submitting} className="flex-1">
-                                        {submitting ? "Submitting..." : "Submit Reading"}
-                                    </Button>
-                                    <Button type="button" variant="outline" className="px-8">
-                                        <Camera className="h-4 w-4 mr-2" />
-                                        Photo
-                                    </Button>
-                                </div>
-                            </form>
+                                    <div className="flex gap-2">
+                                        <Button type="submit" disabled={submitting} className="flex-1">
+                                            {submitting ? "Submitting..." : "Submit Reading"}
+                                        </Button>
+                                        <Button type="button" variant="outline" className="px-8">
+                                            <Camera className="h-4 w-4 mr-2" />
+                                            Photo
+                                        </Button>
+                                    </div>
+                                </form>
+                            </Form>
                         </CardContent>
                     </Card>
                 </TabsContent>

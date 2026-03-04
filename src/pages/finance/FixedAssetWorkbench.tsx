@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 interface Asset {
     id: string;
@@ -301,15 +302,18 @@ export default function FixedAssetWorkbench() {
                                         <CardTitle>Asset Registry</CardTitle>
                                         <CardDescription>Manage your entire fixed asset portfolio</CardDescription>
                                     </div>
-                                    <div className="flex gap-2">
-                                        <div className="relative">
-                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                            <Input className="pl-9 w-64" placeholder="Search by number or tag..." />
+                                    <div className="flex gap-2 w-80">
+                                        <div className="flex-1">
+                                            <ContextualSearch
+                                                placeholder="Search by number or tag..."
+                                                fields={[
+                                                    { key: "assetNumber", label: "Asset Number", type: "text" },
+                                                    { key: "assetTag", label: "Asset Tag", type: "text" },
+                                                    { key: "status", label: "Status", type: "select", options: [{ value: "ACTIVE", label: "Active" }, { value: "RETIRED", label: "Retired" }] }
+                                                ]}
+                                                onSearch={() => { }}
+                                            />
                                         </div>
-                                        <Button variant="outline">
-                                            <Filter className="h-4 w-4 mr-2" />
-                                            Filter
-                                        </Button>
                                     </div>
                                 </div>
                             </CardHeader>

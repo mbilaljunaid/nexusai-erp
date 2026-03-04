@@ -13,6 +13,7 @@ import InventoryDashboardView from "./InventoryDashboardView";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { EnterpriseContextSwitcher } from "@/components/EnterpriseContextSwitcher";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 export default function Inventory() {
   const { toast } = useToast();
@@ -96,9 +97,12 @@ export default function Inventory() {
               <CardHeader>
                 <div className="flex items-center justify-between gap-4">
                   <CardTitle className="text-base">Current Stock Levels</CardTitle>
-                  <div className="flex items-center gap-2">
-                    <Search className="h-4 w-4 text-muted-foreground absolute ml-3" />
-                    <Input placeholder="Search items..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" />
+                  <div className="flex-1 min-w-[300px]">
+                    <ContextualSearch
+                      placeholder="Search items..."
+                      fields={[{ key: "query", label: "Search", type: "text" }]}
+                      onSearch={(filters) => setSearchQuery(filters.query || "")}
+                    />
                   </div>
                 </div>
               </CardHeader>

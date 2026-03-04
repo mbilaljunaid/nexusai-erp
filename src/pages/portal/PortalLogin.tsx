@@ -9,19 +9,37 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Loader2 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+
+const loginSchema = z.object({
+    email: z.string().email("Invalid email address"),
+});
 
 export default function PortalLogin() {
-    const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [, setLocation] = useLocation();
     const { toast } = useToast();
 
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const form = useForm<z.infer<typeof loginSchema>>({
+        resolver: zodResolver(loginSchema),
+        defaultValues: { email: "" },
+    });
+
+    const onSubmit = async (values: z.infer<typeof loginSchema>) => {
         setLoading(true);
 
         try {
-            const res = await apiRequest("POST", "/api/portal/login", { email });
+            const res = await apiRequest("POST", "/api/portal/login", { email: values.email });
             const data = await res.json();
 
             localStorage.setItem("portal_token", data.token);
@@ -57,26 +75,34 @@ export default function PortalLogin() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleLogin} className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                placeholder="name@company.com"
-                                value={email}
-                                onChange={e => setEmail(e.target.value)}
-                                required
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Email</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="email"
+                                                placeholder="name@company.com"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
                             />
-                        </div>
-                        <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700" disabled={loading}>
-                            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                            Sign In
-                        </Button>
-                        <div className="text-center text-xs text-muted-foreground mt-4">
-                            For demo purposes, use a valid customer email (e.g. finance@globex.com)
-                        </div>
-                    </form>
+                            <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700" disabled={loading}>
+                                {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                                Sign In
+                            </Button>
+                            <div className="text-center text-xs text-muted-foreground mt-4">
+                                For demo purposes, use a valid customer email (e.g. finance@globex.com)
+                            </div>
+                        </form>
+                    </Form>
                 </CardContent>
             </Card>
         </StandardPage>

@@ -15,6 +15,20 @@ import { toast } from "@/hooks/use-toast";
 import ModuleLayout from "@/components/layouts/ModuleLayout";
 import { FinanceSidebar } from "@/components/nav/FinanceSidebar";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+const ruleSchema = z.object({
+    name: z.string().min(1, "Rule Name is required"),
+    description: z.string().optional(),
+    ledgerSetId: z.string().min(1, "Ledger Set ID is required"),
+    eliminationLedgerId: z.string().min(1, "Elimination Ledger is required"),
+    matchRule: z.string().min(1, "Match Rule is required"),
+    thresholdAmount: z.coerce.number().min(0, "Threshold must be >= 0"),
+    enabled: z.boolean().default(true)
+});
 
 export default function EliminationRules() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -71,29 +85,49 @@ export default function EliminationRules() {
         }
     });
 
+    const form = useForm<z.infer<typeof ruleSchema>>({
+        resolver: zodResolver(ruleSchema),
+        defaultValues: {
+            name: "",
+            description: "",
+            ledgerSetId: "GLOBAL_GRP",
+            eliminationLedgerId: "ELIM_LEDGER",
+            matchRule: "Standard",
+            thresholdAmount: 0.00,
+            enabled: true
+        }
+    });
+
     const handleEdit = (rule: any) => {
         setSelectedRule(rule);
+        form.reset({
+            name: rule.name,
+            description: rule.description || "",
+            ledgerSetId: rule.ledgerSetId,
+            eliminationLedgerId: rule.eliminationLedgerId,
+            matchRule: rule.matchRule,
+            thresholdAmount: Number(rule.thresholdAmount),
+            enabled: rule.enabled
+        });
         setIsDialogOpen(true);
     };
 
     const handleCreate = () => {
         setSelectedRule(null);
+        form.reset({
+            name: "",
+            description: "",
+            ledgerSetId: "GLOBAL_GRP",
+            eliminationLedgerId: "ELIM_LEDGER",
+            matchRule: "Standard",
+            thresholdAmount: 0.00,
+            enabled: true
+        });
         setIsDialogOpen(true);
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        const formData = new FormData(e.target as HTMLFormElement);
-        const data = {
-            name: formData.get("name"),
-            description: formData.get("description"),
-            ledgerSetId: formData.get("ledgerSetId"),
-            eliminationLedgerId: formData.get("eliminationLedgerId"),
-            matchRule: formData.get("matchRule"),
-            thresholdAmount: formData.get("thresholdAmount"),
-            enabled: formData.get("enabled") === "on",
-        };
-        mutation.mutate(data);
+    const onSubmit = (values: z.infer<typeof ruleSchema>) => {
+        mutation.mutate(values);
     };
 
     const filteredRules = rules.filter((r: any) =>
@@ -171,51 +205,120 @@ export default function EliminationRules() {
                         <DialogHeader>
                             <DialogTitle>{selectedRule ? "Edit Rule" : "Create Rule"}</DialogTitle>
                         </DialogHeader>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="name">Rule Name</Label>
-                                <Input id="name" name="name" required defaultValue={selectedRule?.name} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="description">Description</Label>
-                                <Input id="description" name="description" defaultValue={selectedRule?.description} />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="ledgerSetId">Ledger Set ID</Label>
-                                    <Input id="ledgerSetId" name="ledgerSetId" required defaultValue={selectedRule?.ledgerSetId || "GLOBAL_GRP"} />
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                <FormField
+                                    control={form.control}
+                                    name="name"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Rule Name</FormLabel>
+                                            <FormControl>
+                                                <Input {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="description"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Description</FormLabel>
+                                            <FormControl>
+                                                <Input {...field} value={field.value || ""} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="ledgerSetId"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Ledger Set ID</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="eliminationLedgerId"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Elimination Ledger</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
                                 </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="eliminationLedgerId">Elimination Ledger</Label>
-                                    <Input id="eliminationLedgerId" name="eliminationLedgerId" required defaultValue={selectedRule?.eliminationLedgerId || "ELIM_LEDGER"} />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="matchRule"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Match Rule</FormLabel>
+                                                <Select onValueChange={field.onChange} value={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="Standard">Standard (1:1)</SelectItem>
+                                                        <SelectItem value="Custom">Custom</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="thresholdAmount"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Threshold ($)</FormLabel>
+                                                <FormControl>
+                                                    <Input type="number" step="0.01" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
                                 </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="matchRule">Match Rule</Label>
-                                    <Select name="matchRule" defaultValue={selectedRule?.matchRule || "Standard"}>
-                                        <SelectTrigger>
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="Standard">Standard (1:1)</SelectItem>
-                                            <SelectItem value="Custom">Custom</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="thresholdAmount">Threshold ($)</Label>
-                                    <Input id="thresholdAmount" name="thresholdAmount" type="number" step="0.01" defaultValue={selectedRule?.thresholdAmount || "0.00"} />
-                                </div>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Switch id="enabled" name="enabled" defaultChecked={selectedRule?.enabled ?? true} />
-                                <Label htmlFor="enabled">Active</Label>
-                            </div>
-                            <DialogFooter>
-                                <Button type="submit">Save Rule</Button>
-                            </DialogFooter>
-                        </form>
+                                <FormField
+                                    control={form.control}
+                                    name="enabled"
+                                    render={({ field }) => (
+                                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm mt-4">
+                                            <div className="space-y-0.5">
+                                                <FormLabel>Active</FormLabel>
+                                            </div>
+                                            <FormControl>
+                                                <Switch
+                                                    checked={field.value}
+                                                    onCheckedChange={field.onChange}
+                                                />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                                <DialogFooter>
+                                    <Button type="submit">Save Rule</Button>
+                                </DialogFooter>
+                            </form>
+                        </Form>
                     </DialogContent>
                 </Dialog>
             </StandardPage>

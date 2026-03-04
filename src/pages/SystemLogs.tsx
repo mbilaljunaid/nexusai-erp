@@ -1,14 +1,19 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { Input } from "@/components/ui/input";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 export default function SystemLogs() {
   return (
-    <StandardPage
-      title="System         <p className="text-muted-foreground mt-1">View system event logs and errors</p>
-      </div>
+    <StandardPage title="System Logs" description="View system event logs and errors">
       <div className="flex gap-2 mb-4">
-        <Input placeholder="Search logs..." data-testid="input-search-logs" className="flex-1" />
+        <div className="flex-1">
+          <ContextualSearch
+            placeholder="Search logs..."
+            fields={[{ key: "query", label: "Search", type: "text" }]}
+            onSearch={() => { }}
+            testId="search-logs"
+          />
+        </div>
       </div>
       <Card>
         <CardHeader><CardTitle className="text-base">Recent Logs</CardTitle></CardHeader>

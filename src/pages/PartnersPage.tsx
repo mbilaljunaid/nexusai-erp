@@ -26,13 +26,24 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { Partner } from "@/types/erp-types";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
-import { 
-  Search, 
-  Building2, 
-  Mail, 
-  Phone, 
-  Globe, 
+import {
+  Search,
+  Building2,
+  Mail,
+  Phone,
+  Globe,
   Award,
   GraduationCap,
   ChevronLeft,
@@ -50,6 +61,17 @@ const tierConfig = {
   silver: { bg: "bg-gray-400/10", text: "text-gray-600", label: "Silver" },
 };
 
+const partnerApplySchema = z.object({
+  type: z.enum(["partner", "trainer"]),
+  name: z.string().min(1, "Name is required"),
+  company: z.string().min(1, "Company is required"),
+  email: z.string().email("Invalid email"),
+  phone: z.string().optional(),
+  website: z.string().optional(),
+  description: z.string().optional(),
+  specializations: z.string().optional(),
+});
+
 export default function PartnersPage() {
   const { toast } = useToast();
   const [search, setSearch] = useState("");
@@ -57,17 +79,22 @@ export default function PartnersPage() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [page, setPage] = useState(1);
   const [applyOpen, setApplyOpen] = useState(false);
-  const [applyType, setApplyType] = useState<"partner" | "trainer">("partner");
-  
-  const [formData, setFormData] = useState({
-    name: "",
-    company: "",
-    email: "",
-    phone: "",
-    website: "",
-    description: "",
-    specializations: "",
+
+  const form = useForm<z.infer<typeof partnerApplySchema>>({
+    resolver: zodResolver(partnerApplySchema),
+    defaultValues: {
+      type: "partner",
+      name: "",
+      company: "",
+      email: "",
+      phone: "",
+      website: "",
+      description: "",
+      specializations: "",
+    }
   });
+
+  const applyType = form.watch("type");
 
   useEffect(() => {
     document.title = "Partners & Trainers | NexusAIFirst - Enterprise ERP Platform";
@@ -98,7 +125,7 @@ export default function PartnersPage() {
         description: "Thank you for your interest! We'll review your application and get back to you soon.",
       });
       setApplyOpen(false);
-      setFormData({ name: "", company: "", email: "", phone: "", website: "", description: "", specializations: "" });
+      form.reset();
     },
     onError: () => {
       toast({
@@ -109,12 +136,10 @@ export default function PartnersPage() {
     },
   });
 
-  const handleApply = (e: React.FormEvent) => {
-    e.preventDefault();
-    const specs = formData.specializations.split(",").map(s => s.trim()).filter(Boolean);
+  const onSubmit = (values: z.infer<typeof partnerApplySchema>) => {
+    const specs = (values.specializations || "").split(",").map(s => s.trim()).filter(Boolean);
     applyMutation.mutate({
-      ...formData,
-      type: applyType,
+      ...values,
       specializations: specs,
     });
   };
@@ -129,111 +154,154 @@ export default function PartnersPage() {
       <main className="flex-1">
         <section className="px-4 py-20 text-center max-w-5xl mx-auto">
           <Badge className="mb-4 bg-blue-600 text-white">ECOSYSTEM</Badge>
-          
+
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Connect with our certified implementation partners and professional trainers 
+            Connect with our certified implementation partners and professional trainers
             to accelerate your NexusAIFirst deployment and maximize your platform investment.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <Dialog open={applyOpen} onOpenChange={setApplyOpen}>
+            <Dialog open={applyOpen} onOpenChange={(open) => {
+              setApplyOpen(open);
+              if (!open) form.reset();
+            }}>
               <DialogTrigger asChild>
-                <Button size="lg" onClick={() => setApplyType("partner")} data-testid="button-become-partner">
+                <Button size="lg" onClick={() => form.setValue("type", "partner")} data-testid="button-become-partner">
                   <Handshake className="mr-2 w-5 h-5" /> Become a Partner
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-md">
+              <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>Apply as {applyType === "partner" ? "Implementation Partner" : "Certified Trainer"}</DialogTitle>
                   <DialogDescription>
                     Fill out the form below to submit your application. We'll review it and get back to you within 5 business days.
                   </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={handleApply} className="space-y-4 mt-4">
-                  <div className="space-y-2">
-                    <Label>Application Type</Label>
-                    <Select value={applyType} onValueChange={(v) => setApplyType(v as "partner" | "trainer")}>
-                      <SelectTrigger data-testid="select-apply-type">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="partner">Implementation Partner</SelectItem>
-                        <SelectItem value="trainer">Certified Trainer</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Your Name *</Label>
-                    <Input 
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      required
-                      data-testid="input-apply-name"
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
+                    <FormField
+                      control={form.control}
+                      name="type"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Application Type</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger data-testid="select-apply-type">
+                                <SelectValue />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="partner">Implementation Partner</SelectItem>
+                              <SelectItem value="trainer">Certified Trainer</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Company Name *</Label>
-                    <Input 
-                      value={formData.company}
-                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                      required
-                      data-testid="input-apply-company"
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Your Name *</FormLabel>
+                          <FormControl>
+                            <Input data-testid="input-apply-name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Email *</Label>
-                    <Input 
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      required
-                      data-testid="input-apply-email"
+                    <FormField
+                      control={form.control}
+                      name="company"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Company Name *</FormLabel>
+                          <FormControl>
+                            <Input data-testid="input-apply-company" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Phone</Label>
-                    <Input 
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      data-testid="input-apply-phone"
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email *</FormLabel>
+                          <FormControl>
+                            <Input type="email" data-testid="input-apply-email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Website</Label>
-                    <Input 
-                      value={formData.website}
-                      onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                      data-testid="input-apply-website"
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone</FormLabel>
+                          <FormControl>
+                            <Input data-testid="input-apply-phone" {...field} value={field.value || ""} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>About You / Company</Label>
-                    <Textarea 
-                      value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      placeholder="Tell us about your experience and expertise..."
-                      data-testid="input-apply-description"
+                    <FormField
+                      control={form.control}
+                      name="website"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Website</FormLabel>
+                          <FormControl>
+                            <Input data-testid="input-apply-website" {...field} value={field.value || ""} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Specializations (comma-separated)</Label>
-                    <Input 
-                      value={formData.specializations}
-                      onChange={(e) => setFormData({ ...formData, specializations: e.target.value })}
-                      placeholder="e.g. Finance, Manufacturing, Healthcare"
-                      data-testid="input-apply-specializations"
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>About You / Company</FormLabel>
+                          <FormControl>
+                            <Textarea placeholder="Tell us about your experience and expertise..." data-testid="input-apply-description" {...field} value={field.value || ""} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  <Button type="submit" className="w-full" disabled={applyMutation.isPending} data-testid="button-submit-application">
-                    {applyMutation.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-                    Submit Application
-                  </Button>
-                </form>
+                    <FormField
+                      control={form.control}
+                      name="specializations"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Specializations (comma-separated)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g. Finance, Manufacturing, Healthcare" data-testid="input-apply-specializations" {...field} value={field.value || ""} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit" className="w-full" disabled={applyMutation.isPending} data-testid="button-submit-application">
+                      {applyMutation.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+                      Submit Application
+                    </Button>
+                  </form>
+                </Form>
               </DialogContent>
             </Dialog>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              onClick={() => { setApplyType("trainer"); setApplyOpen(true); }}
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => { form.setValue("type", "trainer"); setApplyOpen(true); }}
               data-testid="button-become-trainer"
             >
               <GraduationCap className="mr-2 w-5 h-5" /> Become a Trainer
@@ -246,8 +314,8 @@ export default function PartnersPage() {
             <div className="flex flex-col md:flex-row gap-4 mb-8">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input 
-                  placeholder="Search partners and trainers..." 
+                <Input
+                  placeholder="Search partners and trainers..."
                   className="pl-10"
                   value={search}
                   onChange={(e) => { setSearch(e.target.value); setPage(1); }}
@@ -291,8 +359,8 @@ export default function PartnersPage() {
                 <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
                 <h3 className="text-lg font-semibold mb-2">No Partners Found</h3>
                 <p className="text-muted-foreground">
-                  {search || tierFilter !== "all" || typeFilter !== "all" 
-                    ? "Try adjusting your search or filters" 
+                  {search || tierFilter !== "all" || typeFilter !== "all"
+                    ? "Try adjusting your search or filters"
                     : "Be the first to join our partner ecosystem!"}
                 </p>
               </div>
@@ -359,8 +427,8 @@ export default function PartnersPage() {
 
                 {totalPages > 1 && (
                   <div className="flex items-center justify-center gap-2 mt-8">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
                       onClick={() => setPage(p => Math.max(1, p - 1))}
                       disabled={page === 1}
@@ -371,8 +439,8 @@ export default function PartnersPage() {
                     <span className="text-sm text-muted-foreground px-4">
                       Page {page} of {totalPages}
                     </span>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
                       onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                       disabled={page === totalPages}

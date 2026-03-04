@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 import { ServiceTicketForm } from "@/components/forms/ServiceTicketForm";
+import { ContextualSearch } from "@/components/ContextualSearch";
 
 export default function ServiceTicketsDetail() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -24,7 +25,13 @@ export default function ServiceTicketsDetail() {
     >
       <div className="space-y-4">
         <div className="flex gap-2 items-center">
-          <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search tickets..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
+          <div className="flex-1">
+            <ContextualSearch
+              placeholder="Search tickets..."
+              fields={[{ key: "title", label: "Ticket Title", type: "text" }]}
+              onSearch={(filters) => setSearchQuery(filters.title || "")}
+            />
+          </div>
           <Button>+ New Ticket</Button>
         </div>
 
