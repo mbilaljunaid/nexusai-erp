@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
+import { ContextualSearch } from "@/components/ContextualSearch";
 import { Link } from "wouter";
 
 function GLEntryForm() {
@@ -34,7 +35,11 @@ export default function GeneralLedgerDetail() {
 
       <div className="space-y-4">
         <div className="flex gap-2 items-center">
-          <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search GL entries..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
+          <ContextualSearch 
+            placeholder="Search GL entries..." 
+            fields={[{ key: "query", label: "Search", type: "text" }]}
+            onSearch={(f) => setSearchQuery(f.query || "")}
+          />
           <Button>+ New Entry</Button>
         </div>
 
@@ -49,6 +54,6 @@ export default function GeneralLedgerDetail() {
           <GLEntryForm />
         </div>
       </div>
-    </StandardPage>
+    </StandardPage >
   );
 }

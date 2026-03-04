@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
+import { ContextualSearch } from "@/components/ContextualSearch";
 import { Link } from "wouter";
 import { PurchaseOrderForm } from "@/components/forms/PurchaseOrderForm";
 
@@ -27,7 +28,11 @@ export default function PurchaseOrdersDetail() {
 
       <div className="space-y-4">
         <div className="flex gap-2 items-center">
-          <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search POs..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
+          <ContextualSearch 
+            placeholder="Search POs..." 
+            fields={[{ key: "query", label: "Search", type: "text" }]}
+            onSearch={(f) => setSearchQuery(f.query || "")}
+          />
           <Button>+ New PO</Button>
         </div>
 
@@ -42,6 +47,6 @@ export default function PurchaseOrdersDetail() {
           <PurchaseOrderForm />
         </div>
       </div>
-    </StandardPage>
+    </StandardPage >
   );
 }

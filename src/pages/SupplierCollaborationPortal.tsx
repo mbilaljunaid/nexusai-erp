@@ -226,6 +226,6 @@ export default function SupplierCollaborationPortal() {
           </Card>
         </TabsContent>
       </Tabs>
-    </StandardPage>
+    </StandardPage >
   );
 }

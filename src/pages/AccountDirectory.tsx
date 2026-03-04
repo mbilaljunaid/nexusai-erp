@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search, Trash2 } from "lucide-react";
+import { ContextualSearch } from "@/components/ContextualSearch";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -57,10 +58,11 @@ export default function AccountDirectory() {
       </Card>
 
       <div className="flex gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search accounts..." className="pl-10" data-testid="input-search" />
-        </div>
+        <ContextualSearch
+          placeholder="Search accounts..."
+          fields={[{ key: "query", label: "Search", type: "text" }]}
+          onSearch={() => { }}
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
