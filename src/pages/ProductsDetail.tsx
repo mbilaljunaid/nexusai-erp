@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,16 +37,17 @@ export default function ProductsDetail() {
     const activeCount = products.filter((p: any) => p.isActive === true || p.isActive === 1).length;
 
     return (
-        <StandardPage
-      title="Product Catalog"
-      description="Manage and track enterprise offerings"
-      className="space-y-6 flex flex-col flex-1 overflow-y-auto pb-10"
-    >
+        <div className="space-y-6 flex flex-col flex-1 overflow-y-auto pb-10">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 pb-4 border-b">
                 <div className="flex items-center gap-2">
                     <Link href="/crm">
-                        <Button variant="ghost" size="icon" className="hover:bg-primary/10 tr               Manage and track enterprise offerings
+                        <Button variant="ghost" size="icon" className="hover:bg-primary/10 transition-colors"><ArrowLeft className="h-4 w-4" /></Button>
+                    </Link>
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight">Product Catalog</h1>
+                        <p className="text-muted-foreground text-sm flex items-center gap-2 italic">
+                            Manage and track enterprise offerings
                         </p>
                     </div>
                 </div>
@@ -278,6 +278,6 @@ export default function ProductsDetail() {
                     )}
                 </SheetContent>
             </Sheet>
-        </StandardPage>
-  );
+        </div>
+    );
 }

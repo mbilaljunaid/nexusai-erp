@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,8 +38,13 @@ export default function RoutingMaster() {
   const totalCycleTime = routings.reduce((sum: number, r: any) => sum + (parseFloat(r.cycleTime) || 0), 0);
 
   return (
-    <StandardPage
-      title="Routing Mas       <p className="text-muted-foreground mt-2">Define manufacturing routings and operations</p>
+    <div className="space-y-6 p-4">
+      <div>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <Workflow className="h-8 w-8" />
+          Routing Master
+        </h1>
+        <p className="text-muted-foreground mt-2">Define manufacturing routings and operations</p>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
@@ -112,6 +116,6 @@ export default function RoutingMaster() {
           ))}
         </CardContent>
       </Card>
-    </StandardPage>
+    </div>
   );
 }

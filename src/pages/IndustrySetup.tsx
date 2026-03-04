@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -259,12 +258,16 @@ export default function IndustrySetup() {
 
   if (isLoading) {
     return (
-      <StandardPage
-      title="Industry Setup & Deployment"
-      description="Deploy industry configurations to tenants and automatically enable relevant modules"
-      className="min-h-screen p-6 flex items-center justify-center"
-    >
+      <div className="min-h-screen p-6 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
+  return (
+    <div className="min-h-screen p-6 space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold mb-2">Industry Setup & Deployment</h1>
         <p className="text-muted-foreground">
           Deploy industry configurations to tenants and automatically enable relevant modules
         </p>
@@ -538,6 +541,6 @@ export default function IndustrySetup() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </StandardPage>
+    </div>
   );
 }

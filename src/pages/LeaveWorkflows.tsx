@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
@@ -37,8 +36,8 @@ export default function LeaveWorkflows() {
   ];
 
   return (
-    <StandardPage
-      title="Leave W
+    <div className="space-y-6">
+      <div><h1 className="text-3xl font-semibold">Leave Workflows</h1>
         <p className="text-muted-foreground text-sm">Request, approve, and track time off</p>
       </div>
 
@@ -60,6 +59,6 @@ export default function LeaveWorkflows() {
       )}
       {activeNav === "approved" && <Card><CardContent className="p-4"><p className="text-muted-foreground">{stats.approved} approved leave requests</p></CardContent></Card>}
       {activeNav === "analytics" && <Card><CardContent className="p-4"><p className="text-muted-foreground">Leave usage and analytics</p></CardContent></Card>}
-    </StandardPage>
+    </div>
   );
 }

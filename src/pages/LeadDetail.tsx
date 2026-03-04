@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,14 +36,14 @@ export default function LeadDetail() {
   ];
 
   return (
-    <StandardPage
-      title="{lead?.name || "Lead"}"
-      description="{lead?.company}"
-      className="space-y-6"
-    >
+    <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" data-testi"}</h1>
+          <Button variant="ghost" size="icon" data-testid="button-back">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold">{lead?.name || "Lead"}</h1>
             <p className="text-muted-foreground">{lead?.company}</p>
           </div>
         </div>
@@ -87,6 +86,6 @@ export default function LeadDetail() {
       {activeNav === "scoring" && (
         <Card><CardHeader><CardTitle>Lead Scoring</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Score: {lead?.score || 0}/100</p><p className="text-sm text-muted-foreground mt-2">Based on engagement, company size, and budget</p></CardContent></Card>
       )}
-    </StandardPage>
+    </div>
   );
 }

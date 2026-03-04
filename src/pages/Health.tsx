@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -83,9 +82,11 @@ export default function Health() {
     : "warning";
 
   return (
-    <StandardPage
-      title="System Health"
-      description="Self-diagnostic monitoring and AI-powered insight     <p className="text-muted-foreground text-sm">Self-diagnostic monitoring and AI-powered insights</p>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-semibold">System Health</h1>
+          <p className="text-muted-foreground text-sm">Self-diagnostic monitoring and AI-powered insights</p>
         </div>
         <Button 
           onClick={runDiagnostics} 
@@ -268,6 +269,6 @@ export default function Health() {
           </Card>
         </div>
       </div>
-    </StandardPage>
+    </div>
   );
 }

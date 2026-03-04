@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,8 +12,13 @@ export default function RoleHierarchy() {
   ]);
 
   return (
-    <StandardPage
-      title="Role Hierar       <p className="text-muted-foreground mt-2">Manage role inheritance and hierarchies</p>
+    <div className="space-y-6 p-4">
+      <div>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <GitBranch className="h-8 w-8" />
+          Role Hierarchy
+        </h1>
+        <p className="text-muted-foreground mt-2">Manage role inheritance and hierarchies</p>
       </div>
 
       <Card>
@@ -46,6 +50,6 @@ export default function RoleHierarchy() {
           ))}
         </CardContent>
       </Card>
-    </StandardPage>
+    </div>
   );
 }

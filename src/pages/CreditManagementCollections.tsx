@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingDown, AlertTriangle, DollarSign, Sparkles } from "lucide-react";
@@ -17,10 +16,15 @@ export default function CreditManagementCollections() {
   const totalDSO = creditData.reduce((sum: number, c: any) => sum + (parseFloat(c.dsodays) || 0), 0);
 
   return (
-    <StandardPage
-      title="Credit Management & Collections"
-      description="Customer credit lim      "
-    >
+    <div className="space-y-6 p-4">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <DollarSign className="h-8 w-8" />
+            Credit Management & Collections
+          </h1>
+          <p className="text-muted-foreground mt-2">Customer credit limits, holds, aging analysis, and collections (Converged)</p>
+        </div>
         <Button
           onClick={() => {
             open();
@@ -98,6 +102,6 @@ export default function CreditManagementCollections() {
           </CardContent>
         </Card>
       </div>
-    </StandardPage>
+    </div>
   );
 }

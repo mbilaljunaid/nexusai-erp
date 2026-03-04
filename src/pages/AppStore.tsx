@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -315,10 +314,11 @@ export default function AppStore() {
   const suspendedApps = filteredInstallations?.filter((inst) => inst.status === "suspended") || [];
 
   return (
-    <StandardPage
-      title="Installed Apps"
-      description="Manage your installed enterprise applications"
-      className="space         <p className="text-muted-foreground mt-1">Manage your installed enterprise applications</p>
+    <div className="space-y-6 p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold" data-testid="text-page-title">Installed Apps</h1>
+          <p className="text-muted-foreground mt-1">Manage your installed enterprise applications</p>
         </div>
         <div className="relative w-full sm:w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -436,6 +436,6 @@ export default function AppStore() {
         open={!!reviewApp}
         onOpenChange={(open) => !open && setReviewApp(null)}
       />
-    </StandardPage>
+    </div>
   );
 }

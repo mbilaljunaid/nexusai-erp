@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
@@ -32,8 +31,13 @@ export default function FormShowcase() {
   ];
 
   return (
-    <StandardPage
-      title="NexusAIassName="text-muted-foreground text-sm mt-2">
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-semibold flex items-center gap-2">
+          <Sparkles className="h-8 w-8 text-blue-600" />
+          NexusAIFirst Form Showcase
+        </h1>
+        <p className="text-muted-foreground text-sm mt-2">
           Production-ready form components across all modules
         </p>
       </div>
@@ -73,6 +77,6 @@ export default function FormShowcase() {
       {activeNav === "all" && (
         <Card><CardHeader><CardTitle className="text-base">All Forms</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">16+ production-ready forms across all modules</p></CardContent></Card>
       )}
-    </StandardPage>
+    </div>
   );
 }

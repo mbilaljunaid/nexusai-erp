@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,12 +28,13 @@ export default function InvoiceList() {
   };
 
   return (
-    <StandardPage
-      title="Invoices"
-      description="Manage customer invoices and payments"
-      className="space-y-6"
-    >
-      <Breadcrumb items={formMetadata?.breadcrumb   <p className="text-muted-foreground mt-1">Manage customer invoices and payments</p>
+    <div className="space-y-6">
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Invoices</h1>
+          <p className="text-muted-foreground mt-1">Manage customer invoices and payments</p>
         </div>
         <SmartAddButton formId="invoice" formMetadata={formMetadata} />
       </div>
@@ -62,6 +62,6 @@ export default function InvoiceList() {
           </Card>
         )) : <Card><CardContent className="p-4"><p className="text-muted-foreground">No invoices found</p></CardContent></Card>}
       </div>
-    </StandardPage>
+    </div>
   );
 }

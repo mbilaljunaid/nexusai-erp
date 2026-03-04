@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -46,9 +45,11 @@ export default function Email() {
   ];
 
   return (
-    <StandardPage
-      title="Email Management"
-      description="Unified email, team collaboration, a        <p className="text-muted-foreground text-sm">Unified email, team collaboration, and marketing campaigns</p>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-semibold flex items-center gap-2"><Mail className="h-8 w-8" />Email Management</h1>
+          <p className="text-muted-foreground text-sm">Unified email, team collaboration, and marketing campaigns</p>
         </div>
         <Button data-testid="button-compose-email">
           <Plus className="h-4 w-4 mr-2" />
@@ -104,6 +105,6 @@ export default function Email() {
       {activeNav === "automation" && (
         <Card><CardHeader><CardTitle className="text-base">Email Automation</CardTitle></CardHeader><CardContent><p className="text-muted-foreground text-sm">Automation module loading. Set up automatic workflows and follow-ups.</p></CardContent></Card>
       )}
-    </StandardPage>
+    </div>
   );
 }

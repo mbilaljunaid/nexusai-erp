@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Brain, TrendingUp, Sparkles, BrainCircuit } from "lucide-react";
@@ -17,9 +16,13 @@ export default function DemandForecastingAI() {
   const avgAccuracy = forecasts.length > 0 ? (forecasts.reduce((sum: number, f: any) => sum + (parseFloat(f.accuracy) || 0), 0) / forecasts.length).toFixed(1) : 0;
 
   return (
-    <StandardPage
-      title="Demand Forecasting & AI"
-      description="ML-based demand prediction,h1>
+    <div className="space-y-6 p-4">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Brain className="h-8 w-8 text-primary" />
+            Demand Forecasting & AI
+          </h1>
           <p className="text-muted-foreground mt-2">ML-based demand prediction, safety stock optimization, and replenishment recommendations</p>
         </div>
         <Button
@@ -77,6 +80,6 @@ export default function DemandForecastingAI() {
           ))}
         </CardContent>
       </Card>
-    </StandardPage>
+    </div>
   );
 }

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,12 +14,13 @@ export default function PurchaseOrder() {
   const formMetadata = getFormMetadata("purchaseOrder");
 
   return (
-    <StandardPage
-      title="Purchase Orders"
-      description="Manage purchase orders and vendor management"
-      className="space-y-6"
-    >
-      <Breadcrumb items={formMetada          <p className="text-muted-foreground mt-1">Manage purchase orders and vendor management</p>
+    <div className="space-y-6">
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Purchase Orders</h1>
+          <p className="text-muted-foreground mt-1">Manage purchase orders and vendor management</p>
         </div>
         <SmartAddButton formId="purchaseOrder" formMetadata={formMetadata} />
       </div>
@@ -52,6 +52,6 @@ export default function PurchaseOrder() {
           </div>
         </CardContent>
       </Card>
-    </StandardPage>
+    </div>
   );
 }

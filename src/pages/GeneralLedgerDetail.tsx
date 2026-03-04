@@ -1,21 +1,15 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, ArrowLeft } from "lucide-react";
-import { ContextualSearch } from "@/components/ContextualSearch";
 import { Link } from "wouter";
 
 function GLEntryForm() {
   return (
-    <StandardPage
-      title="General Ledger"
-      description="Search, view, and create GL entries"
-      className="border rounded bg-muted/50 border-dashed text-center"
-    >
+    <div className="p-4 border rounded bg-muted/50 border-dashed text-center">
       <p className="text-muted-foreground">GL Entry Form Placeholder</p>
     </div>
   );
@@ -29,17 +23,17 @@ export default function GeneralLedgerDetail() {
     <div className="space-y-6">
       <div className="flex items-center gap-2">
         <Link to="/erp">
-          <B  <p className="text-muted-foreground text-sm">Search, view, and create GL entries</p>
+          <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
+        </Link>
+        <div>
+          <h1 className="text-3xl font-semibold">General Ledger</h1>
+          <p className="text-muted-foreground text-sm">Search, view, and create GL entries</p>
         </div>
       </div>
 
       <div className="space-y-4">
         <div className="flex gap-2 items-center">
-          <ContextualSearch 
-            placeholder="Search GL entries..." 
-            fields={[{ key: "query", label: "Search", type: "text" }]}
-            onSearch={(f) => setSearchQuery(f.query || "")}
-          />
+          <div className="relative flex-1"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search GL entries..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8" /></div>
           <Button>+ New Entry</Button>
         </div>
 
@@ -54,6 +48,6 @@ export default function GeneralLedgerDetail() {
           <GLEntryForm />
         </div>
       </div>
-    </StandardPage >
+    </div>
   );
 }

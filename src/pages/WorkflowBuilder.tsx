@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -36,9 +35,11 @@ export default function WorkflowBuilder() {
   });
 
   return (
-    <StandardPage
-      title="Workflow Builder"
-      description="Create and manage automation workf       <p className="text-muted-foreground mt-1">Create and manage automation workflows</p>
+    <div className="space-y-6 p-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2"><Zap className="w-8 h-8" />Workflow Builder</h1>
+          <p className="text-muted-foreground mt-1">Create and manage automation workflows</p>
         </div>
       </div>
 
@@ -86,6 +87,6 @@ export default function WorkflowBuilder() {
           </Card>
         ))}
       </div>
-    </StandardPage>
+    </div>
   );
 }

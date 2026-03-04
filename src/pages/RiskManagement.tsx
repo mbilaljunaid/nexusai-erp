@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -49,9 +48,13 @@ export default function RiskManagement() {
   };
 
   return (
-    <StandardPage
-      title="Risk Management"
-      description="Tracked-foreground mt-2">Track, assess, and mitigate organizational risks</p>
+    <div className="space-y-6 p-4" data-testid="risk-management">
+      <div>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <AlertTriangle className="h-8 w-8" />
+          Risk Management
+        </h1>
+        <p className="text-muted-foreground mt-2">Track, assess, and mitigate organizational risks</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
@@ -153,6 +156,6 @@ export default function RiskManagement() {
           )}
         </CardContent>
       </Card>
-    </StandardPage>
+    </div>
   );
 }

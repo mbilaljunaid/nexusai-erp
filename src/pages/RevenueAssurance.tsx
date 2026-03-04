@@ -40,12 +40,16 @@ export default function RevenueAssurance() {
     return (
         <StandardDashboard
             header={
-                <div className="flex justify-between items-center w-full"
-      actions={<Button variant="outline" onClick={() => refetch()} disabled={isFetching}>
+                <div className="flex justify-between items-center w-full">
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight font-heading">Revenue Assurance</h1>
+                        <p className="text-muted-foreground mt-1">ASC 606 anomaly detection &amp; revenue integrity checks</p>
+                    </div>
+                    <Button variant="outline" onClick={() => refetch()} disabled={isFetching}>
                         <RefreshCw className={`h-4 w-4 mr-2 ${isFetching ? "animate-spin" : ""}`} />
                         Run Check
-                    </Button>}
-    >
+                    </Button>
+                </div>
             }
         >
             <DashboardWidget title="Assurance Status" colSpan={1}>

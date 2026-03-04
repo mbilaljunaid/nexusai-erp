@@ -127,12 +127,16 @@ export function WorkLibrary() {
 
     return (
         <div className="space-y-6 p-6">
-            <div className="flex items-center justify-between"
-      actions={<Button onClick={() => { }}>
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-3xl font-bold">Work Library</h1>
+                    <p className="text-muted-foreground">Browse and apply standardized work definitions</p>
+                </div>
+                <Button onClick={() => { }}>
                     <Plus className="h-4 w-4 mr-2" />
                     New Definition
-                </Button>}
-    >
+                </Button>
+            </div>
 
             <Tabs defaultValue="catalog" className="w-full">
                 <TabsList>

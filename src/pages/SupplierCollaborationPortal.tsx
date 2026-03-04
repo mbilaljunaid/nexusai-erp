@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -53,10 +52,15 @@ export default function SupplierCollaborationPortal() {
   const pending = interactions.filter((i: any) => i.status === "pending").length;
 
   return (
-    <StandardPage
-      title="Supplier Collaboration Portal"
-      description="Holistic managem        "
-    >
+    <div className="space-y-6">
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Handshake className="h-8 w-8 text-primary" />
+            Supplier Collaboration Portal
+          </h1>
+          <p className="text-muted-foreground mt-1">Holistic management of supplier lifecycle and transactional performance.</p>
+        </div>
         <EnterpriseContextSwitcher
           type="business-unit"
           value={activeBuId}
@@ -226,6 +230,6 @@ export default function SupplierCollaborationPortal() {
           </Card>
         </TabsContent>
       </Tabs>
-    </StandardPage >
+    </div>
   );
 }

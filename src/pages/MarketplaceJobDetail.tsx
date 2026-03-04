@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -160,11 +159,7 @@ export default function MarketplaceJobDetail() {
 
   if (isLoading) {
     return (
-      <StandardPage
-      title="MarketplaceJobDetail"
-      description=""
-      className="min-h-screen bg-background"
-    >
+      <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           <Skeleton className="h-8 w-32 mb-6" />
           <Skeleton className="h-12 w-3/4 mb-4" />
@@ -507,6 +502,6 @@ export default function MarketplaceJobDetail() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </StandardPage>
+    </div>
   );
 }

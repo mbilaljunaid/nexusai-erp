@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,10 +15,11 @@ export default function QualityControl() {
   const formMetadata = getFormMetadata("qualityControl");
 
   return (
-    <StandardPage
-      title="Quality Control"
-      description="Manage QC inspections and defect tracking"
-      h1>
+    <div className="space-y-6">
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      
+      <div>
+        <h1 className="text-3xl font-bold">Quality Control</h1>
         <p className="text-muted-foreground mt-1">Manage QC inspections and defect tracking</p>
       </div>
 
@@ -63,6 +63,6 @@ export default function QualityControl() {
           )) : <p className="text-muted-foreground text-center py-4">No inspections found</p>}
         </CardContent>
       </Card>
-    </StandardPage>
+    </div>
   );
 }

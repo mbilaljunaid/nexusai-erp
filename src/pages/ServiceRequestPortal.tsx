@@ -1,6 +1,5 @@
 
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -63,10 +62,11 @@ export default function ServiceRequestPortal() {
     };
 
     return (
-        <StandardPage
-      title="Service Request Portal"
-      description="Report asset failures or request maintenance."
-      className="contai              <p className="text-muted-foreground">Report asset failures or request maintenance.</p>
+        <div className="container mx-auto p-6 max-w-4xl space-y-6">
+            <div className="flex justify-between items-center">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight">Service Request Portal</h1>
+                    <p className="text-muted-foreground">Report asset failures or request maintenance.</p>
                 </div>
             </div>
 
@@ -161,6 +161,6 @@ export default function ServiceRequestPortal() {
                     </CardContent>
                 </Card>
             </div>
-        </StandardPage>
-  );
+        </div>
+    );
 }

@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useRoute, Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -110,11 +109,7 @@ export default function ContributorProfile() {
 
   if (isLoading) {
     return (
-      <StandardPage
-      title="ContributorProfile"
-      description=""
-      className="container mx-auto p-6 max-w-6xl"
-    >
+      <div className="container mx-auto p-6 max-w-6xl">
         <Skeleton className="h-8 w-32 mb-6" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Skeleton className="h-80" />
@@ -378,6 +373,6 @@ export default function ContributorProfile() {
           </Tabs>
         </div>
       </div>
-    </StandardPage>
+    </div>
   );
 }

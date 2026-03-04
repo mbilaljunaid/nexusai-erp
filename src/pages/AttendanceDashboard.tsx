@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
@@ -14,13 +13,12 @@ export default function AttendanceDashboard() {
   const formMetadata = getFormMetadata("attendanceDashboard");
 
   return (
-    <StandardPage
-      title="Attendance Dashboard"
-      description="Track employee attendance and punctuality"
-      className="space-y-6"
-    >
+    <div className="space-y-6">
       <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      <FormSearchWithMetadata formMetadata={formard</h1>
+      <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={attendanceData} onFilter={setFiltered} />
+      
+      <div>
+        <h1 className="text-3xl font-bold">Attendance Dashboard</h1>
         <p className="text-muted-foreground mt-1">Track employee attendance and punctuality</p>
       </div>
 
@@ -61,6 +59,6 @@ export default function AttendanceDashboard() {
           </ResponsiveContainer>
         </CardContent>
       </Card>
-    </StandardPage>
+    </div>
   );
 }

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,9 +36,10 @@ export default function ResourceAllocation() {
   });
 
   return (
-    <StandardPage
-      title="Resource Allocation"
-      description="Managed-foreground mt-1">Manage team resources and allocations</p>
+    <div className="space-y-6 p-4" data-testid="resource-allocation">
+      <div>
+        <h1 className="text-3xl font-bold flex items-center gap-2"><Users className="h-8 w-8" />Resource Allocation</h1>
+        <p className="text-muted-foreground mt-1">Manage team resources and allocations</p>
       </div>
 
       <div className="grid grid-cols-3 gap-4">
@@ -94,6 +94,6 @@ export default function ResourceAllocation() {
           )}
         </CardContent>
       </Card>
-    </StandardPage>
+    </div>
   );
 }

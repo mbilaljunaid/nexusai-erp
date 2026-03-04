@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -57,10 +56,12 @@ export default function EmailManagement() {
   ];
 
   return (
-    <StandardPage
-      title="Email Management"
-      description="Create, send, and track email campaigns"
-    >
+    <div className="space-y-6">
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2"><Mail className="h-8 w-8" />Email Management</h1>
+          <p className="text-muted-foreground mt-2">Create, send, and track email campaigns</p>
+        </div>
         <Button data-testid="button-new-campaign">
           <Send className="h-4 w-4 mr-2" />
           New Campaign
@@ -133,6 +134,6 @@ export default function EmailManagement() {
           <Card><CardHeader><CardTitle className="text-base">Subscriber Management</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Total subscribers: 45,234</p><p className="text-muted-foreground">Active: 42,123</p><p className="text-muted-foreground">Unsubscribed: 3,111</p></CardContent></Card>
         </div>
       )}
-    </StandardPage>
+    </div>
   );
 }

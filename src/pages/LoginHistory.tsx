@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 import { Clock, MapPin, CheckCircle, AlertCircle } from "lucide-react";
 
@@ -12,8 +11,13 @@ export default function LoginHistory() {
   ];
 
   return (
-    <StandardPage
-      title="Login Histo      <p className="text-muted-foreground mt-2">Track all login attempts and activities</p>
+    <div className="space-y-6 p-4">
+      <div>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <Clock className="h-8 w-8" />
+          Login History
+        </h1>
+        <p className="text-muted-foreground mt-2">Track all login attempts and activities</p>
       </div>
 
       <div className="grid grid-cols-3 gap-4">
@@ -71,6 +75,6 @@ export default function LoginHistory() {
           </div>
         </CardContent>
       </Card>
-    </StandardPage>
+    </div>
   );
 }

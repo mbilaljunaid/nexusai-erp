@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -61,9 +60,10 @@ export default function LeadScoringDashboard() {
   const avgScore = leads.length > 0 ? (leads.reduce((sum: number, l: any) => sum + parseFloat(l.score || 0), 0) / leads.length).toFixed(1) : "0";
 
   return (
-    <StandardPage
-      title="Lead Scoring Dashboard"
-      description="AI-powered lead scoring mode1>
+    <div className="space-y-6 p-4">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold">Lead Scoring Dashboard</h1>
           <p className="text-muted-foreground mt-1">AI-powered lead scoring model and insights</p>
         </div>
         <Button
@@ -174,6 +174,6 @@ export default function LeadScoringDashboard() {
           ))}
         </CardContent>
       </Card>
-    </StandardPage>
+    </div>
   );
 }

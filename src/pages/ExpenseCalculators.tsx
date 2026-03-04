@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -121,8 +120,10 @@ export default function ExpenseCalculators() {
     };
 
     return (
-        <StandardPage
-      title="Expense Calculatorsmt-1 text-lg">
+        <div className="space-y-6 pb-20">
+            <div>
+                <h1 className="text-3xl font-bold tracking-tight">Expense Calculators</h1>
+                <p className="text-muted-foreground mt-1 text-lg">
                     Auto-calculate mileage reimbursement and per diem allowances
                 </p>
             </div>
@@ -381,6 +382,6 @@ export default function ExpenseCalculators() {
                     <p className="text-muted-foreground italic text-xs">These calculators use standard rates. Always verify with your company's expense policy.</p>
                 </CardContent>
             </Card>
-        </StandardPage>
-  );
+        </div>
+    );
 }

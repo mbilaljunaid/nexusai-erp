@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -59,9 +58,13 @@ export default function AccountReconciliation() {
   };
 
   return (
-    <StandardPage
-      title="Account Reconciliation"
-      description="GL aned-foreground mt-2">GL and subledger reconciliation with variance analysis</p>
+    <div className="space-y-6 p-4" data-testid="account-reconciliation">
+      <div>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <BarChart3 className="h-8 w-8" />
+          Account Reconciliation
+        </h1>
+        <p className="text-muted-foreground mt-2">GL and subledger reconciliation with variance analysis</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
@@ -143,6 +146,6 @@ export default function AccountReconciliation() {
           )}
         </CardContent>
       </Card>
-    </StandardPage>
+    </div>
   );
 }

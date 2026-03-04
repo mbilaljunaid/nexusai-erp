@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,8 +12,10 @@ export default function MobileApps() {
   const { data: metrics = [] } = useQuery<any[]>({ queryKey: ["/api/mobile/metrics"] });
 
   return (
-    <StandardPage
-      title="Mobile         <p className="text-muted-foreground mt-2">Monitor mobile application performance and metrics</p>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold">Mobile Apps</h1>
+        <p className="text-muted-foreground mt-2">Monitor mobile application performance and metrics</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -98,6 +99,6 @@ export default function MobileApps() {
           View Analytics
         </Button>
       </div>
-    </StandardPage>
+    </div>
   );
 }

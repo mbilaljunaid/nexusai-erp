@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -143,8 +142,10 @@ export default function SubscriptionManagement() {
   };
 
   return (
-    <StandardPage
-      title="Subscription Management"     <p className="text-muted-foreground">
+    <div className="min-h-screen p-6 space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold mb-2">Subscription Management</h1>
+        <p className="text-muted-foreground">
           Manage tenant subscriptions, plans, and billing cycles
         </p>
       </div>
@@ -294,6 +295,6 @@ export default function SubscriptionManagement() {
           ))
         )}
       </div>
-    </StandardPage>
+    </div>
   );
 }

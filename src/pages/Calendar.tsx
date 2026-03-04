@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar as CalendarIcon, MapPin, Users } from "lucide-react";
 
@@ -7,9 +6,13 @@ export default function Calendar() {
   const { data: events = [] } = useQuery<any[]>({ queryKey: ["/api/calendar/events"] });
 
   return (
-    <StandardPage
-      title="Calendar"
-  <p className="text-muted-foreground mt-2">Schedule meetings and manage events</p>
+    <div className="space-y-6 p-4">
+      <div>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <CalendarIcon className="h-8 w-8" />
+          Calendar
+        </h1>
+        <p className="text-muted-foreground mt-2">Schedule meetings and manage events</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-7 gap-2 mb-6">
@@ -42,6 +45,6 @@ export default function Calendar() {
           ))}
         </CardContent>
       </Card>
-    </StandardPage>
+    </div>
   );
 }

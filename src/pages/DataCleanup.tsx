@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 
 export default function DataCleanup() {
   return (
-    <StandardPage
-      title="Data Cl
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold">Data Cleanup</h1>
         <p className="text-muted-foreground mt-1">Remove duplicates and clean data</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -29,6 +29,6 @@ export default function DataCleanup() {
         </Card>
       </div>
       <Button className="w-full" data-testid="button-cleanup">Start Cleanup</Button>
-    </StandardPage>
+    </div>
   );
 }

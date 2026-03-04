@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
@@ -17,8 +16,9 @@ export default function Integrations() {
   ];
 
   return (
-    <StandardPage
-      title="Integra
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-semibold flex items-center gap-2"><Plug className="h-8 w-8" />Integration Hub</h1>
         <p className="text-muted-foreground text-sm">Connect to external systems and automate data flows</p>
       </div>
 
@@ -87,6 +87,6 @@ export default function Integrations() {
       {activeNav === "api" && (
         <Card><CardHeader><CardTitle className="text-base">API & Webhooks</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">REST API endpoints and webhook configurations</p><Button size="sm" className="mt-4">View API Docs</Button></CardContent></Card>
       )}
-    </StandardPage>
+    </div>
   );
 }

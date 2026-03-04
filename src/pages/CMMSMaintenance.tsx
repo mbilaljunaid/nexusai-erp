@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,10 +51,14 @@ export default function CMMSMaintenance() {
   const avgHours = workOrders.length > 0 ? (workOrders.reduce((sum: number, w: any) => sum + (parseFloat(w.estimatedHours) || 0), 0) / workOrders.length).toFixed(1) : 0;
 
   return (
-    <StandardPage
-      title="CMMS & Prev"
-      description="Maintenance schedules, asset tracking, downtime, and predictive analytics"
-    >
+    <div className="space-y-6 p-4">
+      <div>
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <Wrench className="h-8 w-8" />
+          CMMS & Preventive Maintenance
+        </h1>
+        <p className="text-muted-foreground mt-2">Maintenance schedules, asset tracking, downtime, and predictive analytics</p>
+      </div>
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

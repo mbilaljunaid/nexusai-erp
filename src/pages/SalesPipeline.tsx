@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -24,12 +23,13 @@ export default function SalesPipeline() {
   ];
 
   return (
-    <StandardPage
-      title="Sales Pipeline"
-      description="Kanban view of your opportunities across stages"
-      className="space-y-6"
-    >
-      <Breadcrumb items={formMeta         <p className="text-muted-foreground mt-1">Kanban view of your opportunities across stages</p>
+    <div className="space-y-6">
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Sales Pipeline</h1>
+          <p className="text-muted-foreground mt-1">Kanban view of your opportunities across stages</p>
         </div>
         <SmartAddButton formId="opportunity" formMetadata={formMetadata} />
       </div>
@@ -68,6 +68,6 @@ export default function SalesPipeline() {
           </Card>
         ))}
       </div>
-    </StandardPage>
+    </div>
   );
 }

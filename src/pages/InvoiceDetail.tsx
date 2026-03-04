@@ -1,19 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Download, Send } from "lucide-react";
 
 export default function InvoiceDetail() {
   return (
-    <StandardPage
-      title="INV-001"
-      description="Acme Corp"
-      className="space-y-6"
-    >
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" data-te     <p className="text-muted-foreground">Acme Corp</p>
+          <Button variant="ghost" size="icon" data-testid="button-back"><ArrowLeft className="h-5 w-5" /></Button>
+          <div>
+            <h1 className="text-3xl font-bold">INV-001</h1>
+            <p className="text-muted-foreground">Acme Corp</p>
           </div>
         </div>
         <div className="flex gap-2">
@@ -70,6 +68,6 @@ export default function InvoiceDetail() {
           </Card>
         </div>
       </div>
-    </StandardPage>
+    </div>
   );
 }

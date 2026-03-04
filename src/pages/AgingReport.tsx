@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, TrendingUp, AlertCircle, CreditCard, Clock } from "lucide-react";
@@ -56,11 +55,7 @@ export default function AgingReport() {
     ];
 
     return (
-      <StandardPage
-      title="Aging Report"
-      description="View aging analysis for Accounts Payable and Receivable"
-      className="space-y-4"
-    >
+      <div className="space-y-4">
         {buckets.map((bucket) => (
           <div key={bucket.label}>
             <div className="flex justify-between mb-2">
@@ -79,7 +74,18 @@ export default function AgingReport() {
         <div className="pt-4 border-t">
           <div className="flex justify-between">
             <span className="font-semibold">Total</span>
-            <span className="font-semibold text-lg">${parseFloat(data.totalAmount).toLocaleS      <p className="text-muted-foreground text-sm">View aging analysis for Accounts Payable and Receivable</p>
+            <span className="font-semibold text-lg">${parseFloat(data.totalAmount).toLocaleString()}</span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-semibold">Aging Report</h1>
+        <p className="text-muted-foreground text-sm">View aging analysis for Accounts Payable and Receivable</p>
       </div>
 
       <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
@@ -191,6 +197,6 @@ export default function AgingReport() {
           </Card>
         </div>
       )}
-    </StandardPage>
+    </div>
   );
 }

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Breadcrumb } from "@/components/Breadcrumb";
@@ -14,12 +13,12 @@ export default function BackupRestore() {
   const formMetadata = getFormMetadata("backupRestore");
 
   return (
-    <StandardPage
-      title="Backup & Restore"
-      description="Manage system backups and restoration"
-      className="space-y-6"
-    >
-      <Breadcrumb items={formMetadata?.br
+    <div className="space-y-6">
+      <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
+      
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Backup & Restore</h1>
           <p className="text-muted-foreground mt-1">Manage system backups and restoration</p>
         </div>
         <SmartAddButton formId="backupRestore" formMetadata={formMetadata} />
@@ -37,6 +36,6 @@ export default function BackupRestore() {
           </Card>
         )) : <p className="text-muted-foreground text-center py-4">No backups found</p>}
       </div>
-    </StandardPage>
+    </div>
   );
 }

@@ -5,8 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search } from "lucide-react";
-import { StandardPage } from "@/components/layout/StandardPage";
-
 
 export default function HealthcarePage() {
   const [search, setSearch] = useState("");
@@ -18,10 +16,10 @@ export default function HealthcarePage() {
   );
 
   return (
-    <StandardPage title="{endpoint.replace("healthcare-", "").replace(/-/g, " ")}">
+    <div className="space-y-6 p-6">
       <div className="flex justify-between items-center">
         <div>
-          
+          <h1 className="text-3xl font-bold capitalize">{endpoint.replace("healthcare-", "").replace(/-/g, " ")}</h1>
           <p className="text-muted-foreground mt-1">{filtered.length} records</p>
         </div>
         <Button data-testid="button-add"><Plus className="w-4 h-4 mr-2" />Add</Button>
@@ -55,6 +53,6 @@ export default function HealthcarePage() {
           </Card>
         ))}
       </div>
-    </StandardPage>
+    </div>
   );
 }

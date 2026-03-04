@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { MetadataFormRenderer } from "@/components/forms/MetadataFormRenderer";
@@ -26,11 +25,7 @@ export default function FormPage({ formId: propFormId }: FormPageProps) {
   };
 
   return (
-    <StandardPage
-      title="{formMetadata?.name || 'Form'}"
-      description="{formMetadata?.breadcrumbs?.[0]?.label || 'Enter your information'}"
-      className="flex flex-col h-screen bg-background"
-    >
+    <div className="flex flex-col h-screen bg-background">
       {/* Header */}
       <header className="border-b bg-card sticky top-0 z-40">
         <div className="flex items-center justify-between p-4 gap-4">
@@ -38,7 +33,13 @@ export default function FormPage({ formId: propFormId }: FormPageProps) {
             <Button 
               variant="outline" 
               size="icon" 
-              onClh1>
+              onClick={handleBack}
+              data-testid="button-back"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="text-xl font-bold">{formMetadata?.name || 'Form'}</h1>
               <p className="text-sm text-muted-foreground">{formMetadata?.breadcrumbs?.[0]?.label || 'Enter your information'}</p>
             </div>
           </div>
@@ -74,6 +75,6 @@ export default function FormPage({ formId: propFormId }: FormPageProps) {
           </div>
         </div>
       </main>
-    </StandardPage>
+    </div>
   );
 }

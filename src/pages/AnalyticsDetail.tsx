@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, LineChart, Line } from "recharts";
 import { Loader2, TrendingUp, AlertCircle, Users, Target, Activity } from "lucide-react";
@@ -26,11 +25,7 @@ export default function AnalyticsDetail() {
 
     if (pipelineLoading || revenueLoading || sourcesLoading || casesLoading) {
         return (
-            <StandardPage
-      title="AnalyticsDetail"
-      description=""
-      className="flex items-center justify-center p-12"
-    >
+            <div className="flex items-center justify-center p-12">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 <span className="ml-2">Loading analytics data...</span>
             </div>
@@ -189,6 +184,6 @@ function EmptyState({ message }: { message: string }) {
         <div className="h-full flex flex-col items-center justify-center text-muted-foreground border-2 border-dashed rounded-lg">
             <AlertCircle className="h-8 w-8 mb-2 opacity-20" />
             <p className="text-sm">{message}</p>
-        </StandardPage>
-  );
+        </div>
+    );
 }

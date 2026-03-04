@@ -1,6 +1,5 @@
 
 import { AssetList } from "@/components/fixed-assets/AssetList";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -10,9 +9,12 @@ import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseCon
 export default function FixedAssetsPage() {
     const [leId, setLeId] = useState<string>();
     return (
-        <StandardPage
-      title="Fixed Assets"
-      description="Manage asset lifecycle, additions, retirements, and                     Manage asset lifecycle, additions, retirements, and depreciation.
+        <div className="p-8 space-y-8">
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight">Fixed Assets</h1>
+                    <p className="text-muted-foreground mt-2">
+                        Manage asset lifecycle, additions, retirements, and depreciation.
                     </p>
                 </div>
                 <div className="flex gap-2 items-center">
@@ -27,6 +29,6 @@ export default function FixedAssetsPage() {
             <Separator />
 
             <AssetList />
-        </StandardPage>
-  );
+        </div>
+    );
 }

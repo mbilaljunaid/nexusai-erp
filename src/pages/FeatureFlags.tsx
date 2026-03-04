@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
@@ -123,10 +122,15 @@ export default function FeatureFlags() {
   const disabledCount = filtered.length - enabledCount;
 
   return (
-    <StandardPage
-      title="Feature Flags"
-      description="Control feature rollouts per tenant and module"
-      clasxt-muted-foreground mt-1">
+    <div className="space-y-6 p-1">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Flag className="h-8 w-8 text-blue-600" />
+            Feature Flags
+          </h1>
+          <p className="text-muted-foreground mt-1">
             Control feature rollouts per tenant and module
           </p>
         </div>
@@ -318,6 +322,6 @@ export default function FeatureFlags() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </StandardPage>
+    </div>
   );
 }
