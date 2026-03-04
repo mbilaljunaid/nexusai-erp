@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ClipboardList, CheckCircle2, AlertCircle } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface Cycle { id: string; cycle_name: string; cycle_type: string; status: string; count_date: string; line_count: number; counted_lines: number; approved_by: string; created_at: string; }
 interface Line { id: string; item_number: string; location: string; lot_number: string; book_quantity: number; count_quantity: number; variance_quantity: number; variance_value: number; count_status: string; counted_by: string; }
@@ -59,15 +60,13 @@ export default function PhysicalInventory() {
     ];
 
     return (
-        <div className="p-6 max-w-[1400px] mx-auto font-sans">
-            <div className="flex justify-between mb-4">
-                <div>
-                    <h1 className="text-[22px] font-bold text-gray-900 m-0">Physical Inventory</h1>
-                    <p className="text-[13px] text-gray-500 mt-1 mb-0">Cycle counts · Wall-to-wall · Variance analysis · Approval workflow</p>
-                </div>
+        <StandardPage
+            title="Physical Inventory"
+            description="Cycle counts · Wall-to-wall · Variance analysis · Approval workflow"
+            actions={
                 <button onClick={() => setShowNewCycle(true)} className="py-2 px-3.5 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer">+ New Cycle</button>
-            </div>
-
+            }
+        >
             {/* New cycle form */}
             {showNewCycle && (
                 <div className="bg-gray-50 border border-gray-200 rounded-xl p-3.5 mb-3">
@@ -184,7 +183,6 @@ export default function PhysicalInventory() {
                         </div>
                     </div>
                 )}
-            </div>
-        </div >
+            </StandardPage>
     );
 }

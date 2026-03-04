@@ -42,14 +42,13 @@ export default function WorkflowDesigner() {
     <StandardPage
       title="Workflow Designer"
       description="Create custom states and automation rules"
-           <p className="text-muted-foreground text-sm">Create custom states and automation rules</p>
-        </div>
+      actions={
         <Button>
           <Plus className="w-4 h-4 mr-2" />
           New Workflow
         </Button>
-      </div>
-
+      }
+    >
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="hover-elevate"><CardContent className="p-4"><div className="flex items-center gap-3"><GitBranch className="h-5 w-5 text-blue-500" /><div><p className="text-2xl font-semibold">{stats.total}</p><p className="text-xs text-muted-foreground">Total</p></div></div></CardContent></Card>
         <Card className="hover-elevate"><CardContent className="p-4"><div className="flex items-center gap-3"><Zap className="h-5 w-5 text-green-500" /><div><p className="text-2xl font-semibold">{stats.active}</p><p className="text-xs text-muted-foreground">Active</p></div></div></CardContent></Card>

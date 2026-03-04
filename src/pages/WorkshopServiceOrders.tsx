@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Wrench, Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -40,11 +40,9 @@ export default function WorkshopServiceOrders() {
 
   return (
     <StandardPage
-      title="Workshop & ement
-        </h1>
-        <p className="text-muted-foreground mt-2">Appointment booking, repair orders, job cards, technician assignment, and QC</p>
-      </div>
-
+      title="Workshop & Service Management"
+      description="Appointment booking, repair orders, job cards, technician assignment, and QC"
+    >
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">
           <CardContent className="pt-0">
@@ -80,7 +78,7 @@ export default function WorkshopServiceOrders() {
             <Input placeholder="VIN" value={newRO.vin} onChange={(e) => setNewRO({ ...newRO, vin: e.target.value })} data-testid="input-vin" className="text-sm" />
             <Input placeholder="Complaint" value={newRO.complaint} onChange={(e) => setNewRO({ ...newRO, complaint: e.target.value })} data-testid="input-complaint" className="text-sm" />
             <Input placeholder="Status" disabled value={newRO.status} data-testid="input-status" className="text-sm" />
-            <Button disabled={createMutation.isPending || !newRO.roId} size="sm" data-testid="button-create">
+            <Button disabled={createMutation.isPending || !newRO.roId} size="sm" data-testid="button-create" onClick={() => createMutation.mutate(newRO)}>
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -98,7 +96,7 @@ export default function WorkshopServiceOrders() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={o.status === "completed" ? "default" : "secondary"} className="text-xs">{o.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${o.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${o.id}`} className="h-7 w-7" onClick={() => deleteMutation.mutate(o.id)}>
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

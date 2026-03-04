@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
@@ -20,12 +20,10 @@ export default function WorkOrder() {
     <StandardPage
       title="Work Orders"
       description="Track production work orders and status"
+      actions={<SmartAddButton formId="workOrder" formMetadata={formMetadata} />}
       className="space-y-6"
     >
-      <Breadcrumb items={formMetadata?.bread      <p className="text-muted-foreground mt-1">Track production work orders and status</p>
-        </div>
-        <SmartAddButton formId="workOrder" formMetadata={formMetadata} />
-      </div>
+      <Breadcrumb items={formMetadata?.breadcrumbs || []} />
 
       <FormSearchWithMetadata
         formMetadata={formMetadata}
@@ -50,7 +48,6 @@ export default function WorkOrder() {
             </CardContent>
           </Card>
         )) : <Card><CardContent className="p-4"><p className="text-muted-foreground">No work orders found</p></CardContent></Card>}
-      </div>
-    </StandardPage>
+      </StandardPage>
   );
 }

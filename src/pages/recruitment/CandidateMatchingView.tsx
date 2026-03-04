@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 import {
     Brain,
@@ -57,21 +58,16 @@ export default function CandidateMatchingView() {
     });
 
     return (
-        <div className="p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-                        <Brain className="h-8 w-8 text-indigo-600" />
-                        AI Candidate Matching
-                    </h1>
-                    <p className="text-muted-foreground mt-1">NEXUS AI Ranker: Analyzing candidate profiles against job requirements.</p>
-                </div>
+        <StandardPage
+            title="AI Candidate Matching"
+            description="NEXUS AI Ranker: Analyzing candidate profiles against job requirements."
+            actions={
                 <div className="flex gap-2">
                     <Button variant="outline"><Target className="w-4 h-4 mr-2" /> Re-Scan Requisition</Button>
                     <Button>Compare Selected</Button>
                 </div>
-            </div>
-
+            }
+        >
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Ranking List */}
                 <Card className="lg:col-span-1 h-full overflow-hidden">
@@ -196,7 +192,6 @@ export default function CandidateMatchingView() {
                         </div>
                     )}
                 </Card>
-            </div>
-        </div>
+            </StandardPage>
     );
 }

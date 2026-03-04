@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Activity, TrendingUp, AlertCircle } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 
 export default function WorkflowMonitoring() {
   const { data: executions = [] } = useQuery({
@@ -16,10 +16,9 @@ export default function WorkflowMonitoring() {
 
   return (
     <StandardPage
-      title="Workflow Moh1>
-        <p className="text-muted-foreground mt-2">Monitor workflow executions and performance</p>
-      </div>
-
+      title="Workflow Monitoring"
+      description="Monitor workflow executions and performance"
+    >
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">
           <CardContent className="pt-0">

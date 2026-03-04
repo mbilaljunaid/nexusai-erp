@@ -41,11 +41,9 @@ export default function WorkforceScheduling() {
 
   return (
     <StandardPage
-      title="Workforce Sent
-        </h1>
-        <p className="text-muted-foreground mt-2">Employee scheduling, shift management, and labor optimization</p>
-      </div>
-
+      title="Workforce Scheduling"
+      description="Employee scheduling, shift management, and labor optimization"
+    >
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">
           <CardContent className="pt-0">
@@ -88,7 +86,7 @@ export default function WorkforceScheduling() {
                 <SelectItem value="night">Night</SelectItem>
               </SelectContent>
             </Select>
-            <Button disabled={createMutation.isPending || !newSchedule.employeeId} size="sm" data-testid="button-create">
+            <Button disabled={createMutation.isPending || !newSchedule.employeeId} size="sm" data-testid="button-create" onClick={() => createMutation.mutate(newSchedule)}>
               <Plus className="w-3 h-3" />
             </Button>
           </div>
@@ -106,7 +104,7 @@ export default function WorkforceScheduling() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={s.status === "completed" ? "default" : "secondary"} className="text-xs">{s.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${s.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${s.id}`} className="h-7 w-7" onClick={() => deleteMutation.mutate(s.id)}>
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

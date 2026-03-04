@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -81,14 +82,12 @@ export default function TimekeeperConsole() {
     });
 
     return (
-        <div className="container mx-auto p-6 max-w-7xl space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Timekeeper Console</h1>
-                    <p className="text-muted-foreground">High-volume daily time entry.</p>
-                </div>
+        <StandardPage
+            title="Timekeeper Console"
+            description="High-volume daily time entry."
+            actions={
                 <div className="flex gap-4 items-center">
-                    <div className="flex items-center gap-2 border rounded p-2">
+                    <div className="flex items-center gap-2 border rounded p-2 bg-background">
                         <Calendar className="h-4 w-4 text-muted-foreground" />
                         <input
                             type="date"
@@ -102,8 +101,8 @@ export default function TimekeeperConsole() {
                         {saveMutation.isPending ? "Saving..." : "Save Changes"}
                     </Button>
                 </div>
-            </div>
-
+            }
+        >
             <Card>
                 <CardHeader>
                     <CardTitle>{format(parseISO(selectedDate), "EEEE, MMMM do, yyyy")}</CardTitle>
@@ -177,6 +176,6 @@ export default function TimekeeperConsole() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </StandardPage>
     );
 }

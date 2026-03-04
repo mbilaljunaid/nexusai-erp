@@ -27,7 +27,7 @@ export default function BillingWorkbench() {
     const { toast } = useToast();
     const [page, setPage] = useState(1);
     const [selectedEvent, setSelectedEvent] = useState<BillingEvent | null>(null);
-    const pageSize = 50; // Server-side pagination supported by StandardTable
+    const pageSize = 50; // Server-side pagination
 
     const { businessUnitId } = useEnterpriseStore();
 
@@ -146,7 +146,7 @@ export default function BillingWorkbench() {
 
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground">Manage unbilled events and generate invoices.</p>
                 </div>
                 <div className="flex gap-4 items-center">
