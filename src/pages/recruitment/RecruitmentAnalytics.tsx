@@ -14,7 +14,7 @@ import {
     Download
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, FunnelChart, Funnel, LabelList } from "recharts";
-
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 interface Analytics {
     timeToHire: number;
     offerAcceptanceRate: number;
@@ -112,6 +112,64 @@ export default function RecruitmentAnalytics() {
     if (!analytics) {
         return <div className="p-8 text-center text-muted-foreground">No analytics data available</div>;
     }
+
+    const interviewerColumns: SpreadsheetColumn[] = [
+        {
+            id: "name",
+            header: "Interviewer",
+            width: "200px",
+            cell: (row) => <div className="px-2 font-medium text-left">{row.name}</div>
+        },
+        {
+            id: "interviews",
+            header: "# Interviews",
+            width: "150px",
+            cell: (row) => <div className="px-2 text-center">{row.interviews}</div>
+        },
+        {
+            id: "avgRating",
+            header: "Avg Rating",
+            width: "150px",
+            cell: (row) => (
+                <div className="px-2 text-center flex justify-center">
+                    <Badge variant="outline">
+                        {row.avgRating.toFixed(1)} / 5.0
+                    </Badge>
+                </div>
+            )
+        },
+        {
+            id: "avgFeedbackTime",
+            header: "Avg Feedback Time (days)",
+            width: "250px",
+            cell: (row) => (
+                <div className="px-2 text-center flex justify-center">
+                    <Badge
+                        variant={row.avgFeedbackTime <= 1 ? 'default' : 'secondary'}
+                        className={row.avgFeedbackTime <= 1 ? 'bg-green-600' : ''}
+                    >
+                        {row.avgFeedbackTime.toFixed(1)}
+                    </Badge>
+                </div>
+            )
+        },
+        {
+            id: "performance",
+            header: "Performance",
+            width: "150px",
+            cell: (row) => (
+                <div className="px-2 text-center flex justify-center">
+                    {row.avgRating >= 4.5 && row.avgFeedbackTime <= 1 ? (
+                        <Badge variant="default" className="bg-green-600">Excellent</Badge>
+                    ) : row.avgRating >= 4.0 ? (
+                        <Badge variant="default">Good</Badge>
+                    ) : (
+                        <Badge variant="secondary">Average</Badge>
+                    )}
+                </div>
+            )
+        }
+    ];
 
     return (
         <div className="space-y-6 p-4">
@@ -308,48 +366,13 @@ export default function RecruitmentAnalytics() {
                     <CardDescription>Interview activity and feedback metrics</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="border rounded-lg overflow-hidden">
-                        <table className="w-full">
-                            <thead className="bg-muted/50">
-                                <tr>
-                                    <th className="p-3 text-left text-sm font-semibold">Interviewer</th>
-                                    <th className="p-3 text-center text-sm font-semibold"># Interviews</th>
-                                    <th className="p-3 text-center text-sm font-semibold">Avg Rating</th>
-                                    <th className="p-3 text-center text-sm font-semibold">Avg Feedback Time (days)</th>
-                                    <th className="p-3 text-center text-sm font-semibold">Performance</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {analytics.interviewerPerformance.map((interviewer, idx) => (
-                                    <tr key={idx} className="border-t hover:bg-muted/20">
-                                        <td className="p-3 font-medium">{interviewer.name}</td>
-                                        <td className="p-3 text-center">{interviewer.interviews}</td>
-                                        <td className="p-3 text-center">
-                                            <Badge variant="outline">
-                                                {interviewer.avgRating.toFixed(1)} / 5.0
-                                            </Badge>
-                                        </td>
-                                        <td className="p-3 text-center">
-                                            <Badge
-                                                variant={interviewer.avgFeedbackTime <= 1 ? 'default' : 'secondary'}
-                                                className={interviewer.avgFeedbackTime <= 1 ? 'bg-green-600' : ''}
-                                            >
-                                                {interviewer.avgFeedbackTime.toFixed(1)}
-                                            </Badge>
-                                        </td>
-                                        <td className="p-3 text-center">
-                                            {interviewer.avgRating >= 4.5 && interviewer.avgFeedbackTime <= 1 ? (
-                                                <Badge variant="default" className="bg-green-600">Excellent</Badge>
-                                            ) : interviewer.avgRating >= 4.0 ? (
-                                                <Badge variant="default">Good</Badge>
-                                            ) : (
-                                                <Badge variant="secondary">Average</Badge>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                    <div className="border rounded-lg overflow-hidden h-[300px]">
+                        <InteractiveSpreadsheet
+                            data={analytics.interviewerPerformance}
+                            columns={interviewerColumns}
+                            containerHeight={300}
+                            virtualized={true}
+                        />
                     </div>
                 </CardContent>
             </Card>

@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Play, Trash2, ChevronRight, Table2, BarChart3 } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface FSGRow {
     rowNum: number;
@@ -100,6 +101,42 @@ export default function FSGReportBuilder() {
         runMutation.mutate({ reportDefinitionId: selectedReport, ...runParams });
     }, [selectedReport, runParams, runMutation]);
 
+    const runResultColumns: SpreadsheetColumn<FSGRow>[] = [
+        {
+            id: 'row-label',
+            header: 'Row',
+            width: '250px',
+            cell: (row) => (
+                <div style={{ paddingLeft: `${(row.indent ?? 0) * 16 + 12}px`, fontWeight: row.isBold ? 700 : 400 }}>
+                    {row.label}
+                </div>
+            )
+        },
+        ...(runResult?.columns ?? []).map((c: FSGColumn) => ({
+            id: `col-${c.colNum}`,
+            header: c.label,
+            width: '150px',
+            cell: (row: any) => {
+                const val = runResult?.data?.[row.rowNum]?.[c.colNum] ?? 0;
+                return (
+                    <div className={`text-right w-full font-variant-numeric tabular-nums ${val < 0 ? 'text-red-600' : ''}`}>
+                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val)}
+                    </div>
+                );
+            }
+        }))
+    ];
+
+    const editorColumns: SpreadsheetColumn<FSGRow>[] = [
+        { id: "rowNum", header: "#", width: "50px", cell: (row) => <div className="text-center font-bold text-zinc-500">{row.rowNum}</div> },
+        { id: "label", header: "Label", width: "200px", cell: (row) => <input className="w-full px-2 py-1 border rounded" aria-label="Label" value={row.label} onChange={e => updateRow(row.rowNum, 'label', e.target.value)} /> },
+        { id: "accountRange", header: "Account Range", width: "150px", cell: (row) => <input className="w-full px-2 py-1 border rounded font-mono" aria-label="Account Range" value={row.accountRange ?? ''} placeholder="e.g. 5000-5999" onChange={e => updateRow(row.rowNum, 'accountRange', e.target.value)} /> },
+        { id: "formula", header: "Formula (e.g. R1+R2)", width: "150px", cell: (row) => <input className="w-full px-2 py-1 border rounded font-mono" aria-label="Formula" value={row.formula ?? ''} placeholder="e.g. R1 - R2" onChange={e => updateRow(row.rowNum, 'formula', e.target.value)} /> },
+        { id: "isBold", header: "Bold", width: "60px", cell: (row) => <div className="text-center w-full"><input type="checkbox" aria-label="Bold" checked={!!row.isBold} onChange={e => updateRow(row.rowNum, 'isBold', e.target.checked)} /></div> },
+        { id: "isTotal", header: "Total", width: "60px", cell: (row) => <div className="text-center w-full"><input type="checkbox" aria-label="Total" checked={!!row.isTotal} onChange={e => updateRow(row.rowNum, 'isTotal', e.target.checked)} /></div> },
+        { id: "delete", header: "Del", width: "60px", cell: (row) => <button className="p-1 text-red-600 hover:bg-red-100 rounded w-full flex justify-center" aria-label="Delete" onClick={() => removeRow(row.rowNum)}><Trash2 size={14} /></button> }
+    ];
+
     return (
         <StandardPage
             title="FSG Report Builder"
@@ -165,34 +202,13 @@ export default function FSGReportBuilder() {
                     {runResult && (
                         <div className="run-result">
                             <h2 className="panel-title">{runResult.reportName} — {runResult.periodName}</h2>
-                            <div className="result-table-wrapper">
-                                <table className="result-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Row</th>
-                                            {(runResult.columns ?? []).map((c: FSGColumn) => (
-                                                <th key={c.colNum}>{c.label}</th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {(runResult.rows ?? []).map((row: FSGRow) => (
-                                            <tr key={row.rowNum} className={row.isTotal ? 'total-row' : ''}>
-                                                <td className="row-label" style={{ paddingLeft: `${(row.indent ?? 0) * 16 + 12}px`, fontWeight: row.isBold ? 700 : 400 }}>
-                                                    {row.label}
-                                                </td>
-                                                {(runResult.columns ?? []).map((c: FSGColumn) => {
-                                                    const val = runResult.data?.[row.rowNum]?.[c.colNum] ?? 0;
-                                                    return (
-                                                        <td key={c.colNum} className={`value-cell ${val < 0 ? 'negative' : ''}`}>
-                                                            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val)}
-                                                        </td>
-                                                    );
-                                                })}
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                            <div className="border rounded-lg overflow-hidden h-[300px]">
+                                <InteractiveSpreadsheet
+                                    columns={runResultColumns}
+                                    data={runResult.rows ?? []}
+                                    onChange={() => { }}
+                                    containerHeight="100%"
+                                />
                             </div>
                         </div>
                     )}
@@ -246,27 +262,14 @@ export default function FSGReportBuilder() {
                                 <Plus size={14} /> Add Row
                             </button>
                         </div>
-                        <table className="editor-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th><th>Label</th><th>Account Range</th>
-                                    <th>Formula (e.g. R1+R2)</th><th>Bold</th><th>Total</th><th>Del</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {rows.map(row => (
-                                    <tr key={row.rowNum}>
-                                        <td className="row-num">{row.rowNum}</td>
-                                        <td><input className="editor-input" value={row.label} onChange={e => updateRow(row.rowNum, 'label', e.target.value)} aria-label="Row label" /></td>
-                                        <td><input className="editor-input mono" value={row.accountRange ?? ''} placeholder="e.g. 5000-5999" onChange={e => updateRow(row.rowNum, 'accountRange', e.target.value)} aria-label="Account range" /></td>
-                                        <td><input className="editor-input mono" value={row.formula ?? ''} placeholder="e.g. R1 - R2" onChange={e => updateRow(row.rowNum, 'formula', e.target.value)} aria-label="Formula" /></td>
-                                        <td><input type="checkbox" checked={!!row.isBold} onChange={e => updateRow(row.rowNum, 'isBold', e.target.checked)} aria-label="Bold" /></td>
-                                        <td><input type="checkbox" checked={!!row.isTotal} onChange={e => updateRow(row.rowNum, 'isTotal', e.target.checked)} aria-label="Total row" /></td>
-                                        <td><button className="delete-btn" onClick={() => removeRow(row.rowNum)} aria-label={`Delete row ${row.rowNum}`}><Trash2 size={14} /></button></td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                        <div className="border rounded-lg overflow-hidden h-[400px]">
+                            <InteractiveSpreadsheet
+                                columns={editorColumns}
+                                data={rows}
+                                onChange={() => { }}
+                                containerHeight="100%"
+                            />
+                        </div>
                     </div>
                 </div>
             )}
@@ -285,15 +288,6 @@ export default function FSGReportBuilder() {
                 .fsg-select, .fsg-input { padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 13px; flex: 1; min-width: 160px; }
                 .run-btn { display: flex; align-items: center; gap: 6px; padding: 8px 18px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
                 .run-btn:disabled { background: #9ca3af; }
-                .result-table-wrapper { overflow-x: auto; }
-                .result-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-                .result-table th { padding: 10px 14px; text-align: right; font-weight: 600; background: #f9fafb; border-bottom: 2px solid #e5e7eb; }
-                .result-table th:first-child { text-align: left; }
-                .result-table td { padding: 8px 14px; border-bottom: 1px solid #f3f4f6; }
-                .row-label { text-align: left; }
-                .value-cell { text-align: right; font-variant-numeric: tabular-nums; }
-                .value-cell.negative { color: #dc2626; }
-                .total-row { background: #f0f9ff; font-weight: 700; }
                 .report-cards { display: flex; flex-direction: column; gap: 8px; }
                 .report-card { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; cursor: pointer; transition: background 0.15s; }
                 .report-card:hover { background: #eff6ff; border-color: #bfdbfe; }
@@ -308,14 +302,6 @@ export default function FSGReportBuilder() {
                 .editor-section { margin-top: 20px; }
                 .editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
                 .add-row-btn { display: flex; align-items: center; gap: 6px; padding: 6px 14px; background: #f0f9ff; border: 1px solid #bfdbfe; color: #1d4ed8; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
-                .editor-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-                .editor-table th { padding: 8px 12px; text-align: left; background: #f9fafb; border-bottom: 2px solid #e5e7eb; font-weight: 600; color: #374151; white-space: nowrap; }
-                .editor-table td { padding: 6px 8px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
-                .row-num { text-align: center; font-weight: 700; color: #6b7280; width: 36px; }
-                .editor-input { width: 100%; padding: 5px 8px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 12px; box-sizing: border-box; }
-                .editor-input.mono { font-family: monospace; }
-                .delete-btn { background: none; border: none; cursor: pointer; color: #dc2626; padding: 4px; border-radius: 4px; }
-                .delete-btn:hover { background: #fee2e2; }
             `}</style>
         </StandardPage >
     );

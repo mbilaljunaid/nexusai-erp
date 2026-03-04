@@ -10,6 +10,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { CreditCard, Calendar, Package, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function SubscriptionManagement() {
     const { toast } = useToast();
@@ -45,6 +46,19 @@ export default function SubscriptionManagement() {
             queryClient.invalidateQueries({ queryKey: ["/api/portal/subscription"] });
         },
     });
+
+    const columns: SpreadsheetColumn<any>[] = [
+        { id: "date", header: "Date", width: "150px", cell: (bill: any) => <span>{new Date(bill.date).toLocaleDateString()}</span> },
+        { id: "description", header: "Description", width: "300px", cell: (bill: any) => <span>{bill.description}</span> },
+        { id: "amount", header: "Amount", width: "120px", cell: (bill: any) => <span>${bill.amount}</span> },
+        {
+            id: "status", header: "Status", width: "120px", cell: (bill: any) => (
+                <Badge variant={bill.status === 'PAID' ? 'default' : 'secondary'}>
+                    {bill.status}
+                </Badge>
+            )
+        }
+    ];
 
     return (
         <div className="container mx-auto p-6 space-y-6">
@@ -129,30 +143,13 @@ export default function SubscriptionManagement() {
                 </CardHeader>
                 <CardContent>
                     <div className="border rounded-lg">
-                        <table className="w-full">
-                            <thead className="bg-muted">
-                                <tr>
-                                    <th className="text-left p-3">Date</th>
-                                    <th className="text-left p-3">Description</th>
-                                    <th className="text-right p-3">Amount</th>
-                                    <th className="text-left p-3">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {subscription?.billingHistory?.map((bill: any) => (
-                                    <tr key={bill.id} className="border-t">
-                                        <td className="p-3">{new Date(bill.date).toLocaleDateString()}</td>
-                                        <td className="p-3">{bill.description}</td>
-                                        <td className="p-3 text-right">${bill.amount}</td>
-                                        <td className="p-3">
-                                            <Badge variant={bill.status === 'PAID' ? 'default' : 'secondary'}>
-                                                {bill.status}
-                                            </Badge>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                        <InteractiveSpreadsheet
+                            data={subscription?.billingHistory || []}
+                            columns={columns}
+                            virtualized={true}
+                            containerHeight="300px"
+                            onChange={() => { }}
+                        />
                     </div>
                 </CardContent>
             </Card>

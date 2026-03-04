@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Clock, AlertTriangle, CheckCircle2, TrendingUp, RefreshCw } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 interface OvertimeRule {
     id: string;
     rule_code: string;
@@ -62,6 +63,15 @@ export default function OvertimeComplianceDashboard() {
     const totalDoubleHours = report.reduce((s, r) => s + Number(r.double_hours), 0);
     const totalPayroll = report.reduce((s, r) => s + Number(r.gross_pay), 0);
 
+    const otColumns: SpreadsheetColumn<any>[] = [
+        { id: "employee_id", header: "Employee", width: "150px", cell: (row) => <div className={`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{row.employee_id.slice(0, 8)}…</div> },
+        { id: "regular_hours", header: "Regular", width: "120px", cell: (row) => <div className={`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{Number(row.regular_hours).toFixed(1)}h</div> },
+        { id: "ot_hours", header: "OT (1.5×)", width: "120px", cell: (row) => <div className={`mono ot-cell w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{Number(row.ot_hours) > 0 ? <><AlertTriangle size={11} /> {Number(row.ot_hours).toFixed(1)}h</> : '—'}</div> },
+        { id: "double_hours", header: "Double (2×)", width: "120px", cell: (row) => <div className={`mono dbl-cell w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{Number(row.double_hours) > 0 ? `${Number(row.double_hours).toFixed(1)}h` : '—'}</div> },
+        { id: "gross_pay", header: "Gross Pay", width: "150px", cell: (row) => <div className={`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{fmt(row.gross_pay)}</div> },
+        { id: "jurisdiction", header: "Jurisdiction", width: "150px", cell: (row) => <div className="w-full"><span className="juri-tag" style={{ background: (JURI_COLORS[row.jurisdiction] ?? '#6b7280') + '22', color: JURI_COLORS[row.jurisdiction] ?? '#6b7280' }}>{row.jurisdiction}</span></div> }
+    ];
+
     return (
         <StandardPage
             title="Overtime Compliance Dashboard"
@@ -91,23 +101,19 @@ export default function OvertimeComplianceDashboard() {
                         </div>
                         <button className="refresh-btn" onClick={() => refetch()} aria-label="Refresh report"><RefreshCw size={14} /></button>
                     </div>
-                    <table className="ot-table">
-                        <thead><tr><th>Employee</th><th>Regular</th><th>OT (1.5×)</th><th>Double (2×)</th><th>Gross Pay</th><th>Jurisdiction</th></tr></thead>
-                        <tbody>
-                            {reportLoading && <tr><td colSpan={6} className="loading">Loading…</td></tr>}
-                            {report.map((r, i) => (
-                                <tr key={i} className={`ot-row ${Number(r.ot_hours) > 10 ? 'high-ot' : ''}`}>
-                                    <td className="mono">{r.employee_id.slice(0, 8)}…</td>
-                                    <td className="mono">{Number(r.regular_hours).toFixed(1)}h</td>
-                                    <td className="mono ot-cell">{Number(r.ot_hours) > 0 ? <><AlertTriangle size={11} /> {Number(r.ot_hours).toFixed(1)}h</> : '—'}</td>
-                                    <td className="mono dbl-cell">{Number(r.double_hours) > 0 ? `${Number(r.double_hours).toFixed(1)}h` : '—'}</td>
-                                    <td className="mono">{fmt(r.gross_pay)}</td>
-                                    <td><span className="juri-tag" style={{ background: (JURI_COLORS[r.jurisdiction] ?? '#6b7280') + '22', color: JURI_COLORS[r.jurisdiction] ?? '#6b7280' }}>{r.jurisdiction}</span></td>
-                                </tr>
-                            ))}
-                            {report.length === 0 && !reportLoading && <tr><td colSpan={6} className="empty">No data for selected week</td></tr>}
-                        </tbody>
-                    </table>
+                    {reportLoading ? (
+                        <div className="loading">Loading…</div>
+                    ) : (
+                        <div style={{ minHeight: '300px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 8 }}>
+                            <InteractiveSpreadsheet
+                                columns={otColumns}
+                                data={report}
+                                onChange={() => { }}
+                                containerHeight="400px"
+                            />
+                            {report.length === 0 && !reportLoading && <div className="empty border-t">No data for selected week</div>}
+                        </div>
+                    )}
                 </div>
             )}
 

@@ -10,7 +10,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Plus, Save, Send, FileText, DollarSign, Calendar, Check, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 interface CrossChargeInvoice {
     id?: number;
     invoiceNumber?: string;
@@ -136,6 +136,94 @@ export default function CrossChargeInvoicing() {
     const calculateTotal = () => {
         return lineItems.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
     };
+
+    const columns: SpreadsheetColumn[] = [
+        {
+            id: "description",
+            header: "Description",
+            width: "250px",
+            cell: (row) => (
+                <Input
+                    value={row.description}
+                    onChange={(e) => updateLineItem(row.id, { description: e.target.value })}
+                    placeholder="Item description"
+                    className="h-8 border-0 ring-0 focus-visible:ring-0 shadow-none px-2 bg-transparent"
+                />
+            )
+        },
+        {
+            id: "quantity",
+            header: "Qty",
+            width: "100px",
+            cell: (row) => (
+                <Input
+                    type="number"
+                    value={row.quantity}
+                    onChange={(e) => updateLineItem(row.id, { quantity: parseFloat(e.target.value) || 0 })}
+                    className="h-8 border-0 ring-0 focus-visible:ring-0 shadow-none px-2 bg-transparent text-right"
+                    step="0.01"
+                />
+            )
+        },
+        {
+            id: "unitPrice",
+            header: "Unit Price",
+            width: "120px",
+            cell: (row) => (
+                <Input
+                    type="number"
+                    value={row.unitPrice}
+                    onChange={(e) => updateLineItem(row.id, { unitPrice: parseFloat(e.target.value) || 0 })}
+                    className="h-8 border-0 ring-0 focus-visible:ring-0 shadow-none px-2 bg-transparent text-right"
+                    step="0.01"
+                />
+            )
+        },
+        {
+            id: "amount",
+            header: "Amount",
+            width: "120px",
+            cell: (row) => (
+                <div className="px-2 text-right font-medium">
+                    ${(row.quantity * row.unitPrice).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                </div>
+            )
+        },
+        {
+            id: "expenditureType",
+            header: "Exp. Type",
+            width: "150px",
+            cell: (row) => (
+                <Select
+                    value={row.expenditureType}
+                    onValueChange={(value) => updateLineItem(row.id, { expenditureType: value })}
+                >
+                    <SelectTrigger className="h-8 border-0 shadow-none bg-transparent">
+                        <SelectValue placeholder="Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {expenditureTypes?.map((type: any) => (
+                            <SelectItem key={type.id} value={type.code}>
+                                {type.name}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            )
+        },
+        {
+            id: "actions",
+            header: "",
+            width: "80px",
+            cell: (row) => (
+                <div className="flex justify-end pr-2">
+                    <Button size="sm" variant="ghost" onClick={() => removeLineItem(row.id)}>
+                        <X className="h-4 w-4" />
+                    </Button>
+                </div>
+            )
+        }
+    ];
 
     const saveInvoice = () => {
         const invoice: CrossChargeInvoice = {
@@ -295,85 +383,20 @@ export default function CrossChargeInvoicing() {
                                 </Button>
                             </div>
 
-                            <div className="border rounded-lg">
-                                <table className="w-full">
-                                    <thead className="bg-muted">
-                                        <tr>
-                                            <th className="text-left p-2">Description</th>
-                                            <th className="text-right p-2 w-24">Qty</th>
-                                            <th className="text-right p-2 w-32">Unit Price</th>
-                                            <th className="text-right p-2 w-32">Amount</th>
-                                            <th className="text-left p-2 w-32">Exp. Type</th>
-                                            <th className="text-right p-2 w-16"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {lineItems.map((item) => (
-                                            <tr key={item.id} className="border-t">
-                                                <td className="p-2">
-                                                    <Input
-                                                        value={item.description}
-                                                        onChange={(e) => updateLineItem(item.id, { description: e.target.value })}
-                                                        placeholder="Item description"
-                                                        className="h-8"
-                                                    />
-                                                </td>
-                                                <td className="p-2">
-                                                    <Input
-                                                        type="number"
-                                                        value={item.quantity}
-                                                        onChange={(e) => updateLineItem(item.id, { quantity: parseFloat(e.target.value) || 0 })}
-                                                        className="h-8 text-right"
-                                                        step="0.01"
-                                                    />
-                                                </td>
-                                                <td className="p-2">
-                                                    <Input
-                                                        type="number"
-                                                        value={item.unitPrice}
-                                                        onChange={(e) => updateLineItem(item.id, { unitPrice: parseFloat(e.target.value) || 0 })}
-                                                        className="h-8 text-right"
-                                                        step="0.01"
-                                                    />
-                                                </td>
-                                                <td className="p-2 text-right font-medium">
-                                                    ${(item.quantity * item.unitPrice).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                                </td>
-                                                <td className="p-2">
-                                                    <Select
-                                                        value={item.expenditureType}
-                                                        onValueChange={(value) => updateLineItem(item.id, { expenditureType: value })}
-                                                    >
-                                                        <SelectTrigger className="h-8">
-                                                            <SelectValue placeholder="Type" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            {expenditureTypes?.map((type: any) => (
-                                                                <SelectItem key={type.id} value={type.code}>
-                                                                    {type.name}
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                </td>
-                                                <td className="p-2 text-right">
-                                                    <Button size="sm" variant="ghost" onClick={() => removeLineItem(item.id)}>
-                                                        <X className="h-4 w-4" />
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                    <tfoot className="border-t-2 bg-muted font-bold">
-                                        <tr>
-                                            <td colSpan={3} className="p-2 text-right">TOTAL</td>
-                                            <td className="p-2 text-right text-lg">
-                                                ${calculateTotal().toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                            </td>
-                                            <td colSpan={2}></td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                            <div className="border rounded-lg h-[400px]">
+                                <InteractiveSpreadsheet
+                                    data={lineItems}
+                                    columns={columns}
+                                    containerHeight={400}
+                                    virtualized={true}
+                                />
+                            </div>
+                            <div className="flex justify-between items-center mt-4">
+                                <div></div>
+                                <div className="text-right">
+                                    <span className="font-bold mr-4">TOTAL</span>
+                                    <span className="text-lg font-bold">${calculateTotal().toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                </div>
                             </div>
                         </div>
 

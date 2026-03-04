@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Calendar, Users, Save, Copy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function ShiftPlanning() {
     const { toast } = useToast();
@@ -40,6 +41,24 @@ export default function ShiftPlanning() {
             queryClient.invalidateQueries({ queryKey: ["/api/wfm/shift-schedule"] });
         },
     });
+
+    const renderShift = (shift: any) => shift ? (
+        <Badge variant={shift.confirmed ? "default" : "outline"}>
+            {shift.startTime}-{shift.endTime}
+        </Badge>
+    ) : <span className="text-muted-foreground">-</span>;
+
+    const columns: SpreadsheetColumn<any>[] = [
+        { id: "employee", header: "Employee", width: "200px", cell: (emp: any) => <span className="font-medium">{emp.name}</span> },
+        { id: "mon", header: "Mon", width: "120px", cell: (emp: any) => renderShift(emp.shifts[0]) },
+        { id: "tue", header: "Tue", width: "120px", cell: (emp: any) => renderShift(emp.shifts[1]) },
+        { id: "wed", header: "Wed", width: "120px", cell: (emp: any) => renderShift(emp.shifts[2]) },
+        { id: "thu", header: "Thu", width: "120px", cell: (emp: any) => renderShift(emp.shifts[3]) },
+        { id: "fri", header: "Fri", width: "120px", cell: (emp: any) => renderShift(emp.shifts[4]) },
+        { id: "sat", header: "Sat", width: "120px", cell: (emp: any) => renderShift(emp.shifts[5]) },
+        { id: "sun", header: "Sun", width: "120px", cell: (emp: any) => renderShift(emp.shifts[6]) },
+        { id: "total", header: "Total", width: "100px", cell: (emp: any) => <span className="font-bold">{emp.totalHours}</span> }
+    ];
 
     return (
         <div className="container mx-auto p-6 space-y-6">
@@ -121,41 +140,14 @@ export default function ShiftPlanning() {
                             <CardTitle>Weekly Schedule</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="border rounded-lg overflow-x-auto">
-                                <table className="w-full">
-                                    <thead className="bg-muted">
-                                        <tr>
-                                            <th className="text-left p-3 sticky left-0 bg-muted">Employee</th>
-                                            <th className="text-center p-3">Mon</th>
-                                            <th className="text-center p-3">Tue</th>
-                                            <th className="text-center p-3">Wed</th>
-                                            <th className="text-center p-3">Thu</th>
-                                            <th className="text-center p-3">Fri</th>
-                                            <th className="text-center p-3">Sat</th>
-                                            <th className="text-center p-3">Sun</th>
-                                            <th className="text-right p-3">Total Hours</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {schedule.employees?.map((emp: any) => (
-                                            <tr key={emp.id} className="border-t">
-                                                <td className="p-3 sticky left-0 bg-background font-medium">{emp.name}</td>
-                                                {emp.shifts.map((shift: any, i: number) => (
-                                                    <td key={i} className="p-2 text-center">
-                                                        {shift ? (
-                                                            <Badge variant={shift.confirmed ? "default" : "outline"}>
-                                                                {shift.startTime}-{shift.endTime}
-                                                            </Badge>
-                                                        ) : (
-                                                            <span className="text-muted-foreground">-</span>
-                                                        )}
-                                                    </td>
-                                                ))}
-                                                <td className="p-3 text-right font-medium">{emp.totalHours}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                            <div className="border rounded-lg overflow-hidden">
+                                <InteractiveSpreadsheet
+                                    data={schedule.employees || []}
+                                    columns={columns}
+                                    virtualized={true}
+                                    containerHeight="500px"
+                                    onChange={() => { }}
+                                />
                             </div>
                         </CardContent>
                     </Card>

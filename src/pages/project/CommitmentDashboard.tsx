@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertOctagon, Bell, TrendingDown, CheckCheck } from 'lucide-react';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface BudgetAlert { id: string; project_id: string; alert_type: string; severity: string; budget_amount: number; actual_amount: number; variance_pct: number; description: string; is_acknowledged: boolean; created_at: string; }
 interface AlertSummary { critical: number; warnings: number; info: number; acknowledged: number; }
@@ -34,6 +35,24 @@ export default function CommitmentDashboard() {
         mutationFn: () => fetch('/api/project/budget-alerts/detect', { method: 'POST' }).then(r => r.json()),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['alerts', activeProject, 'alert-summary'] }),
     });
+
+    const varColumns: SpreadsheetColumn<VarRow>[] = [
+        { id: "resource", header: "Resource", width: "150px", cell: (v) => <span style={{ fontWeight: 600 }}>{v.resource_id}</span> },
+        { id: "type", header: "Type", width: "150px", cell: (v) => <span style={{ fontSize: 10, fontFamily: 'monospace', color: '#6b7280' }}>{v.resource_type}</span> },
+        { id: "period", header: "Period", width: "100px", cell: (v) => <span style={{ color: '#6b7280', whiteSpace: 'nowrap' }}>{fmtDate(v.period_start)}</span> },
+        { id: "planHrs", header: "Plan Hrs", width: "100px", cell: (v) => <span style={{ fontFamily: 'monospace' }}>{v.planned_hours}</span> },
+        { id: "actHrs", header: "Act Hrs", width: "100px", cell: (v) => <span style={{ fontFamily: 'monospace' }}>{v.actual_hours}</span> },
+        { id: "delHrs", header: "Δ Hrs", width: "100px", cell: (v) => <span style={{ fontFamily: 'monospace', color: v.hour_variance < 0 ? '#dc2626' : '#059669' }}>{v.hour_variance > 0 ? '+' : ''}{v.hour_variance}</span> },
+        { id: "planCost", header: "Plan Cost", width: "120px", cell: (v) => <span style={{ fontFamily: 'monospace' }}>{fmt(v.planned_cost)}</span> },
+        { id: "actCost", header: "Act Cost", width: "120px", cell: (v) => <span style={{ fontFamily: 'monospace' }}>{fmt(v.actual_cost)}</span> },
+        { id: "delCost", header: "Δ Cost", width: "120px", cell: (v) => <span style={{ fontFamily: 'monospace', color: v.cost_variance < 0 ? '#dc2626' : '#059669' }}>{v.cost_variance > 0 ? '+' : ''}{fmt(v.cost_variance)}</span> },
+        {
+            id: "varPct", header: "Var %", width: "100px", cell: (v) => {
+                const overBudget = Number(v.variance_pct) > 0;
+                return <span style={{ fontWeight: 700, color: overBudget ? '#dc2626' : '#059669' }}>{overBudget ? '+' : ''}{Number(v.variance_pct).toFixed(1)}%</span>;
+            }
+        },
+    ];
 
     return (
         <div style={{ padding: 24, maxWidth: 1300, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
@@ -114,31 +133,14 @@ export default function CommitmentDashboard() {
                     )}
 
                     {tab === 'variance' && (
-                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)' }}>
-                            <thead><tr style={{ background: '#f9fafb' }}>
-                                {['Resource', 'Type', 'Period', 'Plan Hrs', 'Act Hrs', 'Δ Hrs', 'Plan Cost', 'Act Cost', 'Δ Cost', 'Var %'].map(h => <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 700, color: '#374151', borderBottom: '2px solid #e5e7eb', whiteSpace: 'nowrap' }}>{h}</th>)}
-                            </tr></thead>
-                            <tbody>
-                                {variance.map((v, i) => {
-                                    const overBudget = Number(v.variance_pct) > 0;
-                                    return (
-                                        <tr key={i} style={{ borderBottom: '1px solid #f3f4f6', background: overBudget ? '#fff7ed' : undefined }}>
-                                            <td style={{ padding: '9px 12px', fontWeight: 600 }}>{v.resource_id}</td>
-                                            <td style={{ padding: '9px 12px', fontSize: 10, fontFamily: 'monospace', color: '#6b7280' }}>{v.resource_type}</td>
-                                            <td style={{ padding: '9px 12px', color: '#6b7280', whiteSpace: 'nowrap' }}>{fmtDate(v.period_start)}</td>
-                                            <td style={{ padding: '9px 12px', fontFamily: 'monospace' }}>{v.planned_hours}</td>
-                                            <td style={{ padding: '9px 12px', fontFamily: 'monospace' }}>{v.actual_hours}</td>
-                                            <td style={{ padding: '9px 12px', fontFamily: 'monospace', color: v.hour_variance < 0 ? '#dc2626' : '#059669' }}>{v.hour_variance > 0 ? '+' : ''}{v.hour_variance}</td>
-                                            <td style={{ padding: '9px 12px', fontFamily: 'monospace' }}>{fmt(v.planned_cost)}</td>
-                                            <td style={{ padding: '9px 12px', fontFamily: 'monospace' }}>{fmt(v.actual_cost)}</td>
-                                            <td style={{ padding: '9px 12px', fontFamily: 'monospace', color: v.cost_variance < 0 ? '#dc2626' : '#059669' }}>{v.cost_variance > 0 ? '+' : ''}{fmt(v.cost_variance)}</td>
-                                            <td style={{ padding: '9px 12px', fontWeight: 700, color: overBudget ? '#dc2626' : '#059669' }}>{overBudget ? '+' : ''}{Number(v.variance_pct).toFixed(1)}%</td>
-                                        </tr>
-                                    );
-                                })}
-                                {variance.length === 0 && <tr><td colSpan={10} style={{ textAlign: 'center', color: '#9ca3af', padding: 20 }}>No variance data — load a project with resource plans</td></tr>}
-                            </tbody>
-                        </table>
+                        <div style={{ minHeight: '400px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 12 }}>
+                            <InteractiveSpreadsheet
+                                columns={varColumns}
+                                data={variance}
+                                onChange={() => { }}
+                                containerHeight="600px"
+                            />
+                        </div>
                     )}
                 </>
             )}

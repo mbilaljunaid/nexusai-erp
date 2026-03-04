@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Upload, FileText, Image, FileAudio, FileSpreadsheet, Loader2, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function APAICaptureUpload() {
     const [file, setFile] = useState<File | null>(null);
@@ -89,6 +90,13 @@ export default function APAICaptureUpload() {
         if (type.includes("spreadsheet") || type.includes("excel")) return <FileSpreadsheet className="h-8 w-8 text-green-500" />;
         return <FileText className="h-8 w-8 text-gray-500" />;
     };
+
+    const lineItemColumns: SpreadsheetColumn<any>[] = [
+        { id: "description", header: "Description", width: "1fr", cell: (row) => row.description },
+        { id: "quantity", header: "Quantity", width: "100px", cell: (row) => <div className="text-right w-full">{row.quantity || 1}</div> },
+        { id: "unitPrice", header: "Unit Price", width: "120px", cell: (row) => <div className="text-right w-full">${row.unitPrice}</div> },
+        { id: "amount", header: "Amount", width: "120px", cell: (row) => <div className="text-right w-full font-medium">${row.amount}</div> },
+    ];
 
     return (
         <StandardPage
@@ -211,27 +219,13 @@ export default function APAICaptureUpload() {
                             {extractedData.lineItems && extractedData.lineItems.length > 0 && (
                                 <div className="mt-6">
                                     <h4 className="font-semibold mb-3">Line Items</h4>
-                                    <div className="border rounded-lg overflow-hidden">
-                                        <table className="w-full">
-                                            <thead className="bg-muted">
-                                                <tr>
-                                                    <th className="text-left p-3">Description</th>
-                                                    <th className="text-right p-3">Quantity</th>
-                                                    <th className="text-right p-3">Unit Price</th>
-                                                    <th className="text-right p-3">Amount</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {extractedData.lineItems.map((item: any, idx: number) => (
-                                                    <tr key={idx} className="border-t">
-                                                        <td className="p-3">{item.description}</td>
-                                                        <td className="text-right p-3">{item.quantity || 1}</td>
-                                                        <td className="text-right p-3">${item.unitPrice}</td>
-                                                        <td className="text-right p-3 font-medium">${item.amount}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
+                                    <div className="border rounded-lg overflow-hidden h-[300px]">
+                                        <InteractiveSpreadsheet
+                                            columns={lineItemColumns}
+                                            data={extractedData.lineItems}
+                                            onChange={() => { }}
+                                            containerHeight="100%"
+                                        />
                                     </div>
                                 </div>
                             )}

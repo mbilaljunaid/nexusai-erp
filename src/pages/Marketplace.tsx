@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import type { MarketplaceApp, MarketplaceCategory } from "@/types/erp-types";
 import { TutorialOverlay } from "@/components/TutorialOverlay";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface Industry {
   id: string;
@@ -430,6 +431,133 @@ function CompareDialog({
     return app.price && parseFloat(app.price) > 0 ? `$${app.price}` : "Free";
   };
 
+  const compareColumns: SpreadsheetColumn<any>[] = [
+    {
+      id: "feature",
+      header: "Feature",
+      width: "150px",
+      cell: (row) => <span className="font-medium text-muted-foreground">{row.feature}</span>
+    },
+    ...apps.map(app => ({
+      id: app.id,
+      header: app.name as any,
+      width: "250px",
+      cell: (row: any) => row[app.id]
+    }))
+  ];
+
+  const compareData = [
+    {
+      id: "rating",
+      feature: "Rating",
+      ...apps.reduce((acc, app) => ({
+        ...acc,
+        [app.id]: (
+          <div className="flex items-center gap-1">
+            <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+            <span>{app.averageRating ? String(Number(app.averageRating).toFixed(1)) : "0.0"}</span>
+            <span className="text-xs text-muted-foreground">({app.reviewCount || 0})</span>
+          </div>
+        )
+      }), {})
+    },
+    {
+      id: "installs",
+      feature: "Installs",
+      ...apps.reduce((acc, app) => ({
+        ...acc,
+        [app.id]: (
+          <div className="flex items-center gap-1">
+            <Download className="w-4 h-4" />
+            <span>{app.installCount || 0}</span>
+          </div>
+        )
+      }), {})
+    },
+    {
+      id: "pricing",
+      feature: "Pricing",
+      ...apps.reduce((acc, app) => ({
+        ...acc,
+        [app.id]: <Badge variant="outline">{getPriceDisplay(app)}</Badge>
+      }), {})
+    },
+    {
+      id: "license",
+      feature: "License",
+      ...apps.reduce((acc, app) => ({
+        ...acc,
+        [app.id]: <span className="capitalize">{app.licenseType || "Commercial"}</span>
+      }), {})
+    },
+    {
+      id: "description",
+      feature: "Description",
+      ...apps.reduce((acc, app) => ({
+        ...acc,
+        [app.id]: <span className="text-muted-foreground">{app.shortDescription || "No description"}</span>
+      }), {})
+    },
+    {
+      id: "tags",
+      feature: "Tags",
+      ...apps.reduce((acc, app) => ({
+        ...acc,
+        [app.id]: (
+          <div className="flex flex-wrap gap-1">
+            {app.tags?.slice(0, 4).map((tag, i) => (
+              <Badge key={i} variant="secondary" className="text-xs">{tag}</Badge>
+            ))}
+            {(app.tags?.length || 0) > 4 && (
+              <Badge variant="secondary" className="text-xs">+{(app.tags?.length || 0) - 4}</Badge>
+            )}
+          </div>
+        )
+      }), {})
+    },
+    {
+      id: "permissions",
+      feature: "Permissions",
+      ...apps.reduce((acc, app) => ({
+        ...acc,
+        [app.id]: (
+          <ul className="text-sm space-y-1 mt-1 mb-1">
+            {app.permissions?.slice(0, 3).map((perm, i) => (
+              <li key={i} className="flex items-center gap-1 text-xs">
+                <Check className="w-3 h-3 text-green-500" />
+                {perm}
+              </li>
+            ))}
+            {(app.permissions?.length || 0) > 3 && (
+              <li className="text-xs text-muted-foreground">+{(app.permissions?.length || 0) - 3} more</li>
+            )}
+          </ul>
+        )
+      }), {})
+    },
+    {
+      id: "industries",
+      feature: "Industries",
+      ...apps.reduce((acc, app) => ({
+        ...acc,
+        [app.id]: (
+          <div className="flex flex-wrap gap-1">
+            {app.supportedIndustries?.slice(0, 3).map((ind, i) => (
+              <Badge key={i} variant="outline" className="text-xs capitalize">
+                {ind.replace(/-/g, ' ')}
+              </Badge>
+            ))}
+            {(app.supportedIndustries?.length || 0) > 3 && (
+              <Badge variant="outline" className="text-xs">
+                +{(app.supportedIndustries?.length || 0) - 3}
+              </Badge>
+            )}
+          </div>
+        )
+      }), {})
+    }
+  ];
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
@@ -444,129 +572,14 @@ function CompareDialog({
         </DialogHeader>
 
         <ScrollArea className="flex-1 -mx-6 px-6">
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr>
-                  <th className="text-left p-3 border-b font-medium text-muted-foreground w-32">Feature</th>
-                  {apps.map(app => (
-                    <th key={app.id} className="text-left p-3 border-b">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                          {app.logoUrl ? (
-                            <img src={app.logoUrl} alt={app.name} className="w-6 h-6 rounded" />
-                          ) : (
-                            <Package className="w-4 h-4" />
-                          )}
-                        </div>
-                        <span className="font-semibold">{app.name}</span>
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="p-3 border-b text-sm text-muted-foreground">Rating</td>
-                  {apps.map(app => (
-                    <td key={app.id} className="p-3 border-b">
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                        <span>{app.averageRating ? String(Number(app.averageRating).toFixed(1)) : "0.0"}</span>
-                        <span className="text-xs text-muted-foreground">({app.reviewCount || 0})</span>
-                      </div>
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <td className="p-3 border-b text-sm text-muted-foreground">Installs</td>
-                  {apps.map(app => (
-                    <td key={app.id} className="p-3 border-b">
-                      <div className="flex items-center gap-1">
-                        <Download className="w-4 h-4" />
-                        <span>{app.installCount || 0}</span>
-                      </div>
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <td className="p-3 border-b text-sm text-muted-foreground">Pricing</td>
-                  {apps.map(app => (
-                    <td key={app.id} className="p-3 border-b">
-                      <Badge variant="outline">{getPriceDisplay(app)}</Badge>
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <td className="p-3 border-b text-sm text-muted-foreground">License</td>
-                  {apps.map(app => (
-                    <td key={app.id} className="p-3 border-b text-sm capitalize">
-                      {app.licenseType || "Commercial"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <td className="p-3 border-b text-sm text-muted-foreground">Description</td>
-                  {apps.map(app => (
-                    <td key={app.id} className="p-3 border-b text-sm text-muted-foreground">
-                      {app.shortDescription || "No description"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <td className="p-3 border-b text-sm text-muted-foreground">Tags</td>
-                  {apps.map(app => (
-                    <td key={app.id} className="p-3 border-b">
-                      <div className="flex flex-wrap gap-1">
-                        {app.tags?.slice(0, 4).map((tag, i) => (
-                          <Badge key={i} variant="secondary" className="text-xs">{tag}</Badge>
-                        ))}
-                        {(app.tags?.length || 0) > 4 && (
-                          <Badge variant="secondary" className="text-xs">+{(app.tags?.length || 0) - 4}</Badge>
-                        )}
-                      </div>
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <td className="p-3 border-b text-sm text-muted-foreground">Permissions</td>
-                  {apps.map(app => (
-                    <td key={app.id} className="p-3 border-b">
-                      <ul className="text-sm space-y-1">
-                        {app.permissions?.slice(0, 3).map((perm, i) => (
-                          <li key={i} className="flex items-center gap-1 text-xs">
-                            <Check className="w-3 h-3 text-green-500" />
-                            {perm}
-                          </li>
-                        ))}
-                        {(app.permissions?.length || 0) > 3 && (
-                          <li className="text-xs text-muted-foreground">+{(app.permissions?.length || 0) - 3} more</li>
-                        )}
-                      </ul>
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <td className="p-3 border-b text-sm text-muted-foreground">Industries</td>
-                  {apps.map(app => (
-                    <td key={app.id} className="p-3 border-b">
-                      <div className="flex flex-wrap gap-1">
-                        {app.supportedIndustries?.slice(0, 3).map((ind, i) => (
-                          <Badge key={i} variant="outline" className="text-xs capitalize">
-                            {ind.replace(/-/g, ' ')}
-                          </Badge>
-                        ))}
-                        {(app.supportedIndustries?.length || 0) > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{(app.supportedIndustries?.length || 0) - 3}
-                          </Badge>
-                        )}
-                      </div>
-                    </td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
+          <div style={{ minHeight: '400px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 8 }}>
+            <InteractiveSpreadsheet
+              columns={compareColumns}
+              data={compareData}
+              onChange={() => { }}
+              containerHeight="500px"
+              virtualized={true}
+            />
           </div>
         </ScrollArea>
 

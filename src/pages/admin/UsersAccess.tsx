@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import AdminLayout from '@/components/admin/AdminLayout';
+import InteractiveSpreadsheet, { SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function UsersAccess() {
     const [searchTerm, setSearchTerm] = useState('');
@@ -20,6 +21,46 @@ export default function UsersAccess() {
         { name: 'Admin', count: 5, permissions: ['Tenant management', 'Module config', 'Billing'] },
         { name: 'Support', count: 12, permissions: ['View only', 'Impersonate users', 'View logs'] },
     ];
+
+    const adminUserColumns: SpreadsheetColumn[] = [
+        {
+            id: "user", header: "User", width: 250, cell: (item) => (
+                <div className="flex items-center gap-3">
+                    <Users className="w-5 h-5 text-muted-foreground" />
+                    <div>
+                        <div className="font-medium text-sm">{item.name}</div>
+                        <div className="text-xs text-muted-foreground">{item.email}</div>
+                    </div>
+                </div>
+            )
+        },
+        {
+            id: "role", header: "Role", width: 150, cell: (item) => (
+                <Badge variant={item.role === 'super_admin' ? 'default' : 'secondary'}>
+                    {item.role.replace('_', ' ')}
+                </Badge>
+            )
+        },
+        { id: "lastActive", header: "Last Active", width: 150, cell: (item) => <span className="text-sm text-muted-foreground">{new Date(item.lastActive).toLocaleDateString()}</span> },
+        {
+            id: "actions", header: "Actions", width: 120, cell: () => (
+                <div className="flex items-center justify-end gap-2 pr-2 w-full">
+                    <Button variant="ghost" size="sm" className="h-8 px-2">
+                        <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="text-red-600 h-8 px-2">
+                        <Trash2 className="w-4 h-4" />
+                    </Button>
+                </div>
+            )
+        }
+    ];
+
+    const filteredUsers = adminUsers.filter(user =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.role.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
         <AdminLayout>
@@ -53,50 +94,13 @@ export default function UsersAccess() {
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
-                                <thead>
-                                    <tr className="border-b">
-                                        <th className="text-left py-3 px-4 font-medium">User</th>
-                                        <th className="text-left py-3 px-4 font-medium">Role</th>
-                                        <th className="text-left py-3 px-4 font-medium">Last Active</th>
-                                        <th className="text-right py-3 px-4 font-medium">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {adminUsers.map((user) => (
-                                        <tr key={user.id} className="border-b hover:bg-gray-50">
-                                            <td className="py-3 px-4">
-                                                <div className="flex items-center gap-3">
-                                                    <Users className="w-5 h-5 text-muted-foreground" />
-                                                    <div>
-                                                        <div className="font-medium">{user.name}</div>
-                                                        <div className="text-sm text-muted-foreground">{user.email}</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-4">
-                                                <Badge variant={user.role === 'super_admin' ? 'default' : 'secondary'}>
-                                                    {user.role.replace('_', ' ')}
-                                                </Badge>
-                                            </td>
-                                            <td className="py-3 px-4 text-sm text-muted-foreground">
-                                                {new Date(user.lastActive).toLocaleDateString()}
-                                            </td>
-                                            <td className="py-3 px-4">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <Button variant="ghost" size="sm">
-                                                        <Edit className="w-4 h-4" />
-                                                    </Button>
-                                                    <Button variant="ghost" size="sm" className="text-red-600">
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </Button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                        <div style={{ height: '350px' }}>
+                            <InteractiveSpreadsheet
+                                columns={adminUserColumns}
+                                data={filteredUsers}
+                                rowKey="id"
+                                containerHeight="350px"
+                            />
                         </div>
                     </CardContent>
                 </Card>

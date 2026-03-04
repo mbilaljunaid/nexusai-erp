@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { FileText, CheckCircle2, XCircle, Clock, Globe, Send, RefreshCw, BarChart3 } from 'lucide-react';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface EInvoiceDoc {
     id: string;
@@ -84,6 +85,36 @@ export default function EInvoicingDashboard() {
     const totalRejected = stats.filter(s => s.status === 'Rejected').reduce((n, s) => n + Number(s.count), 0);
     const totalPending = stats.filter(s => s.status === 'Pending').reduce((n, s) => n + Number(s.count), 0);
 
+    const docColumns: SpreadsheetColumn<EInvoiceDoc>[] = [
+        { id: "country", header: "Country", width: "120px", cell: (d) => <>{FLAG[d.country_code] ?? '🌐'} {d.country_code}</> },
+        { id: "standard", header: "Standard", width: "120px", cell: (d) => <span className="std-badge">{d.standard}</span> },
+        { id: "invoiceId", header: "Invoice ID", width: "150px", cell: (d) => <span className="mono-cell">{d.invoice_id.slice(0, 12)}…</span> },
+        { id: "uuid", header: "UUID", width: "200px", cell: (d) => <span className="mono-cell">{d.uuid?.slice(0, 16)}…</span> },
+        {
+            id: "status", header: "Status", width: "150px", cell: (d) => {
+                const cfg = STATUS_CFG[d.status];
+                const Icon = cfg.icon;
+                return (
+                    <span className="status-pill" style={{ background: cfg.bg, color: cfg.color }}>
+                        <Icon size={12} /> {d.status}
+                    </span>
+                );
+            }
+        },
+        { id: "submitted", header: "Submitted", width: "120px", cell: (d) => d.submitted_at ? new Date(d.submitted_at).toLocaleDateString() : '—' },
+        {
+            id: "actions", header: "Actions", width: "120px", cell: (d) => ['Submitted', 'Accepted'].includes(d.status) ? (
+                <button
+                    className="cancel-btn"
+                    onClick={() => cancelMutation.mutate({ id: d.id, reason: 'User initiated cancellation' })}
+                    aria-label={`Cancel e-invoice ${d.uuid}`}
+                >
+                    Cancel
+                </button>
+            ) : null
+        }
+    ];
+
     return (
         <div className="einvoice-dashboard">
             {/* Header */}
@@ -157,49 +188,20 @@ export default function EInvoicingDashboard() {
                     </select>
                 </div>
 
-                <table className="einv-table">
-                    <thead>
-                        <tr>
-                            <th>Country</th><th>Standard</th><th>Invoice ID</th>
-                            <th>UUID</th><th>Status</th><th>Submitted</th><th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {isLoading ? (
-                            <tr><td colSpan={7} className="center-cell">Loading documents…</td></tr>
-                        ) : docs.length === 0 ? (
-                            <tr><td colSpan={7} className="center-cell">No documents found</td></tr>
-                        ) : docs.map(doc => {
-                            const cfg = STATUS_CFG[doc.status];
-                            const Icon = cfg.icon;
-                            return (
-                                <tr key={doc.id} className="einv-row">
-                                    <td>{FLAG[doc.country_code] ?? '🌐'} {doc.country_code}</td>
-                                    <td><span className="std-badge">{doc.standard}</span></td>
-                                    <td className="mono-cell">{doc.invoice_id.slice(0, 12)}…</td>
-                                    <td className="mono-cell">{doc.uuid?.slice(0, 16)}…</td>
-                                    <td>
-                                        <span className="status-pill" style={{ background: cfg.bg, color: cfg.color }}>
-                                            <Icon size={12} /> {doc.status}
-                                        </span>
-                                    </td>
-                                    <td>{doc.submitted_at ? new Date(doc.submitted_at).toLocaleDateString() : '—'}</td>
-                                    <td>
-                                        {['Submitted', 'Accepted'].includes(doc.status) && (
-                                            <button
-                                                className="cancel-btn"
-                                                onClick={() => cancelMutation.mutate({ id: doc.id, reason: 'User initiated cancellation' })}
-                                                aria-label={`Cancel e-invoice ${doc.uuid}`}
-                                            >
-                                                Cancel
-                                            </button>
-                                        )}
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                <div style={{ height: '500px', width: '100%' }}>
+                    {isLoading ? (
+                        <div className="center-cell">Loading documents…</div>
+                    ) : docs.length === 0 ? (
+                        <div className="center-cell">No documents found</div>
+                    ) : (
+                        <InteractiveSpreadsheet
+                            columns={docColumns}
+                            data={docs}
+                            onChange={() => { }}
+                            containerHeight="500px"
+                        />
+                    )}
+                </div>
             </div>
 
             {/* Submit Modal */}

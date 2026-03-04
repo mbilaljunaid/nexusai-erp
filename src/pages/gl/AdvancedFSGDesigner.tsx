@@ -29,6 +29,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface FSGRow {
     id: string;
@@ -209,6 +210,98 @@ export default function AdvancedFSGDesigner() {
 
     if (isLoading) return <div>Loading...</div>;
 
+    const rowColumns: SpreadsheetColumn<any>[] = [
+        { id: "sequence", header: "#", width: "50px", cell: (row) => <span>{row.sequence}</span> },
+        {
+            id: "label", header: "Label", width: "200px", cell: (row) => (
+                <Input
+                    value={row.label}
+                    onChange={(e) => updateRow(row.id, { label: e.target.value })}
+                    className="h-8"
+                />
+            )
+        },
+        {
+            id: "type", header: "Type", width: "150px", cell: (row) => (
+                <Select
+                    value={row.rowType}
+                    onValueChange={(value: any) => updateRow(row.id, { rowType: value })}
+                >
+                    <SelectTrigger className="h-8">
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="ACCOUNT">Account</SelectItem>
+                        <SelectItem value="FORMULA">Formula</SelectItem>
+                        <SelectItem value="HEADER">Header</SelectItem>
+                        <SelectItem value="TOTAL">Total</SelectItem>
+                    </SelectContent>
+                </Select>
+            )
+        },
+        {
+            id: "definition", header: "Definition", width: "250px", cell: (row) => (
+                <>
+                    {row.rowType === "ACCOUNT" && (
+                        <Input
+                            placeholder="e.g., 1000..1999"
+                            value={row.accountRange || ""}
+                            onChange={(e) => updateRow(row.id, { accountRange: e.target.value })}
+                            className="h-8"
+                        />
+                    )}
+                    {row.rowType === "FORMULA" && (
+                        <Input
+                            placeholder="e.g., R1 + R2 - R3"
+                            value={row.formula || ""}
+                            onChange={(e) => updateRow(row.id, { formula: e.target.value })}
+                            className="h-8"
+                        />
+                    )}
+                </>
+            )
+        },
+        {
+            id: "actions", header: "Actions", width: "100px", cell: (row) => (
+                <div className="flex gap-1">
+                    <Button size="sm" variant="ghost" onClick={() => setEditingRow(row)}>
+                        <Settings className="h-4 w-4" />
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => deleteRow(row.id)}>
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+                </div>
+            )
+        }
+    ];
+
+    const previewColumns: SpreadsheetColumn<any>[] = [
+        {
+            id: "account", header: "Account", width: "250px", cell: (row) => (
+                <div
+                    style={{ paddingLeft: `${(row.indent || 0) * 20}px` }}
+                    className={`${row.rowType === "HEADER" ? "font-semibold text-muted-foreground" : ""} ${row.rowType === "TOTAL" ? "font-bold" : ""}`}
+                >
+                    {row.label}
+                </div>
+            )
+        },
+        ...columns.map(col => ({
+            id: col.id,
+            header: col.name as any,
+            width: "150px",
+            cell: (row: any) => (
+                <div className="text-right w-full">
+                    {row.rowType === "FORMULA" ? (
+                        <span className="text-muted-foreground italic">{row.formula}</span>
+                    ) : (
+                        "-"
+                    )}
+                </div>
+            )
+        }))
+    ];
+
     return (
         <StandardPage
             title="Advanced FSG Designer"
@@ -313,92 +406,13 @@ export default function AdvancedFSGDesigner() {
                                     </Button>
                                 </div>
 
-                                <div className="border rounded-lg">
-                                    <table className="w-full">
-                                        <thead className="bg-muted">
-                                            <tr>
-                                                <th className="text-left p-2 w-8">#</th>
-                                                <th className="text-left p-2">Label</th>
-                                                <th className="text-left p-2">Type</th>
-                                                <th className="text-left p-2">Definition</th>
-                                                <th className="text-left p-2 w-24">Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {rows.map((row) => (
-                                                <tr key={row.id} className="border-t hover:bg-accent">
-                                                    <td className="p-2">{row.sequence}</td>
-                                                    <td className="p-2">
-                                                        <Input
-                                                            value={row.label}
-                                                            onChange={(e) =>
-                                                                updateRow(row.id, { label: e.target.value })
-                                                            }
-                                                            className="h-8"
-                                                        />
-                                                    </td>
-                                                    <td className="p-2">
-                                                        <Select
-                                                            value={row.rowType}
-                                                            onValueChange={(value: any) =>
-                                                                updateRow(row.id, { rowType: value })
-                                                            }
-                                                        >
-                                                            <SelectTrigger className="h-8">
-                                                                <SelectValue />
-                                                            </SelectTrigger>
-                                                            <SelectContent>
-                                                                <SelectItem value="ACCOUNT">Account</SelectItem>
-                                                                <SelectItem value="FORMULA">Formula</SelectItem>
-                                                                <SelectItem value="HEADER">Header</SelectItem>
-                                                                <SelectItem value="TOTAL">Total</SelectItem>
-                                                            </SelectContent>
-                                                        </Select>
-                                                    </td>
-                                                    <td className="p-2">
-                                                        {row.rowType === "ACCOUNT" && (
-                                                            <Input
-                                                                placeholder="e.g., 1000..1999"
-                                                                value={row.accountRange || ""}
-                                                                onChange={(e) =>
-                                                                    updateRow(row.id, { accountRange: e.target.value })
-                                                                }
-                                                                className="h-8"
-                                                            />
-                                                        )}
-                                                        {row.rowType === "FORMULA" && (
-                                                            <Input
-                                                                placeholder="e.g., R1 + R2 - R3"
-                                                                value={row.formula || ""}
-                                                                onChange={(e) =>
-                                                                    updateRow(row.id, { formula: e.target.value })
-                                                                }
-                                                                className="h-8"
-                                                            />
-                                                        )}
-                                                    </td>
-                                                    <td className="p-2">
-                                                        <div className="flex gap-1">
-                                                            <Button
-                                                                size="sm"
-                                                                variant="ghost"
-                                                                onClick={() => setEditingRow(row)}
-                                                            >
-                                                                <Settings className="h-3 w-3" />
-                                                            </Button>
-                                                            <Button
-                                                                size="sm"
-                                                                variant="ghost"
-                                                                onClick={() => deleteRow(row.id)}
-                                                            >
-                                                                <Trash2 className="h-3 w-3" />
-                                                            </Button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                <div style={{ minHeight: '300px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 8 }}>
+                                    <InteractiveSpreadsheet
+                                        columns={rowColumns}
+                                        data={rows}
+                                        onChange={() => { }}
+                                        containerHeight="400px"
+                                    />
                                 </div>
                             </TabsContent>
 
@@ -503,46 +517,13 @@ export default function AdvancedFSGDesigner() {
                                             Export to Excel
                                         </Button>
                                     </div>
-                                    <div className="border rounded-lg overflow-auto">
-                                        <table className="w-full">
-                                            <thead className="bg-muted">
-                                                <tr>
-                                                    <th className="text-left p-2 border-r">Account</th>
-                                                    {columns.map((col) => (
-                                                        <th key={col.id} className="text-right p-2 border-r">
-                                                            {col.name}
-                                                        </th>
-                                                    ))}
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {rows.map((row) => (
-                                                    <tr
-                                                        key={row.id}
-                                                        className={`border-t ${row.rowType === "HEADER" ? "font-semibold bg-muted/50" : ""
-                                                            } ${row.rowType === "TOTAL" ? "font-bold border-t-2" : ""}`}
-                                                    >
-                                                        <td
-                                                            className="p-2 border-r"
-                                                            style={{ paddingLeft: `${(row.indent || 0) * 20 + 8}px` }}
-                                                        >
-                                                            {row.label}
-                                                        </td>
-                                                        {columns.map((col) => (
-                                                            <td key={col.id} className="text-right p-2 border-r">
-                                                                {row.rowType === "FORMULA" ? (
-                                                                    <span className="text-muted-foreground italic">
-                                                                        {row.formula}
-                                                                    </span>
-                                                                ) : (
-                                                                    "-"
-                                                                )}
-                                                            </td>
-                                                        ))}
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
+                                    <div style={{ minHeight: '300px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 8 }}>
+                                        <InteractiveSpreadsheet
+                                            columns={previewColumns}
+                                            data={rows}
+                                            onChange={() => { }}
+                                            containerHeight="400px"
+                                        />
                                     </div>
                                 </div>
                             </TabsContent>

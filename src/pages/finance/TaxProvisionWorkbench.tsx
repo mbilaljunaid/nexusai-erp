@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Calculator, TrendingUp, TrendingDown, FileCheck, RefreshCw } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface TaxProvision {
     id: string;
@@ -65,6 +66,16 @@ export default function TaxProvisionWorkbench() {
             qc.invalidateQueries({ queryKey: ['tax-provisions'] });
         },
     });
+
+    const provisionColumns: SpreadsheetColumn<TaxProvision>[] = [
+        { id: "entity_id", header: "Entity", width: "120px", cell: (row) => row.entity_id.slice(0, 8) },
+        { id: "period_name", header: "Period", width: "120px", cell: (row) => row.period_name },
+        { id: "pretax_income", header: "Pre-Tax Income", width: "150px", cell: (row) => fmtCurrency(row.pretax_income) },
+        { id: "current_tax_expense", header: "Tax Expense", width: "150px", cell: (row) => fmtCurrency(row.current_tax_expense) },
+        { id: "effective_tax_rate", header: "ETR", width: "100px", cell: (row) => fmtPct(row.effective_tax_rate) },
+        { id: "standard", header: "Standard", width: "100px", cell: (row) => <span className="standard-tag">{row.standard}</span> },
+        { id: "status", header: "Status", width: "120px", cell: (row) => <span className={`prov-status ${row.status.toLowerCase()}`}>{row.status}</span> }
+    ];
 
     const handleCompute = useCallback(() => {
         computeMutation.mutate({
@@ -207,27 +218,14 @@ export default function TaxProvisionWorkbench() {
             {provisions.length > 0 && (
                 <div className="provision-history">
                     <h2 className="card-title">Provision History — FY {year}</h2>
-                    <table className="provision-table">
-                        <thead>
-                            <tr>
-                                <th>Entity</th><th>Period</th><th>Pre-Tax Income</th>
-                                <th>Tax Expense</th><th>ETR</th><th>Standard</th><th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {provisions.map(p => (
-                                <tr key={p.id}>
-                                    <td>{p.entity_id.slice(0, 8)}</td>
-                                    <td>{p.period_name}</td>
-                                    <td>{fmtCurrency(p.pretax_income)}</td>
-                                    <td>{fmtCurrency(p.current_tax_expense)}</td>
-                                    <td>{fmtPct(p.effective_tax_rate)}</td>
-                                    <td><span className="standard-tag">{p.standard}</span></td>
-                                    <td><span className={`prov-status ${p.status.toLowerCase()}`}>{p.status}</span></td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    <div className="border rounded-lg overflow-hidden h-[300px]">
+                        <InteractiveSpreadsheet
+                            columns={provisionColumns}
+                            data={provisions}
+                            onChange={() => { }}
+                            containerHeight="100%"
+                        />
+                    </div>
                 </div>
             )}
 
@@ -262,9 +260,6 @@ export default function TaxProvisionWorkbench() {
                 .waterfall-row.grand-total { font-weight: 800; color: #1d4ed8; font-size: 15px; margin-top: 4px; }
                 .empty-result { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; gap: 16px; color: #9ca3af; text-align: center; }
                 .provision-history { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; }
-                .provision-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-                .provision-table th { padding: 10px 14px; text-align: left; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb; background: #f9fafb; }
-                .provision-table td { padding: 10px 14px; border-bottom: 1px solid #f3f4f6; }
                 .standard-tag { background: #dbeafe; color: #1d4ed8; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
                 .prov-status { padding: 2px 10px; border-radius: 9999px; font-size: 11px; font-weight: 500; }
                 .prov-status.draft { background: #f3f4f6; color: #6b7280; }

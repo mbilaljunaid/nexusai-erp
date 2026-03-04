@@ -27,6 +27,7 @@ import {
   BarChart3,
   CreditCard,
 } from "lucide-react";
+import InteractiveSpreadsheet, { SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface TenantUser {
   id: string;
@@ -93,6 +94,32 @@ export default function TenantAdmin() {
     monthlySpend: "$8,500",
     plan: "Enterprise",
   };
+
+  const userColumns: SpreadsheetColumn[] = [
+    { id: "name", header: "Name", width: 200, cell: (item) => <span className="font-medium">{item.name}</span> },
+    { id: "email", header: "Email", width: 250, cell: (item) => <span className="text-muted-foreground">{item.email}</span> },
+    { id: "role", header: "Role", width: 150, cell: (item) => <span className="text-xs">{item.role}</span> },
+    {
+      id: "status", header: "Status", width: 120, cell: (item) => (
+        <Badge
+          variant="secondary"
+          className={item.status === "active" ? "bg-green-500/10 text-green-600" : "bg-gray-500/10 text-gray-600"}
+        >
+          {item.status === "active" ? "Active" : "Inactive"}
+        </Badge>
+      )
+    },
+    { id: "lastLogin", header: "Last Login", width: 150, cell: (item) => <span className="text-xs text-muted-foreground">{item.lastLogin}</span> },
+    {
+      id: "actions", header: "Actions", width: 100, cell: (item) => (
+        <div className="flex justify-end pr-2 w-full">
+          <Button variant="ghost" size="icon" data-testid={`button-user-actions-${item.id}`}>
+            <MoreVertical className="h-4 w-4" />
+          </Button>
+        </div>
+      )
+    }
+  ];
 
   return (
     <div className="space-y-6">
@@ -211,42 +238,13 @@ export default function TenantAdmin() {
             </Button>
           </div>
 
-          <div className="border rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b bg-muted/50">
-                  <th className="px-4 py-2 text-left font-medium">Name</th>
-                  <th className="px-4 py-2 text-left font-medium">Email</th>
-                  <th className="px-4 py-2 text-left font-medium">Role</th>
-                  <th className="px-4 py-2 text-left font-medium">Status</th>
-                  <th className="px-4 py-2 text-left font-medium">Last Login</th>
-                  <th className="px-4 py-2 text-right font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user) => (
-                  <tr key={user.id} className="border-b hover:bg-muted/50" data-testid={`row-user-${user.id}`}>
-                    <td className="px-4 py-3 font-medium">{user.name}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{user.email}</td>
-                    <td className="px-4 py-3 text-xs">{user.role}</td>
-                    <td className="px-4 py-3">
-                      <Badge
-                        variant="secondary"
-                        className={user.status === "active" ? "bg-green-500/10 text-green-600" : "bg-gray-500/10 text-gray-600"}
-                      >
-                        {user.status === "active" ? "Active" : "Inactive"}
-                      </Badge>
-                    </td>
-                    <td className="px-4 py-3 text-xs text-muted-foreground">{user.lastLogin}</td>
-                    <td className="px-4 py-3 text-right">
-                      <Button variant="ghost" size="icon" data-testid={`button-user-actions-${user.id}`}>
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div style={{ height: '400px' }}>
+            <InteractiveSpreadsheet
+              columns={userColumns}
+              data={users}
+              rowKey="id"
+              containerHeight="400px"
+            />
           </div>
         </div>
       )}

@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PlayCircle, CheckCircle2, XCircle, FileText, Download, Globe, DollarSign, Users, RefreshCw } from 'lucide-react';
 import { EnterpriseContextSwitcher, buildScopeHeaders } from '@/components/enterprise/EnterpriseContextSwitcher';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 interface PayrollRun {
     id: string;
     payroll_name: string;
@@ -86,6 +87,61 @@ export default function PayrollWorkbench() {
     const totalNet = runs.reduce((s, r) => s + Number(r.net_total ?? 0), 0);
     const totalEmp = runs.reduce((s, r) => s + Number(r.employee_count ?? 0), 0);
 
+    const runColumns: SpreadsheetColumn<any>[] = [
+        { id: "payroll_name", header: "Run Name", width: "200px", cell: (row) => <span className="run-name">{row.payroll_name}</span> },
+        { id: "country_code", header: "Country", width: "100px", cell: (row) => <span className="cbadge">{row.country_code}</span> },
+        { id: "period", header: "Period", width: "200px", cell: (row) => <span className="date-cell">{row.period_start} – {row.period_end}</span> },
+        { id: "pay_date", header: "Pay Date", width: "120px", cell: (row) => <span className="date-cell">{row.pay_date}</span> },
+        { id: "employee_count", header: "Employees", width: "100px", cell: (row) => <div className="num-cell w-full">{Number(row.employee_count).toLocaleString()}</div> },
+        { id: "gross_total", header: "Gross", width: "120px", cell: (row) => <div className="amt-cell w-full">{fmt(row.gross_total, row.currency_code)}</div> },
+        { id: "net_total", header: "Net", width: "120px", cell: (row) => <div className="amt-cell green w-full">{fmt(row.net_total, row.currency_code)}</div> },
+        { id: "tax_total", header: "Tax", width: "120px", cell: (row) => <div className="amt-cell red w-full">{fmt(row.tax_total, row.currency_code)}</div> },
+        {
+            id: "status", header: "Status", width: "120px", cell: (row) => {
+                const cfg = STATUS_CFG[row.status] ?? { color: '#6b7280', bg: '#f3f4f6', label: row.status };
+                return <span className="status-pill" style={{ background: cfg.bg, color: cfg.color }}>{cfg.label}</span>;
+            }
+        },
+        {
+            id: "actions", header: "Actions", width: "300px", cell: (row) => (
+                <div className="action-cell">
+                    {row.status === 'Draft' && (
+                        <button className="act-btn blue" onClick={() => processMutation.mutate(row.id)} aria-label="Process run">
+                            <PlayCircle size={13} /> Process
+                        </button>
+                    )}
+                    {row.status === 'Review' && (
+                        <button className="act-btn green" onClick={() => approveMutation.mutate(row.id)} aria-label="Approve run">
+                            <CheckCircle2 size={13} /> Approve
+                        </button>
+                    )}
+                    {row.status === 'Approved' && (
+                        <>
+                            <button className="act-btn purple" onClick={() => glMutation.mutate(row.id)} aria-label="Post to GL">
+                                GL Post
+                            </button>
+                            <select
+                                className="fmt-select"
+                                onChange={e => e.target.value && payFileMutation.mutate({ id: row.id, format: e.target.value })}
+                                defaultValue=""
+                                aria-label="Generate payment file"
+                            >
+                                <option value="" disabled>Pay File…</option>
+                                <option value="ACH_NACHA">ACH/NACHA</option>
+                                <option value="BACS">BACS</option>
+                                <option value="SEPA_PAIN001">SEPA</option>
+                                <option value="FPS">FPS</option>
+                            </select>
+                        </>
+                    )}
+                    <a href={`/api/hr/payroll/runs/${row.id}/payslips`} target="_blank" rel="noreferrer" className="act-link">
+                        <FileText size={13} /> Payslips
+                    </a>
+                </div>
+            )
+        }
+    ];
+
     return (
         <StandardPage
             title="Global Payroll Workbench"
@@ -120,70 +176,19 @@ export default function PayrollWorkbench() {
 
             {/* Runs Table */}
             <div className="pw-table-card">
-                <table className="pw-table">
-                    <thead>
-                        <tr>
-                            <th>Run Name</th><th>Country</th><th>Period</th><th>Pay Date</th>
-                            <th>Employees</th><th>Gross</th><th>Net</th><th>Tax</th><th>Status</th><th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {isLoading ? (
-                            <tr><td colSpan={10} className="empty-td">Loading…</td></tr>
-                        ) : runs.length === 0 ? (
-                            <tr><td colSpan={10} className="empty-td">No payroll runs found</td></tr>
-                        ) : runs.map(run => {
-                            const cfg = STATUS_CFG[run.status] ?? { color: '#6b7280', bg: '#f3f4f6', label: run.status };
-                            return (
-                                <tr key={run.id} className="pw-row">
-                                    <td className="run-name">{run.payroll_name}</td>
-                                    <td><span className="cbadge">{run.country_code}</span></td>
-                                    <td className="date-cell">{run.period_start} – {run.period_end}</td>
-                                    <td className="date-cell">{run.pay_date}</td>
-                                    <td className="num-cell">{Number(run.employee_count).toLocaleString()}</td>
-                                    <td className="amt-cell">{fmt(run.gross_total, run.currency_code)}</td>
-                                    <td className="amt-cell green">{fmt(run.net_total, run.currency_code)}</td>
-                                    <td className="amt-cell red">{fmt(run.tax_total, run.currency_code)}</td>
-                                    <td><span className="status-pill" style={{ background: cfg.bg, color: cfg.color }}>{cfg.label}</span></td>
-                                    <td className="action-cell">
-                                        {run.status === 'Draft' && (
-                                            <button className="act-btn blue" onClick={() => processMutation.mutate(run.id)} aria-label="Process run">
-                                                <PlayCircle size={13} /> Process
-                                            </button>
-                                        )}
-                                        {run.status === 'Review' && (
-                                            <button className="act-btn green" onClick={() => approveMutation.mutate(run.id)} aria-label="Approve run">
-                                                <CheckCircle2 size={13} /> Approve
-                                            </button>
-                                        )}
-                                        {run.status === 'Approved' && (
-                                            <>
-                                                <button className="act-btn purple" onClick={() => glMutation.mutate(run.id)} aria-label="Post to GL">
-                                                    GL Post
-                                                </button>
-                                                <select
-                                                    className="fmt-select"
-                                                    onChange={e => e.target.value && payFileMutation.mutate({ id: run.id, format: e.target.value })}
-                                                    defaultValue=""
-                                                    aria-label="Generate payment file"
-                                                >
-                                                    <option value="" disabled>Pay File…</option>
-                                                    <option value="ACH_NACHA">ACH/NACHA</option>
-                                                    <option value="BACS">BACS</option>
-                                                    <option value="SEPA_PAIN001">SEPA</option>
-                                                    <option value="FPS">FPS</option>
-                                                </select>
-                                            </>
-                                        )}
-                                        <a href={`/api/hr/payroll/runs/${run.id}/payslips`} target="_blank" rel="noreferrer" className="act-link">
-                                            <FileText size={13} /> Payslips
-                                        </a>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                {isLoading ? (
+                    <div className="empty-td p-8 text-center text-zinc-500">Loading…</div>
+                ) : (
+                    <div style={{ minHeight: '300px', height: '100%' }}>
+                        <InteractiveSpreadsheet
+                            columns={runColumns}
+                            data={runs}
+                            onChange={() => { }}
+                            containerHeight="400px"
+                        />
+                        {runs.length === 0 && <div className="empty-td p-8 text-center text-zinc-500 border-t border-zinc-200">No payroll runs found</div>}
+                    </div>
+                )}
             </div>
 
             {/* Create Modal */}

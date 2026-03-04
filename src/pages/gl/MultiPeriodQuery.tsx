@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface Period {
     id: number;
@@ -107,6 +108,98 @@ export default function MultiPeriodQuery() {
     const formatPercent = (value: number) => {
         return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
     };
+
+    const queryColumns: SpreadsheetColumn<any>[] = [
+        { id: "accountCode", header: "Account", width: "150px", cell: (row) => <span className={`font-mono ${row.isTotal ? 'font-bold' : ''}`}>{row.accountCode}</span> },
+        { id: "description", header: "Description", width: "200px", cell: (row) => row.description },
+        ...(queryData?.periods || []).map((period: any, i: number) => ({
+            id: `period_${i}`,
+            header: (
+                <div className="text-right w-full">
+                    <div>{period.name}</div>
+                    <div className="text-xs font-normal text-muted-foreground mr-1">
+                        {new Date(period.startDate).toLocaleDateString()}
+                    </div>
+                </div>
+            ) as any,
+            width: "150px",
+            cell: (row: any) => {
+                if (row.isTotal) {
+                    return <div className="text-right font-bold w-full">{formatCurrency(row.periods[i])}</div>;
+                }
+                const periodData = row.periods[i];
+                return (
+                    <div className="text-right w-full">
+                        <div className="font-medium">{formatCurrency(periodData.actual)}</div>
+                        {comparisonType === 'BUDGET' && (
+                            <div className="text-xs text-muted-foreground">
+                                Budget: {formatCurrency(periodData.budget)}
+                            </div>
+                        )}
+                    </div>
+                );
+            }
+        })),
+        ...(showVariance && (queryData?.periods?.length || 0) > 1 ? [{
+            id: "variance",
+            header: (
+                <div className="text-right w-full">
+                    <div>Variance</div>
+                    <div className="text-xs font-normal text-muted-foreground mr-1">% Change</div>
+                </div>
+            ) as any,
+            width: "150px",
+            cell: (row: any) => {
+                if (row.isTotal) {
+                    return (
+                        <div className={`text-right font-bold w-full ${row.variance >= 0 ? "text-green-600" : "text-red-600"}`}>
+                            {formatPercent(row.variance)}
+                        </div>
+                    );
+                }
+                return (
+                    <div className="text-right w-full">
+                        <div className={`font-medium ${row.variance >= 0 ? "text-green-600" : "text-red-600"}`}>
+                            {row.variance >= 0 ? <TrendingUp className="h-4 w-4 inline mr-1" /> : <TrendingDown className="h-4 w-4 inline mr-1" />}
+                            {formatPercent(row.variance)}
+                        </div>
+                        <div className="text-xs text-muted-foreground">{formatCurrency(row.varianceAmount)}</div>
+                    </div>
+                );
+            }
+        }] : []),
+        ...(showTrend && (queryData?.periods?.length || 0) > 2 ? [{
+            id: "trend",
+            header: <div className="text-center w-full">Trend</div> as any,
+            width: "100px",
+            cell: (row: any) => {
+                if (row.isTotal) return null;
+                return (
+                    <div className="flex justify-center w-full items-center h-full">
+                        {row.trend === 'INCREASING' && <TrendingUp className="h-5 w-5 text-green-600" />}
+                        {row.trend === 'DECREASING' && <TrendingDown className="h-5 w-5 text-red-600" />}
+                        {row.trend === 'STABLE' && <div className="h-1 w-5 bg-gray-400 rounded" />}
+                    </div>
+                );
+            }
+        }] : [])
+    ];
+
+    const tableData = queryData ? [
+        ...(queryData.accounts || []).map((account: any) => ({
+            ...account,
+            id: account.accountCode
+        })),
+        ...(queryData.totals ? [{
+            id: "total_row",
+            isTotal: true,
+            accountCode: "TOTAL",
+            description: "",
+            periods: queryData.totals.periods,
+            variance: queryData.totals.variance,
+            trend: null
+        }] : [])
+    ] : [];
 
     return (
         <StandardPage
@@ -223,119 +316,13 @@ export default function MultiPeriodQuery() {
                         <CardTitle>Analysis Results</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="border rounded-lg overflow-auto">
-                            <table className="w-full">
-                                <thead className="bg-muted sticky top-0">
-                                    <tr>
-                                        <th className="text-left p-3 border-r">Account</th>
-                                        <th className="text-left p-3 border-r">Description</th>
-                                        {queryData.periods.map((period: any) => (
-                                            <th key={period.id} className="text-right p-3 border-r">
-                                                <div>{period.name}</div>
-                                                <div className="text-xs font-normal text-muted-foreground">
-                                                    {new Date(period.startDate).toLocaleDateString()}
-                                                </div>
-                                            </th>
-                                        ))}
-                                        {showVariance && queryData.periods.length > 1 && (
-                                            <th className="text-right p-3 border-r bg-blue-50">
-                                                <div>Variance</div>
-                                                <div className="text-xs font-normal text-muted-foreground">
-                                                    % Change
-                                                </div>
-                                            </th>
-                                        )}
-                                        {showTrend && queryData.periods.length > 2 && (
-                                            <th className="text-center p-3 bg-purple-50">
-                                                <div>Trend</div>
-                                            </th>
-                                        )}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {queryData.accounts?.map((account: any) => (
-                                        <tr key={account.accountCode} className="border-t hover:bg-accent">
-                                            <td className="p-3 border-r font-mono">
-                                                {account.accountCode}
-                                            </td>
-                                            <td className="p-3 border-r">{account.description}</td>
-                                            {account.periods.map((periodData: any, i: number) => (
-                                                <td key={i} className="text-right p-3 border-r">
-                                                    <div className="font-medium">
-                                                        {formatCurrency(periodData.actual)}
-                                                    </div>
-                                                    {comparisonType === 'BUDGET' && (
-                                                        <div className="text-xs text-muted-foreground">
-                                                            Budget: {formatCurrency(periodData.budget)}
-                                                        </div>
-                                                    )}
-                                                </td>
-                                            ))}
-                                            {showVariance && account.periods.length > 1 && (
-                                                <td className="text-right p-3 border-r bg-blue-50">
-                                                    <div
-                                                        className={`font-medium ${account.variance >= 0
-                                                            ? "text-green-600"
-                                                            : "text-red-600"
-                                                            }`}
-                                                    >
-                                                        {account.variance >= 0 ? (
-                                                            <TrendingUp className="h-4 w-4 inline mr-1" />
-                                                        ) : (
-                                                            <TrendingDown className="h-4 w-4 inline mr-1" />
-                                                        )}
-                                                        {formatPercent(account.variance)}
-                                                    </div>
-                                                    <div className="text-xs text-muted-foreground">
-                                                        {formatCurrency(account.varianceAmount)}
-                                                    </div>
-                                                </td>
-                                            )}
-                                            {showTrend && account.periods.length > 2 && (
-                                                <td className="text-center p-3 bg-purple-50">
-                                                    <div className="flex justify-center">
-                                                        {account.trend === 'INCREASING' && (
-                                                            <TrendingUp className="h-5 w-5 text-green-600" />
-                                                        )}
-                                                        {account.trend === 'DECREASING' && (
-                                                            <TrendingDown className="h-5 w-5 text-red-600" />
-                                                        )}
-                                                        {account.trend === 'STABLE' && (
-                                                            <div className="h-1 w-5 bg-gray-400 rounded" />
-                                                        )}
-                                                    </div>
-                                                </td>
-                                            )}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                                {queryData.totals && (
-                                    <tfoot className="bg-muted font-bold border-t-2">
-                                        <tr>
-                                            <td className="p-3 border-r" colSpan={2}>TOTAL</td>
-                                            {queryData.totals.periods.map((total: number, i: number) => (
-                                                <td key={i} className="text-right p-3 border-r">
-                                                    {formatCurrency(total)}
-                                                </td>
-                                            ))}
-                                            {showVariance && (
-                                                <td className="text-right p-3 border-r bg-blue-50">
-                                                    <div
-                                                        className={
-                                                            queryData.totals.variance >= 0
-                                                                ? "text-green-600"
-                                                                : "text-red-600"
-                                                        }
-                                                    >
-                                                        {formatPercent(queryData.totals.variance)}
-                                                    </div>
-                                                </td>
-                                            )}
-                                            {showTrend && <td className="p-3 bg-purple-50"></td>}
-                                        </tr>
-                                    </tfoot>
-                                )}
-                            </table>
+                        <div style={{ minHeight: '400px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 8 }}>
+                            <InteractiveSpreadsheet
+                                columns={queryColumns}
+                                data={tableData}
+                                onChange={() => { }}
+                                containerHeight="500px"
+                            />
                         </div>
 
                         {/* Summary Statistics */}

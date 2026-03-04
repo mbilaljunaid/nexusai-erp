@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Network, TrendingDown, TrendingUp, CheckCircle2, BarChart3 } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface NettingSession { id: string; session_name: string; period: string; status: string; entities_in_scope: string[]; net_positions: NetPos[]; settlement_date: string; created_at: string; }
 interface NetPos { entity: string; payable: number; receivable: number; net: number; }
@@ -29,6 +30,25 @@ export default function NettingCenter() {
     const settleMut = useMutation({ mutationFn: (id: string) => fetch(`/api/ic/netting/sessions/${id}/settle`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ settledBy: 'current-user' }) }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['netting-sessions'] }) });
     const createPolicyMut = useMutation({ mutationFn: (d: any) => fetch('/api/ic/tp/policies', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }).then(r => r.json()), onSuccess: () => { qc.invalidateQueries({ queryKey: ['tp-policies'] }); setShowNewPolicy(false); } });
     const runAnalysisMut = useMutation({ mutationFn: (d: any) => fetch('/api/ic/tp/analyses', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['tp-analyses'] }) });
+
+    const netPosColumns: SpreadsheetColumn<NetPos>[] = [
+        { id: "entity", header: "Entity", width: "150px", cell: (row) => <div style={{ fontWeight: 700 }}>{row.entity}</div> },
+        { id: "payable", header: "Payable", width: "120px", cell: (row) => <div style={{ fontFamily: 'monospace', color: '#dc2626' }}>${Number(row.payable).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div> },
+        { id: "receivable", header: "Receivable", width: "120px", cell: (row) => <div style={{ fontFamily: 'monospace', color: '#059669' }}>${Number(row.receivable).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div> },
+        { id: "net", header: "Net Position", width: "150px", cell: (row) => <div style={{ fontFamily: 'monospace', fontWeight: 700, color: Number(row.net) >= 0 ? '#059669' : '#dc2626' }}>{Number(row.net) >= 0 ? '+' : ''}{Number(row.net).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div> },
+        { id: "flow", header: "Flow", width: "100px", cell: (row) => <div>{Number(row.net) > 0 ? <span style={{ color: '#059669' }}><TrendingUp size={12} /></span> : Number(row.net) < 0 ? <span style={{ color: '#dc2626' }}><TrendingDown size={12} /></span> : '—'}</div> }
+    ];
+
+    const analysesColumns: SpreadsheetColumn<TPAnalysis>[] = [
+        { id: "policy", header: "Policy", width: "200px", cell: (row) => <div style={{ fontWeight: 600 }}>{row.policy_name}</div> },
+        { id: "category", header: "Category", width: "120px", cell: (row) => <div style={{ color: '#6b7280', fontSize: 10 }}>{row.transaction_category}</div> },
+        { id: "period", header: "Period", width: "100px", cell: (row) => <div style={{ fontFamily: 'monospace' }}>{row.period}</div> },
+        { id: "actual", header: "Actual %", width: "100px", cell: (row) => <div style={{ fontFamily: 'monospace' }}>{Number(row.actual_margin_pct).toFixed(2)}%</div> },
+        { id: "benchmark", header: "Benchmark %", width: "100px", cell: (row) => <div style={{ fontFamily: 'monospace', color: '#6b7280' }}>{Number(row.benchmark_margin_pct).toFixed(2)}%</div> },
+        { id: "variance", header: "Variance", width: "100px", cell: (row) => <div style={{ fontFamily: 'monospace', color: Number(row.variance_pct) < 0 ? '#dc2626' : '#059669', fontWeight: 700 }}>{Number(row.variance_pct) > 0 ? '+' : ''}{Number(row.variance_pct).toFixed(2)}%</div> },
+        { id: "inRange", header: "In Range", width: "100px", cell: (row) => <div><span style={{ fontSize: 9, padding: '2px 5px', borderRadius: 3, background: row.in_range ? '#d1fae5' : '#fee2e2', color: row.in_range ? '#059669' : '#dc2626' }}>{row.in_range ? '✓ Yes' : '✗ No'}</span></div> },
+        { id: "status", header: "Status", width: "120px", cell: (row) => <div>{row.flagged && <span style={{ fontSize: 9, padding: '2px 5px', borderRadius: 3, background: '#fef9c3', color: '#d97706', fontWeight: 700 }}>⚠ Flagged</span>}</div> }
+    ];
 
     return (
         <StandardPage
@@ -90,22 +110,14 @@ export default function NettingCenter() {
                                 <div style={{ flex: 1 }}>
                                     <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10 }}>{selectedSession.session_name} — Net Positions</div>
                                     {(selectedSession.net_positions ?? []).length > 0 ? (
-                                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)' }}>
-                                            <thead><tr style={{ background: '#f9fafb' }}>
-                                                {['Entity', 'Payable', 'Receivable', 'Net Position', 'Flow'].map(h => <th key={h} style={{ padding: '9px 12px', textAlign: 'left', fontWeight: 700, borderBottom: '2px solid #e5e7eb' }}>{h}</th>)}
-                                            </tr></thead>
-                                            <tbody>
-                                                {selectedSession.net_positions.map((p: NetPos) => (
-                                                    <tr key={p.entity} style={{ borderBottom: '1px solid #f3f4f6', background: Number(p.net) > 0 ? '#f0fdf4' : Number(p.net) < 0 ? '#fef2f2' : undefined }}>
-                                                        <td style={{ padding: '8px 12px', fontWeight: 700 }}>{p.entity}</td>
-                                                        <td style={{ padding: '8px 12px', fontFamily: 'monospace', color: '#dc2626' }}>${Number(p.payable).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                                                        <td style={{ padding: '8px 12px', fontFamily: 'monospace', color: '#059669' }}>${Number(p.receivable).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                                                        <td style={{ padding: '8px 12px', fontFamily: 'monospace', fontWeight: 700, color: Number(p.net) >= 0 ? '#059669' : '#dc2626' }}>{Number(p.net) >= 0 ? '+' : ''}{Number(p.net).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                                                        <td style={{ padding: '8px 12px' }}>{Number(p.net) > 0 ? <span style={{ color: '#059669' }}><TrendingUp size={12} /></span> : Number(p.net) < 0 ? <span style={{ color: '#dc2626' }}><TrendingDown size={12} /></span> : '—'}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
+                                        <div style={{ border: '1px solid #e5e7eb', borderRadius: 12, overflow: 'hidden', height: 300, background: '#fff' }}>
+                                            <InteractiveSpreadsheet
+                                                columns={netPosColumns}
+                                                data={selectedSession.net_positions}
+                                                onChange={() => { }}
+                                                containerHeight="100%"
+                                            />
+                                        </div>
                                     ) : <div style={{ textAlign: 'center', color: '#9ca3af', padding: 40 }}>Run netting to compute positions</div>}
                                 </div>
                             )}
@@ -160,26 +172,18 @@ export default function NettingCenter() {
                                         <button disabled={!analysisForm.policyId || !analysisForm.actualMarginPct} onClick={() => runAnalysisMut.mutate({ policyId: analysisForm.policyId, period: analysisForm.period, actualMarginPct: parseFloat(analysisForm.actualMarginPct), transactionsReviewed: parseInt(analysisForm.transactionsReviewed) || 0 })} style={{ padding: '5px 12px', background: '#7c3aed', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer' }}><BarChart3 size={10} style={{ marginRight: 3 }} />Run Analysis</button>
                                     </div>
                                 </div>
-                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)' }}>
-                                    <thead><tr style={{ background: '#f9fafb' }}>
-                                        {['Policy', 'Category', 'Period', 'Actual %', 'Benchmark %', 'Variance', 'In Range', 'Status'].map(h => <th key={h} style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 700, borderBottom: '2px solid #e5e7eb' }}>{h}</th>)}
-                                    </tr></thead>
-                                    <tbody>
-                                        {analyses.map(a => (
-                                            <tr key={a.id} style={{ borderBottom: '1px solid #f3f4f6', background: a.flagged ? '#fef9c3' : undefined }}>
-                                                <td style={{ padding: '7px 10px', fontWeight: 600 }}>{a.policy_name}</td>
-                                                <td style={{ padding: '7px 10px', color: '#6b7280', fontSize: 10 }}>{a.transaction_category}</td>
-                                                <td style={{ padding: '7px 10px', fontFamily: 'monospace' }}>{a.period}</td>
-                                                <td style={{ padding: '7px 10px', fontFamily: 'monospace' }}>{Number(a.actual_margin_pct).toFixed(2)}%</td>
-                                                <td style={{ padding: '7px 10px', fontFamily: 'monospace', color: '#6b7280' }}>{Number(a.benchmark_margin_pct).toFixed(2)}%</td>
-                                                <td style={{ padding: '7px 10px', fontFamily: 'monospace', color: Number(a.variance_pct) < 0 ? '#dc2626' : '#059669', fontWeight: 700 }}>{Number(a.variance_pct) > 0 ? '+' : ''}{Number(a.variance_pct).toFixed(2)}%</td>
-                                                <td style={{ padding: '7px 10px' }}><span style={{ fontSize: 9, padding: '2px 5px', borderRadius: 3, background: a.in_range ? '#d1fae5' : '#fee2e2', color: a.in_range ? '#059669' : '#dc2626' }}>{a.in_range ? '✓ Yes' : '✗ No'}</span></td>
-                                                <td style={{ padding: '7px 10px' }}>{a.flagged && <span style={{ fontSize: 9, padding: '2px 5px', borderRadius: 3, background: '#fef9c3', color: '#d97706', fontWeight: 700 }}>⚠ Flagged</span>}</td>
-                                            </tr>
-                                        ))}
-                                        {analyses.length === 0 && <tr><td colSpan={8} style={{ textAlign: 'center', color: '#9ca3af', padding: 20 }}>No analyses — select a policy and run</td></tr>}
-                                    </tbody>
-                                </table>
+                                <div style={{ border: '1px solid #e5e7eb', borderRadius: 12, overflow: 'hidden', height: 400, background: '#fff' }}>
+                                    {analyses.length > 0 ? (
+                                        <InteractiveSpreadsheet
+                                            columns={analysesColumns}
+                                            data={analyses}
+                                            onChange={() => { }}
+                                            containerHeight="100%"
+                                        />
+                                    ) : (
+                                        <div style={{ padding: 20, textAlign: 'center', color: '#9ca3af' }}>No analyses — select a policy and run</div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>

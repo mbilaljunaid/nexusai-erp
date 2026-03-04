@@ -2,15 +2,15 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
-import { 
-  ArrowRight, 
-  Users, 
-  Code2, 
-  Video, 
-  CheckCircle2, 
-  Gift, 
-  Star, 
-  Award, 
+import {
+  ArrowRight,
+  Users,
+  Code2,
+  Video,
+  CheckCircle2,
+  Gift,
+  Star,
+  Award,
   TrendingUp,
   DollarSign,
   Shield,
@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function ContributionPage() {
   useEffect(() => {
@@ -115,37 +116,37 @@ export default function ContributionPage() {
   ];
 
   const trustLevels = [
-    { 
-      level: "New User", 
+    {
+      level: "New User",
       trustLevel: 0,
-      requirements: "Account age < 7 days or Rep < 50", 
+      requirements: "Account age < 7 days or Rep < 50",
       limits: "2 posts/day, 3 answers/day, 5 comments/day",
-      perks: "Community access, Learning mode", 
-      color: "bg-slate-600" 
+      perks: "Community access, Learning mode",
+      color: "bg-slate-600"
     },
-    { 
-      level: "Contributor", 
+    {
+      level: "Contributor",
       trustLevel: 1,
-      requirements: "Rep ≥ 50, Account ≥ 7 days", 
+      requirements: "Rep ≥ 50, Account ≥ 7 days",
       limits: "5 posts/day, 10 answers/day, Voting enabled",
-      perks: "Contributor badge, Can vote on content", 
-      color: "bg-blue-600" 
+      perks: "Contributor badge, Can vote on content",
+      color: "bg-blue-600"
     },
-    { 
-      level: "Trusted", 
+    {
+      level: "Trusted",
       trustLevel: 2,
-      requirements: "Rep ≥ 200, 10+ accepted answers", 
+      requirements: "Rep ≥ 200, 10+ accepted answers",
       limits: "10 posts/day, 20 answers/day, 1.5x voting weight",
-      perks: "External links, Can flag content, Marketplace seller", 
-      color: "bg-purple-600" 
+      perks: "External links, Can flag content, Marketplace seller",
+      color: "bg-purple-600"
     },
-    { 
-      level: "Leader", 
+    {
+      level: "Leader",
       trustLevel: 3,
-      requirements: "Rep ≥ 1,000, 50+ accepted answers, 5+ artifacts", 
+      requirements: "Rep ≥ 1,000, 50+ accepted answers, 5+ artifacts",
       limits: "Unlimited posting, 2x voting weight",
-      perks: "Moderate spaces, Lock threads, Premium pricing", 
-      color: "bg-yellow-600" 
+      perks: "Moderate spaces, Lock threads, Premium pricing",
+      color: "bg-yellow-600"
     }
   ];
 
@@ -155,6 +156,15 @@ export default function ContributionPage() {
     { name: "Educator", description: "Training videos", bronze: 2, silver: 5, gold: 10, platinum: 20, legendary: 40 },
     { name: "Form Builder", description: "Forms created", bronze: 5, silver: 15, gold: 30, platinum: 60, legendary: 100 },
     { name: "Bug Resolver", description: "Bugs resolved", bronze: 3, silver: 10, gold: 25, platinum: 50, legendary: 100 },
+  ];
+
+  const badgeColumns: SpreadsheetColumn<any>[] = [
+    { id: "badge", header: "Badge", width: "200px", cell: (row) => <div><div className="font-bold">{row.name}</div><div className="text-sm text-muted-foreground">{row.description}</div></div> },
+    { id: "bronze", header: <span className="text-orange-400">Bronze</span>, width: "100px", cell: (row) => <div className="text-center">{row.bronze}</div> },
+    { id: "silver", header: <span className="text-slate-400">Silver</span>, width: "100px", cell: (row) => <div className="text-center">{row.silver}</div> },
+    { id: "gold", header: <span className="text-yellow-400">Gold</span>, width: "100px", cell: (row) => <div className="text-center">{row.gold}</div> },
+    { id: "platinum", header: <span className="text-purple-400">Platinum</span>, width: "100px", cell: (row) => <div className="text-center">{row.platinum}</div> },
+    { id: "legendary", header: <span className="text-cyan-400">Legendary</span>, width: "100px", cell: (row) => <div className="text-center">{row.legendary}</div> },
   ];
 
   const reputationPoints = [
@@ -172,7 +182,7 @@ export default function ContributionPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1">
         <section className="px-4 py-24 text-center bg-gradient-to-b from-slate-900 to-slate-800">
           <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white mb-4">
@@ -182,7 +192,7 @@ export default function ContributionPage() {
             Contribute to <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">NexusAIFirst</span>
           </h1>
           <p className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Be part of building the world's most powerful open-source ERP platform. 
+            Be part of building the world's most powerful open-source ERP platform.
             Your contributions help thousands of businesses while growing your expertise and earning rewards.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
@@ -307,34 +317,13 @@ export default function ContributionPage() {
               </p>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b">
-                    <th className="p-4 font-bold">Badge</th>
-                    <th className="p-4 text-center text-orange-400">Bronze</th>
-                    <th className="p-4 text-center text-slate-400">Silver</th>
-                    <th className="p-4 text-center text-yellow-400">Gold</th>
-                    <th className="p-4 text-center text-purple-400">Platinum</th>
-                    <th className="p-4 text-center text-cyan-400">Legendary</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {badgeThresholds.map((badge, index) => (
-                    <tr key={index} className="border-b" data-testid={`row-badge-${badge.name.toLowerCase().replace(/\s+/g, '-')}`}>
-                      <td className="p-4">
-                        <div className="font-bold">{badge.name}</div>
-                        <div className="text-sm text-muted-foreground">{badge.description}</div>
-                      </td>
-                      <td className="p-4 text-center">{badge.bronze}</td>
-                      <td className="p-4 text-center">{badge.silver}</td>
-                      <td className="p-4 text-center">{badge.gold}</td>
-                      <td className="p-4 text-center">{badge.platinum}</td>
-                      <td className="p-4 text-center">{badge.legendary}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div style={{ height: 350 }}>
+              <InteractiveSpreadsheet
+                columns={badgeColumns}
+                data={badgeThresholds}
+                onChange={() => { }}
+                containerHeight="100%"
+              />
             </div>
           </div>
         </section>
@@ -459,7 +448,7 @@ export default function ContributionPage() {
               <Sparkles className="w-16 h-16 mx-auto mb-6 text-yellow-400" />
               <h2 className="text-3xl font-bold mb-4">Ready to Start Contributing?</h2>
               <p className="text-lg text-slate-300 mb-8 max-w-2xl mx-auto">
-                Join thousands of contributors who are shaping the future of enterprise software. 
+                Join thousands of contributors who are shaping the future of enterprise software.
                 Every contribution, big or small, makes a difference.
               </p>
               <div className="flex gap-4 justify-center flex-wrap">

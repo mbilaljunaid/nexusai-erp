@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Database, Play, CheckCircle, Download, AlertTriangle, Clock } from 'lucide-react';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface RestorePoint {
     id: string;
@@ -113,6 +114,29 @@ export default function BackupRestoreManager() {
         }
     };
 
+    const restorePointColumns: SpreadsheetColumn[] = [
+        { id: "timestamp", header: "Timestamp", width: 200, cell: (item) => <span className="text-sm text-gray-900">{new Date(item.timestamp).toLocaleString()}</span> },
+        { id: "type", header: "Type", width: 150, cell: (item) => <span className="text-sm capitalize">{item.type}</span> },
+        { id: "dataSize", header: "Size", width: 120, cell: (item) => <span className="text-sm text-gray-900">{item.dataSize}</span> },
+        { id: "itemCount", header: "Items", width: 120, cell: (item) => <span className="text-sm text-gray-900">{item.itemCount.toLocaleString()}</span> },
+        { id: "status", header: "Status", width: 150, cell: (item) => getStatusBadge(item.status) },
+        { id: "lastVerified", header: "Last Verified", width: 200, cell: (item) => <span className="text-sm text-gray-500">{item.lastVerified ? new Date(item.lastVerified).toLocaleString() : 'Never'}</span> },
+        {
+            id: "actions", header: "Actions", width: 150, cell: (item) => (
+                <div className="flex items-center justify-end gap-2 pr-4 w-full">
+                    <button
+                        onClick={() => verifyBackup(item.id)}
+                        className="text-blue-600 hover:text-blue-900 flex items-center gap-1 text-sm font-medium"
+                        title="Verify Backup"
+                    >
+                        <Play className="w-4 h-4" />
+                        Verify
+                    </button>
+                </div>
+            )
+        }
+    ];
+
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -206,89 +230,23 @@ export default function BackupRestoreManager() {
                     <h3 className="text-sm font-semibold text-gray-900">Restore Points</h3>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead className="bg-gray-50 border-b">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Timestamp
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Type
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Size
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Items
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Status
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Last Verified
-                                </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            {loading ? (
-                                <tr>
-                                    <td colSpan={7} className="px-6 py-12">
-                                        <div className="flex items-center justify-center">
-                                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ) : restorePoints.length === 0 ? (
-                                <tr>
-                                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
-                                        No backup restore points found. Create your first backup above.
-                                    </td>
-                                </tr>
-                            ) : (
-                                restorePoints.map((point) => (
-                                    <tr key={point.id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {new Date(point.timestamp).toLocaleString()}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm capitalize">
-                                            {point.type}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {point.dataSize}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {point.itemCount.toLocaleString()}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            {getStatusBadge(point.status)}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {point.lastVerified
-                                                ? new Date(point.lastVerified).toLocaleString()
-                                                : 'Never'}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <button
-                                                    onClick={() => verifyBackup(point.id)}
-                                                    className="text-blue-600 hover:text-blue-900 flex items-center gap-1"
-                                                    title="Verify Backup"
-                                                >
-                                                    <Play className="w-4 h-4" />
-                                                    Verify
-                                                </button>
-                                                {/* Download/Restore buttons can be added here */}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                <div style={{ height: '400px' }}>
+                    {loading ? (
+                        <div className="flex items-center justify-center p-12">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                        </div>
+                    ) : restorePoints.length === 0 ? (
+                        <div className="p-12 text-center text-gray-500">
+                            No backup restore points found. Create your first backup above.
+                        </div>
+                    ) : (
+                        <InteractiveSpreadsheet
+                            columns={restorePointColumns}
+                            data={restorePoints}
+                            onChange={() => { }}
+                            containerHeight="400px"
+                        />
+                    )}
                 </div>
             </div>
 

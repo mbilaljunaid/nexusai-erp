@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ShieldCheck, ShieldAlert, ShieldOff, AlertCircle } from 'lucide-react';
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface Cert { id: string; supplier_id: string; cert_type: string; cert_number: string; issuing_body: string; issue_date: string; expiry_date: string; status: string; verified_by: string; days_remaining?: number; }
 interface Portfolio { cert_type: string; suppliers_with_cert: number; active: number; expired: number; earliest_expiry: string; }
@@ -43,6 +44,14 @@ export default function CertificationStatus() {
         mutationFn: (id: string) => fetch(`/api/supplier/certifications/${id}/revoke`, { method: 'POST' }).then(r => r.json()),
         onSuccess: () => { qc.invalidateQueries({ queryKey: ['certs', 'cert-portfolio'] }); setSelected(null); },
     });
+
+    const portfolioColumns: SpreadsheetColumn<any>[] = [
+        { id: "cert_type", header: "Cert Type", width: "150px", cell: (p: any) => <span style={{ fontWeight: 700, fontFamily: 'monospace' }}>{p.cert_type}</span> },
+        { id: "suppliers", header: "Suppliers", width: "120px", cell: (p: any) => <span style={{ fontFamily: 'monospace' }}>{p.suppliers_with_cert}</span> },
+        { id: "active", header: "Active", width: "120px", cell: (p: any) => <span style={{ color: '#059669', fontWeight: 600 }}>{p.active}</span> },
+        { id: "expired", header: "Expired", width: "120px", cell: (p: any) => <span style={{ color: p.expired > 0 ? '#dc2626' : '#6b7280' }}>{p.expired}</span> },
+        { id: "earliest_expiry", header: "Earliest Expiry", width: "150px", cell: (p: any) => <span style={{ color: '#6b7280' }}>{fmtDate(p.earliest_expiry)}</span> }
+    ];
 
     return (
         <div style={{ padding: 24, maxWidth: 1400, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
@@ -143,23 +152,19 @@ export default function CertificationStatus() {
             )}
 
             {tab === 'portfolio' && (
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)' }}>
-                    <thead><tr style={{ background: '#f9fafb' }}>
-                        {['Cert Type', 'Suppliers', 'Active', 'Expired', 'Earliest Expiry'].map(h => <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontWeight: 700, color: '#374151', borderBottom: '2px solid #e5e7eb' }}>{h}</th>)}
-                    </tr></thead>
-                    <tbody>
-                        {portfolio.map(p => (
-                            <tr key={p.cert_type} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                                <td style={{ padding: '10px 14px', fontWeight: 700, fontFamily: 'monospace' }}>{p.cert_type}</td>
-                                <td style={{ padding: '10px 14px', fontFamily: 'monospace' }}>{p.suppliers_with_cert}</td>
-                                <td style={{ padding: '10px 14px', color: '#059669', fontWeight: 600 }}>{p.active}</td>
-                                <td style={{ padding: '10px 14px', color: p.expired > 0 ? '#dc2626' : '#6b7280' }}>{p.expired}</td>
-                                <td style={{ padding: '10px 14px', color: '#6b7280' }}>{fmtDate(p.earliest_expiry)}</td>
-                            </tr>
-                        ))}
-                        {portfolio.length === 0 && <tr><td colSpan={5} style={{ textAlign: 'center', color: '#9ca3af', padding: 20 }}>No data</td></tr>}
-                    </tbody>
-                </table>
+                <div style={{ background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)', border: '1px solid #e5e7eb' }}>
+                    {portfolio.length > 0 ? (
+                        <InteractiveSpreadsheet
+                            data={portfolio}
+                            columns={portfolioColumns}
+                            virtualized={true}
+                            containerHeight="500px"
+                            onChange={() => { }}
+                        />
+                    ) : (
+                        <div style={{ textAlign: 'center', color: '#9ca3af', padding: 20 }}>No data</div>
+                    )}
+                </div>
             )}
 
             {tab === 'expiring' && (

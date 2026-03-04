@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { TrendingUp, CheckCircle2, BarChart2 } from 'lucide-react';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface RevEvent { id: string; period_start: string; period_end: string; pct_complete: number; costs_incurred: number; costs_to_complete: number; revenue_recognized: number; cumulative_revenue: number; gl_posted: boolean; gl_reference: string; method: string; contract_value: number; }
 interface RevSummary { method: string; contract_value: number; total_recognized: number; cumulative: number; remaining: number; pct_recognized: number; period_count: number; gl_posted_count: number; }
@@ -36,6 +37,17 @@ export default function RevenueRecognition() {
     });
 
     const pctNum = summary ? Math.min(100, Math.round(Number(summary.pct_recognized))) : 0;
+
+    const revColumns: SpreadsheetColumn<RevEvent>[] = [
+        { id: "period", header: "Period", width: "160px", cell: (e) => <span style={{ whiteSpace: 'nowrap' }}>{fmtDate(e.period_start)} – {fmtDate(e.period_end)}</span> },
+        { id: "pctComplete", header: "% Complete", width: "100px", cell: (e) => <span>{(Number(e.pct_complete) * 100).toFixed(1)}%</span> },
+        { id: "costsIncurred", header: "Costs Incurred", width: "120px", cell: (e) => <span style={{ fontFamily: 'monospace' }}>{fmt(e.costs_incurred)}</span> },
+        { id: "costsToComplete", header: "Costs to Complete", width: "130px", cell: (e) => <span style={{ fontFamily: 'monospace' }}>{fmt(e.costs_to_complete)}</span> },
+        { id: "recognized", header: "Recognized", width: "110px", cell: (e) => <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#059669' }}>{fmt(e.revenue_recognized)}</span> },
+        { id: "cumulative", header: "Cumulative", width: "110px", cell: (e) => <span style={{ fontFamily: 'monospace', color: '#6b7280' }}>{fmt(e.cumulative_revenue)}</span> },
+        { id: "gl", header: "GL", width: "100px", cell: (e) => e.gl_posted ? <span style={{ display: 'flex', alignItems: 'center', gap: 3, color: '#059669', fontSize: 10, fontWeight: 700 }}><CheckCircle2 size={11} /> Posted</span> : <span style={{ fontSize: 10, color: '#d97706', fontWeight: 600 }}>Pending</span> },
+        { id: "actions", header: "", width: "100px", cell: (e) => !e.gl_posted ? <button onClick={() => postGLMut.mutate({ id: e.id })} style={{ padding: '3px 8px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>Post GL</button> : null }
+    ];
 
     return (
         <div style={{ padding: 24, maxWidth: 1300, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
@@ -118,31 +130,14 @@ export default function RevenueRecognition() {
                     )}
 
                     {/* Events table */}
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)' }}>
-                        <thead><tr style={{ background: '#f9fafb' }}>
-                            {['Period', '% Complete', 'Costs Incurred', 'Costs to Complete', 'Recognized', 'Cumulative', 'GL', ''].map(h => <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 700, color: '#374151', borderBottom: '2px solid #e5e7eb', whiteSpace: 'nowrap' }}>{h}</th>)}
-                        </tr></thead>
-                        <tbody>
-                            {events.map(e => (
-                                <tr key={e.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                                    <td style={{ padding: '9px 12px', whiteSpace: 'nowrap' }}>{fmtDate(e.period_start)} – {fmtDate(e.period_end)}</td>
-                                    <td style={{ padding: '9px 12px' }}>{(Number(e.pct_complete) * 100).toFixed(1)}%</td>
-                                    <td style={{ padding: '9px 12px', fontFamily: 'monospace' }}>{fmt(e.costs_incurred)}</td>
-                                    <td style={{ padding: '9px 12px', fontFamily: 'monospace' }}>{fmt(e.costs_to_complete)}</td>
-                                    <td style={{ padding: '9px 12px', fontFamily: 'monospace', fontWeight: 700, color: '#059669' }}>{fmt(e.revenue_recognized)}</td>
-                                    <td style={{ padding: '9px 12px', fontFamily: 'monospace', color: '#6b7280' }}>{fmt(e.cumulative_revenue)}</td>
-                                    <td style={{ padding: '9px 12px' }}>
-                                        {e.gl_posted ? <span style={{ display: 'flex', alignItems: 'center', gap: 3, color: '#059669', fontSize: 10, fontWeight: 700 }}><CheckCircle2 size={11} /> Posted</span>
-                                            : <span style={{ fontSize: 10, color: '#d97706', fontWeight: 600 }}>Pending</span>}
-                                    </td>
-                                    <td style={{ padding: '9px 12px' }}>
-                                        {!e.gl_posted && <button onClick={() => postGLMut.mutate({ id: e.id })} style={{ padding: '3px 8px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>Post GL</button>}
-                                    </td>
-                                </tr>
-                            ))}
-                            {events.length === 0 && <tr><td colSpan={8} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No recognition events — search a project and recognize revenue</td></tr>}
-                        </tbody>
-                    </table>
+                    <div style={{ minHeight: '400px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 12 }}>
+                        <InteractiveSpreadsheet
+                            columns={revColumns}
+                            data={events}
+                            onChange={() => { }}
+                            containerHeight="500px"
+                        />
+                    </div>
                 </>
             )}
 

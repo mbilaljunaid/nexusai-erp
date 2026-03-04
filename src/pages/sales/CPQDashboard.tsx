@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { BarChart3, TrendingUp, TrendingDown, AlertTriangle, CheckCircle2, Minus } from 'lucide-react';
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface Quote { id: string; quote_number: string; customer_id: string; status: string; net_total: number; list_total: number; discount_pct: number; margin_pct: number | null; valid_until: string; currency: string; created_by: string; lines?: QuoteLine[]; }
 interface QuoteLine { id: string; line_number: number; product_id: string; description: string; quantity: number; unit_price: number; discount_pct: number; net_price: number; }
@@ -36,6 +37,34 @@ export default function CPQDashboard() {
     const pipeline = quotes.filter(q => q.status !== 'Lost' && q.status !== 'Expired').reduce((s, q) => s + Number(q.net_total ?? 0), 0);
 
     const kpiC = (val: number, gd = 1) => val >= gd ? '#059669' : val >= gd * 0.8 ? '#d97706' : '#dc2626';
+
+    const renewalColumns: SpreadsheetColumn<any>[] = [
+        { id: "contract", header: "Contract", width: "150px", cell: (ren: any) => <span style={{ fontWeight: 600 }}>{ren.contract_number}</span> },
+        { id: "customer", header: "Customer", width: "150px", cell: (ren: any) => <span>{ren.customer_id}</span> },
+        { id: "renewal_date", header: "Renewal Date", width: "120px", cell: (ren: any) => <span>{ren.renewal_date}</span> },
+        { id: "days", header: "Days", width: "80px", cell: (ren: any) => <span style={{ color: Number(ren.days_until_renewal) <= 7 ? '#dc2626' : Number(ren.days_until_renewal) <= 14 ? '#d97706' : '#059669', fontWeight: 700 }}>{ren.days_until_renewal}d</span> },
+        { id: "mrr", header: "MRR", width: "100px", cell: (ren: any) => <span style={{ fontFamily: 'monospace' }}>${Number(ren.mrr ?? 0).toLocaleString()}</span> },
+        { id: "auto_renew", header: "Auto-Renew", width: "100px", cell: (ren: any) => <span style={{ fontSize: 9, padding: '2px 5px', borderRadius: 3, background: ren.auto_renew ? '#d1fae5' : '#f3f4f6', color: ren.auto_renew ? '#059669' : '#9ca3af' }}>{ren.auto_renew ? 'AUTO' : 'MANUAL'}</span> },
+        {
+            id: "status", header: "Status", width: "120px", cell: (ren: any) => {
+                const clr = STATUS_CLR[ren.status] ?? '#6b7280';
+                return <span style={{ fontSize: 9, padding: '2px 5px', borderRadius: 3, background: clr + '18', color: clr }}>{ren.status}</span>;
+            }
+        },
+        { id: "action", header: "", width: "100px", cell: (ren: any) => ren.status === 'Pending' ? <button onClick={() => renewMut.mutate(ren.id)} style={{ padding: '3px 8px', background: '#059669', color: '#fff', border: 'none', borderRadius: 5, fontSize: 9, cursor: 'pointer', fontWeight: 700 }}>Renew</button> : null }
+    ];
+
+    const evmColumns: SpreadsheetColumn<any>[] = [
+        { id: "wbs", header: "WBS", width: "120px", cell: (ca: any) => <span style={{ fontFamily: 'monospace', fontSize: 10, fontWeight: 600 }}>{ca.wbs_code}</span> },
+        { id: "desc", header: "Description", width: "200px", cell: (ca: any) => <span style={{ color: '#6b7280' }}>{ca.description ?? '—'}</span> },
+        { id: "pv", header: "PV", width: "100px", cell: (ca: any) => <span style={{ fontFamily: 'monospace' }}>${Number(ca.pv ?? 0).toLocaleString()}</span> },
+        { id: "ev", header: "EV", width: "100px", cell: (ca: any) => <span style={{ fontFamily: 'monospace' }}>${Number(ca.ev ?? 0).toLocaleString()}</span> },
+        { id: "ac", header: "AC", width: "100px", cell: (ca: any) => <span style={{ fontFamily: 'monospace' }}>${Number(ca.ac ?? 0).toLocaleString()}</span> },
+        { id: "sv", header: "SV", width: "100px", cell: (ca: any) => <span style={{ fontFamily: 'monospace', color: Number(ca.sv ?? 0) >= 0 ? '#059669' : '#dc2626', fontWeight: 700 }}>{Number(ca.sv ?? 0) >= 0 ? '+' : ''}{Number(ca.sv ?? 0).toLocaleString()}</span> },
+        { id: "cv", header: "CV", width: "100px", cell: (ca: any) => <span style={{ fontFamily: 'monospace', color: Number(ca.cv ?? 0) >= 0 ? '#059669' : '#dc2626', fontWeight: 700 }}>{Number(ca.cv ?? 0) >= 0 ? '+' : ''}{Number(ca.cv ?? 0).toLocaleString()}</span> },
+        { id: "cpi", header: "CPI", width: "80px", cell: (ca: any) => <span style={{ color: kpiC(Number(ca.cpi ?? 1)), fontWeight: 700 }}>{Number(ca.cpi ?? 0).toFixed(2)}</span> },
+        { id: "spi", header: "SPI", width: "80px", cell: (ca: any) => <span style={{ color: kpiC(Number(ca.spi ?? 1)), fontWeight: 700 }}>{Number(ca.spi ?? 0).toFixed(2)}</span> }
+    ];
 
     return (
         <div style={{ padding: 24, maxWidth: 1400, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
@@ -121,32 +150,19 @@ export default function CPQDashboard() {
                             <strong>⚠️ {upcoming.length} contract(s)</strong> renewing within 30 days
                         </div>
                     )}
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)' }}>
-                        <thead><tr style={{ background: '#f9fafb' }}>
-                            {['Contract', 'Customer', 'Renewal Date', 'Days', 'MRR', 'Auto-Renew', 'Status', ''].map(h => <th key={h} style={{ padding: '9px 10px', textAlign: 'left', fontWeight: 700, borderBottom: '2px solid #e5e7eb' }}>{h}</th>)}
-                        </tr></thead>
-                        <tbody>
-                            {renewals.map(ren => {
-                                const days = Number(ren.days_until_renewal);
-                                const clr = STATUS_CLR[ren.status] ?? '#6b7280';
-                                return (
-                                    <tr key={ren.id} style={{ borderBottom: '1px solid #f3f4f6', background: days <= 7 ? '#fefce8' : undefined }}>
-                                        <td style={{ padding: '7px 10px', fontWeight: 600 }}>{ren.contract_number}</td>
-                                        <td style={{ padding: '7px 10px' }}>{ren.customer_id}</td>
-                                        <td style={{ padding: '7px 10px' }}>{ren.renewal_date}</td>
-                                        <td style={{ padding: '7px 10px', color: days <= 7 ? '#dc2626' : days <= 14 ? '#d97706' : '#059669', fontWeight: 700 }}>{days}d</td>
-                                        <td style={{ padding: '7px 10px', fontFamily: 'monospace' }}>${Number(ren.mrr ?? 0).toLocaleString()}</td>
-                                        <td style={{ padding: '7px 10px' }}><span style={{ fontSize: 9, padding: '2px 5px', borderRadius: 3, background: ren.auto_renew ? '#d1fae5' : '#f3f4f6', color: ren.auto_renew ? '#059669' : '#9ca3af' }}>{ren.auto_renew ? 'AUTO' : 'MANUAL'}</span></td>
-                                        <td style={{ padding: '7px 10px' }}><span style={{ fontSize: 9, padding: '2px 5px', borderRadius: 3, background: clr + '18', color: clr }}>{ren.status}</span></td>
-                                        <td style={{ padding: '7px 10px' }}>
-                                            {ren.status === 'Pending' && <button onClick={() => renewMut.mutate(ren.id)} style={{ padding: '3px 8px', background: '#059669', color: '#fff', border: 'none', borderRadius: 5, fontSize: 9, cursor: 'pointer', fontWeight: 700 }}>Renew</button>}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                            {renewals.length === 0 && <tr><td colSpan={8} style={{ padding: 24, textAlign: 'center', color: '#9ca3af' }}>No pending renewals</td></tr>}
-                        </tbody>
-                    </table>
+                    <div style={{ background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)', border: '1px solid #e5e7eb' }}>
+                        {renewals.length > 0 ? (
+                            <InteractiveSpreadsheet
+                                data={renewals}
+                                columns={renewalColumns}
+                                virtualized={true}
+                                containerHeight="500px"
+                                onChange={() => { }}
+                            />
+                        ) : (
+                            <div style={{ padding: 24, textAlign: 'center', color: '#9ca3af' }}>No pending renewals</div>
+                        )}
+                    </div>
                 </div>
             )}
 
@@ -166,30 +182,15 @@ export default function CPQDashboard() {
                         )}
                     </div>
                     {evmMetrics && (
-                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)' }}>
-                            <thead><tr style={{ background: '#f9fafb' }}>
-                                {['WBS', 'Description', 'PV', 'EV', 'AC', 'SV', 'CV', 'CPI', 'SPI'].map(h => <th key={h} style={{ padding: '9px 10px', textAlign: 'left', fontWeight: 700, borderBottom: '2px solid #e5e7eb' }}>{h}</th>)}
-                            </tr></thead>
-                            <tbody>
-                                {evmMetrics.controlAccounts.map((ca, i) => {
-                                    const svClr = Number(ca.sv ?? 0) >= 0 ? '#059669' : '#dc2626';
-                                    const cvClr = Number(ca.cv ?? 0) >= 0 ? '#059669' : '#dc2626';
-                                    return (
-                                        <tr key={i} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                                            <td style={{ padding: '7px 10px', fontFamily: 'monospace', fontSize: 10, fontWeight: 600 }}>{ca.wbs_code}</td>
-                                            <td style={{ padding: '7px 10px', color: '#6b7280' }}>{ca.description ?? '—'}</td>
-                                            <td style={{ padding: '7px 10px', fontFamily: 'monospace' }}>${Number(ca.pv ?? 0).toLocaleString()}</td>
-                                            <td style={{ padding: '7px 10px', fontFamily: 'monospace' }}>${Number(ca.ev ?? 0).toLocaleString()}</td>
-                                            <td style={{ padding: '7px 10px', fontFamily: 'monospace' }}>${Number(ca.ac ?? 0).toLocaleString()}</td>
-                                            <td style={{ padding: '7px 10px', fontFamily: 'monospace', color: svClr, fontWeight: 700 }}>{Number(ca.sv ?? 0) >= 0 ? '+' : ''}{Number(ca.sv ?? 0).toLocaleString()}</td>
-                                            <td style={{ padding: '7px 10px', fontFamily: 'monospace', color: cvClr, fontWeight: 700 }}>{Number(ca.cv ?? 0) >= 0 ? '+' : ''}{Number(ca.cv ?? 0).toLocaleString()}</td>
-                                            <td style={{ padding: '7px 10px', color: kpiC(Number(ca.cpi ?? 1)), fontWeight: 700 }}>{Number(ca.cpi ?? 0).toFixed(2)}</td>
-                                            <td style={{ padding: '7px 10px', color: kpiC(Number(ca.spi ?? 1)), fontWeight: 700 }}>{Number(ca.spi ?? 0).toFixed(2)}</td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
+                        <div style={{ background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)', border: '1px solid #e5e7eb' }}>
+                            <InteractiveSpreadsheet
+                                data={evmMetrics.controlAccounts}
+                                columns={evmColumns}
+                                virtualized={true}
+                                containerHeight="500px"
+                                onChange={() => { }}
+                            />
+                        </div>
                     )}
                     {!evmBaseline && <div style={{ textAlign: 'center', color: '#9ca3af', padding: 32, background: '#fff', borderRadius: 10 }}>Enter a Baseline ID to view EVM metrics</div>}
                 </div>

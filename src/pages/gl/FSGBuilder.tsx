@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function FSGBuilder() {
     const { toast } = useToast();
@@ -139,6 +140,18 @@ export default function FSGBuilder() {
             setNewCol({ columnNumber: newCol.columnNumber + 10, header: "", type: "AMOUNT", amountType: "PTD" });
         }
     });
+
+    const rowColumns: SpreadsheetColumn<any>[] = [
+        { id: "rowNumber", header: "Seq", width: "100px", cell: (row) => <span className="font-mono">{row.rowNumber}</span> },
+        { id: "description", header: "Description", width: "300px", cell: (row) => <span className="font-medium">{row.description}</span> },
+        { id: "rowType", header: "Type", width: "150px", cell: (row) => row.rowType }
+    ];
+
+    const colColumns: SpreadsheetColumn<any>[] = [
+        { id: "columnNumber", header: "Seq", width: "100px", cell: (row) => <span className="font-mono">{row.columnNumber}</span> },
+        { id: "header", header: "Header", width: "300px", cell: (row) => <span className="font-medium">{row.columnHeader || row.header}</span> },
+        { id: "type", header: "Type", width: "150px", cell: (row) => row.type === 'AMOUNT' ? row.amountType : row.type }
+    ];
 
     return (
         <StandardPage
@@ -292,28 +305,16 @@ export default function FSGBuilder() {
                                         </div>
 
                                         {/* Rows Table */}
-                                        <div className="overflow-auto max-h-[500px]">
-                                            <table className="w-full text-sm">
-                                                <thead className="bg-muted text-muted-foreground">
-                                                    <tr>
-                                                        <th className="p-2 text-left w-16">Seq</th>
-                                                        <th className="p-2 text-left">Description</th>
-                                                        <th className="p-2 text-left w-24">Type</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {activeRows?.map(row => (
-                                                        <tr key={row.id} className="border-b hover:bg-muted/5">
-                                                            <td className="p-2 font-mono text-xs">{row.rowNumber}</td>
-                                                            <td className="p-2 font-medium">{row.description}</td>
-                                                            <td className="p-2 text-xs">{row.rowType}</td>
-                                                        </tr>
-                                                    ))}
-                                                    {!activeRows?.length && (
-                                                        <tr><td colSpan={3} className="p-8 text-center text-muted-foreground">No rows defined in this set.</td></tr>
-                                                    )}
-                                                </tbody>
-                                            </table>
+                                        <div style={{ minHeight: '300px', height: '100%', borderTop: '1px solid #e5e7eb' }}>
+                                            <InteractiveSpreadsheet
+                                                columns={rowColumns}
+                                                data={activeRows || []}
+                                                onChange={() => { }}
+                                                containerHeight="400px"
+                                            />
+                                            {!activeRows?.length && (
+                                                <div className="p-8 text-center text-muted-foreground border-t">No rows defined in this set.</div>
+                                            )}
                                         </div>
                                     </CardContent>
                                 </Card>
@@ -415,28 +416,16 @@ export default function FSGBuilder() {
                                         </div>
 
                                         {/* Cols Table */}
-                                        <div className="overflow-auto max-h-[500px]">
-                                            <table className="w-full text-sm">
-                                                <thead className="bg-muted text-muted-foreground">
-                                                    <tr>
-                                                        <th className="p-2 text-left w-16">Seq</th>
-                                                        <th className="p-2 text-left">Header</th>
-                                                        <th className="p-2 text-left w-24">Type</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {activeCols?.map(col => (
-                                                        <tr key={col.id} className="border-b hover:bg-muted/5">
-                                                            <td className="p-2 font-mono text-xs">{col.columnNumber}</td>
-                                                            <td className="p-2 font-medium">{col.columnHeader || col.header}</td>
-                                                            <td className="p-2 text-xs">{col.type === 'AMOUNT' ? col.amountType : col.type}</td>
-                                                        </tr>
-                                                    ))}
-                                                    {!activeCols?.length && (
-                                                        <tr><td colSpan={3} className="p-8 text-center text-muted-foreground">No columns defined in this set.</td></tr>
-                                                    )}
-                                                </tbody>
-                                            </table>
+                                        <div style={{ minHeight: '300px', height: '100%', borderTop: '1px solid #e5e7eb' }}>
+                                            <InteractiveSpreadsheet
+                                                columns={colColumns}
+                                                data={activeCols || []}
+                                                onChange={() => { }}
+                                                containerHeight="400px"
+                                            />
+                                            {!activeCols?.length && (
+                                                <div className="p-8 text-center text-muted-foreground border-t">No columns defined in this set.</div>
+                                            )}
                                         </div>
                                     </CardContent>
                                 </Card>

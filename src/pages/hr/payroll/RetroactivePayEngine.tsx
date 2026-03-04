@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import {
     History,
     RefreshCw,
@@ -32,6 +33,23 @@ export default function RetroactivePayEngine() {
             });
         }, 2000);
     };
+
+    const VARIANCES_1 = [
+        { id: 'v1', period: 'Feb 01 - Feb 15', element: 'Regular Salary', original: '$4,000.00', recalculated: '$4,625.00', variance: '+$625.00', varClass: 'text-teal-600' },
+        { id: 'v2', period: 'Feb 16 - Feb 28', element: 'Regular Salary', original: '$4,000.00', recalculated: '$4,625.00', variance: '+$625.00', varClass: 'text-teal-600' },
+    ];
+
+    const VARIANCES_2 = [
+        { id: 'v1', period: 'Feb 16 - Feb 28', element: 'FSA Deduction', original: '$0.00', recalculated: '-$120.00', variance: '-$120.00', varClass: 'text-amber-600' },
+    ];
+
+    const varColumns: SpreadsheetColumn<any>[] = [
+        { id: "period", header: "Period", width: "150px", cell: (row) => <span className="font-medium">{row.period}</span> },
+        { id: "element", header: "Element", width: "200px", cell: (row) => row.element },
+        { id: "original", header: "Original Value", width: "150px", cell: (row) => <div className="text-right w-full text-zinc-500">{row.original}</div> },
+        { id: "recalculated", header: "Recalculated", width: "150px", cell: (row) => <div className="text-right w-full text-zinc-500">{row.recalculated}</div> },
+        { id: "variance", header: "Variance", width: "150px", cell: (row) => <div className={`text-right w-full font-semibold ${row.varClass}`}>{row.variance}</div> }
+    ];
 
     return (
         <StandardPage
@@ -126,34 +144,13 @@ export default function RetroactivePayEngine() {
                                     <p className="text-lg font-black text-red-600 mt-1">+$1,250.00</p>
                                 </div>
                             </div>
-                            <CardContent className="p-0">
-                                <table className="w-full text-sm">
-                                    <thead className="bg-muted/20 text-xs uppercase tracking-wider text-muted-foreground">
-                                        <tr>
-                                            <th className="px-4 py-2 text-left">Period</th>
-                                            <th className="px-4 py-2 text-left">Element</th>
-                                            <th className="px-4 py-2 text-right">Original Value</th>
-                                            <th className="px-4 py-2 text-right">Recalculated</th>
-                                            <th className="px-4 py-2 text-right font-bold">Variance</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
-                                        <tr>
-                                            <td className="px-4 py-3 font-medium">Feb 01 - Feb 15</td>
-                                            <td className="px-4 py-3">Regular Salary</td>
-                                            <td className="px-4 py-3 text-right text-zinc-500">$4,000.00</td>
-                                            <td className="px-4 py-3 text-right text-zinc-500">$4,625.00</td>
-                                            <td className="px-4 py-3 text-right text-teal-600 font-semibold">+$625.00</td>
-                                        </tr>
-                                        <tr>
-                                            <td className="px-4 py-3 font-medium">Feb 16 - Feb 28</td>
-                                            <td className="px-4 py-3">Regular Salary</td>
-                                            <td className="px-4 py-3 text-right text-zinc-500">$4,000.00</td>
-                                            <td className="px-4 py-3 text-right text-zinc-500">$4,625.00</td>
-                                            <td className="px-4 py-3 text-right text-teal-600 font-semibold">+$625.00</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <CardContent className="p-0 border-t">
+                                <InteractiveSpreadsheet
+                                    columns={varColumns}
+                                    data={VARIANCES_1}
+                                    onChange={() => { }}
+                                    containerHeight="120px"
+                                />
                             </CardContent>
                         </Card>
 
@@ -169,27 +166,13 @@ export default function RetroactivePayEngine() {
                                     <p className="text-lg font-black text-amber-600 mt-1">-$120.00</p>
                                 </div>
                             </div>
-                            <CardContent className="p-0">
-                                <table className="w-full text-sm">
-                                    <thead className="bg-muted/20 text-xs uppercase tracking-wider text-muted-foreground">
-                                        <tr>
-                                            <th className="px-4 py-2 text-left">Period</th>
-                                            <th className="px-4 py-2 text-left">Element</th>
-                                            <th className="px-4 py-2 text-right">Original Value</th>
-                                            <th className="px-4 py-2 text-right">Recalculated</th>
-                                            <th className="px-4 py-2 text-right font-bold">Variance</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
-                                        <tr>
-                                            <td className="px-4 py-3 font-medium">Feb 16 - Feb 28</td>
-                                            <td className="px-4 py-3">FSA Deduction</td>
-                                            <td className="px-4 py-3 text-right text-zinc-500">$0.00</td>
-                                            <td className="px-4 py-3 text-right text-zinc-500">-$120.00</td>
-                                            <td className="px-4 py-3 text-right text-amber-600 font-semibold">-$120.00</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <CardContent className="p-0 border-t">
+                                <InteractiveSpreadsheet
+                                    columns={varColumns}
+                                    data={VARIANCES_2}
+                                    onChange={() => { }}
+                                    containerHeight="80px"
+                                />
                             </CardContent>
                         </Card>
 

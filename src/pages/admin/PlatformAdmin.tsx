@@ -48,6 +48,7 @@ import {
   Brain,
   Sparkles,
 } from "lucide-react";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { Partner } from "@/types/erp-types";
@@ -140,6 +141,82 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
   const handleChangeTier = (partner: Partner, newTier: Partner["tier"]) => {
     updatePartnerMutation.mutate({ id: partner.id, data: { tier: newTier } });
   };
+
+  const partnerColumns: SpreadsheetColumn[] = [
+    {
+      id: "partner", header: "Partner", width: 200, cell: (item) => (
+        <div>
+          <p className="font-medium text-sm">{item.name}</p>
+          <p className="text-xs text-muted-foreground">{item.company}</p>
+        </div>
+      )
+    },
+    {
+      id: "type", header: "Type", width: 100, cell: (item) => (
+        <Badge variant="secondary" className="text-xs capitalize">
+          {item.type}
+        </Badge>
+      )
+    },
+    {
+      id: "tier", header: "Tier", width: 150, cell: (item) => {
+        const tier = tierConfig[(item.tier as keyof typeof tierConfig) || "silver"];
+        return (
+          <Select
+            value={item.tier || "silver"}
+            onValueChange={(v) => handleChangeTier(item, v as Partner["tier"])}
+          >
+            <SelectTrigger className="w-28 h-8" data-testid={`select-tier-approved-${item.id}`}>
+              <Badge variant="secondary" className={`${tier.bg} ${tier.text}`}>
+                {tier.label}
+              </Badge>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="silver">Silver</SelectItem>
+              <SelectItem value="gold">Gold</SelectItem>
+              <SelectItem value="platinum">Platinum</SelectItem>
+              <SelectItem value="diamond">Diamond</SelectItem>
+            </SelectContent>
+          </Select>
+        );
+      }
+    },
+    {
+      id: "status", header: "Status", width: 100, cell: (item) => (
+        <Switch
+          checked={item.isActive || false}
+          onCheckedChange={() => handleToggleActive(item)}
+          data-testid={`switch-active-${item.id}`}
+        />
+      )
+    },
+    { id: "joined", header: "Joined", width: 120, cell: (item) => <span className="text-xs text-muted-foreground">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A'}</span> },
+    {
+      id: "actions", header: "Actions", width: 120, cell: (item) => (
+        <div className="flex items-center justify-end gap-1 pr-2 w-full">
+          {item.website && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => window.open(item.website!, '_blank')}
+              data-testid={`button-website-${item.id}`}
+            >
+              <ExternalLink className="h-4 w-4" />
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handleReject(item)}
+            disabled={deletePartnerMutation.isPending}
+            data-testid={`button-delete-${item.id}`}
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      )
+    }
+  ];
 
   if (isLoading) {
     return (
@@ -280,94 +357,13 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
               <p className="text-sm">No partners found</p>
             </div>
           ) : (
-            <div className="border rounded-lg overflow-hidden">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b bg-muted/50">
-                    <th className="px-4 py-2 text-left font-medium">Partner</th>
-                    <th className="px-4 py-2 text-left font-medium">Type</th>
-                    <th className="px-4 py-2 text-left font-medium">Tier</th>
-                    <th className="px-4 py-2 text-left font-medium">Status</th>
-                    <th className="px-4 py-2 text-left font-medium">Joined</th>
-                    <th className="px-4 py-2 text-right font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredApprovedPartners.map((partner) => {
-                    const tier = tierConfig[(partner.tier as keyof typeof tierConfig) || "silver"];
-                    return (
-                      <tr
-                        key={partner.id}
-                        className="border-b hover:bg-muted/50"
-                        data-testid={`row-partner-${partner.id}`}
-                      >
-                        <td className="px-4 py-3">
-                          <div>
-                            <p className="font-medium">{partner.name}</p>
-                            <p className="text-xs text-muted-foreground">{partner.company}</p>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <Badge variant="secondary" className="text-xs capitalize">
-                            {partner.type}
-                          </Badge>
-                        </td>
-                        <td className="px-4 py-3">
-                          <Select
-                            value={partner.tier || "silver"}
-                            onValueChange={(v) => handleChangeTier(partner, v as Partner["tier"])}
-                          >
-                            <SelectTrigger className="w-28 h-8" data-testid={`select-tier-approved-${partner.id}`}>
-                              <Badge variant="secondary" className={`${tier.bg} ${tier.text}`}>
-                                {tier.label}
-                              </Badge>
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="silver">Silver</SelectItem>
-                              <SelectItem value="gold">Gold</SelectItem>
-                              <SelectItem value="platinum">Platinum</SelectItem>
-                              <SelectItem value="diamond">Diamond</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </td>
-                        <td className="px-4 py-3">
-                          <Switch
-                            checked={partner.isActive || false}
-                            onCheckedChange={() => handleToggleActive(partner)}
-                            data-testid={`switch-active-${partner.id}`}
-                          />
-                        </td>
-                        <td className="px-4 py-3 text-xs text-muted-foreground">
-                          {partner.createdAt ? new Date(partner.createdAt).toLocaleDateString() : 'N/A'}
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center justify-end gap-1">
-                            {partner.website && (
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => window.open(partner.website!, '_blank')}
-                                data-testid={`button-website-${partner.id}`}
-                              >
-                                <ExternalLink className="h-4 w-4" />
-                              </Button>
-                            )}
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleReject(partner)}
-                              disabled={deletePartnerMutation.isPending}
-                              data-testid={`button-delete-${partner.id}`}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+            <div style={{ height: '400px' }}>
+              <InteractiveSpreadsheet
+                columns={partnerColumns}
+                data={filteredApprovedPartners}
+                onChange={() => { }}
+                containerHeight="400px"
+              />
             </div>
           )}
         </CardContent>
@@ -473,6 +469,78 @@ export default function PlatformAdmin() {
     trial: { bg: "bg-blue-500/10", text: "text-blue-600", label: "Trial" },
     inactive: { bg: "bg-red-500/10", text: "text-red-600", label: "Inactive" },
   };
+
+  const tenantColumns: SpreadsheetColumn[] = [
+    {
+      id: "tenant", header: "Tenant", width: 250, cell: (item) => (
+        <div>
+          <p className="font-medium text-sm">{item.name}</p>
+          <p className="text-xs text-muted-foreground">{item.company}</p>
+        </div>
+      )
+    },
+    {
+      id: "status", header: "Status", width: 120, cell: (item) => {
+        const statusCfg = statusConfig[item.status as keyof typeof statusConfig];
+        return <Badge variant="secondary" className={`${statusCfg?.bg} ${statusCfg?.text}`}>{statusCfg?.label}</Badge>;
+      }
+    },
+    { id: "plan", header: "Plan", width: 120, cell: (item) => <span className="text-xs capitalize">{item.plan}</span> },
+    { id: "users", header: "Users", width: 100, cell: (item) => <span className="font-mono">{item.users}</span> },
+    { id: "aiCredits", header: "AI Credits", width: 120, cell: (item) => <span className="font-mono">{item.aiCreditsUsed.toLocaleString()}</span> },
+    { id: "created", header: "Created", width: 120, cell: (item) => <span className="text-xs">{item.createdAt}</span> },
+    {
+      id: "actions", header: "Actions", width: 100, cell: (item) => (
+        <div className="flex justify-end pr-2 w-full">
+          <Button variant="ghost" size="icon" data-testid={`button-tenant-actions-${item.id}`}>
+            <MoreVertical className="h-4 w-4" />
+          </Button>
+        </div>
+      )
+    }
+  ];
+
+  const adminUserColumns: SpreadsheetColumn[] = [
+    {
+      id: "user", header: "User", width: 250, cell: (item) => (
+        <div>
+          <p className="font-medium text-sm">{item.name}</p>
+          <p className="text-xs text-muted-foreground">{item.email}</p>
+        </div>
+      )
+    },
+    { id: "tenant", header: "Tenant", width: 200, cell: (item) => <span className="text-sm">{item.tenant}</span> },
+    { id: "role", header: "Role", width: 120, cell: (item) => <Badge variant="secondary">{item.role}</Badge> },
+    { id: "lastLogin", header: "Last Login", width: 120, cell: (item) => <span className="text-xs text-muted-foreground">{item.lastLogin}</span> },
+    {
+      id: "actions", header: "Actions", width: 100, cell: () => (
+        <div className="flex justify-end pr-2 w-full">
+          <Button variant="ghost" size="icon"><Edit className="h-4 w-4" /></Button>
+        </div>
+      )
+    }
+  ];
+
+  const contractColumns: SpreadsheetColumn[] = [
+    { id: "client", header: "Client", width: 200, cell: (item) => <span className="font-medium text-sm">{item.client}</span> },
+    { id: "serviceType", header: "Service Type", width: 200, cell: (item) => <span className="text-sm">{item.service}</span> },
+    { id: "value", header: "Value", width: 120, cell: (item) => <span className="font-mono text-sm">{item.value}</span> },
+    {
+      id: "status", header: "Status", width: 120, cell: (item) => (
+        <Badge variant="secondary" className={item.status === "Active" ? "bg-green-500/10 text-green-600" : "bg-blue-500/10 text-blue-600"}>
+          {item.status}
+        </Badge>
+      )
+    },
+    { id: "renewal", header: "Renewal", width: 120, cell: (item) => <span className="text-xs">{item.renewal}</span> },
+    {
+      id: "actions", header: "Actions", width: 100, cell: () => (
+        <div className="flex justify-end pr-2 w-full">
+          <Button variant="ghost" size="icon"><Edit className="h-4 w-4" /></Button>
+        </div>
+      )
+    }
+  ];
 
   return (
     <div className="space-y-6">
@@ -586,49 +654,13 @@ export default function PlatformAdmin() {
             </Button>
           </div>
 
-          <div className="border rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b bg-muted/50">
-                  <th className="px-4 py-2 text-left font-medium">Tenant</th>
-                  <th className="px-4 py-2 text-left font-medium">Status</th>
-                  <th className="px-4 py-2 text-left font-medium">Plan</th>
-                  <th className="px-4 py-2 text-left font-medium">Users</th>
-                  <th className="px-4 py-2 text-left font-medium">AI Credits</th>
-                  <th className="px-4 py-2 text-left font-medium">Created</th>
-                  <th className="px-4 py-2 text-right font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {tenants.map((tenant) => {
-                  const statusCfg = statusConfig[tenant.status];
-                  return (
-                    <tr key={tenant.id} className="border-b hover:bg-muted/50" data-testid={`row-tenant-${tenant.id}`}>
-                      <td className="px-4 py-3">
-                        <div>
-                          <p className="font-medium">{tenant.name}</p>
-                          <p className="text-xs text-muted-foreground">{tenant.company}</p>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <Badge variant="secondary" className={`${statusCfg.bg} ${statusCfg.text}`}>
-                          {statusCfg.label}
-                        </Badge>
-                      </td>
-                      <td className="px-4 py-3 text-xs capitalize">{tenant.plan}</td>
-                      <td className="px-4 py-3 font-mono">{tenant.users}</td>
-                      <td className="px-4 py-3 font-mono">{tenant.aiCreditsUsed.toLocaleString()}</td>
-                      <td className="px-4 py-3 text-xs">{tenant.createdAt}</td>
-                      <td className="px-4 py-3 text-right">
-                        <Button variant="ghost" size="icon" data-testid={`button-tenant-actions-${tenant.id}`}>
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          <div style={{ height: '400px' }}>
+            <InteractiveSpreadsheet
+              columns={tenantColumns}
+              data={tenants}
+              onChange={() => { }}
+              containerHeight="400px"
+            />
           </div>
         </div>
       )}
@@ -663,45 +695,20 @@ export default function PlatformAdmin() {
                 <CardDescription>Users with full admin access to their tenant</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="border rounded-lg overflow-hidden">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b bg-muted/50">
-                        <th className="px-4 py-2 text-left font-medium">User</th>
-                        <th className="px-4 py-2 text-left font-medium">Tenant</th>
-                        <th className="px-4 py-2 text-left font-medium">Role</th>
-                        <th className="px-4 py-2 text-left font-medium">Last Login</th>
-                        <th className="px-4 py-2 text-right font-medium">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {tenants.slice(0, 10).map((t: any, i) => ({
-                        name: `Admin (${t.name})`,
-                        email: `admin@${t.slug ?? 'unknown'}.com`,
-                        tenant: t.name ?? '—',
-                        role: 'Admin',
-                        lastLogin: '—',
-                      })).map((user, i) => (
-
-                        <tr key={i} className="border-b hover:bg-muted/50">
-                          <td className="px-4 py-3">
-                            <div>
-                              <p className="font-medium">{user.name}</p>
-                              <p className="text-xs text-muted-foreground">{user.email}</p>
-                            </div>
-                          </td>
-                          <td className="px-4 py-3 text-sm">{user.tenant}</td>
-                          <td className="px-4 py-3">
-                            <Badge variant="secondary">{user.role}</Badge>
-                          </td>
-                          <td className="px-4 py-3 text-xs text-muted-foreground">{user.lastLogin}</td>
-                          <td className="px-4 py-3 text-right">
-                            <Button variant="ghost" size="icon"><Edit className="h-4 w-4" /></Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div style={{ height: '350px' }}>
+                  <InteractiveSpreadsheet
+                    columns={adminUserColumns}
+                    data={tenants.slice(0, 10).map((t: any, i) => ({
+                      id: `admin-${i}`,
+                      name: `Admin (${t.name})`,
+                      email: `admin@${t.slug ?? 'unknown'}.com`,
+                      tenant: t.name ?? '—',
+                      role: 'Admin',
+                      lastLogin: '—',
+                    }))}
+                    onChange={() => { }}
+                    containerHeight="350px"
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -963,41 +970,17 @@ export default function PlatformAdmin() {
               <CardDescription>Active implementation and support contracts</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="border rounded-lg overflow-hidden">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b bg-muted/50">
-                      <th className="px-4 py-2 text-left font-medium">Client</th>
-                      <th className="px-4 py-2 text-left font-medium">Service Type</th>
-                      <th className="px-4 py-2 text-left font-medium">Value</th>
-                      <th className="px-4 py-2 text-left font-medium">Status</th>
-                      <th className="px-4 py-2 text-left font-medium">Renewal</th>
-                      <th className="px-4 py-2 text-right font-medium">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[
-                      { client: "Acme Corp", service: "Implementation + Support", value: "$125,000", status: "Active", renewal: "2025-06-15" },
-                      { client: "TechStart Inc", service: "Annual Support", value: "$24,000", status: "Active", renewal: "2025-03-20" },
-                      { client: "Global Solutions", service: "Training Package", value: "$8,500", status: "In Progress", renewal: "N/A" },
-                    ].map((contract, i) => (
-                      <tr key={i} className="border-b hover:bg-muted/50">
-                        <td className="px-4 py-3 font-medium">{contract.client}</td>
-                        <td className="px-4 py-3">{contract.service}</td>
-                        <td className="px-4 py-3 font-mono">{contract.value}</td>
-                        <td className="px-4 py-3">
-                          <Badge variant="secondary" className={contract.status === "Active" ? "bg-green-500/10 text-green-600" : "bg-blue-500/10 text-blue-600"}>
-                            {contract.status}
-                          </Badge>
-                        </td>
-                        <td className="px-4 py-3 text-xs">{contract.renewal}</td>
-                        <td className="px-4 py-3 text-right">
-                          <Button variant="ghost" size="icon"><Edit className="h-4 w-4" /></Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div style={{ height: '300px' }}>
+                <InteractiveSpreadsheet
+                  columns={contractColumns}
+                  data={[
+                    { id: "1", client: "Acme Corp", service: "Implementation + Support", value: "$125,000", status: "Active", renewal: "2025-06-15" },
+                    { id: "2", client: "TechStart Inc", service: "Annual Support", value: "$24,000", status: "Active", renewal: "2025-03-20" },
+                    { id: "3", client: "Global Solutions", service: "Training Package", value: "$8,500", status: "In Progress", renewal: "N/A" },
+                  ]}
+                  onChange={() => { }}
+                  containerHeight="300px"
+                />
               </div>
             </CardContent>
           </Card>

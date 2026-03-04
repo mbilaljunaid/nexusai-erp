@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Download, LayoutDashboard, FileText, Table2, TrendingUp, Percent, Users, ShoppingCart } from "lucide-react";
 import { IconNavigation } from "@/components/IconNavigation";
 import { useQuery } from "@tanstack/react-query";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function Analytics() {
   const [activeNav, setActiveNav] = useState("dashboard");
@@ -58,6 +59,25 @@ export default function Analytics() {
   ];
 
   const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
+
+  const analyticsColumns: SpreadsheetColumn<any>[] = [
+    { id: "month", header: "Month", width: "100px", cell: (row) => <span>{row.month}</span> },
+    { id: "revenue", header: "Revenue", width: "120px", cell: (row) => <span className="text-right block">${row.revenue.toLocaleString()}</span> },
+    { id: "expenses", header: "Expenses", width: "120px", cell: (row) => <span className="text-right block">${row.expenses.toLocaleString()}</span> },
+    {
+      id: "profit", header: "Profit", width: "120px", cell: (row) => {
+        const profit = row.revenue - row.expenses;
+        return <span className="text-right block font-semibold">${profit.toLocaleString()}</span>;
+      }
+    },
+    {
+      id: "margin", header: "Margin %", width: "100px", cell: (row) => {
+        const profit = row.revenue - row.expenses;
+        const margin = ((profit / row.revenue) * 100).toFixed(1);
+        return <span className="text-right block">{margin}%</span>;
+      }
+    }
+  ];
 
   return (
     <StandardPage
@@ -234,32 +254,14 @@ export default function Analytics() {
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm" data-testid="table-analytics-data">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-2 font-semibold">Month</th>
-                      <th className="text-right p-2 font-semibold">Revenue</th>
-                      <th className="text-right p-2 font-semibold">Expenses</th>
-                      <th className="text-right p-2 font-semibold">Profit</th>
-                      <th className="text-right p-2 font-semibold">Margin %</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dashboardData.map((row: any, idx: number) => {
-                      const profit = row.revenue - row.expenses;
-                      const margin = ((profit / row.revenue) * 100).toFixed(1);
-                      return (
-                        <tr key={idx} className="border-b hover:bg-gray-50" data-testid={`row-${row.month}`}>
-                          <td className="p-2">{row.month}</td>
-                          <td className="text-right p-2">${row.revenue.toLocaleString()}</td>
-                          <td className="text-right p-2">${row.expenses.toLocaleString()}</td>
-                          <td className="text-right p-2 font-semibold">${profit.toLocaleString()}</td>
-                          <td className="text-right p-2">{margin}%</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                <div style={{ minHeight: '300px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 12 }}>
+                  <InteractiveSpreadsheet
+                    columns={analyticsColumns}
+                    data={dashboardData}
+                    onChange={() => { }}
+                    containerHeight="400px"
+                  />
+                </div>
               </div>
               <div className="mt-4 p-3 bg-blue-50 rounded">
                 <p className="text-sm text-blue-900">

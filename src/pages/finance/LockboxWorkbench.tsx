@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { UploadCloud, CheckCircle2, AlertCircle, Search, Link2, X } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface LockboxBatch {
     id: string;
@@ -140,6 +141,17 @@ export default function LockboxWorkbench() {
     const matched = safeItems.filter(i => i.match_status === 'Matched').length;
     const unmatched = safeItems.filter(i => i.match_status === 'Unmatched').length;
 
+    const itemColumns: SpreadsheetColumn<LockboxItem>[] = [
+        { id: "check_number", header: "Check #", width: "120px", cell: (row) => <div className="mono">{row.check_number ?? '—'}</div> },
+        { id: "remittance_ref", header: "Remit Ref", width: "120px", cell: (row) => <div className="mono">{row.remittance_ref ?? '—'}</div> },
+        { id: "payer_name", header: "Payer", width: "1fr", cell: (row) => row.payer_name ?? '—' },
+        { id: "amount", header: "Amount", width: "120px", cell: (row) => <div className="mono">{fmt(row.amount)}</div> },
+        { id: "method", header: "Method", width: "100px", cell: (row) => <div>{row.match_method ? <span className="method-tag">{row.match_method}</span> : <span className="grey">—</span>}</div> },
+        { id: "status", header: "Status", width: "120px", cell: (row) => <div>{row.match_status === 'Matched' ? <span className="status-green"><CheckCircle2 size={11} /> Matched</span> : <span className="status-orange"><AlertCircle size={11} /> {row.match_status}</span>}</div> },
+        { id: "unapplied", header: "Unapplied", width: "120px", cell: (row) => <div className={`mono ${row.unapplied_amount > 0 ? 'red' : 'grey'}`}>{row.unapplied_amount > 0 ? fmt(row.unapplied_amount) : '—'}</div> },
+        { id: "action", header: "Action", width: "80px", cell: (row) => <div>{row.match_status !== 'Matched' && row.unapplied_amount > 0 && <button className="btn-match-action" onClick={() => setMatchingItem(row)}>Match</button>}</div> }
+    ];
+
     return (
         <StandardPage
             title="Lockbox Workbench"
@@ -239,42 +251,14 @@ export default function LockboxWorkbench() {
                                     className="filter-search-input"
                                 />
                             </div>
-                            <table className="item-table">
-                                <thead><tr><th>Check #</th><th>Remit Ref</th><th>Payer</th><th>Amount</th><th>Method</th><th>Status</th><th>Unapplied</th><th>Action</th></tr></thead>
-                                <tbody>
-                                    {filteredItems.map(item => {
-                                        const isMatched = item.match_status === 'Matched';
-                                        return (
-                                            <tr key={item.id} className="item-row">
-                                                <td className="mono">{item.check_number ?? '—'}</td>
-                                                <td className="mono">{item.remittance_ref ?? '—'}</td>
-                                                <td>{item.payer_name ?? '—'}</td>
-                                                <td className="mono">{fmt(item.amount)}</td>
-                                                <td>{item.match_method ? <span className="method-tag">{item.match_method}</span> : <span className="grey">—</span>}</td>
-                                                <td>
-                                                    {isMatched
-                                                        ? <span className="status-green"><CheckCircle2 size={11} /> Matched</span>
-                                                        : <span className="status-orange"><AlertCircle size={11} /> {item.match_status}</span>}
-                                                </td>
-                                                <td className={`mono ${item.unapplied_amount > 0 ? 'red' : 'grey'}`}>
-                                                    {item.unapplied_amount > 0 ? fmt(item.unapplied_amount) : '—'}
-                                                </td>
-                                                <td>
-                                                    {!isMatched && item.unapplied_amount > 0 && (
-                                                        <button
-                                                            className="btn-match-action"
-                                                            onClick={() => setMatchingItem(item)}
-                                                        >
-                                                            Match
-                                                        </button>
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                    {filteredItems.length === 0 && <tr><td colSpan={7} className="empty">No items</td></tr>}
-                                </tbody>
-                            </table>
+                            <div style={{ height: 400 }}>
+                                <InteractiveSpreadsheet
+                                    columns={itemColumns}
+                                    data={filteredItems}
+                                    onChange={() => { }}
+                                    containerHeight="100%"
+                                />
+                            </div>
                         </>
                     ) : (
                         <div className="no-select">

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { TrendingDown, AlertTriangle, User } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 interface RiskScore {
     id: string; employee_id: string; risk_score: number; risk_band: string;
     tenure_months: number; engagement_score: number; last_promotion_days: number;
@@ -52,6 +53,33 @@ export default function AttritionPrediction() {
 
     const totalHeadcount = distribution.reduce((s, d) => s + Number(d.count), 0);
 
+    const riskColumns: SpreadsheetColumn<any>[] = [
+        { id: "employee_id", header: "Employee", width: "150px", cell: (row) => <div style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5, width: '100%' }}><User size={12} color="#9ca3af" />{row.employee_id}</div> },
+        { id: "risk_score", header: "Risk Score", width: "150px", cell: (row) => <div className="w-full"><ScoreBar score={Number(row.risk_score)} /></div> },
+        {
+            id: "risk_band", header: "Band", width: "100px", cell: (row) => {
+                const cfg = BAND_CFG[row.risk_band] ?? BAND_CFG.LOW;
+                return <div className="w-full"><span style={{ padding: '2px 7px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: cfg.bg, color: cfg.color }}>{row.risk_band}</span></div>;
+            }
+        },
+        { id: "engagement_score", header: "Engagement", width: "100px", cell: (row) => <div className="w-full text-center" style={{ fontFamily: 'monospace', fontWeight: 700, color: Number(row.engagement_score) < 2.5 ? '#dc2626' : '#374151' }}>{Number(row.engagement_score).toFixed(1)}</div> },
+        { id: "tenure", header: "Tenure", width: "100px", cell: (row) => <span style={{ color: '#6b7280' }}>{row.tenure_months}mo</span> },
+        { id: "compa", header: "Compa", width: "100px", cell: (row) => <div className="w-full" style={{ fontFamily: 'monospace', color: Number(row.compa_ratio) < 0.9 ? '#dc2626' : '#374151' }}>{Number(row.compa_ratio).toFixed(2)}</div> },
+        {
+            id: "top_factor", header: "Top Factor", width: "200px", cell: (row) => {
+                const top = (row.top_factors as Factor[])?.[0];
+                return <span style={{ fontSize: 10, color: '#9ca3af' }}>{top?.factor ?? '—'}</span>;
+            }
+        },
+        {
+            id: "actions", header: "Actions", width: "80px", cell: (row) => (
+                <button onClick={() => setSelected(selected?.id === row.id ? null : row)} style={{ padding: '4px 8px', fontSize: 11, background: selected?.id === row.id ? '#1d4ed8' : '#e5e7eb', color: selected?.id === row.id ? '#fff' : '#374151', border: 'none', borderRadius: 4, cursor: 'pointer' }}>
+                    {selected?.id === row.id ? 'Hide' : 'Select'}
+                </button>
+            )
+        }
+    ];
+
     return (
         <StandardPage
             title="Attrition Risk Prediction"
@@ -101,29 +129,16 @@ export default function AttritionPrediction() {
                 {/* Risk table */}
                 <div style={{ flex: 1 }}>
                     {bandFilter && <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 6 }}>Showing: {BAND_CFG[bandFilter]?.label} — <button onClick={() => setBandFilter('')} style={{ background: 'none', border: 'none', color: '#1d4ed8', cursor: 'pointer', fontSize: 11 }}>Clear</button></div>}
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)' }}>
-                        <thead><tr style={{ background: '#f9fafb' }}>
-                            {['Employee', 'Risk Score', 'Band', 'Engagement', 'Tenure', 'Compa', 'Top Factor'].map(h => <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 700, color: '#374151', borderBottom: '2px solid #e5e7eb', whiteSpace: 'nowrap' }}>{h}</th>)}
-                        </tr></thead>
-                        <tbody>
-                            {highRisk.map(r => {
-                                const cfg = BAND_CFG[r.risk_band] ?? BAND_CFG.LOW;
-                                const top = (r.top_factors as Factor[])?.[0];
-                                return (
-                                    <tr key={r.id} onClick={() => setSelected(selected?.id === r.id ? null : r)} style={{ borderBottom: '1px solid #f3f4f6', cursor: 'pointer', background: selected?.id === r.id ? '#f0f9ff' : undefined }}>
-                                        <td style={{ padding: '8px 12px', fontWeight: 600 }}><div style={{ display: 'flex', alignItems: 'center', gap: 5 }}><User size={12} color="#9ca3af" />{r.employee_id}</div></td>
-                                        <td style={{ padding: '8px 12px', minWidth: 120 }}><ScoreBar score={Number(r.risk_score)} /></td>
-                                        <td style={{ padding: '8px 12px' }}><span style={{ padding: '2px 7px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: cfg.bg, color: cfg.color }}>{r.risk_band}</span></td>
-                                        <td style={{ padding: '8px 12px', textAlign: 'center' }}><span style={{ fontFamily: 'monospace', fontWeight: 700, color: Number(r.engagement_score) < 2.5 ? '#dc2626' : '#374151' }}>{Number(r.engagement_score).toFixed(1)}</span></td>
-                                        <td style={{ padding: '8px 12px', color: '#6b7280' }}>{r.tenure_months}mo</td>
-                                        <td style={{ padding: '8px 12px', fontFamily: 'monospace', color: Number(r.compa_ratio) < 0.9 ? '#dc2626' : '#374151' }}>{Number(r.compa_ratio).toFixed(2)}</td>
-                                        <td style={{ padding: '8px 12px', fontSize: 10, color: '#9ca3af' }}>{top?.factor ?? '—'}</td>
-                                    </tr>
-                                );
-                            })}
-                            {!isLoading && highRisk.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No risk scores — submit an employee to calculate</td></tr>}
-                        </tbody>
-                    </table>
+                    <div style={{ background: '#fff', borderRadius: 12, overflow: 'hidden', border: '1px solid #e5e7eb', height: '100%', minHeight: '400px' }}>
+                        <InteractiveSpreadsheet
+                            columns={riskColumns}
+                            data={highRisk}
+                            onChange={() => { }}
+                            containerHeight="500px"
+                        />
+                        {!isLoading && highRisk.length === 0 && <div style={{ textAlign: 'center', color: '#9ca3af', padding: 24, borderTop: '1px solid #e5e7eb' }}>No risk scores — submit an employee to calculate</div>}
+                        {isLoading && <div style={{ textAlign: 'center', color: '#9ca3af', padding: 24, borderTop: '1px solid #e5e7eb' }}>Loading calculations...</div>}
+                    </div>
                 </div>
 
                 {/* Detail panel */}

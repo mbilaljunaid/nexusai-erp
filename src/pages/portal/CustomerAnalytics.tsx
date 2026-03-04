@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/queryClient";
 import { TrendingUp, DollarSign, Package, FileText, Download, Calendar } from "lucide-react";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
@@ -12,6 +13,13 @@ export default function CustomerAnalytics() {
         queryKey: ["/api/portal/customer-analytics"],
         queryFn: () => apiRequest("/api/portal/customer-analytics"),
     });
+
+    const columns: SpreadsheetColumn<any>[] = [
+        { id: "orderNumber", header: "Order #", width: "150px", cell: (order: any) => <span className="font-medium">{order.orderNumber}</span> },
+        { id: "date", header: "Date", width: "150px", cell: (order: any) => <span>{new Date(order.date).toLocaleDateString()}</span> },
+        { id: "status", header: "Status", width: "150px", cell: (order: any) => <span>{order.status}</span> },
+        { id: "amount", header: "Amount", width: "150px", cell: (order: any) => <span>${order.amount.toLocaleString()}</span> }
+    ];
 
     return (
         <div className="container mx-auto p-6 space-y-6">
@@ -126,26 +134,13 @@ export default function CustomerAnalytics() {
                 </CardHeader>
                 <CardContent>
                     <div className="border rounded-lg">
-                        <table className="w-full">
-                            <thead className="bg-muted">
-                                <tr>
-                                    <th className="text-left p-3">Order #</th>
-                                    <th className="text-left p-3">Date</th>
-                                    <th className="text-left p-3">Status</th>
-                                    <th className="text-right p-3">Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {analytics?.recentOrders?.map((order: any) => (
-                                    <tr key={order.id} className="border-t">
-                                        <td className="p-3 font-medium">{order.orderNumber}</td>
-                                        <td className="p-3">{new Date(order.date).toLocaleDateString()}</td>
-                                        <td className="p-3">{order.status}</td>
-                                        <td className="p-3 text-right">${order.amount.toLocaleString()}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                        <InteractiveSpreadsheet
+                            data={analytics?.recentOrders || []}
+                            columns={columns}
+                            virtualized={true}
+                            containerHeight="300px"
+                            onChange={() => { }}
+                        />
                     </div>
                 </CardContent>
             </Card>

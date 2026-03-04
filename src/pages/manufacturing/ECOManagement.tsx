@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { GitBranch, AlertTriangle, CheckCircle2, Clock } from 'lucide-react';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface ECO {
     id: string; eco_number: string; title: string; change_type: string;
@@ -36,6 +37,30 @@ export default function ECOManagement() {
     const statusTotals = ['Draft', 'Under_Review', 'Approved', 'Released', 'Implemented', 'Cancelled'].map(s => ({
         status: s, count: summary.filter(x => x.status === s).reduce((a, b) => a + Number(b.count), 0)
     }));
+
+    const ecoColumns: SpreadsheetColumn<ECO>[] = [
+        { id: "eco_number", header: "ECO #", width: "120px", cell: (e) => <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 11 }}>{e.eco_number}</span> },
+        {
+            id: "title", header: "Title", width: "300px", cell: (e) => (
+                <>
+                    <div style={{ fontWeight: 600 }}>{e.title}</div>
+                    <div style={{ fontSize: 10, color: '#9ca3af' }}>Requested by: {e.requested_by ?? '—'}</div>
+                </>
+            )
+        },
+        { id: "type", header: "Type", width: "120px", cell: (e) => <span style={{ fontSize: 10, color: '#6b7280' }}>{e.change_type}</span> },
+        { id: "priority", header: "Priority", width: "120px", cell: (e) => <span style={{ padding: '2px 7px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: PRIORITY_CLR[e.priority] + '20', color: PRIORITY_CLR[e.priority] }}>{e.priority}</span> },
+        { id: "status", header: "Status", width: "150px", cell: (e) => <span style={{ padding: '2px 7px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: STATUS_CLR[e.status] + '18', color: STATUS_CLR[e.status] }}>{e.status.replace(/_/g, ' ')}</span> },
+        {
+            id: "actions", header: "Actions", width: "150px", cell: (e) => (
+                <div style={{ display: 'flex', gap: 4 }}>
+                    {(ACTIONS[e.status] ?? []).map(a => (
+                        <button key={a.action} onClick={(ev) => { ev.stopPropagation(); actionMut.mutate({ id: e.id, action: a.action }); }} style={{ padding: '3px 8px', background: a.color, color: '#fff', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>{a.label}</button>
+                    ))}
+                </div>
+            )
+        }
+    ];
 
     return (
         <div style={{ padding: 24, maxWidth: 1300, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
@@ -92,34 +117,15 @@ export default function ECOManagement() {
 
             <div style={{ display: 'flex', gap: 14 }}>
                 {/* ECO list */}
-                <div style={{ flex: 1 }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)' }}>
-                        <thead><tr style={{ background: '#f9fafb' }}>
-                            {['ECO #', 'Title', 'Type', 'Priority', 'Status', 'Actions'].map(h => <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 700, color: '#374151', borderBottom: '2px solid #e5e7eb' }}>{h}</th>)}
-                        </tr></thead>
-                        <tbody>
-                            {ecos.map(e => (
-                                <tr key={e.id} onClick={() => setSelected(selected?.id === e.id ? null : e)} style={{ borderBottom: '1px solid #f3f4f6', cursor: 'pointer', background: selected?.id === e.id ? '#f0f9ff' : undefined }}>
-                                    <td style={{ padding: '8px 12px', fontFamily: 'monospace', fontWeight: 700, fontSize: 11 }}>{e.eco_number}</td>
-                                    <td style={{ padding: '8px 12px' }}>
-                                        <div style={{ fontWeight: 600 }}>{e.title}</div>
-                                        <div style={{ fontSize: 10, color: '#9ca3af' }}>Requested by: {e.requested_by ?? '—'}</div>
-                                    </td>
-                                    <td style={{ padding: '8px 12px', fontSize: 10, color: '#6b7280' }}>{e.change_type}</td>
-                                    <td style={{ padding: '8px 12px' }}><span style={{ padding: '2px 7px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: PRIORITY_CLR[e.priority] + '20', color: PRIORITY_CLR[e.priority] }}>{e.priority}</span></td>
-                                    <td style={{ padding: '8px 12px' }}><span style={{ padding: '2px 7px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: STATUS_CLR[e.status] + '18', color: STATUS_CLR[e.status] }}>{e.status.replace(/_/g, ' ')}</span></td>
-                                    <td style={{ padding: '8px 12px' }}>
-                                        <div style={{ display: 'flex', gap: 4 }}>
-                                            {(ACTIONS[e.status] ?? []).map(a => (
-                                                <button key={a.action} onClick={(ev) => { ev.stopPropagation(); actionMut.mutate({ id: e.id, action: a.action }); }} style={{ padding: '3px 8px', background: a.color, color: '#fff', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>{a.label}</button>
-                                            ))}
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                            {ecos.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No ECOs — create one to start the change process</td></tr>}
-                        </tbody>
-                    </table>
+                <div style={{ flex: 1, minHeight: '400px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 12 }}>
+                    <InteractiveSpreadsheet
+                        columns={ecoColumns}
+                        data={ecos}
+                        activeRow={selected?.id}
+                        onRowSelect={(e) => setSelected(selected?.id === e.id ? null : e as ECO)}
+                        onChange={() => { }}
+                        containerHeight="600px"
+                    />
                 </div>
                 {/* Detail */}
                 {selected && (

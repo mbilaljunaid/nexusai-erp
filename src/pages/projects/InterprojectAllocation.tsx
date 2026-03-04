@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface AllocationRule {
     id?: number;
@@ -162,6 +163,64 @@ export default function InterprojectAllocation() {
             targetProjects.map((t) => ({ ...t, percentage: Number(equalPercentage.toFixed(2)) }))
         );
     };
+
+    const targetColumns: SpreadsheetColumn[] = [
+        {
+            id: "project",
+            header: "Project",
+            width: "250px",
+            cell: (row) => (
+                <div className="px-2 py-1 flex flex-col justify-center">
+                    <div className="font-medium text-sm leading-tight text-left">{row.projectNumber}</div>
+                    <div className="text-xs text-muted-foreground text-left">{row.projectName}</div>
+                </div>
+            )
+        },
+        {
+            id: "percentage",
+            header: "Percentage",
+            width: "120px",
+            cell: (row) => (
+                <Input
+                    type="number"
+                    value={row.percentage || ""}
+                    onChange={(e) =>
+                        updateTargetProject(row.projectId, {
+                            percentage: parseFloat(e.target.value) || 0,
+                        })
+                    }
+                    className="h-8 border-0 ring-0 focus-visible:ring-0 shadow-none px-2 bg-transparent text-right w-full"
+                    step="0.01"
+                    min="0"
+                    max="100"
+                />
+            )
+        },
+        {
+            id: "amount",
+            header: "Estimated Amount",
+            width: "150px",
+            cell: (row) => (
+                <div className="px-2 text-right text-muted-foreground">
+                    {preview?.allocations?.find((a: any) => a.projectId === row.projectId)
+                        ? `$${preview.allocations.find((a: any) => a.projectId === row.projectId).amount.toLocaleString()}`
+                        : "-"}
+                </div>
+            )
+        },
+        {
+            id: "actions",
+            header: "",
+            width: "80px",
+            cell: (row) => (
+                <div className="flex justify-end pr-2">
+                    <Button size="sm" variant="ghost" onClick={() => removeTargetProject(row.projectId)}>
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+                </div>
+            )
+        }
+    ];
 
     const saveRule = () => {
         const rule: AllocationRule = {
@@ -345,64 +404,24 @@ export default function InterprojectAllocation() {
                                 </Button>
                             </div>
 
-                            <div className="border rounded-lg">
-                                <table className="w-full">
-                                    <thead className="bg-muted">
-                                        <tr>
-                                            <th className="text-left p-2">Project</th>
-                                            <th className="text-right p-2">Percentage</th>
-                                            <th className="text-right p-2">Estimated Amount</th>
-                                            <th className="text-right p-2 w-16"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {targetProjects.map((target) => (
-                                            <tr key={target.projectId} className="border-t">
-                                                <td className="p-2">
-                                                    <div className="font-medium">{target.projectNumber}</div>
-                                                    <div className="text-xs text-muted-foreground">{target.projectName}</div>
-                                                </td>
-                                                <td className="p-2 text-right">
-                                                    <Input
-                                                        type="number"
-                                                        value={target.percentage || ""}
-                                                        onChange={(e) =>
-                                                            updateTargetProject(target.projectId, {
-                                                                percentage: parseFloat(e.target.value) || 0,
-                                                            })
-                                                        }
-                                                        className="w-24 text-right"
-                                                        step="0.01"
-                                                        min="0"
-                                                        max="100"
-                                                    />
-                                                </td>
-                                                <td className="p-2 text-right text-muted-foreground">
-                                                    {preview?.allocations?.find((a: any) => a.projectId === target.projectId)
-                                                        ? `$${preview.allocations.find((a: any) => a.projectId === target.projectId).amount.toLocaleString()}`
-                                                        : "-"}
-                                                </td>
-                                                <td className="p-2 text-right">
-                                                    <Button size="sm" variant="ghost" onClick={() => removeTargetProject(target.projectId)}>
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                    <tfoot className="border-t-2 bg-muted font-bold">
-                                        <tr>
-                                            <td className="p-2">TOTAL</td>
-                                            <td className={`p-2 text-right ${calculateTotalPercentage() !== 100 ? "text-red-600" : "text-green-600"}`}>
-                                                {calculateTotalPercentage().toFixed(2)}%
-                                            </td>
-                                            <td className="p-2 text-right">
-                                                {preview?.totalAmount ? `$${preview.totalAmount.toLocaleString()}` : "-"}
-                                            </td>
-                                            <td className="p-2"></td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                            <div className="border rounded-lg h-[300px]">
+                                <InteractiveSpreadsheet
+                                    data={targetProjects}
+                                    columns={targetColumns}
+                                    containerHeight={300}
+                                    virtualized={true}
+                                />
+                            </div>
+                            <div className="flex justify-between items-center mt-4 border-t pt-2">
+                                <div className="font-bold pl-2">TOTAL</div>
+                                <div className="flex gap-16 pr-[120px]">
+                                    <div className={`font-bold ${calculateTotalPercentage() !== 100 ? "text-red-600" : "text-green-600"}`}>
+                                        {calculateTotalPercentage().toFixed(2)}%
+                                    </div>
+                                    <div className="font-bold text-right w-[150px]">
+                                        {preview?.totalAmount ? `$${preview.totalAmount.toLocaleString()}` : "-"}
+                                    </div>
+                                </div>
                             </div>
                             {calculateTotalPercentage() !== 100 && targetProjects.length > 0 && (
                                 <p className="text-sm text-red-600 mt-2">⚠️ Percentages must total 100%</p>

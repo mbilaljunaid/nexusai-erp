@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Calendar, Clock, Percent, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface PaymentTerm {
     id: string;
@@ -56,6 +57,14 @@ export default function PaymentTermsMaster() {
         mutationFn: (data: any) => fetch('/api/finance/payment-terms/schedule', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).then(r => r.json()),
         onSuccess: (data) => setSchedule(Array.isArray(data) ? data : []),
     });
+
+    const scheduleColumns: SpreadsheetColumn<ScheduleLine>[] = [
+        { id: "installment_num", header: "#", width: "50px", cell: (row) => row.installment_num },
+        { id: "due_date", header: "Due Date", width: "120px", cell: (row) => <div className="mono due-date">{row.due_date}</div> },
+        { id: "amount", header: "Amount", width: "120px", cell: (row) => <div className="mono">{fmt(row.amount)}</div> },
+        { id: "discount", header: "Discount", width: "120px", cell: (row) => <div className="mono green">{row.discount_amount > 0 ? fmt(row.discount_amount) : '—'}</div> },
+        { id: "discountDeadline", header: "Discount Deadline", width: "150px", cell: (row) => <div className="mono small">{row.discount_due_date ?? '—'}</div> }
+    ];
 
     return (
         <StandardPage
@@ -155,20 +164,14 @@ export default function PaymentTermsMaster() {
                         </button>
 
                         {schedule.length > 0 && (
-                            <table className="st-table">
-                                <thead><tr><th>#</th><th>Due Date</th><th>Amount</th><th>Discount</th><th>Discount Deadline</th></tr></thead>
-                                <tbody>
-                                    {schedule.map(line => (
-                                        <tr key={line.id} className="st-row-tr">
-                                            <td>{line.installment_num}</td>
-                                            <td className="mono due-date">{line.due_date}</td>
-                                            <td className="mono">{fmt(line.amount)}</td>
-                                            <td className="mono green">{line.discount_amount > 0 ? fmt(line.discount_amount) : '—'}</td>
-                                            <td className="mono small">{line.discount_due_date ?? '—'}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                            <div style={{ marginTop: 10, border: '1px solid #e5e7eb', borderRadius: 8, overflow: 'hidden', height: 250 }}>
+                                <InteractiveSpreadsheet
+                                    columns={scheduleColumns}
+                                    data={schedule}
+                                    onChange={() => { }}
+                                    containerHeight="100%"
+                                />
+                            </div>
                         )}
                     </div>
 

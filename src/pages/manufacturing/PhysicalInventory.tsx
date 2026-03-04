@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ClipboardList, CheckCircle2, AlertCircle } from 'lucide-react';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface Cycle { id: string; cycle_name: string; cycle_type: string; status: string; count_date: string; line_count: number; counted_lines: number; approved_by: string; created_at: string; }
 interface Line { id: string; item_number: string; location: string; lot_number: string; book_quantity: number; count_quantity: number; variance_quantity: number; variance_value: number; count_status: string; counted_by: string; }
@@ -30,6 +31,32 @@ export default function PhysicalInventory() {
     const totalVariance = variance.reduce((s, l) => s + Number(l.variance_value ?? 0), 0);
     const negCount = variance.filter(l => Number(l.variance_quantity) < 0).length;
     const posCount = variance.filter(l => Number(l.variance_quantity) > 0).length;
+
+    const varianceColumns: SpreadsheetColumn<Line>[] = [
+        { id: "item", header: "Item", width: "120px", cell: (l) => <span style={{ fontWeight: 700 }}>{l.item_number}</span> },
+        { id: "location", header: "Location", width: "120px", cell: (l) => <span style={{ color: '#6b7280' }}>{l.location ?? '—'}</span> },
+        { id: "lot", header: "Lot", width: "120px", cell: (l) => <span style={{ fontFamily: 'monospace', fontSize: 10, color: '#9ca3af' }}>{l.lot_number ?? '—'}</span> },
+        { id: "bookQty", header: "Book Qty", width: "100px", cell: (l) => <span style={{ fontFamily: 'monospace' }}>{Number(l.book_quantity).toFixed(2)}</span> },
+        { id: "countQty", header: "Count Qty", width: "100px", cell: (l) => <span style={{ fontFamily: 'monospace', color: l.count_quantity == null ? '#9ca3af' : '#374151' }}>{l.count_quantity != null ? Number(l.count_quantity).toFixed(2) : '—'}</span> },
+        {
+            id: "variance", header: "Variance", width: "100px", cell: (l) => {
+                const vqty = Number(l.variance_quantity ?? 0);
+                return <span style={{ fontFamily: 'monospace', fontWeight: 700, color: vqty < 0 ? '#dc2626' : vqty > 0 ? '#059669' : '#9ca3af' }}>{vqty !== 0 ? (vqty > 0 ? '+' : '') + vqty.toFixed(2) : '0'}</span>;
+            }
+        },
+        {
+            id: "valueDelta", header: "Value Δ", width: "100px", cell: (l) => {
+                const vval = Number(l.variance_value ?? 0);
+                return <span style={{ fontFamily: 'monospace', fontSize: 10, color: vval < 0 ? '#dc2626' : vval > 0 ? '#059669' : '#9ca3af' }}>{vval !== 0 ? (vval > 0 ? '+' : '') + '$' + Math.abs(vval).toFixed(2) : '—'}</span>;
+            }
+        },
+        { id: "status", header: "Status", width: "100px", cell: (l) => <span style={{ fontSize: 9, padding: '2px 5px', borderRadius: 3, background: l.count_status === 'Counted' ? '#d1fae5' : '#f3f4f6', color: l.count_status === 'Counted' ? '#059669' : '#6b7280' }}>{l.count_status}</span> },
+        {
+            id: "action", header: "Action", width: "100px", cell: (l) => l.count_status === 'Pending' ? (
+                <button onClick={() => recordCountMut.mutate({ lineId: l.id, countQuantity: parseFloat(prompt('Enter counted quantity:') ?? '0') })} style={{ padding: '2px 7px', background: '#eff6ff', border: 'none', borderRadius: 4, fontSize: 9, cursor: 'pointer', color: '#1d4ed8' }}>Count</button>
+            ) : null
+        }
+    ];
 
     return (
         <div style={{ padding: 24, maxWidth: 1400, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
@@ -136,35 +163,14 @@ export default function PhysicalInventory() {
                                 <button onClick={() => addLinesMut.mutate({ cycleId: selectedCycle.id, lines: parseLines() })} disabled={!linesText.trim()} style={{ marginTop: 6, padding: '5px 12px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer' }}>Add Lines</button>
                             </div>
                         )}
-                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)' }}>
-                            <thead><tr style={{ background: '#f9fafb' }}>
-                                {['Item', 'Location', 'Lot', 'Book Qty', 'Count Qty', 'Variance', 'Value Δ', 'Status', 'Action'].map(h => <th key={h} style={{ padding: '9px 10px', textAlign: 'left', fontWeight: 700, color: '#374151', borderBottom: '2px solid #e5e7eb' }}>{h}</th>)}
-                            </tr></thead>
-                            <tbody>
-                                {variance.map(l => {
-                                    const vqty = Number(l.variance_quantity ?? 0);
-                                    const vval = Number(l.variance_value ?? 0);
-                                    return (
-                                        <tr key={l.id} style={{ borderBottom: '1px solid #f3f4f6', background: vqty < 0 ? '#fff5f5' : vqty > 0 ? '#f0fdf4' : undefined }}>
-                                            <td style={{ padding: '7px 10px', fontWeight: 700 }}>{l.item_number}</td>
-                                            <td style={{ padding: '7px 10px', color: '#6b7280' }}>{l.location ?? '—'}</td>
-                                            <td style={{ padding: '7px 10px', fontFamily: 'monospace', fontSize: 10, color: '#9ca3af' }}>{l.lot_number ?? '—'}</td>
-                                            <td style={{ padding: '7px 10px', fontFamily: 'monospace' }}>{Number(l.book_quantity).toFixed(2)}</td>
-                                            <td style={{ padding: '7px 10px', fontFamily: 'monospace', color: l.count_quantity == null ? '#9ca3af' : '#374151' }}>{l.count_quantity != null ? Number(l.count_quantity).toFixed(2) : '—'}</td>
-                                            <td style={{ padding: '7px 10px', fontFamily: 'monospace', fontWeight: 700, color: vqty < 0 ? '#dc2626' : vqty > 0 ? '#059669' : '#9ca3af' }}>{vqty !== 0 ? (vqty > 0 ? '+' : '') + vqty.toFixed(2) : '0'}</td>
-                                            <td style={{ padding: '7px 10px', fontFamily: 'monospace', fontSize: 10, color: vval < 0 ? '#dc2626' : vval > 0 ? '#059669' : '#9ca3af' }}>{vval !== 0 ? (vval > 0 ? '+' : '') + '$' + Math.abs(vval).toFixed(2) : '—'}</td>
-                                            <td style={{ padding: '7px 10px' }}><span style={{ fontSize: 9, padding: '2px 5px', borderRadius: 3, background: l.count_status === 'Counted' ? '#d1fae5' : '#f3f4f6', color: l.count_status === 'Counted' ? '#059669' : '#6b7280' }}>{l.count_status}</span></td>
-                                            <td style={{ padding: '7px 10px' }}>
-                                                {l.count_status === 'Pending' && (
-                                                    <button onClick={() => recordCountMut.mutate({ lineId: l.id, countQuantity: parseFloat(prompt('Enter counted quantity:') ?? '0') })} style={{ padding: '2px 7px', background: '#eff6ff', border: 'none', borderRadius: 4, fontSize: 9, cursor: 'pointer', color: '#1d4ed8' }}>Count</button>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                                {variance.length === 0 && <tr><td colSpan={9} style={{ textAlign: 'center', color: '#9ca3af', padding: 20 }}>No lines — add count lines to begin</td></tr>}
-                            </tbody>
-                        </table>
+                        <div style={{ height: '500px', width: '100%' }}>
+                            <InteractiveSpreadsheet
+                                columns={varianceColumns}
+                                data={variance}
+                                onChange={() => { }}
+                                containerHeight="500px"
+                            />
+                        </div>
                     </div>
                 )}
             </div>

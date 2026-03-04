@@ -5,8 +5,22 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminLayout from '@/components/admin/AdminLayout';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function SubscriptionBilling() {
+    const subscriptionColumns: SpreadsheetColumn<any>[] = [
+        { id: "tenant", header: "Tenant", width: "200px", cell: (row: any) => row.tenant },
+        { id: "plan", header: "Plan", width: "150px", cell: (row: any) => <Badge>{row.plan}</Badge> },
+        { id: "mrr", header: "MRR", width: "150px", cell: (row: any) => row.mrr },
+        { id: "startDate", header: "Start Date", width: "150px", cell: (row: any) => row.startDate },
+        { id: "status", header: "Status", width: "150px", cell: (row: any) => <Badge variant="outline" className="text-green-600">{row.status}</Badge> },
+        { id: "actions", header: "Actions", width: "100px", cell: () => <div className="text-right w-full"><Button variant="ghost" size="sm">View</Button></div> }
+    ];
+
+    const subscriptionData = [
+        { id: "1", tenant: "Acme Corp", plan: "Enterprise", mrr: "$2,500", startDate: "2024-01-15", status: "Active" }
+    ];
+
     return (
         <AdminLayout>
             <div className="p-6 space-y-6">
@@ -167,31 +181,13 @@ export default function SubscriptionBilling() {
                                 <CardTitle>Active Subscriptions</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
-                                        <thead>
-                                            <tr className="border-b">
-                                                <th className="text-left py-3 px-4 font-medium">Tenant</th>
-                                                <th className="text-left py-3 px-4 font-medium">Plan</th>
-                                                <th className="text-left py-3 px-4 font-medium">MRR</th>
-                                                <th className="text-left py-3 px-4 font-medium">Start Date</th>
-                                                <th className="text-left py-3 px-4 font-medium">Status</th>
-                                                <th className="text-right py-3 px-4 font-medium">Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr className="border-b">
-                                                <td className="py-3 px-4">Acme Corp</td>
-                                                <td className="py-3 px-4"><Badge>Enterprise</Badge></td>
-                                                <td className="py-3 px-4">$2,500</td>
-                                                <td className="py-3 px-4">2024-01-15</td>
-                                                <td className="py-3 px-4"><Badge variant="outline" className="text-green-600">Active</Badge></td>
-                                                <td className="py-3 px-4 text-right">
-                                                    <Button variant="ghost" size="sm">View</Button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                <div style={{ height: '300px' }}>
+                                    <InteractiveSpreadsheet
+                                        columns={subscriptionColumns}
+                                        data={subscriptionData}
+                                        onChange={() => { }}
+                                        containerHeight="300px"
+                                    />
                                 </div>
                             </CardContent>
                         </Card>

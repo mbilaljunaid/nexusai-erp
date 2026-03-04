@@ -4,6 +4,7 @@ import { Calendar, AlertCircle, CheckCircle2, RefreshCw } from 'lucide-react';
 import { useEnterpriseStore } from '@/lib/enterpriseStore';
 import './RegulatoryCalendar.css';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface RegEvent {
     id: string; title: string; regulation: string; jurisdiction: string;
@@ -42,6 +43,28 @@ export default function RegulatoryCalendar() {
 
     const overdueCount = events.filter(e => e.status === 'Overdue').length;
     const upcomingCount = dueSoon.filter(e => e.status !== 'Overdue').length;
+
+    const fcpaColumns: SpreadsheetColumn<any>[] = [
+        { id: "training_module", header: "Module", width: "250px", cell: (row) => <span className="fcpa-td-bold">{row.training_module.replace(/_/g, ' ')}</span> },
+        { id: "total", header: "Total", width: "100px", cell: (row) => <span className="fcpa-td-mono">{row.total}</span> },
+        { id: "completed_passed", header: "Passed", width: "100px", cell: (row) => <span className="fcpa-td-mono fcpa-td-passed">{row.completed_passed}</span> },
+        { id: "in_progress", header: "In Progress", width: "100px", cell: (row) => <span className="fcpa-td-mono fcpa-td-progress">{row.in_progress}</span> },
+        { id: "overdue", header: "Overdue", width: "100px", cell: (row) => <span className={`fcpa-td-mono ${Number(row.overdue) > 0 ? 'fcpa-td-overdue' : 'fcpa-td-pending'}`}>{row.overdue}</span> },
+        { id: "pending", header: "Pending", width: "100px", cell: (row) => <span className="fcpa-td-mono fcpa-td-pending">{row.pending}</span> },
+        {
+            id: "completion_rate_pct", header: "Completion %", width: "200px", cell: (row) => {
+                const pct = Number(row.completion_rate_pct ?? 0);
+                return (
+                    <div className="progress-bar-container w-full">
+                        <div className="progress-bar-bg flex-grow">
+                            <div className={`progress-bar-fill ${pct >= 90 ? 'progress-safe' : pct >= 70 ? 'progress-warn' : 'progress-danger'}`} style={{ width: pct + '%' }} />
+                        </div>
+                        <span className="progress-bar-text w-12 text-right">{pct}%</span>
+                    </div>
+                )
+            }
+        }
+    ];
 
     return (
         <StandardPage
@@ -139,36 +162,15 @@ export default function RegulatoryCalendar() {
                     <div className="fcpa-header">
                         <button onClick={() => fcpaSweepMut.mutate()} className="btn-sweep"><RefreshCw size={11} /> Sweep Overdue</button>
                     </div>
-                    <table className="fcpa-table">
-                        <thead><tr className="fcpa-tr">
-                            {['Module', 'Total', 'Passed', 'In Progress', 'Overdue', 'Pending', 'Completion %'].map(h => <th key={h} className="fcpa-th">{h}</th>)}
-                        </tr></thead>
-                        <tbody>
-                            {fcpaSummary.map(s => {
-                                const pct = Number(s.completion_rate_pct ?? 0);
-                                return (
-                                    <tr key={s.training_module} className="fcpa-tr">
-                                        <td className="fcpa-td fcpa-td-bold">{s.training_module.replace(/_/g, ' ')}</td>
-                                        <td className="fcpa-td fcpa-td-mono">{s.total}</td>
-                                        <td className="fcpa-td fcpa-td-mono fcpa-td-passed">{s.completed_passed}</td>
-                                        <td className="fcpa-td fcpa-td-mono fcpa-td-progress">{s.in_progress}</td>
-                                        <td className={`fcpa-td fcpa-td-mono ${Number(s.overdue) > 0 ? 'fcpa-td-overdue' : 'fcpa-td-pending'}`}>{s.overdue}</td>
-                                        <td className="fcpa-td fcpa-td-mono fcpa-td-pending">{s.pending}</td>
-                                        <td className="fcpa-td">
-                                            <div className="progress-bar-container">
-                                                <div className="progress-bar-bg">
-                                                    {/* eslint-disable-next-line react/forbid-dom-props */}
-                                                    <div className={`progress-bar-fill ${pct >= 90 ? 'progress-safe' : pct >= 70 ? 'progress-warn' : 'progress-danger'}`} style={{ width: pct + '%' }} />
-                                                </div>
-                                                <span className="progress-bar-text">{pct}%</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                            {fcpaSummary.length === 0 && <tr><td colSpan={7} className="no-events">No FCPA assignments yet</td></tr>}
-                        </tbody>
-                    </table>
+                    <div style={{ minHeight: '300px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 8 }}>
+                        <InteractiveSpreadsheet
+                            columns={fcpaColumns}
+                            data={fcpaSummary}
+                            onChange={() => { }}
+                            containerHeight="400px"
+                        />
+                        {fcpaSummary.length === 0 && <div className="no-events p-4 text-center text-muted-foreground border-t">No FCPA assignments yet</div>}
+                    </div>
                 </div>
             )}
 

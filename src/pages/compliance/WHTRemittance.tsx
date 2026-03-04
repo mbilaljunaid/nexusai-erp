@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DollarSign, Globe, FileCheck, Download, PlusCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface WHTRule {
     id: string;
@@ -101,6 +102,46 @@ export default function WHTRemittance() {
     const totalGross = transactions.reduce((s, t) => s + Number(t.gross_amount), 0);
     const remitted = transactions.filter(t => t.remitted_at).length;
 
+    const transactionColumns: SpreadsheetColumn<WHTTransaction>[] = [
+        { id: "supplier", header: "Supplier", width: "150px", cell: (t) => <span className="mono">{t.supplier_id.slice(0, 10)}…</span> },
+        { id: "country", header: "Country", width: "80px", cell: (t) => <span className="country-badge">{t.country_code}</span> },
+        { id: "type", header: "Type", width: "120px", cell: (t) => t.income_type },
+        { id: "gross", header: "Gross", width: "120px", cell: (t) => <span className="amount">{fmtCcy(t.gross_amount, t.currency_code)}</span> },
+        { id: "rate", header: "Rate", width: "80px", cell: (t) => <span className="rate">{fmtPct(t.wht_rate)}</span> },
+        { id: "wht", header: "WHT", width: "120px", cell: (t) => <span className="amount red">{fmtCcy(t.wht_amount, t.currency_code)}</span> },
+        { id: "net", header: "Net", width: "120px", cell: (t) => <span className="amount">{fmtCcy(t.net_amount, t.currency_code)}</span> },
+        { id: "remitted", header: "Remitted", width: "120px", cell: (t) => t.remitted_at ? <span className="remitted-badge">✓ {new Date(t.remitted_at).toLocaleDateString()}</span> : <span className="pending-badge">Pending</span> }
+    ];
+
+    const ruleColumns: SpreadsheetColumn<WHTRule>[] = [
+        { id: "country", header: "Country", width: "100px", cell: (r) => <span className="country-badge">{r.country_code}</span> },
+        { id: "type", header: "Income Type", width: "150px", cell: (r) => r.income_type },
+        { id: "stdRate", header: "Standard Rate", width: "120px", cell: (r) => <span className="rate">{fmtPct(r.rate)}</span> },
+        { id: "treatyRate", header: "Treaty Rate", width: "120px", cell: (r) => <span className="rate">{r.treaty_rate ? fmtPct(r.treaty_rate) : <span className="na">N/A</span>}</span> },
+        { id: "threshold", header: "Threshold", width: "150px", cell: (r) => fmtCcy(r.threshold_amount, r.currency_code) },
+        { id: "effective", header: "Effective From", width: "150px", cell: (r) => r.effective_from }
+    ];
+
+    const batchColumns: SpreadsheetColumn<RemittanceBatch>[] = [
+        { id: "period", header: "Period", width: "150px", cell: (b) => b.period_name },
+        { id: "country", header: "Country", width: "100px", cell: (b) => <span className="country-badge">{b.country_code}</span> },
+        { id: "totalWHT", header: "Total WHT", width: "150px", cell: (b) => <span className="amount red">{fmtCcy(b.total_wht, b.currency_code)}</span> },
+        { id: "dueDate", header: "Due Date", width: "150px", cell: (b) => b.due_date ?? '—' },
+        { id: "status", header: "Status", width: "120px", cell: (b) => <span className={`batch-status ${b.status.toLowerCase()}`}>{b.status}</span> },
+        {
+            id: "actions", header: "Actions", width: "120px", cell: (b) => b.status === 'Pending' ? (
+                <button
+                    className="file-btn"
+                    onClick={() => fileBatchMutation.mutate({ id: b.id, ref: `REF-${b.id.slice(0, 8).toUpperCase()}` })}
+                    disabled={fileBatchMutation.isPending}
+                    aria-label={`File remittance batch for ${b.period_name}`}
+                >
+                    <FileCheck size={13} /> File
+                </button>
+            ) : null
+        }
+    ];
+
     return (
         <div className="wht-workbench">
             <div className="wht-header">
@@ -155,34 +196,14 @@ export default function WHTRemittance() {
                             Create Remittance Batch
                         </button>
                     </div>
-                    <table className="wht-table">
-                        <thead>
-                            <tr>
-                                <th>Supplier</th><th>Country</th><th>Type</th>
-                                <th>Gross</th><th>Rate</th><th>WHT</th><th>Net</th><th>Remitted</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {transactions.length === 0 ? (
-                                <tr><td colSpan={8} className="empty-cell">No WHT transactions for this period</td></tr>
-                            ) : transactions.map(t => (
-                                <tr key={t.id} className="wht-row">
-                                    <td className="mono">{t.supplier_id.slice(0, 10)}…</td>
-                                    <td><span className="country-badge">{t.country_code}</span></td>
-                                    <td>{t.income_type}</td>
-                                    <td className="amount">{fmtCcy(t.gross_amount, t.currency_code)}</td>
-                                    <td className="rate">{fmtPct(t.wht_rate)}</td>
-                                    <td className="amount red">{fmtCcy(t.wht_amount, t.currency_code)}</td>
-                                    <td className="amount">{fmtCcy(t.net_amount, t.currency_code)}</td>
-                                    <td>
-                                        {t.remitted_at
-                                            ? <span className="remitted-badge">✓ {new Date(t.remitted_at).toLocaleDateString()}</span>
-                                            : <span className="pending-badge">Pending</span>}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    <div style={{ height: '400px', width: '100%' }}>
+                        <InteractiveSpreadsheet
+                            columns={transactionColumns}
+                            data={transactions}
+                            onChange={() => { }}
+                            containerHeight="400px"
+                        />
+                    </div>
                 </div>
             )}
 
@@ -222,59 +243,28 @@ export default function WHTRemittance() {
                             </button>
                         </div>
                     )}
-                    <table className="wht-table">
-                        <thead>
-                            <tr><th>Country</th><th>Income Type</th><th>Standard Rate</th><th>Treaty Rate</th><th>Threshold</th><th>Effective From</th></tr>
-                        </thead>
-                        <tbody>
-                            {rules.map(r => (
-                                <tr key={r.id} className="wht-row">
-                                    <td><span className="country-badge">{r.country_code}</span></td>
-                                    <td>{r.income_type}</td>
-                                    <td className="rate">{fmtPct(r.rate)}</td>
-                                    <td className="rate">{r.treaty_rate ? fmtPct(r.treaty_rate) : <span className="na">N/A</span>}</td>
-                                    <td>{fmtCcy(r.threshold_amount, r.currency_code)}</td>
-                                    <td>{r.effective_from}</td>
-                                </tr>
-                            ))}
-                            {rules.length === 0 && <tr><td colSpan={6} className="empty-cell">No WHT rules configured</td></tr>}
-                        </tbody>
-                    </table>
+                    <div style={{ height: '400px', width: '100%' }}>
+                        <InteractiveSpreadsheet
+                            columns={ruleColumns}
+                            data={rules}
+                            onChange={() => { }}
+                            containerHeight="400px"
+                        />
+                    </div>
                 </div>
             )}
 
             {activeTab === 'batches' && (
                 <div className="wht-card">
                     <h2 className="card-title">Remittance Batches</h2>
-                    <table className="wht-table">
-                        <thead>
-                            <tr><th>Period</th><th>Country</th><th>Total WHT</th><th>Due Date</th><th>Status</th><th>Actions</th></tr>
-                        </thead>
-                        <tbody>
-                            {batches.map(b => (
-                                <tr key={b.id} className="wht-row">
-                                    <td>{b.period_name}</td>
-                                    <td><span className="country-badge">{b.country_code}</span></td>
-                                    <td className="amount red">{fmtCcy(b.total_wht, b.currency_code)}</td>
-                                    <td>{b.due_date ?? '—'}</td>
-                                    <td><span className={`batch-status ${b.status.toLowerCase()}`}>{b.status}</span></td>
-                                    <td>
-                                        {b.status === 'Pending' && (
-                                            <button
-                                                className="file-btn"
-                                                onClick={() => fileBatchMutation.mutate({ id: b.id, ref: `REF-${b.id.slice(0, 8).toUpperCase()}` })}
-                                                disabled={fileBatchMutation.isPending}
-                                                aria-label={`File remittance batch for ${b.period_name}`}
-                                            >
-                                                <FileCheck size={13} /> File
-                                            </button>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                            {batches.length === 0 && <tr><td colSpan={6} className="empty-cell">No remittance batches yet</td></tr>}
-                        </tbody>
-                    </table>
+                    <div style={{ height: '400px', width: '100%' }}>
+                        <InteractiveSpreadsheet
+                            columns={batchColumns}
+                            data={batches}
+                            onChange={() => { }}
+                            containerHeight="400px"
+                        />
+                    </div>
                 </div>
             )}
 

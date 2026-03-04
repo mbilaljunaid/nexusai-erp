@@ -3,17 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
-import { 
-  Shield, 
-  Lock, 
-  AlertTriangle, 
-  Mail, 
-  CheckCircle, 
+import {
+  Shield,
+  Lock,
+  AlertTriangle,
+  Mail,
+  CheckCircle,
   Clock,
   Eye,
   FileWarning,
   ExternalLink
 } from "lucide-react";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function SecurityPolicyPage() {
   useEffect(() => {
@@ -34,6 +35,23 @@ export default function SecurityPolicyPage() {
     { icon: CheckCircle, title: "RBAC", desc: "Role-based access control with principle of least privilege" },
   ];
 
+  const versionColumns: SpreadsheetColumn<any>[] = [
+    { id: "version", header: "Version", width: "200px", cell: (row) => row.version },
+    {
+      id: "status",
+      header: "Support Status",
+      width: "200px",
+      cell: (row) => row.status === "Supported"
+        ? <Badge className="bg-green-500 text-white">Supported</Badge>
+        : <Badge variant="secondary">Limited Support</Badge>
+    }
+  ];
+
+  const versionData = [
+    { id: "1", version: "1.x (current)", status: "Supported" },
+    { id: "2", version: "0.x (beta)", status: "Limited Support" }
+  ];
+
   return (
     <div className="public-page min-h-screen flex flex-col">
       <Header />
@@ -44,7 +62,7 @@ export default function SecurityPolicyPage() {
           <Badge className="mb-4 bg-red-600 text-white">SECURITY</Badge>
           <h1 className="text-5xl font-bold mb-6">Security Policy</h1>
           <p className="text-xl text-muted-foreground mb-8">
-            We take security seriously. This page describes our security practices and 
+            We take security seriously. This page describes our security practices and
             how to responsibly report vulnerabilities.
           </p>
         </section>
@@ -59,7 +77,7 @@ export default function SecurityPolicyPage() {
 
             <Card className="p-6 mb-8 border-yellow-500/50 bg-yellow-500/5">
               <p className="text-lg mb-4">
-                If you discover a security vulnerability in NexusAIFirst, please report it responsibly. 
+                If you discover a security vulnerability in NexusAIFirst, please report it responsibly.
                 We appreciate your help in keeping NexusAIFirst secure.
               </p>
               <div className="flex items-center gap-3 p-4 bg-background rounded-lg">
@@ -140,28 +158,12 @@ export default function SecurityPolicyPage() {
         <section className="px-4 py-20 max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold mb-8 text-center">Supported Versions</h2>
           <Card className="overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-muted">
-                <tr>
-                  <th className="px-6 py-4 text-left font-semibold">Version</th>
-                  <th className="px-6 py-4 text-left font-semibold">Support Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-t">
-                  <td className="px-6 py-4">1.x (current)</td>
-                  <td className="px-6 py-4">
-                    <Badge className="bg-green-500 text-white">Supported</Badge>
-                  </td>
-                </tr>
-                <tr className="border-t">
-                  <td className="px-6 py-4">0.x (beta)</td>
-                  <td className="px-6 py-4">
-                    <Badge variant="secondary">Limited Support</Badge>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <InteractiveSpreadsheet
+              columns={versionColumns}
+              data={versionData}
+              onChange={() => { }}
+              containerHeight="200px"
+            />
           </Card>
         </section>
 
@@ -171,7 +173,7 @@ export default function SecurityPolicyPage() {
             <Shield className="w-16 h-16 mx-auto mb-6" />
             <h2 className="text-3xl font-bold mb-4">Security Researchers</h2>
             <p className="text-lg text-white/80 mb-8">
-              We appreciate the work of security researchers who help keep NexusAIFirst safe. 
+              We appreciate the work of security researchers who help keep NexusAIFirst safe.
               Responsible disclosure reporters will be credited in our security acknowledgments.
             </p>
             <Button size="lg" className="bg-white text-green-600 hover:bg-slate-100" asChild data-testid="button-report-vulnerability">

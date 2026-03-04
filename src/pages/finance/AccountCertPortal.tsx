@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { CheckCircle, Clock, AlertTriangle, XCircle, FileText, ChevronUp, ChevronDown } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface Certification {
     id: string;
@@ -72,8 +73,18 @@ export default function AccountCertPortal() {
         return sortDir === 'desc' ? v : -v;
     });
 
-    const totalVariance = certs.reduce((s, c) => s + Math.abs(c.variance), 0);
     const certifiedPct = certs.length ? Math.round(certs.filter(c => c.status === 'Certified').length / certs.length * 100) : 0;
+
+    const certColumns: SpreadsheetColumn<Certification>[] = [
+        { id: "account_id", header: "Account", width: "120px", cell: (row) => <div className="account-code">{row.account_id}</div> },
+        { id: "status", header: "Status", width: "150px", cell: (row) => { const cfg = STATUS_CONFIG[row.status]; const Icon = cfg.icon; return <span className="status-badge" style={{ background: cfg.bg, color: cfg.color }}><Icon size={12} /> {row.status}</span>; } },
+        { id: "variance", header: <div className="sortable-col" onClick={() => { setSortField('variance'); setSortDir(d => d === 'asc' ? 'desc' : 'asc'); }}>Variance{sortField === 'variance' && (sortDir === 'desc' ? <ChevronDown size={14} /> : <ChevronUp size={14} />)}</div>, width: "120px", cell: (row) => <div className={`variance-cell ${Math.abs(row.variance) > 1000 ? 'high-variance' : ''}`}>{row.variance >= 0 ? '+' : ''}{row.variance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div> },
+        { id: "gl_balance", header: "GL Balance", width: "120px", cell: (row) => row.balance_per_gl.toLocaleString('en-US', { minimumFractionDigits: 2 }) },
+        { id: "sub_balance", header: "Sub Balance", width: "120px", cell: (row) => row.balance_per_sub.toLocaleString('en-US', { minimumFractionDigits: 2 }) },
+        { id: "preparer", header: "Preparer", width: "150px", cell: (row) => <div className="email-cell">{row.preparer_email}</div> },
+        { id: "reviewer", header: "Reviewer", width: "150px", cell: (row) => <div className="email-cell">{row.reviewer_email}</div> },
+        { id: "actions", header: "Actions", width: "120px", cell: (row) => <div className="actions-cell">{row.status === 'In-Review' && <button className="btn-certify" onClick={() => certifyMutation.mutate(row.id)} disabled={certifyMutation.isPending} aria-label={`Certify account ${row.account_id}`}>Certify</button>}{row.escalation_reason && <span className="escalation-tooltip" title={row.escalation_reason}><AlertTriangle size={14} color="#dc2626" /></span>}</div> }
+    ];
 
     return (
         <StandardPage
@@ -127,71 +138,13 @@ export default function AccountCertPortal() {
                 </div>
 
                 {/* Table */}
-                <div className="cert-table-wrapper">
-                    <table className="cert-table">
-                        <thead>
-                            <tr>
-                                <th>Account</th>
-                                <th>Status</th>
-                                <th
-                                    className="sortable-col"
-                                    onClick={() => { setSortField('variance'); setSortDir(d => d === 'asc' ? 'desc' : 'asc'); }}
-                                >
-                                    Variance
-                                    {sortField === 'variance' && (sortDir === 'desc' ? <ChevronDown size={14} /> : <ChevronUp size={14} />)}
-                                </th>
-                                <th>GL Balance</th>
-                                <th>Sub Balance</th>
-                                <th>Preparer</th>
-                                <th>Reviewer</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {isLoading ? (
-                                <tr><td colSpan={8} className="loading-cell">Loading certifications…</td></tr>
-                            ) : sorted.length === 0 ? (
-                                <tr><td colSpan={8} className="empty-cell">No certifications for {period}</td></tr>
-                            ) : sorted.map(cert => {
-                                const cfg = STATUS_CONFIG[cert.status];
-                                const Icon = cfg.icon;
-                                return (
-                                    <tr key={cert.id} className="cert-row">
-                                        <td className="account-code">{cert.account_id}</td>
-                                        <td>
-                                            <span className="status-badge" style={{ background: cfg.bg, color: cfg.color }}>
-                                                <Icon size={12} /> {cert.status}
-                                            </span>
-                                        </td>
-                                        <td className={`variance-cell ${Math.abs(cert.variance) > 1000 ? 'high-variance' : ''}`}>
-                                            {cert.variance >= 0 ? '+' : ''}{cert.variance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                                        </td>
-                                        <td>{cert.balance_per_gl.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
-                                        <td>{cert.balance_per_sub.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
-                                        <td className="email-cell">{cert.preparer_email}</td>
-                                        <td className="email-cell">{cert.reviewer_email}</td>
-                                        <td className="actions-cell">
-                                            {cert.status === 'In-Review' && (
-                                                <button
-                                                    className="btn-certify"
-                                                    onClick={() => certifyMutation.mutate(cert.id)}
-                                                    disabled={certifyMutation.isPending}
-                                                    aria-label={`Certify account ${cert.account_id}`}
-                                                >
-                                                    Certify
-                                                </button>
-                                            )}
-                                            {cert.escalation_reason && (
-                                                <span className="escalation-tooltip" title={cert.escalation_reason}>
-                                                    <AlertTriangle size={14} color="#dc2626" />
-                                                </span>
-                                            )}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
+                <div style={{ height: 600, marginTop: 20 }}>
+                    <InteractiveSpreadsheet
+                        columns={certColumns}
+                        data={sorted}
+                        onChange={() => { }}
+                        containerHeight="100%"
+                    />
                 </div>
 
                 <style>{`

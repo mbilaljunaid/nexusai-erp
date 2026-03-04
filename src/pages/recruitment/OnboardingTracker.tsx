@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ClipboardList, CheckCircle2, Clock, AlertTriangle, User } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 interface OnboardingTask {
     id: string;
     taskName: string;
@@ -124,6 +124,62 @@ export default function OnboardingTracker() {
         }
         return true;
     });
+
+    const getTaskColumns = (): SpreadsheetColumn[] => [
+        {
+            id: "taskName",
+            header: "Task",
+            width: "300px",
+            cell: (row) => <div className="px-2 text-sm text-left">{row.taskName}</div>
+        },
+        {
+            id: "assignee",
+            header: "Assignee",
+            width: "150px",
+            cell: (row) => <div className="px-2 text-sm text-left">{row.assignee}</div>
+        },
+        {
+            id: "dueDate",
+            header: "Due Date",
+            width: "150px",
+            cell: (row) => (
+                <div className={`px-2 text-sm text-left ${isOverdue(row.dueDate, row.status) ? 'text-red-600 font-semibold' : ''}`}>
+                    {new Date(row.dueDate).toLocaleDateString()}
+                    {isOverdue(row.dueDate, row.status) && ' (Overdue)'}
+                </div>
+            )
+        },
+        {
+            id: "status",
+            header: "Status",
+            width: "150px",
+            cell: (row) => <div className="px-2">{getStatusBadge(row.status)}</div>
+        },
+        {
+            id: "action",
+            header: "Action",
+            width: "150px",
+            cell: (row) => (
+                <div className="px-2">
+                    {row.status !== 'COMPLETE' && (
+                        <Select
+                            value={row.status}
+                            onValueChange={(value) => updateTaskMutation.mutate({ taskId: row.id, status: value })}
+                        >
+                            <SelectTrigger className="w-full h-8 px-2 border-0 shadow-none bg-transparent hover:bg-muted/50 transition-colors">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="PENDING">Pending</SelectItem>
+                                <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
+                                <SelectItem value="COMPLETE">Complete</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    )}
+                </div>
+            )
+        }
+    ];
 
     return (
         <div className="space-y-6 p-4">
@@ -252,50 +308,13 @@ export default function OnboardingTracker() {
                                     <Progress value={progress} className="mt-2" />
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="border rounded-lg overflow-hidden">
-                                        <table className="w-full">
-                                            <thead className="bg-muted/50">
-                                                <tr>
-                                                    <th className="p-3 text-left text-sm font-semibold">Task</th>
-                                                    <th className="p-3 text-left text-sm font-semibold">Assignee</th>
-                                                    <th className="p-3 text-left text-sm font-semibold">Due Date</th>
-                                                    <th className="p-3 text-left text-sm font-semibold">Status</th>
-                                                    <th className="p-3 text-left text-sm font-semibold">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {hire.tasks.map(task => (
-                                                    <tr key={task.id} className="border-t hover:bg-muted/20">
-                                                        <td className="p-3 text-sm">{task.taskName}</td>
-                                                        <td className="p-3 text-sm">{task.assignee}</td>
-                                                        <td className="p-3 text-sm">
-                                                            <div className={isOverdue(task.dueDate, task.status) ? 'text-red-600 font-semibold' : ''}>
-                                                                {new Date(task.dueDate).toLocaleDateString()}
-                                                                {isOverdue(task.dueDate, task.status) && ' (Overdue)'}
-                                                            </div>
-                                                        </td>
-                                                        <td className="p-3">{getStatusBadge(task.status)}</td>
-                                                        <td className="p-3">
-                                                            {task.status !== 'COMPLETE' && (
-                                                                <Select
-                                                                    value={task.status}
-                                                                    onValueChange={(value) => updateTaskMutation.mutate({ taskId: task.id, status: value })}
-                                                                >
-                                                                    <SelectTrigger className="w-32 h-8">
-                                                                        <SelectValue />
-                                                                    </SelectTrigger>
-                                                                    <SelectContent>
-                                                                        <SelectItem value="PENDING">Pending</SelectItem>
-                                                                        <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
-                                                                        <SelectItem value="COMPLETE">Complete</SelectItem>
-                                                                    </SelectContent>
-                                                                </Select>
-                                                            )}
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
+                                    <div className="border rounded-lg overflow-hidden h-[300px]">
+                                        <InteractiveSpreadsheet
+                                            data={hire.tasks}
+                                            columns={getTaskColumns()}
+                                            containerHeight={300}
+                                            virtualized={true}
+                                        />
                                     </div>
                                 </CardContent>
                             </Card>

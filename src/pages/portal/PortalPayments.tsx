@@ -5,6 +5,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { format } from "date-fns";
 import { CheckCircle, Download, ArrowRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function PortalPayments() {
     const { data: payments, isLoading } = useQuery({
@@ -47,6 +48,22 @@ export default function PortalPayments() {
         );
     }
 
+    const columns: SpreadsheetColumn<any>[] = [
+        { id: "receiptNumber", header: "Receipt #", width: "150px", cell: (payment: any) => <span className="font-mono text-sm">{payment.receiptNumber}</span> },
+        { id: "date", header: "Date", width: "150px", cell: (payment: any) => <span>{format(new Date(payment.receiptDate), "MMM dd, yyyy")}</span> },
+        { id: "invoiceNumber", header: "Invoice #", width: "150px", cell: (payment: any) => <span>{payment.invoiceNumber || "-"}</span> },
+        { id: "amount", header: "Amount", width: "120px", cell: (payment: any) => <span className="font-semibold text-emerald-600">${Number(payment.amount).toLocaleString()}</span> },
+        { id: "method", header: "Method", width: "120px", cell: (payment: any) => <span>{payment.paymentMethod}</span> },
+        {
+            id: "status", header: "Status", width: "150px", cell: (payment: any) => (
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                    <CheckCircle className="w-3 h-3 mr-1" />
+                    {payment.status}
+                </span>
+            )
+        }
+    ];
+
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -63,36 +80,14 @@ export default function PortalPayments() {
                 </CardHeader>
                 <CardContent>
                     {payments && payments.length > 0 ? (
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
-                                <thead>
-                                    <tr className="border-b">
-                                        <th className="text-left py-3 px-4 font-semibold text-sm text-slate-600">Receipt #</th>
-                                        <th className="text-left py-3 px-4 font-semibold text-sm text-slate-600">Date</th>
-                                        <th className="text-left py-3 px-4 font-semibold text-sm text-slate-600">Invoice #</th>
-                                        <th className="text-right py-3 px-4 font-semibold text-sm text-slate-600">Amount</th>
-                                        <th className="text-left py-3 px-4 font-semibold text-sm text-slate-600">Method</th>
-                                        <th className="text-left py-3 px-4 font-semibold text-sm text-slate-600">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {payments.map((payment: any) => (
-                                        <tr key={payment.id} className="border-b hover:bg-slate-50">
-                                            <td className="py-3 px-4 font-mono text-sm">{payment.receiptNumber}</td>
-                                            <td className="py-3 px-4 text-sm">{format(new Date(payment.receiptDate), "MMM dd, yyyy")}</td>
-                                            <td className="py-3 px-4 text-sm">{payment.invoiceNumber || "-"}</td>
-                                            <td className="py-3 px-4 text-right font-semibold text-emerald-600">${Number(payment.amount).toLocaleString()}</td>
-                                            <td className="py-3 px-4 text-sm">{payment.paymentMethod}</td>
-                                            <td className="py-3 px-4">
-                                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
-                                                    <CheckCircle className="w-3 h-3 mr-1" />
-                                                    {payment.status}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                        <div className="overflow-x-auto border rounded-xl shadow-sm">
+                            <InteractiveSpreadsheet
+                                data={payments}
+                                columns={columns}
+                                virtualized={true}
+                                containerHeight="500px"
+                                onChange={() => { }}
+                            />
                         </div>
                     ) : (
                         <div className="text-center py-12">

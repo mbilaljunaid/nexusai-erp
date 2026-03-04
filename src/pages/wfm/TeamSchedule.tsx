@@ -10,6 +10,7 @@ import { format, startOfWeek, addDays, isSameDay, parseISO } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { Sparkles } from "lucide-react";
 import { AIScheduleOptimizer } from "@/components/wfm/AIScheduleOptimizer";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 // MOCK CONSTANTS
 const MOCK_TENANT_ID = "test-tenant-wfm-001";
@@ -80,6 +81,51 @@ export default function TeamSchedule() {
         );
     };
 
+    const columns: SpreadsheetColumn<any>[] = [
+        {
+            id: "employee",
+            header: "Employee",
+            width: "250px",
+            cell: (person: any) => (
+                <div className="font-medium p-2">
+                    {person.firstName} {person.lastName}
+                    <div className="text-xs text-muted-foreground">{person.personNumber}</div>
+                </div>
+            )
+        },
+        ...days.map(day => ({
+            id: day.toString(),
+            header: (
+                <div className="text-center py-2">
+                    <div className="text-sm font-medium">{format(day, "EEE")}</div>
+                    <div className="text-xs text-muted-foreground">{format(day, "d")}</div>
+                </div>
+            ) as any,
+            width: "120px",
+            cell: (person: any) => {
+                const assignment = getShiftForCell(person.id, day);
+                return (
+                    <div
+                        className="w-full h-full p-1 cursor-pointer hover:bg-accent transition-colors flex items-center justify-center min-h-[40px]"
+                        onClick={() => setSelectedCell({ personId: person.id, date: day })}
+                    >
+                        {assignment ? (
+                            <div
+                                className="text-xs font-medium px-2 py-1 rounded text-white truncate w-full text-center"
+                                style={{ backgroundColor: assignment.shift.color }}
+                                title={`${assignment.shift.name} (${assignment.shift.startTime}-${assignment.shift.endTime})`}
+                            >
+                                {assignment.shift.code}
+                            </div>
+                        ) : (
+                            <div className="h-full w-full rounded hover:bg-slate-100 min-h-[24px]"></div>
+                        )}
+                    </div>
+                );
+            }
+        }))
+    ];
+
     return (
         <div className="container mx-auto p-6 max-w-6xl space-y-6">
             <div className="flex justify-between items-center">
@@ -97,58 +143,20 @@ export default function TeamSchedule() {
             </div>
 
             <Card>
-                <CardContent className="p-0 overflow-x-auto">
-                    <table className="w-full border-collapse">
-                        <thead>
-                            <tr className="border-b bg-muted/50">
-                                <th className="p-4 text-left font-medium min-w-[200px]">Employee</th>
-                                {days.map(day => (
-                                    <th key={day.toString()} className="p-4 text-center font-medium min-w-[100px] border-l">
-                                        <div className="text-sm">{format(day, "EEE")}</div>
-                                        <div className="text-xs text-muted-foreground">{format(day, "d")}</div>
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {isLoading ? (
-                                <tr><td colSpan={8} className="p-8 text-center">Loading Schedule...</td></tr>
-                            ) : uniquePersons.length === 0 ? (
-                                <tr><td colSpan={8} className="p-8 text-center text-muted-foreground">No employees found locally. Run Seed/Verification.</td></tr>
-                            ) : (
-                                uniquePersons.map((person: any) => (
-                                    <tr key={person.id} className="border-b hover:bg-muted/5">
-                                        <td className="p-4 font-medium">
-                                            {person.firstName} {person.lastName}
-                                            <div className="text-xs text-muted-foreground">{person.personNumber}</div>
-                                        </td>
-                                        {days.map(day => {
-                                            const assignment = getShiftForCell(person.id, day);
-                                            return (
-                                                <td
-                                                    key={day.toString()}
-                                                    className="p-2 border-l text-center cursor-pointer hover:bg-accent transition-colors"
-                                                    onClick={() => setSelectedCell({ personId: person.id, date: day })}
-                                                >
-                                                    {assignment ? (
-                                                        <div
-                                                            className="text-xs font-medium px-2 py-1 rounded text-white truncate"
-                                                            style={{ backgroundColor: assignment.shift.color }}
-                                                            title={`${assignment.shift.name} (${assignment.shift.startTime}-${assignment.shift.endTime})`}
-                                                        >
-                                                            {assignment.shift.code}
-                                                        </div>
-                                                    ) : (
-                                                        <div className="h-6 w-full rounded hover:bg-slate-200"></div>
-                                                    )}
-                                                </td>
-                                            );
-                                        })}
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                <CardContent className="p-0 overflow-hidden">
+                    {isLoading ? (
+                        <div className="p-8 text-center text-muted-foreground">Loading Schedule...</div>
+                    ) : uniquePersons.length === 0 ? (
+                        <div className="p-8 text-center text-muted-foreground">No employees found locally. Run Seed/Verification.</div>
+                    ) : (
+                        <InteractiveSpreadsheet
+                            data={uniquePersons}
+                            columns={columns}
+                            virtualized={true}
+                            containerHeight="500px"
+                            onChange={() => { }}
+                        />
+                    )}
                 </CardContent>
             </Card>
 

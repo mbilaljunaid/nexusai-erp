@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, MessageSquare, CheckCircle2 } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface Dispute { id: string; dispute_number: string; from_entity: string; to_entity: string; disputed_amount: number; currency: string; status: string; reason: string; opened_by: string; opened_at: string; events: DEvent[]; resolution: string; }
 interface DEvent { at: string; by: string; action: string; note: string; }
@@ -39,6 +40,16 @@ export default function ICDisputeWorkbench() {
 
     const totalOpen = safeDisputes.filter(d => d.status === 'Open' || d.status === 'Escalated').length;
     const totalAmt = safeDisputes.reduce((s, d) => s + Number(d.disputed_amount ?? 0), 0);
+
+    const disputeColumns: SpreadsheetColumn<Dispute>[] = [
+        { id: "dispute_number", header: "#", width: "100px", cell: (row) => <div style={{ fontFamily: 'monospace', fontSize: 10, color: '#9ca3af' }}>{row.dispute_number}</div> },
+        { id: "entities", header: "From → To", width: "150px", cell: (row) => <div style={{ fontWeight: 600 }}>{row.from_entity} → {row.to_entity}</div> },
+        { id: "reason", header: "Reason", width: "120px", cell: (row) => <div style={{ color: '#6b7280', fontSize: 10 }}>{row.reason}</div> },
+        { id: "amount", header: "Amount", width: "120px", cell: (row) => <div style={{ fontFamily: 'monospace' }}>{row.disputed_amount ? `$${Number(row.disputed_amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}` : '—'}</div> },
+        { id: "status", header: "Status", width: "100px", cell: (row) => { const clr = STATUS_CLR[row.status] ?? '#6b7280'; return <span style={{ padding: '2px 6px', borderRadius: 4, fontSize: 9, fontWeight: 700, background: clr + '18', color: clr }}>{row.status}</span>; } },
+        { id: "opened_at", header: "Opened", width: "100px", cell: (row) => <div style={{ color: '#9ca3af', fontSize: 10 }}>{new Date(row.opened_at).toLocaleDateString()}</div> },
+        { id: "actions", header: "Actions", width: "200px", cell: (row) => <div style={{ display: 'flex', gap: 4 }}><button onClick={(ev) => { ev.stopPropagation(); setSelected(selected?.id === row.id ? null : row); }} style={{ padding: '2px 6px', background: '#e5e7eb', border: 'none', borderRadius: 4, fontSize: 9, cursor: 'pointer', color: '#374151' }}>{selected?.id === row.id ? 'Unselect' : 'View'}</button>{row.status !== 'Resolved' && row.status !== 'Closed' && <><button onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'REVIEW', note: 'Under review' }); }} style={{ padding: '2px 6px', background: '#eff6ff', border: 'none', borderRadius: 4, fontSize: 9, cursor: 'pointer', color: '#1d4ed8' }}>Review</button><button onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'ESCALATE', note: 'Escalated for management review' }); }} style={{ padding: '2px 6px', background: '#fef2f2', border: 'none', borderRadius: 4, fontSize: 9, cursor: 'pointer', color: '#dc2626' }}>Escalate</button></>}</div> }
+    ];
 
     return (
         <StandardPage
@@ -122,36 +133,13 @@ export default function ICDisputeWorkbench() {
 
             <div style={{ display: 'flex', gap: 14 }}>
                 {/* Dispute list */}
-                <div style={{ flex: 1 }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)' }}>
-                        <thead><tr style={{ background: '#f9fafb' }}>
-                            {['#', 'From → To', 'Reason', 'Amount', 'Status', 'Opened', 'Actions'].map(h => <th key={h} style={{ padding: '9px 10px', textAlign: 'left', fontWeight: 700, borderBottom: '2px solid #e5e7eb' }}>{h}</th>)}
-                        </tr></thead>
-                        <tbody>
-                            {filteredDisputes.map(d => {
-                                const clr = STATUS_CLR[d.status] ?? '#6b7280';
-                                return (
-                                    <tr key={d.id} onClick={() => setSelected(selected?.id === d.id ? null : d)} style={{ borderBottom: '1px solid #f3f4f6', cursor: 'pointer', background: selected?.id === d.id ? '#eff6ff' : d.status === 'Escalated' ? '#fff5f5' : undefined }}>
-                                        <td style={{ padding: '7px 10px', fontFamily: 'monospace', fontSize: 10, color: '#9ca3af' }}>{d.dispute_number}</td>
-                                        <td style={{ padding: '7px 10px', fontWeight: 600 }}>{d.from_entity} → {d.to_entity}</td>
-                                        <td style={{ padding: '7px 10px', color: '#6b7280', fontSize: 10 }}>{d.reason}</td>
-                                        <td style={{ padding: '7px 10px', fontFamily: 'monospace' }}>{d.disputed_amount ? `$${Number(d.disputed_amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}` : '—'}</td>
-                                        <td style={{ padding: '7px 10px' }}><span style={{ padding: '2px 6px', borderRadius: 4, fontSize: 9, fontWeight: 700, background: clr + '18', color: clr }}>{d.status}</span></td>
-                                        <td style={{ padding: '7px 10px', color: '#9ca3af', fontSize: 10 }}>{new Date(d.opened_at).toLocaleDateString()}</td>
-                                        <td style={{ padding: '7px 10px', display: 'flex', gap: 4 }}>
-                                            {d.status !== 'Resolved' && d.status !== 'Closed' && (
-                                                <>
-                                                    <button onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: d.id, action: 'REVIEW', note: 'Under review' }); }} style={{ padding: '2px 6px', background: '#eff6ff', border: 'none', borderRadius: 4, fontSize: 9, cursor: 'pointer', color: '#1d4ed8' }}>Review</button>
-                                                    <button onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: d.id, action: 'ESCALATE', note: 'Escalated for management review' }); }} style={{ padding: '2px 6px', background: '#fef2f2', border: 'none', borderRadius: 4, fontSize: 9, cursor: 'pointer', color: '#dc2626' }}>Escalate</button>
-                                                </>
-                                            )}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                            {filteredDisputes.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No disputes — open one to track IC discrepancies</td></tr>}
-                        </tbody>
-                    </table>
+                <div style={{ flex: 1, height: 600 }}>
+                    <InteractiveSpreadsheet
+                        columns={disputeColumns}
+                        data={filteredDisputes}
+                        onChange={() => { }}
+                        containerHeight="100%"
+                    />
                 </div>
 
                 {/* Detail panel */}

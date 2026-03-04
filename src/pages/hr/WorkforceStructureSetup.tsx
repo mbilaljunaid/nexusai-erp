@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import {
     GitMerge,
     TrendingUp,
@@ -32,6 +33,25 @@ export default function WorkforceStructureSetup() {
             description: "Workforce structure rules have been successfully updated.",
         });
     };
+
+    const LADDERS = [
+        { id: 'l1', name: 'Engineering Professional Series', type: 'Time-in-Step', typeClass: 'bg-blue-50 text-blue-700 border-blue-200', grades: 'G1, G2, G3 (12 Steps Total)', status: 'Active' },
+        { id: 'l2', name: 'Executive Leadership', type: 'Manual / Performance', typeClass: 'bg-purple-50 text-purple-700 border-purple-200', grades: 'E1, E2 (No Steps)', status: 'Active' },
+    ];
+
+    const ladderColumns: SpreadsheetColumn<any>[] = [
+        { id: "name", header: "Ladder Name", width: "250px", cell: (row) => <span className="font-semibold">{row.name}</span> },
+        { id: "type", header: "Progression Type", width: "200px", cell: (row) => <div className="w-full"><Badge variant="outline" className={row.typeClass}>{row.type}</Badge></div> },
+        { id: "grades", header: "Grades Included", width: "250px", cell: (row) => <span className="text-muted-foreground">{row.grades}</span> },
+        { id: "status", header: "Status", width: "120px", cell: (row) => <div className="w-full"><Badge className="bg-green-500/10 text-green-700 border-green-500/20 shadow-none">{row.status}</Badge></div> },
+        {
+            id: "actions", header: "Actions", width: "150px", cell: (row) => (
+                <div className="flex justify-end w-full">
+                    <Button variant="ghost" size="sm">Manage Steps <ArrowRight className="ml-2 h-4 w-4" /></Button>
+                </div>
+            )
+        }
+    ];
 
     return (
         <StandardPage
@@ -201,46 +221,13 @@ export default function WorkforceStructureSetup() {
                                 </div>
 
                                 {/* Mock Grade Ladder Table */}
-                                <div className="border rounded-lg overflow-hidden">
-                                    <table className="w-full text-sm text-left">
-                                        <thead className="bg-muted/50 border-b">
-                                            <tr>
-                                                <th className="px-4 py-3 font-medium">Ladder Name</th>
-                                                <th className="px-4 py-3 font-medium">Progression Type</th>
-                                                <th className="px-4 py-3 font-medium">Grades Included</th>
-                                                <th className="px-4 py-3 font-medium">Status</th>
-                                                <th className="px-4 py-3 text-right font-medium">Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y">
-                                            <tr className="hover:bg-muted/20 transition-colors">
-                                                <td className="px-4 py-3 font-semibold">Engineering Professional Series</td>
-                                                <td className="px-4 py-3">
-                                                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">Time-in-Step</Badge>
-                                                </td>
-                                                <td className="px-4 py-3">G1, G2, G3 (12 Steps Total)</td>
-                                                <td className="px-4 py-3">
-                                                    <Badge className="bg-green-500/10 text-green-700 border-green-500/20 shadow-none">Active</Badge>
-                                                </td>
-                                                <td className="px-4 py-3 text-right">
-                                                    <Button variant="ghost" size="sm">Manage Steps <ArrowRight className="ml-2 h-4 w-4" /></Button>
-                                                </td>
-                                            </tr>
-                                            <tr className="hover:bg-muted/20 transition-colors">
-                                                <td className="px-4 py-3 font-semibold">Executive Leadership</td>
-                                                <td className="px-4 py-3">
-                                                    <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">Manual / Performance</Badge>
-                                                </td>
-                                                <td className="px-4 py-3">E1, E2 (No Steps)</td>
-                                                <td className="px-4 py-3">
-                                                    <Badge className="bg-green-500/10 text-green-700 border-green-500/20 shadow-none">Active</Badge>
-                                                </td>
-                                                <td className="px-4 py-3 text-right">
-                                                    <Button variant="ghost" size="sm">Manage Steps <ArrowRight className="ml-2 h-4 w-4" /></Button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                <div className="border rounded-lg overflow-hidden h-[300px]">
+                                    <InteractiveSpreadsheet
+                                        columns={ladderColumns}
+                                        data={LADDERS}
+                                        onChange={() => { }}
+                                        containerHeight="100%"
+                                    />
                                 </div>
 
                             </CardContent>

@@ -40,6 +40,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function PersonalDetails() {
     const { toast } = useToast();
@@ -87,6 +88,42 @@ export default function PersonalDetails() {
         setActionType(type);
         setActionDialogOpen(true);
     };
+
+    const documentColumns: SpreadsheetColumn<any>[] = [
+        {
+            id: "name", header: "Document Name", width: "250px", cell: (row) => (
+                <div className="flex items-center gap-3 w-full">
+                    <div className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
+                        <FileText className="h-4 w-4 text-zinc-500" />
+                    </div>
+                    <span className="font-medium">{row.name}</span>
+                </div>
+            )
+        },
+        { id: "type", header: "Category", width: "150px", cell: (row) => <div className="text-muted-foreground w-full">{row.type}</div> },
+        { id: "date", header: "Date Added", width: "150px", cell: (row) => <div className="font-mono text-zinc-500 w-full">{row.date}</div> },
+        {
+            id: "status", header: "Status", width: "150px", cell: (row) => (
+                <div className="w-full">
+                    <Badge variant={row.status === "Verified" ? "default" : "outline"} className={row.status === "Verified" ? "bg-green-500/10 text-green-600 border-green-200" : ""}>
+                        {row.status}
+                    </Badge>
+                </div>
+            )
+        },
+        {
+            id: "actions", header: <div className="text-right w-full">Actions</div> as any, width: "120px", cell: (row) => (
+                <div className="text-right w-full space-x-2">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600">
+                        <Download className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-red-600">
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+                </div>
+            )
+        }
+    ];
 
     return (
         <StandardPage
@@ -331,45 +368,13 @@ export default function PersonalDetails() {
                             </Button>
                         </div>
 
-                        <div className="border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden bg-background">
-                            <table className="w-full text-sm">
-                                <thead className="bg-zinc-50 dark:bg-zinc-900">
-                                    <tr className="border-b border-zinc-200 dark:border-zinc-800">
-                                        <th className="px-6 py-4 text-left font-semibold">Document Name</th>
-                                        <th className="px-6 py-4 text-left font-semibold">Category</th>
-                                        <th className="px-6 py-4 text-left font-semibold">Date Added</th>
-                                        <th className="px-6 py-4 text-left font-semibold">Status</th>
-                                        <th className="px-6 py-4 text-right font-semibold">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {documents.map((doc) => (
-                                        <tr key={doc.id} className="border-b border-zinc-100 dark:border-zinc-900 last:border-0 hover:bg-zinc-50/50 dark:hover:bg-zinc-900/50">
-                                            <td className="px-6 py-4 flex items-center gap-3">
-                                                <div className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
-                                                    <FileText className="h-4 w-4 text-zinc-500" />
-                                                </div>
-                                                <span className="font-medium">{doc.name}</span>
-                                            </td>
-                                            <td className="px-6 py-4 text-muted-foreground">{doc.type}</td>
-                                            <td className="px-6 py-4 font-mono text-zinc-500">{doc.date}</td>
-                                            <td className="px-6 py-4">
-                                                <Badge variant={doc.status === "Verified" ? "default" : "outline"} className={doc.status === "Verified" ? "bg-green-500/10 text-green-600 border-green-200" : ""}>
-                                                    {doc.status}
-                                                </Badge>
-                                            </td>
-                                            <td className="px-6 py-4 text-right space-x-2">
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600">
-                                                    <Download className="h-4 w-4" />
-                                                </Button>
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-red-600">
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                        <div style={{ minHeight: '300px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 8 }}>
+                            <InteractiveSpreadsheet
+                                columns={documentColumns}
+                                data={documents}
+                                onChange={() => { }}
+                                containerHeight="400px"
+                            />
                         </div>
                     </TabsContent>
 

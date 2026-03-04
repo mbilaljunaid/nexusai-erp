@@ -16,6 +16,7 @@ import {
     ArrowRight
 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function TaskDashboard() {
     const { data: tasksData = { data: [] }, isLoading } = useQuery({
@@ -27,6 +28,29 @@ export default function TaskDashboard() {
     });
 
     const tasks = tasksData.data;
+
+    const taskColumns: SpreadsheetColumn<any>[] = [
+        { id: "taskNumber", header: "Task #", width: "120px", cell: (row) => <div className="font-mono text-blue-400">{row.taskNumber}</div> },
+        { id: "taskType", header: "Type", width: "100px", cell: (row) => <Badge variant="outline" className="text-[10px] uppercase">{row.taskType}</Badge> },
+        {
+            id: "status", header: "Status", width: "150px", cell: (row) => (
+                <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${row.status === 'COMPLETED' ? 'bg-green-500' : 'bg-blue-500 animate-pulse'}`} />
+                    <span className="text-white capitalize">{row.status.toLowerCase().replace('_', ' ')}</span>
+                </div>
+            )
+        },
+        { id: "priority", header: "Priority", width: "100px", cell: (row) => <span className="text-slate-400">{row.priority}</span> },
+        { id: "assigned", header: "Assigned To", width: "150px", cell: (row) => <span className="text-white">{row.assignedUserId || 'Unassigned'}</span> },
+        { id: "location", header: "Location", width: "120px", cell: () => <span className="text-slate-400 font-mono text-xs">A-04-12-01</span> },
+        {
+            id: "actions", header: "Actions", width: "100px", cell: () => (
+                <Button variant="ghost" size="sm" className="hover:bg-blue-500/20 text-blue-400 w-full justify-end">
+                    Details <ArrowRight className="w-3 h-3 ml-1" />
+                </Button>
+            )
+        }
+    ];
 
     const stats = [
         { label: 'Pending', count: tasks.filter((t: any) => t.status === 'PENDING').length, color: 'text-blue-400', icon: Clock },
@@ -71,53 +95,13 @@ export default function TaskDashboard() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="border border-slate-800 rounded-lg overflow-hidden">
-                        <table className="w-full text-sm text-left">
-                            <thead className="bg-slate-950 text-slate-400 font-medium border-b border-slate-800">
-                                <tr>
-                                    <th className="p-4">Task #</th>
-                                    <th className="p-4">Type</th>
-                                    <th className="p-4">Status</th>
-                                    <th className="p-4">Priority</th>
-                                    <th className="p-4">Assigned To</th>
-                                    <th className="p-4">Location</th>
-                                    <th className="p-4 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-800">
-                                {tasks.map((task: any) => (
-                                    <tr key={task.id} className="hover:bg-blue-500/5 transition-colors group">
-                                        <td className="p-4 font-mono text-blue-400">{task.taskNumber}</td>
-                                        <td className="p-4">
-                                            <Badge variant="outline" className="text-[10px] uppercase">{task.taskType}</Badge>
-                                        </td>
-                                        <td className="p-4">
-                                            <div className="flex items-center gap-2">
-                                                <div className={`w-2 h-2 rounded-full ${task.status === 'COMPLETED' ? 'bg-green-500' : 'bg-blue-500 animate-pulse'}`} />
-                                                <span className="text-white capitalize">{task.status.toLowerCase().replace('_', ' ')}</span>
-                                            </div>
-                                        </td>
-                                        <td className="p-4">
-                                            <span className="text-slate-400">{task.priority}</span>
-                                        </td>
-                                        <td className="p-4">
-                                            <span className="text-white">{task.assignedUserId || 'Unassigned'}</span>
-                                        </td>
-                                        <td className="p-4 text-slate-400 font-mono text-xs">A-04-12-01</td>
-                                        <td className="p-4 text-right">
-                                            <Button variant="ghost" size="sm" className="hover:bg-blue-500/20 text-blue-400">
-                                                Details <ArrowRight className="w-3 h-3 ml-1" />
-                                            </Button>
-                                        </td>
-                                    </tr>
-                                ))}
-                                {tasks.length === 0 && (
-                                    <tr>
-                                        <td colSpan={7} className="p-12 text-center text-slate-500 italic">No tasks in the active queue</td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
+                    <div style={{ height: 400 }}>
+                        <InteractiveSpreadsheet
+                            columns={taskColumns}
+                            data={tasks}
+                            onChange={() => { }}
+                            containerHeight="100%"
+                        />
                     </div>
                 </CardContent>
             </Card>

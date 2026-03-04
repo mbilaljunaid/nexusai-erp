@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { CheckCircle2, AlertTriangle, Play, Download, RefreshCw, FileText } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface AutoInvRun {
     id: string;
@@ -68,6 +69,12 @@ export default function AutoInvoiceValidation() {
         if (!parsedLines.length || jsonError) return;
         validateMutation.mutate({ sourceType, sourceRef, lines: parsedLines });
     };
+
+    const errColumns: SpreadsheetColumn<any>[] = [
+        { id: "lineRef", header: "Line Ref", width: "150px", cell: (row) => <div className="mono">{row.lineRef}</div> },
+        { id: "rule", header: "Rule", width: "150px", cell: (row) => <div><span className="rule-badge">{row.rule}</span></div> },
+        { id: "message", header: "Message", width: "1fr", cell: (row) => <div className="err-msg">{row.message}</div> }
+    ];
 
     return (
         <StandardPage
@@ -161,18 +168,14 @@ export default function AutoInvoiceValidation() {
                             </div>
 
                             {activeRun.validation_errors?.length > 0 ? (
-                                <table className="err-table">
-                                    <thead><tr><th>Line Ref</th><th>Rule</th><th>Message</th></tr></thead>
-                                    <tbody>
-                                        {activeRun.validation_errors.map((e, i) => (
-                                            <tr key={i} className="err-row">
-                                                <td className="mono">{e.lineRef}</td>
-                                                <td><span className="rule-badge">{e.rule}</span></td>
-                                                <td className="err-msg">{e.message}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                <div style={{ height: 300, border: '1px solid #e5e7eb', borderRadius: 8, overflow: 'hidden' }}>
+                                    <InteractiveSpreadsheet
+                                        columns={errColumns}
+                                        data={activeRun.validation_errors}
+                                        onChange={() => { }}
+                                        containerHeight="100%"
+                                    />
+                                </div>
                             ) : (
                                 <div className="all-pass">
                                     <CheckCircle2 size={20} style={{ color: '#059669' }} />

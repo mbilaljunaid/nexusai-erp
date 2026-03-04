@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Plus, ArrowRight, Check, X, RefreshCw } from "lucide-react";
+import { Plus, Check, X, Building2, Upload } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -12,6 +12,9 @@ import { formatCurrency } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import TransferPricingRules from "./TransferPricingRules";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 
 export default function IntercompanyWorkbench() {
     const [activeTab, setActiveTab] = useState("outbound");
@@ -25,7 +28,7 @@ export default function IntercompanyWorkbench() {
 
     // --- Outbound: My Batches ---
     const [page, setPage] = useState(1);
-    const { data: batchData, isLoading } = useQuery({
+    const { data: batchData, isLoading: isLoadingBatches } = useQuery({
         queryKey: ["ic-batches-outbound", currentOrgId, page],
         queryFn: async () => {
             const res = await fetch(`/api/intercompany/batches?initiatorOrgId=${currentOrgId}&role=INITIATOR&page=${page}&limit=10`, { headers: scopeHeaders });
@@ -95,6 +98,64 @@ export default function IntercompanyWorkbench() {
         }
     });
 
+    const getStatusColor = (status: string) => {
+        switch (status?.toLowerCase()) {
+            case 'pending': return 'bg-yellow-100 text-yellow-800';
+            case 'approved': return 'bg-green-100 text-green-800';
+            case 'rejected': return 'bg-red-100 text-red-800';
+            case 'draft': return 'bg-gray-100 text-gray-800';
+            case 'submitted': return 'bg-blue-100 text-blue-800';
+            default: return 'bg-gray-100 text-gray-800';
+        }
+    };
+
+    const outboundColumns: SpreadsheetColumn<any>[] = [
+        { id: "id", header: "Batch ID", width: "100px", cell: (item: any) => <span className="font-mono text-xs">{item.id}</span> },
+        { id: "createdAt", header: "Date", width: "120px", cell: (item: any) => new Date(item.createdAt).toLocaleDateString() },
+        { id: "receiverOrgId", header: "Counterparty", width: "150px", cell: (item: any) => item.receiverOrgId },
+        { id: "totalAmount", header: "Amount", width: "120px", cell: (item: any) => <span className="font-mono text-right block w-full">{formatCurrency(item.totalAmount)}</span> },
+        { id: "currency", header: "Currency", width: "100px", cell: (item: any) => item.currency || "USD" },
+        { id: "status", header: "Status", width: "120px", cell: (item: any) => <Badge className={getStatusColor(item.status)}>{item.status}</Badge> }
+    ];
+
+    const inboundColumns: SpreadsheetColumn<any>[] = [
+        { id: "id", header: "Transaction ID", width: "100px", cell: (item: any) => <span className="font-mono text-xs">{item.id.substring(0, 8)}...</span> },
+        { id: "createdAt", header: "Date", width: "120px", cell: (item: any) => new Date(item.createdAt).toLocaleDateString() },
+        { id: "providerOrgId", header: "From Entity", width: "150px", cell: (item: any) => item.providerOrgId },
+        { id: "transactionTypeId", header: "Type", width: "150px", cell: (item: any) => item.transactionTypeId },
+        { id: "amount", header: "Amount", width: "120px", cell: (item: any) => <span className="font-mono text-right block w-full">{formatCurrency(item.amount)}</span> },
+        { id: "status", header: "Status", width: "120px", cell: (item: any) => <Badge className={getStatusColor(item.status)}>{item.status}</Badge> },
+        {
+            id: "actions", header: "Action", width: "150px", cell: (item: any) => (
+                item.status === 'PENDING' && (
+                    <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="sm" className="text-green-600 h-8 px-2"
+                            onClick={() => respondTransaction.mutate({ id: item.id, action: "APPROVE" })}>
+                            <Check className="w-4 h-4" />
+                        </Button>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button variant="ghost" size="sm" className="text-red-600 h-8 px-2">
+                                    <X className="w-4 h-4" />
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader><DialogTitle>Reject Transaction</DialogTitle></DialogHeader>
+                                <div className="space-y-4">
+                                    <Input id={`reason-${item.id}`} placeholder="Enter Rejection Reason..." />
+                                    <Button onClick={() => {
+                                        const el = document.getElementById(`reason-${item.id}`) as HTMLInputElement;
+                                        respondTransaction.mutate({ id: item.id, action: "REJECT", rejectionReason: el?.value || "No reason" });
+                                    }}>Confirm Rejection</Button>
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
+                )
+            )
+        }
+    ];
+
     return (
         <div className="p-8 space-y-6">
             <div className="flex justify-between items-center">
@@ -122,55 +183,18 @@ export default function IntercompanyWorkbench() {
                     <Card>
                         <CardHeader><CardTitle>My Outbound Batches</CardTitle></CardHeader>
                         <CardContent>
-                            {/* Simplified Table */}
-                            <div className="rounded-md border">
-                                <table className="w-full text-sm">
-                                    <thead className="bg-muted/50 border-b">
-                                        <tr>
-                                            <th className="p-3 text-left font-medium">Batch ID</th>
-                                            <th className="p-3 text-left font-medium">Description</th>
-                                            <th className="p-3 text-left font-medium">Status</th>
-                                            <th className="p-3 text-right font-medium">Amount</th>
-                                            <th className="p-3 text-center font-medium">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {outboundBatches?.map((b: any) => (
-                                            <tr key={b.id} className="border-b transition-colors hover:bg-muted/50">
-                                                <td className="p-3">{b.id}</td>
-                                                <td className="p-3">{b.description}</td>
-                                                <td className="p-3">
-                                                    <Badge variant={b.status === "SUBMITTED" ? "secondary" : b.status === "REJECTED" ? "destructive" : "outline"}>
-                                                        {b.status}
-                                                    </Badge>
-                                                </td>
-                                                <td className="p-3 text-right">{formatCurrency(b.totalAmount)}</td>
-                                                <td className="p-3 text-center">
-                                                    {b.status === "DRAFT" && (
-                                                        <Button variant="ghost" size="sm" onClick={() => submitBatch.mutate(b.id)}>
-                                                            Submit <ArrowRight className="ml-2 h-4 w-4" />
-                                                        </Button>
-                                                    )}
-                                                    {b.status === "REJECTED" && (
-                                                        <Button variant="outline" size="sm" onClick={() => resubmitTransaction.mutate(b.id)}>
-                                                            <RefreshCw className="mr-2 h-4 w-4" /> Resubmit
-                                                        </Button>
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="flex items-center justify-between mt-4">
-                                <div className="text-sm text-muted-foreground">
-                                    Page {meta.page} of {meta.totalPages} (Total: {meta.total})
+                            {isLoadingBatches ? (
+                                <div className="text-center py-4 text-muted-foreground">Loading outbound charges...</div>
+                            ) : (
+                                <div style={{ height: '400px' }}>
+                                    <InteractiveSpreadsheet
+                                        columns={outboundColumns}
+                                        data={outboundBatches}
+                                        rowKey="id"
+                                        containerHeight="400px"
+                                    />
                                 </div>
-                                <div className="space-x-2">
-                                    <Button variant="outline" size="sm" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>Previous</Button>
-                                    <Button variant="outline" size="sm" onClick={() => setPage(p => Math.min(meta.totalPages, p + 1))} disabled={page >= meta.totalPages}>Next</Button>
-                                </div>
-                            </div>
+                            )}
                         </CardContent>
                     </Card>
                 </TabsContent>
@@ -179,72 +203,16 @@ export default function IntercompanyWorkbench() {
                     <Card>
                         <CardHeader><CardTitle>Inbound Transactions (Requiring Approval)</CardTitle></CardHeader>
                         <CardContent>
-                            {inboundLoading ? <div>Loading...</div> : (
-                                <div className="rounded-md border">
-                                    <table className="w-full text-sm">
-                                        <thead className="bg-muted/50 border-b">
-                                            <tr>
-                                                <th className="p-3 text-left font-medium">Transaction ID</th>
-                                                <th className="p-3 text-left font-medium">Provider</th>
-                                                <th className="p-3 text-left font-medium">Type</th>
-                                                <th className="p-3 text-right font-medium">Base Cost</th>
-                                                <th className="p-3 text-right font-medium">Markup</th>
-                                                <th className="p-3 text-right font-medium">Total</th>
-                                                <th className="p-3 text-center font-medium">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {inboundTransactions?.map((t: any) => {
-                                                const total = Number(t.amount);
-                                                const rate = Number(t.markupRate || 0);
-                                                const base = total / (1 + rate);
-                                                const markup = total - base;
-
-                                                return (
-                                                    <tr key={t.id} className="border-b transition-colors hover:bg-muted/50">
-                                                        <td className="p-3 font-mono text-xs">{t.id.substring(0, 8)}...</td>
-                                                        <td className="p-3">{t.providerOrgId}</td>
-                                                        <td className="p-3">{t.transactionTypeId}</td>
-                                                        <td className="p-3 text-right">{formatCurrency(base)}</td>
-                                                        <td className="p-3 text-right">
-                                                            <div className="flex flex-col items-end">
-                                                                <span>{formatCurrency(markup)}</span>
-                                                                {rate > 0 && <span className="text-xs text-muted-foreground">{(rate * 100).toFixed(1)}%</span>}
-                                                            </div>
-                                                        </td>
-                                                        <td className="p-3 text-right font-bold">{formatCurrency(total)}</td>
-                                                        <td className="p-3 text-center space-x-2">
-                                                            <Button size="sm" variant="default" className="bg-green-600 hover:bg-green-700 h-8"
-                                                                onClick={() => respondTransaction.mutate({ id: t.id, action: "APPROVE" })}>
-                                                                <Check className="h-4 w-4 mr-1" /> Approve
-                                                            </Button>
-
-                                                            <Dialog>
-                                                                <DialogTrigger asChild>
-                                                                    <Button size="sm" variant="destructive" className="h-8">
-                                                                        <X className="h-4 w-4 mr-1" /> Reject
-                                                                    </Button>
-                                                                </DialogTrigger>
-                                                                <DialogContent>
-                                                                    <DialogHeader><DialogTitle>Reject Transaction</DialogTitle></DialogHeader>
-                                                                    <div className="space-y-4">
-                                                                        <Input id={`reason-${t.id}`} placeholder="Enter Rejection Reason..." />
-                                                                        <Button onClick={() => {
-                                                                            const el = document.getElementById(`reason-${t.id}`) as HTMLInputElement;
-                                                                            respondTransaction.mutate({ id: t.id, action: "REJECT", rejectionReason: el?.value || "No reason" });
-                                                                        }}>Confirm Rejection</Button>
-                                                                    </div>
-                                                                </DialogContent>
-                                                            </Dialog>
-                                                        </td>
-                                                    </tr>
-                                                );
-                                            })}
-                                            {!inboundTransactions?.length && (
-                                                <tr><td colSpan={7} className="p-8 text-center text-muted-foreground">No pending transactions.</td></tr>
-                                            )}
-                                        </tbody>
-                                    </table>
+                            {inboundLoading ? (
+                                <div className="text-center py-4 text-muted-foreground">Loading inbound...</div>
+                            ) : (
+                                <div style={{ height: '400px' }}>
+                                    <InteractiveSpreadsheet
+                                        columns={inboundColumns}
+                                        data={inboundTransactions || []}
+                                        onChange={() => { }}
+                                        containerHeight="400px"
+                                    />
                                 </div>
                             )}
                         </CardContent>

@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Play, Save, Link2, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface ConstraintRule {
     id?: number;
@@ -65,6 +66,21 @@ export default function ConstraintScheduler() {
             bufferHours: bufferTime,
         });
     };
+
+    const scheduleColumns: SpreadsheetColumn<any>[] = [
+        { id: "workOrder", header: "Work Order", width: "150px", cell: (wo) => <div className="font-medium">{wo.orderNumber}</div> },
+        { id: "product", header: "Product", width: "200px", cell: (wo) => wo.productName },
+        { id: "quantity", header: "Quantity", width: "100px", cell: (wo) => <div className="text-right">{wo.quantity}</div> },
+        { id: "startDate", header: "Start Date", width: "150px", cell: (wo) => wo.scheduledStart ? new Date(wo.scheduledStart).toLocaleDateString() : '—' },
+        { id: "dueDate", header: "Due Date", width: "150px", cell: (wo) => wo.dueDate ? new Date(wo.dueDate).toLocaleDateString() : '—' },
+        {
+            id: "status", header: "Status", width: "120px", cell: (wo) => (
+                <Badge variant={wo.isOnTime ? 'default' : 'destructive'}>
+                    {wo.isOnTime ? 'On Time' : 'At Risk'}
+                </Badge>
+            )
+        }
+    ];
 
     return (
         <div className="container mx-auto p-6 space-y-6">
@@ -172,35 +188,13 @@ export default function ConstraintScheduler() {
                                     </Card>
                                 </div>
 
-                                <div className="border rounded-lg">
-                                    <table className="w-full">
-                                        <thead className="bg-muted">
-                                            <tr>
-                                                <th className="text-left p-3">Work Order</th>
-                                                <th className="text-left p-3">Product</th>
-                                                <th className="text-right p-3">Quantity</th>
-                                                <th className="text-left p-3">Start Date</th>
-                                                <th className="text-left p-3">Due Date</th>
-                                                <th className="text-left p-3">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {schedule.workOrders?.map((wo: any) => (
-                                                <tr key={wo.id} className="border-t">
-                                                    <td className="p-3 font-medium">{wo.orderNumber}</td>
-                                                    <td className="p-3">{wo.productName}</td>
-                                                    <td className="p-3 text-right">{wo.quantity}</td>
-                                                    <td className="p-3">{new Date(wo.scheduledStart).toLocaleDateString()}</td>
-                                                    <td className="p-3">{new Date(wo.dueDate).toLocaleDateString()}</td>
-                                                    <td className="p-3">
-                                                        <Badge variant={wo.isOnTime ? 'default' : 'destructive'}>
-                                                            {wo.isOnTime ? 'On Time' : 'At Risk'}
-                                                        </Badge>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                <div className="h-[400px]">
+                                    <InteractiveSpreadsheet
+                                        columns={scheduleColumns}
+                                        data={schedule.workOrders || []}
+                                        onChange={() => { }}
+                                        containerHeight="400px"
+                                    />
                                 </div>
                             </div>
                         ) : (

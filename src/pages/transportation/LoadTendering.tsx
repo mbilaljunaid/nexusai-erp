@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Send, TrendingDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function LoadTendering() {
     const { toast } = useToast();
@@ -55,6 +56,49 @@ export default function LoadTendering() {
             queryClient.invalidateQueries({ queryKey: ["/api/transportation/shipments"] });
         },
     });
+
+    const columns: SpreadsheetColumn<any>[] = [
+        {
+            id: "carrier",
+            header: "Carrier",
+            width: "200px",
+            cell: (carrier: any) => (
+                <div>
+                    <div className="font-medium">{carrier.name}</div>
+                    <div className="text-sm text-muted-foreground">{carrier.serviceLevel}</div>
+                </div>
+            )
+        },
+        { id: "baseRate", header: "Base Rate", width: "120px", cell: (carrier: any) => <span>${carrier.baseRate}</span> },
+        { id: "fuelSurcharge", header: "Fuel Surcharge", width: "150px", cell: (carrier: any) => <span>${carrier.fuelSurcharge}</span> },
+        { id: "totalRate", header: "Total Rate", width: "120px", cell: (carrier: any) => <span className="font-bold">${carrier.totalRate}</span> },
+        { id: "transitTime", header: "Transit Time", width: "150px", cell: (carrier: any) => <span>{carrier.transitDays} days</span> },
+        {
+            id: "performance", header: "Performance", width: "120px", cell: (carrier: any) => (
+                <Badge variant={carrier.performanceScore >= 90 ? "default" : "secondary"}>
+                    {carrier.performanceScore}%
+                </Badge>
+            )
+        },
+        {
+            id: "actions", header: "Action", width: "120px", cell: (carrier: any) => (
+                <Button
+                    size="sm"
+                    onClick={() =>
+                        tenderMutation.mutate({
+                            shipmentId,
+                            carrierId: carrier.id,
+                            rate: carrier.totalRate,
+                        })
+                    }
+                    disabled={tenderMutation.isPending}
+                >
+                    <Send className="h-3 w-3 mr-1" />
+                    Tender
+                </Button>
+            )
+        }
+    ];
 
     return (
         <div className="container mx-auto p-6 space-y-6">
@@ -110,54 +154,13 @@ export default function LoadTendering() {
                     </CardHeader>
                     <CardContent>
                         <div className="border rounded-lg">
-                            <table className="w-full">
-                                <thead className="bg-muted">
-                                    <tr>
-                                        <th className="text-left p-3">Carrier</th>
-                                        <th className="text-right p-3">Base Rate</th>
-                                        <th className="text-right p-3">Fuel Surcharge</th>
-                                        <th className="text-right p-3">Total Rate</th>
-                                        <th className="text-left p-3">Transit Time</th>
-                                        <th className="text-left p-3">Performance</th>
-                                        <th className="text-right p-3">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {carriers.map((carrier: any) => (
-                                        <tr key={carrier.id} className="border-t">
-                                            <td className="p-3">
-                                                <div className="font-medium">{carrier.name}</div>
-                                                <div className="text-sm text-muted-foreground">{carrier.serviceLevel}</div>
-                                            </td>
-                                            <td className="p-3 text-right">${carrier.baseRate}</td>
-                                            <td className="p-3 text-right">${carrier.fuelSurcharge}</td>
-                                            <td className="p-3 text-right font-bold">${carrier.totalRate}</td>
-                                            <td className="p-3">{carrier.transitDays} days</td>
-                                            <td className="p-3">
-                                                <Badge variant={carrier.performanceScore >= 90 ? "default" : "secondary"}>
-                                                    {carrier.performanceScore}%
-                                                </Badge>
-                                            </td>
-                                            <td className="p-3 text-right">
-                                                <Button
-                                                    size="sm"
-                                                    onClick={() =>
-                                                        tenderMutation.mutate({
-                                                            shipmentId,
-                                                            carrierId: carrier.id,
-                                                            rate: carrier.totalRate,
-                                                        })
-                                                    }
-                                                    disabled={tenderMutation.isPending}
-                                                >
-                                                    <Send className="h-3 w-3 mr-1" />
-                                                    Tender
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                            <InteractiveSpreadsheet
+                                data={carriers}
+                                columns={columns}
+                                virtualized={true}
+                                containerHeight="400px"
+                                onChange={() => { }}
+                            />
                         </div>
                     </CardContent>
                 </Card>

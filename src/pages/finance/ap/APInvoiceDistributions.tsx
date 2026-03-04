@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Trash2, Save, Network } from "lucide-react";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface DistributionLine {
     id?: string;
@@ -129,6 +130,67 @@ export function APInvoiceDistributions({ invoiceId, invoiceLineId, lineAmount, o
     const totalCalculated = calculateTotal();
     const isBalanced = Math.abs(totalCalculated - lineAmount) <= 0.01;
 
+    const distColumns: SpreadsheetColumn<DistributionLine>[] = [
+        { id: "lineNumber", header: "No.", width: "80px", cell: (row) => <div className="text-center text-slate-500 font-medium">{row.lineNumber}</div> },
+        {
+            id: "type", header: "Type", width: "160px", cell: (row) => (
+                <Select value={row.distributionLineType} onValueChange={v => handleDistributionChange(row.lineNumber - 1, "distributionLineType", v)}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="ITEM">Item</SelectItem>
+                        <SelectItem value="ACCRUAL">Accrual</SelectItem>
+                        <SelectItem value="TAX">Tax</SelectItem>
+                        <SelectItem value="VARIANCE">Variance</SelectItem>
+                        <SelectItem value="PREPAYMENT">Prepayment</SelectItem>
+                    </SelectContent>
+                </Select>
+            )
+        },
+        {
+            id: "glDate", header: "GL Date", width: "160px", cell: (row) => (
+                <Input type="date" className="h-8 text-xs w-full" value={row.accountingDate || ""} onChange={e => handleDistributionChange(row.lineNumber - 1, "accountingDate", e.target.value)} />
+            )
+        },
+        {
+            id: "glAccount", header: "GL Account", width: "250px", cell: (row) => (
+                <Select value={row.glAccountId || undefined} onValueChange={v => handleDistributionChange(row.lineNumber - 1, "glAccountId", v)}>
+                    <SelectTrigger className="h-8 text-xs font-mono"><SelectValue placeholder="Select Account" /></SelectTrigger>
+                    <SelectContent>
+                        {Array.isArray(accounts) ? accounts.map((acc: any) => (
+                            <SelectItem key={acc.id} value={acc.id} className="font-mono text-xs">
+                                {acc.accountCode} - {acc.description}
+                            </SelectItem>
+                        )) : null}
+                    </SelectContent>
+                </Select>
+            )
+        },
+        {
+            id: "amount", header: "Amount", width: "120px", cell: (row) => (
+                <Input type="number" className="h-8 text-xs text-right w-full" value={row.amount} onChange={e => handleDistributionChange(row.lineNumber - 1, "amount", e.target.value)} />
+            )
+        },
+        {
+            id: "desc", header: "Description", width: "200px", cell: (row) => (
+                <Input className="h-8 text-xs w-full" placeholder="Description..." value={row.description} onChange={e => handleDistributionChange(row.lineNumber - 1, "description", e.target.value)} />
+            )
+        },
+        {
+            id: "project", header: "Project (PPM)", width: "150px", cell: (row) => (
+                <Input className="h-8 text-xs font-mono w-full" placeholder="Project #" value={row.ppmProjectId || ""} onChange={e => handleDistributionChange(row.lineNumber - 1, "ppmProjectId", e.target.value)} />
+            )
+        },
+        {
+            id: "actions", header: "Actions", width: "80px", cell: (row) => (
+                <div className="flex justify-center w-full">
+                    <Button variant="ghost" size="sm" onClick={() => removeDistribution(row.lineNumber - 1)} disabled={distributions.length === 1} className="h-8 w-8 p-0 px-2 text-red-500 hover:text-red-700 hover:bg-red-50">
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+                </div>
+            )
+        }
+    ];
+
     return (
         <StandardPage
             title={<><Network className="h-5 w-5 text-blue-600 inline-block mr-2" /> Line Distributions</>}
@@ -145,89 +207,13 @@ export function APInvoiceDistributions({ invoiceId, invoiceLineId, lineAmount, o
             }
         >
             <Card className="border-slate-200 shadow-sm mt-4">
-                <CardContent className="p-0">
-                    <table className="w-full text-sm text-left">
-                        <thead className="bg-slate-100/50 text-slate-500 border-b">
-                            <tr>
-                                <th className="px-4 py-3 font-medium w-16">No.</th>
-                                <th className="px-4 py-3 font-medium w-40">Type</th>
-                                <th className="px-4 py-3 font-medium w-40">GL Date</th>
-                                <th className="px-4 py-3 font-medium w-64">GL Account</th>
-                                <th className="px-4 py-3 font-medium w-32">Amount</th>
-                                <th className="px-4 py-3 font-medium">Description</th>
-                                <th className="px-4 py-3 font-medium w-48">Project (PPM)</th>
-                                <th className="px-4 py-3 font-medium w-24 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y">
-                            {distributions.map((dist, index) => (
-                                <tr key={index} className="hover:bg-slate-50/50 transition-colors">
-                                    <td className="px-4 py-3 text-center text-slate-500 font-medium">{dist.lineNumber}</td>
-                                    <td className="px-4 py-3">
-                                        <Select value={dist.distributionLineType} onValueChange={v => handleDistributionChange(index, "distributionLineType", v)}>
-                                            <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="ITEM">Item</SelectItem>
-                                                <SelectItem value="ACCRUAL">Accrual</SelectItem>
-                                                <SelectItem value="TAX">Tax</SelectItem>
-                                                <SelectItem value="VARIANCE">Variance</SelectItem>
-                                                <SelectItem value="PREPAYMENT">Prepayment</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </td>
-                                    <td className="px-4 py-3">
-                                        <Input
-                                            type="date"
-                                            className="h-8 text-xs"
-                                            value={dist.accountingDate || ""}
-                                            onChange={e => handleDistributionChange(index, "accountingDate", e.target.value)}
-                                        />
-                                    </td>
-                                    <td className="px-4 py-3">
-                                        <Select value={dist.glAccountId || undefined} onValueChange={v => handleDistributionChange(index, "glAccountId", v)}>
-                                            <SelectTrigger className="h-8 text-xs font-mono"><SelectValue placeholder="Select Account" /></SelectTrigger>
-                                            <SelectContent>
-                                                {Array.isArray(accounts) ? accounts.map((acc: any) => (
-                                                    <SelectItem key={acc.id} value={acc.id} className="font-mono text-xs">
-                                                        {acc.accountCode} - {acc.description}
-                                                    </SelectItem>
-                                                )) : null}
-                                            </SelectContent>
-                                        </Select>
-                                    </td>
-                                    <td className="px-4 py-3">
-                                        <Input
-                                            type="number"
-                                            className="h-8 text-xs text-right"
-                                            value={dist.amount}
-                                            onChange={e => handleDistributionChange(index, "amount", e.target.value)}
-                                        />
-                                    </td>
-                                    <td className="px-4 py-3">
-                                        <Input
-                                            className="h-8 text-xs"
-                                            placeholder="Description..."
-                                            value={dist.description}
-                                            onChange={e => handleDistributionChange(index, "description", e.target.value)}
-                                        />
-                                    </td>
-                                    <td className="px-4 py-3">
-                                        <Input
-                                            className="h-8 text-xs font-mono"
-                                            placeholder="Project #"
-                                            value={dist.ppmProjectId || ""}
-                                            onChange={e => handleDistributionChange(index, "ppmProjectId", e.target.value)}
-                                        />
-                                    </td>
-                                    <td className="px-4 py-3 text-right">
-                                        <Button variant="ghost" size="sm" onClick={() => removeDistribution(index)} disabled={distributions.length === 1} className="h-8 px-2 text-red-500 hover:text-red-700 hover:bg-red-50">
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                <CardContent className="p-0 border-b">
+                    <InteractiveSpreadsheet
+                        columns={distColumns}
+                        data={distributions}
+                        onChange={() => { }}
+                        containerHeight="400px"
+                    />
                     <div className="flex justify-between items-center p-4 border-t bg-slate-50">
                         <Button variant="outline" size="sm" onClick={addDistribution} className="text-blue-600 border-blue-200 hover:bg-blue-50">
                             <Plus className="mr-2 h-4 w-4" /> Add Split

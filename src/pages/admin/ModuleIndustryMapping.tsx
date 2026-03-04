@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import AdminLayout from '@/components/admin/AdminLayout';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function ModuleIndustryMapping() {
     const modules = [
@@ -57,6 +58,30 @@ export default function ModuleIndustryMapping() {
         }));
     };
 
+    const mappingColumns: SpreadsheetColumn<any>[] = [
+        {
+            id: "industry",
+            header: "Industry",
+            width: "200px",
+            cell: (row: any) => <div className="font-medium bg-white sticky left-0 z-10">{row.industry}</div>
+        },
+        ...modules.map(module => ({
+            id: module,
+            header: <div className="text-xs text-center">{module}</div>,
+            width: "120px",
+            cell: (row: any) => (
+                <div className="flex items-center justify-center w-full">
+                    <Checkbox
+                        checked={mapping[row.industry]?.[module] || false}
+                        onCheckedChange={() => toggleMapping(row.industry, module)}
+                    />
+                </div>
+            )
+        }))
+    ];
+
+    const mappingData = industries.map(industry => ({ industry }));
+
     return (
         <AdminLayout>
             <div className="p-6 space-y-6">
@@ -75,40 +100,13 @@ export default function ModuleIndustryMapping() {
                         </p>
                     </CardHeader>
                     <CardContent>
-                        <div className="overflow-x-auto">
-                            <table className="w-full border-collapse">
-                                <thead>
-                                    <tr className="border-b-2">
-                                        <th className="text-left py-3 px-4 font-medium bg-gray-50 sticky left-0 z-10">
-                                            Industry
-                                        </th>
-                                        {modules.map((module) => (
-                                            <th key={module} className="text-center py-3 px-4 font-medium bg-gray-50 min-w-[120px]">
-                                                <div className="text-xs">{module}</div>
-                                            </th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {industries.map((industry) => (
-                                        <tr key={industry} className="border-b hover:bg-gray-50">
-                                            <td className="py-3 px-4 font-medium bg-white sticky left-0 z-10">
-                                                {industry}
-                                            </td>
-                                            {modules.map((module) => (
-                                                <td key={module} className="py-3 px-4 text-center">
-                                                    <div className="flex items-center justify-center">
-                                                        <Checkbox
-                                                            checked={mapping[industry]?.[module] || false}
-                                                            onCheckedChange={() => toggleMapping(industry, module)}
-                                                        />
-                                                    </div>
-                                                </td>
-                                            ))}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                        <div className="overflow-x-auto" style={{ height: '500px' }}>
+                            <InteractiveSpreadsheet
+                                columns={mappingColumns}
+                                data={mappingData}
+                                onChange={() => { }}
+                                containerHeight="500px"
+                            />
                         </div>
 
                         {/* Bulk Actions */}

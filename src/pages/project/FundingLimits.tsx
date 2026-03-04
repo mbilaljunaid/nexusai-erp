@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, DollarSign, Activity } from 'lucide-react';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface FundingLimit { id: string; project_id: string; funding_source: string; limit_amount: number; utilized_amount: number; available: number; utilization_pct: number; status: string; alert_threshold_pct: number; restrict_charges: boolean; }
 interface Commitment { id: string; project_id: string; commitment_type: string; reference_number: string; vendor_id: string; description: string; committed_amount: number; invoiced_amount: number; remaining_amount: number; status: string; commitment_date: string; }
@@ -26,6 +27,17 @@ export default function FundingLimits() {
     const addFLMut = useMutation({ mutationFn: (d: any) => fetch('/api/project/funding-limits', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }).then(r => r.json()), onSuccess: () => { qc.invalidateQueries({ queryKey: ['fl', activeProject] }); setShowNewFL(false); } });
     const addCommitMut = useMutation({ mutationFn: (d: any) => fetch('/api/project/commitments', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }).then(r => r.json()), onSuccess: () => { qc.invalidateQueries({ queryKey: ['commits', activeProject, 'commit-summary', activeProject] }); setShowNewCommit(false); } });
     const closeCommitMut = useMutation({ mutationFn: (id: string) => fetch(`/api/project/commitments/${id}/close`, { method: 'POST' }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['commits', activeProject] }) });
+
+    const commitColumns: SpreadsheetColumn<Commitment>[] = [
+        { id: "type", header: "Type", width: "120px", cell: (c) => <span style={{ fontWeight: 700, fontSize: 10, fontFamily: 'monospace' }}>{c.commitment_type}</span> },
+        { id: "reference", header: "Reference", width: "150px", cell: (c) => <span style={{ color: '#6b7280' }}>{c.reference_number ?? '—'}</span> },
+        { id: "vendor", header: "Vendor", width: "150px", cell: (c) => <span>{c.vendor_id ?? '—'}</span> },
+        { id: "committed", header: "Committed", width: "120px", cell: (c) => <span style={{ fontFamily: 'monospace' }}>{fmt(c.committed_amount)}</span> },
+        { id: "invoiced", header: "Invoiced", width: "120px", cell: (c) => <span style={{ fontFamily: 'monospace' }}>{fmt(c.invoiced_amount)}</span> },
+        { id: "remaining", header: "Remaining", width: "120px", cell: (c) => <span style={{ fontFamily: 'monospace', color: '#059669', fontWeight: 700 }}>{fmt(c.remaining_amount)}</span> },
+        { id: "status", header: "Status", width: "120px", cell: (c) => <span style={{ padding: '2px 6px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: (STATUS_CLR[c.status] ?? '#6b7280') + '18', color: STATUS_CLR[c.status] ?? '#6b7280' }}>{c.status}</span> },
+        { id: "actions", header: "", width: "100px", cell: (c) => c.status !== 'Closed' && c.status !== 'Cancelled' ? <button onClick={() => closeCommitMut.mutate(c.id)} style={{ padding: '3px 8px', background: '#f3f4f6', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>Close</button> : null }
+    ];
 
     return (
         <div style={{ padding: 24, maxWidth: 1300, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
@@ -147,28 +159,14 @@ export default function FundingLimits() {
                                 </div>
                             )}
 
-                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)' }}>
-                                <thead><tr style={{ background: '#f9fafb' }}>
-                                    {['Type', 'Reference', 'Vendor', 'Committed', 'Invoiced', 'Remaining', 'Status', ''].map(h => <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 700, color: '#374151', borderBottom: '2px solid #e5e7eb' }}>{h}</th>)}
-                                </tr></thead>
-                                <tbody>
-                                    {commitments.map(c => (
-                                        <tr key={c.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                                            <td style={{ padding: '9px 12px', fontWeight: 700, fontSize: 10, fontFamily: 'monospace' }}>{c.commitment_type}</td>
-                                            <td style={{ padding: '9px 12px', color: '#6b7280' }}>{c.reference_number ?? '—'}</td>
-                                            <td style={{ padding: '9px 12px' }}>{c.vendor_id ?? '—'}</td>
-                                            <td style={{ padding: '9px 12px', fontFamily: 'monospace' }}>{fmt(c.committed_amount)}</td>
-                                            <td style={{ padding: '9px 12px', fontFamily: 'monospace' }}>{fmt(c.invoiced_amount)}</td>
-                                            <td style={{ padding: '9px 12px', fontFamily: 'monospace', color: '#059669', fontWeight: 700 }}>{fmt(c.remaining_amount)}</td>
-                                            <td style={{ padding: '9px 12px' }}><span style={{ padding: '2px 6px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: (STATUS_CLR[c.status] ?? '#6b7280') + '18', color: STATUS_CLR[c.status] ?? '#6b7280' }}>{c.status}</span></td>
-                                            <td style={{ padding: '9px 12px' }}>
-                                                {c.status !== 'Closed' && c.status !== 'Cancelled' && <button onClick={() => closeCommitMut.mutate(c.id)} style={{ padding: '3px 8px', background: '#f3f4f6', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>Close</button>}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {commitments.length === 0 && <tr><td colSpan={8} style={{ textAlign: 'center', color: '#9ca3af', padding: 20 }}>No commitments</td></tr>}
-                                </tbody>
-                            </table>
+                            <div style={{ minHeight: '400px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 12 }}>
+                                <InteractiveSpreadsheet
+                                    columns={commitColumns}
+                                    data={commitments}
+                                    onChange={() => { }}
+                                    containerHeight="500px"
+                                />
+                            </div>
                         </>
                     )}
                 </>

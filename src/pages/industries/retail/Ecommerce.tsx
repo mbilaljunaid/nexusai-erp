@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search, ShoppingCart, Package, Truck, CreditCard, Users, TrendingUp, Star, BarChart3 } from "lucide-react";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface Product {
   id: string;
@@ -88,7 +89,7 @@ export default function Ecommerce() {
     cartAbandonmentRate: 68,
   };
 
-  const filteredProducts = products.filter(p => 
+  const filteredProducts = products.filter(p =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.sku.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -105,6 +106,71 @@ export default function Ecommerce() {
     completed: "bg-green-500/10 text-green-600",
     failed: "bg-red-500/10 text-red-600",
   } as const;
+
+  const productColumns: SpreadsheetColumn<Product>[] = [
+    { id: "name", header: "Product", width: "200px", cell: (product) => <span className="font-medium">{product.name}</span> },
+    { id: "category", header: "Category", width: "150px", cell: (product) => <span className="text-sm">{product.category}</span> },
+    { id: "price", header: "Price", width: "100px", cell: (product) => <span className="font-mono">${product.price}</span> },
+    {
+      id: "stock", header: "Stock", width: "100px", cell: (product) => (
+        <Badge variant="secondary" className={product.stock < 50 ? "bg-yellow-500/10 text-yellow-600" : ""}>
+          {product.stock}
+        </Badge>
+      )
+    },
+    { id: "sales", header: "Sales", width: "100px", cell: (product) => <span className="font-mono">{product.sales}</span> },
+    {
+      id: "rating", header: "Rating", width: "100px", cell: (product) => (
+        <div className="flex items-center gap-1">
+          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+          {product.rating}
+        </div>
+      )
+    },
+    {
+      id: "status", header: "Status", width: "100px", cell: (product) => (
+        <Badge className={statusConfig[product.status as keyof typeof statusConfig]}>
+          {product.status}
+        </Badge>
+      )
+    }
+  ];
+
+  const orderColumns: SpreadsheetColumn<Order>[] = [
+    { id: "orderNumber", header: "Order", width: "150px", cell: (order) => <span className="font-medium">{order.orderNumber}</span> },
+    { id: "customer", header: "Customer", width: "200px", cell: (order) => order.customer },
+    { id: "total", header: "Total", width: "120px", cell: (order) => <span className="font-mono">${order.total}</span> },
+    { id: "date", header: "Date", width: "120px", cell: (order) => <span className="text-xs">{order.date}</span> },
+    {
+      id: "payment", header: "Payment", width: "120px", cell: (order) => (
+        <Badge className={statusConfig[order.paymentStatus as keyof typeof statusConfig]} variant="secondary">
+          {order.paymentStatus}
+        </Badge>
+      )
+    },
+    {
+      id: "shipping", header: "Shipping", width: "120px", cell: (order) => (
+        <Badge className={statusConfig[order.shippingStatus as keyof typeof statusConfig]} variant="secondary">
+          {order.shippingStatus}
+        </Badge>
+      )
+    }
+  ];
+
+  const customerColumns: SpreadsheetColumn<Customer>[] = [
+    { id: "name", header: "Name", width: "200px", cell: (customer) => <span className="font-medium">{customer.name}</span> },
+    { id: "email", header: "Email", width: "200px", cell: (customer) => <span className="text-xs">{customer.email}</span> },
+    { id: "phone", header: "Phone", width: "150px", cell: (customer) => <span className="text-xs">{customer.phone}</span> },
+    { id: "orders", header: "Orders", width: "100px", cell: (customer) => <span className="font-mono">{customer.totalOrders}</span> },
+    { id: "spent", header: "Total Spent", width: "120px", cell: (customer) => <span className="font-mono">${customer.totalSpent}</span> },
+    {
+      id: "status", header: "Status", width: "100px", cell: (customer) => (
+        <Badge className={customer.status === "active" ? "bg-green-500/10 text-green-600" : "bg-gray-500/10 text-gray-600"}>
+          {customer.status}
+        </Badge>
+      )
+    }
+  ];
 
   return (
     <div className="space-y-6">
@@ -182,56 +248,56 @@ export default function Ecommerce() {
       <IconNavigation items={navItems} activeId={selectedTab} onSelect={setSelectedTab} />
 
       {selectedTab === "overview" && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Recent Orders</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {orders.slice(0, 4).map((order) => (
-                    <div key={order.id} className="flex items-center justify-between p-3 rounded-md border">
-                      <div className="flex-1">
-                        <p className="font-medium text-sm">{order.orderNumber}</p>
-                        <p className="text-xs text-muted-foreground">{order.customer}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-mono font-semibold">${order.total}</p>
-                        <Badge className={`text-xs capitalize ${statusConfig[order.status as "pending" | "processing" | "shipped" | "delivered" | "cancelled"]}`}>
-                          {order.status}
-                        </Badge>
-                      </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Recent Orders</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {orders.slice(0, 4).map((order) => (
+                  <div key={order.id} className="flex items-center justify-between p-3 rounded-md border">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">{order.orderNumber}</p>
+                      <p className="text-xs text-muted-foreground">{order.customer}</p>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                    <div className="text-right">
+                      <p className="font-mono font-semibold">${order.total}</p>
+                      <Badge className={`text-xs capitalize ${statusConfig[order.status as "pending" | "processing" | "shipped" | "delivered" | "cancelled"]}`}>
+                        {order.status}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Top Products</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {products.slice(0, 4).map((product) => (
-                    <div key={product.id} className="flex items-center justify-between p-3 rounded-md border">
-                      <div className="flex-1">
-                        <p className="font-medium text-sm">{product.name}</p>
-                        <p className="text-xs text-muted-foreground">{product.sales} sales</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-mono font-semibold">${product.price}</p>
-                        <div className="flex items-center gap-1 text-xs">
-                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                          {product.rating}
-                        </div>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Top Products</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {products.slice(0, 4).map((product) => (
+                  <div key={product.id} className="flex items-center justify-between p-3 rounded-md border">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">{product.name}</p>
+                      <p className="text-xs text-muted-foreground">{product.sales} sales</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-mono font-semibold">${product.price}</p>
+                      <div className="flex items-center gap-1 text-xs">
+                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                        {product.rating}
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       )}
 
       {selectedTab === "products" && (
@@ -247,46 +313,13 @@ export default function Ecommerce() {
           </div>
           <Card>
             <CardContent className="p-0">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b bg-muted/50">
-                      <th className="px-4 py-3 text-left font-medium">Product</th>
-                      <th className="px-4 py-3 text-left font-medium">Category</th>
-                      <th className="px-4 py-3 text-left font-medium">Price</th>
-                      <th className="px-4 py-3 text-left font-medium">Stock</th>
-                      <th className="px-4 py-3 text-left font-medium">Sales</th>
-                      <th className="px-4 py-3 text-left font-medium">Rating</th>
-                      <th className="px-4 py-3 text-left font-medium">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredProducts.map((product) => (
-                      <tr key={product.id} className="border-b hover:bg-muted/50">
-                        <td className="px-4 py-3 font-medium">{product.name}</td>
-                        <td className="px-4 py-3 text-sm">{product.category}</td>
-                        <td className="px-4 py-3 font-mono">${product.price}</td>
-                        <td className="px-4 py-3">
-                          <Badge variant="secondary" className={product.stock < 50 ? "bg-yellow-500/10 text-yellow-600" : ""}>
-                            {product.stock}
-                          </Badge>
-                        </td>
-                        <td className="px-4 py-3 font-mono">{product.sales}</td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-1">
-                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                            {product.rating}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <Badge className={statusConfig[product.status as keyof typeof statusConfig]}>
-                            {product.status}
-                          </Badge>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div style={{ height: '500px' }}>
+                <InteractiveSpreadsheet
+                  columns={productColumns}
+                  data={filteredProducts}
+                  onChange={() => { }}
+                  containerHeight="500px"
+                />
               </div>
             </CardContent>
           </Card>
@@ -295,77 +328,29 @@ export default function Ecommerce() {
 
       {selectedTab === "orders" && (
         <Card>
-            <CardContent className="p-0">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b bg-muted/50">
-                      <th className="px-4 py-3 text-left font-medium">Order</th>
-                      <th className="px-4 py-3 text-left font-medium">Customer</th>
-                      <th className="px-4 py-3 text-left font-medium">Total</th>
-                      <th className="px-4 py-3 text-left font-medium">Date</th>
-                      <th className="px-4 py-3 text-left font-medium">Payment</th>
-                      <th className="px-4 py-3 text-left font-medium">Shipping</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {orders.map((order) => (
-                      <tr key={order.id} className="border-b hover:bg-muted/50">
-                        <td className="px-4 py-3 font-medium">{order.orderNumber}</td>
-                        <td className="px-4 py-3">{order.customer}</td>
-                        <td className="px-4 py-3 font-mono">${order.total}</td>
-                        <td className="px-4 py-3 text-xs">{order.date}</td>
-                        <td className="px-4 py-3">
-                          <Badge className={statusConfig[order.paymentStatus as keyof typeof statusConfig]} variant="secondary">
-                            {order.paymentStatus}
-                          </Badge>
-                        </td>
-                        <td className="px-4 py-3">
-                          <Badge className={statusConfig[order.shippingStatus as keyof typeof statusConfig]} variant="secondary">
-                            {order.shippingStatus}
-                          </Badge>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
+          <CardContent className="p-0">
+            <div style={{ height: '500px' }}>
+              <InteractiveSpreadsheet
+                columns={orderColumns}
+                data={orders}
+                onChange={() => { }}
+                containerHeight="500px"
+              />
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {selectedTab === "customers" && (
         <Card>
           <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b bg-muted/50">
-                    <th className="px-4 py-3 text-left font-medium">Name</th>
-                    <th className="px-4 py-3 text-left font-medium">Email</th>
-                    <th className="px-4 py-3 text-left font-medium">Phone</th>
-                    <th className="px-4 py-3 text-left font-medium">Orders</th>
-                    <th className="px-4 py-3 text-left font-medium">Total Spent</th>
-                    <th className="px-4 py-3 text-left font-medium">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {customers.map((customer) => (
-                    <tr key={customer.id} className="border-b hover:bg-muted/50">
-                      <td className="px-4 py-3 font-medium">{customer.name}</td>
-                      <td className="px-4 py-3 text-xs">{customer.email}</td>
-                      <td className="px-4 py-3 text-xs">{customer.phone}</td>
-                      <td className="px-4 py-3 font-mono">{customer.totalOrders}</td>
-                      <td className="px-4 py-3 font-mono">${customer.totalSpent}</td>
-                      <td className="px-4 py-3">
-                        <Badge className={customer.status === "active" ? "bg-green-500/10 text-green-600" : "bg-gray-500/10 text-gray-600"}>
-                          {customer.status}
-                        </Badge>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div style={{ height: '500px' }}>
+              <InteractiveSpreadsheet
+                columns={customerColumns}
+                data={customers}
+                onChange={() => { }}
+                containerHeight="500px"
+              />
             </div>
           </CardContent>
         </Card>

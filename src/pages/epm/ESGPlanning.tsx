@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Leaf, TrendingUp, AlertTriangle, CheckCircle2, BarChart3 } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface ESGGoal { id: string; goal_code: string; goal_name: string; category: string; subcategory: string; unit: string; baseline_value: number; target_value: number; target_year: number; status: string; owner: string; }
 interface Actual { actual_value: number; period: string; data_source: string; }
@@ -32,6 +33,36 @@ export default function ESGPlanning() {
     const social = goals.filter(g => g.category === 'SOCIAL').length;
     const gov = goals.filter(g => g.category === 'GOVERNANCE').length;
     const onTrack = goals.filter(g => g.status === 'On_Track' || g.status === 'Achieved').length;
+
+    const varianceColumns: SpreadsheetColumn<any>[] = [
+        { id: "cost_center", header: "Cost Center", width: "150px", cell: (v: any) => <span style={{ fontWeight: 600 }}>{v.cost_center}</span> },
+        { id: "gl_account", header: "GL Account", width: "150px", cell: (v: any) => <span style={{ fontFamily: 'monospace', fontSize: 10, color: '#6b7280' }}>{v.gl_account}</span> },
+        { id: "budget", header: "Budget", width: "120px", cell: (v: any) => <span style={{ fontFamily: 'monospace' }}>${Number(v.budget_amount).toLocaleString()}</span> },
+        { id: "actual", header: "Actual", width: "120px", cell: (v: any) => <span style={{ fontFamily: 'monospace' }}>${Number(v.actual_amount).toLocaleString()}</span> },
+        { id: "committed", header: "Committed", width: "120px", cell: (v: any) => <span style={{ fontFamily: 'monospace', color: '#d97706' }}>${Number(v.committed_amount).toLocaleString()}</span> },
+        { id: "available", header: "Available", width: "120px", cell: (v: any) => <span style={{ fontFamily: 'monospace', color: Number(v.available) < 0 ? '#dc2626' : '#059669', fontWeight: 700 }}>${Number(v.available).toLocaleString()}</span> },
+        {
+            id: "utilization", header: "Utilization", width: "150px", cell: (v: any) => {
+                const pct = Number(v.utilization_pct ?? 0);
+                const barClr = pct >= 100 ? '#dc2626' : pct >= 90 ? '#f59e0b' : '#059669';
+                return (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                        <div style={{ width: 60, background: '#f3f4f6', height: 5, borderRadius: 999 }}>
+                            <div style={{ width: Math.min(100, pct) + '%', background: barClr, height: '100%', borderRadius: 999 }} />
+                        </div>
+                        <span style={{ color: barClr, fontWeight: 700 }}>{pct.toFixed(1)}%</span>
+                    </div>
+                );
+            }
+        },
+        { id: "control", header: "Control", width: "120px", cell: (v: any) => <span style={{ padding: '2px 5px', borderRadius: 3, fontSize: 9, background: v.control_action === 'HARD_STOP' ? '#fee2e2' : v.control_action === 'HOLD' ? '#fef9c3' : '#f3f4f6', color: v.control_action === 'HARD_STOP' ? '#dc2626' : '#6b7280' }}>{v.control_action}</span> },
+        {
+            id: "status", header: "Status", width: "80px", cell: (v: any) => {
+                const pct = Number(v.utilization_pct ?? 0);
+                return pct >= 100 ? <AlertTriangle size={12} color="#dc2626" /> : pct >= 90 ? <AlertTriangle size={12} color="#f59e0b" /> : <CheckCircle2 size={12} color="#059669" />;
+            }
+        }
+    ];
 
     return (
         <StandardPage
@@ -156,38 +187,19 @@ export default function ESGPlanning() {
                         <input value={budgetPeriod} onChange={e => setBudgetPeriod(e.target.value)} placeholder="YYYY-MM" style={{ padding: '6px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12 }} aria-label="Budget period" />
                         <span style={{ fontSize: 11, color: '#9ca3af' }}>Approved budget variance by cost center / GL account</span>
                     </div>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)' }}>
-                        <thead><tr style={{ background: '#f9fafb' }}>
-                            {['Cost Center', 'GL Account', 'Budget', 'Actual', 'Committed', 'Available', 'Utilization', 'Control', 'Status'].map(h => <th key={h} style={{ padding: '9px 10px', textAlign: 'left', fontWeight: 700, borderBottom: '2px solid #e5e7eb' }}>{h}</th>)}
-                        </tr></thead>
-                        <tbody>
-                            {variance.map((v, i) => {
-                                const pct = Number(v.utilization_pct ?? 0);
-                                const barClr = pct >= 100 ? '#dc2626' : pct >= 90 ? '#f59e0b' : '#059669';
-                                return (
-                                    <tr key={i} style={{ borderBottom: '1px solid #f3f4f6', background: pct >= 100 ? '#fff5f5' : pct >= 90 ? '#fffbeb' : undefined }}>
-                                        <td style={{ padding: '7px 10px', fontWeight: 600 }}>{v.cost_center}</td>
-                                        <td style={{ padding: '7px 10px', fontFamily: 'monospace', fontSize: 10, color: '#6b7280' }}>{v.gl_account}</td>
-                                        <td style={{ padding: '7px 10px', fontFamily: 'monospace' }}>${Number(v.budget_amount).toLocaleString()}</td>
-                                        <td style={{ padding: '7px 10px', fontFamily: 'monospace' }}>${Number(v.actual_amount).toLocaleString()}</td>
-                                        <td style={{ padding: '7px 10px', fontFamily: 'monospace', color: '#d97706' }}>${Number(v.committed_amount).toLocaleString()}</td>
-                                        <td style={{ padding: '7px 10px', fontFamily: 'monospace', color: Number(v.available) < 0 ? '#dc2626' : '#059669', fontWeight: 700 }}>${Number(v.available).toLocaleString()}</td>
-                                        <td style={{ padding: '7px 10px' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                                                <div style={{ width: 60, background: '#f3f4f6', height: 5, borderRadius: 999 }}>
-                                                    <div style={{ width: Math.min(100, pct) + '%', background: barClr, height: '100%', borderRadius: 999 }} />
-                                                </div>
-                                                <span style={{ color: barClr, fontWeight: 700 }}>{pct.toFixed(1)}%</span>
-                                            </div>
-                                        </td>
-                                        <td style={{ padding: '7px 10px', fontSize: 9 }}><span style={{ padding: '2px 5px', borderRadius: 3, background: v.control_action === 'HARD_STOP' ? '#fee2e2' : v.control_action === 'HOLD' ? '#fef9c3' : '#f3f4f6', color: v.control_action === 'HARD_STOP' ? '#dc2626' : '#6b7280' }}>{v.control_action}</span></td>
-                                        <td style={{ padding: '7px 10px' }}>{pct >= 100 ? <AlertTriangle size={12} color="#dc2626" /> : pct >= 90 ? <AlertTriangle size={12} color="#f59e0b" /> : <CheckCircle2 size={12} color="#059669" />}</td>
-                                    </tr>
-                                );
-                            })}
-                            {variance.length === 0 && <tr><td colSpan={9} style={{ padding: 24, textAlign: 'center', color: '#9ca3af' }}>No approved budget controls for {budgetPeriod}</td></tr>}
-                        </tbody>
-                    </table>
+                    <div style={{ background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)', border: '1px solid #e5e7eb' }}>
+                        {variance.length > 0 ? (
+                            <InteractiveSpreadsheet
+                                data={variance}
+                                columns={varianceColumns}
+                                virtualized={true}
+                                containerHeight="500px"
+                                onChange={() => { }}
+                            />
+                        ) : (
+                            <div style={{ padding: 24, textAlign: 'center', color: '#9ca3af' }}>No approved budget controls for {budgetPeriod}</div>
+                        )}
+                    </div>
                 </div>
             )}
         </StandardPage>

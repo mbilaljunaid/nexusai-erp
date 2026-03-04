@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function IntercompanyReconciliation() {
     const { data: report, isLoading } = useQuery({
@@ -18,6 +19,65 @@ export default function IntercompanyReconciliation() {
     if (isLoading) return <div className="p-8">Loading Report...</div>;
 
     const summary = report?.summary || { totalOutbound: 0, totalInbound: 0, variance: 0 };
+
+    const detailsColumns: SpreadsheetColumn[] = [
+        {
+            id: "batchId",
+            header: "Batch ID",
+            width: "120px",
+            cell: (row) => <div className="px-2 font-mono text-xs text-left">{row.batchId.substring(0, 8)}...</div>
+        },
+        {
+            id: "provider",
+            header: "Provider",
+            width: "120px",
+            cell: (row) => <div className="px-2 text-left">{row.providerOrgId}</div>
+        },
+        {
+            id: "receiver",
+            header: "Receiver",
+            width: "120px",
+            cell: (row) => <div className="px-2 text-left">{row.receiverOrgId}</div>
+        },
+        {
+            id: "outbound",
+            header: "Outbound",
+            width: "140px",
+            cell: (row) => <div className="px-2 text-right">{formatCurrency(row.outboundAmount)}</div>
+        },
+        {
+            id: "inbound",
+            header: "Inbound",
+            width: "140px",
+            cell: (row) => <div className="px-2 text-right">{formatCurrency(row.inboundAmount)}</div>
+        },
+        {
+            id: "diff",
+            header: "Diff",
+            width: "120px",
+            cell: (row) => (
+                <div className={`px-2 text-right font-medium ${row.difference !== 0 ? "text-red-500" : "text-green-500"}`}>
+                    {formatCurrency(row.difference)}
+                </div>
+            )
+        },
+        {
+            id: "status",
+            header: "Status",
+            width: "120px",
+            cell: (row) => (
+                <div className="px-2 text-center flex justify-center">
+                    <Badge variant={row.status === "APPROVED" ? "default" : "outline"}>{row.status}</Badge>
+                </div>
+            )
+        },
+        {
+            id: "reason",
+            header: "Reason",
+            width: "250px",
+            cell: (row) => <div className="px-2 text-muted-foreground text-left">{row.reason}</div>
+        }
+    ];
 
     return (
         <div className="p-8 space-y-6">
@@ -54,39 +114,13 @@ export default function IntercompanyReconciliation() {
             <Card>
                 <CardHeader><CardTitle>Transaction Details</CardTitle></CardHeader>
                 <CardContent>
-                    <div className="rounded-md border">
-                        <table className="w-full text-sm">
-                            <thead className="bg-muted/50 border-b">
-                                <tr>
-                                    <th className="p-3 text-left font-medium">Batch ID</th>
-                                    <th className="p-3 text-left font-medium">Provider</th>
-                                    <th className="p-3 text-left font-medium">Receiver</th>
-                                    <th className="p-3 text-right font-medium">Outbound</th>
-                                    <th className="p-3 text-right font-medium">Inbound</th>
-                                    <th className="p-3 text-right font-medium">Diff</th>
-                                    <th className="p-3 text-center font-medium">Status</th>
-                                    <th className="p-3 text-left font-medium">Reason</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {report?.details?.map((d: any) => (
-                                    <tr key={d.transactionId} className="border-b hover:bg-muted/50">
-                                        <td className="p-3 font-mono text-xs">{d.batchId.substring(0, 8)}...</td>
-                                        <td className="p-3">{d.providerOrgId}</td>
-                                        <td className="p-3">{d.receiverOrgId}</td>
-                                        <td className="p-3 text-right">{formatCurrency(d.outboundAmount)}</td>
-                                        <td className="p-3 text-right">{formatCurrency(d.inboundAmount)}</td>
-                                        <td className={`p-3 text-right font-medium ${d.difference !== 0 ? "text-red-500" : "text-green-500"}`}>
-                                            {formatCurrency(d.difference)}
-                                        </td>
-                                        <td className="p-3 text-center">
-                                            <Badge variant={d.status === "APPROVED" ? "default" : "outline"}>{d.status}</Badge>
-                                        </td>
-                                        <td className="p-3 text-muted-foreground">{d.reason}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                    <div className="rounded-md border h-[400px]">
+                        <InteractiveSpreadsheet
+                            data={report?.details || []}
+                            columns={detailsColumns}
+                            containerHeight={400}
+                            virtualized={true}
+                        />
                     </div>
                 </CardContent>
             </Card>

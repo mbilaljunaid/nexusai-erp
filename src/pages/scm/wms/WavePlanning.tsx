@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { useToast } from "@/hooks/use-toast";
 
 export default function WavePlanning() {
@@ -45,6 +46,34 @@ export default function WavePlanning() {
         }
     });
 
+    const waveColumns: SpreadsheetColumn<any>[] = [
+        {
+            id: "select",
+            header: <input type="checkbox" className="rounded bg-slate-900 border-slate-700" title="Select all orders" aria-label="Select all orders" />,
+            width: "60px",
+            cell: (row) => (
+                <div className="flex justify-center w-full">
+                    <input
+                        type="checkbox"
+                        title={`Select order ${row.orderNumber}`}
+                        aria-label={`Select order ${row.orderNumber}`}
+                        checked={selectedOrders.includes(row.id)}
+                        onChange={(e) => {
+                            if (e.target.checked) setSelectedOrders([...selectedOrders, row.id]);
+                            else setSelectedOrders(selectedOrders.filter(id => id !== row.id));
+                        }}
+                        className="rounded bg-slate-900 border-slate-700 mt-1"
+                    />
+                </div>
+            )
+        },
+        { id: "orderNumber", header: "Order #", width: "120px", cell: (row) => <div className="font-mono text-blue-400">{row.orderNumber}</div> },
+        { id: "customer", header: "Customer", width: "150px", cell: () => <div className="text-white">Consolidated Express</div> },
+        { id: "requestedDate", header: "Requested Date", width: "150px", cell: () => <div className="text-slate-400">{new Date().toLocaleDateString()}</div> },
+        { id: "items", header: "Items", width: "100px", cell: () => <div className="text-white">5 items</div> },
+        { id: "priority", header: "Priority", width: "120px", cell: () => <Badge variant="outline" className="border-orange-500/20 text-orange-400 bg-orange-500/5">High</Badge> }
+    ];
+
     return (
         <StandardPage
             title="Wave Planning"
@@ -68,52 +97,13 @@ export default function WavePlanning() {
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <div className="border border-slate-800 rounded-lg overflow-hidden">
-                            <table className="w-full text-sm text-left">
-                                <thead className="bg-slate-950 text-slate-400 font-medium border-b border-slate-800">
-                                    <tr>
-                                        <th className="p-4 w-12 text-center">
-                                            <input type="checkbox" className="rounded bg-slate-900 border-slate-700" title="Select all orders" aria-label="Select all orders" />
-                                        </th>
-                                        <th className="p-4">Order #</th>
-                                        <th className="p-4">Customer</th>
-                                        <th className="p-4">Requested Date</th>
-                                        <th className="p-4">Items</th>
-                                        <th className="p-4">Priority</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-800">
-                                    {readyOrders.map((order: any) => (
-                                        <tr key={order.id} className="hover:bg-blue-500/5 transition-colors group">
-                                            <td className="p-4 text-center">
-                                                <input
-                                                    type="checkbox"
-                                                    title={`Select order ${order.orderNumber}`}
-                                                    aria-label={`Select order ${order.orderNumber}`}
-                                                    checked={selectedOrders.includes(order.id)}
-                                                    onChange={(e) => {
-                                                        if (e.target.checked) setSelectedOrders([...selectedOrders, order.id]);
-                                                        else setSelectedOrders(selectedOrders.filter(id => id !== order.id));
-                                                    }}
-                                                    className="rounded bg-slate-900 border-slate-700 mt-1"
-                                                />
-                                            </td>
-                                            <td className="p-4 font-mono text-blue-400">{order.orderNumber}</td>
-                                            <td className="p-4 text-white">Consolidated Express</td>
-                                            <td className="p-4 text-slate-400">{new Date().toLocaleDateString()}</td>
-                                            <td className="p-4 text-white">5 items</td>
-                                            <td className="p-4">
-                                                <Badge variant="outline" className="border-orange-500/20 text-orange-400 bg-orange-500/5">High</Badge>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {readyOrders.length === 0 && (
-                                        <tr>
-                                            <td colSpan={6} className="p-12 text-center text-slate-500 italic">No orders ready for fulfillment</td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
+                        <div style={{ height: 400 }}>
+                            <InteractiveSpreadsheet
+                                columns={waveColumns}
+                                data={readyOrders}
+                                onChange={() => { }}
+                                containerHeight="100%"
+                            />
                         </div>
                     </CardContent>
                 </Card>

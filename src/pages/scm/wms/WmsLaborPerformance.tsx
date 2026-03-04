@@ -14,6 +14,7 @@ import {
     ArrowRight
 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import {
     BarChart,
     Bar,
@@ -40,6 +41,37 @@ export default function WmsLaborPerformance() {
             return res.json();
         }
     });
+
+    const performanceColumns: SpreadsheetColumn<any>[] = [
+        { id: "name", header: "Worker Name", width: "150px", cell: (row) => <span className="font-semibold text-white">{row.name}</span> },
+        { id: "tasks", header: "Tasks Completed", width: "150px", cell: (row) => <span className="text-slate-400">{row.tasks}</span> },
+        {
+            id: "efficiency", header: "Efficiency %", width: "200px", cell: (row) => (
+                <div className="flex items-center gap-2">
+                    <div className="w-16 h-2 bg-slate-800 rounded-full overflow-hidden">
+                        <div className="h-full bg-blue-500" style={{ width: `${Math.min(row.efficiency, 100)}%` }} />
+                    </div>
+                    <span className="text-white">{row.efficiency}%</span>
+                </div>
+            )
+        },
+        { id: "errorRate", header: "Error Rate %", width: "150px", cell: (row) => <span className="text-slate-400">{row.errorRate}%</span> },
+        {
+            id: "tier", header: "Incentive Tier", width: "150px", cell: (row) => (
+                <Badge variant="outline" className={row.efficiency > 100 ? 'border-yellow-500/20 text-yellow-400 bg-yellow-500/5' : 'border-slate-800'}>
+                    {row.efficiency > 100 ? <Award className="w-3 h-3 mr-1" /> : null}
+                    {row.efficiency > 100 ? 'Gold' : row.efficiency > 90 ? 'Silver' : 'Standard'}
+                </Badge>
+            )
+        },
+        {
+            id: "actions", header: "Actions", width: "150px", cell: () => (
+                <Button variant="ghost" size="sm" className="text-blue-400 w-full justify-end">
+                    View Log <ArrowRight className="w-3 h-3 ml-1" />
+                </Button>
+            )
+        }
+    ];
 
     return (
         <StandardPage
@@ -144,45 +176,13 @@ export default function WmsLaborPerformance() {
                     <CardTitle>Individual Performance Leaderboard</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="border border-slate-800 rounded-lg overflow-hidden">
-                        <table className="w-full text-sm text-left">
-                            <thead className="bg-slate-950 text-slate-400 font-medium border-b border-slate-800">
-                                <tr>
-                                    <th className="p-4">Worker Name</th>
-                                    <th className="p-4">Tasks Completed</th>
-                                    <th className="p-4">Efficiency %</th>
-                                    <th className="p-4">Error Rate %</th>
-                                    <th className="p-4">Incentive Tier</th>
-                                    <th className="p-4 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-800">
-                                {performanceData.map((worker: any) => (
-                                    <tr key={worker.name} className="hover:bg-blue-500/5 transition-colors">
-                                        <td className="p-4 font-semibold text-white">{worker.name}</td>
-                                        <td className="p-4 text-slate-400">{worker.tasks}</td>
-                                        <td className="p-4">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-16 h-2 bg-slate-800 rounded-full overflow-hidden">
-                                                    <div className="h-full bg-blue-500" style={{ width: `${Math.min(worker.efficiency, 100)}%` }} />
-                                                </div>
-                                                <span className="text-white">{worker.efficiency}%</span>
-                                            </div>
-                                        </td>
-                                        <td className="p-4 text-slate-400">{worker.errorRate}%</td>
-                                        <td className="p-4">
-                                            <Badge variant="outline" className={worker.efficiency > 100 ? 'border-yellow-500/20 text-yellow-400 bg-yellow-500/5' : 'border-slate-800'}>
-                                                {worker.efficiency > 100 ? <Award className="w-3 h-3 mr-1" /> : null}
-                                                {worker.efficiency > 100 ? 'Gold' : worker.efficiency > 90 ? 'Silver' : 'Standard'}
-                                            </Badge>
-                                        </td>
-                                        <td className="p-4 text-right">
-                                            <Button variant="ghost" size="sm" className="text-blue-400">View Log <ArrowRight className="w-3 h-3 ml-1" /></Button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                    <div style={{ height: 400 }}>
+                        <InteractiveSpreadsheet
+                            columns={performanceColumns}
+                            data={performanceData}
+                            onChange={() => { }}
+                            containerHeight="100%"
+                        />
                     </div>
                 </CardContent>
             </Card>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { GitMerge, ChevronRight, AlertTriangle } from 'lucide-react';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface Lot { id: string; lot_number: string; item_number: string; item_description: string; lot_type: string; quantity: number; unit_of_measure: string; status: string; expiry_date: string; supplier_lot: string; work_order_id: string; parent_lots: any[]; trace_events: any[]; created_at: string; }
 
@@ -25,6 +26,26 @@ export default function LotGenealogy() {
 
     const createMut = useMutation({ mutationFn: (d: any) => fetch('/api/mfg/lots', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }).then(r => r.json()), onSuccess: () => { qc.invalidateQueries({ queryKey: ['lots'] }); setShowNew(false); } });
     const statusMut = useMutation({ mutationFn: ({ lot, status }: { lot: string; status: string }) => fetch(`/api/mfg/lots/${lot}/status`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['lots'] }) });
+
+    const lotColumns: SpreadsheetColumn<Lot>[] = [
+        { id: "lotNumber", header: "Lot #", width: "150px", cell: (l) => <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 11 }}>{l.lot_number}</span> },
+        { id: "item", header: "Item", width: "200px", cell: (l) => <><div style={{ fontWeight: 600, fontSize: 11 }}>{l.item_number}</div><div style={{ fontSize: 10, color: '#9ca3af' }}>{l.item_description}</div></> },
+        { id: "type", header: "Type", width: "100px", cell: (l) => <span style={{ fontSize: 10, color: '#6b7280' }}>{l.lot_type}</span> },
+        { id: "quantity", header: "Quantity", width: "150px", cell: (l) => <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{Number(l.quantity).toLocaleString()} {l.unit_of_measure}</span> },
+        {
+            id: "expiry", header: "Expiry", width: "150px", cell: (l) => {
+                const daysToExpiry = l.expiry_date ? Math.ceil((new Date(l.expiry_date).getTime() - Date.now()) / 86400000) : null;
+                return l.expiry_date ? <span style={{ color: daysToExpiry !== null && daysToExpiry < 30 ? '#dc2626' : '#374151', fontWeight: daysToExpiry !== null && daysToExpiry < 30 ? 700 : 400 }}>{fmtDate(l.expiry_date)}</span> : <span style={{ color: '#9ca3af' }}>—</span>;
+            }
+        },
+        {
+            id: "status", header: "Status", width: "120px", cell: (l) => {
+                const cfg = STATUS_CFG[l.status] ?? STATUS_CFG.Active;
+                return <span style={{ padding: '2px 7px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: cfg.bg, color: cfg.color }}>{l.status}</span>;
+            }
+        },
+        { id: "actions", header: "", width: "80px", cell: (l) => l.status === 'Active' ? <button onClick={ev => { ev.stopPropagation(); statusMut.mutate({ lot: l.lot_number, status: 'Quarantine' }); }} style={{ padding: '2px 7px', background: '#fee2e2', border: 'none', borderRadius: 4, fontSize: 9, cursor: 'pointer', color: '#dc2626' }}>Hold</button> : null }
+    ];
 
     return (
         <div style={{ padding: 24, maxWidth: 1400, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
@@ -76,30 +97,15 @@ export default function LotGenealogy() {
             </div>
 
             <div style={{ display: 'flex', gap: 14 }}>
-                <div style={{ flex: 1 }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)' }}>
-                        <thead><tr style={{ background: '#f9fafb' }}>
-                            {['Lot #', 'Item', 'Type', 'Quantity', 'Expiry', 'Status', ''].map(h => <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 700, color: '#374151', borderBottom: '2px solid #e5e7eb' }}>{h}</th>)}
-                        </tr></thead>
-                        <tbody>
-                            {lots.map(l => {
-                                const cfg = STATUS_CFG[l.status] ?? STATUS_CFG.Active;
-                                const daysToExpiry = l.expiry_date ? Math.ceil((new Date(l.expiry_date).getTime() - Date.now()) / 86400000) : null;
-                                return (
-                                    <tr key={l.id} onClick={() => { setSelected(selected?.id === l.id ? null : l); setTraceMode(null); }} style={{ borderBottom: '1px solid #f3f4f6', cursor: 'pointer', background: selected?.id === l.id ? '#f0f9ff' : undefined }}>
-                                        <td style={{ padding: '8px 12px', fontFamily: 'monospace', fontWeight: 700, fontSize: 11 }}>{l.lot_number}</td>
-                                        <td style={{ padding: '8px 12px' }}><div style={{ fontWeight: 600, fontSize: 11 }}>{l.item_number}</div><div style={{ fontSize: 10, color: '#9ca3af' }}>{l.item_description}</div></td>
-                                        <td style={{ padding: '8px 12px', fontSize: 10, color: '#6b7280' }}>{l.lot_type}</td>
-                                        <td style={{ padding: '8px 12px', fontFamily: 'monospace', fontWeight: 700 }}>{Number(l.quantity).toLocaleString()} {l.unit_of_measure}</td>
-                                        <td style={{ padding: '8px 12px', fontSize: 11 }}>{l.expiry_date ? <span style={{ color: daysToExpiry !== null && daysToExpiry < 30 ? '#dc2626' : '#374151', fontWeight: daysToExpiry !== null && daysToExpiry < 30 ? 700 : 400 }}>{fmtDate(l.expiry_date)}</span> : <span style={{ color: '#9ca3af' }}>—</span>}</td>
-                                        <td style={{ padding: '8px 12px' }}><span style={{ padding: '2px 7px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: cfg.bg, color: cfg.color }}>{l.status}</span></td>
-                                        <td style={{ padding: '8px 12px' }}>{l.status === 'Active' && <button onClick={ev => { ev.stopPropagation(); statusMut.mutate({ lot: l.lot_number, status: 'Quarantine' }); }} style={{ padding: '2px 7px', background: '#fee2e2', border: 'none', borderRadius: 4, fontSize: 9, cursor: 'pointer', color: '#dc2626' }}>Hold</button>}</td>
-                                    </tr>
-                                );
-                            })}
-                            {lots.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No lots found</td></tr>}
-                        </tbody>
-                    </table>
+                <div style={{ flex: 1, minHeight: '400px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 12 }}>
+                    <InteractiveSpreadsheet
+                        columns={lotColumns}
+                        data={lots}
+                        activeRow={selected?.id}
+                        onRowSelect={(l) => { setSelected(selected?.id === l.id ? null : l as Lot); setTraceMode(null); }}
+                        onChange={() => { }}
+                        containerHeight="600px"
+                    />
                 </div>
 
                 {selected && (

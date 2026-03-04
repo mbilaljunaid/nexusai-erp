@@ -3,33 +3,42 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { CheckCircle, X, AlertCircle, ArrowRight, BarChart3, Zap, Shield } from "lucide-react";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function FeaturesComparison() {
   const features = [
-    { category: "Core Features", items: [
-      { name: "All-in-One ERP Platform", nexusai: true, oracle: false, salesforce: false, odoo: true, sap: false },
-      { name: "AI-Powered Insights", nexusai: true, oracle: false, salesforce: true, odoo: false, sap: false },
-      { name: "40+ Industry Templates", nexusai: true, oracle: false, salesforce: false, odoo: false, sap: false },
-      { name: "Pre-Configured Workflows", nexusai: true, oracle: false, salesforce: true, odoo: true, sap: false },
-    ]},
-    { category: "Reports & Analytics", items: [
-      { name: "50+ Pre-built Reports", nexusai: true, oracle: true, salesforce: true, odoo: true, sap: true },
-      { name: "SmartViews (Custom Filtered Views)", nexusai: true, oracle: false, salesforce: false, odoo: false, sap: false },
-      { name: "Pivot Tables & Charts", nexusai: true, oracle: true, salesforce: true, odoo: true, sap: true },
-      { name: "Excel Import/Export", nexusai: true, oracle: true, salesforce: true, odoo: true, sap: true },
-      { name: "Real-time Spreadsheet Editor", nexusai: true, oracle: false, salesforce: false, odoo: false, sap: false },
-    ]},
-    { category: "Implementation & Support", items: [
-      { name: "Fast Implementation (weeks vs months)", nexusai: true, oracle: false, salesforce: true, odoo: true, sap: false },
-      { name: "No Complex Customization Needed", nexusai: true, oracle: false, salesforce: true, odoo: true, sap: false },
-      { name: "24/7 AI Copilot Support", nexusai: true, oracle: false, salesforce: false, odoo: false, sap: false },
-      { name: "Cloud-Native Multi-tenant", nexusai: true, oracle: true, salesforce: true, odoo: true, sap: true },
-    ]},
-    { category: "Pricing & Accessibility", items: [
-      { name: "Transparent Pricing", nexusai: true, oracle: false, salesforce: false, odoo: true, sap: false },
-      { name: "Suitable for SMB to Enterprise", nexusai: true, oracle: false, salesforce: true, odoo: true, sap: false },
-      { name: "No License Lock-in", nexusai: true, oracle: false, salesforce: false, odoo: true, sap: false },
-    ]},
+    {
+      category: "Core Features", items: [
+        { name: "All-in-One ERP Platform", nexusai: true, oracle: false, salesforce: false, odoo: true, sap: false },
+        { name: "AI-Powered Insights", nexusai: true, oracle: false, salesforce: true, odoo: false, sap: false },
+        { name: "40+ Industry Templates", nexusai: true, oracle: false, salesforce: false, odoo: false, sap: false },
+        { name: "Pre-Configured Workflows", nexusai: true, oracle: false, salesforce: true, odoo: true, sap: false },
+      ]
+    },
+    {
+      category: "Reports & Analytics", items: [
+        { name: "50+ Pre-built Reports", nexusai: true, oracle: true, salesforce: true, odoo: true, sap: true },
+        { name: "SmartViews (Custom Filtered Views)", nexusai: true, oracle: false, salesforce: false, odoo: false, sap: false },
+        { name: "Pivot Tables & Charts", nexusai: true, oracle: true, salesforce: true, odoo: true, sap: true },
+        { name: "Excel Import/Export", nexusai: true, oracle: true, salesforce: true, odoo: true, sap: true },
+        { name: "Real-time Spreadsheet Editor", nexusai: true, oracle: false, salesforce: false, odoo: false, sap: false },
+      ]
+    },
+    {
+      category: "Implementation & Support", items: [
+        { name: "Fast Implementation (weeks vs months)", nexusai: true, oracle: false, salesforce: true, odoo: true, sap: false },
+        { name: "No Complex Customization Needed", nexusai: true, oracle: false, salesforce: true, odoo: true, sap: false },
+        { name: "24/7 AI Copilot Support", nexusai: true, oracle: false, salesforce: false, odoo: false, sap: false },
+        { name: "Cloud-Native Multi-tenant", nexusai: true, oracle: true, salesforce: true, odoo: true, sap: true },
+      ]
+    },
+    {
+      category: "Pricing & Accessibility", items: [
+        { name: "Transparent Pricing", nexusai: true, oracle: false, salesforce: false, odoo: true, sap: false },
+        { name: "Suitable for SMB to Enterprise", nexusai: true, oracle: false, salesforce: true, odoo: true, sap: false },
+        { name: "No License Lock-in", nexusai: true, oracle: false, salesforce: false, odoo: true, sap: false },
+      ]
+    },
   ];
 
   const companies = [
@@ -38,6 +47,15 @@ export default function FeaturesComparison() {
     { name: "Salesforce", color: "bg-green-50 dark:bg-green-950", strength: "CRM Excellence, Cloud Native" },
     { name: "Odoo", color: "bg-purple-50 dark:bg-purple-950", strength: "Open Source, Affordable" },
     { name: "SAP", color: "bg-amber-50 dark:bg-amber-950", strength: "Complex Operations, Global Scale" },
+  ];
+
+  const compColumns: SpreadsheetColumn<any>[] = [
+    { id: "name", header: "Feature", width: "400px", cell: (row) => <span className="font-semibold">{row.name}</span> },
+    { id: "nexusai", header: "NexusAIFirst", width: "120px", cell: (row) => row.nexusai ? <CheckCircle className="w-5 h-5 text-green-600 mx-auto" /> : <X className="w-5 h-5 text-red-400 mx-auto" /> },
+    { id: "oracle", header: "Oracle", width: "120px", cell: (row) => row.oracle ? <CheckCircle className="w-5 h-5 text-green-600 mx-auto" /> : <X className="w-5 h-5 text-red-400 mx-auto" /> },
+    { id: "salesforce", header: "Salesforce", width: "120px", cell: (row) => row.salesforce ? <CheckCircle className="w-5 h-5 text-green-600 mx-auto" /> : <X className="w-5 h-5 text-red-400 mx-auto" /> },
+    { id: "odoo", header: "Odoo", width: "120px", cell: (row) => row.odoo ? <CheckCircle className="w-5 h-5 text-green-600 mx-auto" /> : <X className="w-5 h-5 text-red-400 mx-auto" /> },
+    { id: "sap", header: "SAP", width: "120px", cell: (row) => row.sap ? <CheckCircle className="w-5 h-5 text-green-600 mx-auto" /> : <X className="w-5 h-5 text-red-400 mx-auto" /> },
   ];
 
   return (
@@ -65,35 +83,13 @@ export default function FeaturesComparison() {
             {features.map((section) => (
               <div key={section.category}>
                 <h2 className="text-2xl font-bold mb-4">{section.category}</h2>
-                <div className="overflow-x-auto border rounded-lg">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="bg-muted border-b">
-                        <th className="text-left p-4 font-bold">Feature</th>
-                        <th className="text-center p-4 font-bold w-20">NexusAIFirst</th>
-                        <th className="text-center p-4 font-bold w-20">Oracle</th>
-                        <th className="text-center p-4 font-bold w-20">Salesforce</th>
-                        <th className="text-center p-4 font-bold w-20">Odoo</th>
-                        <th className="text-center p-4 font-bold w-20">SAP</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {section.items.map((item) => (
-                        <tr key={item.name} className="border-b hover:bg-muted/50">
-                          <td className="p-4 font-semibold">{item.name}</td>
-                          {[item.nexusai, item.oracle, item.salesforce, item.odoo, item.sap].map((available, idx) => (
-                            <td key={idx} className="text-center p-4">
-                              {available ? (
-                                <CheckCircle className="w-5 h-5 text-green-600 mx-auto" />
-                              ) : (
-                                <X className="w-5 h-5 text-red-400 mx-auto" />
-                              )}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div className="overflow-hidden border rounded-lg h-[250px]">
+                  <InteractiveSpreadsheet
+                    columns={compColumns}
+                    data={section.items}
+                    onChange={() => { }}
+                    containerHeight="100%"
+                  />
                 </div>
               </div>
             ))}

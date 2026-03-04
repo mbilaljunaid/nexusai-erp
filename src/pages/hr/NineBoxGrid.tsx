@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 interface NineBoxEntry { employee_id: string; performance: number; potential: number; box_label: string; assessed_by: string; notes: string; }
 
 const BOX_CONFIG: Record<string, { bg: string; border: string; label: string }> = {
@@ -38,6 +39,20 @@ export default function NineBoxGrid() {
     });
 
     const boxEntries = (perf: number, pot: number) => grid.filter(e => e.performance === perf && e.potential === pot);
+
+    const gridColumns: SpreadsheetColumn<any>[] = [
+        { id: "employee_id", header: "Employee", width: "150px", cell: (row) => <span style={{ fontWeight: 600 }}>{row.employee_id}</span> },
+        {
+            id: "box_label", header: "Box", width: "150px", cell: (row) => {
+                const cfg = BOX_CONFIG[row.box_label] ?? { bg: '#f9fafb', border: '#e5e7eb', label: row.box_label };
+                return <span style={{ padding: '2px 6px', borderRadius: 4, background: cfg.bg, border: `1px solid ${cfg.border}`, fontSize: 9, fontWeight: 700 }}>{cfg.label}</span>
+            }
+        },
+        { id: "performance", header: "Performance", width: "100px", cell: (row) => ['', '🔴 Low', '🟡 Medium', '🟢 High'][row.performance] },
+        { id: "potential", header: "Potential", width: "100px", cell: (row) => ['', '🔴 Low', '🟡 Medium', '🟢 High'][row.potential] },
+        { id: "assessed_by", header: "Assessed By", width: "150px", cell: (row) => <span style={{ color: '#6b7280' }}>{row.assessed_by || '—'}</span> },
+        { id: "notes", header: "Notes", width: "250px", cell: (row) => <span style={{ color: '#6b7280', display: 'block', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{row.notes || '—'}</span> }
+    ];
 
     return (
         <StandardPage
@@ -113,28 +128,14 @@ export default function NineBoxGrid() {
             </div>
 
             {/* Summary table */}
-            <div style={{ marginTop: 20, background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, overflow: 'hidden' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
-                    <thead><tr style={{ background: '#f9fafb' }}>
-                        {['Employee', 'Box', 'Performance', 'Potential', 'Assessed By', 'Notes'].map(h => <th key={h} style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 700, borderBottom: '2px solid #e5e7eb' }}>{h}</th>)}
-                    </tr></thead>
-                    <tbody>
-                        {grid.map((e, i) => {
-                            const cfg = BOX_CONFIG[e.box_label] ?? { bg: '#f9fafb', border: '#e5e7eb', label: e.box_label };
-                            return (
-                                <tr key={i} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                                    <td style={{ padding: '6px 10px', fontWeight: 600 }}>{e.employee_id}</td>
-                                    <td style={{ padding: '6px 10px' }}><span style={{ padding: '2px 6px', borderRadius: 4, background: cfg.bg, border: `1px solid ${cfg.border}`, fontSize: 9, fontWeight: 700 }}>{cfg.label}</span></td>
-                                    <td style={{ padding: '6px 10px' }}>{['', '🔴 Low', '🟡 Medium', '🟢 High'][e.performance]}</td>
-                                    <td style={{ padding: '6px 10px' }}>{['', '🔴 Low', '🟡 Medium', '🟢 High'][e.potential]}</td>
-                                    <td style={{ padding: '6px 10px', color: '#6b7280' }}>{e.assessed_by ?? '—'}</td>
-                                    <td style={{ padding: '6px 10px', color: '#6b7280', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.notes ?? '—'}</td>
-                                </tr>
-                            );
-                        })}
-                        {grid.length === 0 && <tr><td colSpan={6} style={{ padding: 24, textAlign: 'center', color: '#9ca3af' }}>No assessments for {period}</td></tr>}
-                    </tbody>
-                </table>
+            <div style={{ marginTop: 20, background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, overflow: 'hidden', height: 400 }}>
+                <InteractiveSpreadsheet
+                    columns={gridColumns}
+                    data={grid}
+                    onChange={() => { }}
+                    containerHeight="400px"
+                />
+                {grid.length === 0 && <div style={{ padding: 24, textAlign: 'center', color: '#9ca3af', borderTop: '1px solid #e5e7eb' }}>No assessments for {period}</div>}
             </div>
         </StandardPage>
     );

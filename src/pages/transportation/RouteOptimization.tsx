@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { MapPin, Navigation, TrendingDown, Clock, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function RouteOptimization() {
     const { toast } = useToast();
@@ -42,6 +43,38 @@ export default function RouteOptimization() {
             includeTraffic: true,
         });
     };
+
+    const columns: SpreadsheetColumn<any>[] = [
+        { id: "routeNumber", header: "Route ID", width: "150px", cell: (route: any) => <span className="font-medium">{route.routeNumber}</span> },
+        {
+            id: "originDest", header: "Origin → Destination", width: "300px", cell: (route: any) => (
+                <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-green-600" />
+                    {route.origin}
+                    <span className="text-muted-foreground">→</span>
+                    <MapPin className="h-4 w-4 text-red-600" />
+                    {route.destination}
+                </div>
+            )
+        },
+        { id: "stops", header: "Stops", width: "100px", cell: (route: any) => <span>{route.stops}</span> },
+        { id: "distance", header: "Distance", width: "120px", cell: (route: any) => <span>{route.distance} mi</span> },
+        {
+            id: "estTime", header: "Est. Time", width: "120px", cell: (route: any) => (
+                <div className="flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    {route.estimatedTime}
+                </div>
+            )
+        },
+        {
+            id: "status", header: "Status", width: "120px", cell: (route: any) => (
+                <Badge variant={route.optimized ? "default" : "secondary"}>
+                    {route.optimized ? "Optimized" : "Pending"}
+                </Badge>
+            )
+        }
+    ];
 
     return (
         <div className="container mx-auto p-6 space-y-6">
@@ -128,47 +161,13 @@ export default function RouteOptimization() {
                         </CardHeader>
                         <CardContent>
                             <div className="border rounded-lg">
-                                <table className="w-full">
-                                    <thead className="bg-muted">
-                                        <tr>
-                                            <th className="text-left p-3">Route ID</th>
-                                            <th className="text-left p-3">Origin → Destination</th>
-                                            <th className="text-right p-3">Stops</th>
-                                            <th className="text-right p-3">Distance</th>
-                                            <th className="text-right p-3">Est. Time</th>
-                                            <th className="text-left p-3">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {routes.routes?.map((route: any) => (
-                                            <tr key={route.id} className="border-t hover:bg-accent">
-                                                <td className="p-3 font-medium">{route.routeNumber}</td>
-                                                <td className="p-3">
-                                                    <div className="flex items-center gap-2">
-                                                        <MapPin className="h-4 w-4 text-green-600" />
-                                                        {route.origin}
-                                                        <span className="text-muted-foreground">→</span>
-                                                        <MapPin className="h-4 w-4 text-red-600" />
-                                                        {route.destination}
-                                                    </div>
-                                                </td>
-                                                <td className="p-3 text-right">{route.stops}</td>
-                                                <td className="p-3 text-right">{route.distance} mi</td>
-                                                <td className="p-3 text-right">
-                                                    <div className="flex items-center justify-end gap-1">
-                                                        <Clock className="h-3 w-3" />
-                                                        {route.estimatedTime}
-                                                    </div>
-                                                </td>
-                                                <td className="p-3">
-                                                    <Badge variant={route.optimized ? "default" : "secondary"}>
-                                                        {route.optimized ? "Optimized" : "Pending"}
-                                                    </Badge>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                <InteractiveSpreadsheet
+                                    data={routes.routes || []}
+                                    columns={columns}
+                                    virtualized={true}
+                                    containerHeight="400px"
+                                    onChange={() => { }}
+                                />
                             </div>
                         </CardContent>
                     </Card>
