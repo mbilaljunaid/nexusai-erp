@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function AdvancedReporting() {
   return (
     <StandardPage
-      title="Advanceg</h1>
-        <p className="text-muted-foreground mt-1">Custom reports and business intelligence</p>
-      </div>
+      title="Advanceg"
+      description="Custom reports and business intelligence"
+    >
       <div className="grid gap-4">
         {[
           { report: "Executive Summary", frequency: "Monthly", status: "Active" },

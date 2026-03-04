@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function AccessibilityAudit() {
   return (
     <StandardPage
-      title="Accessiit</h1>
-        <p className="text-muted-foreground mt-1">WCAG 2.1 AAA compliance tracking</p>
-      </div>
+      title="Accessiit"
+      description="WCAG 2.1 AAA compliance tracking"
+    >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card><CardContent className="pt-6"><p className="text-sm text-muted-foreground">WCAG Level</p><p className="text-3xl font-bold mt-1">AAA</p></CardContent></Card>
         <Card><CardContent className="pt-6"><p className="text-sm text-muted-foreground">Compliance</p><p className="text-3xl font-bold mt-1">99%</p></CardContent></Card>

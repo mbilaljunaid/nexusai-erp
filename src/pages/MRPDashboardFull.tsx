@@ -16,9 +16,9 @@ export default function MRPDashboardFull() {
 
   return (
     <StandardPage
-      title="MRP Plannin </h1>
-        <p className="text-muted-foreground mt-2">Material Requirements Planning analysis and recommendations</p>
-      </div>
+      title="MRP Plannin"
+      description="Material Requirements Planning analysis and recommendations"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

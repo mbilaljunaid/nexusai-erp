@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function CustomWorkflows() {
   return (
     <StandardPage
-      title="Custom /h1>
-        <p className="text-muted-foreground mt-1">Low-code workflow automation</p>
-      </div>
+      title="Custom /h"
+      description="Low-code workflow automation"
+    >
       <Card>
         <CardContent className="pt-6">
           <p className="text-sm text-muted-foreground">Active Workflows</p>

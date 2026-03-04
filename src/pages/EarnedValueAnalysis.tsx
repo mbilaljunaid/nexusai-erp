@@ -15,9 +15,9 @@ export default function EarnedValueAnalysis() {
 
   return (
     <StandardPage
-      title="Earned Valu      </h1>
-        <p className="text-muted-foreground mt-2">Schedule Performance Index (SPI), Cost Performance (CPI), and forecasting</p>
-      </div>
+      title="Earned Valu"
+      description="Schedule Performance Index (SPI), Cost Performance (CPI), and forecasting"
+    >
 
       <div className="grid grid-cols-3 gap-3">
         <Card className="p-3">

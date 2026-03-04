@@ -51,9 +51,9 @@ export default function ChartOfAccounts() {
 
   return (
     <StandardPage
-      title="Chart of Ac </h1>
-        <p className="text-muted-foreground">Manage your general ledger account structure</p>
-      </div>
+      title="Chart of Ac"
+      description="Manage your general ledger account structure"
+    >
 
       <Card data-testid="card-new-account">
         <CardHeader><CardTitle className="text-base">Add Account</CardTitle></CardHeader>

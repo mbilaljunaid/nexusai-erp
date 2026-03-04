@@ -13,7 +13,9 @@ export default function AssessmentGrading() {
     <StandardPage
       title="Assessment & Grading"
       description=""
-      className="spter"><div><h1 className="text-3xl font-bold">Assessment & Grading</h1></div><Button data-testid="button-create-exam"><Plus className="h-4 w-4 mr-2" /> Create Exam</Button></div>
+      className="spter"
+      actions={<Button data-testid="button-create-exam"><Plus className="h-4 w-4 mr-2" /> Create Exam</Button>}
+    >
       <div className="grid gap-4">
         {exams.map(e => (
           <Card key={e.id} className="hover-elevate" data-testid={`card-exam-${e.id}`}>

@@ -13,9 +13,9 @@ export default function UserActivityDashboard() {
 
   return (
     <StandardPage
-      title="User Activi  </h1>
-        <p className="text-muted-foreground mt-2">Monitor all user actions across modules</p>
-      </div>
+      title="User Activi"
+      description="Monitor all user actions across modules"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

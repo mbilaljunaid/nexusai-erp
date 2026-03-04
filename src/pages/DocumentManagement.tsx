@@ -13,9 +13,9 @@ export default function DocumentManagement() {
 
   return (
     <StandardPage
-      title="Documennt</h1>
-        <p className="text-muted-foreground mt-2">Manage documents and approvals</p>
-      </div>
+      title="Documennt"
+      description="Manage documents and approvals"
+    >
 
       <div className="flex gap-2">
         <Button variant={viewType === "documents" ? "default" : "outline"} data-testid="button-view-documents">

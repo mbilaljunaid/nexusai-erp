@@ -40,10 +40,9 @@ export default function RecipeFormulation() {
 
   return (
     <StandardPage
-      title="Recipe & Fot
-        </h1>
-        <p className="text-muted-foreground mt-2">Recipe editor, versioning, nutrition calculation, and label generation</p>
-      </div>
+      title="Recipe & Fot"
+      description="Recipe editor, versioning, nutrition calculation, and label generation"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

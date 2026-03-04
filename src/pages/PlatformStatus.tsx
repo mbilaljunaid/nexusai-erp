@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function PlatformStatus() {
   return (
     <StandardPage
-      title="Platforh1>
-        <p className="text-muted-foreground mt-1">Current system status and incidents</p>
-      </div>
+      title="Platforh"
+      description="Current system status and incidents"
+    >
       <div className="grid gap-4">
         <Card>
           <CardContent className="pt-6">

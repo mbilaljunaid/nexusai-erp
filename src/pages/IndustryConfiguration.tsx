@@ -68,9 +68,9 @@ export default function IndustryConfiguration() {
 
   return (
     <StandardPage
-      title="Industration</h1>
-        <p className="text-muted-foreground mt-2">Configure your enterprise for a specific industry</p>
-      </div>
+      title="Industration"
+      description="Configure your enterprise for a specific industry"
+    >
 
       {isLoading ? (
         <div className="flex justify-center p-8">

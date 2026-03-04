@@ -6,9 +6,9 @@ import { ChevronRight } from "lucide-react";
 export default function AccountHierarchy() {
   return (
     <StandardPage
-      title="Account</h1>
-        <p className="text-muted-foreground mt-1">View parent/child account relationships</p>
-      </div>
+      title="Account"
+      description="View parent/child account relationships"
+    >
 
       <Card>
         <CardHeader><CardTitle className="text-base">Account Structure</CardTitle></CardHeader>

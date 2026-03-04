@@ -29,9 +29,9 @@ export default function SupplierInvoices() {
 
   return (
     <StandardPage
-      title="Supplieoices (AP)</h1>
-        <p className="text-muted-foreground">Manage vendor invoices, match with POs/GRNs, and process payments</p>
-      </div>
+      title="Supplieoices (AP)"
+      description="Manage vendor invoices, match with POs/GRNs, and process payments"
+    >
 
       <IconNavigation items={navigationItems} activeId={activeNav} onSelect={setActiveNav} />
 

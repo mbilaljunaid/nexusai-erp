@@ -42,9 +42,9 @@ export default function ExceptionManagement() {
 
   return (
     <StandardPage
-      title="Exception M/h1>
-        <p className="text-muted-foreground mt-2">Track and manage variance and exception items</p>
-      </div>
+      title="Exception M/h"
+      description="Track and manage variance and exception items"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

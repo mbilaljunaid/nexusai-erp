@@ -13,9 +13,9 @@ export default function SessionManagement() {
 
   return (
     <StandardPage
-      title="Session Man1>
-        <p className="text-muted-foreground mt-2">Manage your active sessions and device access</p>
-      </div>
+      title="Session Man"
+      description="Manage your active sessions and device access"
+    >
 
       <div className="grid grid-cols-3 gap-4">
         <Card className="p-4">

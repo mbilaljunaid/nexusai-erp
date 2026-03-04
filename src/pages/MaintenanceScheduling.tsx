@@ -41,9 +41,9 @@ export default function MaintenanceScheduling() {
 
   return (
     <StandardPage
-      title="Maintenance </h1>
-        <p className="text-muted-foreground mt-2">Fleet maintenance planning, work orders, and preventive maintenance tracking</p>
-      </div>
+      title="Maintenance"
+      description="Fleet maintenance planning, work orders, and preventive maintenance tracking"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

@@ -6,9 +6,9 @@ import { Badge } from "@/components/ui/badge";
 export default function CustomerPortal() {
   return (
     <StandardPage
-      title="Customeh1>
-        <p className="text-muted-foreground mt-1">Customer self-service access</p>
-      </div>
+      title="Customeh"
+      description="Customer self-service access"
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="hover:shadow-lg transition cursor-pointer">

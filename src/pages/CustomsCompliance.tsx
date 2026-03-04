@@ -39,10 +39,9 @@ export default function CustomsCompliance() {
 
   return (
     <StandardPage
-      title="Customs, Trance
-        </h1>
-        <p className="text-muted-foreground mt-2">Export/import declarations, customs docs, trade screening, and duties calculation</p>
-      </div>
+      title="Customs, Trance"
+      description="Export/import declarations, customs docs, trade screening, and duties calculation"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

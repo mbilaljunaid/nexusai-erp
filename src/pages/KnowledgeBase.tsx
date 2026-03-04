@@ -5,9 +5,9 @@ import { Input } from "@/components/ui/input";
 export default function KnowledgeBase() {
   return (
     <StandardPage
-      title="Knowled1>
-        <p className="text-muted-foreground mt-1">Searchable documentation and FAQs</p>
-      </div>
+      title="Knowled"
+      description="Searchable documentation and FAQs"
+    >
       <Card>
         <CardContent className="pt-6 space-y-3">
           <Input placeholder="Search knowledge base..." data-testid="input-kb-search" />

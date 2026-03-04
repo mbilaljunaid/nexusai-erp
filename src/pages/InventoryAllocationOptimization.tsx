@@ -15,10 +15,9 @@ export default function InventoryAllocationOptimization() {
 
   return (
     <StandardPage
-      title="Inventory Aation
-        </h1>
-        <p className="text-muted-foreground mt-2">Allocation across warehouses, stock balancing, and optimization recommendations</p>
-      </div>
+      title="Inventory Aation"
+      description="Allocation across warehouses, stock balancing, and optimization recommendations"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

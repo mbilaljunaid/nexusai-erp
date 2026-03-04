@@ -41,9 +41,9 @@ export default function TradeComplianceDashboard() {
 
   return (
     <StandardPage
-      title="Global Trad    </h1>
-        <p className="text-muted-foreground mt-2">Manage HS codes, duties, and customs clearance</p>
-      </div>
+      title="Global Trad"
+      description="Manage HS codes, duties, and customs clearance"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

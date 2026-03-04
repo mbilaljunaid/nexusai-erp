@@ -38,9 +38,9 @@ export default function PerformanceReviews() {
 
   return (
     <StandardPage
-      title="Performanceh1>
-        <p className="text-muted-foreground mt-1">Track employee performance and evaluations</p>
-      </div>
+      title="Performanceh"
+      description="Track employee performance and evaluations"
+    >
 
       <Card data-testid="card-new-review">
         <CardHeader><CardTitle className="text-base">Create Performance Review</CardTitle></CardHeader>

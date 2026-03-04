@@ -18,9 +18,9 @@ export default function BPM() {
 
   return (
     <StandardPage
-      title="Businesping</h1>
-        <p className="text-muted-foreground text-sm">Design, optimize, and automate business workflows</p>
-      </div>
+      title="Businesping"
+      description="Design, optimize, and automate business workflows"
+    >
 
       <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 

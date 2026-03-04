@@ -41,10 +41,9 @@ export default function PricingPromotionManagement() {
 
   return (
     <StandardPage
-      title="Pricing & P
-        </h1>
-        <p className="text-muted-foreground mt-2">Price rules, promotions, dynamic pricing, and discount strategies</p>
-      </div>
+      title="Pricing & P"
+      description="Price rules, promotions, dynamic pricing, and discount strategies"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

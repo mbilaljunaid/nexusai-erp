@@ -36,9 +36,9 @@ export default function VarianceAnalysis() {
 
   return (
     <StandardPage
-      title="Varianc1>
-        <p className="text-muted-foreground text-sm">Actual vs forecast trending and analysis</p>
-      </div>
+      title="Varianc"
+      description="Actual vs forecast trending and analysis"
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="hover-elevate"><CardContent className="p-4">

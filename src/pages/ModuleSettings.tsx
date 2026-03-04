@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 export default function ModuleSettings() {
   return (
     <StandardPage
-      title="Module h1>
-        <p className="text-muted-foreground mt-1">Enable or disable modules</p>
-      </div>
+      title="Module h"
+      description="Enable or disable modules"
+    >
       <div className="grid gap-4">
         {[
           { module: "CRM", enabled: true },

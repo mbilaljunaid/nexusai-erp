@@ -40,9 +40,9 @@ export default function MenuPOSOperations() {
 
   return (
     <StandardPage
-      title="Menu & POS </h1>
-        <p className="text-muted-foreground mt-2">Menu management, POS integration, portion costing, allergen management, and KDS routing</p>
-      </div>
+      title="Menu & POS"
+      description="Menu management, POS integration, portion costing, allergen management, and KDS routing"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

@@ -40,10 +40,9 @@ export default function DigitalRetailLeads() {
 
   return (
     <StandardPage
-      title="Digital Retnt
-        </h1>
-        <p className="text-muted-foreground mt-2">Online showroom, lead capture, CRM pipeline, and sales qualification</p>
-      </div>
+      title="Digital Retnt"
+      description="Online showroom, lead capture, CRM pipeline, and sales qualification"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

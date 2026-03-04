@@ -6,9 +6,9 @@ import { Download, Eye } from "lucide-react";
 export default function FinancialReports() {
   return (
     <StandardPage
-      title="Financi</h1>
-        <p className="text-muted-foreground mt-1">Access financial statements and reports</p>
-      </div>
+      title="Financi"
+      description="Access financial statements and reports"
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[

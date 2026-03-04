@@ -28,9 +28,9 @@ export default function SecurityEventLog() {
 
   return (
     <StandardPage
-      title="Security Ev1>
-        <p className="text-muted-foreground mt-2">Monitor security events and access logs</p>
-      </div>
+      title="Security Ev"
+      description="Monitor security events and access logs"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

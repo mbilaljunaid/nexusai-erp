@@ -26,9 +26,9 @@ export default function BackendIntegration() {
 
   return (
     <StandardPage
-      title="Backendon Status</h1>
-        <p className="text-muted-foreground mt-2">All 180+ API endpoints operational and connected to frontend</p>
-      </div>
+      title="Backendon Status"
+      description="All 180+ API endpoints operational and connected to frontend"
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {endpoints.map((endpoint, idx) => (

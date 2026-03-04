@@ -62,9 +62,9 @@ export default function ApprovalWorkflow() {
 
   return (
     <StandardPage
-      title="Approva1>
-        <p className="text-muted-foreground text-sm">Review and approve quotes, orders, invoices, and expenses</p>
-      </div>
+      title="Approva"
+      description="Review and approve quotes, orders, invoices, and expenses"
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="cursor-pointer hover-elevate">

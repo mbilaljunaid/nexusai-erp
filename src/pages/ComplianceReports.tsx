@@ -37,9 +37,9 @@ export default function ComplianceReports() {
 
   return (
     <StandardPage
-      title="Compliance 1>
-        <p className="text-muted-foreground mt-1">Generate compliance and regulatory reports</p>
-      </div>
+      title="Compliance"
+      description="Generate compliance and regulatory reports"
+    >
 
       <Card data-testid="card-new-report">
         <CardHeader><CardTitle className="text-base">Create Report</CardTitle></CardHeader>

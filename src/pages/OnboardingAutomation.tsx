@@ -38,9 +38,9 @@ export default function OnboardingAutomation() {
 
   return (
     <StandardPage
-      title="Onboardn</h1>
-        <p className="text-muted-foreground text-sm">Document management and workflow automation</p>
-      </div>
+      title="Onboardn"
+      description="Document management and workflow automation"
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="hover-elevate"><CardContent className="p-4"><div className="flex items-center gap-3"><Users className="h-5 w-5 text-blue-500" /><div><p className="text-2xl font-semibold">{stats.total}</p><p className="text-xs text-muted-foreground">Employees</p></div></div></CardContent></Card>

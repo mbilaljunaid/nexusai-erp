@@ -16,9 +16,9 @@ export default function SecuritySettings() {
 
   return (
     <StandardPage
-      title="Authenticat    </h1>
-        <p className="text-muted-foreground mt-2">Configure security policies and access control</p>
-      </div>
+      title="Authenticat"
+      description="Configure security policies and access control"
+    >
 
       <div className="grid grid-cols-2 gap-4">
         <Card>

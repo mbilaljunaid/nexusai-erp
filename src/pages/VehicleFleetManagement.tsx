@@ -41,9 +41,9 @@ export default function VehicleFleetManagement() {
 
   return (
     <StandardPage
-      title="Vehicle Fle   </h1>
-        <p className="text-muted-foreground mt-2">Fleet tracking, maintenance scheduling, fuel management, and driver assignment</p>
-      </div>
+      title="Vehicle Fle"
+      description="Fleet tracking, maintenance scheduling, fuel management, and driver assignment"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

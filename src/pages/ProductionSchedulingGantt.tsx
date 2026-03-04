@@ -15,10 +15,9 @@ export default function ProductionSchedulingGantt() {
 
   return (
     <StandardPage
-      title="Production antt)
-        </h1>
-        <p className="text-muted-foreground mt-2">Finite capacity scheduling, bottleneck analysis, and what-if scenarios</p>
-      </div>
+      title="Production antt)"
+      description="Finite capacity scheduling, bottleneck analysis, and what-if scenarios"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

@@ -41,9 +41,9 @@ export default function IntercompanyEliminations() {
 
   return (
     <StandardPage
-      title="Intercompan    </h1>
-        <p className="text-muted-foreground mt-2">Manage intercompany transactions and eliminations</p>
-      </div>
+      title="Intercompan"
+      description="Manage intercompany transactions and eliminations"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

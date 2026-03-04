@@ -41,9 +41,9 @@ export default function HSESafety() {
 
   return (
     <StandardPage
-      title="HSE & Safet  </h1>
-        <p className="text-muted-foreground mt-2">Incident logging, investigations, and corrective actions</p>
-      </div>
+      title="HSE & Safet"
+      description="Incident logging, investigations, and corrective actions"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

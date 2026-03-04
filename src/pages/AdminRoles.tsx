@@ -54,9 +54,9 @@ export default function AdminRoles() {
 
   return (
     <StandardPage
-      title="Role Manage Management</h1>
-        <p className="text-gray-600">Create and manage user roles with permissions</p>
-      </div>
+      title="Role Manage Management"
+      description="Create and manage user roles with permissions"
+    >
 
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Create New Role</h2>

@@ -56,8 +56,7 @@ export default function InvoiceGenerator() {
     <StandardPage
       title="Invoice Generator"
       description="Create, send, and track customer invoices"
-           <p className="text-muted-foreground text-sm">Create, send, and track customer invoices</p>
-        </div>
+    >
         <Button onClick={() => createMutation.mutate({ invoiceNumber: `INV-${Date.now()}`, amount: "0" })}>
           <Plus className="w-4 h-4 mr-2" />
           New Invoice

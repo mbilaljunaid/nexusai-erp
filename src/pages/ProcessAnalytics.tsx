@@ -38,10 +38,9 @@ export default function ProcessAnalytics() {
 
   return (
     <StandardPage
-      title="Process Anaon
-        </h1>
-        <p className="text-muted-foreground mt-2">Track process performance and identify optimization opportunities</p>
-      </div>
+      title="Process Anaon"
+      description="Track process performance and identify optimization opportunities"
+    >
 
       <Card data-testid="card-new-kpi">
         <CardHeader><CardTitle className="text-base">Add Process KPI</CardTitle></CardHeader>

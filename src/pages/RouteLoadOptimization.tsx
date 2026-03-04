@@ -15,10 +15,9 @@ export default function RouteLoadOptimization() {
 
   return (
     <StandardPage
-      title="Route & Loa)
-        </h1>
-        <p className="text-muted-foreground mt-2">Load planning, route sequencing, optimization, and backhaul management</p>
-      </div>
+      title="Route & Loa)"
+      description="Load planning, route sequencing, optimization, and backhaul management"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

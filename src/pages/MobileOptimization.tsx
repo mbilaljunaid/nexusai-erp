@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function MobileOptimization() {
   return (
     <StandardPage
-      title="Mobile on</h1>
-        <p className="text-muted-foreground mt-1">Responsive design and mobile-first UX</p>
-      </div>
+      title="Mobile on"
+      description="Responsive design and mobile-first UX"
+    >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card><CardContent className="pt-6"><p className="text-sm text-muted-foreground">Mobile Users</p><p className="text-3xl font-bold mt-1">45%</p></CardContent></Card>
         <Card><CardContent className="pt-6"><p className="text-sm text-muted-foreground">Page Load (Mobile)</p><p className="text-3xl font-bold mt-1">1.2s</p></CardContent></Card>

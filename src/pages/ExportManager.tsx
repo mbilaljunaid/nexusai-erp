@@ -6,9 +6,9 @@ import { Download } from "lucide-react";
 export default function ExportManager() {
   return (
     <StandardPage
-      title="Export 1>
-        <p className="text-muted-foreground mt-1">Manage data exports to PDF, Excel, CSV</p>
-      </div>
+      title="Export"
+      description="Manage data exports to PDF, Excel, CSV"
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[

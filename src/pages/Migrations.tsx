@@ -5,9 +5,9 @@ import { Badge } from "@/components/ui/badge";
 export default function Migrations() {
   return (
     <StandardPage
-      title="Data Mih1>
-        <p className="text-muted-foreground mt-1">Manage data migration jobs</p>
-      </div>
+      title="Data Mih"
+      description="Manage data migration jobs"
+    >
       <div className="grid gap-4">
         {[
           { source: "Legacy System", target: "NexusAIFirst", status: "Completed", pct: "100%" },

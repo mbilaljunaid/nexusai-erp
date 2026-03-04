@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function ReportingConfiguration() {
   return (
     <StandardPage
-      title="Reportiration</h1>
-        <p className="text-muted-foreground mt-1">Configure reporting and BI settings</p>
-      </div>
+      title="Reportiration"
+      description="Configure reporting and BI settings"
+    >
       <Card>
         <CardContent className="pt-6">
           <p className="text-sm font-medium">Default Report Format</p>

@@ -40,10 +40,9 @@ export default function ECommerceDelivery() {
 
   return (
     <StandardPage
-      title="E-Commerce ion
-        </h1>
-        <p className="text-muted-foreground mt-2">Online menu, order capture, delivery orchestration, and fulfillment management</p>
-      </div>
+      title="E-Commerce ion"
+      description="Online menu, order capture, delivery orchestration, and fulfillment management"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

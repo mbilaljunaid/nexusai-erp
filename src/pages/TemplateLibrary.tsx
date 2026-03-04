@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function TemplateLibrary() {
   return (
     <StandardPage
-      title="Templat/h1>
-        <p className="text-muted-foreground mt-1">Reusable templates for documents and workflows</p>
-      </div>
+      title="Templat/h"
+      description="Reusable templates for documents and workflows"
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[
           { template: "Email Templates", count: "24" },

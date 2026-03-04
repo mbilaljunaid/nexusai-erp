@@ -20,9 +20,9 @@ export default function OpportunitiesNew() {
 
   return (
     <StandardPage
-      title="Sales O       </h1>
-        <p className="text-muted-foreground">Manage your sales pipeline</p>
-      </div>
+      title="Sales O"
+      description="Manage your sales pipeline"
+    >
 
       <div className="grid grid-cols-3 gap-4">
         <Card>

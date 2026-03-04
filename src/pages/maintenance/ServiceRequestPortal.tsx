@@ -192,16 +192,12 @@ export function ServiceRequestPortal() {
 
     return (
         <div className="space-y-6 p-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold">Service Requests</h1>
-                    <p className="text-muted-foreground">Submit and manage maintenance requests</p>
-                </div>
-                <Button onClick={() => setShowForm(true)}>
+            <div className="flex items-center justify-between"
+      actions={<Button onClick={() => setShowForm(true)}>
                     <Plus className="h-4 w-4 mr-2" />
                     New Request
-                </Button>
-            </div>
+                </Button>}
+    >
 
             <Tabs defaultValue="inbox" className="w-full">
                 <TabsList>

@@ -6,9 +6,9 @@ import { Input } from "@/components/ui/input";
 export default function SystemSettings() {
   return (
     <StandardPage
-      title="System h1>
-        <p className="text-muted-foreground mt-1">Configure core system parameters</p>
-      </div>
+      title="System h"
+      description="Configure core system parameters"
+    >
       <Card>
         <CardHeader><CardTitle className="text-base">General Settings</CardTitle></CardHeader>
         <CardContent className="space-y-4">

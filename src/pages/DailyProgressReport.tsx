@@ -41,9 +41,9 @@ export default function DailyProgressReport() {
 
   return (
     <StandardPage
-      title="Daily Progr      </h1>
-        <p className="text-muted-foreground mt-2">Site progress, material consumption, and man-hours tracking</p>
-      </div>
+      title="Daily Progr"
+      description="Site progress, material consumption, and man-hours tracking"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

@@ -16,10 +16,9 @@ export default function WIPTrackingDashboard() {
 
   return (
     <StandardPage
-      title="WIP Trackinysis
-        </h1>
-        <p className="text-muted-foreground mt-2">Work-in-progress visibility, aging analysis, and constraint management</p>
-      </div>
+      title="WIP Trackinysis"
+      description="Work-in-progress visibility, aging analysis, and constraint management"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

@@ -15,10 +15,9 @@ export default function ShipmentTracking() {
 
   return (
     <StandardPage
-      title="Visibility me)
-        </h1>
-        <p className="text-muted-foreground mt-2">Real-time tracker, ETA predictions, events, POD capture, and geo-fencing alerts</p>
-      </div>
+      title="Visibility me)"
+      description="Real-time tracker, ETA predictions, events, POD capture, and geo-fencing alerts"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

@@ -15,10 +15,9 @@ export default function MFAEnrollment() {
 
   return (
     <StandardPage
-      title="Multi-Factorollment
-        </h1>
-        <p className="text-muted-foreground mt-2">Set up additional security methods for your account</p>
-      </div>
+      title="Multi-Factorollment"
+      description="Set up additional security methods for your account"
+    >
 
       <div className="grid grid-cols-2 gap-4">
         <Card className="hover-elevate" data-testid="card-mfa-email">

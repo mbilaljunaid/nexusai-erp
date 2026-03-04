@@ -38,9 +38,9 @@ export default function RFQs() {
 
   return (
     <StandardPage
-      title="RequestQuotation (RFQ)</h1>
-        <p className="text-muted-foreground">Manage RFQs, send quotes to vendors, and track responses</p>
-      </div>
+      title="RequestQuotation (RFQ)"
+      description="Manage RFQs, send quotes to vendors, and track responses"
+    >
 
       <IconNavigation items={navigationItems} activeId={activeNav} onSelect={setActiveNav} />
 

@@ -14,9 +14,9 @@ export default function SoDRules() {
 
   return (
     <StandardPage
-      title="Segregation</h1>
-        <p className="text-muted-foreground mt-2">Define conflicting roles and mitigation controls</p>
-      </div>
+      title="Segregation"
+      description="Define conflicting roles and mitigation controls"
+    >
 
       <div className="grid grid-cols-3 gap-4">
         <Card className="p-4">

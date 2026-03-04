@@ -40,10 +40,9 @@ export default function WarrantyClaimsManagement() {
 
   return (
     <StandardPage
-      title="Warranty, Cgement
-        </h1>
-        <p className="text-muted-foreground mt-2">Warranty policies, claim submission, tracking, and recall campaigns</p>
-      </div>
+      title="Warranty, Cgement"
+      description="Warranty policies, claim submission, tracking, and recall campaigns"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

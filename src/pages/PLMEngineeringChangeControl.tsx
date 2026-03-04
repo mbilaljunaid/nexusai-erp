@@ -41,10 +41,9 @@ export default function PLMEngineeringChangeControl() {
 
   return (
     <StandardPage
-      title="PLM & Enginol
-        </h1>
-        <p className="text-muted-foreground mt-2">ECO/CR workflows, DRB reviews, BOM versioning, and document management</p>
-      </div>
+      title="PLM & Enginol"
+      description="ECO/CR workflows, DRB reviews, BOM versioning, and document management"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

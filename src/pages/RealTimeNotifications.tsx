@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function RealTimeNotifications() {
   return (
     <StandardPage
-      title="Real-Tiations</h1>
-        <p className="text-muted-foreground mt-1">Live alerts and push notifications</p>
-      </div>
+      title="Real-Tiations"
+      description="Live alerts and push notifications"
+    >
       <Card>
         <CardContent className="pt-6">
           <p className="text-sm text-muted-foreground">Active Subscriptions</p>

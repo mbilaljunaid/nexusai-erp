@@ -174,16 +174,12 @@ export function PMScheduler() {
     return (
         <div className="space-y-6 p-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold">PM Scheduler</h1>
-                    <p className="text-muted-foreground">Generate and manage preventive maintenance work orders</p>
-                </div>
-                <Button onClick={loadPMDefinitions} variant="outline">
+            <div className="flex items-center justify-between"
+      actions={<Button onClick={loadPMDefinitions} variant="outline">
                     <RefreshCw className="h-4 w-4 mr-2" />
                     Refresh
-                </Button>
-            </div>
+                </Button>}
+    >
 
             {/* Generation Section */}
             <Card className="border-2 border-primary/20">

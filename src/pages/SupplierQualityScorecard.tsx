@@ -15,10 +15,9 @@ export default function SupplierQualityScorecard() {
 
   return (
     <StandardPage
-      title="Supplier Qu Scorecard
-        </h1>
-        <p className="text-muted-foreground mt-2">On-time delivery, defect rates, responsiveness, and vendor ratings</p>
-      </div>
+      title="Supplier Qu Scorecard"
+      description="On-time delivery, defect rates, responsiveness, and vendor ratings"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

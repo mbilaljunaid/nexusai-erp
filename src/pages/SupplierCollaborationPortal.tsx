@@ -55,9 +55,8 @@ export default function SupplierCollaborationPortal() {
   return (
     <StandardPage
       title="Supplier Collaboration Portal"
-      description="Holistic managem        </h1>
-          <p className="text-muted-foreground mt-1">Holistic management of supplier lifecycle and transactional performance.</p>
-        </div>
+      description="Holistic managem        "
+    >
         <EnterpriseContextSwitcher
           type="business-unit"
           value={activeBuId}

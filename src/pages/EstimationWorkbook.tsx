@@ -40,9 +40,9 @@ export default function EstimationWorkbook() {
 
   return (
     <StandardPage
-      title="Estimation h1>
-        <p className="text-muted-foreground mt-2">Material, labor, and equipment rate estimation</p>
-      </div>
+      title="Estimation h"
+      description="Material, labor, and equipment rate estimation"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

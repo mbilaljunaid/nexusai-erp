@@ -38,9 +38,9 @@ export default function LeadConversion() {
 
   return (
     <StandardPage
-      title="Lead Manageversion</h1>
-        <p className="text-muted-foreground mt-1">Manage leads and convert them to opportunities</p>
-      </div>
+      title="Lead Manageversion"
+      description="Manage leads and convert them to opportunities"
+    >
 
       <div className="grid grid-cols-3 gap-4">
         <Card><CardContent className="pt-6"><p className="text-xs text-muted-foreground">Total Leads</p><p className="text-2xl font-bold">{leads.length}</p></CardContent></Card>

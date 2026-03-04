@@ -39,9 +39,9 @@ export default function PartsInventory() {
 
   return (
     <StandardPage
-      title="Parts Wareh      </h1>
-        <p className="text-muted-foreground mt-2">Parts inventory, kitting, POS, replenishment, and warranty returns</p>
-      </div>
+      title="Parts Wareh"
+      description="Parts inventory, kitting, POS, replenishment, and warranty returns"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

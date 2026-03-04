@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 export default function DeveloperTools() {
   return (
     <StandardPage
-      title="Developh1>
-        <p className="text-muted-foreground mt-1">Access developer utilities and testing tools</p>
-      </div>
+      title="Developh"
+      description="Access developer utilities and testing tools"
+    >
       <div className="grid gap-4">
         {[
           { tool: "API Explorer", desc: "Test API endpoints" },

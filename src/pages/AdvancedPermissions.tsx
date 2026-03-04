@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function AdvancedPermissions() {
   return (
     <StandardPage
-      title="Advanceons</h1>
-        <p className="text-muted-foreground mt-1">Fine-grained access control with delegation</p>
-      </div>
+      title="Advanceons"
+      description="Fine-grained access control with delegation"
+    >
       <div className="grid gap-4">
         {[
           { role: "Admin", permissions: "All", scope: "Organization" },

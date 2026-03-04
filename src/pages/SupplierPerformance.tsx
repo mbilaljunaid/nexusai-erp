@@ -12,9 +12,9 @@ export default function SupplierPerformance() {
 
   return (
     <StandardPage
-      title="Supplier Pe/h1>
-        <p className="text-muted-foreground mt-2">Monitor supplier metrics and ratings</p>
-      </div>
+      title="Supplier Pe/h"
+      description="Monitor supplier metrics and ratings"
+    >
 
       <div className="grid grid-cols-3 gap-3">
         <Card className="p-3">

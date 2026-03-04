@@ -41,9 +41,9 @@ export default function BulkInventoryManagement() {
 
   return (
     <StandardPage
-      title="Bulk Invent    </h1>
-        <p className="text-muted-foreground mt-2">Tanks, silos, drums, batch tracking, and shelf life management</p>
-      </div>
+      title="Bulk Invent"
+      description="Tanks, silos, drums, batch tracking, and shelf life management"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

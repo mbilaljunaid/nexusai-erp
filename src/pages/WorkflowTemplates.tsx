@@ -37,9 +37,9 @@ export default function WorkflowTemplates() {
 
   return (
     <StandardPage
-      title="Workflow Te1>
-        <p className="text-muted-foreground mt-1">Pre-built workflow templates</p>
-      </div>
+      title="Workflow Te"
+      description="Pre-built workflow templates"
+    >
 
       <Card data-testid="card-new-template">
         <CardHeader><CardTitle className="text-base">Create Template</CardTitle></CardHeader>

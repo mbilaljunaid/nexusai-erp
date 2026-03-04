@@ -5,9 +5,9 @@ import { Badge } from "@/components/ui/badge";
 export default function NotificationCenter() {
   return (
     <StandardPage
-      title="Notificer</h1>
-        <p className="text-muted-foreground mt-1">Unified notification management</p>
-      </div>
+      title="Notificer"
+      description="Unified notification management"
+    >
       <div className="grid gap-4">
         {[
           { msg: "New lead assigned to you", time: "10 min ago", read: false },

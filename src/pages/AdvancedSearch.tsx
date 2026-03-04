@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 export default function AdvancedSearch() {
   return (
     <StandardPage
-      title="Advanceh1>
-        <p className="text-muted-foreground mt-1">Full-text and faceted search capabilities</p>
-      </div>
+      title="Advanceh"
+      description="Full-text and faceted search capabilities"
+    >
       <Card>
         <CardContent className="pt-6 space-y-3">
           <Input placeholder="Search all records..." data-testid="input-search-advanced" />

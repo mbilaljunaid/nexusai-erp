@@ -40,10 +40,9 @@ export default function FreightCostingBilling() {
 
   return (
     <StandardPage
-      title="Freight Costlement
-        </h1>
-        <p className="text-muted-foreground mt-2">Freight calculation, customer billing, carrier settlement, and claims management</p>
-      </div>
+      title="Freight Costlement"
+      description="Freight calculation, customer billing, carrier settlement, and claims management"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

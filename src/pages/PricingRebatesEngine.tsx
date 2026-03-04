@@ -41,10 +41,9 @@ export default function PricingRebatesEngine() {
 
   return (
     <StandardPage
-      title="Pricing, Retions
-        </h1>
-        <p className="text-muted-foreground mt-2">Volume tiers, tier pricing, rebate accruals, and settlement</p>
-      </div>
+      title="Pricing, Retions"
+      description="Volume tiers, tier pricing, rebate accruals, and settlement"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

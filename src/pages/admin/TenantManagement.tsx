@@ -134,16 +134,12 @@ export default function TenantManagement() {
         <AdminLayout>
             <div className="p-6 space-y-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold">Tenant Management</h1>
-                        <p className="text-muted-foreground">Manage all tenant organizations and their configurations</p>
-                    </div>
-                    <Button onClick={() => setCreateOpen(true)}>
+                <div className="flex items-center justify-between"
+      actions={<Button onClick={() => setCreateOpen(true)}>
                         <Plus className="w-4 h-4 mr-2" />
                         Create Tenant
-                    </Button>
-                </div>
+                    </Button>}
+    >
 
                 {isError && (
                     <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 rounded-lg p-3">

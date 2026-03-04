@@ -14,10 +14,9 @@ export default function BatchTraceabilityGeology() {
 
   return (
     <StandardPage
-      title="Batch Trace
-        </h1>
-        <p className="text-muted-foreground mt-2">Parent/child batch links, raw material sourcing, and recall management</p>
-      </div>
+      title="Batch Trace"
+      description="Parent/child batch links, raw material sourcing, and recall management"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

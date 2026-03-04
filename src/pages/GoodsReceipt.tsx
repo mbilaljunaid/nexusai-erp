@@ -29,9 +29,9 @@ export default function GoodsReceipt() {
 
   return (
     <StandardPage
-      title="Goods Rt Notes (GRN)</h1>
-        <p className="text-muted-foreground">Track incoming goods, perform quality checks, and match with POs</p>
-      </div>
+      title="Goods Rt Notes (GRN)"
+      description="Track incoming goods, perform quality checks, and match with POs"
+    >
 
       <IconNavigation items={navigationItems} activeId={activeNav} onSelect={setActiveNav} />
 

@@ -5,9 +5,9 @@ import { Badge } from "@/components/ui/badge";
 export default function SLATracking() {
   return (
     <StandardPage
-      title="SLA Tracalation</h1>
-        <p className="text-muted-foreground mt-1">Monitor service level agreements</p>
-      </div>
+      title="SLA Tracalation"
+      description="Monitor service level agreements"
+    >
 
       <Card>
         <CardHeader><CardTitle className="text-base">Active SLAs</CardTitle></CardHeader>

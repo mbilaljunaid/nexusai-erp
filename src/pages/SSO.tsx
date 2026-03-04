@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 export default function SSO() {
   return (
     <StandardPage
-      title="Single SO)</h1>
-        <p className="text-muted-foreground mt-1">Configure SSO identity providers</p>
-      </div>
+      title="Single SO)"
+      description="Configure SSO identity providers"
+    >
       <div className="grid gap-4">
         {[
           { provider: "Azure AD", status: "Configured" },

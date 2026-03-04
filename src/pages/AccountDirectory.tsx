@@ -39,9 +39,7 @@ export default function AccountDirectory() {
     <StandardPage
       title="Accounts"
       description="Manage customer accounts and relationships"
-   <p className="text-muted-foreground mt-1">Manage customer accounts and relationships</p>
-        </div>
-      </div>
+    >
 
       <Card data-testid="card-new-account">
         <CardHeader><CardTitle className="text-base">Add Account</CardTitle></CardHeader>

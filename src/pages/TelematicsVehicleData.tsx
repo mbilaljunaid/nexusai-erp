@@ -15,10 +15,9 @@ export default function TelematicsVehicleData() {
 
   return (
     <StandardPage
-      title="Telematics,icle Data
-        </h1>
-        <p className="text-muted-foreground mt-2">Device registry, OBD data, remote diagnostics, and predictive alerts</p>
-      </div>
+      title="Telematics,icle Data"
+      description="Device registry, OBD data, remote diagnostics, and predictive alerts"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

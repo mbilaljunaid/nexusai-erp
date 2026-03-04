@@ -10,9 +10,9 @@ export default function SecurityManagement() {
 
   return (
     <StandardPage
-      title="Securitagement</h1>
-        <p className="text-muted-foreground">Manage security policies and access</p>
-      </div>
+      title="Securitagement"
+      description="Manage security policies and access"
+    >
       <div className="grid grid-cols-3 gap-4">
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Policies</p><p className="text-2xl font-bold">{policies.length}</p></CardContent></Card>
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Active</p><p className="text-2xl font-bold text-green-600">{active}</p></CardContent></Card>

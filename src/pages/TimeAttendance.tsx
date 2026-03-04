@@ -15,9 +15,9 @@ export default function TimeAttendance() {
 
   return (
     <StandardPage
-      title="Time & </h1>
-        <p className="text-muted-foreground mt-2">Track employee time and attendance</p>
-      </div>
+      title="Time &"
+      description="Track employee time and attendance"
+    >
 
       <Card>
         <CardContent className="pt-6">

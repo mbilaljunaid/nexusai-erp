@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function InternationalizationConfig() {
   return (
     <StandardPage
-      title="Internaion (i18n)</h1>
-        <p className="text-muted-foreground mt-1">Multi-language support configuration</p>
-      </div>
+      title="Internaion (i18n)"
+      description="Multi-language support configuration"
+    >
       <div className="grid gap-4">
         {[
           { lang: "English", region: "US", coverage: "100%" },

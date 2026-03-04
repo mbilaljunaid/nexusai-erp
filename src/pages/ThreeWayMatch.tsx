@@ -35,9 +35,9 @@ export default function ThreeWayMatch() {
 
   return (
     <StandardPage
-      title="Three-Wtch</h1>
-        <p className="text-muted-foreground">Match Purchase Orders, Goods Receipts, and Supplier Invoices</p>
-      </div>
+      title="Three-Wtch"
+      description="Match Purchase Orders, Goods Receipts, and Supplier Invoices"
+    >
 
       <IconNavigation items={navigationItems} activeId={activeNav} onSelect={setActiveNav} />
 

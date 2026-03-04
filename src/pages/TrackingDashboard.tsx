@@ -16,9 +16,9 @@ export default function TrackingDashboard() {
 
   return (
     <StandardPage
-      title="Tracking Da1>
-        <p className="text-muted-foreground mt-2">Track all active shipments and deliveries</p>
-      </div>
+      title="Tracking Da"
+      description="Track all active shipments and deliveries"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

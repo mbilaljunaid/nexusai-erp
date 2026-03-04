@@ -6,9 +6,9 @@ export default function PerformanceMonitoring() {
   const data = [{ time: "10:00", latency: 45 }, { time: "11:00", latency: 38 }];
   return (
     <StandardPage
-      title="Performoring</h1>
-        <p className="text-muted-foreground mt-1">Track system performance metrics</p>
-      </div>
+      title="Performoring"
+      description="Track system performance metrics"
+    >
       <Card>
         <CardHeader><CardTitle className="text-base">Response Time</CardTitle></CardHeader>
         <CardContent>

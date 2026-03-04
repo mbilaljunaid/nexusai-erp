@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function ServiceLevelConfig() {
   return (
     <StandardPage
-      title="Servicefiguration</h1>
-        <p className="text-muted-foreground mt-1">Configure SLA and service level targets</p>
-      </div>
+      title="Servicefiguration"
+      description="Configure SLA and service level targets"
+    >
       <div className="grid gap-4">
         {[
           { level: "Premium", response: "1h", resolution: "4h" },

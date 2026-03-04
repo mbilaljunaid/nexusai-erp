@@ -5,9 +5,9 @@ import { Badge } from "@/components/ui/badge";
 export default function ScheduledReports() {
   return (
     <StandardPage
-      title="Schedul</h1>
-        <p className="text-muted-foreground mt-1">Automated report scheduling and delivery</p>
-      </div>
+      title="Schedul"
+      description="Automated report scheduling and delivery"
+    >
 
       <div className="grid gap-4">
         {[

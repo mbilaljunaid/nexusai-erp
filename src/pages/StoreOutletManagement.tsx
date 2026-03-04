@@ -37,9 +37,9 @@ export default function StoreOutletManagement() {
 
   return (
     <StandardPage
-      title="Store & Out    </h1>
-        <p className="text-muted-foreground mt-2">Multi-location management, store hierarchy, and operational controls</p>
-      </div>
+      title="Store & Out"
+      description="Multi-location management, store hierarchy, and operational controls"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

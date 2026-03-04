@@ -20,9 +20,8 @@ export default function ActivityTimeline() {
   return (
     <StandardPage
       title="Activity Timeline"
-      description="All interactions and activities across your org</h1>
-        <p className="text-muted-foreground mt-1">All interactions and activities across your organization</p>
-      </div>
+      description="All interactions and activities across your org"
+    >
 
       <FormSearchWithMetadata
         formMetadata={formMetadata}

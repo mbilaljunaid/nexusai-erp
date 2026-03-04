@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function ResponseAnalytics() {
   return (
     <StandardPage
-      title="Responslytics</h1>
-        <p className="text-muted-foreground mt-1">Support response and resolution metrics</p>
-      </div>
+      title="Responslytics"
+      description="Support response and resolution metrics"
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>

@@ -38,9 +38,9 @@ export default function RecommendationEngine() {
 
   return (
     <StandardPage
-      title="AI Recommenine</h1>
-        <p className="text-muted-foreground mt-1">Intelligent suggestions and insights</p>
-      </div>
+      title="AI Recommenine"
+      description="Intelligent suggestions and insights"
+    >
 
       <Card data-testid="card-new-recommendation">
         <CardHeader><CardTitle className="text-base">Create Recommendation</CardTitle></CardHeader>

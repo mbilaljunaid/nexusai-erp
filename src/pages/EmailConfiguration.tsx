@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 export default function EmailConfiguration() {
   return (
     <StandardPage
-      title="Email Con</h1>
-        <p className="text-muted-foreground mt-1">Configure SMTP and email settings</p>
-      </div>
+      title="Email Con"
+      description="Configure SMTP and email settings"
+    >
       <Card>
         <CardContent className="pt-6 space-y-4">
           <div>

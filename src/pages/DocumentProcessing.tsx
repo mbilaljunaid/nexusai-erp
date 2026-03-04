@@ -11,7 +11,9 @@ export default function DocumentProcessing() {
   ];
   return (
     <StandardPage
-      title="Document Prent Processing</h1><p className="text-muted-foreground mt-2">AI-powered document extraction and processing</p></div>
+      title="Document Prent Processing"
+      description="AI-powered document extraction and processing"
+    >
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Total Documents</p><p className="text-2xl font-bold">3</p></CardContent></Card>
         <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Completed</p><p className="text-2xl font-bold text-green-600">2</p></CardContent></Card>

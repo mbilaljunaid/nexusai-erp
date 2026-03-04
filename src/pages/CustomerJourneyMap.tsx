@@ -37,9 +37,9 @@ export default function CustomerJourneyMap() {
 
   return (
     <StandardPage
-      title="Customer Jo/h1>
-        <p className="text-muted-foreground mt-1">Track customer interactions across channels</p>
-      </div>
+      title="Customer Jo/h"
+      description="Track customer interactions across channels"
+    >
 
       <Card data-testid="card-new-stage">
         <CardHeader><CardTitle className="text-base">Add Journey Stage</CardTitle></CardHeader>

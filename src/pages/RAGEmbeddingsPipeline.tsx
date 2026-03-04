@@ -36,9 +36,9 @@ export default function RAGEmbeddingsPipeline() {
 
   return (
     <StandardPage
-      title="RAG Embine</h1>
-        <p className="text-muted-foreground text-sm">Vector DB and semantic search infrastructure</p>
-      </div>
+      title="RAG Embine"
+      description="Vector DB and semantic search infrastructure"
+    >
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="hover-elevate"><CardContent className="p-4">
           <div className="flex items-center gap-3">

@@ -27,9 +27,9 @@ export default function Stories() {
 
   return (
     <StandardPage
-      title="User St</h1>
-        <p className="text-muted-foreground">Manage sprint stories and track progress</p>
-      </div>
+      title="User St"
+      description="Manage sprint stories and track progress"
+    >
 
       <IconNavigation items={navigationItems} activeId={activeNav} onSelect={setActiveNav} />
 

@@ -41,9 +41,9 @@ export default function ReplenishmentPlanning() {
 
   return (
     <StandardPage
-      title="Replenishme </h1>
-        <p className="text-muted-foreground mt-2">Stock planning, purchase orders, and supplier management</p>
-      </div>
+      title="Replenishme"
+      description="Stock planning, purchase orders, and supplier management"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

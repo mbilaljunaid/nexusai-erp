@@ -40,9 +40,9 @@ export default function SupplierCarrierManagement() {
 
   return (
     <StandardPage
-      title="Supplier &         </h1>
-        <p className="text-muted-foreground mt-2">Vendor contracts, SLAs, scorecards, and performance tracking</p>
-      </div>
+      title="Supplier &"
+      description="Vendor contracts, SLAs, scorecards, and performance tracking"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

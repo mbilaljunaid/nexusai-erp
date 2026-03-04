@@ -40,10 +40,9 @@ export default function CarrierProcurement() {
 
   return (
     <StandardPage
-      title="Carrier Proagement
-        </h1>
-        <p className="text-muted-foreground mt-2">RFQ, rate tendering, contract rates, dynamic pricing, and carrier scorecards</p>
-      </div>
+      title="Carrier Proagement"
+      description="RFQ, rate tendering, contract rates, dynamic pricing, and carrier scorecards"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

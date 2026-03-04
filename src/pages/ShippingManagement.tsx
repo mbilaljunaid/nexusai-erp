@@ -41,10 +41,9 @@ export default function ShippingManagement() {
 
   return (
     <StandardPage
-      title="Shipping & 
-        </h1>
-        <p className="text-muted-foreground mt-2">Carrier integration, tracking, fulfillment, and delivery confirmation</p>
-      </div>
+      title="Shipping &"
+      description="Carrier integration, tracking, fulfillment, and delivery confirmation"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

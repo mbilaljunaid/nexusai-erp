@@ -41,9 +41,9 @@ export default function EDIMarketplaceConnectors() {
 
   return (
     <StandardPage
-      title="EDI & Marke       </h1>
-        <p className="text-muted-foreground mt-2">EDI 850/855/856/810, ASN tracking, API connectors, and marketplace integrations</p>
-      </div>
+      title="EDI & Marke"
+      description="EDI 850/855/856/810, ASN tracking, API connectors, and marketplace integrations"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

@@ -43,9 +43,7 @@ export default function PaymentScheduling() {
     <StandardPage
       title="Payment Scheduling"
       description="Plan and manage vendor payment dates"
-                <p className="text-muted-foreground text-sm">Plan and manage vendor payment dates</p>
-        </div>
-      </div>
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="cursor-pointer hover-elevate"><CardContent className="p-4"><div className="flex items-center gap-3"><Clock className="h-5 w-5 text-yellow-500" /><div><p className="text-2xl font-semibold">{stats.pending}</p><p className="text-xs text-muted-foreground">Pending</p></div></div></CardContent></Card>

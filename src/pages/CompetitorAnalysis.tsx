@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function CompetitorAnalysis() {
   return (
     <StandardPage
-      title="Competiis</h1>
-        <p className="text-muted-foreground mt-1">Market intelligence and competitive insights</p>
-      </div>
+      title="Competiis"
+      description="Market intelligence and competitive insights"
+    >
       <div className="grid gap-4">
         {[
           { competitor: "Competitor A", marketShare: "28%", trend: "↑" },

@@ -37,9 +37,9 @@ export default function ErrorHandling() {
 
   return (
     <StandardPage
-      title="Error Hilience</h1>
-        <p className="text-muted-foreground text-sm">Error tracking, alerting, and recovery</p>
-      </div>
+      title="Error Hilience"
+      description="Error tracking, alerting, and recovery"
+    >
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="hover-elevate"><CardContent className="p-4">
           <div className="flex items-center gap-3">

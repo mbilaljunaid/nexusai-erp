@@ -13,9 +13,9 @@ export default function BankReconciliation() {
 
   return (
     <StandardPage
-      title="Bank Re       </h1>
-        <p className="text-muted-foreground">Reconcile bank statements with your records</p>
-      </div>
+      title="Bank Re"
+      description="Reconcile bank statements with your records"
+    >
 
       <div className="grid grid-cols-3 gap-4">
         <Card>

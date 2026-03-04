@@ -41,9 +41,9 @@ export default function ReturnsRefundsManagement() {
 
   return (
     <StandardPage
-      title="Returns & R       </h1>
-        <p className="text-muted-foreground mt-2">Return requests, RMA processing, refund tracking, and reverse logistics</p>
-      </div>
+      title="Returns & R"
+      description="Return requests, RMA processing, refund tracking, and reverse logistics"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

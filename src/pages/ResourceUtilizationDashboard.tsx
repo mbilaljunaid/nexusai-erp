@@ -13,10 +13,9 @@ export default function ResourceUtilizationDashboard() {
 
   return (
     <StandardPage
-      title="Resource Ut
-        </h1>
-        <p className="text-muted-foreground mt-2">Monitor resource capacity and allocation</p>
-      </div>
+      title="Resource Ut"
+      description="Monitor resource capacity and allocation"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

@@ -42,9 +42,9 @@ export default function ToolingManagement() {
 
   return (
     <StandardPage
-      title="Tooling & F       </h1>
-        <p className="text-muted-foreground mt-2">Tool tracking, calibration, certification, and lifecycle management</p>
-      </div>
+      title="Tooling & F"
+      description="Tool tracking, calibration, certification, and lifecycle management"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

@@ -13,9 +13,9 @@ export default function PurchaseRequisitions() {
 
   return (
     <StandardPage
-      title="Purchase Re</h1>
-        <p className="text-muted-foreground mt-2">Manage purchase requests and approvals</p>
-      </div>
+      title="Purchase Re"
+      description="Manage purchase requests and approvals"
+    >
 
       <Card className="bg-muted/50">
         <CardContent className="pt-6">

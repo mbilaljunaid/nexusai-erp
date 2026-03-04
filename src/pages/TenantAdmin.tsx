@@ -25,9 +25,9 @@ export default function TenantAdmin() {
 
   return (
     <StandardPage
-      title="Tenant Manant Management</h1>
-        <p className="text-gray-600">Manage organizational tenants and accounts</p>
-      </div>
+      title="Tenant Manant Management"
+      description="Manage organizational tenants and accounts"
+    >
       
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Create New Tenant</h2>

@@ -41,10 +41,9 @@ export default function ShopFloorDataCollection() {
 
   return (
     <StandardPage
-      title="Shop Floor ES
-        </h1>
-        <p className="text-muted-foreground mt-2">Operator terminal, work order tracking, scrap/yield, and real-time WIP</p>
-      </div>
+      title="Shop Floor ES"
+      description="Operator terminal, work order tracking, scrap/yield, and real-time WIP"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

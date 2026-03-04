@@ -41,9 +41,9 @@ export default function ShoppingCartCheckout() {
 
   return (
     <StandardPage
-      title="Shopping Ca   </h1>
-        <p className="text-muted-foreground mt-2">Cart management, checkout flow, and order finalization</p>
-      </div>
+      title="Shopping Ca"
+      description="Cart management, checkout flow, and order finalization"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

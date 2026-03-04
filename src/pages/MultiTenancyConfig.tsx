@@ -9,9 +9,9 @@ export default function MultiTenancyConfig() {
 
   return (
     <StandardPage
-      title="Multi-Ty</h1>
-        <p className="text-muted-foreground">Manage multiple customer instances</p>
-      </div>
+      title="Multi-Ty"
+      description="Manage multiple customer instances"
+    >
       <div className="grid grid-cols-3 gap-4">
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Tenants</p><p className="text-2xl font-bold">{tenants.length}</p></CardContent></Card>
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Active</p><p className="text-2xl font-bold text-green-600">{active}</p></CardContent></Card>

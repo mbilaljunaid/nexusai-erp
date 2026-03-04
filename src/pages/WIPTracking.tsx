@@ -47,8 +47,7 @@ export default function WIPTracking() {
     <StandardPage
       title="WIP Tracking"
       description="Track work-in-process across operations"
-    <p className="text-muted-foreground mt-2">Track work-in-process across operations</p>
-        </div>
+    >
         <EnterpriseContextSwitcher type="inventory-org" />
       </div>
 

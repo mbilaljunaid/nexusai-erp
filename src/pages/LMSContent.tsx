@@ -13,7 +13,9 @@ export default function LMSContent() {
     <StandardPage
       title="LMS & Content Delivery"
       description=""
-      className="ter"><div><h1 className="text-3xl font-bold">LMS & Content Delivery</h1></div><Button data-testid="button-upload-content"><Plus className="h-4 w-4 mr-2" /> Upload Content</Button></div>
+      className="ter"
+      actions={<Button data-testid="button-upload-content"><Plus className="h-4 w-4 mr-2" /> Upload Content</Button>}
+    >
       <div className="grid gap-4">
         {modules.map(m => (
           <Card key={m.id} className="hover-elevate" data-testid={`card-module-${m.id}`}>

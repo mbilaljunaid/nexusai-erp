@@ -42,8 +42,8 @@ export default function VendorInvoiceEntry() {
   return (
     <StandardPage
       title="AP Invoice Entry"
-      description="Match vendor invoices to POs (3-way matching)"        <p className="text-muted-foreground text-sm">Match vendor invoices to POs (3-way matching)</p>
-        </div>
+      description="Match vendor invoices to POs (3-way matching)"
+    >
         <Button>
           <Plus className="w-4 h-4 mr-2" />
           New Invoice

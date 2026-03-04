@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function FieldValidation() {
   return (
     <StandardPage
-      title="Field VRules</h1>
-        <p className="text-muted-foreground mt-1">Configure validation for custom fields</p>
-      </div>
+      title="Field VRules"
+      description="Configure validation for custom fields"
+    >
       <div className="grid gap-4">
         {[
           { field: "Email", rule: "Valid email format", status: "Active" },

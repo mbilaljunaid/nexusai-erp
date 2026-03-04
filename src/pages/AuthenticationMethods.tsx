@@ -13,9 +13,9 @@ export default function AuthenticationMethods() {
 
   return (
     <StandardPage
-      title="Authenticat </h1>
-        <p className="text-muted-foreground mt-2">Configure supported authentication mechanisms</p>
-      </div>
+      title="Authenticat"
+      description="Configure supported authentication mechanisms"
+    >
 
       <div className="space-y-3">
         {methods.map((method) => (

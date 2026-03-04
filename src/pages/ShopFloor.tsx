@@ -5,9 +5,9 @@ import { Badge } from "@/components/ui/badge";
 export default function ShopFloor() {
   return (
     <StandardPage
-      title="Shop Flion</h1>
-        <p className="text-muted-foreground mt-1">Real-time shop floor status and equipment monitoring</p>
-      </div>
+      title="Shop Flion"
+      description="Real-time shop floor status and equipment monitoring"
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[

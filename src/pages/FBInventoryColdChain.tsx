@@ -40,9 +40,9 @@ export default function FBInventoryColdChain() {
 
   return (
     <StandardPage
-      title="Inventory,       </h1>
-        <p className="text-muted-foreground mt-2">FEFO/FIFO, temperature logging, batch traceability, and cold storage management</p>
-      </div>
+      title="Inventory,"
+      description="FEFO/FIFO, temperature logging, batch traceability, and cold storage management"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

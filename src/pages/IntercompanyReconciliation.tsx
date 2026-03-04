@@ -46,9 +46,9 @@ export default function IntercompanyReconciliation() {
 
   return (
     <StandardPage
-      title="Intercompan      </h1>
-        <p className="text-muted-foreground mt-2">Reconcile intercompany transactions and verify matching</p>
-      </div>
+      title="Intercompan"
+      description="Reconcile intercompany transactions and verify matching"
+    >
 
       {/* LE Context Banner */}
       {legalEntityId && (

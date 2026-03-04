@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function BulkOperations() {
   return (
     <StandardPage
-      title="Bulk Oph1>
-        <p className="text-muted-foreground mt-1">Mass update and bulk processing</p>
-      </div>
+      title="Bulk Oph"
+      description="Mass update and bulk processing"
+    >
       <div className="grid gap-4">
         {[
           { op: "Bulk Email Send", status: "Queued", records: "1,200" },

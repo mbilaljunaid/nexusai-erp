@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function SecurityAudit() {
   return (
     <StandardPage
-      title="Securit1>
-        <p className="text-muted-foreground mt-1">View security audit findings</p>
-      </div>
+      title="Securit"
+      description="View security audit findings"
+    >
       <div className="grid gap-4">
         {[
           { category: "Authentication", findings: 0, status: "Pass" },

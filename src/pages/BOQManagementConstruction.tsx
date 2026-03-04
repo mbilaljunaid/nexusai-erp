@@ -40,10 +40,9 @@ export default function BOQManagementConstruction() {
 
   return (
     <StandardPage
-      title="Bill of Quaon)
-        </h1>
-        <p className="text-muted-foreground mt-2">WBS, cost codes, and BOQ management</p>
-      </div>
+      title="Bill of Quaon)"
+      description="WBS, cost codes, and BOQ management"
+    >
 
       <div className="grid grid-cols-3 gap-3">
         <Card className="p-3">

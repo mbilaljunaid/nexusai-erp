@@ -66,16 +66,12 @@ export default function AgileBoard() {
         <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={sprints} onFilter={setFiltered} />
       </div>
 
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Agile Board</h1>
-          <p className="text-muted-foreground text-sm">Sprint planning and kanban board</p>
-        </div>
-        <Button>
+      <div className="flex items-center justify-between"
+      actions={<Button>
           <Plus className="w-4 h-4 mr-2" />
           New Sprint
-        </Button>
-      </div>
+        </Button>}
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="hover-elevate">

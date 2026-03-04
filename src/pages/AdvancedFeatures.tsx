@@ -48,9 +48,9 @@ export default function AdvancedFeatures() {
 
   return (
     <StandardPage
-      title="Advance</h1>
-        <p className="text-muted-foreground mt-2">Enterprise-grade capabilities for complex business operations</p>
-      </div>
+      title="Advance"
+      description="Enterprise-grade capabilities for complex business operations"
+    >
 
       <div className="grid grid-cols-1 gap-6">
         {features.map((category) => (

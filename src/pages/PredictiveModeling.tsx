@@ -41,9 +41,9 @@ export default function PredictiveModeling() {
 
   return (
     <StandardPage
-      title="Predictive h1>
-        <p className="text-muted-foreground mt-2">Create and manage AI predictive models</p>
-      </div>
+      title="Predictive h"
+      description="Create and manage AI predictive models"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

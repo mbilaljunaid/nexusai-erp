@@ -19,9 +19,8 @@ export default function CreditManagementCollections() {
   return (
     <StandardPage
       title="Credit Management & Collections"
-      description="Customer credit lim      </h1>
-          <p className="text-muted-foreground mt-2">Customer credit limits, holds, aging analysis, and collections (Converged)</p>
-        </div>
+      description="Customer credit lim      "
+    >
         <Button
           onClick={() => {
             open();

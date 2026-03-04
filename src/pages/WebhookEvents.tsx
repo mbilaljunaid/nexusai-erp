@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function WebhookEvents() {
   return (
     <StandardPage
-      title="Webhook1>
-        <p className="text-muted-foreground mt-1">View available webhook event types</p>
-      </div>
+      title="Webhook"
+      description="View available webhook event types"
+    >
       <div className="grid gap-4">
         {[
           { event: "lead.created", resource: "Lead", actions: 245 },

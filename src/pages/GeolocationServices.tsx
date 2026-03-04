@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function GeolocationServices() {
   return (
     <StandardPage
-      title="Geolocaces</h1>
-        <p className="text-muted-foreground mt-1">Location-based features and analytics</p>
-      </div>
+      title="Geolocaces"
+      description="Location-based features and analytics"
+    >
       <Card>
         <CardContent className="pt-6">
           <p className="text-sm text-muted-foreground">Active Locations</p>

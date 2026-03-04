@@ -39,9 +39,7 @@ export default function ReportBuilder() {
     <StandardPage
       title="Report Builder"
       description="Create and schedule custom reports"
-     <p className="text-muted-foreground mt-1">Create and schedule custom reports</p>
-        </div>
-      </div>
+    >
 
       <Card data-testid="card-new-report">
         <CardHeader><CardTitle className="text-base">Create Report</CardTitle></CardHeader>

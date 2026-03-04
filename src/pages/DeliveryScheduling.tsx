@@ -40,9 +40,9 @@ export default function DeliveryScheduling() {
 
   return (
     <StandardPage
-      title="Delivery Sch1>
-        <p className="text-muted-foreground mt-2">Schedule delivery dates and times</p>
-      </div>
+      title="Delivery Sch"
+      description="Schedule delivery dates and times"
+    >
 
       <div className="grid grid-cols-3 gap-3">
         <Card className="p-3">

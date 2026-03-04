@@ -153,16 +153,12 @@ export function PermitWorkflow() {
 
     return (
         <div className="space-y-6 p-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold">Work Permits</h1>
-                    <p className="text-muted-foreground">Manage safety permits and approvals</p>
-                </div>
-                <Button onClick={() => setShowForm(true)}>
+            <div className="flex items-center justify-between"
+      actions={<Button onClick={() => setShowForm(true)}>
                     <Plus className="h-4 w-4 mr-2" />
                     Request Permit
-                </Button>
-            </div>
+                </Button>}
+    >
 
             {showForm ? (
                 <Card className="border-2 border-primary">

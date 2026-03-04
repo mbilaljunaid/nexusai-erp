@@ -13,9 +13,9 @@ export default function TeamCollaborationHub() {
 
   return (
     <StandardPage
-      title="Team Collab </h1>
-        <p className="text-muted-foreground mt-2">Collaborate with your team on projects and tasks</p>
-      </div>
+      title="Team Collab"
+      description="Collaborate with your team on projects and tasks"
+    >
 
       <Card className="bg-muted/50">
         <CardContent className="pt-6">

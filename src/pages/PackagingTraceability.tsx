@@ -12,10 +12,9 @@ export default function PackagingTraceability() {
 
   return (
     <StandardPage
-      title="Packaging, lity
-        </h1>
-        <p className="text-muted-foreground mt-2">Label templates, batch serialization, shelf life calculation, and batch tracking</p>
-      </div>
+      title="Packaging, lity"
+      description="Label templates, batch serialization, shelf life calculation, and batch tracking"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

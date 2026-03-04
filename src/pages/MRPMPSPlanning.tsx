@@ -41,9 +41,9 @@ export default function MRPMPSPlanning() {
 
   return (
     <StandardPage
-      title="MRP / MPS /   </h1>
-        <p className="text-muted-foreground mt-2">Master production schedule, demand planning, and advanced scheduling</p>
-      </div>
+      title="MRP / MPS /"
+      description="Master production schedule, demand planning, and advanced scheduling"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function CustomerSuccessPanel() {
   return (
     <StandardPage
-      title="CustomePanel</h1>
-        <p className="text-muted-foreground mt-1">Customer health and success tracking</p>
-      </div>
+      title="CustomePanel"
+      description="Customer health and success tracking"
+    >
       <div className="grid gap-4">
         {[
           { customer: "Acme Corp", health: "Healthy", nlr: "110%" },

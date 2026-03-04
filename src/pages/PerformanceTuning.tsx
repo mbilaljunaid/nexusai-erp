@@ -39,9 +39,9 @@ export default function PerformanceTuning() {
 
   return (
     <StandardPage
-      title="Performh1>
-        <p className="text-muted-foreground text-sm">Code splitting, lazy loading, and optimization</p>
-      </div>
+      title="Performh"
+      description="Code splitting, lazy loading, and optimization"
+    >
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="hover-elevate"><CardContent className="p-4"><div className="flex items-center gap-3"><BarChart3 className="h-5 w-5 text-blue-500" /><div><p className="text-2xl font-semibold">{stats.total}</p><p className="text-xs text-muted-foreground">Optimizations</p></div></div></CardContent></Card>
         <Card className="hover-elevate"><CardContent className="p-4"><div className="flex items-center gap-3"><TrendingUp className="h-5 w-5 text-green-500" /><div><p className="text-2xl font-semibold">{stats.improved}</p><p className="text-xs text-muted-foreground">Improved</p></div></div></CardContent></Card>

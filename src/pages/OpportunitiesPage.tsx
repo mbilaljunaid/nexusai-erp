@@ -13,9 +13,9 @@ export default function OpportunitiesPage() {
 
   return (
     <StandardPage
-      title="Sales Opporh1>
-        <p className="text-muted-foreground mt-2">Track and manage sales opportunities</p>
-      </div>
+      title="Sales Opporh"
+      description="Track and manage sales opportunities"
+    >
 
       <Card className="bg-muted/50">
         <CardContent className="pt-6">

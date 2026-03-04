@@ -52,9 +52,7 @@ export default function TeamCollaboration() {
     <StandardPage
       title="Team Collaboration"
       description="Comments, mentions, and activity tracking"
-           <p className="text-muted-foreground text-sm">Comments, mentions, and activity tracking</p>
-        </div>
-      </div>
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="hover-elevate"><CardContent className="p-4"><div className="flex items-center gap-3"><MessageSquare className="h-5 w-5 text-blue-500" /><div><p className="text-2xl font-semibold">{stats.comments}</p><p className="text-xs text-muted-foreground">Comments</p></div></div></CardContent></Card>

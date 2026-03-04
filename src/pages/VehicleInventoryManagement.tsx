@@ -41,9 +41,9 @@ export default function VehicleInventoryManagement() {
 
   return (
     <StandardPage
-      title="Vehicle Inv       </h1>
-        <p className="text-muted-foreground mt-2">New & used vehicle inventory, allocation, pricing, and stock tracking</p>
-      </div>
+      title="Vehicle Inv"
+      description="New & used vehicle inventory, allocation, pricing, and stock tracking"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

@@ -41,9 +41,9 @@ export default function PromotionDiscountCodes() {
 
   return (
     <StandardPage
-      title="Promotions       </h1>
-        <p className="text-muted-foreground mt-2">Coupon management, seasonal sales, flash deals, and campaign tracking</p>
-      </div>
+      title="Promotions"
+      description="Coupon management, seasonal sales, flash deals, and campaign tracking"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

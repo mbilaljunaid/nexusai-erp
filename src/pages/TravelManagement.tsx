@@ -13,9 +13,9 @@ export default function TravelManagement() {
 
   return (
     <StandardPage
-      title="Travel </h1>
-        <p className="text-muted-foreground mt-2">Manage travel requests and expenses</p>
-      </div>
+      title="Travel"
+      description="Manage travel requests and expenses"
+    >
 
       <div className="flex gap-2">
         <Button variant={viewType === "requests" ? "default" : "outline"} onClick={() => setViewType("requests")} data-testid="button-view-requests">

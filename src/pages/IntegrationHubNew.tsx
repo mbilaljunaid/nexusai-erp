@@ -10,9 +10,9 @@ export default function IntegrationHubNew() {
 
   return (
     <StandardPage
-      title="IntegraHub</h1>
-        <p className="text-muted-foreground">Connect third-party applications</p>
-      </div>
+      title="IntegraHub"
+      description="Connect third-party applications"
+    >
       <div className="grid grid-cols-3 gap-4">
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Connections</p><p className="text-2xl font-bold">{integrations.length}</p></CardContent></Card>
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Active</p><p className="text-2xl font-bold text-green-600">{active}</p></CardContent></Card>

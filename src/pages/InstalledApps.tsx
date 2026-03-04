@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 export default function InstalledApps() {
   return (
     <StandardPage
-      title="Installtions</h1>
-        <p className="text-muted-foreground mt-1">Manage installed apps and extensions</p>
-      </div>
+      title="Installtions"
+      description="Manage installed apps and extensions"
+    >
       <div className="grid gap-4">
         {[
           { name: "Slack Integration", version: "2.1.0", status: "Active" },

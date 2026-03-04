@@ -5,9 +5,9 @@ import { Badge } from "@/components/ui/badge";
 export default function LicenseManagement() {
   return (
     <StandardPage
-      title="Licenset</h1>
-        <p className="text-muted-foreground mt-1">Manage product licenses and activations</p>
-      </div>
+      title="Licenset"
+      description="Manage product licenses and activations"
+    >
       <Card>
         <CardContent className="pt-6 space-y-4">
           <div>

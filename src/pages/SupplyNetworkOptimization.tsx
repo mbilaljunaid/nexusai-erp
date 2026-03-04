@@ -15,9 +15,9 @@ export default function SupplyNetworkOptimization() {
 
   return (
     <StandardPage
-      title="Supply Netw      </h1>
-        <p className="text-muted-foreground mt-2">Multi-echelon planning and network optimization</p>
-      </div>
+      title="Supply Netw"
+      description="Multi-echelon planning and network optimization"
+    >
 
       <div className="grid grid-cols-3 gap-3">
         <Card className="p-3">

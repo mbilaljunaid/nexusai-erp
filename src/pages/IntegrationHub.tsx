@@ -46,9 +46,9 @@ export default function IntegrationHub() {
 
   return (
     <StandardPage
-      title="Integrah1>
-        <p className="text-muted-foreground mt-2">Connect your business systems and automate workflows</p>
-      </div>
+      title="Integrah"
+      description="Connect your business systems and automate workflows"
+    >
 
       <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
 

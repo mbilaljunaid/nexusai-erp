@@ -34,15 +34,11 @@ export default function SlaReconciliation() {
     return (
         <StandardDashboard
             header={
-                <div className="flex justify-between items-center">
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Reconciliation Dashboard</h1>
-                        <p className="text-muted-foreground mt-2">Compare Subledger Accounting (SLA) vs General Ledger (GL) Balances.</p>
-                    </div>
-                    <Button variant="outline" onClick={() => refetch()} disabled={isLoading}>
+                <div className="flex justify-between items-center"
+      actions={<Button variant="outline" onClick={() => refetch()} disabled={isLoading}>
                         <RefreshCcw className={`mr-2 h-4 w-4 ${isLoading ? "animate-spin" : ""}`} /> Refresh
-                    </Button>
-                </div>
+                    </Button>}
+    >
             }
         >
             {/* Parameters */}

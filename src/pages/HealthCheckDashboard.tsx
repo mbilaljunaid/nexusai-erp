@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function HealthCheckDashboard() {
   return (
     <StandardPage
-      title="Health board</h1>
-        <p className="text-muted-foreground mt-1">Monitor critical system components</p>
-      </div>
+      title="Health board"
+      description="Monitor critical system components"
+    >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
           { component: "Database", status: "Healthy" },

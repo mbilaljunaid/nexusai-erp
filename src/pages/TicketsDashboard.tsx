@@ -11,9 +11,9 @@ export default function TicketsDashboard() {
 
   return (
     <StandardPage
-      title="Supportets</h1>
-        <p className="text-muted-foreground">Manage customer support requests</p>
-      </div>
+      title="Supportets"
+      description="Manage customer support requests"
+    >
       <div className="grid grid-cols-3 gap-4">
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Total Tickets</p><p className="text-2xl font-bold">{tickets.length}</p></CardContent></Card>
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Open</p><p className="text-2xl font-bold text-red-600">{open}</p></CardContent></Card>

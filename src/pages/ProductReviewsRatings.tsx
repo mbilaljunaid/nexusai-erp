@@ -41,9 +41,9 @@ export default function ProductReviewsRatings() {
 
   return (
     <StandardPage
-      title="Product Rev    </h1>
-        <p className="text-muted-foreground mt-2">Customer feedback, ratings, moderation, and publishing</p>
-      </div>
+      title="Product Rev"
+      description="Customer feedback, ratings, moderation, and publishing"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

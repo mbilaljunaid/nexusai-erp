@@ -21,9 +21,9 @@ export default function IoT() {
 
   return (
     <StandardPage
-      title="IoT & Fce</h1>
-        <p className="text-muted-foreground mt-2">Manage IoT devices, sensor data, and field service jobs</p>
-      </div>
+      title="IoT & Fce"
+      description="Manage IoT devices, sensor data, and field service jobs"
+    >
 
       <div className="flex gap-2">
         {tabs.map((tab) => (

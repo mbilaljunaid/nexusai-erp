@@ -16,10 +16,9 @@ export default function InventoryOptimization() {
 
   return (
     <StandardPage
-      title="Inventory OWarehouse)
-        </h1>
-        <p className="text-muted-foreground mt-2">Stock levels across DCs, inventory turns, and safety stock recommendations</p>
-      </div>
+      title="Inventory OWarehouse)"
+      description="Stock levels across DCs, inventory turns, and safety stock recommendations"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

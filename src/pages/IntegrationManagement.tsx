@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 export default function IntegrationManagement() {
   return (
     <StandardPage
-      title="Integraement</h1>
-        <p className="text-muted-foreground mt-1">Manage third-party integrations</p>
-      </div>
+      title="Integraement"
+      description="Manage third-party integrations"
+    >
       <div className="grid gap-4">
         {[
           { name: "Slack", status: "Connected" },

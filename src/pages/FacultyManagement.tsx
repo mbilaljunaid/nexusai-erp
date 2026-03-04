@@ -14,7 +14,9 @@ export default function FacultyManagement() {
     <StandardPage
       title="Faculty Management"
       description=""
-      className="spacter"><div><h1 className="text-3xl font-bold">Faculty Management</h1></div><Button data-testid="button-add-faculty"><Plus className="h-4 w-4 mr-2" /> Add Faculty</Button></div>
+      className="spacter"
+      actions={<Button data-testid="button-add-faculty"><Plus className="h-4 w-4 mr-2" /> Add Faculty</Button>}
+    >
       <div className="grid gap-4">
         {faculty.map(f => (
           <Card key={f.id} className="hover-elevate" data-testid={`card-faculty-${f.id}`}>

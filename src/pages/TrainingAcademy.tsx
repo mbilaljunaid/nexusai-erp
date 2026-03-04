@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function TrainingAcademy() {
   return (
     <StandardPage
-      title="Trainin/h1>
-        <p className="text-muted-foreground mt-1">Certification and training programs</p>
-      </div>
+      title="Trainin/h"
+      description="Certification and training programs"
+    >
       <div className="grid gap-4">
         {[
           { course: "NexusAIFirst Fundamentals", students: "1,245", completion: "85%" },

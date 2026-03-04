@@ -36,9 +36,9 @@ export default function CompensationManagement() {
 
   return (
     <StandardPage
-      title="Compensationt</h1>
-        <p className="text-muted-foreground mt-1">Manage employee compensation packages</p>
-      </div>
+      title="Compensationt"
+      description="Manage employee compensation packages"
+    >
 
       <Card data-testid="card-new-compensation">
         <CardHeader><CardTitle className="text-base">Add Compensation</CardTitle></CardHeader>

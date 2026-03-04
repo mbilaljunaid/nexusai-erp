@@ -40,9 +40,9 @@ export default function QualityFoodSafety() {
 
   return (
     <StandardPage
-      title="Quality, LI      </h1>
-        <p className="text-muted-foreground mt-2">HACCP plans, CCP, QC testing, LIMS integration, NCR, and compliance audits</p>
-      </div>
+      title="Quality, LI"
+      description="HACCP plans, CCP, QC testing, LIMS integration, NCR, and compliance audits"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

@@ -41,10 +41,9 @@ export default function FormulationRecipeManagement() {
 
   return (
     <StandardPage
-      title="Formulationt
-        </h1>
-        <p className="text-muted-foreground mt-2">Recipe editor, ingredient substitutions, batch instructions, and version control</p>
-      </div>
+      title="Formulationt"
+      description="Recipe editor, ingredient substitutions, batch instructions, and version control"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

@@ -14,10 +14,9 @@ export default function FBDemandPlanning() {
 
   return (
     <StandardPage
-      title="MRP, Demandting
-        </h1>
-        <p className="text-muted-foreground mt-2">Demand forecasting, ingredient depletion, MRP runs, and shelf-life aware procurement</p>
-      </div>
+      title="MRP, Demandting"
+      description="Demand forecasting, ingredient depletion, MRP runs, and shelf-life aware procurement"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

@@ -53,9 +53,9 @@ export default function CMMSMaintenance() {
 
   return (
     <StandardPage
-      title="CMMS & Prev        </h1>
-        <p className="text-muted-foreground mt-2">Maintenance schedules, asset tracking, downtime, and predictive analytics</p>
-      </div>
+      title="CMMS & Prev"
+      description="Maintenance schedules, asset tracking, downtime, and predictive analytics"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

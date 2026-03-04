@@ -13,10 +13,9 @@ export default function EventTriggers() {
 
   return (
     <StandardPage
-      title="Event Trigg
-        </h1>
-        <p className="text-muted-foreground mt-2">Configure events and notification templates</p>
-      </div>
+      title="Event Trigg"
+      description="Configure events and notification templates"
+    >
 
       <Card className="bg-muted/50">
         <CardContent className="pt-6">

@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 export default function NotificationSettings() {
   return (
     <StandardPage
-      title="Notificings</h1>
-        <p className="text-muted-foreground mt-1">Configure system notifications</p>
-      </div>
+      title="Notificings"
+      description="Configure system notifications"
+    >
       <div className="grid gap-4">
         {[
           { notif: "Email Notifications", enabled: true },

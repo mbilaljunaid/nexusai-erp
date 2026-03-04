@@ -64,9 +64,8 @@ export default function ComplianceDashboard() {
   return (
     <StandardPage
       title="Compliance Dashboard"
-      description="Monitor regulatory compliance across your orard</h1>
-        <p className="text-muted-foreground mt-2">Monitor regulatory compliance across your organization</p>
-      </div>
+      description="Monitor regulatory compliance across your orard"
+    >
 
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function ArchiveManagement() {
   return (
     <StandardPage
-      title="Archivet</h1>
-        <p className="text-muted-foreground mt-1">Manage data archival and retention</p>
-      </div>
+      title="Archivet"
+      description="Manage data archival and retention"
+    >
       <Card>
         <CardContent className="pt-6">
           <p className="text-sm text-muted-foreground">Archived Records</p>

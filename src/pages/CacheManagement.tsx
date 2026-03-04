@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 export default function CacheManagement() {
   return (
     <StandardPage
-      title="Cache M/h1>
-        <p className="text-muted-foreground mt-1">Manage application caching</p>
-      </div>
+      title="Cache M/h"
+      description="Manage application caching"
+    >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardContent className="pt-6">

@@ -16,9 +16,9 @@ export default function OmniChannelFulfillment() {
 
   return (
     <StandardPage
-      title="Omni-Channe   </h1>
-        <p className="text-muted-foreground mt-2">Order fulfillment, store pickup, ship-from-store, and cross-channel allocation</p>
-      </div>
+      title="Omni-Channe"
+      description="Order fulfillment, store pickup, ship-from-store, and cross-channel allocation"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

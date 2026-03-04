@@ -53,9 +53,9 @@ export default function DuplicateDetection() {
 
   return (
     <StandardPage
-      title="Duplicaion Console</h1>
-        <p className="text-muted-foreground mt-1">Review and merge duplicate party records</p>
-      </div>
+      title="Duplicaion Console"
+      description="Review and merge duplicate party records"
+    >
 
       {loading ? (
         <div className="text-center py-10 text-muted-foreground">Loading potential duplicates...</div>

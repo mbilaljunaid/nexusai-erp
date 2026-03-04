@@ -5,9 +5,9 @@ import { Badge } from "@/components/ui/badge";
 export default function TeamUtilization() {
   return (
     <StandardPage
-      title="Team Ut/h1>
-        <p className="text-muted-foreground mt-1">Support team capacity and workload</p>
-      </div>
+      title="Team Ut/h"
+      description="Support team capacity and workload"
+    >
 
       <Card>
         <CardHeader><CardTitle className="text-base">Team Members</CardTitle></CardHeader>

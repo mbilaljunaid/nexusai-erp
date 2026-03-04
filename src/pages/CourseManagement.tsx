@@ -13,7 +13,9 @@ export default function CourseManagement() {
     <StandardPage
       title="Courses & Curriculum"
       description=""
-      className="spter"><div><h1 className="text-3xl font-bold">Courses & Curriculum</h1></div><Button data-testid="button-add-course"><Plus className="h-4 w-4 mr-2" /> Add Course</Button></div>
+      className="spter"
+      actions={<Button data-testid="button-add-course"><Plus className="h-4 w-4 mr-2" /> Add Course</Button>}
+    >
       <div className="grid gap-4">
         {courses.map(c => (
           <Card key={c.id} className="hover-elevate" data-testid={`card-course-${c.id}`}>

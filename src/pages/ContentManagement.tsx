@@ -11,9 +11,9 @@ export default function ContentManagement() {
 
   return (
     <StandardPage
-      title="Contentgement</h1>
-        <p className="text-muted-foreground">Manage website content and pages</p>
-      </div>
+      title="Contentgement"
+      description="Manage website content and pages"
+    >
       <div className="grid grid-cols-3 gap-4">
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Total Pages</p><p className="text-2xl font-bold">{pages.length}</p></CardContent></Card>
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Published</p><p className="text-2xl font-bold text-green-600">{published}</p></CardContent></Card>

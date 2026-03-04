@@ -60,9 +60,7 @@ export default function EmailManagement() {
     <StandardPage
       title="Email Management"
       description="Create, send, and track email campaigns"
-     
-          <p className="text-muted-foreground mt-2">Create, send, and track email campaigns</p>
-        </div>
+    >
         <Button data-testid="button-new-campaign">
           <Send className="h-4 w-4 mr-2" />
           New Campaign

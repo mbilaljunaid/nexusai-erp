@@ -11,7 +11,9 @@ export default function CognitiveServices() {
   ];
   return (
     <StandardPage
-      title="Cognitive Stive Services</h1><p className="text-muted-foreground mt-2">AI-powered intelligent services</p></div>
+      title="Cognitive Stive Services"
+      description="AI-powered intelligent services"
+    >
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Total Services</p><p className="text-2xl font-bold">3</p></CardContent></Card>
         <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Active</p><p className="text-2xl font-bold text-green-600">3</p></CardContent></Card>

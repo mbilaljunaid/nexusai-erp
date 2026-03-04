@@ -40,10 +40,9 @@ export default function CycleCountingAudit() {
 
   return (
     <StandardPage
-      title="Cycle Countit
-        </h1>
-        <p className="text-muted-foreground mt-2">Physical inventory counts, variance analysis, and audit trails</p>
-      </div>
+      title="Cycle Countit"
+      description="Physical inventory counts, variance analysis, and audit trails"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

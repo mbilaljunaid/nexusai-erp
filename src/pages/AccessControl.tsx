@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function AccessControl() {
   return (
     <StandardPage
-      title="Access 1>
-        <p className="text-muted-foreground mt-1">Manage attribute-based access control (ABAC)</p>
-      </div>
+      title="Access"
+      description="Manage attribute-based access control (ABAC)"
+    >
       <div className="grid gap-4">
         {[
           { policy: "Department-based", rules: 12, status: "Active" },

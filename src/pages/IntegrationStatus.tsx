@@ -13,9 +13,9 @@ export default function IntegrationStatus() {
 
   return (
     <StandardPage
-      title="Integration1>
-        <p className="text-muted-foreground mt-2">Monitor external system integrations</p>
-      </div>
+      title="Integration"
+      description="Monitor external system integrations"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

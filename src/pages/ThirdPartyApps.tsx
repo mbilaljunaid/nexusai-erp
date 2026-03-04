@@ -5,9 +5,9 @@ import { Badge } from "@/components/ui/badge";
 export default function ThirdPartyApps() {
   return (
     <StandardPage
-      title="Third-P/h1>
-        <p className="text-muted-foreground mt-1">Manage third-party integrations and apps</p>
-      </div>
+      title="Third-P/h"
+      description="Manage third-party integrations and apps"
+    >
       <div className="grid gap-4">
         {[
           { app: "Slack", connected: true, users: 125 },

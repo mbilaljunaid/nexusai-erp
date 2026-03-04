@@ -41,10 +41,9 @@ export default function CustomerSubscriberManagement() {
 
   return (
     <StandardPage
-      title="Customer & nt
-        </h1>
-        <p className="text-muted-foreground mt-2">Lifecycle management, onboarding, KYC, and customer profiles</p>
-      </div>
+      title="Customer & nt"
+      description="Lifecycle management, onboarding, KYC, and customer profiles"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

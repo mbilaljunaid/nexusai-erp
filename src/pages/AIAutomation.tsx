@@ -41,7 +41,9 @@ export default function AIAutomation() {
 
   return (
     <StandardPage
-      title="AI & AutomaAutomation</h1><p className="text-muted-foreground mt-2">Manage intelligent workflows and automations</p></div>
+      title="AI & AutomaAutomation"
+      description="Manage intelligent workflows and automations"
+    >
 
       <Card data-testid="card-new-workflow">
         <CardHeader><CardTitle className="text-base">Create AI Workflow</CardTitle></CardHeader>

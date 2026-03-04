@@ -10,9 +10,9 @@ export default function MobileSync() {
 
   return (
     <StandardPage
-      title="Mobile Sync </h1>
-        <p className="text-muted-foreground mt-2">Offline-first mobile app sync with iOS & Android</p>
-      </div>
+      title="Mobile Sync"
+      description="Offline-first mobile app sync with iOS & Android"
+    >
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>

@@ -11,9 +11,9 @@ export default function AdminConsole() {
 
   return (
     <StandardPage
-      title="Admin Ce</h1>
-        <p className="text-muted-foreground">System administration and configuration</p>
-      </div>
+      title="Admin Ce"
+      description="System administration and configuration"
+    >
       <div className="grid grid-cols-3 gap-4">
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Users</p><p className="text-2xl font-bold">{users.length}</p></CardContent></Card>
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Active</p><p className="text-2xl font-bold text-green-600">{activeUsers}</p></CardContent></Card>

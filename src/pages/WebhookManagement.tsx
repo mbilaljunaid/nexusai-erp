@@ -5,9 +5,9 @@ import { Badge } from "@/components/ui/badge";
 export default function WebhookManagement() {
   return (
     <StandardPage
-      title="Webhookt</h1>
-        <p className="text-muted-foreground mt-1">Manage webhook endpoints and events</p>
-      </div>
+      title="Webhookt"
+      description="Manage webhook endpoints and events"
+    >
       <div className="grid gap-4">
         {[
           { url: "https://example.com/webhook", events: "lead.created", status: "Active" },

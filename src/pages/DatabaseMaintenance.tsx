@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 export default function DatabaseMaintenance() {
   return (
     <StandardPage
-      title="Databasnce</h1>
-        <p className="text-muted-foreground mt-1">Optimize and maintain database</p>
-      </div>
+      title="Databasnce"
+      description="Optimize and maintain database"
+    >
       <div className="grid gap-4">
         {[
           { task: "Optimize Tables", lastRun: "Yesterday" },

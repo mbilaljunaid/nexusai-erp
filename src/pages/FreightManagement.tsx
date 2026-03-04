@@ -41,9 +41,9 @@ export default function FreightManagement() {
 
   return (
     <StandardPage
-      title="Freight & C       </h1>
-        <p className="text-muted-foreground mt-2">Shipment planning, carrier rates, tracking, and landed cost</p>
-      </div>
+      title="Freight & C"
+      description="Shipment planning, carrier rates, tracking, and landed cost"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

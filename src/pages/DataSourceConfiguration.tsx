@@ -13,9 +13,9 @@ export default function DataSourceConfiguration() {
 
   return (
     <StandardPage
-      title="Data Source    </h1>
-        <p className="text-muted-foreground mt-2">Manage data connections and sources</p>
-      </div>
+      title="Data Source"
+      description="Manage data connections and sources"
+    >
 
       <Card className="bg-muted/50">
         <CardContent className="pt-6">

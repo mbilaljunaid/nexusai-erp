@@ -41,9 +41,9 @@ export default function FreightRateCalculation() {
 
   return (
     <StandardPage
-      title="Freight Rat   </h1>
-        <p className="text-muted-foreground mt-2">Carrier rates, tariff tables, weight-based pricing, and cost optimization</p>
-      </div>
+      title="Freight Rat"
+      description="Carrier rates, tariff tables, weight-based pricing, and cost optimization"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

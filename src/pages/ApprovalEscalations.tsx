@@ -38,9 +38,9 @@ export default function ApprovalEscalations() {
 
   return (
     <StandardPage
-      title="Approval Es/h1>
-        <p className="text-muted-foreground mt-2">Define escalation rules for pending approvals</p>
-      </div>
+      title="Approval Es/h"
+      description="Define escalation rules for pending approvals"
+    >
 
       <Card data-testid="card-new-escalation">
         <CardHeader><CardTitle className="text-base">Create Escalation Rule</CardTitle></CardHeader>

@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 export default function TwoFactorAuth() {
   return (
     <StandardPage
-      title="Two-Factication</h1>
-        <p className="text-muted-foreground mt-1">Manage 2FA settings and enforcement</p>
-      </div>
+      title="Two-Factication"
+      description="Manage 2FA settings and enforcement"
+    >
       <Card>
         <CardContent className="pt-6 space-y-4">
           <div>

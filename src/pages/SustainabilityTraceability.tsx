@@ -16,10 +16,9 @@ export default function SustainabilityTraceability() {
 
   return (
     <StandardPage
-      title="Sustainabil CSR
-        </h1>
-        <p className="text-muted-foreground mt-2">Farm/supplier trace, CO2 tracking, waste management, and sustainability reporting</p>
-      </div>
+      title="Sustainabil CSR"
+      description="Farm/supplier trace, CO2 tracking, waste management, and sustainability reporting"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">

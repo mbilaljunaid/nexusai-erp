@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function BatchOperations() {
   return (
     <StandardPage
-      title="Batch O/h1>
-        <p className="text-muted-foreground mt-1">Execute bulk operations and jobs</p>
-      </div>
+      title="Batch O/h"
+      description="Execute bulk operations and jobs"
+    >
       <div className="grid gap-4">
         {[
           { job: "Bulk Update Leads", status: "Completed", records: "5,420" },

@@ -5,9 +5,9 @@ import { Badge } from "@/components/ui/badge";
 export default function OAuthManagement() {
   return (
     <StandardPage
-      title="OAuth M/h1>
-        <p className="text-muted-foreground mt-1">Manage OAuth applications and tokens</p>
-      </div>
+      title="OAuth M/h"
+      description="Manage OAuth applications and tokens"
+    >
       <div className="grid gap-4">
         {[
           { app: "Mobile App", scope: "read,write", status: "Active" },

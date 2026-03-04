@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 export default function DeploymentSettings() {
   return (
     <StandardPage
-      title="Deploymgs</h1>
-        <p className="text-muted-foreground mt-1">Manage deployment configurations</p>
-      </div>
+      title="Deploymgs"
+      description="Manage deployment configurations"
+    >
       <Card>
         <CardContent className="pt-6 space-y-4">
           <div>

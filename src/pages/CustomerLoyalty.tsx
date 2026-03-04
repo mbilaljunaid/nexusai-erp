@@ -9,9 +9,9 @@ export default function CustomerLoyalty() {
 
   return (
     <StandardPage
-      title="Customealty</h1>
-        <p className="text-muted-foreground">Manage loyalty programs and rewards</p>
-      </div>
+      title="Customealty"
+      description="Manage loyalty programs and rewards"
+    >
       <div className="grid grid-cols-3 gap-4">
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Members</p><p className="text-2xl font-bold">{members.length}</p></CardContent></Card>
         <Card><CardContent className="pt-6"><p className="text-muted-foreground text-sm">Points Issued</p><p className="text-2xl font-bold">{totalPoints.toLocaleString()}</p></CardContent></Card>

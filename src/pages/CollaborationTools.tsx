@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function CollaborationTools() {
   return (
     <StandardPage
-      title="Collabols</h1>
-        <p className="text-muted-foreground mt-1">Team communication and document sharing</p>
-      </div>
+      title="Collabols"
+      description="Team communication and document sharing"
+    >
       <div className="grid gap-4">
         {[
           { tool: "Shared Workspaces", count: "8", active: "5" },

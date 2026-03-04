@@ -4,9 +4,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function DataGovernance() {
   return (
     <StandardPage
-      title="Data Goh1>
-        <p className="text-muted-foreground mt-1">Manage data policies and retention</p>
-      </div>
+      title="Data Goh"
+      description="Manage data policies and retention"
+    >
       <div className="grid gap-4">
         {[
           { policy: "Data Retention", days: 365, status: "Active" },

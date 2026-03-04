@@ -41,9 +41,9 @@ export default function EquipmentManagement() {
 
   return (
     <StandardPage
-      title="Equipment &       </h1>
-        <p className="text-muted-foreground mt-2">Equipment allocation, maintenance, fuel logs, and utilization</p>
-      </div>
+      title="Equipment &"
+      description="Equipment allocation, maintenance, fuel logs, and utilization"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">
