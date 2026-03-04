@@ -2,6 +2,7 @@ import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useQuery } from "@tanstack/react-query";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export interface Task {
     id: string;
@@ -86,12 +87,14 @@ export default function TaskList() {
     ];
 
     return (
-        <InteractiveSpreadsheet
-            data={tasks}
-            columns={columns}
-            virtualized={true}
-            containerHeight="600px"
-            onChange={() => { }}
-        />
+        <StandardPage title="Tasks" description="Project task management">
+            <InteractiveSpreadsheet
+                data={tasks}
+                columns={columns}
+                virtualized={true}
+                containerHeight="600px"
+                onChange={() => { }}
+            />
+        </StandardPage>
     );
 }

@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ShieldAlert, Trash2, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 // Mock roles derived from shared definition or fetched
 const AVAILABLE_ROLES = [
@@ -80,12 +81,11 @@ export default function SoDMatrix() {
     if (isLoading) return <div className="p-8"><Loader2 className="animate-spin" /></div>;
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-2xl font-bold tracking-tight">Segregation of Duties (SoD) Matrix</h2>
-                    <p className="text-muted-foreground">Define toxic role combinations that create conflict of interest risks.</p>
-                </div>
+    return (
+        <StandardPage
+            title="Segregation of Duties (SoD) Matrix"
+            description="Define toxic role combinations that create conflict of interest risks."
+            actions={
                 <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                     <DialogTrigger asChild>
                         <Button><Plus className="mr-2 h-4 w-4" /> Add Conflict Rule</Button>
@@ -146,7 +146,8 @@ export default function SoDMatrix() {
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
-            </div>
+            }
+        >
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {rules?.map((rule: any) => (
@@ -190,6 +191,6 @@ export default function SoDMatrix() {
                     </Card>
                 ))}
             </div>
-        </div>
+        </StandardPage>
     );
 }

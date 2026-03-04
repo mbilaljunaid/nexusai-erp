@@ -14,6 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 // Schema Validation
 const orderSchema = z.object({
@@ -77,13 +78,14 @@ export function OrderEntry() {
     };
 
     return (
-        <div className="p-6 space-y-6 max-w-5xl mx-auto">
-            <div className="flex items-center gap-4">
+        <StandardPage
+            title="Create Sales Order"
+            actions={
                 <Button variant="ghost" onClick={() => setLocation("/order-management")}>
                     <ArrowLeft className="mr-2 h-4 w-4" /> Back
                 </Button>
-                <h1 className="text-2xl font-bold">Create Sales Order</h1>
-            </div>
+            }
+        >
 
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -224,6 +226,6 @@ export function OrderEntry() {
                     </div>
                 </form>
             </Form>
-        </div>
+        </StandardPage>
     );
 }

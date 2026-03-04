@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Skeleton } from '@/components/ui/skeleton';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { useAuditLogs } from '@/hooks/admin/useAdminData';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 const actionTypes = [
     { value: 'all', label: 'All Actions' },
@@ -67,19 +68,16 @@ export default function AuditLogs() {
 
     return (
         <AdminLayout>
-            <div className="p-6 space-y-6">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold">Audit & Logs</h1>
-                        <p className="text-muted-foreground">Track all admin actions and system events</p>
-                    </div>
+            <StandardPage
+                title="Audit & Logs"
+                description="Track all admin actions and system events"
+                actions={
                     <Button variant="outline" onClick={handleExport} disabled={logs.length === 0}>
                         <Download className="w-4 h-4 mr-2" />
                         Export Logs
                     </Button>
-                </div>
-
+                }
+            >
                 {isError && (
                     <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 rounded-lg p-3">
                         <AlertCircle className="w-4 h-4" />
@@ -200,7 +198,7 @@ export default function AuditLogs() {
                         )}
                     </CardContent>
                 </Card>
-            </div>
+            </StandardPage>
         </AdminLayout>
     );
 }

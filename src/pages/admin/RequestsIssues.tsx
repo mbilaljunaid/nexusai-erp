@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminLayout from '@/components/admin/AdminLayout';
+import { StandardPage } from '@/components/layout/StandardPage';
 import { Pagination } from '@/components/admin/Pagination';
 import { ViewModeToggle } from '@/components/admin/ViewModeToggle';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from '@/components/ui/InteractiveSpreadsheet';
@@ -351,331 +352,331 @@ export default function RequestsIssues() {
 
     return (
         <AdminLayout>
-            <div className="p-6 space-y-6">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center justify-between w-full">
-                        <h2 className="text-3xl font-bold tracking-tight">Requests & Issues</h2>
-                        <div className="flex items-center gap-2">
-                            <ViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
-                            <Button variant="outline" onClick={() => exportToCSV(requests, 'requests')}>
-                                <Download className="mr-2 h-4 w-4" />
-                                Export CSV
-                            </Button>
-                            <Button onClick={() => setCreateDialogOpen(true)}>
-                                Create Request
-                            </Button>
+            <StandardPage
+                title="Requests & Issues"
+                actions={
+                    <div className="flex items-center gap-2">
+                        <ViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+                        <Button variant="outline" onClick={() => exportToCSV(requests, 'requests')}>
+                            <Download className="mr-2 h-4 w-4" />
+                            Export CSV
+                        </Button>
+                        <Button onClick={() => setCreateDialogOpen(true)}>
+                            Create Request
+                        </Button>
+                    </div>
+                }
+            >
+                <div className="space-y-6">
+
+                    {/* Dialog */}
+                    <CreateSupportRequestDialog
+                        open={createDialogOpen}
+                        onOpenChange={setCreateDialogOpen}
+                    />
+                    <EditSupportRequestDialog
+                        open={editDialogOpen}
+                        onOpenChange={setEditDialogOpen}
+                        request={selectedRequest as any}
+                    />
+                    {/* Stats */}
+                    {!isLoading && !error && (
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <Card>
+                                <CardContent className="pt-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <div className="text-2xl font-bold">{stats.openCount}</div>
+                                            <div className="text-sm text-muted-foreground">Open Issues</div>
+                                        </div>
+                                        <AlertCircle className="w-8 h-8 text-orange-600" />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            <Card>
+                                <CardContent className="pt-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <div className="text-2xl font-bold">{stats.inProgressCount}</div>
+                                            <div className="text-sm text-muted-foreground">In Progress</div>
+                                        </div>
+                                        <Clock className="w-8 h-8 text-blue-600" />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            <Card>
+                                <CardContent className="pt-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <div className="text-2xl font-bold">{stats.resolvedCount}</div>
+                                            <div className="text-sm text-muted-foreground">Resolved</div>
+                                        </div>
+                                        <CheckCircle className="w-8 h-8 text-green-600" />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            <Card>
+                                <CardContent className="pt-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <div className="text-2xl font-bold">{allRequests.length}</div>
+                                            <div className="text-sm text-muted-foreground">Total Requests</div>
+                                        </div>
+                                        <MessageSquare className="w-8 h-8 text-purple-600" />
+                                    </div>
+                                </CardContent>
+                            </Card>
                         </div>
-                    </div>
-                </div>
-
-                {/* Dialog */}
-                <CreateSupportRequestDialog
-                    open={createDialogOpen}
-                    onOpenChange={setCreateDialogOpen}
-                />
-                <EditSupportRequestDialog
-                    open={editDialogOpen}
-                    onOpenChange={setEditDialogOpen}
-                    request={selectedRequest as any}
-                />
-                {/* Stats */}
-                {!isLoading && !error && (
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <Card>
-                            <CardContent className="pt-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <div className="text-2xl font-bold">{stats.openCount}</div>
-                                        <div className="text-sm text-muted-foreground">Open Issues</div>
-                                    </div>
-                                    <AlertCircle className="w-8 h-8 text-orange-600" />
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardContent className="pt-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <div className="text-2xl font-bold">{stats.inProgressCount}</div>
-                                        <div className="text-sm text-muted-foreground">In Progress</div>
-                                    </div>
-                                    <Clock className="w-8 h-8 text-blue-600" />
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardContent className="pt-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <div className="text-2xl font-bold">{stats.resolvedCount}</div>
-                                        <div className="text-sm text-muted-foreground">Resolved</div>
-                                    </div>
-                                    <CheckCircle className="w-8 h-8 text-green-600" />
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardContent className="pt-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <div className="text-2xl font-bold">{allRequests.length}</div>
-                                        <div className="text-sm text-muted-foreground">Total Requests</div>
-                                    </div>
-                                    <MessageSquare className="w-8 h-8 text-purple-600" />
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
-                )}
-
-                {/* Tabs */}
-                <Tabs defaultValue="all">
-                    <TabsList>
-                        <TabsTrigger value="all">All</TabsTrigger>
-                        <TabsTrigger value="feature">Feature Requests</TabsTrigger>
-                        <TabsTrigger value="bug">Bugs</TabsTrigger>
-                        <TabsTrigger value="support">Support</TabsTrigger>
-                    </TabsList>
-
-                    {/* Search and Filters */}
-                    <Card className="mt-4">
-                        <CardContent className="pt-6">
-                            <div className="flex flex-col gap-4">
-                                <div className="relative flex-1">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                    <Input
-                                        placeholder="Search by title, description, user, tenant..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="pl-10"
-                                    />
-                                    {searchQuery && (
-                                        <Button
-                                            size="sm"
-                                            variant="ghost"
-                                            className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2"
-                                            onClick={() => setSearchQuery('')}
-                                        >
-                                            <X className="w-4 h-4" />
-                                        </Button>
-                                    )}
-                                </div>
-
-                                <div className="flex items-center gap-2">
-                                    <Select value={filters.priority} onValueChange={(v) => handleFilterChange('priority', v)}>
-                                        <SelectTrigger className="w-[160px]">
-                                            <SelectValue placeholder="Priority" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="all">All Priorities</SelectItem>
-                                            <SelectItem value="urgent">Urgent</SelectItem>
-                                            <SelectItem value="high">High</SelectItem>
-                                            <SelectItem value="medium">Medium</SelectItem>
-                                            <SelectItem value="low">Low</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-
-                                    <Select value={filters.status} onValueChange={(v) => handleFilterChange('status', v)}>
-                                        <SelectTrigger className="w-[160px]">
-                                            <SelectValue placeholder="Status" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="all">All Statuses</SelectItem>
-                                            <SelectItem value="open">Open</SelectItem>
-                                            <SelectItem value="in-progress">In Progress</SelectItem>
-                                            <SelectItem value="resolved">Resolved</SelectItem>
-                                            <SelectItem value="closed">Closed</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-
-                                    {activeFilterCount > 0 && (
-                                        <Button variant="outline" size="sm" onClick={clearFilters}>
-                                            Clear Filters ({activeFilterCount})
-                                        </Button>
-                                    )}
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Empty State for Filtered Results */}
-                    {!isLoading && !error && allRequests.length > 0 && requests.length === 0 && (
-                        <Card className="mt-4">
-                            <CardContent className="pt-6 text-center">
-                                <Search className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                                <p className="text-muted-foreground">No results found for your search criteria</p>
-                                <Button variant="outline" className="mt-4" onClick={clearFilters}>
-                                    Clear Filters
-                                </Button>
-                            </CardContent>
-                        </Card>
                     )}
 
+                    {/* Tabs */}
+                    <Tabs defaultValue="all">
+                        <TabsList>
+                            <TabsTrigger value="all">All</TabsTrigger>
+                            <TabsTrigger value="feature">Feature Requests</TabsTrigger>
+                            <TabsTrigger value="bug">Bugs</TabsTrigger>
+                            <TabsTrigger value="support">Support</TabsTrigger>
+                        </TabsList>
 
-                    <TabsContent value="all" className="space-y-4">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>All Requests & Issues</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                {/* Loading State */}
-                                {isLoading && (
-                                    <div className="flex items-center justify-center p-12">
-                                        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                        {/* Search and Filters */}
+                        <Card className="mt-4">
+                            <CardContent className="pt-6">
+                                <div className="flex flex-col gap-4">
+                                    <div className="relative flex-1">
+                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                        <Input
+                                            placeholder="Search by title, description, user, tenant..."
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            className="pl-10"
+                                        />
+                                        {searchQuery && (
+                                            <Button
+                                                size="sm"
+                                                variant="ghost"
+                                                className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2"
+                                                onClick={() => setSearchQuery('')}
+                                            >
+                                                <X className="w-4 h-4" />
+                                            </Button>
+                                        )}
                                     </div>
-                                )}
 
-                                {/* Error State */}
-                                {error && (
-                                    <div className="p-6 text-center text-red-600">
-                                        Failed to load requests. Please try again.
+                                    <div className="flex items-center gap-2">
+                                        <Select value={filters.priority} onValueChange={(v) => handleFilterChange('priority', v)}>
+                                            <SelectTrigger className="w-[160px]">
+                                                <SelectValue placeholder="Priority" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">All Priorities</SelectItem>
+                                                <SelectItem value="urgent">Urgent</SelectItem>
+                                                <SelectItem value="high">High</SelectItem>
+                                                <SelectItem value="medium">Medium</SelectItem>
+                                                <SelectItem value="low">Low</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+
+                                        <Select value={filters.status} onValueChange={(v) => handleFilterChange('status', v)}>
+                                            <SelectTrigger className="w-[160px]">
+                                                <SelectValue placeholder="Status" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">All Statuses</SelectItem>
+                                                <SelectItem value="open">Open</SelectItem>
+                                                <SelectItem value="in-progress">In Progress</SelectItem>
+                                                <SelectItem value="resolved">Resolved</SelectItem>
+                                                <SelectItem value="closed">Closed</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+
+                                        {activeFilterCount > 0 && (
+                                            <Button variant="outline" size="sm" onClick={clearFilters}>
+                                                Clear Filters ({activeFilterCount})
+                                            </Button>
+                                        )}
                                     </div>
-                                )}
+                                </div>
+                            </CardContent>
+                        </Card>
 
-                                {/* Empty State */}
-                                {!isLoading && !error && requests.length === 0 && (
-                                    <div className="p-12 text-center">
-                                        <MessageSquare className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                                        <p className="text-muted-foreground">No requests found</p>
-                                    </div>
-                                )}
+                        {/* Empty State for Filtered Results */}
+                        {!isLoading && !error && allRequests.length > 0 && requests.length === 0 && (
+                            <Card className="mt-4">
+                                <CardContent className="pt-6 text-center">
+                                    <Search className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                                    <p className="text-muted-foreground">No results found for your search criteria</p>
+                                    <Button variant="outline" className="mt-4" onClick={clearFilters}>
+                                        Clear Filters
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        )}
 
-                                {/* Requests List */}
-                                {!isLoading && !error && paginatedRequests.length > 0 && (
-                                    viewMode === 'table' ? (
-                                        <div className="h-[500px]">
-                                            <InteractiveSpreadsheet
-                                                columns={tableColumns}
-                                                data={paginatedRequests}
-                                                onChange={() => { }}
-                                                containerHeight="100%"
-                                            />
+
+                        <TabsContent value="all" className="space-y-4">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>All Requests & Issues</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    {/* Loading State */}
+                                    {isLoading && (
+                                        <div className="flex items-center justify-center p-12">
+                                            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
                                         </div>
-                                    ) : (
-                                        <div className="space-y-3">
-                                            {paginatedRequests.map((request) => (
-                                                <div key={request.id} className="border rounded-lg p-4 hover:bg-gray-50">
-                                                    <div className="flex items-start justify-between gap-4">
-                                                        <div className="flex-1 space-y-2">
+                                    )}
+
+                                    {/* Error State */}
+                                    {error && (
+                                        <div className="p-6 text-center text-red-600">
+                                            Failed to load requests. Please try again.
+                                        </div>
+                                    )}
+
+                                    {/* Empty State */}
+                                    {!isLoading && !error && requests.length === 0 && (
+                                        <div className="p-12 text-center">
+                                            <MessageSquare className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                                            <p className="text-muted-foreground">No requests found</p>
+                                        </div>
+                                    )}
+
+                                    {/* Requests List */}
+                                    {!isLoading && !error && paginatedRequests.length > 0 && (
+                                        viewMode === 'table' ? (
+                                            <div className="h-[500px]">
+                                                <InteractiveSpreadsheet
+                                                    columns={tableColumns}
+                                                    data={paginatedRequests}
+                                                    onChange={() => { }}
+                                                    containerHeight="100%"
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div className="space-y-3">
+                                                {paginatedRequests.map((request) => (
+                                                    <div key={request.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                                                        <div className="flex items-start justify-between gap-4">
+                                                            <div className="flex-1 space-y-2">
+                                                                <div className="flex items-center gap-2">
+                                                                    {getStatusIcon(request.status)}
+                                                                    <h3 className="font-semibold">{request.title}</h3>
+                                                                </div>
+                                                                <p className="text-sm text-muted-foreground">{request.description}</p>
+                                                                <div className="flex items-center gap-3 flex-wrap">
+                                                                    <Badge className={getTypeColor(request.type)}>
+                                                                        {request.type}
+                                                                    </Badge>
+                                                                    <Badge className={getPriorityColor(request.priority)}>
+                                                                        {request.priority}
+                                                                    </Badge>
+                                                                    {request.submittedBy && (
+                                                                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                                                            <User className="w-4 h-4" />
+                                                                            {request.submittedBy}
+                                                                        </div>
+                                                                    )}
+                                                                    {request.tenant && (
+                                                                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                                                            <Tag className="w-4 h-4" />
+                                                                            {request.tenant}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
                                                             <div className="flex items-center gap-2">
-                                                                {getStatusIcon(request.status)}
-                                                                <h3 className="font-semibold">{request.title}</h3>
-                                                            </div>
-                                                            <p className="text-sm text-muted-foreground">{request.description}</p>
-                                                            <div className="flex items-center gap-3 flex-wrap">
-                                                                <Badge className={getTypeColor(request.type)}>
-                                                                    {request.type}
-                                                                </Badge>
-                                                                <Badge className={getPriorityColor(request.priority)}>
-                                                                    {request.priority}
-                                                                </Badge>
-                                                                {request.submittedBy && (
-                                                                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                                                        <User className="w-4 h-4" />
-                                                                        {request.submittedBy}
-                                                                    </div>
-                                                                )}
-                                                                {request.tenant && (
-                                                                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                                                        <Tag className="w-4 h-4" />
-                                                                        {request.tenant}
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                        <div className="flex items-center gap-2">
-                                                            <Button
-                                                                size="sm"
-                                                                variant="outline"
-                                                                onClick={() => {
-                                                                    setSelectedRequest(request);
-                                                                    setEditDialogOpen(true);
-                                                                }}
-                                                            >
-                                                                <Edit className="w-4 h-4 mr-1" />
-                                                                Edit
-                                                            </Button>
-                                                            {request.status !== 'closed' && (
                                                                 <Button
                                                                     size="sm"
-                                                                    onClick={() => closeMutation.mutate(request.id)}
-                                                                    disabled={closeMutation.isPending}
+                                                                    variant="outline"
+                                                                    onClick={() => {
+                                                                        setSelectedRequest(request);
+                                                                        setEditDialogOpen(true);
+                                                                    }}
                                                                 >
-                                                                    {closeMutation.isPending ? (
-                                                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                                                    ) : (
-                                                                        <>
-                                                                            <CheckCircle className="w-4 h-4 mr-1" />
-                                                                            Close
-                                                                        </>
-                                                                    )}
+                                                                    <Edit className="w-4 h-4 mr-1" />
+                                                                    Edit
                                                                 </Button>
-                                                            )}
+                                                                {request.status !== 'closed' && (
+                                                                    <Button
+                                                                        size="sm"
+                                                                        onClick={() => closeMutation.mutate(request.id)}
+                                                                        disabled={closeMutation.isPending}
+                                                                    >
+                                                                        {closeMutation.isPending ? (
+                                                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                                                        ) : (
+                                                                            <>
+                                                                                <CheckCircle className="w-4 h-4 mr-1" />
+                                                                                Close
+                                                                            </>
+                                                                        )}
+                                                                    </Button>
+                                                                )}
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )
-                                )}
+                                                ))}
+                                            </div>
+                                        )
+                                    )}
 
-                                {/* Bulk Action Bar */}
-                                <BulkActionBar
-                                    selectedCount={selectedIds.size}
-                                    onClear={handleClearSelection}
-                                    actions={bulkActions}
-                                />
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
+                                    {/* Bulk Action Bar */}
+                                    <BulkActionBar
+                                        selectedCount={selectedIds.size}
+                                        onClear={handleClearSelection}
+                                        actions={bulkActions}
+                                    />
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
 
-                    <TabsContent value="feature">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Feature Requests</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-sm text-muted-foreground">Feature requests will appear here...</p>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
+                        <TabsContent value="feature">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Feature Requests</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="text-sm text-muted-foreground">Feature requests will appear here...</p>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
 
-                    <TabsContent value="bug">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Bug Reports</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-sm text-muted-foreground">Bug reports will appear here...</p>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
+                        <TabsContent value="bug">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Bug Reports</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="text-sm text-muted-foreground">Bug reports will appear here...</p>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
 
-                    <TabsContent value="support">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Support Tickets</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-sm text-muted-foreground">Support tickets will appear here...</p>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
-                </Tabs>
+                        <TabsContent value="support">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Support Tickets</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="text-sm text-muted-foreground">Support tickets will appear here...</p>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+                    </Tabs>
 
-                {/* Pagination */}
-                {!isLoading && !error && requests.length > 0 && (
-                    <Pagination
-                        currentPage={currentPage}
-                        totalItems={requests.length}
-                        pageSize={pageSize}
-                        onPageChange={handlePageChange}
-                        onPageSizeChange={handlePageSizeChange}
-                    />
-                )}
+                    {/* Pagination */}
+                    {!isLoading && !error && requests.length > 0 && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalItems={requests.length}
+                            pageSize={pageSize}
+                            onPageChange={handlePageChange}
+                            onPageSizeChange={handlePageSizeChange}
+                        />
+                    )}
 
-            </div>
+                </div>
+            </StandardPage>
         </AdminLayout >
     );
 }

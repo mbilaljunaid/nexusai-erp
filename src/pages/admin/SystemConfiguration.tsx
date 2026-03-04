@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import AdminLayout from '@/components/admin/AdminLayout';
 import { useFeatureFlags, useToggleFeatureFlag, useSystemConfig, useUpdateSystemConfig } from '@/hooks/admin/useAdminData';
 import { toast } from 'sonner';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function SystemConfiguration() {
     // Feature Flags
@@ -110,13 +111,10 @@ export default function SystemConfiguration() {
 
     return (
         <AdminLayout>
-            <div className="p-6 space-y-6">
-                {/* Header */}
-                <div>
-                    <h1 className="text-3xl font-bold">System Configuration</h1>
-                    <p className="text-muted-foreground">Configure platform-wide settings and integrations</p>
-                </div>
-
+            <StandardPage
+                title="System Configuration"
+                description="Configure platform-wide settings and integrations"
+            >
                 <Tabs defaultValue="general">
                     <TabsList>
                         <TabsTrigger value="general">General</TabsTrigger>
@@ -355,7 +353,7 @@ export default function SystemConfiguration() {
                         </Card>
                     </TabsContent>
                 </Tabs>
-            </div>
+            </StandardPage>
         </AdminLayout>
     );
 }

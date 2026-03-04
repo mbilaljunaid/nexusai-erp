@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { StandardPage } from '@/components/layout/StandardPage';
 import { Badge } from "@/components/ui/badge";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export function APMasterData() {
     const [payGroups] = useState([
@@ -21,24 +22,22 @@ export function APMasterData() {
         { id: "4", name: "Virtual Card", type: "Card", active: true }
     ]);
 
-    const payGroupColumns: Column<any>[] = [
-        { header: "Pay Group Name", accessorKey: "name", className: "font-medium text-indigo-600" },
-        { header: "Description", accessorKey: "description" },
-        { header: "Default Priority", accessorKey: "defaultPriority" },
+    const payGroupColumns: SpreadsheetColumn<any>[] = [
+        { id: "name", header: "Pay Group Name", width: 200, cell: (row) => <div className="p-2 font-medium text-indigo-600">{row.name}</div> },
+        { id: "description", header: "Description", width: 300, cell: (row) => <div className="p-2">{row.description}</div> },
+        { id: "defaultPriority", header: "Default Priority", width: 150, cell: (row) => <div className="p-2">{row.defaultPriority}</div> },
         {
-            header: "Status",
-            accessorKey: "active",
-            cell: (row) => <Badge variant={row.active ? "default" : "secondary"}>{row.active ? "Active" : "Inactive"}</Badge>
+            id: "active", header: "Status", width: 100,
+            cell: (row) => <div className="p-2"><Badge variant={row.active ? "default" : "secondary"}>{row.active ? "Active" : "Inactive"}</Badge></div>
         }
     ];
 
-    const paymentMethodColumns: Column<any>[] = [
-        { header: "Method Name", accessorKey: "name", className: "font-medium" },
-        { header: "Type", accessorKey: "type" },
+    const paymentMethodColumns: SpreadsheetColumn<any>[] = [
+        { id: "name", header: "Method Name", width: 250, cell: (row) => <div className="p-2 font-medium">{row.name}</div> },
+        { id: "type", header: "Type", width: 150, cell: (row) => <div className="p-2">{row.type}</div> },
         {
-            header: "Status",
-            accessorKey: "active",
-            cell: (row) => <Badge variant={row.active ? "default" : "secondary"}>{row.active ? "Active" : "Inactive"}</Badge>
+            id: "active", header: "Status", width: 100,
+            cell: (row) => <div className="p-2"><Badge variant={row.active ? "default" : "secondary"}>{row.active ? "Active" : "Inactive"}</Badge></div>
         }
     ];
 
@@ -62,10 +61,10 @@ export function APMasterData() {
                                     <Plus className="mr-2 h-4 w-4" /> Add Pay Group
                                 </Button>
                             </div>
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={payGroups}
                                 columns={payGroupColumns}
-                                filterColumn="name"
+                                onChange={() => { }}
                             />
                         </TabsContent>
 
@@ -75,10 +74,10 @@ export function APMasterData() {
                                     <Plus className="mr-2 h-4 w-4" /> Add Payment Method
                                 </Button>
                             </div>
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={paymentMethods}
                                 columns={paymentMethodColumns}
-                                filterColumn="name"
+                                onChange={() => { }}
                             />
                         </TabsContent>
 

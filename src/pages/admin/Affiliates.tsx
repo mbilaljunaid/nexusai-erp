@@ -12,6 +12,7 @@ import { useAffiliates, useUpdateAffiliateStatus } from '@/hooks/admin/useAdminD
 import CreateAffiliateDialog from '@/components/admin/dialogs/CreateAffiliateDialog';
 import EditAffiliateDialog from '@/components/admin/dialogs/EditAffiliateDialog';
 import { exportToCSV } from '@/utils/exportUtils';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function Affiliates() {
     const { data: allAffiliates = [], isLoading, error } = useAffiliates();
@@ -154,10 +155,9 @@ export default function Affiliates() {
 
     return (
         <AdminLayout>
-            <div className="p-6 space-y-6">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                    <h2 className="text-3xl font-bold tracking-tight">Affiliate Program</h2>
+            <StandardPage
+                title="Affiliate Program"
+                actions={
                     <div className="flex items-center gap-2">
                         <Button variant="outline" onClick={() => exportToCSV(affiliates, 'affiliates')}>
                             <Download className="mr-2 h-4 w-4" />
@@ -168,8 +168,8 @@ export default function Affiliates() {
                             Add Affiliate
                         </Button>
                     </div>
-                </div>
-
+                }
+            >
                 {/* Dialog */}
                 <CreateAffiliateDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} />
                 <EditAffiliateDialog
@@ -508,7 +508,7 @@ export default function Affiliates() {
                         </Card>
                     </TabsContent>
                 </Tabs>
-            </div>
+            </StandardPage>
         </AdminLayout>
     );
 }

@@ -3,17 +3,15 @@ import { BarChart3, TrendingUp, Users, DollarSign, Activity, PieChart } from 'lu
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminLayout from '@/components/admin/AdminLayout';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function Analytics() {
     return (
         <AdminLayout>
-            <div className="p-6 space-y-6">
-                {/* Header */}
-                <div>
-                    <h1 className="text-3xl font-bold">Analytics</h1>
-                    <p className="text-muted-foreground">Platform-wide analytics and insights</p>
-                </div>
-
+            <StandardPage
+                title="Analytics"
+                description="Platform-wide analytics and insights"
+            >
                 {/* Key Metrics */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <Card>
@@ -200,7 +198,7 @@ export default function Analytics() {
                         </Card>
                     </TabsContent>
                 </Tabs>
-            </div>
+            </StandardPage>
         </AdminLayout>
     );
 }

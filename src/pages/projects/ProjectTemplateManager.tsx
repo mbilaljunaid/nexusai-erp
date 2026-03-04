@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Layout, Settings, CheckCircle2, XCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface ProjectTemplate {
     id: string;
@@ -101,12 +102,10 @@ export default function ProjectTemplateManager() {
     ];
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-2xl font-bold tracking-tight">Project Templates</h2>
-                    <p className="text-muted-foreground">Define standard structures and defaults for new projects</p>
-                </div>
+        <StandardPage
+            title="Project Templates"
+            description="Define standard structures and defaults for new projects"
+            actions={
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
                     <DialogTrigger asChild>
                         <Button className="bg-blue-600 hover:bg-blue-700">
@@ -167,7 +166,8 @@ export default function ProjectTemplateManager() {
                         </div>
                     </DialogContent>
                 </Dialog>
-            </div>
+            }
+        >
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card>
@@ -189,6 +189,6 @@ export default function ProjectTemplateManager() {
                     />
                 )}
             </Card>
-        </div>
+        </StandardPage>
     );
 }

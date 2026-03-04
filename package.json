@@ -134,6 +134,7 @@
     "tailwindcss-animate": "^1.0.7",
     "ts-jest": "^29.4.6",
     "ts-loader": "^9.5.4",
+    "ts-morph": "^27.0.2",
     "tw-animate-css": "^1.2.5",
     "vaul": "^1.1.2",
     "wouter": "^3.3.5",

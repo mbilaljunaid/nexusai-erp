@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FileText, Download, Search, Filter, X } from 'lucide-react';
 import LogEntry from '../../components/admin/LogEntry';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface Log {
     id: string;
@@ -108,15 +109,10 @@ export default function SystemLogsViewer() {
     };
 
     return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-2xl font-bold text-gray-900">System Logs</h2>
-                    <p className="mt-1 text-sm text-gray-600">
-                        Search and filter application logs
-                    </p>
-                </div>
+        <StandardPage
+            title="System Logs"
+            description="Search and filter application logs"
+            actions={
                 <div className="flex items-center gap-3">
                     <button
                         onClick={exportLogs}
@@ -133,8 +129,8 @@ export default function SystemLogsViewer() {
                         Refresh
                     </button>
                 </div>
-            </div>
-
+            }
+        >
             {/* Filters */}
             <div className="bg-white rounded-lg shadow-sm border p-4">
                 <div className="flex items-center gap-2 mb-4">
@@ -277,6 +273,6 @@ export default function SystemLogsViewer() {
                     )}
                 </div>
             </div>
-        </div>
+        </StandardPage>
     );
 }

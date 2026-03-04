@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Activity, AlertCircle, CheckCircle, XCircle, Database, Zap, Server, Clock } from 'lucide-react';
 import MetricCard from '../../components/admin/MetricCard';
 import AlertBanner from '../../components/admin/AlertBanner';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface HealthStatus {
     status: 'healthy' | 'degraded' | 'unhealthy';
@@ -104,15 +105,10 @@ export default function SystemHealthDashboard() {
     }
 
     return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-2xl font-bold text-gray-900">System Health Dashboard</h2>
-                    <p className="mt-1 text-sm text-gray-600">
-                        Real-time system monitoring and health status
-                    </p>
-                </div>
+        <StandardPage
+            title="System Health Dashboard"
+            description="Real-time system monitoring and health status"
+            actions={
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => setAutoRefresh(!autoRefresh)}
@@ -133,8 +129,8 @@ export default function SystemHealthDashboard() {
                         Refresh Now
                     </button>
                 </div>
-            </div>
-
+            }
+        >
             {/* Overall Status */}
             {health && (
                 <div className="bg-white rounded-lg shadow-sm border p-6">
@@ -240,6 +236,6 @@ export default function SystemHealthDashboard() {
                     </div>
                 </dl>
             </div>
-        </div>
+        </StandardPage>
     );
 }

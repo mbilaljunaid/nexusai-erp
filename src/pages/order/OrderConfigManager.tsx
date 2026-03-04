@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 // Real API Fetchers
 const fetchOrderTypes = async () => {
@@ -175,13 +176,10 @@ export function OrderConfigManager() {
     };
 
     return (
-        <div className="p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Order Management Configuration</h1>
-                    <p className="text-muted-foreground">Manage Order Types, Holds, and Orchestration Rules.</p>
-                </div>
-            </div>
+        <StandardPage
+            title="Order Management Configuration"
+            description="Manage Order Types, Holds, and Orchestration Rules."
+        >
 
             <Tabs defaultValue="types" className="w-full">
                 <TabsList>
@@ -237,6 +235,6 @@ export function OrderConfigManager() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </StandardPage>
     );
 }

@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import AdminLayout from '@/components/admin/AdminLayout';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function DatabaseBackups() {
     const backups = [
@@ -38,19 +39,16 @@ export default function DatabaseBackups() {
 
     return (
         <AdminLayout>
-            <div className="p-6 space-y-6">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold">Database Backups</h1>
-                        <p className="text-muted-foreground">Manage database backups and restore points</p>
-                    </div>
+            <StandardPage
+                title="Database Backups"
+                description="Manage database backups and restore points"
+                actions={
                     <Button>
                         <Database className="w-4 h-4 mr-2" />
                         Create Backup
                     </Button>
-                </div>
-
+                }
+            >
                 {/* Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <Card>
@@ -216,7 +214,7 @@ export default function DatabaseBackups() {
                         </div>
                     </CardContent>
                 </Card>
-            </div>
+            </StandardPage>
         </AdminLayout>
     );
 }

@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, DollarSign, Clock, FileText } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface BillingRule {
     id: string;
@@ -132,21 +133,20 @@ export default function BillingRulesManager() {
     ];
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-2xl font-bold tracking-tight">Billing Rules</h2>
-                    <p className="text-muted-foreground">Define revenue recognition and billing methods for projects.</p>
-                </div>
-                {selectedProject && (
+        <StandardPage
+            title="Billing Rules"
+            description="Define revenue recognition and billing methods for projects."
+            actions={
+                selectedProject ? (
                     <Button onClick={() => {
                         setFormData({ ...formData, projectId: selectedProject });
                         setIsOpen(true);
                     }}>
                         <Plus className="mr-2 h-4 w-4" /> Add Rule
                     </Button>
-                )}
-            </div>
+                ) : null
+            }
+        >
 
             <Card>
                 <CardHeader>
@@ -257,6 +257,6 @@ export default function BillingRulesManager() {
                     </SheetFooter>
                 </SheetContent>
             </Sheet>
-        </div>
+        </StandardPage>
     );
 }

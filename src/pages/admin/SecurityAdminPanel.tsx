@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Lock, Shield, Plus, Trash2 } from 'lucide-react';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface IPEntry {
   ip: string;
@@ -157,15 +158,10 @@ export default function SecurityAdminPanel() {
   const currentList = activeTab === 'whitelist' ? whitelist : blacklist;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900">Security Administration</h2>
-        <p className="mt-1 text-sm text-gray-600">
-          Manage IP whitelists and blacklists for security hardening
-        </p>
-      </div>
-
+    <StandardPage
+      title="Security Administration"
+      description="Manage IP whitelists and blacklists for security hardening"
+    >
       {/* Warning Banner */}
       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
         <div className="flex gap-3">
@@ -289,6 +285,6 @@ export default function SecurityAdminPanel() {
           )}
         </div>
       </div>
-    </div >
+    </StandardPage>
   );
 }

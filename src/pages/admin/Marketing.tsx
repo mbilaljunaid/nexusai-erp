@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminLayout from '@/components/admin/AdminLayout';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function Marketing() {
     const campaigns = [
@@ -21,19 +22,16 @@ export default function Marketing() {
 
     return (
         <AdminLayout>
-            <div className="p-6 space-y-6">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold">Marketing</h1>
-                        <p className="text-muted-foreground">Manage campaigns, content, and lead generation</p>
-                    </div>
+            <StandardPage
+                title="Marketing"
+                description="Manage campaigns, content, and lead generation"
+                actions={
                     <Button>
                         <Megaphone className="w-4 h-4 mr-2" />
                         New Campaign
                     </Button>
-                </div>
-
+                }
+            >
                 {/* Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <Card>
@@ -172,7 +170,7 @@ export default function Marketing() {
                         </Card>
                     </TabsContent>
                 </Tabs>
-            </div>
+            </StandardPage>
         </AdminLayout>
     );
 }

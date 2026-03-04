@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminLayout from '@/components/admin/AdminLayout';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function EmailAutomation() {
     const campaigns = [
@@ -21,19 +22,16 @@ export default function EmailAutomation() {
 
     return (
         <AdminLayout>
-            <div className="p-6 space-y-6">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold">Email Automation</h1>
-                        <p className="text-muted-foreground">Manage email campaigns, templates, and automation workflows</p>
-                    </div>
+            <StandardPage
+                title="Email Automation"
+                description="Manage email campaigns, templates, and automation workflows"
+                actions={
                     <Button>
                         <Send className="w-4 h-4 mr-2" />
                         New Campaign
                     </Button>
-                </div>
-
+                }
+            >
                 {/* Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <Card>
@@ -213,7 +211,7 @@ export default function EmailAutomation() {
                         </Card>
                     </TabsContent>
                 </Tabs>
-            </div>
+            </StandardPage>
         </AdminLayout>
     );
 }

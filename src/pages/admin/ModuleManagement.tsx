@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import AdminLayout from '@/components/admin/AdminLayout';
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface Module {
     id: string;
@@ -57,19 +58,16 @@ export default function ModuleManagement() {
 
     return (
         <AdminLayout>
-            <div className="p-6 space-y-6">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold">Module Management</h1>
-                        <p className="text-muted-foreground">Configure available modules and their settings</p>
-                    </div>
+            <StandardPage
+                title="Module Management"
+                description="Configure available modules and their settings"
+                actions={
                     <Button>
                         <Package className="w-4 h-4 mr-2" />
                         Add Module
                     </Button>
-                </div>
-
+                }
+            >
                 {/* Modules List */}
                 <div className="space-y-4">
                     {modules.map((module) => (
@@ -149,7 +147,7 @@ export default function ModuleManagement() {
                         </Card>
                     ))}
                 </div>
-            </div>
+            </StandardPage>
         </AdminLayout>
     );
 }

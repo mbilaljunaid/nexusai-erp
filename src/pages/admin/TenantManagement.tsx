@@ -11,6 +11,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AdminLayout from '@/components/admin/AdminLayout';
+import { StandardPage } from '@/components/layout/StandardPage';
 import { useTenants, useCreateTenant, useDeleteTenant, useUpdateTenantStatus } from '@/hooks/admin/useAdminData';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
@@ -132,130 +133,131 @@ export default function TenantManagement() {
 
     return (
         <AdminLayout>
-            <div className="p-6 space-y-6">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold">Tenant Management</h1>
-                        <p className="text-muted-foreground">Manage all tenant organizations and their configurations</p>
-                    </div>
+            <StandardPage
+                title="Tenant Management"
+                description="Manage all tenant organizations and their configurations"
+                actions={
                     <Button onClick={() => setCreateOpen(true)}>
                         <Plus className="w-4 h-4 mr-2" />
                         Create Tenant
                     </Button>
+                }
+            >
+                <div className="space-y-6">
+
+                    {isError && (
+                        <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 rounded-lg p-3">
+                            <AlertCircle className="w-4 h-4" />
+                            Failed to load tenants. Please refresh the page.
+                        </div>
+                    )}
+
+                    {/* Search */}
+                    <Card>
+                        <CardContent className="pt-6">
+                            <div className="flex items-center gap-4">
+                                <div className="relative flex-1">
+                                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                    <Input
+                                        placeholder="Search tenants by name or slug..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className="pl-10"
+                                    />
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Tenants Table */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>
+                                {isLoading ? 'Loading...' : `All Tenants (${filteredTenants.length})`}
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            {isLoading ? (
+                                <div className="space-y-3">
+                                    {[...Array(5)].map((_, i) => (
+                                        <Skeleton key={i} className="h-12 w-full" />
+                                    ))}
+                                </div>
+                            ) : filteredTenants.length === 0 ? (
+                                <div className="text-center py-12 text-muted-foreground">
+                                    <Building2 className="w-8 h-8 mx-auto mb-3 opacity-50" />
+                                    <p className="text-sm">No tenants found</p>
+                                    <Button variant="outline" size="sm" className="mt-3" onClick={() => setCreateOpen(true)}>
+                                        Create your first tenant
+                                    </Button>
+                                </div>
+                            ) : (
+                                <div style={{ height: '400px' }}>
+                                    <InteractiveSpreadsheet
+                                        columns={tenantColumns}
+                                        data={filteredTenants}
+                                        onChange={() => { }}
+                                        containerHeight="400px"
+                                    />
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
                 </div>
 
-                {isError && (
-                    <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 rounded-lg p-3">
-                        <AlertCircle className="w-4 h-4" />
-                        Failed to load tenants. Please refresh the page.
-                    </div>
-                )}
-
-                {/* Search */}
-                <Card>
-                    <CardContent className="pt-6">
-                        <div className="flex items-center gap-4">
-                            <div className="relative flex-1">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                {/* Create Tenant Dialog */}
+                <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Create New Tenant</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4 py-2">
+                            <div className="space-y-2">
+                                <Label htmlFor="tenant-name">Organization Name</Label>
                                 <Input
-                                    placeholder="Search tenants by name or slug..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="pl-10"
+                                    id="tenant-name"
+                                    placeholder="Acme Corporation"
+                                    value={newTenant.name}
+                                    onChange={(e) => setNewTenant(p => ({ ...p, name: e.target.value }))}
                                 />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="tenant-slug">Slug</Label>
+                                <Input
+                                    id="tenant-slug"
+                                    placeholder="acme-corp"
+                                    value={newTenant.slug}
+                                    onChange={(e) => setNewTenant(p => ({ ...p, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') }))}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="tenant-status">Initial Status</Label>
+                                <Select value={newTenant.status} onValueChange={(v) => setNewTenant(p => ({ ...p, status: v }))}>
+                                    <SelectTrigger id="tenant-status">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="active">Active</SelectItem>
+                                        <SelectItem value="trial">Trial</SelectItem>
+                                        <SelectItem value="inactive">Inactive</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
                         </div>
-                    </CardContent>
-                </Card>
-
-                {/* Tenants Table */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>
-                            {isLoading ? 'Loading...' : `All Tenants (${filteredTenants.length})`}
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        {isLoading ? (
-                            <div className="space-y-3">
-                                {[...Array(5)].map((_, i) => (
-                                    <Skeleton key={i} className="h-12 w-full" />
-                                ))}
-                            </div>
-                        ) : filteredTenants.length === 0 ? (
-                            <div className="text-center py-12 text-muted-foreground">
-                                <Building2 className="w-8 h-8 mx-auto mb-3 opacity-50" />
-                                <p className="text-sm">No tenants found</p>
-                                <Button variant="outline" size="sm" className="mt-3" onClick={() => setCreateOpen(true)}>
-                                    Create your first tenant
-                                </Button>
-                            </div>
-                        ) : (
-                            <div style={{ height: '400px' }}>
-                                <InteractiveSpreadsheet
-                                    columns={tenantColumns}
-                                    data={filteredTenants}
-                                    onChange={() => { }}
-                                    containerHeight="400px"
-                                />
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setCreateOpen(false)}>Cancel</Button>
+                            <Button
+                                onClick={handleCreate}
+                                disabled={!newTenant.name || !newTenant.slug || createTenant.isPending}
+                            >
+                                {createTenant.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                                Create Tenant
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
-
-            {/* Create Tenant Dialog */}
-            <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Create New Tenant</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4 py-2">
-                        <div className="space-y-2">
-                            <Label htmlFor="tenant-name">Organization Name</Label>
-                            <Input
-                                id="tenant-name"
-                                placeholder="Acme Corporation"
-                                value={newTenant.name}
-                                onChange={(e) => setNewTenant(p => ({ ...p, name: e.target.value }))}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="tenant-slug">Slug</Label>
-                            <Input
-                                id="tenant-slug"
-                                placeholder="acme-corp"
-                                value={newTenant.slug}
-                                onChange={(e) => setNewTenant(p => ({ ...p, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') }))}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="tenant-status">Initial Status</Label>
-                            <Select value={newTenant.status} onValueChange={(v) => setNewTenant(p => ({ ...p, status: v }))}>
-                                <SelectTrigger id="tenant-status">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="active">Active</SelectItem>
-                                    <SelectItem value="trial">Trial</SelectItem>
-                                    <SelectItem value="inactive">Inactive</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setCreateOpen(false)}>Cancel</Button>
-                        <Button
-                            onClick={handleCreate}
-                            disabled={!newTenant.name || !newTenant.slug || createTenant.isPending}
-                        >
-                            {createTenant.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                            Create Tenant
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-        </AdminLayout>
+        </StandardPage>
+        </AdminLayout >
     );
 }

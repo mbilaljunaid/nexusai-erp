@@ -81,17 +81,16 @@ export default function AssetWorkbench() {
     ];
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-2xl font-bold tracking-tight">Capital Asset Workbench</h2>
-                    <p className="text-muted-foreground">Manage Construction-in-Progress (CIP) assets and capitalization</p>
-                </div>
-                <div className="flex gap-2">
+        <StandardPage
+            title="Capital Asset Workbench"
+            description="Manage Construction-in-Progress (CIP) assets and capitalization"
+            actions={
+                <>
                     <Button variant="outline">Run Capitalization</Button>
                     <Button>Create Asset</Button>
-                </div>
-            </div>
+                </>
+            }
+        >
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
@@ -132,6 +131,6 @@ export default function AssetWorkbench() {
                     />
                 )}
             </Card>
-        </div>
+        </StandardPage>
     );
 }
