@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
 import {
     Users2,
@@ -54,18 +53,22 @@ export default function RecruitmentPipelineBoard() {
     if (isLoading) return <div className="p-8">Loading Recruiting Pipeline...</div>;
 
     return (
-        <StandardPage
-            title="Global Recruitment Pipeline"
-            description="Real-time candidate tracking across all active requisitions"
-            className="flex-1 overflow-hidden"
-            actions={
+        <div className="p-6 space-y-6 h-[calc(100vh-100px)] flex flex-col">
+            <div className="flex justify-between items-center">
+                <div>
+                    <h1 className="text-3xl font-bold flex items-center gap-3">
+                        <Users2 className="h-8 w-8 text-blue-600" />
+                        Global Recruitment Pipeline
+                    </h1>
+                    <p className="text-muted-foreground mt-1">Real-time candidate tracking across all active requisitions</p>
+                </div>
                 <div className="flex gap-3">
                     <Button variant="outline"><Filter className="w-4 h-4 mr-2" /> Filters</Button>
                     <Button className="bg-blue-600 hover:bg-blue-700">Post New Requisition</Button>
                 </div>
-            }
-        >
-            <div className="grid grid-cols-5 gap-4 flex-1 overflow-y-auto pb-6 -mt-2">
+            </div>
+
+            <div className="grid grid-cols-5 gap-4 flex-1 min-h-0">
                 {STAGES.map((stage) => {
                     const candidates = pipeline[stage] || [];
                     return (
@@ -125,6 +128,7 @@ export default function RecruitmentPipelineBoard() {
                         </div>
                     );
                 })}
-            </StandardPage>
+            </div>
+        </div>
     );
 }

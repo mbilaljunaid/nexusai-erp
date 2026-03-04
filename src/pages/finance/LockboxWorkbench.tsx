@@ -251,7 +251,7 @@ export default function LockboxWorkbench() {
                                     className="filter-search-input"
                                 />
                             </div>
-                            <div className="h-[400px]">
+                            <div style={{ height: 400 }}>
                                 <InteractiveSpreadsheet
                                     columns={itemColumns}
                                     data={filteredItems}
@@ -262,7 +262,7 @@ export default function LockboxWorkbench() {
                         </>
                     ) : (
                         <div className="no-select">
-                            <Link2 size={40} className="text-gray-300 mb-3" />
+                            <Link2 size={40} style={{ color: '#d1d5db', marginBottom: 12 }} />
                             <div>Select a batch to view items</div>
                         </div>
                     )}

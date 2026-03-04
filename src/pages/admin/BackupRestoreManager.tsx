@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Database, Play, CheckCircle, Download, AlertTriangle, Clock } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
-import { StandardPage } from "@/components/layout/StandardPage";
 
 interface RestorePoint {
     id: string;
@@ -139,11 +138,15 @@ export default function BackupRestoreManager() {
     ];
 
     return (
-    return (
-        <StandardPage
-            title="Backup & Restore Manager"
-            description="Create, verify, and manage database backups"
-            actions={
+        <div className="space-y-6">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-900">Backup & Restore Manager</h2>
+                    <p className="mt-1 text-sm text-gray-600">
+                        Create, verify, and manage database backups
+                    </p>
+                </div>
                 <button
                     onClick={createBackup}
                     disabled={creating}
@@ -161,8 +164,8 @@ export default function BackupRestoreManager() {
                         </>
                     )}
                 </button>
-            }
-        >
+            </div>
+
             {/* Warning Banner */}
             <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                 <div className="flex gap-3">
@@ -257,6 +260,6 @@ export default function BackupRestoreManager() {
                     Configure Schedule
                 </button>
             </div>
-        </StandardPage>
+        </div>
     );
 }

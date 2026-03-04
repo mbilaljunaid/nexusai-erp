@@ -37,9 +37,10 @@ export default function WorkflowTemplates() {
 
   return (
     <StandardPage
-      title="Workflow Templates"
-      description="Pre-built workflow templates"
-    >
+      title="Workflow Te1>
+        <p className="text-muted-foreground mt-1">Pre-built workflow templates</p>
+      </div>
+
       <Card data-testid="card-new-template">
         <CardHeader><CardTitle className="text-base">Create Template</CardTitle></CardHeader>
         <CardContent className="space-y-3">
@@ -55,7 +56,7 @@ export default function WorkflowTemplates() {
               </SelectContent>
             </Select>
           </div>
-          <Button disabled={createMutation.isPending || !newTemplate.name} className="w-full" data-testid="button-create-template" onClick={() => createMutation.mutate(newTemplate)}>
+          <Button disabled={createMutation.isPending || !newTemplate.name} className="w-full" data-testid="button-create-template">
             <Plus className="w-4 h-4 mr-2" /> Create Template
           </Button>
         </CardContent>
@@ -70,13 +71,14 @@ export default function WorkflowTemplates() {
                   <h3 className="font-semibold">{t.name}</h3>
                   <p className="text-sm text-muted-foreground mt-1">{t.category}</p>
                 </div>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${t.id}`} onClick={() => deleteMutation.mutate(t.id)}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${t.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>
             </CardContent>
           </Card>
         ))}
-      </StandardPage>
+      </div>
+    </StandardPage>
   );
 }

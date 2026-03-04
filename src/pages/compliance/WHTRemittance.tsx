@@ -148,7 +148,7 @@ export default function WHTRemittance() {
         <StandardPage title="WHT Remittance Workbench">
             <div className="wht-header">
                 <div>
-
+                    
                     <p className="wht-subtitle">Withholding tax calculation, statutory XML generation & batch remittance filing</p>
                 </div>
                 <div className="wht-controls">
@@ -170,10 +170,10 @@ export default function WHTRemittance() {
 
             {/* KPIs */}
             <div className="wht-kpis">
-                <WKpi label="Total Gross Payments" value={fmtCcy(totalGross)} textClass="text-blue-700" borderClass="border-l-blue-700" icon={<DollarSign size={18} />} />
-                <WKpi label="WHT Withheld" value={fmtCcy(totalWHT)} textClass="text-red-600" borderClass="border-l-red-600" icon={<Globe size={18} />} />
-                <WKpi label="Effective Rate" value={totalGross > 0 ? fmtPct(totalWHT / totalGross) : '0.00%'} textClass="text-amber-600" borderClass="border-l-amber-600" icon={<FileCheck size={18} />} />
-                <WKpi label="Remitted" value={`${remitted} / ${transactions.length}`} textClass="text-emerald-600" borderClass="border-l-emerald-600" icon={<FileCheck size={18} />} />
+                <WKpi label="Total Gross Payments" value={fmtCcy(totalGross)} color="#1d4ed8" icon={<DollarSign size={18} />} />
+                <WKpi label="WHT Withheld" value={fmtCcy(totalWHT)} color="#dc2626" icon={<Globe size={18} />} />
+                <WKpi label="Effective Rate" value={totalGross > 0 ? fmtPct(totalWHT / totalGross) : '0.00%'} color="#d97706" icon={<FileCheck size={18} />} />
+                <WKpi label="Remitted" value={`${remitted} / ${transactions.length}`} color="#059669" icon={<FileCheck size={18} />} />
             </div>
 
             {/* Tabs */}
@@ -198,7 +198,7 @@ export default function WHTRemittance() {
                             Create Remittance Batch
                         </button>
                     </div>
-                    <div className="h-[400px] w-full">
+                    <div style={{ height: '400px', width: '100%' }}>
                         <InteractiveSpreadsheet
                             columns={transactionColumns}
                             data={transactions}
@@ -245,7 +245,7 @@ export default function WHTRemittance() {
                             </button>
                         </div>
                     )}
-                    <div className="h-[400px] w-full">
+                    <div style={{ height: '400px', width: '100%' }}>
                         <InteractiveSpreadsheet
                             columns={ruleColumns}
                             data={rules}
@@ -259,7 +259,7 @@ export default function WHTRemittance() {
             {activeTab === 'batches' && (
                 <div className="wht-card">
                     <h2 className="card-title">Remittance Batches</h2>
-                    <div className="h-[400px] w-full">
+                    <div style={{ height: '400px', width: '100%' }}>
                         <InteractiveSpreadsheet
                             columns={batchColumns}
                             data={batches}
@@ -315,14 +315,14 @@ export default function WHTRemittance() {
     );
 }
 
-function WKpi({ label, value, textClass, borderClass, icon }: { label: string; value: string; textClass: string; borderClass: string; icon: React.ReactNode }) {
-    return
-    <div className={`bg-white border border-gray-200 rounded-xl px-[18px] py-[14px] flex items-center gap-3 min-w-[160px] border-l-[4px] ${borderClass}`}>
-        <div className={textClass}>{icon}</div>
-        <div>
-            <div className={`text-xl font-extrabold ${textClass}`}>{value}</div>
-            <div className="text-[11px] text-gray-500 mt-0.5">{label}</div>
+function WKpi({ label, value, color, icon }: { label: string; value: string; color: string; icon: React.ReactNode }) {
+    return (
+        <div style={{ background: '#fff', border: `1px solid #e5e7eb`, borderLeft: `4px solid ${color}`, borderRadius: 12, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 12, minWidth: 160 }}>
+            <div style={{ color }}>{icon}</div>
+            <div>
+                <div style={{ fontSize: 20, fontWeight: 800, color }}>{value}</div>
+                <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2 }}>{label}</div>
+            </div>
         </div>
-    </div>
     );
 }

@@ -38,14 +38,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
 
 const contactFormSchema = z.object({
     firstName: z.string().optional(),
@@ -105,103 +97,51 @@ function ContactEntryForm({ onSuccess }: { onSuccess?: () => void }) {
     };
 
     return (
-        <div className="space-y-6 pt-4">
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    <div className="grid grid-cols-1 gap-4">
-                        <div className="grid grid-cols-2 gap-4">
-                            <FormField
-                                control={form.control}
-                                name="firstName"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>First Name</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="John" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="lastName"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Last Name *</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Doe" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+        <StandardPage
+      title="Contacts"
+      description="Manage your business relationships and network."
+      className="space-y-6 pt-4"
+    >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <div className="grid grid-cols-1 gap-4">
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="firstName">First Name</Label>
+                            <Input id="firstName" {...form.register("firstName")} placeholder="John" />
                         </div>
-
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                        <Input type="email" placeholder="john@example.com" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <FormField
-                                control={form.control}
-                                name="phone"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Phone</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="+1 555..." {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="title"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Title</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Manager" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                        <div className="space-y-2">
+                            <Label htmlFor="lastName">Last Name *</Label>
+                            <Input id="lastName" {...form.register("lastName")} placeholder="Doe" />
                         </div>
-
-                        <FormField
-                            control={form.control}
-                            name="description"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Notes</FormLabel>
-                                    <FormControl>
-                                        <Textarea placeholder="Additional notes..." {...field} value={field.value || ""} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
                     </div>
 
-                    <Button type="submit" disabled={createMutation.isPending} className="w-full">
-                        {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Create Contact
-                    </Button>
-                </form>
-            </Form>
+                    <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input id="email" {...form.register("email")} placeholder="john@example.com" />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="phone">Phone</Label>
+                            <Input id="phone" {...form.register("phone")} placeholder="+1 555..." />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="title">Title</Label>
+                            <Input id="title" {...form.register("title")} placeholder="Manager" />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="description">Notes</Label>
+                        <Textarea id="description" {...form.register("description")} placeholder="Additional notes..." />
+                    </div>
+                </div>
+
+                <Button type="submit" disabled={createMutation.isPending} className="w-full">
+                    {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Create Contact
+                </Button>
+            </form>
         </div>
     );
 }
@@ -312,12 +252,7 @@ export default function ContactsDetail() {
                 <div className="flex items-center gap-4">
                     <Link href="/crm">
                         <Button variant="outline" size="icon" className="rounded-full">
-                            <ArrowLeft className="h-4 w-4" />
-                        </Button>
-                    </Link>
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Contacts</h1>
-                        <p className="text-muted-foreground">Manage your business relationships and network.</p>
+                            <ArrolassName="text-muted-foreground">Manage your business relationships and network.</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -436,5 +371,5 @@ export default function ContactsDetail() {
                 onOpenChange={(open) => !open && setSelectedContact(null)}
             />
         </StandardPage>
-    );
+  );
 }

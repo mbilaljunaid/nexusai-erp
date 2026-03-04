@@ -2,10 +2,6 @@
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,23 +11,13 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus } from "lucide-react";
 
-const formSchema = z.object({
-    assetId: z.string().min(1, "Asset selection is required"),
-    priority: z.enum(["LOW", "NORMAL", "HIGH", "CRITICAL"]),
-    description: z.string().min(1, "Description is required"),
-});
-
 export default function ServiceRequestPortal() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
-
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            assetId: "",
-            description: "",
-            priority: "NORMAL"
-        }
+    const [formData, setFormData] = useState({
+        assetId: "",
+        description: "",
+        priority: "NORMAL"
     });
 
     // Fetch Assets
@@ -59,7 +45,7 @@ export default function ServiceRequestPortal() {
         },
         onSuccess: () => {
             toast({ title: "Request Submitted", description: "Maintenance team has been notified." });
-            form.reset();
+            setFormData({ assetId: "", description: "", priority: "NORMAL" });
             queryClient.invalidateQueries({ queryKey: ["/api/maintenance/service-requests"] });
         },
         onError: (err) => {
@@ -67,15 +53,23 @@ export default function ServiceRequestPortal() {
         }
     });
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
-        mutation.mutate(values);
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!formData.assetId || !formData.description) {
+            toast({ title: "Validation Error", description: "Asset and Description are required.", variant: "destructive" });
+            return;
+        }
+        mutation.mutate(formData);
     };
 
     return (
         <StandardPage
-            title="Service Request Portal"
-            description="Report asset failures or request maintenance."
-        >
+      title="Service Request Portal"
+      description="Report asset failures or request maintenance."
+      className="contai              <p className="text-muted-foreground">Report asset failures or request maintenance.</p>
+                </div>
+            </div>
+
             <div className="grid gap-6 md:grid-cols-2">
                 {/* Submission Form */}
                 <Card>
@@ -84,88 +78,60 @@ export default function ServiceRequestPortal() {
                         <CardDescription>Describe the problem to help us prioritize.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                                <FormField
-                                    control={form.control}
-                                    name="assetId"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Asset</FormLabel>
-                                            <Select
-                                                value={field.value}
-                                                onValueChange={field.onChange}
-                                            >
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select Asset" />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {loadingAssets ? <div className="p-2">Loading...</div> :
-                                                        assets?.map((a: any) => (
-                                                            <SelectItem key={a.id} value={String(a.id)}>
-                                                                {a.assetNumber} - {a.description}
-                                                            </SelectItem>
-                                                        ))
-                                                    }
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div className="space-y-2">
+                                <Label>Asset</Label>
+                                <Select
+                                    value={formData.assetId}
+                                    onValueChange={(val) => setFormData({ ...formData, assetId: val })}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select Asset" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {loadingAssets ? <div className="p-2">Loading...</div> :
+                                            assets?.map((a: any) => (
+                                                <SelectItem key={a.id} value={a.id}>
+                                                    {a.assetNumber} - {a.description}
+                                                </SelectItem>
+                                            ))
+                                        }
+                                    </SelectContent>
+                                </Select>
+                            </div>
 
-                                <FormField
-                                    control={form.control}
-                                    name="priority"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Priority</FormLabel>
-                                            <Select
-                                                value={field.value}
-                                                onValueChange={field.onChange}
-                                            >
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    <SelectItem value="LOW">Low - Cosmetic/Minor</SelectItem>
-                                                    <SelectItem value="NORMAL">Normal - Standard Repair</SelectItem>
-                                                    <SelectItem value="HIGH">High - Urgent/Safety</SelectItem>
-                                                    <SelectItem value="CRITICAL">Critical - Line Down</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                            <div className="space-y-2">
+                                <Label>Priority</Label>
+                                <Select
+                                    value={formData.priority}
+                                    onValueChange={(val) => setFormData({ ...formData, priority: val })}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="LOW">Low - Cosmetic/Minor</SelectItem>
+                                        <SelectItem value="NORMAL">Normal - Standard Repair</SelectItem>
+                                        <SelectItem value="HIGH">High - Urgent/Safety</SelectItem>
+                                        <SelectItem value="CRITICAL">Critical - Line Down</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
 
-                                <FormField
-                                    control={form.control}
-                                    name="description"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Description</FormLabel>
-                                            <FormControl>
-                                                <Textarea
-                                                    placeholder="Describe the issue..."
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
+                            <div className="space-y-2">
+                                <Label>Description</Label>
+                                <Textarea
+                                    placeholder="Describe the issue..."
+                                    value={formData.description}
+                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 />
+                            </div>
 
-                                <Button type="submit" className="w-full" disabled={mutation.isPending}>
-                                    {mutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                    Submit Request
-                                </Button>
-                            </form>
-                        </Form>
+                            <Button type="submit" className="w-full" disabled={mutation.isPending}>
+                                {mutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                Submit Request
+                            </Button>
+                        </form>
                     </CardContent>
                 </Card>
 
@@ -182,7 +148,7 @@ export default function ServiceRequestPortal() {
                                     <div className="flex justify-between items-start">
                                         <span className="font-medium text-sm">{sr.requestNumber}</span>
                                         <div className={`text-xs px-2 py-1 rounded-full ${sr.status === 'NEW' ? 'bg-blue-100 text-blue-800' :
-                                            sr.status === 'CONVERTED' ? 'bg-green-100 text-green-800' : 'bg-gray-100'
+                                                sr.status === 'CONVERTED' ? 'bg-green-100 text-green-800' : 'bg-gray-100'
                                             }`}>
                                             {sr.status}
                                         </div>
@@ -194,6 +160,7 @@ export default function ServiceRequestPortal() {
                         </div>
                     </CardContent>
                 </Card>
-            </StandardPage>
-    );
+            </div>
+        </StandardPage>
+  );
 }

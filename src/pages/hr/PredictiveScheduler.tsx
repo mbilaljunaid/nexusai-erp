@@ -110,7 +110,7 @@ export default function PredictiveScheduler() {
             <div className="tab-bar">
                 {(['schedule', 'forecast', 'generate'] as const).map(t => (
                     <button key={t} className={`tab-btn ${activeTab === t ? 'active' : ''}`}
-                        onClick={() => setActiveTab(t)} data-active={activeTab === t}>
+                        onClick={() => setActiveTab(t)} aria-pressed={activeTab === t ? 'true' : 'false'}>
                         {t === 'schedule' && <Calendar size={12} />}
                         {t === 'forecast' && <BarChart2 size={12} />}
                         {t === 'generate' && <Zap size={12} />}
@@ -132,10 +132,12 @@ export default function PredictiveScheduler() {
                                     {dayShifts.map(s => {
                                         const cfg = STATUS_CFG[s.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
                                         return (
-                                            <div key={s.id} className={`shift-chip ps-shift-${s.status}`}>
+                                            // eslint-disable-next-line
+                                            <div key={s.id} className="shift-chip" style={{ background: cfg.bg, borderLeft: `3px solid ${cfg.color}` }}>
                                                 <div className="sc-time">{s.start_time}–{s.end_time}</div>
                                                 <div className="sc-emp"><Users size={10} /> {s.employee_id?.slice(0, 6)}…</div>
-                                                <span className={`sc-stat ps-shift-stat-${s.status}`}>{s.status}</span>
+                                                {/* eslint-disable-next-line */}
+                                                <span className="sc-stat" style={{ color: cfg.color }}>{s.status}</span>
                                             </div>
                                         );
                                     })}
@@ -145,80 +147,75 @@ export default function PredictiveScheduler() {
                         );
                     })}
                 </div>
-            )
-            }
+            )}
 
-            {
-                activeTab === 'forecast' && (
-                    <div className="forecast-panel">
-                        <div className="fc-ctrl">
-                            <div className="pf"><label className="pl">Date</label><input className="pi" type="date" value={coverageDate} onChange={e => setCoverageDate(e.target.value)} aria-label="Date for coverage" /></div>
-                            <button className="run-fc-btn" disabled={forecastMutation.isPending}
-                                onClick={() => forecastMutation.mutate({ locationId: location, startDate: coverageDate, endDate: coverageDate })} aria-label="Run forecast">
-                                {forecastMutation.isPending ? 'Forecasting…' : 'Run Forecast'}
-                            </button>
-                        </div>
-
-                        {coverage && (
-                            <>
-                                <div className="cov-summary">
-                                    <div className="cs-kpi"><div className="ck-v">{coverage.scheduledHeadcount}</div><div className="ck-l">Scheduled</div></div>
-                                    <div className="cs-kpi"><div className="ck-v">{coverage.gaps?.length ?? 0}</div><div className="ck-l">Coverage Gaps</div></div>
-                                </div>
-                                <div className="demand-chart">
-                                    <div className="dc-title">Hourly Demand Forecast vs Scheduled</div>
-                                    <div className="bars">
-                                        {HOURS.map(h => {
-                                            const slot = coverage.forecasted?.find((f: any) => f.hour_of_day === h);
-                                            const req = slot?.required_headcount ?? 0;
-                                            const isGap = coverage.gaps?.some((g: any) => g.hour_of_day === h);
-                                            return (
-                                                <div key={h} className="bar-col">
-                                                    <div className="bar-wrap">
-                                                        <style>{`.ps-bar-${h} { height: ${(req / maxDemand) * 80}px; background: ${isGap ? '#fca5a5' : '#93c5fd'}; }`}</style>
-                                                        <div className={`bar ps-bar-${h}`} title={`${h}:00 — ${req} needed`} />
-                                                    </div>
-                                                    <div className="bar-h">{h % 4 === 0 ? `${h}h` : ''}</div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                    <div className="bar-legend"><span className="legend-item blue">■ Covered</span><span className="legend-item red">■ Gap</span></div>
-                                </div>
-                            </>
-                        )}
-                        {!coverage && <div className="empty">Select a date and run forecast</div>}
-                    </div>
-                )
-            }
-
-            {
-                activeTab === 'generate' && (
-                    <div className="gen-panel">
-                        <h3 className="gp-title">Generate Schedule from Demand Forecast</h3>
-                        <div className="gp-grid">
-                            <div className="gf"><label className="gl">Week Start</label><input className="gi" type="date" value={genParams.weekStartDate || weekStart} onChange={e => setGenParams(p => ({ ...p, weekStartDate: e.target.value }))} aria-label="Schedule week start" /></div>
-                            <div className="gf"><label className="gl">Employee IDs (comma-sep)</label><input className="gi" value={genParams.employeeIds} onChange={e => setGenParams(p => ({ ...p, employeeIds: e.target.value }))} aria-label="Employee IDs" /></div>
-                            <div className="gf"><label className="gl">Max Hours / Employee</label><input className="gi" type="number" value={genParams.maxHoursPerEmployee} onChange={e => setGenParams(p => ({ ...p, maxHoursPerEmployee: parseInt(e.target.value) || 40 }))} aria-label="Max hours per employee" /></div>
-                            <div className="gf"><label className="gl">Shift Hours</label><input className="gi" type="number" value={genParams.shiftHours} onChange={e => setGenParams(p => ({ ...p, shiftHours: parseInt(e.target.value) || 8 }))} aria-label="Hours per shift" /></div>
-                        </div>
-                        <button className="gen-btn" disabled={generateMutation.isPending}
-                            onClick={() => generateMutation.mutate({
-                                locationId: location,
-                                weekStartDate: genParams.weekStartDate || weekStart,
-                                shiftHours: genParams.shiftHours,
-                                employeePool: genParams.employeeIds.split(',').map(id => ({ employeeId: id.trim(), maxHours: genParams.maxHoursPerEmployee })),
-                            })} aria-label="Generate schedule">
-                            <Zap size={13} /> {generateMutation.isPending ? 'Generating…' : 'Generate Schedule'}
+            {activeTab === 'forecast' && (
+                <div className="forecast-panel">
+                    <div className="fc-ctrl">
+                        <div className="pf"><label className="pl">Date</label><input className="pi" type="date" value={coverageDate} onChange={e => setCoverageDate(e.target.value)} aria-label="Date for coverage" /></div>
+                        <button className="run-fc-btn" disabled={forecastMutation.isPending}
+                            onClick={() => forecastMutation.mutate({ locationId: location, startDate: coverageDate, endDate: coverageDate })} aria-label="Run forecast">
+                            {forecastMutation.isPending ? 'Forecasting…' : 'Run Forecast'}
                         </button>
-                        {generateMutation.isSuccess && (
-                            <div className="gen-result">
-                                ✅ {generateMutation.data?.shiftsGenerated} shifts generated · {Math.round((generateMutation.data?.coverage ?? 0) * 100)}% week coverage
-                            </div>
-                        )}
                     </div>
-                )
-            }
+
+                    {coverage && (
+                        <>
+                            <div className="cov-summary">
+                                <div className="cs-kpi"><div className="ck-v">{coverage.scheduledHeadcount}</div><div className="ck-l">Scheduled</div></div>
+                                <div className="cs-kpi"><div className="ck-v">{coverage.gaps?.length ?? 0}</div><div className="ck-l">Coverage Gaps</div></div>
+                            </div>
+                            <div className="demand-chart">
+                                <div className="dc-title">Hourly Demand Forecast vs Scheduled</div>
+                                <div className="bars">
+                                    {HOURS.map(h => {
+                                        const slot = coverage.forecasted?.find((f: any) => f.hour_of_day === h);
+                                        const req = slot?.required_headcount ?? 0;
+                                        const isGap = coverage.gaps?.some((g: any) => g.hour_of_day === h);
+                                        return (
+                                            <div key={h} className="bar-col">
+                                                <div className="bar-wrap">
+                                                    {/* eslint-disable-next-line */}
+                                                    <div className="bar" style={{ height: `${(req / maxDemand) * 80}px`, background: isGap ? '#fca5a5' : '#93c5fd' }} title={`${h}:00 — ${req} needed`} />
+                                                </div>
+                                                <div className="bar-h">{h % 4 === 0 ? `${h}h` : ''}</div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                                <div className="bar-legend"><span className="legend-item blue">■ Covered</span><span className="legend-item red">■ Gap</span></div>
+                            </div>
+                        </>
+                    )}
+                    {!coverage && <div className="empty">Select a date and run forecast</div>}
+                </div>
+            )}
+
+            {activeTab === 'generate' && (
+                <div className="gen-panel">
+                    <h3 className="gp-title">Generate Schedule from Demand Forecast</h3>
+                    <div className="gp-grid">
+                        <div className="gf"><label className="gl">Week Start</label><input className="gi" type="date" value={genParams.weekStartDate || weekStart} onChange={e => setGenParams(p => ({ ...p, weekStartDate: e.target.value }))} aria-label="Schedule week start" /></div>
+                        <div className="gf"><label className="gl">Employee IDs (comma-sep)</label><input className="gi" value={genParams.employeeIds} onChange={e => setGenParams(p => ({ ...p, employeeIds: e.target.value }))} aria-label="Employee IDs" /></div>
+                        <div className="gf"><label className="gl">Max Hours / Employee</label><input className="gi" type="number" value={genParams.maxHoursPerEmployee} onChange={e => setGenParams(p => ({ ...p, maxHoursPerEmployee: parseInt(e.target.value) || 40 }))} aria-label="Max hours per employee" /></div>
+                        <div className="gf"><label className="gl">Shift Hours</label><input className="gi" type="number" value={genParams.shiftHours} onChange={e => setGenParams(p => ({ ...p, shiftHours: parseInt(e.target.value) || 8 }))} aria-label="Hours per shift" /></div>
+                    </div>
+                    <button className="gen-btn" disabled={generateMutation.isPending}
+                        onClick={() => generateMutation.mutate({
+                            locationId: location,
+                            weekStartDate: genParams.weekStartDate || weekStart,
+                            shiftHours: genParams.shiftHours,
+                            employeePool: genParams.employeeIds.split(',').map(id => ({ employeeId: id.trim(), maxHours: genParams.maxHoursPerEmployee })),
+                        })} aria-label="Generate schedule">
+                        <Zap size={13} /> {generateMutation.isPending ? 'Generating…' : 'Generate Schedule'}
+                    </button>
+                    {generateMutation.isSuccess && (
+                        <div className="gen-result">
+                            ✅ {generateMutation.data?.shiftsGenerated} shifts generated · {Math.round((generateMutation.data?.coverage ?? 0) * 100)}% week coverage
+                        </div>
+                    )}
+                </div>
+            )}
 
             <style>{`
                 .ps-container { font-family: 'Inter', sans-serif; }
@@ -269,15 +266,7 @@ export default function PredictiveScheduler() {
                 .gen-btn { display: flex; align-items: center; gap: 6px; padding: 9px 18px; background: linear-gradient(135deg, #1d4ed8, #7c3aed); color: #fff; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
                 .gen-btn:disabled { background: #9ca3af; }
                 .gen-result { margin-top: 12px; padding: 10px 14px; background: #d1fae5; color: #059669; border-radius: 8px; font-size: 12px; font-weight: 600; }
-                .ps-shift-Confirmed { background: #d1fae5; border-left: 3px solid #059669; }
-                .ps-shift-stat-Confirmed { color: #059669; }
-                .ps-shift-Scheduled { background: #eff6ff; border-left: 3px solid #1d4ed8; }
-                .ps-shift-stat-Scheduled { color: #1d4ed8; }
-                .ps-shift-Open { background: #fef3c7; border-left: 3px solid #d97706; }
-                .ps-shift-stat-Open { color: #d97706; }
-                .ps-shift-Cancelled { background: #fee2e2; border-left: 3px solid #dc2626; }
-                .ps-shift-stat-Cancelled { color: #dc2626; }
             `}</style>
-        </StandardPage >
+        </StandardPage>
     );
 }

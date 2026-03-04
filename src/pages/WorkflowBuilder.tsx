@@ -38,8 +38,10 @@ export default function WorkflowBuilder() {
   return (
     <StandardPage
       title="Workflow Builder"
-      description="Create and manage automation workflows"
-    >
+      description="Create and manage automation workf       <p className="text-muted-foreground mt-1">Create and manage automation workflows</p>
+        </div>
+      </div>
+
       <Card data-testid="card-new-workflow">
         <CardHeader><CardTitle className="text-base">Create Workflow</CardTitle></CardHeader>
         <CardContent className="space-y-3">
@@ -61,7 +63,7 @@ export default function WorkflowBuilder() {
               </SelectContent>
             </Select>
           </div>
-          <Button disabled={createMutation.isPending || !newWorkflow.name} className="w-full" data-testid="button-new-workflow" onClick={() => createMutation.mutate(newWorkflow)}>
+          <Button disabled={createMutation.isPending || !newWorkflow.name} className="w-full" data-testid="button-new-workflow">
             <Plus className="w-4 h-4 mr-2" /> Create Workflow
           </Button>
         </CardContent>
@@ -76,13 +78,14 @@ export default function WorkflowBuilder() {
                   <h3 className="font-semibold">{w.name}</h3>
                   <p className="text-sm text-muted-foreground mt-1">Trigger: {w.trigger} • Status: {w.status}</p>
                 </div>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${w.id}`} onClick={() => deleteMutation.mutate(w.id)}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${w.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>
             </CardContent>
           </Card>
         ))}
-      </StandardPage>
+      </div>
+    </StandardPage>
   );
 }

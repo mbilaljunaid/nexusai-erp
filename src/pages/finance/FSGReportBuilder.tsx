@@ -5,7 +5,6 @@ import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface FSGRow {
-    id?: string;
     rowNum: number;
     label: string;
     accountRange?: string;
@@ -107,14 +106,11 @@ export default function FSGReportBuilder() {
             id: 'row-label',
             header: 'Row',
             width: '250px',
-            cell: (row) => {
-                const indentClasses: Record<number, string> = { 0: 'pl-3', 1: 'pl-7', 2: 'pl-11', 3: 'pl-[60px]', 4: 'pl-[76px]', 5: 'pl-[92px]' };
-                return (
-                    <div className={`${indentClasses[row.indent ?? 0] ?? 'pl-3'} ${row.isBold ? 'font-bold' : 'font-normal'}`}>
-                        {row.label}
-                    </div>
-                );
-            }
+            cell: (row) => (
+                <div style={{ paddingLeft: `${(row.indent ?? 0) * 16 + 12}px`, fontWeight: row.isBold ? 700 : 400 }}>
+                    {row.label}
+                </div>
+            )
         },
         ...(runResult?.columns ?? []).map((c: FSGColumn) => ({
             id: `col-${c.colNum}`,
@@ -146,14 +142,13 @@ export default function FSGReportBuilder() {
             title="FSG Report Builder"
             description="Oracle FSG-equivalent — define rows, columns, account ranges & formulas"
             actions={
-                <div className="fsg-tabs" role="tablist">
+                <div className="fsg-tabs">
                     {(['library', 'builder'] as const).map(tab => (
                         <button
                             key={tab}
-                            role="tab"
                             className={`fsg-tab ${activeTab === tab ? 'active' : ''}`}
                             onClick={() => setActiveTab(tab)}
-                            data-active={activeTab === tab}
+                            aria-selected={activeTab === tab}
                         >
                             {tab === 'library' ? <Table2 size={14} /> : <BarChart3 size={14} />}
                             {tab.charAt(0).toUpperCase() + tab.slice(1)}

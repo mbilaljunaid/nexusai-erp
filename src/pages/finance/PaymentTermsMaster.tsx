@@ -26,11 +26,11 @@ interface ScheduleLine {
     status: string;
 }
 
-const TYPE_COLORS: Record<string, string> = {
-    Net: 'bg-blue-100 text-blue-700',
-    EOM: 'bg-emerald-100 text-emerald-600',
-    InstallmentSplit: 'bg-purple-100 text-purple-700',
-    ImmediateDue: 'bg-red-100 text-red-600',
+const TYPE_COLORS: Record<string, { bg: string; color: string }> = {
+    Net: { bg: '#dbeafe', color: '#1d4ed8' },
+    EOM: { bg: '#d1fae5', color: '#059669' },
+    InstallmentSplit: { bg: '#f3e8ff', color: '#7c3aed' },
+    ImmediateDue: { bg: '#fee2e2', color: '#dc2626' },
 };
 
 const fmt = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(n);
@@ -81,12 +81,12 @@ export default function PaymentTermsMaster() {
                 <div className="terms-panel">
                     {isLoading ? <div className="loading">Loading…</div> : (
                         terms.map(t => {
-                            const cfgClass = TYPE_COLORS[t.term_type] ?? 'bg-gray-100 text-gray-500';
+                            const cfg = TYPE_COLORS[t.term_type] ?? { bg: '#f3f4f6', color: '#6b7280' };
                             return (
                                 <div key={t.id} className={`term-card ${selected?.id === t.id ? 'selected' : ''}`} onClick={() => { setSelected(t); setSchedTest(p => ({ ...p, termCode: t.term_code })); }}>
                                     <div className="tc-top">
                                         <span className="tc-code">{t.term_code}</span>
-                                        <span className={`tc-type ${cfgClass}`}>{t.term_type}</span>
+                                        <span className="tc-type" style={{ background: cfg.bg, color: cfg.color }}>{t.term_type}</span>
                                     </div>
                                     <div className="tc-name">{t.term_name}</div>
                                     <div className="tc-meta">
@@ -164,7 +164,7 @@ export default function PaymentTermsMaster() {
                         </button>
 
                         {schedule.length > 0 && (
-                            <div className="mt-2.5 border border-gray-200 rounded-lg overflow-hidden h-[250px]">
+                            <div style={{ marginTop: 10, border: '1px solid #e5e7eb', borderRadius: 8, overflow: 'hidden', height: 250 }}>
                                 <InteractiveSpreadsheet
                                     columns={scheduleColumns}
                                     data={schedule}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -17,26 +17,6 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-
-const workCenterSchema = z.object({
-    name: z.string().min(1, "Name is required"),
-    description: z.string().optional(),
-    capacity: z.coerce.number().min(1, "Capacity must be at least 1"),
-    calendarId: z.string().optional(),
-    status: z.enum(["active", "inactive", "maintenance"]).default("active")
-});
 
 interface WorkCenter {
     id: string;
@@ -81,7 +61,6 @@ export default function WorkCenterManager() {
             queryClient.invalidateQueries({ queryKey: ["/api/manufacturing/work-centers"] });
             setIsSheetOpen(false);
             setEditingCenter(null);
-            form.reset();
             toast({ title: "Success", description: "Work center saved successfully" });
         },
         onError: (err: any) => {
@@ -131,45 +110,17 @@ export default function WorkCenterManager() {
         }
     ];
 
-    ];
-
-    const form = useForm<z.infer<typeof workCenterSchema>>({
-        resolver: zodResolver(workCenterSchema),
-        defaultValues: {
-            name: "",
-            description: "",
-            capacity: 0,
-            calendarId: undefined,
-            status: "active"
-        }
-    });
-
-    useEffect(() => {
-        if (editingCenter) {
-            form.reset({
-                name: editingCenter.name || "",
-                description: editingCenter.description || "",
-                capacity: editingCenter.capacity || 0,
-                calendarId: editingCenter.calendarId || undefined,
-                status: editingCenter.status || "active"
-            });
-        } else {
-            form.reset({
-                name: "",
-                description: "",
-                capacity: 0,
-                calendarId: undefined,
-                status: "active"
-            });
-        }
-    }, [editingCenter, form]);
-
-    const onSubmit = (values: z.infer<typeof workCenterSchema>) => {
-        mutation.mutate({
-            ...editingCenter,
-            ...values,
-            calendarId: values.calendarId || undefined
-        });
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const formData = new FormData(e.target as HTMLFormElement);
+        const data = {
+            name: formData.get("name") as string,
+            description: formData.get("description") as string,
+            capacity: parseInt(formData.get("capacity") as string),
+            calendarId: formData.get("calendarId") as string,
+            status: formData.get("status") as any || "active"
+        };
+        mutation.mutate(data);
     };
 
     return (
@@ -187,100 +138,38 @@ export default function WorkCenterManager() {
                         <SheetHeader>
                             <SheetTitle>{editingCenter ? 'Edit' : 'Add'} Work Center</SheetTitle>
                         </SheetHeader>
-                        <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-6">
-                                <FormField
-                                    control={form.control}
-                                    name="name"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Work Center Name</FormLabel>
-                                            <FormControl>
-                                                <Input {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="description"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Description</FormLabel>
-                                            <FormControl>
-                                                <Textarea {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="capacity"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Capacity (units/day)</FormLabel>
-                                            <FormControl>
-                                                <Input type="number" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="calendarId"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Production Calendar</FormLabel>
-                                            <Select onValueChange={field.onChange} value={field.value || ""}>
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select calendar..." />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {calendars.map((cal) => (
-                                                        <SelectItem key={cal.id} value={cal.id}>
-                                                            {cal.calendarCode}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="status"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Status</FormLabel>
-                                            <Select onValueChange={field.onChange} value={field.value}>
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    <SelectItem value="active">Active</SelectItem>
-                                                    <SelectItem value="inactive">Inactive</SelectItem>
-                                                    <SelectItem value="maintenance">Maintenance</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <div className="pt-2">
-                                    <Button type="submit" className="w-full" disabled={mutation.isPending}>
-                                        {mutation.isPending ? "Saving..." : "Save Work Center"}
-                                    </Button>
-                                </div>
-                            </form>
-                        </Form>
+                        <form onSubmit={handleSubmit} className="space-y-4 mt-6">
+                            <div className="space-y-2">
+                                <Label htmlFor="name">Work Center Name</Label>
+                                <Input id="name" name="name" defaultValue={editingCenter?.name} required />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="description">Description</Label>
+                                <Textarea id="description" name="description" defaultValue={editingCenter?.description} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="capacity">Capacity (units/day)</Label>
+                                <Input id="capacity" name="capacity" type="number" defaultValue={editingCenter?.capacity} required />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="calendarId">Production Calendar</Label>
+                                <Select name="calendarId" defaultValue={editingCenter?.calendarId}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select calendar..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {calendars.map((cal) => (
+                                            <SelectItem key={cal.id} value={cal.id}>
+                                                {cal.calendarCode}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <Button type="submit" className="w-full" disabled={mutation.isPending}>
+                                {mutation.isPending ? "Saving..." : "Save Work Center"}
+                            </Button>
+                        </form>
                     </SheetContent>
                 </Sheet>
             }
@@ -289,7 +178,7 @@ export default function WorkCenterManager() {
                 data={centers}
                 columns={columns}
                 isLoading={isLoading}
-                onChange={() => { }} containerHeight="600px" />
+             onChange={() => {}} containerHeight="600px" />
         </StandardPage>
     );
 }

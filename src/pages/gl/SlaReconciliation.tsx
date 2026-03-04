@@ -8,7 +8,6 @@ import { Loader2, RefreshCcw, AlertTriangle, CheckCircle } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 
 type ReconData = {
     period: string;
@@ -51,13 +50,13 @@ export default function SlaReconciliation() {
                 <div className="flex gap-4 items-end">
                     <div className="space-y-2 w-64">
                         <label className="text-sm font-medium">Ledger</label>
-                        <div className="pb-1">
-                            <EnterpriseContextSwitcher
-                                type="ledger"
-                                value={ledgerId || undefined}
-                                onChange={(val) => setLedgerId(val || "PRIMARY")}
-                            />
-                        </div>
+                        <Select value={ledgerId} onValueChange={setLedgerId}>
+                            <SelectTrigger><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="PRIMARY">Primary Ledger</SelectItem>
+                                <SelectItem value="SECONDARY">Secondary Ledger</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
                     <div className="space-y-2 w-48">
                         <label className="text-sm font-medium">Period</label>

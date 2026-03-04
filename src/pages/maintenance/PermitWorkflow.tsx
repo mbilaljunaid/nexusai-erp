@@ -6,10 +6,6 @@ import { permitService } from "@/services/maintenance.service";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import {
     ShieldCheck,
     ClipboardList,
@@ -58,13 +54,6 @@ interface PermitApproval {
     comments?: string;
 }
 
-const permitSchema = z.object({
-    permitTypeId: z.string().min(1, "Permit type is required"),
-    assetName: z.string().optional(),
-    workOrderId: z.string().optional(),
-    safetyNotes: z.string().min(1, "Safety notes are required")
-});
-
 export function PermitWorkflow() {
     const [permitTypes, setPermitTypes] = useState<PermitType[]>([]);
     const [permits, setPermits] = useState<Permit[]>([]);
@@ -72,14 +61,12 @@ export function PermitWorkflow() {
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
 
-    const form = useForm<z.infer<typeof permitSchema>>({
-        resolver: zodResolver(permitSchema),
-        defaultValues: {
-            permitTypeId: "",
-            assetName: "",
-            workOrderId: "",
-            safetyNotes: ""
-        }
+    // Form state
+    const [formData, setFormData] = useState({
+        assetId: "",
+        assetName: "",
+        workOrderId: "",
+        safetyNotes: ""
     });
 
     useEffect(() => {
@@ -114,16 +101,17 @@ export function PermitWorkflow() {
         }
     };
 
-    const handleRequestPermit = async (data: z.infer<typeof permitSchema>) => {
+    const handleRequestPermit = async (e: React.FormEvent) => {
+        e.preventDefault();
         if (!selectedType) return;
 
         try {
             // ✅ LIVE API CALL - Create permit request
             const result = await permitService.createPermit({
                 permitType: selectedType.name,
-                location: data.assetName || "Unspecified",
-                description: data.safetyNotes || `Permit for ${selectedType.name}`,
-                woId: data.workOrderId || undefined,
+                location: formData.assetName || "Unspecified",
+                description: formData.safetyNotes || `Permit for ${selectedType.name}`,
+                woId: formData.workOrderId || undefined,
                 hazards: [], // TODO: collect from form
                 safeguards: [] // TODO: collect from form
             });
@@ -132,7 +120,7 @@ export function PermitWorkflow() {
 
             await loadPermits(); // Refresh list
             setShowForm(false);
-            form.reset();
+            setFormData({ assetId: "", assetName: "", workOrderId: "", safetyNotes: "" });
             setSelectedType(null);
         } catch (error) {
             console.error("Failed to request permit:", error);
@@ -182,91 +170,92 @@ export function PermitWorkflow() {
                         <CardTitle className="text-base">Request Work Permit</CardTitle>
                     </CardHeader>
                     <CardContent className="pt-6">
-                        <Form {...form}>
-                            <form onSubmit={form.handleSubmit(handleRequestPermit)} className="space-y-4">
-                                <FormField control={form.control} name="permitTypeId" render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Permit Type *</FormLabel>
-                                        <Select onValueChange={(value) => {
-                                            field.onChange(value);
-                                            const type = permitTypes.find(t => t.id === value);
-                                            setSelectedType(type || null);
-                                        }} defaultValue={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select permit type..." />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {permitTypes.map(type => (
-                                                    <SelectItem key={type.id} value={type.id}>
-                                                        {type.name}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                        {selectedType && (
-                                            <FormDescription>{selectedType.description}</FormDescription>
-                                        )}
-                                        <FormMessage />
-                                    </FormItem>
-                                )} />
-
+                        <form onSubmit={handleRequestPermit} className="space-y-4">
+                            <div>
+                                <label className="text-sm font-medium mb-2 block">Permit Type *</label>
+                                <Select
+                                    value={selectedType?.id || ""}
+                                    onValueChange={(value) => {
+                                        const type = permitTypes.find(t => t.id === value);
+                                        setSelectedType(type || null);
+                                    }}
+                                    required
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select permit type..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {permitTypes.map(type => (
+                                            <SelectItem key={type.id} value={type.id}>
+                                                {type.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                                 {selectedType && (
-                                    <>
-                                        <div className="grid md:grid-cols-2 gap-4">
-                                            <FormField control={form.control} name="assetName" render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Asset Name</FormLabel>
-                                                    <FormControl><Input placeholder="Enter asset name..." {...field} /></FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )} />
-                                            <FormField control={form.control} name="workOrderId" render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Work Order #</FormLabel>
-                                                    <FormControl><Input placeholder="Optional" {...field} /></FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )} />
-                                        </div>
-
-                                        <FormField control={form.control} name="safetyNotes" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Safety Notes / Precautions *</FormLabel>
-                                                <FormControl><Textarea placeholder="Describe safety measures, equipment, personnel..." rows={4} {...field} /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )} />
-
-                                        <div className="border rounded p-4 bg-blue-50">
-                                            <div className="text-sm font-medium mb-2">Required Documents:</div>
-                                            <ul className="text-sm space-y-1">
-                                                {selectedType.requiredDocuments.map((doc, i) => (
-                                                    <li key={i} className="flex items-center gap-2">
-                                                        <ClipboardList className="h-4 w-4 text-blue-600" />
-                                                        {doc}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                            <div className="text-xs text-muted-foreground mt-3">
-                                                Valid for: {selectedType.validityHours} hours •
-                                                Approval levels: {selectedType.approvalLevels}
-                                            </div>
-                                        </div>
-
-                                        <div className="flex gap-2">
-                                            <Button type="button" variant="outline" className="flex-1" onClick={() => setShowForm(false)}>
-                                                Cancel
-                                            </Button>
-                                            <Button type="submit" className="flex-1">
-                                                Submit Request
-                                            </Button>
-                                        </div>
-                                    </>
+                                    <p className="text-xs text-muted-foreground mt-1">{selectedType.description}</p>
                                 )}
-                            </form>
-                        </Form>
+                            </div>
+
+                            {selectedType && (
+                                <>
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="text-sm font-medium mb-2 block">Asset Name</label>
+                                            <Input
+                                                placeholder="Enter asset name..."
+                                                value={formData.assetName}
+                                                onChange={(e) => setFormData({ ...formData, assetName: e.target.value })}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium mb-2 block">Work Order #</label>
+                                            <Input
+                                                placeholder="Optional"
+                                                value={formData.workOrderId}
+                                                onChange={(e) => setFormData({ ...formData, workOrderId: e.target.value })}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="text-sm font-medium mb-2 block">Safety Notes / Precautions *</label>
+                                        <Textarea
+                                            placeholder="Describe safety measures, equipment, personnel..."
+                                            value={formData.safetyNotes}
+                                            onChange={(e) => setFormData({ ...formData, safetyNotes: e.target.value })}
+                                            rows={4}
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="border rounded p-4 bg-blue-50">
+                                        <div className="text-sm font-medium mb-2">Required Documents:</div>
+                                        <ul className="text-sm space-y-1">
+                                            {selectedType.requiredDocuments.map((doc, i) => (
+                                                <li key={i} className="flex items-center gap-2">
+                                                    <ClipboardList className="h-4 w-4 text-blue-600" />
+                                                    {doc}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        <div className="text-xs text-muted-foreground mt-3">
+                                            Valid for: {selectedType.validityHours} hours •
+                                            Approval levels: {selectedType.approvalLevels}
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-2">
+                                        <Button type="button" variant="outline" className="flex-1" onClick={() => setShowForm(false)}>
+                                            Cancel
+                                        </Button>
+                                        <Button type="submit" className="flex-1">
+                                            Submit Request
+                                        </Button>
+                                    </div>
+                                </>
+                            )}
+                        </form>
                     </CardContent>
                 </Card>
             ) : (
@@ -380,9 +369,9 @@ export function PermitWorkflow() {
                                                         </span>
                                                     </div>
                                                     <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                                                        <style>{`.pw-progress-${permit.id} { width: ${progress.percentage}%; }`}</style>
                                                         <div
-                                                            className={`h-full bg-blue-600 transition-all pw-progress-${permit.id}`}
+                                                            className="h-full bg-blue-600 transition-all"
+                                                            style={{ width: `${progress.percentage}%` }}
                                                         />
                                                     </div>
 
