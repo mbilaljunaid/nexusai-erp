@@ -32,17 +32,17 @@ interface ReconSignoff {
     approver_id: string;
 }
 
-const STATUS_CFG: Record<string, { bg: string; color: string }> = {
-    Clear: { bg: '#d1fae5', color: '#059669' },
-    PotentialMatch: { bg: '#fef3c7', color: '#d97706' },
-    Confirmed: { bg: '#fee2e2', color: '#dc2626' },
-    FalsePositive: { bg: '#f3f4f6', color: '#6b7280' },
+const STATUS_CFG: Record<string, string> = {
+    Clear: 'bg-emerald-100 text-emerald-600',
+    PotentialMatch: 'bg-amber-100 text-amber-600',
+    Confirmed: 'bg-red-100 text-red-600',
+    FalsePositive: 'bg-gray-100 text-gray-500',
 };
 
-const RECON_CFG: Record<string, { bg: string; color: string }> = {
-    Draft: { bg: '#eff6ff', color: '#1d4ed8' },
-    Reviewed: { bg: '#fef3c7', color: '#d97706' },
-    Approved: { bg: '#d1fae5', color: '#059669' },
+const RECON_CFG: Record<string, string> = {
+    Draft: 'bg-blue-50 text-blue-700',
+    Reviewed: 'bg-amber-100 text-amber-600',
+    Approved: 'bg-emerald-100 text-emerald-600',
 };
 
 const fmt = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
@@ -110,8 +110,8 @@ export default function DebtCovenantMonitor() {
         { id: "type", header: "Type", width: "120px", cell: (row) => <span className="type-chip">{row.entity_type}</span> },
         {
             id: "status", header: "Status", width: "120px", cell: (row) => {
-                const cfg = STATUS_CFG[row.match_status] ?? { bg: '#f3f4f6', color: '#6b7280' };
-                return <span className="status-chip" style={{ background: cfg.bg, color: cfg.color }}>{row.match_status}</span>;
+                const cfg = STATUS_CFG[row.match_status] ?? 'bg-gray-100 text-gray-500';
+                return <span className={`status-chip ${cfg}`}>{row.match_status}</span>;
             }
         },
         { id: "score", header: "Score", width: "100px", cell: (row) => <span className="mono">{row.match_score?.toFixed(0) ?? '—'}%</span> },
@@ -140,8 +140,8 @@ export default function DebtCovenantMonitor() {
         },
         {
             id: "status", header: "Status", width: "120px", cell: (row) => {
-                const cfg = RECON_CFG[row.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
-                return <span className="status-chip" style={{ background: cfg.bg, color: cfg.color }}>{row.status}</span>;
+                const cfg = RECON_CFG[row.status] ?? 'bg-gray-100 text-gray-500';
+                return <span className={`status-chip ${cfg}`}>{row.status}</span>;
             }
         },
         {
@@ -162,17 +162,17 @@ export default function DebtCovenantMonitor() {
     return (
         <StandardPage title="Compliance Controls">
             <div className="dcm-header">
-                
+
                 <p className="dcm-sub">Sanctions Screening · Bank Reconciliation Sign-off</p>
             </div>
 
             {/* KPIs */}
             <div className="dcm-kpis">
-                <DcmKpi label="Total Screened" value={stats?.total_screened ?? 0} color="#1d4ed8" />
-                <DcmKpi label="Pending Review" value={pending} color="#d97706" alert={pending > 0} />
-                <DcmKpi label="Confirmed Matches" value={confirmed} color="#dc2626" alert={confirmed > 0} />
-                <DcmKpi label="Recon Approved" value={reconSummary?.approved ?? 0} color="#059669" />
-                <DcmKpi label="Recon Pending" value={reconSummary?.pending_approval ?? 0} color="#7c3aed" />
+                <DcmKpi label="Total Screened" value={stats?.total_screened ?? 0} colorClass="text-blue-700" borderClass="border-l-blue-700" />
+                <DcmKpi label="Pending Review" value={pending} colorClass="text-amber-600" borderClass="border-l-amber-600" alert={pending > 0} />
+                <DcmKpi label="Confirmed Matches" value={confirmed} colorClass="text-red-600" borderClass="border-l-red-600" alert={confirmed > 0} />
+                <DcmKpi label="Recon Approved" value={reconSummary?.approved ?? 0} colorClass="text-emerald-600" borderClass="border-l-emerald-600" />
+                <DcmKpi label="Recon Pending" value={reconSummary?.pending_approval ?? 0} colorClass="text-purple-600" borderClass="border-l-purple-600" />
             </div>
 
             {/* Tabs */}
@@ -286,10 +286,10 @@ export default function DebtCovenantMonitor() {
             {activeTab === 'recon' && (
                 <div className="dcm-panel">
                     <div className="recon-summary-grid">
-                        <ReconKpi label="Drafts" value={reconSummary?.drafts ?? 0} color="#1d4ed8" />
-                        <ReconKpi label="Pending Approval" value={reconSummary?.pending_approval ?? 0} color="#d97706" />
-                        <ReconKpi label="Approved" value={reconSummary?.approved ?? 0} color="#059669" />
-                        <ReconKpi label="Avg Variance" value={reconSummary?.avg_variance ? fmt(reconSummary.avg_variance) : '$0'} color="#7c3aed" isText />
+                        <ReconKpi label="Drafts" value={reconSummary?.drafts ?? 0} colorClass="text-blue-700" />
+                        <ReconKpi label="Pending Approval" value={reconSummary?.pending_approval ?? 0} colorClass="text-amber-600" />
+                        <ReconKpi label="Approved" value={reconSummary?.approved ?? 0} colorClass="text-emerald-600" />
+                        <ReconKpi label="Avg Variance" value={reconSummary?.avg_variance ? fmt(reconSummary.avg_variance) : '$0'} colorClass="text-purple-600" isText />
                     </div>
                     <div className="h-[400px]">
                         {signoffs.length === 0 ? (
@@ -377,20 +377,20 @@ export default function DebtCovenantMonitor() {
     );
 }
 
-function DcmKpi({ label, value, color, alert }: { label: string; value: number | string; color: string; alert?: boolean }) {
+function DcmKpi({ label, value, colorClass, borderClass, alert }: { label: string; value: number | string; colorClass: string; borderClass: string; alert?: boolean }) {
     return (
-        <div style={{ background: '#fff', border: `1px solid ${alert ? '#fca5a5' : '#e5e7eb'}`, borderLeft: `4px solid ${color}`, borderRadius: 12, padding: '12px 16px', minWidth: 120 }}>
-            <div style={{ fontSize: 22, fontWeight: 800, color }}>{value}</div>
-            <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2 }}>{label}</div>
+        <div className={`bg-white border-y border-r border-l-4 rounded-xl px-4 py-3 min-w-[120px] ${alert ? 'border-y-red-300 border-r-red-300' : 'border-y-gray-200 border-r-gray-200'} ${borderClass}`}>
+            <div className={`text-[22px] font-[800] ${colorClass}`}>{value}</div>
+            <div className="text-[11px] text-gray-500 mt-0.5">{label}</div>
         </div>
     );
 }
 
-function ReconKpi({ label, value, color, isText }: { label: string; value: number | string; color: string; isText?: boolean }) {
+function ReconKpi({ label, value, colorClass, isText }: { label: string; value: number | string; colorClass: string; isText?: boolean }) {
     return (
-        <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 8, padding: '10px 16px', flex: 1 }}>
-            <div style={{ fontSize: isText ? 16 : 22, fontWeight: 800, color, fontFamily: isText ? 'monospace' : undefined }}>{value}</div>
-            <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 2 }}>{label}</div>
+        <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 flex-1">
+            <div className={`font-[800] ${colorClass} ${isText ? 'text-base font-mono' : 'text-[22px]'}`}>{value}</div>
+            <div className="text-[11px] text-gray-400 mt-0.5">{label}</div>
         </div>
     );
 }

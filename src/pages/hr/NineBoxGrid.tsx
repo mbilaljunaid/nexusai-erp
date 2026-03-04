@@ -5,14 +5,14 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 interface NineBoxEntry { employee_id: string; performance: number; potential: number; box_label: string; assessed_by: string; notes: string; }
 
 const BOX_CONFIG: Record<string, { bg: string; border: string; label: string }> = {
-    'Underperformer': { bg: '#fef2f2', border: '#fca5a5', label: 'Underperformer' },
-    'Inconsistent Player': { bg: '#fff7ed', border: '#fdba74', label: 'Inconsistent' },
-    'Enigma': { bg: '#fefce8', border: '#fde047', label: 'Enigma' },
-    'Core Player': { bg: '#f0f9ff', border: '#7dd3fc', label: 'Core Player' },
-    'High Potential': { bg: '#eff6ff', border: '#93c5fd', label: 'High Potential' },
-    'Solid Performer': { bg: '#f0fdf4', border: '#86efac', label: 'Solid Performer' },
-    'High Performer': { bg: '#d1fae5', border: '#34d399', label: 'High Performer' },
-    'Star': { bg: '#fdf4ff', border: '#c084fc', label: '⭐ Star' },
+    'Underperformer': { bg: 'bg-red-50', border: 'border-red-300', label: 'Underperformer' },
+    'Inconsistent Player': { bg: 'bg-orange-50', border: 'border-orange-300', label: 'Inconsistent' },
+    'Enigma': { bg: 'bg-yellow-50', border: 'border-yellow-300', label: 'Enigma' },
+    'Core Player': { bg: 'bg-sky-50', border: 'border-sky-300', label: 'Core Player' },
+    'High Potential': { bg: 'bg-blue-50', border: 'border-blue-300', label: 'High Potential' },
+    'Solid Performer': { bg: 'bg-green-50', border: 'border-green-300', label: 'Solid Performer' },
+    'High Performer': { bg: 'bg-emerald-100', border: 'border-emerald-400', label: 'High Performer' },
+    'Star': { bg: 'bg-fuchsia-50', border: 'border-fuchsia-400', label: '⭐ Star' },
 };
 
 // 3×3 grid layout: potential (col) × performance (row)
@@ -44,9 +44,8 @@ export default function NineBoxGrid() {
         { id: "employee_id", header: "Employee", width: "150px", cell: (row) => <span className="font-semibold">{row.employee_id}</span> },
         {
             id: "box_label", header: "Box", width: "150px", cell: (row) => {
-                const cfg = BOX_CONFIG[row.box_label] ?? { bg: '#f9fafb', border: '#e5e7eb', label: row.box_label };
-                /* eslint-disable-next-line react/forbid-dom-props */
-                return <span className="px-1.5 py-0.5 rounded text-[9px] font-bold" style={{ background: cfg.bg, border: `1px solid ${cfg.border}` }}>{cfg.label}</span>
+                const cfg = BOX_CONFIG[row.box_label] ?? { bg: 'bg-gray-50', border: 'border-gray-200', label: row.box_label };
+                return <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold border ${cfg.bg} ${cfg.border}`}>{cfg.label}</span>
             }
         },
         { id: "performance", header: "Performance", width: "100px", cell: (row) => ['', '🔴 Low', '🟡 Medium', '🟢 High'][row.performance] },
@@ -107,15 +106,13 @@ export default function NineBoxGrid() {
                     <div className="grid grid-cols-3 gap-2">
                         {GRID_MAP.map((cell, i) => {
                             const entries = boxEntries(cell.perf, cell.pot);
-                            const cfg = BOX_CONFIG[cell.key] ?? { bg: '#f9fafb', border: '#e5e7eb', label: cell.key };
+                            const cfg = BOX_CONFIG[cell.key] ?? { bg: 'bg-gray-50', border: 'border-gray-200', label: cell.key };
                             return (
-                                /* eslint-disable-next-line react/forbid-dom-props */
-                                <div key={i} className="rounded-xl p-2.5 min-h-[100px]" style={{ background: cfg.bg, border: `2px solid ${cfg.border}` }}>
+                                <div key={i} className={`rounded-xl p-2.5 min-h-[100px] border-[2px] ${cfg.bg} ${cfg.border}`}>
                                     <div className="text-[10px] font-extrabold text-gray-700 mb-1.5">{cfg.label}</div>
                                     <div className="flex flex-wrap gap-1">
                                         {entries.map((e, j) => (
-                                            /* eslint-disable-next-line react/forbid-dom-props */
-                                            <div key={j} className="bg-white rounded-md px-1.5 py-[3px] text-[9px]" style={{ border: `1px solid ${cfg.border}` }}>
+                                            <div key={j} className={`bg-white rounded-md px-1.5 py-[3px] text-[9px] border ${cfg.border}`}>
                                                 <div className="font-bold">{e.employee_id}</div>
                                                 {e.assessed_by && <div className="text-gray-400">by {e.assessed_by}</div>}
                                             </div>

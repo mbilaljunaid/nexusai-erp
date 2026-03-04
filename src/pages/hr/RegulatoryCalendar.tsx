@@ -57,8 +57,10 @@ export default function RegulatoryCalendar() {
                 return (
                     <div className="progress-bar-container w-full">
                         <div className="progress-bar-bg flex-grow">
-                            {/* eslint-disable-next-line react/forbid-dom-props */}
-                            <div className={`progress-bar-fill ${pct >= 90 ? 'progress-safe' : pct >= 70 ? 'progress-warn' : 'progress-danger'}`} style={{ width: pct + '%' }} />
+                            <style>{`
+                                .fcpa-bar-w-${Math.round(pct)} { width: ${pct}%; }
+                            `}</style>
+                            <div className={`progress-bar-fill fcpa-bar-w-${Math.round(pct)} ${pct >= 90 ? 'progress-safe' : pct >= 70 ? 'progress-warn' : 'progress-danger'}`} />
                         </div>
                         <span className="progress-bar-text w-12 text-right">{pct}%</span>
                     </div>

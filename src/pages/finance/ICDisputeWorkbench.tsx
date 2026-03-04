@@ -8,6 +8,7 @@ interface Dispute { id: string; dispute_number: string; from_entity: string; to_
 interface DEvent { at: string; by: string; action: string; note: string; }
 interface Summary { status: string; reason: string; count: number; total_disputed: number; }
 
+const STATUS_CFG: Record<string, string> = { Open: 'text-amber-600 bg-amber-50', Under_Review: 'text-blue-700 bg-blue-50', Escalated: 'text-red-600 bg-red-50', Resolved: 'text-emerald-600 bg-emerald-50', Closed: 'text-gray-500 bg-gray-50' };
 const STATUS_CLR: Record<string, string> = { Open: '#d97706', Under_Review: '#1d4ed8', Escalated: '#dc2626', Resolved: '#059669', Closed: '#6b7280' };
 const REASONS = ['AMOUNT_MISMATCH', 'MISSING_INVOICE', 'DUPLICATE', 'CURRENCY_DIFF', 'OTHER'];
 
@@ -42,13 +43,13 @@ export default function ICDisputeWorkbench() {
     const totalAmt = safeDisputes.reduce((s, d) => s + Number(d.disputed_amount ?? 0), 0);
 
     const disputeColumns: SpreadsheetColumn<Dispute>[] = [
-        { id: "dispute_number", header: "#", width: "100px", cell: (row) => <div style={{ fontFamily: 'monospace', fontSize: 10, color: '#9ca3af' }}>{row.dispute_number}</div> },
-        { id: "entities", header: "From → To", width: "150px", cell: (row) => <div style={{ fontWeight: 600 }}>{row.from_entity} → {row.to_entity}</div> },
-        { id: "reason", header: "Reason", width: "120px", cell: (row) => <div style={{ color: '#6b7280', fontSize: 10 }}>{row.reason}</div> },
-        { id: "amount", header: "Amount", width: "120px", cell: (row) => <div style={{ fontFamily: 'monospace' }}>{row.disputed_amount ? `$${Number(row.disputed_amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}` : '—'}</div> },
-        { id: "status", header: "Status", width: "100px", cell: (row) => { const clr = STATUS_CLR[row.status] ?? '#6b7280'; return <span style={{ padding: '2px 6px', borderRadius: 4, fontSize: 9, fontWeight: 700, background: clr + '18', color: clr }}>{row.status}</span>; } },
-        { id: "opened_at", header: "Opened", width: "100px", cell: (row) => <div style={{ color: '#9ca3af', fontSize: 10 }}>{new Date(row.opened_at).toLocaleDateString()}</div> },
-        { id: "actions", header: "Actions", width: "200px", cell: (row) => <div style={{ display: 'flex', gap: 4 }}><button onClick={(ev) => { ev.stopPropagation(); setSelected(selected?.id === row.id ? null : row); }} style={{ padding: '2px 6px', background: '#e5e7eb', border: 'none', borderRadius: 4, fontSize: 9, cursor: 'pointer', color: '#374151' }}>{selected?.id === row.id ? 'Unselect' : 'View'}</button>{row.status !== 'Resolved' && row.status !== 'Closed' && <><button onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'REVIEW', note: 'Under review' }); }} style={{ padding: '2px 6px', background: '#eff6ff', border: 'none', borderRadius: 4, fontSize: 9, cursor: 'pointer', color: '#1d4ed8' }}>Review</button><button onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'ESCALATE', note: 'Escalated for management review' }); }} style={{ padding: '2px 6px', background: '#fef2f2', border: 'none', borderRadius: 4, fontSize: 9, cursor: 'pointer', color: '#dc2626' }}>Escalate</button></>}</div> }
+        { id: "dispute_number", header: "#", width: "100px", cell: (row) => <div className="ic-col-id">{row.dispute_number}</div> },
+        { id: "entities", header: "From → To", width: "150px", cell: (row) => <div className="ic-col-entities">{row.from_entity} → {row.to_entity}</div> },
+        { id: "reason", header: "Reason", width: "120px", cell: (row) => <div className="ic-col-reason">{row.reason}</div> },
+        { id: "amount", header: "Amount", width: "120px", cell: (row) => <div className="font-mono">{row.disputed_amount ? `$${Number(row.disputed_amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}` : '—'}</div> },
+        { id: "status", header: "Status", width: "100px", cell: (row) => { const clrClass = STATUS_CFG[row.status] ?? 'text-gray-500 bg-gray-50'; return <span className={`ic-stat-badge ${clrClass}`}>{row.status}</span>; } },
+        { id: "opened_at", header: "Opened", width: "100px", cell: (row) => <div className="ic-col-date">{new Date(row.opened_at).toLocaleDateString()}</div> },
+        { id: "actions", header: "Actions", width: "200px", cell: (row) => <div className="ic-act-btns"><button onClick={(ev) => { ev.stopPropagation(); setSelected(selected?.id === row.id ? null : row); }} className="ic-btn-view">{selected?.id === row.id ? 'Unselect' : 'View'}</button>{row.status !== 'Resolved' && row.status !== 'Closed' && <><button onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'REVIEW', note: 'Under review' }); }} className="ic-btn-review">Review</button><button onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'ESCALATE', note: 'Escalated for management review' }); }} className="ic-btn-escalate">Escalate</button></>}</div> }
     ];
 
     return (
@@ -56,70 +57,73 @@ export default function ICDisputeWorkbench() {
             title="IC Dispute Workbench"
             description="Intercompany discrepancy management · Dispute lifecycle · Resolution tracking"
             actions={
-                <button onClick={() => setShowNew(true)} style={{ padding: '7px 14px', background: '#dc2626', color: '#fff', border: 'none', borderRadius: 8, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>+ Open Dispute</button>
+                <button onClick={() => setShowNew(true)} className="ic-btn-new">+ Open Dispute</button>
             }
         >
             {/* KPI row */}
-            <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
-                {[{ label: 'Active Disputes', val: totalOpen, clr: '#dc2626' }, { label: 'Total Disputed', val: `$${totalAmt.toLocaleString(undefined, { minimumFractionDigits: 0 })}`, clr: '#d97706' }, { label: 'Total Disputes', val: safeDisputes.length, clr: '#1d4ed8' }].map(k => (
-                    <div key={k.label} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 10, padding: '10px 16px', minWidth: 120 }}>
-                        <div style={{ fontSize: 10, color: '#9ca3af', fontWeight: 600 }}>{k.label}</div>
-                        <div style={{ fontSize: 20, fontWeight: 800, color: k.clr }}>{k.val}</div>
+            <div className="ic-kpis">
+                {[{ label: 'Active Disputes', val: totalOpen, clr: 'text-red-600' }, { label: 'Total Disputed', val: `$${totalAmt.toLocaleString(undefined, { minimumFractionDigits: 0 })}`, clr: 'text-amber-600' }, { label: 'Total Disputes', val: safeDisputes.length, clr: 'text-blue-700' }].map(k => (
+                    <div key={k.label} className="ic-kpi-card">
+                        <div className="ic-kpi-label">{k.label}</div>
+                        <div className={`ic-kpi-val ${k.clr}`}>{k.val}</div>
                     </div>
                 ))}
-                {safeSummary.map(s => (
-                    <div key={s.status + s.reason} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 10, padding: '8px 12px' }}>
-                        <div style={{ fontSize: 9, color: '#9ca3af', fontWeight: 600 }}>{s.reason}</div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: STATUS_CLR[s.status] ?? '#374151' }}>{s.count} {s.status}</div>
-                    </div>
-                ))}
+                {safeSummary.map(s => {
+                    const clrClass = STATUS_CFG[s.status]?.split(' ')[0] ?? 'text-gray-700';
+                    return (
+                        <div key={s.status + s.reason} className="ic-kpi-sum">
+                            <div className="ic-kpi-sum-label">{s.reason}</div>
+                            <div className={`ic-kpi-sum-val ${clrClass}`}>{s.count} {s.status}</div>
+                        </div>
+                    );
+                })}
             </div>
 
             {showNew && (
-                <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 10, padding: 14, marginBottom: 12 }}>
-                    <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 8 }}>Open New IC Dispute</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 10 }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <label style={{ fontSize: 10, fontWeight: 700 }}>From Entity</label>
-                            <select value={form.fromEntity} onChange={e => setForm(p => ({ ...p, fromEntity: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #fca5a5', borderRadius: 6, fontSize: 12 }}>
+                <div className="ic-new-box">
+                    <div className="ic-new-title">Open New IC Dispute</div>
+                    <div className="ic-new-grid">
+                        <div className="ic-new-fld">
+                            <label>From Entity</label>
+                            <select value={form.fromEntity} onChange={e => setForm(p => ({ ...p, fromEntity: e.target.value }))} aria-label="From Entity">
                                 <option value="">Select Entity...</option>
                                 {icOrgs.map(org => <option key={org.id} value={org.id}>{org.org_name || org.id}</option>)}
                             </select>
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <label style={{ fontSize: 10, fontWeight: 700 }}>To Entity</label>
-                            <select value={form.toEntity} onChange={e => setForm(p => ({ ...p, toEntity: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #fca5a5', borderRadius: 6, fontSize: 12 }}>
+                        <div className="ic-new-fld">
+                            <label>To Entity</label>
+                            <select value={form.toEntity} onChange={e => setForm(p => ({ ...p, toEntity: e.target.value }))} aria-label="To Entity">
                                 <option value="">Select Entity...</option>
                                 {icOrgs.map(org => <option key={org.id} value={org.id}>{org.org_name || org.id}</option>)}
                             </select>
                         </div>
                         {[['Currency', 'currency', 'text'], ['Disputed Amount', 'disputedAmount', 'number']].map(([lbl, key, type]) => (
-                            <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                <label style={{ fontSize: 10, fontWeight: 700 }}>{lbl}</label>
-                                <input type={type} value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #fca5a5', borderRadius: 6, fontSize: 12 }} aria-label={lbl} />
+                            <div key={key} className="ic-new-fld">
+                                <label>{lbl}</label>
+                                <input type={type} value={(form as any)[key as string]} onChange={e => setForm(p => ({ ...p, [key as string]: e.target.value }))} aria-label={lbl as string} />
                             </div>
                         ))}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <label style={{ fontSize: 10, fontWeight: 700 }}>Reason</label>
-                            <select value={form.reason} onChange={e => setForm(p => ({ ...p, reason: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #fca5a5', borderRadius: 6, fontSize: 12 }} aria-label="Reason">{REASONS.map(r => <option key={r}>{r}</option>)}</select>
+                        <div className="ic-new-fld">
+                            <label>Reason</label>
+                            <select value={form.reason} onChange={e => setForm(p => ({ ...p, reason: e.target.value }))} aria-label="Reason">{REASONS.map(r => <option key={r}>{r}</option>)}</select>
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2, gridColumn: 'span 2' }}>
-                            <label style={{ fontSize: 10, fontWeight: 700 }}>Notes</label>
-                            <input value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #fca5a5', borderRadius: 6, fontSize: 12 }} aria-label="Notes" />
+                        <div className="ic-new-fld ic-span-2">
+                            <label>Notes</label>
+                            <input value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} aria-label="Notes" />
                         </div>
                     </div>
-                    <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                        <button onClick={() => setShowNew(false)} style={{ padding: '5px 12px', background: '#e5e7eb', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer' }}>Cancel</button>
-                        <button disabled={!form.fromEntity || !form.toEntity} onClick={() => openMut.mutate({ ...form, disputedAmount: parseFloat(form.disputedAmount) || undefined, openedBy: 'current-user' })} style={{ padding: '5px 12px', background: '#dc2626', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>Open Dispute</button>
+                    <div className="ic-new-acts">
+                        <button onClick={() => setShowNew(false)} className="ic-btn-cancel">Cancel</button>
+                        <button disabled={!form.fromEntity || !form.toEntity} onClick={() => openMut.mutate({ ...form, disputedAmount: parseFloat(form.disputedAmount) || undefined, openedBy: 'current-user' })} className="ic-btn-open">Open Dispute</button>
                     </div>
                 </div>
             )}
 
             {/* Status filter */}
-            <div style={{ display: 'flex', gap: 6, marginBottom: 10, justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', gap: 6 }}>
+            <div className="ic-filters">
+                <div className="ic-filter-btns">
                     {['', 'Open', 'Under_Review', 'Escalated', 'Resolved', 'Closed'].map(s => (
-                        <button key={s} onClick={() => setStatusFilter(s)} style={{ padding: '5px 10px', border: '1px solid #e5e7eb', borderRadius: 6, background: statusFilter === s ? '#111827' : '#fff', color: statusFilter === s ? '#fff' : '#6b7280', fontSize: 10, fontWeight: 600, cursor: 'pointer' }}>{s || 'All'}</button>
+                        <button key={s} onClick={() => setStatusFilter(s)} className={`ic-btn-filter ${statusFilter === s ? 'active' : ''}`}>{s || 'All'}</button>
                     ))}
                 </div>
                 <input
@@ -127,54 +131,56 @@ export default function ICDisputeWorkbench() {
                     placeholder="Search disputes..."
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
-                    style={{ padding: '6px 12px', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 11, width: 250, boxSizing: 'border-box' }}
+                    className="ic-search"
                 />
             </div>
 
-            <div style={{ display: 'flex', gap: 14 }}>
+            <div className="ic-main-layout">
                 {/* Dispute list */}
-                <div style={{ flex: 1, height: 600 }}>
-                    <InteractiveSpreadsheet
-                        columns={disputeColumns}
-                        data={filteredDisputes}
-                        onChange={() => { }}
-                        containerHeight="100%"
-                    />
+                <div className="ic-list-sec">
+                    <div className="h-[600px]">
+                        <InteractiveSpreadsheet
+                            columns={disputeColumns}
+                            data={filteredDisputes}
+                            onChange={() => { }}
+                            containerHeight="100%"
+                        />
+                    </div>
                 </div>
 
                 {/* Detail panel */}
                 {selected && (
-                    <div style={{ width: 300, flexShrink: 0, background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: 14 }}>
-                        <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 8 }}>{selected.dispute_number}</div>
-                        <div style={{ fontSize: 11, color: '#6b7280', lineHeight: 1.7 }}>
+                    <div className="ic-detail">
+                        <div className="ic-det-id">{selected.dispute_number}</div>
+                        <div className="ic-det-meta">
                             <strong>Entities:</strong> {selected.from_entity} → {selected.to_entity}<br />
                             <strong>Reason:</strong> {selected.reason}<br />
                             <strong>Amount:</strong> {selected.disputed_amount ? `$${Number(selected.disputed_amount).toFixed(2)}` : '—'}<br />
                             <strong>Opened by:</strong> {selected.opened_by}
                         </div>
-                        <div style={{ marginTop: 10, marginBottom: 6, fontSize: 11, fontWeight: 700 }}>Event Timeline</div>
-                        <div style={{ maxHeight: 180, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 5 }}>
+                        <div className="ic-det-evt-title">Event Timeline</div>
+                        <div className="ic-det-evts">
                             {(selected.events ?? []).map((ev, i) => (
-                                <div key={i} style={{ display: 'flex', gap: 7, alignItems: 'flex-start' }}>
-                                    <MessageSquare size={10} style={{ marginTop: 1, color: '#9ca3af', flexShrink: 0 }} />
+                                <div key={i} className="ic-evt-row">
+                                    <MessageSquare size={10} className="ic-evt-icon" />
                                     <div>
-                                        <div style={{ fontSize: 9, fontWeight: 700, color: '#6b7280' }}>{ev.action} · {ev.by} · {new Date(ev.at).toLocaleString()}</div>
-                                        <div style={{ fontSize: 10, color: '#374151' }}>{ev.note}</div>
+                                        <div className="ic-evt-hdr">{ev.action} · {ev.by} · {new Date(ev.at).toLocaleString()}</div>
+                                        <div className="ic-evt-note">{ev.note}</div>
                                     </div>
                                 </div>
                             ))}
                         </div>
                         {selected.status !== 'Resolved' && selected.status !== 'Closed' && (
-                            <div style={{ marginTop: 10 }}>
-                                <div style={{ fontSize: 10, fontWeight: 700, marginBottom: 4 }}>Add Event</div>
-                                <input value={eventNote} onChange={e => setEventNote(e.target.value)} placeholder="Event note…" style={{ width: '100%', padding: '5px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 10, marginBottom: 4, boxSizing: 'border-box' }} aria-label="Event note" />
-                                <div style={{ display: 'flex', gap: 4 }}>
-                                    <button disabled={!eventNote} onClick={() => eventMut.mutate({ id: selected.id, action: 'NOTE', note: eventNote })} style={{ flex: 1, padding: '4px', background: '#f3f4f6', border: 'none', borderRadius: 5, fontSize: 9, cursor: 'pointer' }}>Add Note</button>
+                            <div className="ic-acts-sec">
+                                <div className="ic-acts-title">Add Event</div>
+                                <input value={eventNote} onChange={e => setEventNote(e.target.value)} placeholder="Event note…" className="ic-evt-in" aria-label="Event note" />
+                                <div className="ic-evt-btn-row">
+                                    <button disabled={!eventNote} onClick={() => eventMut.mutate({ id: selected.id, action: 'NOTE', note: eventNote })} className="ic-evt-btn">Add Note</button>
                                 </div>
-                                <div style={{ marginTop: 8 }}>
-                                    <div style={{ fontSize: 10, fontWeight: 700, marginBottom: 4 }}>Resolve</div>
-                                    <input value={resolveText} onChange={e => setResolveText(e.target.value)} placeholder="Resolution notes…" style={{ width: '100%', padding: '5px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 10, marginBottom: 4, boxSizing: 'border-box' }} aria-label="Resolution" />
-                                    <button disabled={!resolveText} onClick={() => resolveMut.mutate({ id: selected.id, resolution: resolveText })} style={{ width: '100%', padding: '5px', background: '#059669', color: '#fff', border: 'none', borderRadius: 6, fontSize: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                                <div className="ic-res-sec">
+                                    <div className="ic-acts-title">Resolve</div>
+                                    <input value={resolveText} onChange={e => setResolveText(e.target.value)} placeholder="Resolution notes…" className="ic-evt-in" aria-label="Resolution" />
+                                    <button disabled={!resolveText} onClick={() => resolveMut.mutate({ id: selected.id, resolution: resolveText })} className="ic-res-btn">
                                         <CheckCircle2 size={10} /> Resolve Dispute
                                     </button>
                                 </div>
@@ -183,6 +189,59 @@ export default function ICDisputeWorkbench() {
                     </div>
                 )}
             </div>
+
+            <style>{`
+                .ic-col-id { font-family: monospace; font-size: 10px; color: #9ca3af; }
+                .ic-col-entities { font-weight: 600; }
+                .ic-col-reason { color: #6b7280; font-size: 10px; }
+                .ic-stat-badge { padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; }
+                .ic-col-date { color: #9ca3af; font-size: 10px; }
+                .ic-act-btns { display: flex; gap: 4px; }
+                .ic-btn-view { padding: 2px 6px; background: #e5e7eb; border: none; border-radius: 4px; font-size: 9px; cursor: pointer; color: #374151; }
+                .ic-btn-review { padding: 2px 6px; background: #eff6ff; border: none; border-radius: 4px; font-size: 9px; cursor: pointer; color: #1d4ed8; }
+                .ic-btn-escalate { padding: 2px 6px; background: #fef2f2; border: none; border-radius: 4px; font-size: 9px; cursor: pointer; color: #dc2626; }
+                .ic-btn-new { padding: 7px 14px; background: #dc2626; color: #fff; border: none; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
+                .ic-kpis { display: flex; gap: 10px; margin-bottom: 14px; }
+                .ic-kpi-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px 16px; min-width: 120px; }
+                .ic-kpi-label { font-size: 10px; color: #9ca3af; font-weight: 600; }
+                .ic-kpi-val { font-size: 20px; font-weight: 800; }
+                .ic-kpi-sum { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 8px 12px; }
+                .ic-kpi-sum-label { font-size: 9px; color: #9ca3af; font-weight: 600; }
+                .ic-kpi-sum-val { font-size: 14px; font-weight: 700; }
+                .ic-new-box { background: #fef2f2; border: 1px solid #fca5a5; border-radius: 10px; padding: 14px; margin-bottom: 12px; }
+                .ic-new-title { font-weight: 700; font-size: 12px; margin-bottom: 8px; }
+                .ic-new-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+                .ic-new-fld { display: flex; flex-direction: column; gap: 2px; }
+                .ic-new-fld label { font-size: 10px; font-weight: 700; }
+                .ic-new-fld select, .ic-new-fld input { padding: 6px 8px; border: 1px solid #fca5a5; border-radius: 6px; font-size: 12px; }
+                .ic-span-2 { grid-column: span 2; }
+                .ic-new-acts { display: flex; gap: 6px; justify-content: flex-end; }
+                .ic-btn-cancel { padding: 5px 12px; background: #e5e7eb; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; }
+                .ic-btn-open { padding: 5px 12px; background: #dc2626; color: #fff; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; }
+                .ic-filters { display: flex; gap: 6px; margin-bottom: 10px; justify-content: space-between; align-items: center; }
+                .ic-filter-btns { display: flex; gap: 6px; }
+                .ic-btn-filter { padding: 5px 10px; border: 1px solid #e5e7eb; border-radius: 6px; background: #fff; color: #6b7280; font-size: 10px; font-weight: 600; cursor: pointer; }
+                .ic-btn-filter.active { background: #111827; color: #fff; }
+                .ic-search { padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 11px; width: 250px; box-sizing: border-box; }
+                .ic-main-layout { display: flex; gap: 14px; }
+                .ic-list-sec { flex: 1; height: 600px; }
+                .ic-detail { width: 300px; flex-shrink: 0; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; align-self: flex-start; }
+                .ic-det-id { font-weight: 700; font-size: 13px; margin-bottom: 8px; }
+                .ic-det-meta { font-size: 11px; color: #6b7280; line-height: 1.7; }
+                .ic-det-evt-title { margin-top: 10px; margin-bottom: 6px; font-size: 11px; font-weight: 700; }
+                .ic-det-evts { max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
+                .ic-evt-row { display: flex; gap: 7px; align-items: flex-start; }
+                .ic-evt-icon { margin-top: 1px; color: #9ca3af; flex-shrink: 0; }
+                .ic-evt-hdr { font-size: 9px; font-weight: 700; color: #6b7280; }
+                .ic-evt-note { font-size: 10px; color: #374151; }
+                .ic-acts-sec { margin-top: 10px; }
+                .ic-acts-title { font-size: 10px; font-weight: 700; margin-bottom: 4px; }
+                .ic-evt-in { width: 100%; padding: 5px 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 10px; margin-bottom: 4px; box-sizing: border-box; }
+                .ic-evt-btn-row { display: flex; gap: 4px; }
+                .ic-evt-btn { flex: 1; padding: 4px; background: #f3f4f6; border: none; border-radius: 5px; font-size: 9px; cursor: pointer; }
+                .ic-res-sec { margin-top: 8px; }
+                .ic-res-btn { width: 100%; padding: 5px; background: #059669; color: #fff; border: none; border-radius: 6px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
+            `}</style>
         </StandardPage>
     );
 }

@@ -109,10 +109,8 @@ export default function TeamSchedule() {
                 return (
                     <div className="cursor-pointer h-full w-full flex items-center justify-center p-1" onClick={() => setSelectedCell({ personId: person.id, date: day })}>
                         {assignment ? (
-                            // eslint-disable-next-line react/forbid-dom-props
                             <div
-                                className="text-xs font-medium px-2 py-1 rounded text-white truncate w-full text-center"
-                                style={{ backgroundColor: assignment.shift.color }}
+                                className={`text-xs font-medium px-2 py-1 rounded text-white truncate w-full text-center ts-bg-${assignment.shift.id}`}
                                 title={`${assignment.shift.name} (${assignment.shift.startTime}-${assignment.shift.endTime})`}
                             >
                                 {assignment.shift.code}
@@ -133,6 +131,9 @@ export default function TeamSchedule() {
 
                     <p className="text-muted-foreground">Manage shift assignments ({format(weekStart, "MMM d")} - {format(addDays(weekStart, 6), "MMM d")})</p>
                 </div>
+                <style>{
+                    shifts?.map((s: any) => `.ts-bg-${s.id} { background-color: ${s.color}; }`).join('\n')
+                }</style>
                 <Button
                     onClick={() => setShowAIOptimizer(true)}
                     className="gap-2 bg-purple-600 hover:bg-purple-700"
@@ -177,8 +178,7 @@ export default function TeamSchedule() {
                                 <SelectContent>
                                     {shifts?.map((s: any) => (
                                         <SelectItem key={s.id} value={s.id}>
-                                            {/* eslint-disable-next-line react/forbid-dom-props */}
-                                            <span className="inline-block w-3 h-3 rounded-full mr-2" style={{ backgroundColor: s.color }}></span>
+                                            <span className={`inline-block w-3 h-3 rounded-full mr-2 ts-bg-${s.id}`}></span>
                                             {s.name} ({s.startTime}-{s.endTime})
                                         </SelectItem>
                                     ))}

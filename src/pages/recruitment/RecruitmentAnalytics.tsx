@@ -276,14 +276,10 @@ export default function RecruitmentAnalytics() {
                                             <span>{stage.count} ({percentage}%)</span>
                                         </div>
                                         <div className="w-full bg-muted rounded-full h-6 relative overflow-hidden">
-                                            {/* eslint-disable-next-line react/forbid-dom-props */}
-                                            <div
-                                                className="h-full flex items-center justify-end px-2 text-xs font-semibold text-white transition-all"
-                                                style={{
-                                                    width: `${percentage}%`,
-                                                    backgroundColor: COLORS[idx % COLORS.length]
-                                                }}
-                                            >
+                                            <style>{`
+                                                .funnel-bar-${idx} { width: ${percentage}%; background-color: ${COLORS[idx % COLORS.length]}; }
+                                            `}</style>
+                                            <div className={`h-full flex items-center justify-end px-2 text-xs font-semibold text-white transition-all funnel-bar-${idx}`}>
                                                 {stage.count}
                                             </div>
                                         </div>

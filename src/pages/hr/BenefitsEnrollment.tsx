@@ -44,9 +44,14 @@ const TYPE_ICONS: Record<string, React.ReactNode> = {
     HSA: <DollarSign size={18} />,
 };
 
-const TYPE_COLORS: Record<string, string> = {
-    Medical: '#dc2626', Dental: '#1d4ed8', Vision: '#7c3aed',
-    Life: '#d97706', '401k': '#059669', FSA: '#0891b2', HSA: '#0891b2',
+const TYPE_CLASSES: Record<string, { bg: string; text: string; lightBg: string }> = {
+    Medical: { bg: 'bg-red-600', text: 'text-red-600', lightBg: 'bg-red-600/20' },
+    Dental: { bg: 'bg-blue-700', text: 'text-blue-700', lightBg: 'bg-blue-700/20' },
+    Vision: { bg: 'bg-purple-600', text: 'text-purple-600', lightBg: 'bg-purple-600/20' },
+    Life: { bg: 'bg-amber-600', text: 'text-amber-600', lightBg: 'bg-amber-600/20' },
+    '401k': { bg: 'bg-emerald-600', text: 'text-emerald-600', lightBg: 'bg-emerald-600/20' },
+    FSA: { bg: 'bg-cyan-600', text: 'text-cyan-600', lightBg: 'bg-cyan-600/20' },
+    HSA: { bg: 'bg-cyan-600', text: 'text-cyan-600', lightBg: 'bg-cyan-600/20' },
 };
 
 const fmt = (n: number, c = 'USD') => new Intl.NumberFormat('en-US', { style: 'currency', currency: c }).format(n);
@@ -98,7 +103,12 @@ export default function BenefitsEnrollment() {
 
     const enrollmentColumns: SpreadsheetColumn<any>[] = [
         { id: "plan", header: "Plan", width: "150px", cell: (row) => <span className="plan-cell">{row.plan_name}</span> },
-        { id: "type", header: "Type", width: "100px", cell: (row) => <span className="type-badge" style={{ background: (TYPE_COLORS[row.benefit_type] ?? '#9ca3af') + '20', color: TYPE_COLORS[row.benefit_type] ?? '#6b7280' }}>{row.benefit_type}</span> },
+        {
+            id: "type", header: "Type", width: "100px", cell: (row) => {
+                const cls = TYPE_CLASSES[row.benefit_type] ?? { lightBg: 'bg-gray-100', text: 'text-gray-500' };
+                return <span className={`type-badge ${cls.lightBg} ${cls.text}`}>{row.benefit_type}</span>;
+            }
+        },
         { id: "emp_cost", header: "Employee Cost", width: "120px", cell: (row) => <span>{fmt(row.employee_cost, row.currency_code)}</span> },
         { id: "empr_cost", header: "Employer Cost", width: "120px", cell: (row) => <span>{fmt(row.employer_cost, row.currency_code)}</span> },
         { id: "effective", header: "Effective", width: "100px", cell: (row) => <span className="date-cell">{row.effective_from}</span> },
@@ -116,8 +126,8 @@ export default function BenefitsEnrollment() {
     const summaryColumns: SpreadsheetColumn<any>[] = [
         {
             id: "type", header: "Benefit Type", width: "150px", cell: (row) => {
-                const color = TYPE_COLORS[row.benefit_type] ?? '#6b7280';
-                return <span className="type-badge" style={{ background: color + '20', color }}>{row.benefit_type}</span>;
+                const cls = TYPE_CLASSES[row.benefit_type] ?? { lightBg: 'bg-gray-100', text: 'text-gray-500' };
+                return <span className={`type-badge ${cls.lightBg} ${cls.text}`}>{row.benefit_type}</span>;
             }
         },
         { id: "enrolled", header: "Enrolled", width: "100px", cell: (row) => <span className="num-cell block w-full text-right">{Number(row.enrolled).toLocaleString()}</span> },
@@ -128,11 +138,12 @@ export default function BenefitsEnrollment() {
             id: "participation", header: "Participation %", width: "150px", cell: (row) => {
                 const total = Number(row.enrolled) + Number(row.waived);
                 const pct = total > 0 ? Math.round(Number(row.enrolled) / total * 100) : 0;
-                const color = TYPE_COLORS[row.benefit_type] ?? '#6b7280';
+                const cls = TYPE_CLASSES[row.benefit_type] ?? { bg: 'bg-gray-500' };
                 return (
                     <div className="pct-row flex items-center gap-2">
                         <div className="pct-bar-bg flex-1 h-1.5 bg-gray-200 rounded-full">
-                            <div className="pct-bar-fill h-full rounded-full" style={{ width: `${pct}%`, background: color }} />
+                            <style>{`.pct-bar-fill-${row.benefit_type.replace(/\\W/g, '')} { width: ${pct}%; }`}</style>
+                            <div className={`pct-bar-fill pct-bar-fill-${row.benefit_type.replace(/\\W/g, '')} h-full rounded-full ${cls.bg}`} />
                         </div>
                         <span className="pct-label text-xs min-w-[30px]">{pct}%</span>
                     </div>
@@ -158,13 +169,13 @@ export default function BenefitsEnrollment() {
             {activeTab === 'catalog' && (
                 <div className="plan-grid">
                     {plans.map(plan => {
-                        const color = TYPE_COLORS[plan.benefit_type] ?? '#6b7280';
+                        const cls = TYPE_CLASSES[plan.benefit_type] ?? { bg: 'bg-gray-500' };
                         const icon = TYPE_ICONS[plan.benefit_type] ?? <Star size={18} />;
                         return (
                             <div key={plan.id} className="plan-card">
-                                <div className="plan-type-header" style={{ background: color }}>
-                                    <span style={{ color: '#fff' }}>{icon}</span>
-                                    <span className="plan-type-label">{plan.benefit_type}</span>
+                                <div className={`plan-type-header ${cls.bg}`}>
+                                    <span className="text-white">{icon}</span>
+                                    <span className="plan-type-label text-white">{plan.benefit_type}</span>
                                 </div>
                                 <div className="plan-body">
                                     <div className="plan-name">{plan.name}</div>
@@ -256,9 +267,9 @@ export default function BenefitsEnrollment() {
                             </div>
                             {dependents.map((d, i) => (
                                 <div key={i} className="dep-row">
-                                    <input className="dep-input" placeholder="Name" value={d.name} onChange={e => { const n = [...dependents]; n[i].name = e.target.value; setDependents(n); }} />
-                                    <input className="dep-input" type="date" value={d.dob} onChange={e => { const n = [...dependents]; n[i].dob = e.target.value; setDependents(n); }} />
-                                    <select className="dep-input" value={d.relationship} onChange={e => { const n = [...dependents]; n[i].relationship = e.target.value; setDependents(n); }}>
+                                    <input className="dep-input" placeholder="Name" value={d.name} onChange={e => { const n = [...dependents]; n[i].name = e.target.value; setDependents(n); }} aria-label="Dependent name" />
+                                    <input className="dep-input" type="date" value={d.dob} onChange={e => { const n = [...dependents]; n[i].dob = e.target.value; setDependents(n); }} aria-label="Dependent Date of Birth" />
+                                    <select className="dep-input" value={d.relationship} onChange={e => { const n = [...dependents]; n[i].relationship = e.target.value; setDependents(n); }} aria-label="Dependent Relationship">
                                         {['Spouse', 'Child', 'Parent', 'Domestic Partner'].map(r => <option key={r} value={r}>{r}</option>)}
                                     </select>
                                     <button className="dep-remove" onClick={() => setDependents(d => d.filter((_, j) => j !== i))} aria-label="Remove dependent"><X size={14} /></button>

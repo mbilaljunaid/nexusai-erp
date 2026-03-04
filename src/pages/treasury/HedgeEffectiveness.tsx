@@ -128,17 +128,17 @@ export default function HedgeEffectiveness() {
         <StandardPage title="Treasury Risk & Compliance">
             <div className="he-header">
                 <div>
-                    
+
                     <p className="he-sub">Hedge Effectiveness (IFRS 9/ASC 815) · Debt Covenant Monitoring</p>
                 </div>
             </div>
 
             {/* KPIs */}
             <div className="he-kpis">
-                <HeKpi label="Total Hedges" value={String(hedges.length)} icon={<Shield size={18} />} color="#1d4ed8" />
-                <HeKpi label="Effective" value={String(effectiveCount)} icon={<CheckCircle2 size={18} />} color="#059669" />
-                <HeKpi label="Total Notional" value={fmt(totalNotional)} icon={<TrendingUp size={18} />} color="#7c3aed" />
-                <HeKpi label="Covenant Breaches (90d)" value={String(breachCount)} icon={<AlertTriangle size={18} />} color={breachCount > 0 ? '#dc2626' : '#059669'} />
+                <HeKpi label="Total Hedges" value={String(hedges.length)} icon={<Shield size={18} />} colorClass="text-blue-700" borderClass="border-l-blue-700" />
+                <HeKpi label="Effective" value={String(effectiveCount)} icon={<CheckCircle2 size={18} />} colorClass="text-emerald-600" borderClass="border-l-emerald-600" />
+                <HeKpi label="Total Notional" value={fmt(totalNotional)} icon={<TrendingUp size={18} />} colorClass="text-purple-600" borderClass="border-l-purple-600" />
+                <HeKpi label="Covenant Breaches (90d)" value={String(breachCount)} icon={<AlertTriangle size={18} />} colorClass={breachCount > 0 ? 'text-red-600' : 'text-emerald-600'} borderClass={breachCount > 0 ? 'border-l-red-600' : 'border-l-emerald-600'} />
             </div>
 
             {/* Tabs */}
@@ -328,7 +328,10 @@ export default function HedgeEffectiveness() {
                                     </div>
                                     <div className="dc-lender">{f.lender} · {f.facility_type}</div>
                                     <div className="dc-util">
-                                        <div className="util-bar-bg"><div className="util-bar" style={{ width: `${util}%`, background: util > 80 ? '#dc2626' : '#1d4ed8' }} /></div>
+                                        <div className="util-bar-bg">
+                                            <style>{`.util-bar-he-${f.id} { width: ${util}%; }`}</style>
+                                            <div className={`util-bar util-bar-he-${f.id} ${util > 80 ? 'bg-red-600' : 'bg-blue-700'}`} />
+                                        </div>
                                         <span className="util-pct">{util}% utilised</span>
                                     </div>
                                     <div className="dc-amounts">
@@ -410,13 +413,13 @@ export default function HedgeEffectiveness() {
     );
 }
 
-function HeKpi({ label, value, icon, color }: { label: string; value: string; icon: React.ReactNode; color: string }) {
+function HeKpi({ label, value, icon, colorClass, borderClass }: { label: string; value: string; icon: React.ReactNode; colorClass: string; borderClass: string }) {
     return (
-        <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderLeft: `4px solid ${color}`, borderRadius: 12, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 12, minWidth: 160 }}>
-            <div style={{ color }}>{icon}</div>
+        <div className={`bg-white border flex items-center gap-3 min-w-[160px] px-4 py-3 rounded-xl border-gray-200 border-l-4 ${borderClass}`}>
+            <div className={colorClass}>{icon}</div>
             <div>
-                <div style={{ fontSize: 20, fontWeight: 800, color }}>{value}</div>
-                <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2 }}>{label}</div>
+                <div className={`text-xl font-extrabold ${colorClass}`}>{value}</div>
+                <div className="text-xs text-gray-500 mt-0.5">{label}</div>
             </div>
         </div>
     );

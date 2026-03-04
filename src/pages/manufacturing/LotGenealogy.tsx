@@ -7,9 +7,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 interface Lot { id: string; lot_number: string; item_number: string; item_description: string; lot_type: string; quantity: number; unit_of_measure: string; status: string; expiry_date: string; supplier_lot: string; work_order_id: string; parent_lots: any[]; trace_events: any[]; created_at: string; }
 
-const STATUS_CFG: Record<string, { bg: string; color: string }> = {
-    Active: { bg: '#d1fae5', color: '#059669' }, Consumed: { bg: '#f3f4f6', color: '#6b7280' },
-    Quarantine: { bg: '#fee2e2', color: '#dc2626' }, Scrapped: { bg: '#fef3c7', color: '#d97706' }, Expired: { bg: '#f3f4f6', color: '#9ca3af' },
+const STATUS_CFG: Record<string, string> = {
+    Active: 'bg-emerald-100 text-emerald-600', Consumed: 'bg-gray-100 text-gray-500',
+    Quarantine: 'bg-red-100 text-red-600', Scrapped: 'bg-amber-100 text-amber-600', Expired: 'bg-gray-100 text-gray-400',
 };
 function fmtDate(d: string) { return d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'; }
 
@@ -43,8 +43,7 @@ export default function LotGenealogy() {
         {
             id: "status", header: "Status", width: "120px", cell: (l) => {
                 const cfg = STATUS_CFG[l.status] ?? STATUS_CFG.Active;
-                {/* eslint-disable-next-line react/forbid-dom-props */ }
-                return <span className="py-0.5 px-2 rounded font-bold text-[10px]" style={{ background: cfg.bg, color: cfg.color }}>{l.status}</span>;
+                return <span className={`py-0.5 px-2 rounded font-bold text-[10px] ${cfg}`}>{l.status}</span>;
             }
         },
         { id: "actions", header: "", width: "80px", cell: (l) => l.status === 'Active' ? <button onClick={ev => { ev.stopPropagation(); statusMut.mutate({ lot: l.lot_number, status: 'Quarantine' }); }} className="py-0.5 px-2 bg-red-100 border-none rounded text-[9px] cursor-pointer text-red-600">Hold</button> : null }

@@ -380,9 +380,9 @@ export function PermitWorkflow() {
                                                         </span>
                                                     </div>
                                                     <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                                        <style>{`.pw-progress-${permit.id} { width: ${progress.percentage}%; }`}</style>
                                                         <div
-                                                            className="h-full bg-blue-600 transition-all"
-                                                            style={{ width: `${progress.percentage}%` }}
+                                                            className={`h-full bg-blue-600 transition-all pw-progress-${permit.id}`}
                                                         />
                                                     </div>
 

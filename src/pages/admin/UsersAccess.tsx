@@ -25,7 +25,7 @@ export default function UsersAccess() {
 
     const adminUserColumns: SpreadsheetColumn<any>[] = [
         {
-            id: "user", header: "User", width: 250, cell: (item) => (
+            id: "user", header: "User", width: "250px", cell: (item) => (
                 <div className="flex items-center gap-3">
                     <Users className="w-5 h-5 text-muted-foreground" />
                     <div>
@@ -36,15 +36,15 @@ export default function UsersAccess() {
             )
         },
         {
-            id: "role", header: "Role", width: 150, cell: (item) => (
+            id: "role", header: "Role", width: "150px", cell: (item) => (
                 <Badge variant={item.role === 'super_admin' ? 'default' : 'secondary'}>
                     {item.role.replace('_', ' ')}
                 </Badge>
             )
         },
-        { id: "lastActive", header: "Last Active", width: 150, cell: (item) => <span className="text-sm text-muted-foreground">{new Date(item.lastActive).toLocaleDateString()}</span> },
+        { id: "lastActive", header: "Last Active", width: "150px", cell: (item) => <span className="text-sm text-muted-foreground">{new Date(item.lastActive).toLocaleDateString()}</span> },
         {
-            id: "actions", header: "Actions", width: 120, cell: () => (
+            id: "actions", header: "Actions", width: "120px", cell: () => (
                 <div className="flex items-center justify-end gap-2 pr-2 w-full">
                     <Button variant="ghost" size="sm" className="h-8 px-2">
                         <Edit className="w-4 h-4" />
@@ -94,12 +94,12 @@ export default function UsersAccess() {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div style={{ height: '350px' }}>
+                            <div className="h-[350px]">
                                 <InteractiveSpreadsheet
                                     columns={adminUserColumns}
                                     data={filteredUsers}
-                                    rowKey="id"
                                     containerHeight="350px"
+                                    onChange={() => { }}
                                 />
                             </div>
                         </CardContent>

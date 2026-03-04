@@ -169,7 +169,7 @@ export default function Inventory() {
                       <span className="text-white font-mono">82%</span>
                     </div>
                     <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-blue-500 w-[var(--tw-progress-width)]" style={{ "--tw-progress-width": '82%' } as React.CSSProperties} />
+                      <div className="h-full bg-blue-500 w-[82%]" />
                     </div>
                   </div>
                 </CardContent>

@@ -97,7 +97,7 @@ export default function WavePlanning() {
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <div style={{ height: 400 }}>
+                        <div className="h-[400px]">
                             <InteractiveSpreadsheet
                                 columns={waveColumns}
                                 data={readyOrders}

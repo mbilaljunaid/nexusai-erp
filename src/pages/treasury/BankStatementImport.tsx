@@ -30,11 +30,11 @@ interface BankTx {
     match_status: string;
 }
 
-const STATUS_CFG: Record<string, { color: string; bg: string }> = {
-    Parsed: { color: '#059669', bg: '#d1fae5' },
-    Matched: { color: '#7c3aed', bg: '#ede9fe' },
-    Error: { color: '#dc2626', bg: '#fee2e2' },
-    Pending: { color: '#d97706', bg: '#fef3c7' },
+const STATUS_CFG: Record<string, string> = {
+    Parsed: 'bg-emerald-100 text-emerald-600',
+    Matched: 'bg-purple-100 text-purple-600',
+    Error: 'bg-red-100 text-red-600',
+    Pending: 'bg-amber-100 text-amber-600',
 };
 
 const fmt = (n: number, c = 'USD') => new Intl.NumberFormat('en-US', { style: 'currency', currency: c, maximumFractionDigits: 0 }).format(n);
@@ -96,7 +96,7 @@ export default function BankStatementImport() {
         <StandardPage title="Bank Statement Import">
             <div className="bsi-header">
                 <div>
-                    
+
                     <p className="bsi-sub">BAI2 · MT940 · CAMT.053 (ISO 20022)</p>
                 </div>
             </div>
@@ -111,7 +111,7 @@ export default function BankStatementImport() {
                     </div>
                     <input ref={fileRef} type="file" accept=".txt,.xml,.camt,.mt940,.bai2" onChange={handleFile} hidden />
                     <div className="drop-zone" onClick={() => fileRef.current?.click()}>
-                        <Upload size={32} style={{ color: '#9ca3af', marginBottom: 8 }} />
+                        <Upload size={32} className="text-gray-400 mb-2" />
                         <div className="dz-primary">Click to upload or paste below</div>
                         <div className="dz-sub">{format} format</div>
                     </div>
@@ -135,12 +135,12 @@ export default function BankStatementImport() {
                     {isLoading ? <div className="loading">Loading…</div> : (
                         <div className="hist-list">
                             {imports.map(imp => {
-                                const cfg = STATUS_CFG[imp.import_status] ?? { color: '#6b7280', bg: '#f3f4f6' };
+                                const cfg = STATUS_CFG[imp.import_status] ?? 'bg-gray-100 text-gray-500';
                                 return (
                                     <div key={imp.id} className={`hist-item ${activeImport?.id === imp.id ? 'selected' : ''}`} onClick={() => setActiveImport(imp)}>
                                         <div className="hist-top">
                                             <span className="hist-fmt">{imp.format}</span>
-                                            <span className="hist-status" style={{ background: cfg.bg, color: cfg.color }}>{imp.import_status}</span>
+                                            <span className={`hist-status ${cfg}`}>{imp.import_status}</span>
                                         </div>
                                         <div className="hist-date">{imp.statement_date}</div>
                                         <div className="hist-amounts">

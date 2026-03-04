@@ -22,11 +22,11 @@ interface ValidationRule {
     name: string;
 }
 
-const STATUS_CFG: Record<string, { bg: string; color: string }> = {
-    Validated: { bg: '#d1fae5', color: '#059669' },
-    Error: { bg: '#fee2e2', color: '#dc2626' },
-    Pending: { bg: '#eff6ff', color: '#1d4ed8' },
-    Imported: { bg: '#f3e8ff', color: '#7c3aed' },
+const STATUS_CFG: Record<string, string> = {
+    Validated: 'bg-emerald-100 text-emerald-600',
+    Error: 'bg-red-100 text-red-600',
+    Pending: 'bg-blue-50 text-blue-700',
+    Imported: 'bg-purple-100 text-purple-700',
 };
 
 const SAMPLE_LINES = [
@@ -120,12 +120,12 @@ export default function AutoInvoiceValidation() {
                     <div className="hist-box">
                         <div className="hb-title">Run History</div>
                         {runs.map(r => {
-                            const cfg = STATUS_CFG[r.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
+                            const cfgClass = STATUS_CFG[r.status] ?? 'bg-gray-100 text-gray-500';
                             return (
                                 <div key={r.id} className={`run-card ${activeRun?.id === r.id ? 'selected' : ''}`} onClick={() => setActiveRun(r)}>
                                     <div className="rc-top">
                                         <span className="rc-ref mono">{r.source_ref || r.source_type}</span>
-                                        <span className="rc-status" style={{ background: cfg.bg, color: cfg.color }}>{r.status}</span>
+                                        <span className={`rc-status ${cfgClass}`}>{r.status}</span>
                                     </div>
                                     <div className="rc-meta">{r.total_lines} lines · {r.valid_lines} valid · {r.error_lines} err</div>
                                     <div className="rc-date small">{new Date(r.run_at).toLocaleString()}</div>
@@ -157,7 +157,7 @@ export default function AutoInvoiceValidation() {
                             <div className="rd-header">
                                 <div>
                                     <div className="rd-title">{activeRun.source_ref || activeRun.source_type} — {activeRun.run_date}</div>
-                                    <div className="rd-meta">{activeRun.total_lines} total · {activeRun.valid_lines} valid · <span style={{ color: activeRun.error_lines > 0 ? '#dc2626' : '#059669' }}>{activeRun.error_lines} errors</span></div>
+                                    <div className="rd-meta">{activeRun.total_lines} total · {activeRun.valid_lines} valid · <span className={activeRun.error_lines > 0 ? 'text-red-600' : 'text-emerald-600'}>{activeRun.error_lines} errors</span></div>
                                 </div>
                                 {activeRun.status === 'Validated' && activeRun.error_lines === 0 && (
                                     <button className="import-btn" disabled={importMutation.isPending}
@@ -168,7 +168,7 @@ export default function AutoInvoiceValidation() {
                             </div>
 
                             {activeRun.validation_errors?.length > 0 ? (
-                                <div style={{ height: 300, border: '1px solid #e5e7eb', borderRadius: 8, overflow: 'hidden' }}>
+                                <div className="h-[300px] border border-gray-200 rounded-lg overflow-hidden">
                                     <InteractiveSpreadsheet
                                         columns={errColumns}
                                         data={activeRun.validation_errors}
@@ -178,7 +178,7 @@ export default function AutoInvoiceValidation() {
                                 </div>
                             ) : (
                                 <div className="all-pass">
-                                    <CheckCircle2 size={20} style={{ color: '#059669' }} />
+                                    <CheckCircle2 size={20} className="text-emerald-600" />
                                     <span>All {activeRun.total_lines} lines passed validation</span>
                                 </div>
                             )}

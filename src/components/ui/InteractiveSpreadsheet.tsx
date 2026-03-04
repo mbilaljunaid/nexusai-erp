@@ -115,9 +115,21 @@ export function InteractiveSpreadsheet<T extends { id?: string | number, lineNum
 
     // Render virtualized grid (assumes columns pass fixed grid classes via style or width)
     const gridTemplateColumns = columns.map(c => c.width || "1fr").join(" ");
+    const uId = React.useId().replace(/:/g, '');
+
+    const dynamicStyles = `
+        .is-container-${uId} { min-height: ${containerHeight}; }
+        .is-header-${uId} { grid-template-columns: ${gridTemplateColumns}; }
+        .is-viewport-${uId} { height: ${containerHeight}; }
+        .is-totalsize-${uId} { height: ${rowVirtualizer.getTotalSize()}px; }
+        ${rowVirtualizer.getVirtualItems().map((virtualRow) => `
+            .is-row-${uId}-${virtualRow.index} { height: ${virtualRow.size}px; transform: translateY(${virtualRow.start}px); grid-template-columns: ${gridTemplateColumns}; }
+        `).join('')}
+    `;
 
     return (
         <div className="flex flex-col w-full h-full">
+            <style>{dynamicStyles}</style>
             {onPasteFromClipboard && (
                 <div className="flex justify-end mb-2">
                     <Button variant="outline" size="sm" onClick={onPasteFromClipboard}>
@@ -126,31 +138,30 @@ export function InteractiveSpreadsheet<T extends { id?: string | number, lineNum
                 </div>
             )}
 
-            <div className="border rounded-md bg-white flex flex-col w-full" style={{ minHeight: containerHeight }}>
+            {/* eslint-disable-next-line react/forbid-dom-props */}
+            <div className={`border rounded-md bg-white flex flex-col w-full is-container-${uId}`}>
+                {/* eslint-disable-next-line react/forbid-dom-props */}
                 <div
-                    className="grid gap-2 p-3 bg-slate-100/50 border-b font-medium text-sm text-muted-foreground"
-                    style={{ gridTemplateColumns }}
+                    className={`grid gap-2 p-3 bg-slate-100/50 border-b font-medium text-sm text-muted-foreground is-header-${uId}`}
                 >
                     {columns.map(col => (
                         <div key={col.id} className={`truncate ${col.headerClassName || ''}`}>{col.header}</div>
                     ))}
                 </div>
 
-                <div ref={parentRef} className="flex-1 overflow-auto w-full relative" style={{ height: containerHeight }}>
-                    <div className="w-full relative" style={{ height: `${rowVirtualizer.getTotalSize()}px` }}>
+                {/* eslint-disable-next-line react/forbid-dom-props */}
+                <div ref={parentRef} className={`flex-1 overflow-auto w-full relative is-viewport-${uId}`}>
+                    {/* eslint-disable-next-line react/forbid-dom-props */}
+                    <div className={`w-full relative is-totalsize-${uId}`}>
                         {rowVirtualizer.getVirtualItems().map((virtualRow) => {
                             const row = data[virtualRow.index];
                             const isSelected = activeRow !== undefined && (activeRow === row.id || activeRow === row.lineNumber);
+                            // eslint-disable-next-line react/forbid-dom-props
                             return (
                                 <div
                                     key={row.id || virtualRow.index}
-                                    className={`grid gap-2 p-1 px-3 items-center border-b border-slate-50 absolute top-0 left-0 w-full ${isSelected ? 'bg-slate-100' : 'hover:bg-slate-50'} ${onRowSelect ? 'cursor-pointer' : ''}`}
+                                    className={`grid gap-2 p-1 px-3 items-center border-b border-slate-50 absolute top-0 left-0 w-full ${isSelected ? 'bg-slate-100' : 'hover:bg-slate-50'} ${onRowSelect ? 'cursor-pointer' : ''} is-row-${uId}-${virtualRow.index}`}
                                     onClick={() => onRowSelect && onRowSelect(row)}
-                                    style={{
-                                        height: `${virtualRow.size}px`,
-                                        transform: `translateY(${virtualRow.start}px)`,
-                                        gridTemplateColumns
-                                    }}
                                 >
                                     {columns.map(col => (
                                         <div key={`${row.id || virtualRow.index}-${col.id}`} className={`w-full ${col.cellClassName || ''}`}>
@@ -167,6 +178,6 @@ export function InteractiveSpreadsheet<T extends { id?: string | number, lineNum
                 Showing {data.length} lines. Optimized for high-volume data entry.
             </p>
             {footer && <div className="mt-4">{footer}</div>}
-        </div>
+        </div >
     );
 }

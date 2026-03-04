@@ -99,7 +99,7 @@ export default function TaskDashboard() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div style={{ height: 400 }}>
+                    <div className="h-[400px]">
                         <InteractiveSpreadsheet
                             columns={taskColumns}
                             data={tasks}

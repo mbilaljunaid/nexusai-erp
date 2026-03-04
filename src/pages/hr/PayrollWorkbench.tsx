@@ -21,12 +21,12 @@ interface PayrollRun {
 }
 
 const STATUS_CFG: Record<string, { color: string; bg: string; label: string }> = {
-    Draft: { color: '#6b7280', bg: '#f3f4f6', label: 'Draft' },
-    Processing: { color: '#d97706', bg: '#fef3c7', label: 'Processing' },
-    Review: { color: '#2563eb', bg: '#dbeafe', label: 'Under Review' },
-    Approved: { color: '#059669', bg: '#d1fae5', label: 'Approved' },
-    Paid: { color: '#7c3aed', bg: '#ede9fe', label: 'Paid' },
-    Reversed: { color: '#dc2626', bg: '#fee2e2', label: 'Reversed' },
+    Draft: { color: 'text-gray-500', bg: 'bg-gray-100', label: 'Draft' },
+    Processing: { color: 'text-amber-600', bg: 'bg-amber-100', label: 'Processing' },
+    Review: { color: 'text-blue-600', bg: 'bg-blue-100', label: 'Under Review' },
+    Approved: { color: 'text-emerald-600', bg: 'bg-emerald-100', label: 'Approved' },
+    Paid: { color: 'text-violet-600', bg: 'bg-violet-100', label: 'Paid' },
+    Reversed: { color: 'text-red-600', bg: 'bg-red-100', label: 'Reversed' },
 };
 
 const COUNTRIES = ['US', 'GB', 'DE', 'FR', 'IN', 'AU', 'CA', 'SG'];
@@ -98,8 +98,8 @@ export default function PayrollWorkbench() {
         { id: "tax_total", header: "Tax", width: "120px", cell: (row) => <div className="amt-cell red w-full">{fmt(row.tax_total, row.currency_code)}</div> },
         {
             id: "status", header: "Status", width: "120px", cell: (row) => {
-                const cfg = STATUS_CFG[row.status] ?? { color: '#6b7280', bg: '#f3f4f6', label: row.status };
-                return <span className="status-pill" style={{ background: cfg.bg, color: cfg.color }}>{cfg.label}</span>;
+                const cfg = STATUS_CFG[row.status] ?? { color: 'text-gray-500', bg: 'bg-gray-100', label: row.status };
+                return <span className={`status-pill ${cfg.bg} ${cfg.color}`}>{cfg.label}</span>;
             }
         },
         {
@@ -155,10 +155,10 @@ export default function PayrollWorkbench() {
 
             {/* KPI Strip */}
             <div className="pw-kpis">
-                <PWKpi label="Employees" value={totalEmp.toLocaleString()} icon={<Users size={18} />} color="#1d4ed8" />
-                <PWKpi label="Gross Payroll" value={fmt(totalGross)} icon={<DollarSign size={18} />} color="#059669" />
-                <PWKpi label="Net Pay" value={fmt(totalNet)} icon={<DollarSign size={18} />} color="#7c3aed" />
-                <PWKpi label="Active Runs" value={String(runs.filter(r => ['Draft', 'Processing', 'Review'].includes(r.status)).length)} icon={<RefreshCw size={18} />} color="#d97706" />
+                <PWKpi label="Employees" value={totalEmp.toLocaleString()} icon={<Users size={18} />} colorClass="text-blue-700" borderClass="border-l-blue-700" />
+                <PWKpi label="Gross Payroll" value={fmt(totalGross)} icon={<DollarSign size={18} />} colorClass="text-emerald-600" borderClass="border-l-emerald-600" />
+                <PWKpi label="Net Pay" value={fmt(totalNet)} icon={<DollarSign size={18} />} colorClass="text-violet-600" borderClass="border-l-violet-600" />
+                <PWKpi label="Active Runs" value={String(runs.filter(r => ['Draft', 'Processing', 'Review'].includes(r.status)).length)} icon={<RefreshCw size={18} />} colorClass="text-amber-600" borderClass="border-l-amber-600" />
             </div>
 
             {/* Country filter */}
@@ -179,7 +179,7 @@ export default function PayrollWorkbench() {
                 {isLoading ? (
                     <div className="empty-td p-8 text-center text-zinc-500">Loading…</div>
                 ) : (
-                    <div style={{ minHeight: '300px', height: '100%' }}>
+                    <div className="min-h-[300px] h-full">
                         <InteractiveSpreadsheet
                             columns={runColumns}
                             data={runs}
@@ -264,12 +264,12 @@ export default function PayrollWorkbench() {
     );
 }
 
-function PWKpi({ label, value, icon, color }: { label: string; value: string; icon: React.ReactNode; color: string }) {
+function PWKpi({ label, value, icon, colorClass, borderClass }: { label: string; value: string; icon: React.ReactNode; colorClass: string; borderClass: string }) {
     return (
-        <div className="pw-kpi-card" style={{ borderLeftColor: color }}>
-            <div style={{ color }}>{icon}</div>
+        <div className={`pw-kpi-card ${borderClass}`}>
+            <div className={colorClass}>{icon}</div>
             <div>
-                <div className="pw-kpi-val" style={{ color }}>{value}</div>
+                <div className={`pw-kpi-val ${colorClass}`}>{value}</div>
                 <div className="pw-kpi-lbl">{label}</div>
             </div>
         </div>

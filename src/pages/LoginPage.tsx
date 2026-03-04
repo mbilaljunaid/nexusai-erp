@@ -105,13 +105,8 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-hidden relative">
       {/* Animated Background */}
-      <div
-        className="absolute inset-0 -z-10"
-        style={{
-          background: `radial-gradient(circle at 50% 50%, ${colors.brand.purple}20 0%, transparent 100%)`,
-          opacity: 0.5
-        }}
-      />
+      <style>{`.lp-bg-gradient { background: radial-gradient(circle at 50% 50%, ${colors.brand.purple}20 0%, transparent 100%); opacity: 0.5; }`}</style>
+      <div className="absolute inset-0 -z-10 lp-bg-gradient" />
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
         <motion.div
           className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-primary/20 blur-[100px]"
@@ -267,13 +262,15 @@ export default function LoginPage() {
                           <FormItem className="flex items-center gap-2 space-y-0">
                             <FormControl>
                               <input
+                                id="rememberMe"
                                 type="checkbox"
                                 className="rounded bg-white/10 border-white/20"
+                                aria-label="Remember me"
                                 checked={field.value}
                                 onChange={field.onChange}
                               />
                             </FormControl>
-                            <FormLabel className="cursor-pointer text-muted-foreground hover:text-white transition-colors font-normal">
+                            <FormLabel htmlFor="rememberMe" className="cursor-pointer text-muted-foreground hover:text-white transition-colors font-normal">
                               Remember me
                             </FormLabel>
                           </FormItem>

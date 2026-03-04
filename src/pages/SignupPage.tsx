@@ -82,13 +82,8 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-hidden relative">
       {/* Animated Background */}
-      <div
-        className="absolute inset-0 -z-10"
-        style={{
-          background: `radial-gradient(circle at 60% 40%, ${colors.brand.blue}20 0%, transparent 100%)`,
-          opacity: 0.5
-        }}
-      />
+      <style>{`.sp-bg-gradient { background: radial-gradient(circle at 60% 40%, ${colors.brand.blue}20 0%, transparent 100%); opacity: 0.5; }`}</style>
+      <div className="absolute inset-0 -z-10 sp-bg-gradient" />
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
         <motion.div
           className="absolute bottom-[-20%] left-[10%] w-[600px] h-[600px] rounded-full bg-blue-500/10 blur-[120px]"
@@ -185,6 +180,7 @@ export default function SignupPage() {
                             <div className="relative group">
                               <User className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
                               <Input
+                                aria-label="Full Name"
                                 placeholder="John Doe"
                                 className="pl-10 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
                                 {...field}
@@ -206,6 +202,7 @@ export default function SignupPage() {
                             <div className="relative group">
                               <Mail className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
                               <Input
+                                aria-label="Email"
                                 type="email"
                                 placeholder="your@company.com"
                                 className="pl-10 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
@@ -229,8 +226,10 @@ export default function SignupPage() {
                               <div className="relative group">
                                 <Lock className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
                                 <Input
+                                  aria-label="Password"
                                   type={showPassword ? "text" : "password"}
                                   placeholder="••••••••"
+                                  title="Password"
                                   className="pl-10 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
                                   {...field}
                                 />
@@ -250,13 +249,16 @@ export default function SignupPage() {
                             <FormControl>
                               <div className="relative group">
                                 <Input
+                                  aria-label="Confirm Password"
                                   type={showPassword ? "text" : "password"}
                                   placeholder="••••••••"
+                                  title="Confirm Password"
                                   className="pl-4 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
                                   {...field}
                                 />
                                 <button
                                   type="button"
+                                  title="Toggle password visibility"
                                   onClick={() => setShowPassword(!showPassword)}
                                   className="absolute right-3 top-3 text-muted-foreground hover:text-white transition-colors"
                                 >
@@ -277,6 +279,8 @@ export default function SignupPage() {
                         <FormItem className="flex items-start gap-2 pt-2 space-y-0">
                           <FormControl>
                             <input
+                              aria-label="Accept Terms"
+                              id="terms"
                               type="checkbox"
                               className="mt-1 rounded bg-white/10 border-white/20"
                               checked={field.value}
@@ -284,7 +288,7 @@ export default function SignupPage() {
                             />
                           </FormControl>
                           <div className="leading-none">
-                            <FormLabel className="text-sm text-muted-foreground font-normal cursor-pointer">
+                            <FormLabel htmlFor="terms" className="text-sm text-muted-foreground font-normal cursor-pointer">
                               I agree to the <a href="#" className="text-blue-400 hover:text-blue-300">Terms</a> and <a href="#" className="text-blue-400 hover:text-blue-300">Privacy Policy</a>
                             </FormLabel>
                             <FormMessage />

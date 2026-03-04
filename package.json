@@ -14,7 +14,8 @@
     "test:coverage": "jest --coverage --passWithNoTests",
     "test:watch": "jest --watch --passWithNoTests",
     "verify:cm": "ts-node scripts/verify_cm_phase3.ts",
-    "cron:sweep": "ts-node scripts/cron-sweeper.ts"
+    "cron:sweep": "ts-node scripts/cron-sweeper.ts",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

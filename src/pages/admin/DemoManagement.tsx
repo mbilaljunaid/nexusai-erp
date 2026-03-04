@@ -228,7 +228,7 @@ export default function DemoManagement() {
                     </Button>
                     {demo.accessUrl && (
                         <Button variant="ghost" size="sm" asChild>
-                            <a href={demo.accessUrl} target="_blank" rel="noopener noreferrer">
+                            <a href={demo.accessUrl} target="_blank" rel="noopener noreferrer" aria-label={`Access demo ${demo.name || demo.slug}`}>
                                 <ExternalLink className="w-4 h-4" />
                             </a>
                         </Button>

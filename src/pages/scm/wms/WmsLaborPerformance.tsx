@@ -48,8 +48,11 @@ export default function WmsLaborPerformance() {
         {
             id: "efficiency", header: "Efficiency %", width: "200px", cell: (row) => (
                 <div className="flex items-center gap-2">
+                    <style>{`
+                        .wms-bar-${row.name.replace(/\\s+/g, '')} { width: ${Math.min(row.efficiency, 100)}%; }
+                    `}</style>
                     <div className="w-16 h-2 bg-slate-800 rounded-full overflow-hidden">
-                        <div className="h-full bg-blue-500" style={{ width: `${Math.min(row.efficiency, 100)}%` }} />
+                        <div className={`h-full bg-blue-500 wms-bar-${row.name.replace(/\\s+/g, '')}`} />
                     </div>
                     <span className="text-white">{row.efficiency}%</span>
                 </div>
@@ -176,7 +179,7 @@ export default function WmsLaborPerformance() {
                     <CardTitle>Individual Performance Leaderboard</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div style={{ height: 400 }}>
+                    <div className="h-[400px]">
                         <InteractiveSpreadsheet
                             columns={performanceColumns}
                             data={performanceData}

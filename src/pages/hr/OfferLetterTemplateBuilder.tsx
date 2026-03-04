@@ -202,7 +202,7 @@ The NexusAI Talent Team`);
 
                             {/* Editor Area */}
                             <div className="flex-1 bg-zinc-50 dark:bg-zinc-900/50 p-6">
-                                <div className="bg-white dark:bg-zinc-950 shadow-sm border h-full rounded-md p-0 overflow-hidden" style={{ minHeight: '600px' }}>
+                                <div className="bg-white dark:bg-zinc-950 shadow-sm border h-full rounded-md p-0 overflow-hidden min-h-[600px]">
                                     <textarea
                                         className="w-full h-full p-8 resize-none focus:outline-none focus:ring-0 border-none font-serif text-base text-zinc-800 dark:text-zinc-200 leading-relaxed"
                                         value={documentBody}

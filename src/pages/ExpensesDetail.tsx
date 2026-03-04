@@ -42,7 +42,7 @@ export default function ExpensesDetail() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
-  const reportId = params?.id;
+  const reportId = params?.id || "";
 
   const [isAddLineOpen, setIsAddLineOpen] = useState(false);
   const [isRejectOpen, setIsRejectOpen] = useState(false);
@@ -328,24 +328,40 @@ export default function ExpensesDetail() {
     },
     {
       header: "Merchant",
-      id: "merchant", width: "150px"
+      id: "merchant", width: "150px",
+      cell: (line) => line.merchant || ""
     },
     {
       header: "Description",
-      id: "description", width: "150px"
+      id: "description", width: "150px",
+      cell: (line) => line.description || ""
     },
     {
       header: "Amount",
       id: "amount", width: "150px",
       cell: (line) => <span className="font-mono font-bold">${Number(line.amount).toFixed(2)}</span>
-    }
+    },
+    ...(report?.status === 'DRAFT' ? [{
+      header: "Actions",
+      id: "actions", width: "80px",
+      cell: (line: any) => (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => deleteLineMutation.mutate(line.id)}
+          disabled={deleteLineMutation.isPending}
+        >
+          <Trash2 className="h-3 w-3 text-red-500" />
+        </Button>
+      )
+    }] : [])
   ];
 
   if (reportLoading) {
     return (
       <StandardPage
-        title={report.title || `Expense Report ${report.reportNumber || report.id.slice(0, 8)}`}
-        description={report.description || "No description provided"}
+        title={report?.title || `Loading Expense Report...`}
+        description={report?.description || "Please wait while we load the expense report."}
         className="flex items-center justify-center h-64"
       >
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -425,7 +441,7 @@ export default function ExpensesDetail() {
       {
         report.status === 'DRAFT' && (
           <div className="flex gap-2">
-            <Button onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending || lines.length === 0}>
+            <Button onClick={() => submitMutation.mutate(undefined)} disabled={submitMutation.isPending || lines.length === 0}>
               {submitMutation.isPending ? (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               ) : (
@@ -490,17 +506,6 @@ export default function ExpensesDetail() {
           <InteractiveSpreadsheet
             data={lines}
             columns={lineColumns}
-            isLoading={linesLoading}
-            actions={report.status === 'DRAFT' ? (line) => (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => deleteLineMutation.mutate(line.id)}
-                disabled={deleteLineMutation.isPending}
-              >
-                <Trash2 className="h-3 w-3 text-red-500" />
-              </Button>
-            ) : undefined}
             onChange={() => { }} containerHeight="600px"
           />
         </CardContent>
@@ -553,7 +558,7 @@ export default function ExpensesDetail() {
             </div>
             <div>
               <label className="text-sm font-medium mb-2 block">Category</label>
-              <select className="w-full px-3 py-2 border rounded-md" id="lineCategory">
+              <select className="w-full px-3 py-2 border rounded-md" id="lineCategory" aria-label="Expense Category">
                 <option value="TRAVEL">Travel</option>
                 <option value="MEALS">Meals & Entertainment</option>
                 <option value="ACCOMMODATION">Accommodation</option>
@@ -672,7 +677,7 @@ export default function ExpensesDetail() {
             </div>
             <div>
               <label className="text-sm font-medium mb-2 block">Link to Expense Line (Optional)</label>
-              <select className="w-full px-3 py-2 border rounded-md" id="receiptLineId">
+              <select className="w-full px-3 py-2 border rounded-md" id="receiptLineId" aria-label="Link to Expense Line">
                 <option value="">No line selected</option>
                 {lines.map((line: any) => (
                   <option key={line.id} value={line.id}>

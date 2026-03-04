@@ -43,7 +43,7 @@ export default function PermissionMatrix() {
       <Card>
         <CardHeader><CardTitle className="text-base">Module Access by Role</CardTitle></CardHeader>
         <CardContent>
-          <div style={{ height: 400 }}>
+          <div className="h-[400px]">
             <InteractiveSpreadsheet
               columns={columns}
               data={data}

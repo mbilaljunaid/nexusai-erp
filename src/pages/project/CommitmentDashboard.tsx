@@ -12,10 +12,10 @@ interface VarRow { id: string; resource_id: string; resource_type: string; role:
 function fmt(n: any) { return Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
 function fmtDate(d: string) { return d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'; }
 
-const SEV_CFG: Record<string, { bg: string; color: string; icon: React.ElementType }> = {
-    Critical: { bg: '#fee2e2', color: '#dc2626', icon: AlertOctagon },
-    Warning: { bg: '#fef3c7', color: '#d97706', icon: Bell },
-    Info: { bg: '#eff6ff', color: '#1d4ed8', icon: Bell },
+const SEV_CFG: Record<string, { bg: string; color: string; border: string; borderLeft: string; iconColor: string; icon: React.ElementType }> = {
+    Critical: { bg: 'bg-red-100', color: 'text-red-600', border: 'border-red-600/30', borderLeft: 'border-l-red-600', iconColor: '#dc2626', icon: AlertOctagon },
+    Warning: { bg: 'bg-amber-100', color: 'text-amber-600', border: 'border-amber-600/30', borderLeft: 'border-l-amber-600', iconColor: '#d97706', icon: Bell },
+    Info: { bg: 'bg-blue-50', color: 'text-blue-700', border: 'border-blue-700/30', borderLeft: 'border-l-blue-700', iconColor: '#1d4ed8', icon: Bell },
 };
 
 export default function CommitmentDashboard() {
@@ -73,16 +73,14 @@ export default function CommitmentDashboard() {
                 <div className="flex gap-2.5 mb-3.5">
                     {(
                         [
-                            ['Critical', summary.critical, '#dc2626'],
-                            ['Warnings', summary.warnings, '#d97706'],
-                            ['Info', summary.info, '#1d4ed8'],
-                            ['Acknowledged', summary.acknowledged, '#059669']
+                            ['Critical', summary.critical, 'text-red-600', 'border-l-red-600'],
+                            ['Warnings', summary.warnings, 'text-amber-600', 'border-l-amber-600'],
+                            ['Info', summary.info, 'text-blue-700', 'border-l-blue-700'],
+                            ['Acknowledged', summary.acknowledged, 'text-emerald-600', 'border-l-emerald-600']
                         ] as const
-                    ).map(([l, v, c]) => (
-                        /* eslint-disable-next-line react/forbid-dom-props */
-                        <div key={l as string} className="bg-white border border-gray-200 rounded-xl py-2.5 px-4 flex-1" style={{ borderLeft: `4px solid ${c as string}` }}>
-                            {/* eslint-disable-next-line react/forbid-dom-props */}
-                            <div className="text-[22px] font-extrabold font-mono" style={{ color: c as string }}>{v as number}</div>
+                    ).map(([l, v, textClass, borderClass]) => (
+                        <div key={l as string} className={`bg-white border border-gray-200 rounded-xl py-2.5 px-4 flex-1 border-l-[4px] ${borderClass}`}>
+                            <div className={`text-[22px] font-extrabold font-mono ${textClass}`}>{v as number}</div>
                             <div className="text-[11px] text-gray-400 mt-0.5">{l as string}</div>
                         </div>
                     ))}
@@ -120,14 +118,12 @@ export default function CommitmentDashboard() {
                                 const cfg = SEV_CFG[a.severity] ?? SEV_CFG.Info;
                                 const Icon = cfg.icon;
                                 return (
-                                    /* eslint-disable-next-line react/forbid-dom-props */
-                                    <div key={a.id} className="rounded-xl p-2.5 px-3.5 flex justify-between items-center" style={{ background: cfg.bg, border: `1px solid ${cfg.color}30`, borderLeft: `4px solid ${cfg.color}` }}>
+                                    <div key={a.id} className={`rounded-xl p-2.5 px-3.5 flex justify-between items-center border border-l-[4px] ${cfg.bg} ${cfg.border} ${cfg.borderLeft}`}>
                                         <div>
                                             <div className="flex items-center gap-1.5 mb-0.5">
-                                                <Icon size={13} color={cfg.color} />
+                                                <Icon size={13} color={cfg.iconColor} />
                                                 <span className="text-xs font-bold text-gray-900">{a.alert_type.replace(/_/g, ' ')}</span>
-                                                {/* eslint-disable-next-line react/forbid-dom-props */}
-                                                <span className="text-[10px] font-bold" style={{ color: cfg.color }}>{a.severity}</span>
+                                                <span className={`text-[10px] font-bold ${cfg.color}`}>{a.severity}</span>
                                             </div>
                                             <div className="text-[11px] text-gray-700">{a.description}</div>
                                             {a.budget_amount && <div className="text-[10px] text-gray-500 mt-0.5">Budget: {fmt(a.budget_amount)} · Actual: {fmt(a.actual_amount)} · Variance: {Number(a.variance_pct).toFixed(1)}%</div>}

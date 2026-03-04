@@ -210,7 +210,7 @@ function TaxCodesTab({ legalEntityId }: { legalEntityId: string | null }) {
           </div>
 
           {/* Table */}
-          <div style={{ height: 400 }}>
+          <div className="h-[400px]">
             {isLoading ? (
               <div className="p-8 text-center text-muted-foreground border rounded-lg h-full flex items-center justify-center">Loading tax codes...</div>
             ) : filteredCodes.length === 0 ? (
@@ -346,7 +346,7 @@ function TaxJurisdictionsTab({ legalEntityId }: { legalEntityId: string | null }
           </div>
 
           {/* Table */}
-          <div style={{ height: 400 }}>
+          <div className="h-[400px]">
             {isLoading ? (
               <div className="p-8 text-center text-muted-foreground border rounded-lg h-full flex items-center justify-center">Loading jurisdictions...</div>
             ) : filteredJurisdictions.length === 0 ? (

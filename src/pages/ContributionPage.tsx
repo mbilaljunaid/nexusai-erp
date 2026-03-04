@@ -190,7 +190,7 @@ export default function ContributionPage() {
           <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white mb-4">
             Join Our Community
           </Badge>
-          
+
           <p className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
             Be part of building the world's most powerful open-source ERP platform.
             Your contributions help thousands of businesses while growing your expertise and earning rewards.
@@ -307,7 +307,7 @@ export default function ContributionPage() {
           </div>
         </section>
 
-        <section className="px-4 py-20" style={{ background: `hsl(var(--muted) / 0.3)` }}>
+        <section className="px-4 py-20 bg-muted/30">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
               <Award className="w-12 h-12 mx-auto mb-4 text-purple-500" />
@@ -317,7 +317,7 @@ export default function ContributionPage() {
               </p>
             </div>
 
-            <div style={{ height: 350 }}>
+            <div className="h-[350px]">
               <InteractiveSpreadsheet
                 columns={badgeColumns}
                 data={badgeThresholds}
@@ -347,7 +347,7 @@ export default function ContributionPage() {
           </div>
         </section>
 
-        <section className="px-4 py-20" style={{ background: `hsl(var(--muted) / 0.5)` }}>
+        <section className="px-4 py-20 bg-muted/50">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
               <Target className="w-12 h-12 mx-auto mb-4 text-blue-500" />

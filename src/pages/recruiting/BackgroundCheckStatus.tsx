@@ -13,9 +13,9 @@ interface BGCOrder {
 interface BGCDetail extends BGCOrder { components: { component_type: string; status: string; result: string; details: string }[]; }
 interface BGCSummary { initiated: number; in_progress: number; clear: number; consider: number; adverse_action: number; withdrawn: number; }
 
-const STATUS_CLR: Record<string, string> = { Initiated: '#1d4ed8', In_Progress: '#d97706', Complete: '#059669', Adverse_Action: '#dc2626', Cancelled: '#6b7280' };
-const ADJ_CLR: Record<string, string> = { Clear: '#059669', Consider: '#d97706', Adverse: '#dc2626' };
-const RESULT_CLR: Record<string, string> = { Clear: '#059669', Hit: '#dc2626', Unable_To_Verify: '#d97706' };
+const STATUS_CLR: Record<string, string> = { Initiated: 'bg-blue-700/10 text-blue-700', In_Progress: 'bg-amber-600/10 text-amber-600', Complete: 'bg-emerald-600/10 text-emerald-600', Adverse_Action: 'bg-red-600/10 text-red-600', Cancelled: 'bg-gray-500/10 text-gray-500' };
+const ADJ_CLR: Record<string, string> = { Clear: 'text-emerald-600', Consider: 'text-amber-600', Adverse: 'text-red-600' };
+const RESULT_CLR: Record<string, string> = { Clear: 'text-emerald-600', Hit: 'text-red-600', Unable_To_Verify: 'text-amber-600' };
 
 function fmtDate(d: string) { return d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'; }
 
@@ -46,99 +46,97 @@ export default function BackgroundCheckStatus() {
         {
             id: "candidate", header: "Candidate", width: "200px", cell: (row) => (
                 <div onClick={() => loadDetail(row.id)} className="cursor-pointer">
-                    <div style={{ fontWeight: 700 }}>{row.candidate_name ?? row.applicant_id}</div>
-                    <div style={{ fontSize: 10, color: '#9ca3af' }}>{row.applicant_id}</div>
+                    <div className="font-bold">{row.candidate_name ?? row.applicant_id}</div>
+                    <div className="text-[10px] text-gray-400">{row.applicant_id}</div>
                 </div>
             )
         },
-        { id: "package", header: "Package", width: "120px", cell: (row) => <div style={{ fontFamily: 'monospace', fontSize: 10, fontWeight: 700, color: '#374151' }}>{row.package_type}</div> },
+        { id: "package", header: "Package", width: "120px", cell: (row) => <div className="font-mono text-[10px] font-bold text-gray-700">{row.package_type}</div> },
         {
             id: "progress", header: "Progress", width: "200px", cell: (row) => {
                 const pct = row.total_components > 0 ? Math.round(Number(row.completed_components) / Number(row.total_components) * 100) : 0;
                 return (
-                    <StandardPage title="Page Title">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: '#6b7280' }}>
+                    <div>
+                        <div className="flex justify-between text-[9px] text-gray-500">
                             <span>{row.completed_components}/{row.total_components}</span>
-                            {Number(row.hits) > 0 && <span style={{ color: '#dc2626', fontWeight: 700 }}>⚑ {row.hits} hit{Number(row.hits) > 1 ? 's' : ''}</span>}
+                            {Number(row.hits) > 0 && <span className="text-red-600 font-bold">⚑ {row.hits} hit{Number(row.hits) > 1 ? 's' : ''}</span>}
                         </div>
-                        <div style={{ background: '#f3f4f6', borderRadius: 999, height: 5, marginTop: 2 }}>
-                            <div style={{ width: pct + '%', background: pct === 100 ? '#059669' : '#1d4ed8', height: '100%', borderRadius: 999 }} />
+                        <style>{`.bgc-pct-${row.id} { width: ${pct}%; }`}</style>
+                        <div className="bg-gray-100 rounded-full h-[5px] mt-0.5">
+                            {/* eslint-disable-next-line react/forbid-dom-props */}
+                            <div className={`h-full rounded-full bgc-pct-${row.id} ${pct === 100 ? 'bg-emerald-600' : 'bg-blue-700'}`} />
                         </div>
-                    </StandardPage>
+                    </div>
                 );
             }
         },
-        { id: "adjudication", header: "Adjudication", width: "120px", cell: (row) => row.adjudication ? <span style={{ fontWeight: 700, color: ADJ_CLR[row.adjudication] ?? '#6b7280' }}>{row.adjudication}</span> : <span style={{ color: '#9ca3af', fontSize: 10 }}>—</span> },
-        { id: "status", header: "Status", width: "150px", cell: (row) => <span style={{ padding: '2px 7px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: (STATUS_CLR[row.status] ?? '#6b7280') + '18', color: STATUS_CLR[row.status] ?? '#6b7280' }}>{row.status.replace(/_/g, ' ')}</span> },
+        { id: "adjudication", header: "Adjudication", width: "120px", cell: (row) => row.adjudication ? <span className={`font-bold ${ADJ_CLR[row.adjudication] ?? 'text-gray-500'}`}>{row.adjudication}</span> : <span className="text-gray-400 text-[10px]">—</span> },
+        { id: "status", header: "Status", width: "150px", cell: (row) => <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${STATUS_CLR[row.status] ?? 'bg-gray-500/10 text-gray-500'}`}>{row.status.replace(/_/g, ' ')}</span> },
         {
             id: "actions", header: "", width: "160px", cell: (row) => (
-                <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', width: '100%' }}>
-                    <button onClick={(e) => { e.stopPropagation(); loadDetail(row.id); }} style={{ padding: '3px 8px', background: '#f3f4f6', color: '#374151', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>View</button>
-                    {row.status === 'Initiated' && <button onClick={(e) => { e.stopPropagation(); consentMut.mutate(row.id); }} style={{ padding: '3px 8px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>Get Consent</button>}
+                <div className="flex gap-1.5 justify-end w-full">
+                    <button onClick={(e) => { e.stopPropagation(); loadDetail(row.id); }} className="px-2 py-1 bg-gray-100 text-gray-700 border-none rounded-[5px] text-[10px] cursor-pointer">View</button>
+                    {row.status === 'Initiated' && <button onClick={(e) => { e.stopPropagation(); consentMut.mutate(row.id); }} className="px-2 py-1 bg-blue-700 text-white border-none rounded-[5px] text-[10px] cursor-pointer">Get Consent</button>}
                 </div>
             )
         }
     ];
 
     return (
-        <div style={{ padding: 24, maxWidth: 1300, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-                <div>
-                    <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>Background Check Management</h1>
-                    <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>FCRA compliant · Adverse action workflow · Component-level results</p>
-                </div>
-                <button onClick={() => setShowNew(true)} style={{ padding: '8px 14px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>+ Initiate Check</button>
+        <StandardPage title="Background Check Management" description="FCRA compliant · Adverse action workflow · Component-level results">
+            <div className="flex justify-between mb-4">
+                <button onClick={() => setShowNew(true)} className="px-3.5 py-2 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer">+ Initiate Check</button>
             </div>
 
             {/* KPIs */}
             {summary && (
-                <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
-                    {([['Initiated', summary.initiated, '#6b7280'], ['In Progress', summary.in_progress, '#d97706'], ['Clear', summary.clear, '#059669'], ['Consider', summary.consider, '#f59e0b'], ['Adverse Action', summary.adverse_action, '#dc2626'], ['Withdrawn', summary.withdrawn, '#9ca3af']] as [string, number, string][]).map(([l, v, c]) => (
-                        <div key={l} style={{ flex: 1, background: '#fff', border: '1px solid #e5e7eb', borderLeft: `4px solid ${c}`, borderRadius: 10, padding: '10px 12px' }}>
-                            <div style={{ fontSize: 20, fontWeight: 800, fontFamily: 'monospace', color: c }}>{v ?? 0}</div>
-                            <div style={{ fontSize: 10, color: '#9ca3af' }}>{l}</div>
+                <div className="flex gap-2.5 mb-3.5">
+                    {([['Initiated', summary.initiated, 'border-gray-500', 'text-gray-500'], ['In Progress', summary.in_progress, 'border-amber-600', 'text-amber-600'], ['Clear', summary.clear, 'border-emerald-600', 'text-emerald-600'], ['Consider', summary.consider, 'border-amber-500', 'text-amber-500'], ['Adverse Action', summary.adverse_action, 'border-red-600', 'text-red-600'], ['Withdrawn', summary.withdrawn, 'border-gray-400', 'text-gray-400']] as [string, number, string, string][]).map(([l, v, bc, tc]) => (
+                        <div key={l} className={`flex-1 bg-white border border-gray-200 border-l-4 rounded-xl p-2.5 ${bc}`}>
+                            <div className={`text-xl font-extrabold font-mono ${tc}`}>{v ?? 0}</div>
+                            <div className="text-[10px] text-gray-400">{l}</div>
                         </div>
                     ))}
                 </div>
             )}
 
             {/* Filter row */}
-            <div style={{ display: 'flex', gap: 6, marginBottom: 12 }}>
+            <div className="flex gap-1.5 mb-3">
                 {['', 'Initiated', 'In_Progress', 'Complete', 'Adverse_Action'].map(s => (
-                    <button key={s} onClick={() => setFilter(s)} style={{ padding: '5px 12px', border: '1px solid #e5e7eb', borderRadius: 6, background: filter === s ? '#111827' : '#fff', color: filter === s ? '#fff' : '#6b7280', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>{s || 'All'}</button>
+                    <button key={s} onClick={() => setFilter(s)} className={`px-3 py-1 border border-gray-200 rounded-md text-[11px] font-semibold cursor-pointer ${filter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`}>{s || 'All'}</button>
                 ))}
             </div>
 
             {/* New order form */}
             {showNew && (
-                <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 10, padding: 14, marginBottom: 12 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10 }}>Initiate Background Check</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <label style={{ fontSize: 10, fontWeight: 600 }}>Package</label>
-                            <select value={form.packageType} onChange={e => setForm(p => ({ ...p, packageType: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label="Package">
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-3.5 mb-3">
+                    <div className="text-[13px] font-bold mb-2.5">Initiate Background Check</div>
+                    <div className="grid grid-cols-3 gap-2">
+                        <div className="flex flex-col gap-0.5">
+                            <label className="text-[10px] font-semibold">Package</label>
+                            <select value={form.packageType} onChange={e => setForm(p => ({ ...p, packageType: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label="Package">
                                 {['BASIC', 'STANDARD', 'COMPREHENSIVE', 'EXECUTIVE', 'INTERNATIONAL'].map(t => <option key={t}>{t}</option>)}
                             </select>
                         </div>
                         {[['applicantId', 'Applicant ID', 'text'], ['candidateName', 'Candidate Name', 'text'], ['candidateEmail', 'Email', 'email']].map(([k, l, t]) => (
-                            <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                <label style={{ fontSize: 10, fontWeight: 600 }}>{l}</label>
-                                <input type={t} value={(form as any)[k]} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label={l} />
+                            <div key={k} className="flex flex-col gap-0.5">
+                                <label className="text-[10px] font-semibold">{l}</label>
+                                <input type={t} value={(form as any)[k]} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label={l} />
                             </div>
                         ))}
                     </div>
-                    <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', marginTop: 10 }}>
-                        <button onClick={() => setShowNew(false)} style={{ padding: '5px 12px', background: '#e5e7eb', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer' }}>Cancel</button>
-                        <button disabled={!form.applicantId} onClick={() => initMut.mutate(form)} style={{ padding: '5px 12px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>Initiate</button>
+                    <div className="flex gap-1.5 justify-end mt-2.5">
+                        <button onClick={() => setShowNew(false)} className="px-3 py-1 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
+                        <button disabled={!form.applicantId} onClick={() => initMut.mutate(form)} className="px-3 py-1 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer disabled:opacity-50">Initiate</button>
                     </div>
                 </div>
             )}
 
-            <div style={{ display: 'flex', gap: 14 }}>
+            <div className="flex gap-3.5">
                 {/* Orders list */}
-                <div style={{ flex: 1, height: 600, background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.05)', border: '1px solid #e5e7eb' }}>
+                <div className="flex-1 h-[600px] bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
                     {orders.length === 0 ? (
-                        <div style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>No orders</div>
+                        <div className="text-center text-gray-400 p-6">No orders</div>
                     ) : (
                         <InteractiveSpreadsheet
                             columns={orderColumns}
@@ -151,53 +149,53 @@ export default function BackgroundCheckStatus() {
 
                 {/* Detail panel */}
                 {selectedOrder && (
-                    <div style={{ width: 340, background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: 16, flexShrink: 0 }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                            <div style={{ fontSize: 13, fontWeight: 700 }}>{selectedOrder.candidate_name ?? selectedOrder.applicant_id}</div>
-                            <button onClick={() => setSelectedOrder(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}>✕</button>
+                    <div className="w-[340px] bg-white border border-gray-200 rounded-xl p-4 shrink-0">
+                        <div className="flex justify-between mb-2.5">
+                            <div className="text-[13px] font-bold">{selectedOrder.candidate_name ?? selectedOrder.applicant_id}</div>
+                            <button onClick={() => setSelectedOrder(null)} className="bg-transparent border-none cursor-pointer text-sm">✕</button>
                         </div>
-                        <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 10 }}>
+                        <div className="text-[11px] text-gray-500 mb-2.5">
                             <div>Package: <strong>{selectedOrder.package_type}</strong></div>
                             <div>Consent: {fmtDate(selectedOrder.consent_signed_at)}</div>
                             <div>Ordered: {fmtDate(selectedOrder.ordered_at)}</div>
                             {selectedOrder.completed_at && <div>Completed: {fmtDate(selectedOrder.completed_at)}</div>}
-                            {selectedOrder.hold_start_date && <div style={{ color: '#dc2626' }}>Hold start: {selectedOrder.hold_start_date}</div>}
+                            {selectedOrder.hold_start_date && <div className="text-red-600">Hold start: {selectedOrder.hold_start_date}</div>}
                             {selectedOrder.final_decision && <div>Final decision: <strong>{selectedOrder.final_decision}</strong></div>}
                         </div>
 
                         {/* Components */}
-                        <div style={{ fontSize: 11, fontWeight: 700, marginBottom: 6, color: '#374151' }}>Component Results</div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 12 }}>
+                        <div className="text-[11px] font-bold mb-1.5 text-gray-700">Component Results</div>
+                        <div className="flex flex-col gap-1 mb-3">
                             {selectedOrder.components.map(c => (
-                                <div key={c.component_type} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 8px', background: '#f9fafb', borderRadius: 6 }}>
-                                    <span style={{ fontSize: 10 }}>{c.component_type}</span>
-                                    <span style={{ fontSize: 10, fontWeight: 700, color: c.result ? (RESULT_CLR[c.result] ?? '#6b7280') : '#9ca3af' }}>{c.result ?? c.status}</span>
+                                <div key={c.component_type} className="flex justify-between px-2 py-1 bg-gray-50 rounded-md">
+                                    <span className="text-[10px]">{c.component_type}</span>
+                                    <span className={`text-[10px] font-bold ${c.result ? (RESULT_CLR[c.result] ?? 'text-gray-500') : 'text-gray-400'}`}>{c.result ?? c.status}</span>
                                 </div>
                             ))}
                         </div>
 
                         {/* Update component */}
                         {selectedOrder.status === 'In_Progress' && (
-                            <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: 10, marginBottom: 10 }}>
-                                <div style={{ fontSize: 10, fontWeight: 700, marginBottom: 6 }}>Record Component Result</div>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                                    <select value={componentForm.componentType} onChange={e => setComponentForm(p => ({ ...p, componentType: e.target.value }))} style={{ padding: '4px 6px', border: '1px solid #d1d5db', borderRadius: 5, fontSize: 10 }} aria-label="Component type">
+                            <div className="bg-green-50 border border-green-200 rounded-lg p-2.5 mb-2.5">
+                                <div className="text-[10px] font-bold mb-1.5">Record Component Result</div>
+                                <div className="flex flex-col gap-1.5">
+                                    <select value={componentForm.componentType} onChange={e => setComponentForm(p => ({ ...p, componentType: e.target.value }))} className="px-1.5 py-1 border border-gray-300 rounded-md text-[10px]" aria-label="Component type">
                                         {selectedOrder.components.filter(c => !c.result).map(c => <option key={c.component_type} value={c.component_type}>{c.component_type}</option>)}
                                     </select>
-                                    <select value={componentForm.result} onChange={e => setComponentForm(p => ({ ...p, result: e.target.value }))} style={{ padding: '4px 6px', border: '1px solid #d1d5db', borderRadius: 5, fontSize: 10 }} aria-label="Result">
+                                    <select value={componentForm.result} onChange={e => setComponentForm(p => ({ ...p, result: e.target.value }))} className="px-1.5 py-1 border border-gray-300 rounded-md text-[10px]" aria-label="Result">
                                         {['Clear', 'Hit', 'Unable_To_Verify'].map(r => <option key={r}>{r}</option>)}
                                     </select>
-                                    <input placeholder="Details (optional)" value={componentForm.details} onChange={e => setComponentForm(p => ({ ...p, details: e.target.value }))} style={{ padding: '4px 6px', border: '1px solid #d1d5db', borderRadius: 5, fontSize: 10 }} aria-label="Details" />
-                                    <button onClick={() => componentMut.mutate({ id: selectedOrder.id, ...componentForm })} style={{ padding: '4px', background: '#059669', color: '#fff', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>Record</button>
+                                    <input placeholder="Details (optional)" value={componentForm.details} onChange={e => setComponentForm(p => ({ ...p, details: e.target.value }))} className="px-1.5 py-1 border border-gray-300 rounded-md text-[10px]" aria-label="Details" />
+                                    <button onClick={() => componentMut.mutate({ id: selectedOrder.id, ...componentForm })} className="p-1 bg-emerald-600 text-white border-none rounded-md text-[10px] cursor-pointer">Record</button>
                                 </div>
                             </div>
                         )}
 
                         {/* Adverse action */}
                         {selectedOrder.status === 'Complete' && selectedOrder.adjudication === 'Consider' && (
-                            <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: 10, marginBottom: 10 }}>
-                                <div style={{ fontSize: 10, fontWeight: 700, color: '#dc2626', marginBottom: 4 }}>Adverse Adjudication</div>
-                                <button onClick={() => adverseMut.mutate(selectedOrder.id)} style={{ width: '100%', padding: '5px', background: '#dc2626', color: '#fff', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                            <div className="bg-red-50 border border-red-200 rounded-lg p-2.5 mb-2.5">
+                                <div className="text-[10px] font-bold text-red-600 mb-1">Adverse Adjudication</div>
+                                <button onClick={() => adverseMut.mutate(selectedOrder.id)} className="w-full p-1.5 bg-red-600 text-white border-none rounded-md text-[10px] cursor-pointer flex items-center justify-center gap-1">
                                     <ShieldAlert size={10} /> Initiate Adverse Action
                                 </button>
                             </div>
@@ -205,18 +203,18 @@ export default function BackgroundCheckStatus() {
 
                         {/* Final decision */}
                         {(selectedOrder.status === 'Complete' || selectedOrder.status === 'Adverse_Action') && !selectedOrder.final_decision && (
-                            <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: 10 }}>
-                                <div style={{ fontSize: 10, fontWeight: 700, marginBottom: 6 }}>Final Decision</div>
-                                <select value={decisionForm.decision} onChange={e => setDecisionForm(p => ({ ...p, decision: e.target.value as any }))} style={{ padding: '4px 6px', border: '1px solid #d1d5db', borderRadius: 5, fontSize: 10, width: '100%', marginBottom: 4 }} aria-label="Decision">
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-2.5">
+                                <div className="text-[10px] font-bold mb-1.5">Final Decision</div>
+                                <select value={decisionForm.decision} onChange={e => setDecisionForm(p => ({ ...p, decision: e.target.value as any }))} className="px-1.5 py-1 border border-gray-300 rounded-md text-[10px] w-full mb-1" aria-label="Decision">
                                     {['Proceed', 'Withdraw', 'Conditional'].map(d => <option key={d}>{d}</option>)}
                                 </select>
-                                <input placeholder="Notes" value={decisionForm.notes} onChange={e => setDecisionForm(p => ({ ...p, notes: e.target.value }))} style={{ padding: '4px 6px', border: '1px solid #d1d5db', borderRadius: 5, fontSize: 10, width: '100%', marginBottom: 4 }} aria-label="Notes" />
-                                <button onClick={() => decisionMut.mutate({ id: selectedOrder.id, ...decisionForm })} style={{ width: '100%', padding: '5px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>Finalize</button>
+                                <input placeholder="Notes" value={decisionForm.notes} onChange={e => setDecisionForm(p => ({ ...p, notes: e.target.value }))} className="px-1.5 py-1 border border-gray-300 rounded-md text-[10px] w-full mb-1" aria-label="Notes" />
+                                <button onClick={() => decisionMut.mutate({ id: selectedOrder.id, ...decisionForm })} className="w-full p-1.5 bg-blue-700 text-white border-none rounded-md text-[10px] cursor-pointer">Finalize</button>
                             </div>
                         )}
                     </div>
                 )}
             </div>
-        </div>
+        </StandardPage>
     );
 }

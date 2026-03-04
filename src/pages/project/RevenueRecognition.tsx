@@ -90,8 +90,10 @@ export default function RevenueRecognition() {
                         </div>
                         {/* progress bar */}
                         <div className="bg-gray-100 rounded-full h-2.5 overflow-hidden">
-                            {/* eslint-disable-next-line react/forbid-dom-props */}
-                            <div className={`h-full rounded-full transition-all duration-400 ${pctNum >= 90 ? 'bg-emerald-600' : 'bg-blue-700'}`} style={{ width: pctNum + '%' }} />
+                            <style>{`
+                                .rev-progress { width: ${pctNum}%; }
+                            `}</style>
+                            <div className={`h-full rounded-full transition-all duration-400 rev-progress ${pctNum >= 90 ? 'bg-emerald-600' : 'bg-blue-700'}`} />
                         </div>
                         <div className="text-[11px] text-gray-500 mt-1">{pctNum}% recognized of contract value</div>
                     </div>

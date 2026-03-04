@@ -185,10 +185,10 @@ export default function Analytics() {
                                                 <span className="font-medium">{module.name}</span>
                                                 <span className="text-muted-foreground">{module.tenants} tenants ({module.usage}%)</span>
                                             </div>
-                                            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div className="h-2 bg-gray-200 rounded-full overflow-hidden w-full relative">
+                                                <style>{`.mod-u-${module.name.replace(/\\W/g, '')} { width: ${module.usage}%; }`}</style>
                                                 <div
-                                                    className="h-full bg-blue-600 rounded-full"
-                                                    style={{ width: `${module.usage}%` }}
+                                                    className={`h-full bg-blue-600 rounded-full mod-u-${module.name.replace(/\\W/g, '')}`}
                                                 />
                                             </div>
                                         </div>

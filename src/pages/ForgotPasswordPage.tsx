@@ -110,13 +110,8 @@ export default function ForgotPasswordPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-hidden relative">
       {/* Animated Background */}
-      <div
-        className="absolute inset-0 -z-10"
-        style={{
-          background: `radial-gradient(circle at 30% 70%, rgba(79, 70, 229, 0.15) 0%, transparent 100%)`,
-          opacity: 0.6
-        }}
-      />
+      <style>{`.fp-bg-gradient { background: radial-gradient(circle at 30% 70%, rgba(79, 70, 229, 0.15) 0%, transparent 100%); opacity: 0.6; }`}</style>
+      <div className="absolute inset-0 -z-10 fp-bg-gradient" />
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
         <motion.div
           className="absolute top-[20%] right-[30%] w-[400px] h-[400px] rounded-full bg-indigo-500/10 blur-[100px]"

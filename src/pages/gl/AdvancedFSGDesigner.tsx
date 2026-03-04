@@ -272,10 +272,8 @@ export default function AdvancedFSGDesigner() {
     const previewColumns: SpreadsheetColumn<any>[] = [
         {
             id: "account", header: "Account", width: "250px", cell: (row) => (
-                /* eslint-disable-next-line react/forbid-dom-props */
                 <div
-                    style={{ paddingLeft: `${(row.indent || 0) * 20}px` }}
-                    className={`${row.rowType === "HEADER" ? "font-semibold text-muted-foreground" : ""} ${row.rowType === "TOTAL" ? "font-bold" : ""}`}
+                    className={`${{ 0: 'pl-0', 1: 'pl-5', 2: 'pl-10', 3: 'pl-[60px]', 4: 'pl-[80px]', 5: 'pl-[100px]' }[row.indent || 0] || 'pl-0'} ${row.rowType === "HEADER" ? "font-semibold text-muted-foreground" : ""} ${row.rowType === "TOTAL" ? "font-bold" : ""}`}
                 >
                     {row.label}
                 </div>

@@ -113,22 +113,30 @@ export default function PhysicalInventory() {
             <div className="flex gap-3.5">
                 {/* Cycles list */}
                 <div className="w-[380px] shrink-0">
+                    <style>{`
+                        ${cycles.map(c => `
+                            .pi-cycle-${c.id} { border-left: 4px solid ${CYCLE_STATUS_CLR[c.status] ?? '#6b7280'}; }
+                            .pi-cycle-status-${c.id} { background: ${(CYCLE_STATUS_CLR[c.status] ?? '#6b7280')}18; color: ${CYCLE_STATUS_CLR[c.status] ?? '#6b7280'}; }
+                            .pi-cycle-pct-${c.id} { width: ${c.line_count > 0 ? Math.round(Number(c.counted_lines) / Number(c.line_count) * 100) : 0}%; }
+                        `).join('')}
+                    `}</style>
                     <div className="flex flex-col gap-1.5">
                         {cycles.map(c => {
                             const clr = CYCLE_STATUS_CLR[c.status] ?? '#6b7280';
                             const pct = c.line_count > 0 ? Math.round(Number(c.counted_lines) / Number(c.line_count) * 100) : 0;
                             // eslint-disable-next-line react/forbid-dom-props
                             return (
-                                <div key={c.id} onClick={() => setSelectedCycle(selectedCycle?.id === c.id ? null : c)} className={`bg-white rounded-xl p-3.5 cursor-pointer border ${selectedCycle?.id === c.id ? 'border-blue-700' : 'border-gray-200'}`} style={{ borderLeft: `4px solid ${clr}` }}>
+                                // eslint-disable-next-line react/forbid-dom-props
+                                <div key={c.id} onClick={() => setSelectedCycle(selectedCycle?.id === c.id ? null : c)} className={`bg-white rounded-xl p-3.5 cursor-pointer border pi-cycle-${c.id} ${selectedCycle?.id === c.id ? 'border-blue-700' : 'border-gray-200'}`}>
                                     <div className="flex justify-between mb-1">
                                         <div className="font-bold text-[13px]">{c.cycle_name}</div>
                                         {/* eslint-disable-next-line react/forbid-dom-props */}
-                                        <span className="py-0.5 px-2 rounded col-span-2 text-[10px] font-bold" style={{ background: clr + '18', color: clr }}>{c.status}</span>
+                                        <span className={`py-0.5 px-2 rounded col-span-2 text-[10px] font-bold pi-cycle-status-${c.id}`}>{c.status}</span>
                                     </div>
                                     <div className="text-[10px] text-gray-500 mb-1.5">{c.cycle_type.replace(/_/g, ' ')} · {new Date(c.count_date).toLocaleDateString()} · {c.counted_lines}/{c.line_count} lines</div>
                                     <div className="bg-gray-100 rounded-full h-1">
                                         {/* eslint-disable-next-line react/forbid-dom-props */}
-                                        <div className={`h-full rounded-full ${pct === 100 ? 'bg-emerald-600' : 'bg-blue-700'}`} style={{ width: pct + '%' }} />
+                                        <div className={`h-full rounded-full pi-cycle-pct-${c.id} ${pct === 100 ? 'bg-emerald-600' : 'bg-blue-700'}`} />
                                     </div>
                                     {c.status === 'Counting' && (
                                         <button onClick={ev => { ev.stopPropagation(); approveMut.mutate(c.id); }} className="mt-1.5 py-1 px-2.5 bg-purple-600 text-white border-none rounded-md text-[10px] cursor-pointer flex items-center gap-1">

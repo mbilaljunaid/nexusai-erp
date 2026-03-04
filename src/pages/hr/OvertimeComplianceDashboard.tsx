@@ -36,7 +36,13 @@ interface TimecardForm {
 
 const fmt = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n ?? 0);
 
-const JURI_COLORS: Record<string, string> = { US_FEDERAL: '#1d4ed8', CA_ON: '#7c3aed', CA_BC: '#7c3aed', UK: '#059669', DE: '#d97706' };
+const JURI_STYLES: Record<string, { bg: string; text: string }> = {
+    US_FEDERAL: { bg: 'bg-blue-100', text: 'text-blue-700' },
+    CA_ON: { bg: 'bg-violet-100', text: 'text-violet-700' },
+    CA_BC: { bg: 'bg-violet-100', text: 'text-violet-700' },
+    UK: { bg: 'bg-emerald-100', text: 'text-emerald-700' },
+    DE: { bg: 'bg-amber-100', text: 'text-amber-700' }
+};
 
 export default function OvertimeComplianceDashboard() {
     const [activeTab, setActiveTab] = useState<'report' | 'timecard' | 'rules'>('report');
@@ -69,7 +75,12 @@ export default function OvertimeComplianceDashboard() {
         { id: "ot_hours", header: "OT (1.5×)", width: "120px", cell: (row) => <div className={`mono ot-cell w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{Number(row.ot_hours) > 0 ? <><AlertTriangle size={11} /> {Number(row.ot_hours).toFixed(1)}h</> : '—'}</div> },
         { id: "double_hours", header: "Double (2×)", width: "120px", cell: (row) => <div className={`mono dbl-cell w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{Number(row.double_hours) > 0 ? `${Number(row.double_hours).toFixed(1)}h` : '—'}</div> },
         { id: "gross_pay", header: "Gross Pay", width: "150px", cell: (row) => <div className={`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{fmt(row.gross_pay)}</div> },
-        { id: "jurisdiction", header: "Jurisdiction", width: "150px", cell: (row) => <div className="w-full"><span className="juri-tag" style={{ background: (JURI_COLORS[row.jurisdiction] ?? '#6b7280') + '22', color: JURI_COLORS[row.jurisdiction] ?? '#6b7280' }}>{row.jurisdiction}</span></div> }
+        {
+            id: "jurisdiction", header: "Jurisdiction", width: "150px", cell: (row) => {
+                const style = JURI_STYLES[row.jurisdiction] ?? { bg: 'bg-gray-100', text: 'text-gray-500' };
+                return <div className="w-full"><span className={`juri-tag ${style.bg} ${style.text}`}>{row.jurisdiction}</span></div>;
+            }
+        }
     ];
 
     return (
@@ -88,7 +99,7 @@ export default function OvertimeComplianceDashboard() {
             <div className="tab-bar">
                 {(['report', 'timecard', 'rules'] as const).map(t => (
                     <button key={t} className={`tab-btn ${activeTab === t ? 'active' : ''}`} onClick={() => setActiveTab(t)}
-                        aria-pressed={activeTab === t}>{t.charAt(0).toUpperCase() + t.slice(1)}</button>
+                        data-active={activeTab === t}>{t.charAt(0).toUpperCase() + t.slice(1)}</button>
                 ))}
             </div>
 
@@ -104,7 +115,7 @@ export default function OvertimeComplianceDashboard() {
                     {reportLoading ? (
                         <div className="loading">Loading…</div>
                     ) : (
-                        <div style={{ minHeight: '300px', height: '100%', border: '1px solid #e5e7eb', borderRadius: 8 }}>
+                        <div className="min-h-[300px] h-full border border-gray-200 rounded-lg">
                             <InteractiveSpreadsheet
                                 columns={otColumns}
                                 data={report}
@@ -154,7 +165,7 @@ export default function OvertimeComplianceDashboard() {
                         <div key={r.id} className="rule-card">
                             <div className="rc-top">
                                 <span className="rc-code">{r.rule_code}</span>
-                                <span className="rc-juri" style={{ color: JURI_COLORS[r.jurisdiction] ?? '#6b7280' }}>{r.jurisdiction}</span>
+                                <span className={`rc-juri ${JURI_STYLES[r.jurisdiction]?.text ?? 'text-gray-500'}`}>{r.jurisdiction}</span>
                             </div>
                             <div className="rc-grid">
                                 <div className="rcg"><span>Daily Threshold</span><strong>{r.daily_threshold_hours}h</strong></div>

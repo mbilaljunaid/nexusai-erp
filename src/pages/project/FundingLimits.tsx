@@ -9,7 +9,16 @@ interface Commitment { id: string; project_id: string; commitment_type: string; 
 interface CommitSummary { commitment_type: string; count: number; total_committed: number; total_invoiced: number; total_remaining: number; }
 
 function fmt(n: any) { return Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
-const STATUS_CLR: Record<string, string> = { Active: '#059669', Exhausted: '#dc2626', Suspended: '#d97706', Closed: '#6b7280', Open: '#1d4ed8', PartiallyInvoiced: '#d97706', FullyInvoiced: '#059669' };
+const STATUS_STYLES: Record<string, { bg: string, text: string, borderLeft: string }> = {
+    Active: { bg: 'bg-emerald-100', text: 'text-emerald-600', borderLeft: 'border-l-emerald-600' },
+    Exhausted: { bg: 'bg-red-100', text: 'text-red-600', borderLeft: 'border-l-red-600' },
+    Suspended: { bg: 'bg-amber-100', text: 'text-amber-600', borderLeft: 'border-l-amber-600' },
+    Closed: { bg: 'bg-gray-100', text: 'text-gray-500', borderLeft: 'border-l-gray-500' },
+    Open: { bg: 'bg-blue-100', text: 'text-blue-700', borderLeft: 'border-l-blue-700' },
+    PartiallyInvoiced: { bg: 'bg-amber-100', text: 'text-amber-600', borderLeft: 'border-l-amber-600' },
+    FullyInvoiced: { bg: 'bg-emerald-100', text: 'text-emerald-600', borderLeft: 'border-l-emerald-600' }
+};
+const DEFAULT_STYLE = { bg: 'bg-gray-100', text: 'text-gray-500', borderLeft: 'border-l-gray-500' };
 
 export default function FundingLimits() {
     const [tab, setTab] = useState<'funding' | 'commitments'>('funding');
@@ -36,7 +45,12 @@ export default function FundingLimits() {
         { id: "committed", header: "Committed", width: "120px", cell: (c) => <span className="font-mono">{fmt(c.committed_amount)}</span> },
         { id: "invoiced", header: "Invoiced", width: "120px", cell: (c) => <span className="font-mono">{fmt(c.invoiced_amount)}</span> },
         { id: "remaining", header: "Remaining", width: "120px", cell: (c) => <span className="font-mono text-emerald-600 font-bold">{fmt(c.remaining_amount)}</span> },
-        { id: "status", header: "Status", width: "120px", cell: (c) => <span className="py-0.5 px-1.5 rounded-sm text-[10px] font-bold" style={{ background: (STATUS_CLR[c.status] ?? '#6b7280') + '18', color: STATUS_CLR[c.status] ?? '#6b7280' }}>{c.status}</span> },
+        {
+            id: "status", header: "Status", width: "120px", cell: (c) => {
+                const s = STATUS_STYLES[c.status] || DEFAULT_STYLE;
+                return <span className={`py-0.5 px-1.5 rounded-sm text-[10px] font-bold ${s.bg} ${s.text}`}>{c.status}</span>;
+            }
+        },
         { id: "actions", header: "", width: "100px", cell: (c) => c.status !== 'Closed' && c.status !== 'Cancelled' ? <button onClick={() => closeCommitMut.mutate(c.id)} className="py-1 px-2 bg-gray-100 border-none rounded-md text-[10px] cursor-pointer">Close</button> : null }
     ];
 
@@ -104,13 +118,12 @@ export default function FundingLimits() {
                             <div className="flex flex-col gap-2">
                                 {fundingLimits.map(fl => {
                                     const pct = Math.min(100, Number(fl.utilization_pct));
+                                    const s = STATUS_STYLES[fl.status] || DEFAULT_STYLE;
                                     return (
-                                        /* eslint-disable-next-line react/forbid-dom-props */
-                                        <div key={fl.id} className="bg-white rounded-xl p-3 px-4 border" style={{ borderColor: fl.status === 'Exhausted' ? '#fca5a5' : '#e5e7eb', borderLeft: `4px solid ${STATUS_CLR[fl.status] ?? '#6b7280'}` }}>
+                                        <div key={fl.id} className={`bg-white rounded-xl p-3 px-4 border border-x border-y border-l-[4px] ${fl.status === 'Exhausted' ? 'border-red-300' : 'border-gray-200'} ${s.borderLeft}`}>
                                             <div className="flex justify-between mb-1.5">
                                                 <div className="font-bold text-[13px]">{fl.funding_source} <span className="font-mono text-gray-500 text-xs font-normal">(Limit: {fmt(fl.limit_amount)})</span></div>
-                                                {/* eslint-disable-next-line react/forbid-dom-props */}
-                                                <span className="text-[10px] py-0.5 px-1.5 rounded-sm font-bold" style={{ background: (STATUS_CLR[fl.status] ?? '#6b7280') + '20', color: STATUS_CLR[fl.status] ?? '#6b7280' }}>{fl.status}</span>
+                                                <span className={`text-[10px] py-0.5 px-1.5 rounded-sm font-bold ${s.bg} ${s.text}`}>{fl.status}</span>
                                             </div>
                                             <div className="flex gap-4 text-[11px] text-gray-500 mb-1.5">
                                                 <span>Utilized: <strong>{fmt(fl.utilized_amount)}</strong></span>
@@ -119,8 +132,10 @@ export default function FundingLimits() {
                                                 {fl.restrict_charges && <span className="text-amber-600 font-semibold">⚑ Charges blocked at 100%</span>}
                                             </div>
                                             <div className="bg-gray-100 rounded-full h-2">
-                                                {/* eslint-disable-next-line react/forbid-dom-props */}
-                                                <div className={`h-full rounded-full transition-all duration-300 ${pct >= 100 ? 'bg-red-600' : pct >= fl.alert_threshold_pct ? 'bg-amber-600' : 'bg-emerald-600'}`} style={{ width: pct + '%' }} />
+                                                <style>{`
+                                                    .fl-progress-${fl.id} { width: ${pct}%; }
+                                                `}</style>
+                                                <div className={`h-full rounded-full transition-all duration-300 fl-progress-${fl.id} ${pct >= 100 ? 'bg-red-600' : pct >= fl.alert_threshold_pct ? 'bg-amber-600' : 'bg-emerald-600'}`} />
                                             </div>
                                             <div className="text-[10px] text-gray-500 mt-0.5">{pct.toFixed(1)}% utilized</div>
                                         </div>

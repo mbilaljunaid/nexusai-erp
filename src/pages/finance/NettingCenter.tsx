@@ -4,12 +4,18 @@ import { Network, TrendingDown, TrendingUp, CheckCircle2, BarChart3 } from 'luci
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
-interface NettingSession { id: string; session_name: string; period: string; status: string; entities_in_scope: string[]; net_positions: NetPos[]; settlement_date: string; created_at: string; }
-interface NetPos { entity: string; payable: number; receivable: number; net: number; }
+interface NettingSession { id: string; session_name: string; period: string; currency: string; status: string; entities_in_scope: string[]; net_positions: NetPos[]; settlement_date: string; created_at: string; }
+interface NetPos { id?: string; entity: string; payable: number; receivable: number; net: number; }
 interface TPPolicy { id: string; policy_name: string; transaction_category: string; method: string; arm_length_margin_pct: number; benchmark_range_low: number; benchmark_range_high: number; effective_from: string; }
 interface TPAnalysis { id: string; policy_name: string; transaction_category: string; period: string; actual_margin_pct: number; benchmark_margin_pct: number; variance_pct: number; in_range: boolean; flagged: boolean; transactions_reviewed: number; analysis_notes: string; }
 
-const STATUS_CLR: Record<string, string> = { Draft: '#6b7280', Running: '#d97706', Completed: '#1d4ed8', Settled: '#059669', Cancelled: '#dc2626' };
+const STATUS_STYLES: Record<string, { bg: string; text: string; border: string }> = {
+    Draft: { text: 'text-gray-500', bg: 'bg-gray-100', border: 'border-gray-500' },
+    Running: { text: 'text-amber-600', bg: 'bg-amber-100', border: 'border-amber-600' },
+    Completed: { text: 'text-blue-700', bg: 'bg-blue-50', border: 'border-blue-700' },
+    Settled: { text: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-600' },
+    Cancelled: { text: 'text-red-600', bg: 'bg-red-50', border: 'border-red-600' }
+};
 
 export default function NettingCenter() {
     const [tab, setTab] = useState<'netting' | 'tp'>('netting');
@@ -32,22 +38,22 @@ export default function NettingCenter() {
     const runAnalysisMut = useMutation({ mutationFn: (d: any) => fetch('/api/ic/tp/analyses', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['tp-analyses'] }) });
 
     const netPosColumns: SpreadsheetColumn<NetPos>[] = [
-        { id: "entity", header: "Entity", width: "150px", cell: (row) => <div style={{ fontWeight: 700 }}>{row.entity}</div> },
-        { id: "payable", header: "Payable", width: "120px", cell: (row) => <div style={{ fontFamily: 'monospace', color: '#dc2626' }}>${Number(row.payable).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div> },
-        { id: "receivable", header: "Receivable", width: "120px", cell: (row) => <div style={{ fontFamily: 'monospace', color: '#059669' }}>${Number(row.receivable).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div> },
-        { id: "net", header: "Net Position", width: "150px", cell: (row) => <div style={{ fontFamily: 'monospace', fontWeight: 700, color: Number(row.net) >= 0 ? '#059669' : '#dc2626' }}>{Number(row.net) >= 0 ? '+' : ''}{Number(row.net).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div> },
-        { id: "flow", header: "Flow", width: "100px", cell: (row) => <div>{Number(row.net) > 0 ? <span style={{ color: '#059669' }}><TrendingUp size={12} /></span> : Number(row.net) < 0 ? <span style={{ color: '#dc2626' }}><TrendingDown size={12} /></span> : '—'}</div> }
+        { id: "entity", header: "Entity", width: "150px", cell: (row) => <div className="font-bold">{row.entity}</div> },
+        { id: "payable", header: "Payable", width: "120px", cell: (row) => <div className="font-mono text-red-600">${Number(row.payable).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div> },
+        { id: "receivable", header: "Receivable", width: "120px", cell: (row) => <div className="font-mono text-emerald-600">${Number(row.receivable).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div> },
+        { id: "net", header: "Net Position", width: "150px", cell: (row) => <div className={`font-mono font-bold ${Number(row.net) >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{Number(row.net) >= 0 ? '+' : ''}{Number(row.net).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div> },
+        { id: "flow", header: "Flow", width: "100px", cell: (row) => <div>{Number(row.net) > 0 ? <span className="text-emerald-600"><TrendingUp size={12} /></span> : Number(row.net) < 0 ? <span className="text-red-600"><TrendingDown size={12} /></span> : '—'}</div> }
     ];
 
     const analysesColumns: SpreadsheetColumn<TPAnalysis>[] = [
-        { id: "policy", header: "Policy", width: "200px", cell: (row) => <div style={{ fontWeight: 600 }}>{row.policy_name}</div> },
-        { id: "category", header: "Category", width: "120px", cell: (row) => <div style={{ color: '#6b7280', fontSize: 10 }}>{row.transaction_category}</div> },
-        { id: "period", header: "Period", width: "100px", cell: (row) => <div style={{ fontFamily: 'monospace' }}>{row.period}</div> },
-        { id: "actual", header: "Actual %", width: "100px", cell: (row) => <div style={{ fontFamily: 'monospace' }}>{Number(row.actual_margin_pct).toFixed(2)}%</div> },
-        { id: "benchmark", header: "Benchmark %", width: "100px", cell: (row) => <div style={{ fontFamily: 'monospace', color: '#6b7280' }}>{Number(row.benchmark_margin_pct).toFixed(2)}%</div> },
-        { id: "variance", header: "Variance", width: "100px", cell: (row) => <div style={{ fontFamily: 'monospace', color: Number(row.variance_pct) < 0 ? '#dc2626' : '#059669', fontWeight: 700 }}>{Number(row.variance_pct) > 0 ? '+' : ''}{Number(row.variance_pct).toFixed(2)}%</div> },
-        { id: "inRange", header: "In Range", width: "100px", cell: (row) => <div><span style={{ fontSize: 9, padding: '2px 5px', borderRadius: 3, background: row.in_range ? '#d1fae5' : '#fee2e2', color: row.in_range ? '#059669' : '#dc2626' }}>{row.in_range ? '✓ Yes' : '✗ No'}</span></div> },
-        { id: "status", header: "Status", width: "120px", cell: (row) => <div>{row.flagged && <span style={{ fontSize: 9, padding: '2px 5px', borderRadius: 3, background: '#fef9c3', color: '#d97706', fontWeight: 700 }}>⚠ Flagged</span>}</div> }
+        { id: "policy", header: "Policy", width: "200px", cell: (row) => <div className="font-semibold">{row.policy_name}</div> },
+        { id: "category", header: "Category", width: "120px", cell: (row) => <div className="text-gray-500 text-[10px]">{row.transaction_category}</div> },
+        { id: "period", header: "Period", width: "100px", cell: (row) => <div className="font-mono">{row.period}</div> },
+        { id: "actual", header: "Actual %", width: "100px", cell: (row) => <div className="font-mono">{Number(row.actual_margin_pct).toFixed(2)}%</div> },
+        { id: "benchmark", header: "Benchmark %", width: "100px", cell: (row) => <div className="font-mono text-gray-500">{Number(row.benchmark_margin_pct).toFixed(2)}%</div> },
+        { id: "variance", header: "Variance", width: "100px", cell: (row) => <div className={`font-mono font-bold ${Number(row.variance_pct) < 0 ? 'text-red-600' : 'text-emerald-600'}`}>{Number(row.variance_pct) > 0 ? '+' : ''}{Number(row.variance_pct).toFixed(2)}%</div> },
+        { id: "inRange", header: "In Range", width: "100px", cell: (row) => <div><span className={`text-[9px] px-[5px] py-[2px] rounded-[3px] ${row.in_range ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}`}>{row.in_range ? '✓ Yes' : '✗ No'}</span></div> },
+        { id: "status", header: "Status", width: "120px", cell: (row) => <div>{row.flagged && <span className="text-[9px] px-[5px] py-[2px] rounded-[3px] bg-yellow-100 text-amber-600 font-bold">⚠ Flagged</span>}</div> }
     ];
 
     return (
@@ -55,62 +61,62 @@ export default function NettingCenter() {
             title="IC Netting Center"
             description="Multilateral netting · Transfer pricing · Arm-length analysis"
             actions={
-                <div style={{ display: 'flex', gap: 8 }}>
-                    {['netting', 'tp'].map(t => <button key={t} onClick={() => setTab(t as any)} style={{ padding: '7px 14px', border: 'none', borderRadius: 8, fontWeight: 700, fontSize: 11, cursor: 'pointer', background: tab === t ? '#111827' : '#f3f4f6', color: tab === t ? '#fff' : '#6b7280' }}>{t === 'netting' ? 'Netting' : 'Transfer Pricing'}</button>)}
+                <div className="flex gap-2">
+                    {['netting', 'tp'].map(t => <button key={t} onClick={() => setTab(t as any)} data-active={tab === t} className={`px-[14px] py-[7px] border-none rounded-lg font-bold text-[11px] cursor-pointer hover:bg-gray-200 hover:text-gray-800 ${tab === t ? 'bg-gray-900 text-white hover:bg-gray-800 hover:text-white' : 'bg-gray-100 text-gray-500'}`}>{t === 'netting' ? 'Netting' : 'Transfer Pricing'}</button>)}
                 </div>
             }
         >
-            <div style={{ padding: '0 24px', maxWidth: 1400, margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
+            <div className="px-6 max-w-[1400px] mx-auto font-sans">
 
                 {tab === 'netting' && (
                     <>
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10 }}>
-                            <button onClick={() => setShowNew(true)} style={{ padding: '7px 14px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>+ New Session</button>
+                        <div className="flex justify-end mb-[10px]">
+                            <button onClick={() => setShowNew(true)} className="px-[14px] py-[7px] bg-blue-700 text-white border-none rounded-lg text-[11px] font-bold cursor-pointer hover:bg-blue-800">+ New Session</button>
                         </div>
                         {showNew && (
-                            <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 10, padding: 14, marginBottom: 12 }}>
-                                <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 8 }}>Create Netting Session</div>
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 10 }}>
+                            <div className="bg-gray-50 border border-gray-200 rounded-[10px] p-[14px] mb-[12px]">
+                                <div className="font-bold text-[12px] mb-2">Create Netting Session</div>
+                                <div className="grid grid-cols-4 gap-2 mb-[10px]">
                                     {[['Session Name', 'sessionName', 'text'], ['Period (YYYY-MM)', 'period', 'text'], ['Currency', 'currency', 'text'], ['Settlement Date', 'settlementDate', 'date']].map(([lbl, key, type]) => (
-                                        <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                            <label style={{ fontSize: 10, fontWeight: 700 }}>{lbl}</label>
-                                            <input type={type} value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 12 }} aria-label={lbl} />
+                                        <div key={key} className="flex flex-col gap-[2px]">
+                                            <label className="text-[10px] font-bold">{lbl}</label>
+                                            <input type={type} value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="px-2 py-[6px] border border-gray-300 rounded-md text-[12px]" aria-label={lbl} />
                                         </div>
                                     ))}
                                 </div>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 10 }}>
-                                    <label style={{ fontSize: 10, fontWeight: 700 }}>Entities (one per line)</label>
-                                    <textarea rows={3} value={form.entitiesText} onChange={e => setForm(p => ({ ...p, entitiesText: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 12, fontFamily: 'monospace' }} aria-label="Entities" />
+                                <div className="flex flex-col gap-[2px] mb-[10px]">
+                                    <label className="text-[10px] font-bold">Entities (one per line)</label>
+                                    <textarea rows={3} value={form.entitiesText} onChange={e => setForm(p => ({ ...p, entitiesText: e.target.value }))} className="px-2 py-[6px] border border-gray-300 rounded-md text-[12px] font-mono" aria-label="Entities" />
                                 </div>
-                                <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                                    <button onClick={() => setShowNew(false)} style={{ padding: '5px 12px', background: '#e5e7eb', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer' }}>Cancel</button>
-                                    <button onClick={() => createMut.mutate({ ...form, entitiesInScope: form.entitiesText.split('\n').map(s => s.trim()).filter(Boolean) })} disabled={!form.sessionName || !form.period} style={{ padding: '5px 12px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>Create</button>
+                                <div className="flex gap-[6px] justify-end">
+                                    <button onClick={() => setShowNew(false)} className="px-3 py-[5px] bg-gray-200 border-none rounded-md text-[11px] cursor-pointer hover:bg-gray-300">Cancel</button>
+                                    <button onClick={() => createMut.mutate({ ...form, entitiesInScope: form.entitiesText.split('\n').map(s => s.trim()).filter(Boolean) })} disabled={!form.sessionName || !form.period} className="px-3 py-[5px] bg-blue-700 text-white border-none rounded-md text-[11px] font-bold cursor-pointer hover:bg-blue-800 disabled:opacity-50">Create</button>
                                 </div>
                             </div>
                         )}
-                        <div style={{ display: 'flex', gap: 14 }}>
-                            <div style={{ width: 340, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        <div className="flex gap-[14px]">
+                            <div className="w-[340px] shrink-0 flex flex-col gap-[6px]">
                                 {sessions.map(s => {
-                                    const clr = STATUS_CLR[s.status] ?? '#6b7280';
+                                    const style = STATUS_STYLES[s.status] ?? STATUS_STYLES['Draft'];
                                     return (
-                                        <div key={s.id} onClick={() => setSelectedSession(selectedSession?.id === s.id ? null : s)} style={{ background: '#fff', border: `1px solid ${selectedSession?.id === s.id ? '#1d4ed8' : '#e5e7eb'}`, borderLeft: `4px solid ${clr}`, borderRadius: 10, padding: '10px 12px', cursor: 'pointer' }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
-                                                <div style={{ fontWeight: 700, fontSize: 13 }}>{s.session_name}</div>
-                                                <span style={{ padding: '2px 6px', borderRadius: 4, fontSize: 9, fontWeight: 700, background: clr + '18', color: clr }}>{s.status}</span>
+                                        <div key={s.id} onClick={() => setSelectedSession(selectedSession?.id === s.id ? null : s)} className={`bg-white border rounded-[10px] p-[10px_12px] cursor-pointer outline-none border-l-[4px] border-l-solid ${selectedSession?.id === s.id ? 'border-blue-700' : 'border-gray-200'} ${style.border}`}>
+                                            <div className="flex justify-between mb-[3px]">
+                                                <div className="font-bold text-[13px]">{s.session_name}</div>
+                                                <span className={`px-[6px] py-[2px] rounded-[4px] text-[9px] font-bold ${style.bg} ${style.text}`}>{s.status}</span>
                                             </div>
-                                            <div style={{ fontSize: 10, color: '#9ca3af' }}>{s.period} · {s.currency} · {(s.entities_in_scope ?? []).length} entities</div>
-                                            {s.status === 'Draft' && <button onClick={ev => { ev.stopPropagation(); runMut.mutate(s.id); }} style={{ marginTop: 6, padding: '3px 8px', background: '#eff6ff', border: 'none', borderRadius: 4, fontSize: 9, cursor: 'pointer', color: '#1d4ed8' }}>▶ Run Netting</button>}
-                                            {s.status === 'Completed' && <button onClick={ev => { ev.stopPropagation(); settleMut.mutate(s.id); }} style={{ marginTop: 6, padding: '3px 8px', background: '#f0fdf4', border: 'none', borderRadius: 4, fontSize: 9, cursor: 'pointer', color: '#059669', fontWeight: 700 }}><CheckCircle2 size={9} /> Settle</button>}
+                                            <div className="text-[10px] text-gray-400">{s.period} · {s.currency} · {(s.entities_in_scope ?? []).length} entities</div>
+                                            {s.status === 'Draft' && <button onClick={ev => { ev.stopPropagation(); runMut.mutate(s.id); }} className="mt-[6px] px-[8px] py-[3px] bg-blue-50 border-none rounded-[4px] text-[9px] cursor-pointer text-blue-700 hover:bg-blue-100">▶ Run Netting</button>}
+                                            {s.status === 'Completed' && <button onClick={ev => { ev.stopPropagation(); settleMut.mutate(s.id); }} className="mt-[6px] px-[8px] py-[3px] bg-emerald-50 border-none rounded-[4px] text-[9px] cursor-pointer text-emerald-600 font-bold hover:bg-emerald-100 flex items-center gap-1"><CheckCircle2 size={9} /> Settle</button>}
                                         </div>
                                     );
                                 })}
-                                {sessions.length === 0 && <div style={{ textAlign: 'center', color: '#9ca3af', padding: 32, background: '#fff', borderRadius: 10 }}>No sessions — create one</div>}
+                                {sessions.length === 0 && <div className="text-center text-gray-400 p-8 bg-white rounded-[10px]">No sessions — create one</div>}
                             </div>
                             {selectedSession && (
-                                <div style={{ flex: 1 }}>
-                                    <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10 }}>{selectedSession.session_name} — Net Positions</div>
+                                <div className="flex-1">
+                                    <div className="font-bold text-[14px] mb-[10px]">{selectedSession.session_name} — Net Positions</div>
                                     {(selectedSession.net_positions ?? []).length > 0 ? (
-                                        <div style={{ border: '1px solid #e5e7eb', borderRadius: 12, overflow: 'hidden', height: 300, background: '#fff' }}>
+                                        <div className="border border-gray-200 rounded-[12px] overflow-hidden h-[300px] bg-white">
                                             <InteractiveSpreadsheet
                                                 columns={netPosColumns}
                                                 data={selectedSession.net_positions}
@@ -118,7 +124,7 @@ export default function NettingCenter() {
                                                 containerHeight="100%"
                                             />
                                         </div>
-                                    ) : <div style={{ textAlign: 'center', color: '#9ca3af', padding: 40 }}>Run netting to compute positions</div>}
+                                    ) : <div className="text-center text-gray-400 p-10">Run netting to compute positions</div>}
                                 </div>
                             )}
                         </div>
@@ -127,52 +133,52 @@ export default function NettingCenter() {
 
                 {tab === 'tp' && (
                     <div>
-                        <div style={{ display: 'flex', gap: 14 }}>
+                        <div className="flex gap-[14px]">
                             {/* Policies */}
-                            <div style={{ width: 320, flexShrink: 0 }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, alignItems: 'center' }}>
-                                    <div style={{ fontWeight: 700, fontSize: 13 }}>TP Policies</div>
-                                    <button onClick={() => setShowNewPolicy(true)} style={{ padding: '4px 10px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 6, fontSize: 10, cursor: 'pointer' }}>+ Policy</button>
+                            <div className="w-[320px] shrink-0">
+                                <div className="flex justify-between mb-[8px] items-center">
+                                    <div className="font-bold text-[13px]">TP Policies</div>
+                                    <button onClick={() => setShowNewPolicy(true)} className="px-[10px] py-[4px] bg-blue-700 text-white border-none rounded-[6px] text-[10px] cursor-pointer hover:bg-blue-800">+ Policy</button>
                                 </div>
                                 {showNewPolicy && (
-                                    <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 8, padding: 10, marginBottom: 8 }}>
+                                    <div className="bg-gray-50 border border-gray-200 rounded-[8px] p-[10px] mb-[8px]">
                                         {[['Policy Name', 'policyName', 'text'], ['Category', 'transactionCategory', 'select'], ['Method', 'method', 'select'], ['Range Low %', 'benchmarkRangeLow', 'number'], ['Range High %', 'benchmarkRangeHigh', 'number'], ['Effective From', 'effectiveFrom', 'date']].map(([lbl, key, type]) => (
-                                            <div key={key} style={{ marginBottom: 5 }}>
-                                                <label style={{ fontSize: 9, fontWeight: 700, display: 'block' }}>{lbl}</label>
+                                            <div key={key} className="mb-[5px]">
+                                                <label className="text-[9px] font-bold block">{lbl}</label>
                                                 {type === 'select' && key === 'transactionCategory'
-                                                    ? <select value={(policyForm as any)[key]} onChange={e => setPolicyForm(p => ({ ...p, [key]: e.target.value }))} style={{ width: '100%', padding: '4px 6px', border: '1px solid #d1d5db', borderRadius: 5, fontSize: 11 }} aria-label={lbl}>{['GOODS', 'SERVICES', 'IP_ROYALTIES', 'LOANS', 'COST_SHARING'].map(v => <option key={v}>{v}</option>)}</select>
+                                                    ? <select value={(policyForm as any)[key]} onChange={e => setPolicyForm(p => ({ ...p, [key]: e.target.value }))} className="w-full px-[6px] py-[4px] border border-gray-300 rounded-[5px] text-[11px]" aria-label={lbl}>{['GOODS', 'SERVICES', 'IP_ROYALTIES', 'LOANS', 'COST_SHARING'].map(v => <option key={v}>{v}</option>)}</select>
                                                     : type === 'select' && key === 'method'
-                                                        ? <select value={(policyForm as any)[key]} onChange={e => setPolicyForm(p => ({ ...p, [key]: e.target.value }))} style={{ width: '100%', padding: '4px 6px', border: '1px solid #d1d5db', borderRadius: 5, fontSize: 11 }} aria-label={lbl}>{['CUP', 'RESALE_PRICE', 'COST_PLUS', 'TNMM', 'PSM', 'CUSTOM'].map(v => <option key={v}>{v}</option>)}</select>
-                                                        : <input type={type} value={(policyForm as any)[key]} onChange={e => setPolicyForm(p => ({ ...p, [key]: e.target.value }))} style={{ width: '100%', padding: '4px 6px', border: '1px solid #d1d5db', borderRadius: 5, fontSize: 11, boxSizing: 'border-box' }} aria-label={lbl} />}
+                                                        ? <select value={(policyForm as any)[key]} onChange={e => setPolicyForm(p => ({ ...p, [key]: e.target.value }))} className="w-full px-[6px] py-[4px] border border-gray-300 rounded-[5px] text-[11px]" aria-label={lbl}>{['CUP', 'RESALE_PRICE', 'COST_PLUS', 'TNMM', 'PSM', 'CUSTOM'].map(v => <option key={v}>{v}</option>)}</select>
+                                                        : <input type={type} value={(policyForm as any)[key]} onChange={e => setPolicyForm(p => ({ ...p, [key]: e.target.value }))} className="w-full px-[6px] py-[4px] border border-gray-300 rounded-[5px] text-[11px] box-border" aria-label={lbl} />}
                                             </div>
                                         ))}
-                                        <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end', marginTop: 6 }}>
-                                            <button onClick={() => setShowNewPolicy(false)} style={{ padding: '3px 8px', background: '#e5e7eb', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>Cancel</button>
-                                            <button onClick={() => createPolicyMut.mutate({ ...policyForm, benchmarkRangeLow: parseFloat(policyForm.benchmarkRangeLow) || null, benchmarkRangeHigh: parseFloat(policyForm.benchmarkRangeHigh) || null })} style={{ padding: '3px 8px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 5, fontSize: 10, cursor: 'pointer' }}>Save</button>
+                                        <div className="flex gap-[4px] justify-end mt-[6px]">
+                                            <button onClick={() => setShowNewPolicy(false)} className="px-[8px] py-[3px] bg-gray-200 border-none rounded-[5px] text-[10px] cursor-pointer hover:bg-gray-300">Cancel</button>
+                                            <button onClick={() => createPolicyMut.mutate({ ...policyForm, benchmarkRangeLow: parseFloat(policyForm.benchmarkRangeLow) || null, benchmarkRangeHigh: parseFloat(policyForm.benchmarkRangeHigh) || null })} className="px-[8px] py-[3px] bg-blue-700 text-white border-none rounded-[5px] text-[10px] cursor-pointer hover:bg-blue-800">Save</button>
                                         </div>
                                     </div>
                                 )}
                                 {policies.map(p => (
-                                    <div key={p.id} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 8, padding: '8px 10px', marginBottom: 5 }}>
-                                        <div style={{ fontWeight: 700, fontSize: 12 }}>{p.policy_name}</div>
-                                        <div style={{ fontSize: 9, color: '#9ca3af', marginBottom: 3 }}>{p.method} · {p.transaction_category}</div>
-                                        <div style={{ fontSize: 10, color: '#374151' }}>Range: {p.benchmark_range_low ?? '—'}% – {p.benchmark_range_high ?? '—'}%</div>
-                                        <button onClick={() => setAnalysisForm(af => ({ ...af, policyId: p.id }))} style={{ marginTop: 4, padding: '2px 7px', background: '#eff6ff', border: 'none', borderRadius: 4, fontSize: 9, cursor: 'pointer', color: '#1d4ed8' }}>Select for Analysis</button>
+                                    <div key={p.id} className="bg-white border border-gray-200 rounded-[8px] p-[8px_10px] mb-[5px]">
+                                        <div className="font-bold text-[12px]">{p.policy_name}</div>
+                                        <div className="text-[9px] text-gray-400 mb-[3px]">{p.method} · {p.transaction_category}</div>
+                                        <div className="text-[10px] text-gray-700">Range: {p.benchmark_range_low ?? '—'}% – {p.benchmark_range_high ?? '—'}%</div>
+                                        <button onClick={() => setAnalysisForm(af => ({ ...af, policyId: p.id }))} className="mt-[4px] px-[7px] py-[2px] bg-blue-50 border-none rounded-[4px] text-[9px] cursor-pointer text-blue-700 hover:bg-blue-100">Select for Analysis</button>
                                     </div>
                                 ))}
                             </div>
 
                             {/* Analyses */}
-                            <div style={{ flex: 1 }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, alignItems: 'center' }}>
-                                    <div style={{ fontWeight: 700, fontSize: 13 }}>Analyses</div>
-                                    <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                                        <input placeholder="Period YYYY-MM" value={analysisForm.period} onChange={e => setAnalysisForm(p => ({ ...p, period: e.target.value }))} style={{ padding: '5px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11, width: 110 }} aria-label="Analysis period" />
-                                        <input type="number" placeholder="Actual margin %" value={analysisForm.actualMarginPct} onChange={e => setAnalysisForm(p => ({ ...p, actualMarginPct: e.target.value }))} style={{ padding: '5px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11, width: 120 }} aria-label="Actual margin pct" />
-                                        <button disabled={!analysisForm.policyId || !analysisForm.actualMarginPct} onClick={() => runAnalysisMut.mutate({ policyId: analysisForm.policyId, period: analysisForm.period, actualMarginPct: parseFloat(analysisForm.actualMarginPct), transactionsReviewed: parseInt(analysisForm.transactionsReviewed) || 0 })} style={{ padding: '5px 12px', background: '#7c3aed', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer' }}><BarChart3 size={10} style={{ marginRight: 3 }} />Run Analysis</button>
+                            <div className="flex-1">
+                                <div className="flex justify-between mb-[8px] items-center">
+                                    <div className="font-bold text-[13px]">Analyses</div>
+                                    <div className="flex gap-[6px] items-center">
+                                        <input placeholder="Period YYYY-MM" value={analysisForm.period} onChange={e => setAnalysisForm(p => ({ ...p, period: e.target.value }))} className="px-[8px] py-[5px] border border-gray-300 rounded-[6px] text-[11px] w-[110px]" aria-label="Analysis period" />
+                                        <input type="number" placeholder="Actual margin %" value={analysisForm.actualMarginPct} onChange={e => setAnalysisForm(p => ({ ...p, actualMarginPct: e.target.value }))} className="px-[8px] py-[5px] border border-gray-300 rounded-[6px] text-[11px] w-[120px]" aria-label="Actual margin pct" />
+                                        <button disabled={!analysisForm.policyId || !analysisForm.actualMarginPct} onClick={() => runAnalysisMut.mutate({ policyId: analysisForm.policyId, period: analysisForm.period, actualMarginPct: parseFloat(analysisForm.actualMarginPct), transactionsReviewed: parseInt(analysisForm.transactionsReviewed) || 0 })} className="px-[12px] py-[5px] bg-violet-600 text-white border-none rounded-[6px] text-[11px] cursor-pointer flex items-center hover:bg-violet-700 disabled:opacity-50"><BarChart3 size={10} className="mr-[3px]" />Run Analysis</button>
                                     </div>
                                 </div>
-                                <div style={{ border: '1px solid #e5e7eb', borderRadius: 12, overflow: 'hidden', height: 400, background: '#fff' }}>
+                                <div className="border border-gray-200 rounded-[12px] overflow-hidden h-[400px] bg-white">
                                     {analyses.length > 0 ? (
                                         <InteractiveSpreadsheet
                                             columns={analysesColumns}
@@ -181,7 +187,7 @@ export default function NettingCenter() {
                                             containerHeight="100%"
                                         />
                                     ) : (
-                                        <div style={{ padding: 20, textAlign: 'center', color: '#9ca3af' }}>No analyses — select a policy and run</div>
+                                        <div className="p-5 text-center text-gray-400">No analyses — select a policy and run</div>
                                     )}
                                 </div>
                             </div>
