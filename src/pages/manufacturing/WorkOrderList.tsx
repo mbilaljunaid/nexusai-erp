@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -128,58 +128,66 @@ export default function WorkOrderList() {
         }
     });
 
-    const columns: Column<WorkOrder>[] = [
+    const columns: SpreadsheetColumn<any>[] = [
         {
+            id: "orderNumber",
             header: "Order #",
-            accessorKey: "orderNumber",
-            cell: (row: WorkOrder) => <span className="font-semibold">{row.orderNumber}</span>
+            width: "150px",
+            cell: (row: any) => <div className="p-2 font-semibold">{row.orderNumber}</div>
         },
         {
+            id: "projectNumber",
             header: "Project",
-            accessorKey: "projectNumber",
-            cell: (row: WorkOrder) => (
-                <div className="flex flex-col">
+            width: "200px",
+            cell: (row: any) => (
+                <div className="flex flex-col p-2">
                     <span className="font-medium">{row.projectNumber || '-'}</span>
                 </div>
             )
         },
         {
+            id: "productName",
             header: "Product",
-            accessorKey: "productName",
-            cell: (row: WorkOrder) => (
-                <div className="flex flex-col">
+            width: "250px",
+            cell: (row: any) => (
+                <div className="flex flex-col p-2">
                     <span className="font-medium">{row.productName || 'Unknown Product'}</span>
                     <span className="text-[10px] text-muted-foreground font-mono">{row.productId}</span>
                 </div>
             )
         },
         {
+            id: "quantity",
             header: "Quantity",
-            accessorKey: "quantity",
-            cell: (row: WorkOrder) => <span className="font-mono">{row.quantity?.toLocaleString()}</span>
+            width: "100px",
+            cell: (row: any) => <div className="font-mono p-2">{row.quantity?.toLocaleString()}</div>
         },
         {
+            id: "status",
             header: "Status",
-            accessorKey: "status",
-            cell: (row: WorkOrder) => {
+            width: "150px",
+            cell: (row: any) => {
                 const colors = {
                     planned: "secondary",
                     in_progress: "default",
                     completed: "outline",
                     cancelled: "destructive"
                 } as const;
-                return <Badge variant={colors[row.status] || "secondary"} className="capitalize">{row.status?.replace('_', ' ')}</Badge>;
+                return <div className="p-2"><Badge variant={colors[row.status as keyof typeof colors] || "secondary"} className="capitalize">{row.status?.replace('_', ' ')}</Badge></div>;
             },
         },
         {
+            id: "scheduledDate",
             header: "Scheduled",
-            accessorKey: "scheduledDate",
-            cell: (row: WorkOrder) => row.scheduledDate ? new Date(row.scheduledDate).toLocaleDateString() : '-'
+            width: "150px",
+            cell: (row: any) => <div className="p-2">{row.scheduledDate ? new Date(row.scheduledDate).toLocaleDateString() : '-'}</div>
         },
         {
+            id: "actions",
             header: "Actions",
-            cell: (row: WorkOrder) => (
-                <div className="flex gap-2">
+            width: "200px",
+            cell: (row: any) => (
+                <div className="flex gap-2 p-2">
                     {row.status === "planned" && (
                         <Button variant="ghost" size="sm" onClick={() => statusMutation.mutate({ id: row.id, status: "in_progress" })}>
                             <Play className="h-4 w-4 mr-1" /> Start
@@ -271,17 +279,10 @@ export default function WorkOrderList() {
                 </Sheet>
             }
         >
-            <StandardTable
+            <InteractiveSpreadsheet
                 data={data?.items || []}
                 columns={columns}
-                isLoading={isLoading}
-                keyExtractor={(item) => item.id}
-                filterColumn="orderNumber"
-                filterPlaceholder="Filter by order number..."
-                page={page + 1}
-                pageSize={limit}
-                totalItems={data?.total || 0}
-                onPageChange={(p) => setPage(p - 1)}
+                onChange={() => { }} virtualized={true} containerHeight="600px"
             />
         </StandardPage>
     );

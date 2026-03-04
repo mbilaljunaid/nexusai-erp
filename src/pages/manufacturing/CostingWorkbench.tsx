@@ -4,7 +4,7 @@ import {
     Card, CardContent, CardHeader, CardTitle, CardDescription
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import {
     Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger
 } from "@/components/ui/sheet";
@@ -18,8 +18,8 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import {
     Calculator, Plus, TrendingUp, DollarSign, Layers
 } from "lucide-react";
-interface CostElement { id: string; name?: string; type?: string; [key: string]: any; }
-interface StandardCost { id: string; itemId?: string; costElementId?: string; amount?: string; [key: string]: any; }
+interface CostElement { id: string; name?: string; type?: string;[key: string]: any; }
+interface StandardCost { id: string; itemId?: string; costElementId?: string; amount?: string;[key: string]: any; }
 import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function CostingWorkbench() {
@@ -57,15 +57,16 @@ export default function CostingWorkbench() {
     });
 
     // Table Columns
-    const costColumns: Column<StandardCost>[] = [
+    const costColumns: SpreadsheetColumn<any>[] = [
         {
+            id: "targetId",
             header: "Product / Resource",
-            accessorKey: "targetId",
-            cell: (row) => {
-                if (row.targetType === "RESOURCE") return <span className="font-mono text-xs">{row.targetId}</span>;
+            width: "250px",
+            cell: (row: any) => {
+                if (row.targetType === "RESOURCE") return <span className="font-mono text-xs p-2">{row.targetId}</span>;
                 const item = inventory.find(i => i.id === row.targetId);
                 return (
-                    <div>
+                    <div className="p-2">
                         <div className="font-medium text-sm">{item ? item.itemName : "Unknown Item"}</div>
                         <div className="text-xs text-muted-foreground font-mono">{item ? item.sku : row.targetId}</div>
                     </div>
@@ -73,27 +74,30 @@ export default function CostingWorkbench() {
             }
         },
         {
+            id: "unitCost",
             header: "Unit Cost",
-            accessorKey: "unitCost",
-            cell: (row) => `$${Number(row.unitCost).toFixed(2)}`
+            width: "150px",
+            cell: (row: any) => <div className="p-2">${Number(row.unitCost).toFixed(2)}</div>
         },
         {
+            id: "effectiveDate",
             header: "Effective Date",
-            accessorKey: "effectiveDate",
-            cell: (row) => new Date(row.effectiveDate!).toLocaleDateString()
+            width: "150px",
+            cell: (row: any) => <div className="p-2">{new Date(row.effectiveDate!).toLocaleDateString()}</div>
         },
         {
+            id: "isActive",
             header: "Status",
-            accessorKey: "isActive",
-            cell: (row) => row.isActive ? "Active" : "Historical"
+            width: "150px",
+            cell: (row: any) => <div className="p-2">{row.isActive ? "Active" : "Historical"}</div>
         }
     ];
 
-    const elementColumns: Column<CostElement>[] = [
-        { header: "Code", accessorKey: "code" },
-        { header: "Name", accessorKey: "name" },
-        { header: "Type", accessorKey: "type" },
-        { header: "GL Account", accessorKey: "glAccountId" }
+    const elementColumns: SpreadsheetColumn<any>[] = [
+        { id: "code", header: "Code", width: "150px", cell: (row: any) => <div className="p-2">{row.code}</div> },
+        { id: "name", header: "Name", width: "200px", cell: (row: any) => <div className="p-2">{row.name}</div> },
+        { id: "type", header: "Type", width: "150px", cell: (row: any) => <div className="p-2">{row.type}</div> },
+        { id: "glAccountId", header: "GL Account", width: "150px", cell: (row: any) => <div className="p-2">{row.glAccountId}</div> }
     ];
 
     return (
@@ -191,9 +195,10 @@ export default function CostingWorkbench() {
                     <CardDescription>Current validated costs for all manufactured items.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <StandardTable
+                    <InteractiveSpreadsheet
                         columns={costColumns}
                         data={standardCosts}
+                        onChange={() => { }} virtualized={true} containerHeight="400px"
                     />
                 </CardContent>
             </Card>
@@ -204,9 +209,10 @@ export default function CostingWorkbench() {
                     <CardDescription>Definitions for material, labor, and overhead buckets.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <StandardTable
+                    <InteractiveSpreadsheet
                         columns={elementColumns}
                         data={costElements}
+                        onChange={() => { }} virtualized={true} containerHeight="400px"
                     />
                 </CardContent>
             </Card>

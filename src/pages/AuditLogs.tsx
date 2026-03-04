@@ -2,7 +2,7 @@ import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { format } from "date-fns";
 import { ClipboardList, History } from "lucide-react";
 import { MetricCard } from "@/components/MetricCard";
@@ -13,36 +13,30 @@ export default function AuditLogs() {
     queryKey: ["/api/hr/transactions"]
   });
 
-  const columns = [
+  const columns: SpreadsheetColumn<any>[] = [
     {
-      header: "Timestamp",
-      accessorKey: "updatedAt",
-      cell: (info: any) => format(new Date(info.getValue()), "MMM dd, yyyy HH:mm:ss"),
+      id: "updatedAt", header: "Timestamp", width: "200px", cell: (row) => <div className="p-2">{format(new Date(row.updatedAt), "MMM dd, yyyy HH:mm:ss")}</div>
     },
     {
-      header: "Employee",
-      accessorKey: "personName",
+      id: "personName", header: "Employee", width: "250px", cell: (row) => <div className="p-2">{row.personName}</div>
     },
     {
-      header: "Action",
-      accessorKey: "assignmentStatus",
-      cell: (info: any) => {
-        const val = info.getValue();
+      id: "assignmentStatus", header: "Action", width: "150px", cell: (row) => {
+        const val = row.assignmentStatus;
         return (
-          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${val === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-            }`}>
-            {val}
-          </span>
+          <div className="p-2">
+            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${val === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+              {val}
+            </span>
+          </div>
         );
       }
     },
     {
-      header: "Department",
-      accessorKey: "dept",
+      id: "dept", header: "Department", width: "200px", cell: (row) => <div className="p-2">{row.dept}</div>
     },
     {
-      header: "Updated By",
-      accessorKey: "updatedBy",
+      id: "updatedBy", header: "Updated By", width: "200px", cell: (row) => <div className="p-2">{row.updatedBy}</div>
     }
   ];
 
@@ -82,12 +76,11 @@ export default function AuditLogs() {
         />
       </div>
 
-      <StandardTable
+      <InteractiveSpreadsheet
         data={transactions}
         columns={columns}
-        isLoading={isLoading}
-        filterColumn="personName"
-        filterPlaceholder="Search logs..."
+        onChange={() => { }}
+        virtualized={true} containerHeight="600px"
       />
     </StandardPage>
   );

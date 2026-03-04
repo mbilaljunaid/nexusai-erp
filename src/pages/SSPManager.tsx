@@ -12,14 +12,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, Book, FileText } from "lucide-react";
 import type { RevenueSspBook, RevenueSspLine } from "@/types/erp-types";
 import { useToast } from "@/hooks/use-toast";
 
-interface SSPBook extends RevenueSspBook {}
+interface SSPBook extends RevenueSspBook { }
 
 interface SSPLine extends RevenueSspLine {
     itemName?: string;
@@ -79,53 +79,44 @@ export default function SSPManager() {
         }
     });
 
-    const bookColumns: Column<SSPBook>[] = [
+    const bookColumns: SpreadsheetColumn<SSPBook>[] = [
         {
-            header: "Book Name",
-            cell: (item) => (
-                <div className="flex items-center gap-2">
+            id: "bookName", header: "Book Name", width: "250px", cell: (item) => (
+                <div className="flex items-center gap-2 p-2">
                     <Book className="h-4 w-4 text-blue-500" />
                     <span className="font-medium">{item.name}</span>
                 </div>
             )
         },
         {
-            header: "Currency",
-            accessorKey: "currency",
-            cell: (item) => <Badge variant="outline">{item.currency}</Badge>
+            id: "currency", header: "Currency", width: "120px", cell: (item) => <div className="p-2"><Badge variant="outline">{item.currency}</Badge></div>
         },
         {
-            header: "Effective From",
-            cell: (item) => new Date(item.effectiveFrom).toLocaleDateString()
+            id: "effectiveFrom", header: "Effective From", width: "150px", cell: (item) => <div className="p-2">{new Date(item.effectiveFrom).toLocaleDateString()}</div>
         },
         {
-            header: "Status",
-            accessorKey: "status",
-            cell: (item) => <Badge>{item.status}</Badge>
+            id: "status", header: "Status", width: "120px", cell: (item) => <div className="p-2"><Badge>{item.status}</Badge></div>
         },
         {
-            header: "Actions",
-            id: "actions",
-            cell: (item) => (
-                <Button variant="ghost" size="sm" onClick={() => setSelectedBook(item.id)}>
-                    View Lines
-                </Button>
+            id: "actions", header: "Actions", width: "150px", cell: (item) => (
+                <div className="p-2">
+                    <Button variant="ghost" size="sm" onClick={() => setSelectedBook(item.id)}>
+                        View Lines
+                    </Button>
+                </div>
             )
         }
     ];
 
-    const lineColumns: Column<SSPLine>[] = [
+    const lineColumns: SpreadsheetColumn<SSPLine>[] = [
         {
-            header: "Item Name",
-            cell: (item) => item.itemName || <span className="text-muted-foreground font-mono">{item.itemId}</span>
+            id: "itemName", header: "Item Name", width: "300px", cell: (item) => <div className="p-2">{item.itemName || <span className="text-muted-foreground font-mono">{item.itemId}</span>}</div>
         },
         {
-            header: "SSP Value",
-            cell: (item) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(item.sspValue))
+            id: "sspValue", header: "SSP Value", width: "150px", cell: (item) => <div className="p-2">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(item.sspValue))}</div>
         },
         {
-            header: "Min Quantity",
-            accessorKey: "minQuantity"
+            id: "minQuantity", header: "Min Quantity", width: "150px", cell: (item) => <div className="p-2">{item.minQuantity}</div>
         }
     ];
 
@@ -163,9 +154,14 @@ export default function SSPManager() {
 
     return (
         <StandardPage
-      title="SSP Manager"
-      description="Manage Standalone Selling Prices for Allocations."
-   className="text-muted-foreground mt-1">Manage Standalone Selling Prices for Allocations.</p>
+            title="SSP Manager"
+            description="Manage Standalone Selling Prices for Allocations."
+            className="space-y-6"
+        >
+            <div className="flex justify-between items-center mb-6">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">SSP Manager</h1>
+                    <p className="text-muted-foreground mt-1">Manage Standalone Selling Prices for Allocations.</p>
                 </div>
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
@@ -188,9 +184,9 @@ export default function SSPManager() {
                         <div className="flex justify-end">
                             <Button onClick={() => createBookMutation.mutate(newBookName)}>Create Book</Button>
                         </div>
-                    </DialogContent>
-                </Dialog>
-            </div>
+                    </DialogContent >
+                </Dialog >
+            </div >
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* List of Books */}
@@ -200,7 +196,7 @@ export default function SSPManager() {
                             <CardTitle>SSP Books</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <StandardTable data={sspBooks || []} columns={bookColumns} />
+                            <InteractiveSpreadsheet data={sspBooks || []} columns={bookColumns} onChange={() => { }} virtualized={true} containerHeight="400px" />
                         </CardContent>
                     </Card>
                 </div>
@@ -261,7 +257,7 @@ export default function SSPManager() {
                         <CardContent>
                             {selectedBook ? (
                                 linesLoading ? <Skeleton className="h-32" /> : (
-                                    <StandardTable data={sspLines || []} columns={lineColumns} />
+                                    <InteractiveSpreadsheet data={sspLines || []} columns={lineColumns} onChange={() => { }} virtualized={true} containerHeight="400px" />
                                 )
                             ) : (
                                 <div className="h-32 flex items-center justify-center text-muted-foreground">
@@ -272,6 +268,6 @@ export default function SSPManager() {
                     </Card>
                 </div>
             </div>
-        </StandardPage>
-  );
+        </StandardPage >
+    );
 }

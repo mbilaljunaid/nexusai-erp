@@ -14,8 +14,8 @@ import {
     Download
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/api";
-import { StandardTable } from "@/components/StandardTable";
+import { apiRequest } from "@/lib/queryClient";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function CorporateCardReconciliation() {
     const { toast } = useToast();
@@ -92,11 +92,9 @@ export default function CorporateCardReconciliation() {
 
     return (
         <StandardPage
-      title="Corporate Card Recooreground mt-1 text-lg">
-                    Import and match corporate card transactions to expense reports
-                </p>
-            </div>
-
+            title="Corporate Card Reconciliation"
+            description="Import and match corporate card transactions to expense reports"
+        >
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card>
@@ -178,25 +176,25 @@ export default function CorporateCardReconciliation() {
                         {importMutation.isPending ? "Importing..." : "Import & Auto-Match"}
                     </Button>
                 </CardContent>
-            </Card>
+            </Card >
 
             {/* Transactions Table */}
-            <Card>
+            < Card >
                 <CardHeader>
                     <div className="flex items-center justify-between">
                         <CardTitle>Card Transactions</CardTitle>
-                        <div className="flex gap-2">
-                            <select
-                                className="px-3 py-1 border rounded-md text-sm"
-                                value={selectedStatus}
-                                onChange={(e) => setSelectedStatus(e.target.value)}
-                            >
-                                <option value="all">All Status</option>
-                                <option value="PENDING">Pending</option>
-                                <option value="MATCHED">Matched</option>
-                                <option value="RECONCILED">Reconciled</option>
-                            </select>
-                        </div>
+                        <select
+                            aria-label="Filter transactions by status"
+                            title="Filter status"
+                            className="px-3 py-1 border rounded-md text-sm"
+                            value={selectedStatus}
+                            onChange={(e) => setSelectedStatus(e.target.value)}
+                        >
+                            <option value="all">All Status</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="MATCHED">Matched</option>
+                            <option value="RECONCILED">Reconciled</option>
+                        </select>
                     </div>
                 </CardHeader>
                 <CardContent>
@@ -207,58 +205,73 @@ export default function CorporateCardReconciliation() {
                             <p className="text-sm">Import card transactions via CSV to get started</p>
                         </div>
                     ) : (
-                        <StandardTable
+                        <InteractiveSpreadsheet
                             data={transactions}
                             columns={[
                                 {
+                                    id: "transactionDate",
                                     header: "Date",
-                                    accessorKey: "transactionDate",
-                                    cell: (row: any) => new Date(row.transactionDate).toLocaleDateString()
+                                    width: "150px",
+                                    cell: (row: any) => <div className="p-2">{new Date(row.transactionDate).toLocaleDateString()}</div>
                                 },
                                 {
+                                    id: "merchant",
                                     header: "Merchant",
-                                    accessorKey: "merchant"
+                                    width: "200px",
+                                    cell: (row: any) => <div className="p-2">{row.merchant}</div>
                                 },
                                 {
+                                    id: "amount",
                                     header: "Amount",
-                                    accessorKey: "amount",
-                                    cell: (row: any) => `$${Number(row.amount).toFixed(2)}`
+                                    width: "150px",
+                                    cell: (row: any) => <div className="p-2">${Number(row.amount).toFixed(2)}</div>
                                 },
                                 {
+                                    id: "cardNumber",
                                     header: "Card",
-                                    accessorKey: "cardNumber"
+                                    width: "150px",
+                                    cell: (row: any) => <div className="p-2">{row.cardNumber}</div>
                                 },
                                 {
+                                    id: "category",
                                     header: "Category",
-                                    accessorKey: "category"
+                                    width: "150px",
+                                    cell: (row: any) => <div className="p-2">{row.category}</div>
                                 },
                                 {
+                                    id: "status",
                                     header: "Status",
-                                    accessorKey: "status",
+                                    width: "150px",
                                     cell: (row: any) => (
-                                        <Badge variant={
-                                            row.status === "RECONCILED" ? "default" :
-                                                row.status === "MATCHED" ? "secondary" : "outline"
-                                        }>
-                                            {row.status}
-                                        </Badge>
+                                        <div className="p-2">
+                                            <Badge variant={
+                                                row.status === "RECONCILED" ? "default" :
+                                                    row.status === "MATCHED" ? "secondary" : "outline"
+                                            }>
+                                                {row.status}
+                                            </Badge>
+                                        </div>
                                     )
                                 },
                                 {
+                                    id: "matchedLineId",
                                     header: "Match",
-                                    accessorKey: "matchedLineId",
+                                    width: "150px",
                                     cell: (row: any) => (
-                                        row.matchedLineId ? (
-                                            <div className="flex items-center gap-2">
-                                                <LinkIcon className="h-3 w-3 text-blue-600" />
-                                                <span className="text-xs text-blue-600">Linked</span>
-                                            </div>
-                                        ) : (
-                                            <span className="text-xs text-muted-foreground">Unmatched</span>
-                                        )
+                                        <div className="p-2">
+                                            {row.matchedLineId ? (
+                                                <div className="flex items-center gap-2">
+                                                    <LinkIcon className="h-3 w-3 text-blue-600" />
+                                                    <span className="text-xs text-blue-600">Linked</span>
+                                                </div>
+                                            ) : (
+                                                <span className="text-xs text-muted-foreground">Unmatched</span>
+                                            )}
+                                        </div>
                                     )
                                 }
                             ]}
+                            onChange={() => { }} virtualized={true} containerHeight="500px"
                         />
                     )}
                 </CardContent>
@@ -275,7 +288,7 @@ export default function CorporateCardReconciliation() {
                     <p><strong>Manual Matching:</strong> Review unmatched transactions and link them manually if needed.</p>
                     <p><strong>Reconciliation:</strong> Once matched, transactions are marked as reconciled for audit purposes.</p>
                 </CardContent>
-            </Card>
-        </StandardPage>
-  );
+            </Card >
+        </StandardPage >
+    );
 }

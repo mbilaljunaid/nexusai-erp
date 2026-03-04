@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     CalendarDays,
@@ -88,31 +88,48 @@ export default function RevenuePeriodClose() {
         }
     });
 
-    const columns: Column<any>[] = [
+    const columns: any[] = [
         {
-            header: "Period",
-            accessorKey: "periodName",
-            cell: (item) => (
-                <div className="flex items-center gap-2">
-                    <CalendarDays className="h-4 w-4 text-slate-400" />
-                    <span className="font-medium">{item.periodName}</span>
-                </div>
+            id: "exceptions",
+            header: "Exceptions",
+            width: "150px",
+            cell: (row: any) => ( // Changed Period to any as Period type is not defined in the snippet
+                row.exceptions > 0 ? (
+                    <Badge variant="destructive" className="ml-2">{row.exceptions}</Badge>
+                ) : (
+                    <span className="text-muted-foreground text-sm ml-2">None</span>
+                )
             )
         },
         {
+            id: "lastUpdated",
+            header: "Last Activity",
+            width: "150px",
+            cell: (item: any) => <span>{format(new Date(item.startDate), "MMM dd, yyyy")}</span>
+        },
+        {
+            id: "periodName",
+            header: "Period",
+            width: "150px",
+            cell: (row: any) => <span className="font-medium">{row.periodName}</span> // Changed Period to any
+        },
+        {
+            id: "startDate",
             header: "Start Date",
-            accessorKey: "startDate",
-            cell: (item) => format(new Date(item.startDate), "MMM dd, yyyy")
+            width: "150px",
+            cell: (item: any) => <span>{format(new Date(item.startDate), "MMM dd, yyyy")}</span>
         },
         {
+            id: "endDate",
             header: "End Date",
-            accessorKey: "endDate",
-            cell: (item) => format(new Date(item.endDate), "MMM dd, yyyy")
+            width: "150px",
+            cell: (item: any) => <span>{format(new Date(item.endDate), "MMM dd, yyyy")}</span>
         },
         {
+            id: "status",
             header: "Status",
-            accessorKey: "status",
-            cell: (item) => {
+            width: "150px",
+            cell: (item: any) => {
                 const status = item.status;
                 return (
                     <Badge variant={status === "Open" ? "outline" : "default"}>
@@ -123,9 +140,10 @@ export default function RevenuePeriodClose() {
             }
         },
         {
-            header: "Actions",
             id: "actions",
-            cell: (period) => {
+            header: "Actions",
+            width: 250,
+            cell: (period: any) => {
                 return (
                     <div className="flex gap-2">
                         <Button
@@ -190,9 +208,12 @@ export default function RevenuePeriodClose() {
                             <Skeleton className="h-12 w-full" />
                         </div>
                     ) : (
-                        <StandardTable
+                        <InteractiveSpreadsheet
                             data={periods || []}
                             columns={columns}
+                            onChange={() => { }}
+                            virtualized={true}
+                            containerHeight="400px"
                         />
                     )}
                 </CardContent>

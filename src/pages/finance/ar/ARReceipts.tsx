@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Plus, Link, Unlink, RotateCcw } from "lucide-react";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { useLocation } from "wouter";
@@ -82,27 +82,31 @@ export default function ARReceipts() {
         }
     });
 
-    const columns: Column<any>[] = [
+    const columns: SpreadsheetColumn<any>[] = [
         {
+            id: "transactionId",
             header: "Transaction Ref",
-            accessorKey: "transactionId",
-            className: "font-semibold",
-            cell: (row: any) => row.transactionId?.substring(0, 8).toUpperCase() || row.id.substring(0, 8).toUpperCase()
+            width: "150px",
+            cell: (row: any) => <span className="font-semibold">{row.transactionId?.substring(0, 8).toUpperCase() || row.id.substring(0, 8).toUpperCase()}</span>
         },
-        { header: "Method", accessorKey: "paymentMethod" },
-        { header: "Amount", cell: (r) => `$${Number(r.amount).toFixed(2)}` },
-        { header: "Status", cell: (r) => <Badge variant={r.status === 'Applied' ? 'default' : 'secondary'}>{r.status}</Badge> },
+        { id: "paymentMethod", header: "Method", width: "120px", cell: (row: any) => <span>{row.paymentMethod}</span> },
+        { id: "amount", header: "Amount", width: "120px", cell: (r: any) => <span>${Number(r.amount).toFixed(2)}</span> },
+        { id: "status", header: "Status", width: "120px", cell: (r: any) => <Badge variant={r.status === 'Applied' ? 'default' : 'secondary'}>{r.status}</Badge> },
         {
+            id: "accounting",
             header: "Accounting",
-            cell: (r) => (
+            width: "120px",
+            cell: (r: any) => (
                 <Button variant="ghost" size="sm" onClick={() => { setSelectedEntityId(r.id); setAccountingModalOpen(true); }}>
                     View GL
                 </Button>
             )
         },
         {
+            id: "actions",
             header: "Actions",
-            cell: (r) => (
+            width: "250px",
+            cell: (r: any) => (
                 <div className="flex gap-2">
                     <Dialog>
                         <DialogTrigger asChild>
@@ -192,7 +196,7 @@ export default function ARReceipts() {
             <Card>
                 <CardHeader><CardTitle>Receipt Inventory</CardTitle></CardHeader>
                 <CardContent>
-                    <StandardTable data={receipts} columns={columns} isLoading={isLoading} filterColumn="transactionId" filterPlaceholder="Search by Ref #..." onRowClick={(item) => setLocation(`/finance/ar/receipts/${item.id}`)} />
+                    <InteractiveSpreadsheet data={receipts} columns={columns} virtualized={true} containerHeight="500px" onChange={() => { }} />
                 </CardContent>
             </Card>
 

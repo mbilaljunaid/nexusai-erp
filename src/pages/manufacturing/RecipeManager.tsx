@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -108,29 +108,32 @@ export default function RecipeManager() {
         });
     };
 
-    const columns: Column<Recipe>[] = [
+    const columns: SpreadsheetColumn<any>[] = [
         {
+            id: "recipeNumber",
             header: "Recipe ID",
-            accessorKey: "recipeNumber",
-            cell: (row) => <span className="font-mono font-bold text-indigo-700">{row.recipeNumber}</span>
+            width: "150px",
+            cell: (row: any) => <div className="p-2"><span className="font-mono font-bold text-indigo-700">{row.recipeNumber}</span></div>
         },
         {
+            id: "name",
             header: "Recipe Name",
-            accessorKey: "name",
-            cell: (row) => (
-                <div>
+            width: "250px",
+            cell: (row: any) => (
+                <div className="p-2">
                     <div className="font-medium">{row.name}</div>
                     <div className="text-xs text-slate-500 truncate max-w-[200px]">{row.description}</div>
                 </div>
             )
         },
         {
+            id: "formulaId",
             header: "Formula",
-            accessorKey: "formulaId",
-            cell: (row) => {
+            width: "200px",
+            cell: (row: any) => {
                 const f = Array.isArray(formulas) ? formulas.find((x: any) => x.id === row.formulaId) : null;
                 return (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 p-2">
                         <FlaskConical className="h-3 w-3 text-slate-400" />
                         <span className="text-sm">{f?.name || row.formulaId}</span>
                     </div>
@@ -138,25 +141,29 @@ export default function RecipeManager() {
             }
         },
         {
+            id: "routingId",
             header: "Routing",
-            accessorKey: "routingId",
-            cell: (row) => {
+            width: "200px",
+            cell: (row: any) => {
                 const r = routings.find(x => x.id === row.routingId);
                 return row.routingId ? (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 p-2">
                         <Settings className="h-3 w-3 text-slate-400" />
                         <span className="text-sm">{r?.routingNumber || "Standard Routing"}</span>
                     </div>
-                ) : <span className="text-slate-400 text-xs italic">No routing linked</span>;
+                ) : <span className="text-slate-400 text-xs italic p-2">No routing linked</span>;
             }
         },
         {
+            id: "status",
             header: "Status",
-            accessorKey: "status",
-            cell: (row) => (
-                <Badge variant={row.status === "active" ? "default" : "secondary"}>
-                    {row.status.toUpperCase()}
-                </Badge>
+            width: "120px",
+            cell: (row: any) => (
+                <div className="p-2">
+                    <Badge variant={row.status === "active" ? "default" : "secondary"}>
+                        {row.status.toUpperCase()}
+                    </Badge>
+                </div>
             )
         }
     ];
@@ -254,13 +261,10 @@ export default function RecipeManager() {
             }
         >
             <div className="bg-white rounded-lg border shadow-sm">
-                <StandardTable
+                <InteractiveSpreadsheet
                     data={recipes}
                     columns={columns}
-                    isLoading={isLoading}
-                    keyExtractor={item => item.id}
-                    filterColumn="name"
-                    filterPlaceholder="Search recipes..."
+                    onChange={() => { }} virtualized={true} containerHeight="600px"
                 />
             </div>
         </StandardPage>

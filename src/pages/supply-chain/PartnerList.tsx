@@ -1,5 +1,5 @@
 import React from 'react';
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -31,8 +31,9 @@ export default function PartnerList() {
 
     const columns: any[] = [
         {
+            id: "name",
             header: "Name",
-            accessorKey: "name",
+            width: "200px",
             cell: (row: Partner) => (
                 <div className="flex items-center gap-2">
                     <Users className="h-4 w-4 text-muted-foreground" />
@@ -41,13 +42,15 @@ export default function PartnerList() {
             )
         },
         {
+            id: "type",
             header: "Type",
-            accessorKey: "type",
+            width: "150px",
             cell: (row: Partner) => <Badge variant="outline">{row.type}</Badge>
         },
         {
+            id: "location",
             header: "Location",
-            accessorKey: "location",
+            width: "200px",
             cell: (row: Partner) => (
                 <div className="flex items-center gap-2">
                     <MapPin className="h-3 w-3 text-muted-foreground" />
@@ -56,8 +59,9 @@ export default function PartnerList() {
             )
         },
         {
+            id: "status",
             header: "Status",
-            accessorKey: "status",
+            width: "150px",
             cell: (row: Partner) => (
                 <Badge variant={row.status === 'Active' ? 'secondary' : 'destructive'} className="text-xs">
                     {row.status}
@@ -76,13 +80,15 @@ export default function PartnerList() {
                 </Button>
             }
         >
-            <StandardTable
-                data={partners}
-                columns={columns}
-                keyExtractor={(item) => item.id}
-                filterColumn="name"
-                filterPlaceholder="Filter partners..."
-            />
+            <div className="bg-white rounded-md shadow-sm border">
+                <InteractiveSpreadsheet
+                    data={partners}
+                    columns={columns}
+                    onChange={() => { }}
+                    virtualized={true}
+                    containerHeight="600px"
+                />
+            </div>
         </StandardPage>
     );
 }

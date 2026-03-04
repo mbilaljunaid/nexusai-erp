@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingUp, TrendingDown, AlertCircle, CheckCircle, Calendar, User } from 'lucide-react';
 import CustomerSuccessService, { CustomerHealthScore, RenewalForecast } from '@/services/customerSuccessService';
-import { StandardTable } from '@/components/ui/StandardTable';
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface CustomerHealthDashboardProps {
     customerId?: string; // If provided, shows single customer view
@@ -78,12 +78,13 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
         }
     };
 
-    const atRiskColumns = [
+    const atRiskColumns: SpreadsheetColumn<any>[] = [
         {
-            key: 'customer_name',
-            label: 'Customer',
-            render: (row: any) => (
-                <div className="flex items-center space-x-3">
+            id: 'customer_name',
+            header: 'Customer',
+            width: "250px",
+            cell: (row: any) => (
+                <div className="flex items-center space-x-3 p-2">
                     {getRiskIcon(row.risk_level)}
                     <div>
                         <div className="font-medium">{row.customers?.name || 'Unknown'}</div>
@@ -93,10 +94,11 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
             )
         },
         {
-            key: 'health_score',
-            label: 'Health Score',
-            render: (row: any) => (
-                <div className="flex items-center space-x-2">
+            id: 'health_score',
+            header: 'Health Score',
+            width: "150px",
+            cell: (row: any) => (
+                <div className="flex items-center space-x-2 p-2">
                     <Badge className={getHealthBadgeColor(row.health_score)}>
                         {row.health_score}
                     </Badge>
@@ -105,37 +107,43 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
             )
         },
         {
-            key: 'risk_level',
-            label: 'Risk Level',
-            render: (row: any) => (
-                <Badge variant={row.risk_level === 'critical' ? 'destructive' : 'default'}>
-                    {row.risk_level}
-                </Badge>
+            id: 'risk_level',
+            header: 'Risk Level',
+            width: "120px",
+            cell: (row: any) => (
+                <div className="p-2">
+                    <Badge variant={row.risk_level === 'critical' ? 'destructive' : 'default'}>
+                        {row.risk_level}
+                    </Badge>
+                </div>
             )
         },
         {
-            key: 'last_engagement',
-            label: 'Last Engagement',
-            render: (row: any) => (
-                <span className="text-sm text-gray-600">
+            id: 'last_engagement',
+            header: 'Last Engagement',
+            width: "150px",
+            cell: (row: any) => (
+                <div className="p-2 text-sm text-gray-600">
                     {row.last_engagement ? new Date(row.last_engagement).toLocaleDateString() : 'Never'}
-                </span>
+                </div>
             )
         },
         {
-            key: 'days_since_last_activity',
-            label: 'Days Inactive',
-            render: (row: any) => (
-                <span className={`text-sm ${row.days_since_last_activity > 30 ? 'text-red-600 font-semibold' : 'text-gray-600'}`}>
+            id: 'days_since_last_activity',
+            header: 'Days Inactive',
+            width: "120px",
+            cell: (row: any) => (
+                <div className={`p-2 text-sm ${row.days_since_last_activity > 30 ? 'text-red-600 font-semibold' : 'text-gray-600'}`}>
                     {row.days_since_last_activity || 0}
-                </span>
+                </div>
             )
         },
         {
-            key: 'actions',
-            label: 'Actions',
-            render: (row: any) => (
-                <div className="flex space-x-2">
+            id: 'actions',
+            header: 'Actions',
+            width: "150px",
+            cell: (row: any) => (
+                <div className="flex space-x-2 p-2">
                     <Button size="sm" variant="outline">View</Button>
                     <Button size="sm">Engage</Button>
                 </div>
@@ -143,67 +151,75 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
         }
     ];
 
-    const renewalColumns = [
+    const renewalColumns: SpreadsheetColumn<any>[] = [
         {
-            key: 'customer_name',
-            label: 'Customer',
-            render: (row: any) => (
-                <div>
+            id: 'customer_name',
+            header: 'Customer',
+            width: "250px",
+            cell: (row: any) => (
+                <div className="p-2">
                     <div className="font-medium">{row.customers?.name || 'Unknown'}</div>
                     <div className="text-sm text-gray-500">ARR: ${row.current_arr?.toLocaleString()}</div>
                 </div>
             )
         },
         {
-            key: 'renewal_date',
-            label: 'Renewal Date',
-            render: (row: any) => (
-                <div className="flex items-center space-x-2">
+            id: 'renewal_date',
+            header: 'Renewal Date',
+            width: "150px",
+            cell: (row: any) => (
+                <div className="flex items-center space-x-2 p-2">
                     <Calendar className="h-4 w-4 text-gray-500" />
                     <span>{new Date(row.renewal_date).toLocaleDateString()}</span>
                 </div>
             )
         },
         {
-            key: 'renewal_probability',
-            label: 'Renewal Probability',
-            render: (row: any) => (
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
+            id: 'renewal_probability',
+            header: 'Renewal Probability',
+            width: "200px",
+            cell: (row: any) => (
+                <div className="w-full bg-gray-200 rounded-full h-2.5 m-2 relative">
                     <div
-                        className={`h-2.5 rounded-full ${row.renewal_probability > 70 ? 'bg-green-600' :
-                                row.renewal_probability > 50 ? 'bg-yellow-600' : 'bg-red-600'
+                        className={`absolute left-0 top-0 h-2.5 rounded-full ${row.renewal_probability > 70 ? 'bg-green-600' :
+                            row.renewal_probability > 50 ? 'bg-yellow-600' : 'bg-red-600'
                             }`}
                         style={{ width: `${row.renewal_probability}%` }}
                     />
-                    <span className="text-xs ml-2">{row.renewal_probability}%</span>
+                    <span className="text-xs absolute -right-8 -top-1">{row.renewal_probability}%</span>
                 </div>
             )
         },
         {
-            key: 'churn_risk',
-            label: 'Churn Risk',
-            render: (row: any) => (
-                <Badge className={row.churn_risk > 50 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}>
-                    {row.churn_risk}%
-                </Badge>
+            id: 'churn_risk',
+            header: 'Churn Risk',
+            width: "100px",
+            cell: (row: any) => (
+                <div className="p-2">
+                    <Badge className={row.churn_risk > 50 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}>
+                        {row.churn_risk}%
+                    </Badge>
+                </div>
             )
         },
         {
-            key: 'csm_confidence',
-            label: 'CSM Confidence',
-            render: (row: any) => (
-                <span className="text-sm text-gray-600 capitalize">
+            id: 'csm_confidence',
+            header: 'CSM Confidence',
+            width: "150px",
+            cell: (row: any) => (
+                <div className="p-2 text-sm text-gray-600 capitalize">
                     {row.csm_confidence || 'Not set'}
-                </span>
+                </div>
             )
         },
         {
-            key: 'actions',
-            label: 'Actions',
-            render: (row: any) => (
-                <div className="flex space-x-2">
+            id: 'actions',
+            header: 'Actions',
+            width: "200px",
+            cell: (row: any) => (
+                <div className="flex space-x-2 p-2">
                     <Button size="sm" variant="outline">Update Forecast</Button>
-                    <Button size="sm">Plan Renewal</Button>
+                    <Button size="sm">Plan</Button>
                 </div>
             )
         }
@@ -306,10 +322,10 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
                             </p>
                         </CardHeader>
                         <CardContent>
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 columns={atRiskColumns}
                                 data={atRiskCustomers}
-                                pageSize={10}
+                                onChange={() => { }} virtualized={true} containerHeight="400px"
                             />
                         </CardContent>
                     </Card>
@@ -324,10 +340,10 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
                             </p>
                         </CardHeader>
                         <CardContent>
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 columns={renewalColumns}
                                 data={renewalPipeline}
-                                pageSize={10}
+                                onChange={() => { }} virtualized={true} containerHeight="400px"
                             />
                         </CardContent>
                     </Card>

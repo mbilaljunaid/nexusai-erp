@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Calendar, Plus, Mail } from "lucide-react";
@@ -47,11 +47,11 @@ export default function ReportScheduler() {
         createMutation.mutate({ ...newItem, recipients: recipientList });
     };
 
-    const columns: Column<any>[] = [
-        { accessorKey: "reportType", header: "Report" },
-        { accessorKey: "cronExpression", header: "Schedule (Cron)" },
-        { accessorKey: "recipients", header: "Recipients", cell: (info: any) => (info.getValue() as string[]).join(", ") },
-        { accessorKey: "isActive", header: "Active", cell: (info: any) => info.getValue() ? "Yes" : "No" }
+    const columns: SpreadsheetColumn<any>[] = [
+        { id: "reportType", header: "Report", width: "200px", cell: (r) => <div className="p-2">{r.reportType}</div> },
+        { id: "cronExpression", header: "Schedule (Cron)", width: "150px", cell: (r) => <div className="p-2">{r.cronExpression}</div> },
+        { id: "recipients", header: "Recipients", width: "300px", cell: (r) => <div className="p-2">{(r.recipients as string[]).join(", ")}</div> },
+        { id: "isActive", header: "Active", width: "100px", cell: (r) => <div className="p-2">{r.isActive ? "Yes" : "No"}</div> }
     ];
 
     return (
@@ -116,7 +116,7 @@ export default function ReportScheduler() {
                     </Dialog>
                 </CardHeader>
                 <CardContent>
-                    <StandardTable data={schedules} columns={columns} isLoading={isLoading} />
+                    <InteractiveSpreadsheet data={schedules} columns={columns} onChange={() => { }} virtualized={true} containerHeight="400px" />
                 </CardContent>
             </Card>
         </div>

@@ -25,7 +25,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, FileText, CheckCircle, XCircle, DollarSign, Undo } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -255,75 +255,34 @@ export default function CreditMemoWorkbench() {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={creditMemos}
                                 columns={[
-                                    { header: "CM Number", accessorKey: "invoiceNumber", className: "font-medium" },
+                                    { id: "invoiceNumber", header: "CM Number", width: "150px", cell: (r: any) => <div className="p-2 font-medium">{r.invoiceNumber}</div> },
+                                    { id: "sourceTransactionId", header: "Original Invoice", width: "150px", cell: (item: any) => <div className="p-2">{item.sourceTransactionId || "—"}</div> },
+                                    { id: "amount", header: "Amount", width: "150px", cell: (item: any) => <div className="p-2 font-bold text-red-600">${Math.abs(parseFloat(item.amount || "0")).toLocaleString()}</div> },
+                                    { id: "status", header: "Status", width: "150px", cell: (item: any) => <div className="p-2">{getStatusBadge(item.status)}</div> },
+                                    { id: "description", header: "Reason", width: "250px", cell: (item: any) => <div className="p-2">{item.description}</div> },
+                                    { id: "createdAt", header: "Date", width: "150px", cell: (item: any) => <div className="p-2">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "—"}</div> },
                                     {
-                                        header: "Original Invoice",
-                                        accessorKey: "sourceTransactionId",
-                                        cell: (item: any) => item.sourceTransactionId || "—",
-                                    },
-                                    {
-                                        header: "Amount",
-                                        accessorKey: "amount",
-                                        cell: (item: any) => (
-                                            <span className="font-bold text-red-600">
-                                                ${Math.abs(parseFloat(item.amount || "0")).toLocaleString()}
-                                            </span>
-                                        ),
-                                    },
-                                    {
-                                        header: "Status",
-                                        accessorKey: "status",
-                                        cell: (item: any) => getStatusBadge(item.status),
-                                    },
-                                    { header: "Reason", accessorKey: "description" },
-                                    {
-                                        header: "Date",
-                                        accessorKey: "createdAt",
-                                        cell: (item: any) =>
-                                            item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "—",
-                                    },
-                                    {
-                                        header: "Actions",
-                                        cell: (item: any) => (
-                                            <div className="flex gap-2">
+                                        id: "actions", header: "Actions", width: "150px", cell: (item: any) => (
+                                            <div className="flex gap-2 p-2">
                                                 {item.status === "Draft" && (
                                                     <>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                approveMutation.mutate(item.id);
-                                                            }}
-                                                        >
+                                                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); approveMutation.mutate(item.id); }}>
                                                             <CheckCircle className="h-4 w-4 text-green-500" />
                                                         </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                const reason = prompt("Rejection reason:");
-                                                                if (reason) {
-                                                                    rejectMutation.mutate({ id: item.id, reason });
-                                                                }
-                                                            }}
-                                                        >
+                                                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); const reason = prompt("Rejection reason:"); if (reason) { rejectMutation.mutate({ id: item.id, reason }); } }}>
                                                             <XCircle className="h-4 w-4 text-red-500" />
                                                         </Button>
                                                     </>
                                                 )}
                                             </div>
-                                        ),
-                                    },
+                                        )
+                                    }
                                 ]}
-                                keyExtractor={(item) => item.id}
-                                isLoading={isLoading}
-                                filterColumn="invoiceNumber"
-                                filterPlaceholder="Search credit memos..."
+                                onChange={() => { }}
+                                virtualized={true} containerHeight="400px"
                             />
                         </CardContent>
                     </Card>
@@ -336,66 +295,29 @@ export default function CreditMemoWorkbench() {
                             <CardDescription>Credit memos requiring manager approval</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={creditMemos.filter((cm: any) => cm.status === "Draft")}
                                 columns={[
-                                    { header: "CM Number", accessorKey: "invoiceNumber", className: "font-medium" },
+                                    { id: "invoiceNumber", header: "CM Number", width: "150px", cell: (r: any) => <div className="p-2 font-medium">{r.invoiceNumber}</div> },
+                                    { id: "sourceTransactionId", header: "Original Invoice", width: "150px", cell: (item: any) => <div className="p-2">{item.sourceTransactionId || "—"}</div> },
+                                    { id: "amount", header: "Amount", width: "150px", cell: (item: any) => <div className="p-2 font-bold text-red-600">${Math.abs(parseFloat(item.amount || "0")).toLocaleString()}</div> },
+                                    { id: "description", header: "Reason", width: "250px", cell: (item: any) => <div className="p-2">{item.description}</div> },
+                                    { id: "createdAt", header: "Date", width: "150px", cell: (item: any) => <div className="p-2">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "—"}</div> },
                                     {
-                                        header: "Original Invoice",
-                                        accessorKey: "sourceTransactionId",
-                                        cell: (item: any) => item.sourceTransactionId || "—",
-                                    },
-                                    {
-                                        header: "Amount",
-                                        accessorKey: "amount",
-                                        cell: (item: any) => (
-                                            <span className="font-bold text-red-600">
-                                                ${Math.abs(parseFloat(item.amount || "0")).toLocaleString()}
-                                            </span>
-                                        ),
-                                    },
-                                    { header: "Reason", accessorKey: "description" },
-                                    {
-                                        header: "Date",
-                                        accessorKey: "createdAt",
-                                        cell: (item: any) =>
-                                            item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "—",
-                                    },
-                                    {
-                                        header: "Actions",
-                                        cell: (item: any) => (
-                                            <div className="flex gap-2">
-                                                <Button
-                                                    variant="default"
-                                                    size="sm"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        approveMutation.mutate(item.id);
-                                                    }}
-                                                >
-                                                    <CheckCircle className="h-4 w-4 mr-1" />
-                                                    Approve
+                                        id: "actions", header: "Actions", width: "200px", cell: (item: any) => (
+                                            <div className="flex gap-2 p-2">
+                                                <Button variant="default" size="sm" onClick={(e) => { e.stopPropagation(); approveMutation.mutate(item.id); }}>
+                                                    <CheckCircle className="h-4 w-4 mr-1" /> Approve
                                                 </Button>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        const reason = prompt("Rejection reason:");
-                                                        if (reason) {
-                                                            rejectMutation.mutate({ id: item.id, reason });
-                                                        }
-                                                    }}
-                                                >
-                                                    <XCircle className="h-4 w-4 mr-1" />
-                                                    Reject
+                                                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); const reason = prompt("Rejection reason:"); if (reason) { rejectMutation.mutate({ id: item.id, reason }); } }}>
+                                                    <XCircle className="h-4 w-4 mr-1" /> Reject
                                                 </Button>
                                             </div>
-                                        ),
-                                    },
+                                        )
+                                    }
                                 ]}
-                                keyExtractor={(item) => item.id}
-                                isLoading={isLoading}
+                                onChange={() => { }}
+                                virtualized={true} containerHeight="400px"
                             />
                         </CardContent>
                     </Card>

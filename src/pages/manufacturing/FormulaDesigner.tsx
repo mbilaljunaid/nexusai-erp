@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -149,32 +149,41 @@ export default function FormulaDesigner() {
         return { ...f, displayName: product ? product.itemName : f.productId };
     });
 
-    const columns: Column<FormulaHeader & { displayName: string }>[] = [
+    const columns: SpreadsheetColumn<any>[] = [
         {
+            id: "formulaCode",
             header: "Formula ID",
-            accessorKey: "formulaCode",
-            cell: (row: any) => <span className="font-mono font-bold text-indigo-700">{row.formulaCode}</span>
+            width: "150px",
+            cell: (row: any) => <div className="p-2"><span className="font-mono font-bold text-indigo-700">{row.formulaCode}</span></div>
         },
         {
+            id: "name",
             header: "Formula Name",
-            accessorKey: "name",
+            width: "250px",
+            cell: (row: any) => <div className="p-2">{row.name}</div>
         },
         {
+            id: "displayName",
             header: "Product",
-            accessorKey: "displayName",
+            width: "250px",
+            cell: (row: any) => <div className="p-2">{row.displayName}</div>
         },
         {
+            id: "version",
             header: "Version",
-            accessorKey: "version",
-            cell: (row: any) => <Badge variant="outline">v{row.version}</Badge>
+            width: "100px",
+            cell: (row: any) => <div className="p-2"><Badge variant="outline">v{row.version}</Badge></div>
         },
         {
+            id: "status",
             header: "Status",
-            accessorKey: "status",
+            width: "120px",
             cell: (row: any) => (
-                <Badge variant={row.status === "active" ? "default" : "secondary"}>
-                    {row.status.toUpperCase()}
-                </Badge>
+                <div className="p-2">
+                    <Badge variant={row.status === "active" ? "default" : "secondary"}>
+                        {row.status.toUpperCase()}
+                    </Badge>
+                </div>
             )
         }
     ];
@@ -308,17 +317,10 @@ export default function FormulaDesigner() {
             }
         >
             <div className="bg-white rounded-lg border shadow-sm">
-                <StandardTable
+                <InteractiveSpreadsheet
                     data={formulasWithNames}
                     columns={columns}
-                    isLoading={formulasLoading}
-                    keyExtractor={(item) => item.id}
-                    filterColumn="displayName"
-                    filterPlaceholder="Search by output product..."
-                    page={page}
-                    pageSize={pageSize}
-                    totalItems={totalItems}
-                    onPageChange={setPage}
+                    onChange={() => { }} virtualized={true} containerHeight="600px"
                 />
             </div>
         </StandardPage>

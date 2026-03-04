@@ -38,7 +38,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OpportunityProductList } from "@/components/crm/OpportunityProductList";
 import { OpportunityQuoteList } from "@/components/crm/OpportunityQuoteList";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Progress } from "@/components/ui/progress";
 import { CompetitorList } from "@/components/crm/CompetitorList";
 import { useNexusAI } from "@/contexts/NexusAIContext";
@@ -78,7 +78,7 @@ function AiInsightsTab({ opportunityId }: { opportunityId: string }) {
           NexusAI Convergence Platform v1.0
         </p>
       </div>
-    </div>
+    </StandardPage>
   );
 }
 
@@ -206,7 +206,13 @@ export default function OpportunitiesDetail() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
         <div className="flex items-center gap-4">
           <Link href="/crm">
-            <Button variant="outline" size="icon" clas           <p className="text-muted-foreground">Manage your sales pipeline and track deal progress.</p>
+            <Button variant="outline" size="icon" className="shrink-0 rounded-full">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          </Link>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Opportunities</h1>
+            <p className="text-muted-foreground">Manage your sales pipeline and track deal progress.</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -302,42 +308,58 @@ export default function OpportunitiesDetail() {
             ))}
           </div>
         ) : viewMode === "list" ? (
-          <StandardTable
+          <InteractiveSpreadsheet
             data={filteredOpps}
             columns={[
               {
+                id: "name",
                 header: "Name",
-                accessorKey: "name" as any,
+                width: "300px",
                 cell: (opp: any) => (
-                  <div>
+                  <div className="p-2">
                     <div className="font-semibold">{opp.name}</div>
                     <div className="text-xs text-muted-foreground">{getAccountName(opp.accountId)}</div>
                   </div>
                 )
               },
               {
+                id: "stage",
                 header: "Stage",
-                accessorKey: "stage" as any,
-                cell: (opp: any) => <Badge variant="outline" className="capitalize">{String(opp.stage).replace('_', ' ')}</Badge>
+                width: "150px",
+                cell: (opp: any) => <div className="p-2"><Badge variant="outline" className="capitalize">{String(opp.stage).replace('_', ' ')}</Badge></div>
               },
               {
+                id: "amount",
                 header: "Amount",
-                accessorKey: "amount" as any,
-                cell: (opp: any) => <span className="font-medium">{formatCurrency(opp.amount)}</span>
+                width: "150px",
+                cell: (opp: any) => <div className="p-2 font-medium">{formatCurrency(opp.amount)}</div>
               },
               {
+                id: "probability",
                 header: "Probability",
-                accessorKey: "probability" as any,
-                cell: (opp: any) => <span>{opp.probability}%</span>
+                width: "120px",
+                cell: (opp: any) => <div className="p-2">{opp.probability}%</div>
               },
               {
+                id: "closeDate",
                 header: "Close Date",
-                accessorKey: "closeDate" as any,
-                cell: (opp: any) => opp.closeDate ? new Date(opp.closeDate).toLocaleDateString() : '-'
+                width: "150px",
+                cell: (opp: any) => <div className="p-2">{opp.closeDate ? new Date(opp.closeDate).toLocaleDateString() : '-'}</div>
+              },
+              {
+                id: "actions",
+                header: "Actions",
+                width: "100px",
+                cell: (opp: any) => (
+                  <div className="p-2">
+                    <Button variant="ghost" size="sm" onClick={() => setSelectedOpp(opp)}>View</Button>
+                  </div>
+                )
               }
             ]}
-            onRowClick={(opp: any) => setSelectedOpp(opp)}
-            keyExtractor={(opp: any) => opp.id}
+            onChange={() => { }}
+            virtualized={true}
+            containerHeight="600px"
           />
         ) : (
           /* Kanban View */
@@ -483,6 +505,6 @@ export default function OpportunitiesDetail() {
           )}
         </SheetContent>
       </Sheet>
-    </StandardPage>
+    </div>
   );
 }

@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { SubscriptionDetailSheet } from "./components/SubscriptionDetailSheet";
 
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export function SubscriptionWorkbench() {
@@ -134,27 +134,26 @@ export function SubscriptionWorkbench() {
                     <CardTitle>Active Subscriptions</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <StandardTable
+                    <InteractiveSpreadsheet
                         data={subscriptions || []}
                         columns={[
-                            { header: "Contract #", accessorKey: "contractNumber", className: "font-medium" },
-                            { header: "Customer", accessorKey: "customerId", cell: (item: any) => getCustomerName(item.customerId) },
-                            { header: "Status", accessorKey: "status", cell: (item: any) => <Badge variant="outline">{item.status}</Badge> },
-                            { header: "MRR", accessorKey: "totalMrr", cell: (item: any) => `$${Number(item.totalMrr).toLocaleString()}` },
+                            { id: "contractNumber", header: "Contract #", width: "150px", cell: (item: any) => <div className="p-2 font-medium">{item.contractNumber}</div> },
+                            { id: "customerId", header: "Customer", width: "200px", cell: (item: any) => <div className="p-2">{getCustomerName(item.customerId)}</div> },
+                            { id: "status", header: "Status", width: "150px", cell: (item: any) => <div className="p-2"><Badge variant="outline">{item.status}</Badge></div> },
+                            { id: "totalMrr", header: "MRR", width: "150px", cell: (item: any) => <div className="p-2">${Number(item.totalMrr).toLocaleString()}</div> },
                             {
-                                header: "Actions",
+                                id: "actions", header: "Actions", width: "150px",
                                 cell: (item: any) => (
-                                    <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setSelectedSub(item); }}>
-                                        View Details
-                                    </Button>
+                                    <div className="p-2">
+                                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setSelectedSub(item); }}>
+                                            View Details
+                                        </Button>
+                                    </div>
                                 )
                             }
                         ]}
-                        keyExtractor={(item) => item.id}
-                        isLoading={isLoading}
-                        onRowClick={(item) => setSelectedSub(item)}
-                        filterColumn="contractNumber"
-                        filterPlaceholder="Search contracts..."
+                        onChange={() => { }}
+                        virtualized={true} containerHeight="400px"
                     />
                 </CardContent>
             </Card>

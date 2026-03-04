@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { MetricCard } from "@/components/MetricCard";
 import { ComplianceAnalytics } from "@/components/compliance/ComplianceAnalytics";
 import { RemediationSheet } from "@/components/compliance/RemediationSheet";
@@ -142,50 +142,60 @@ export default function ComplianceGovernance() {
     },
   });
 
-  const columns: Column<ComplianceRule>[] = [
+  const columns: SpreadsheetColumn<any>[] = [
     {
+      id: "name",
       header: "Rule Name",
-      accessorKey: "name",
+      width: "250px",
       cell: (r: any) => (
-        <div className="flex flex-col">
+        <div className="flex flex-col p-2">
           <span className="font-medium text-slate-900">{r.name}</span>
           <span className="text-xs text-muted-foreground font-mono">{r.id.substring(0, 8)}</span>
         </div>
       )
     },
     {
+      id: "legislationCode",
       header: "Legislation",
-      accessorKey: "legislationCode",
-      cell: (r: any) => <Badge variant="outline" className="bg-slate-50">{r.legislationCode}</Badge>
+      width: "150px",
+      cell: (r: any) => <div className="p-2"><Badge variant="outline" className="bg-slate-50">{r.legislationCode}</Badge></div>
     },
     {
+      id: "severity",
       header: "Risk Level",
-      accessorKey: "severity",
+      width: "150px",
       cell: (r: any) => (
-        <Badge variant={r.severity === "high" || r.severity === "critical" ? "destructive" : r.severity === "medium" ? "secondary" : "default"}>
-          {(r.severity || "MEDIUM").toUpperCase()}
-        </Badge>
+        <div className="p-2">
+          <Badge variant={r.severity === "high" || r.severity === "critical" ? "destructive" : r.severity === "medium" ? "secondary" : "default"}>
+            {(r.severity || "MEDIUM").toUpperCase()}
+          </Badge>
+        </div>
       )
     },
     {
+      id: "category",
       header: "Category",
-      accessorKey: "category",
-      cell: (r: any) => <span className="text-xs font-semibold text-slate-500">{r.category}</span>
+      width: "150px",
+      cell: (r: any) => <div className="p-2"><span className="text-xs font-semibold text-slate-500">{r.category}</span></div>
     },
     {
+      id: "status",
       header: "Status",
-      accessorKey: "status",
-      cell: (r) => (
-        <Badge variant={r.status === "active" ? "default" : "secondary"} className={r.status === "active" ? "bg-green-500/10 text-green-600 border-none" : ""}>
-          {r.status.toUpperCase()}
-        </Badge>
+      width: "150px",
+      cell: (r: any) => (
+        <div className="p-2">
+          <Badge variant={r.status === "active" ? "default" : "secondary"} className={r.status === "active" ? "bg-green-500/10 text-green-600 border-none" : ""}>
+            {r.status.toUpperCase()}
+          </Badge>
+        </div>
       )
     },
     {
-      header: "Actions",
       id: "actions",
-      cell: (r) => (
-        <div className="flex gap-2">
+      header: "Actions",
+      width: "100px",
+      cell: (r: any) => (
+        <div className="flex gap-2 p-2">
           <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" onClick={() => deleteMutation.mutate(r.id)}>
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -194,65 +204,75 @@ export default function ComplianceGovernance() {
     }
   ];
 
-  const violationColumns: Column<Violation>[] = [
+  const violationColumns: SpreadsheetColumn<any>[] = [
     {
+      id: "ruleName",
       header: "Rule / Description",
-      accessorKey: "ruleName",
-      cell: (v) => (
-        <div className="flex flex-col">
+      width: "300px",
+      cell: (v: any) => (
+        <div className="flex flex-col p-2">
           <span className="font-medium text-slate-900">{v.ruleName}</span>
-          <span className="text-xs text-muted-foreground truncate max-w-[300px]">{v.description}</span>
+          <span className="text-xs text-muted-foreground truncate max-w-[280px]">{v.description}</span>
         </div>
       )
     },
     {
+      id: "severity",
       header: "Severity",
-      accessorKey: "severity",
-      cell: (v) => (
-        <Badge variant={v.severity === 'critical' ? 'destructive' : 'secondary'}>
-          {v.severity.toUpperCase()}
-        </Badge>
+      width: "120px",
+      cell: (v: any) => (
+        <div className="p-2">
+          <Badge variant={v.severity === 'critical' ? 'destructive' : 'secondary'}>
+            {v.severity.toUpperCase()}
+          </Badge>
+        </div>
       )
     },
     {
+      id: "entityId",
       header: "Entity",
-      accessorKey: "entityId",
-      cell: (v) => (
-        <div className="flex items-center gap-2">
+      width: "150px",
+      cell: (v: any) => (
+        <div className="flex items-center gap-2 p-2">
           <span className="text-xs font-mono bg-slate-100 px-1.5 py-0.5 rounded">{v.entityType}</span>
           <span className="text-sm font-medium">{v.entityId}</span>
         </div>
       )
     },
     {
+      id: "createdAt",
       header: "Created",
-      accessorKey: "createdAt",
-      cell: (v) => (
-        <span className="text-sm text-muted-foreground">
+      width: "150px",
+      cell: (v: any) => (
+        <div className="p-2 text-sm text-muted-foreground">
           {format(new Date(v.createdAt), 'MMM d, yyyy')}
-        </span>
+        </div>
       )
     },
     {
+      id: "status",
       header: "Status",
-      accessorKey: "status",
-      cell: (v) => (
-        <Badge
-          className={
-            v.status === 'resolved' ? 'bg-green-100 text-green-700 border-green-200 hover:bg-green-100' :
-              v.status === 'dismissed' ? 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-100' :
-                'bg-orange-100 text-orange-700 border-orange-200 hover:bg-orange-100'
-          }
-        >
-          {v.status.toUpperCase()}
-        </Badge>
+      width: "150px",
+      cell: (v: any) => (
+        <div className="p-2">
+          <Badge
+            className={
+              v.status === 'resolved' ? 'bg-green-100 text-green-700 border-green-200 hover:bg-green-100' :
+                v.status === 'dismissed' ? 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-100' :
+                  'bg-orange-100 text-orange-700 border-orange-200 hover:bg-orange-100'
+            }
+          >
+            {v.status.toUpperCase()}
+          </Badge>
+        </div>
       )
     },
     {
-      header: "Actions",
       id: "actions",
-      cell: (v) => (
-        <div className="flex items-center gap-2">
+      header: "Actions",
+      width: "150px",
+      cell: (v: any) => (
+        <div className="flex items-center gap-2 p-2">
           <Button
             variant="ghost"
             size="sm"
@@ -433,11 +453,10 @@ export default function ComplianceGovernance() {
                 </Sheet>
               </div>
             </div>
-            <StandardTable
+            <InteractiveSpreadsheet
               data={rules}
               columns={columns}
-              isLoading={isLoading}
-              filterColumn="name"
+              onChange={() => { }} virtualized={true} containerHeight="500px"
             />
           </div>
         </TabsContent>
@@ -450,14 +469,10 @@ export default function ComplianceGovernance() {
                 <h3 className="font-bold text-slate-700 italic">Active Violations & Remediation Queue</h3>
               </div>
             </div>
-            <StandardTable
+            <InteractiveSpreadsheet
               data={violations}
               columns={violationColumns}
-              filterColumn="ruleName"
-              totalCount={totalViolations}
-              page={violationPage}
-              onPageChange={setViolationPage}
-              isLoading={isViolationsLoading}
+              onChange={() => { }} virtualized={true} containerHeight="500px"
             />
           </div>
         </TabsContent>

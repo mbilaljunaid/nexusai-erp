@@ -34,7 +34,7 @@ import {
     CheckCircle2,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -288,41 +288,34 @@ export default function SubscriptionLifecycleManager() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <StandardTable
+                    <InteractiveSpreadsheet
                         data={subscriptions}
                         columns={[
-                            { header: "Contract #", accessorKey: "contractNumber", className: "font-medium" },
+                            { id: "contractNumber", header: "Contract #", width: "150px", cell: (r) => <div className="p-2 font-medium">{r.contractNumber}</div> },
                             {
-                                header: "Customer",
-                                accessorKey: "customerId",
-                                cell: (item: any) => getCustomerName(item.customerId),
+                                id: "customer", header: "Customer", width: "200px",
+                                cell: (item: any) => <div className="p-2">{getCustomerName(item.customerId)}</div>,
                             },
                             {
-                                header: "Status",
-                                accessorKey: "status",
-                                cell: (item: any) => getStatusBadge(item.status),
+                                id: "status", header: "Status", width: "150px",
+                                cell: (item: any) => <div className="p-2">{getStatusBadge(item.status)}</div>,
                             },
                             {
-                                header: "MRR",
-                                accessorKey: "totalMrr",
-                                cell: (item: any) => `$${parseFloat(item.totalMrr || "0").toLocaleString()}`,
+                                id: "totalMrr", header: "MRR", width: "150px",
+                                cell: (item: any) => <div className="p-2">${parseFloat(item.totalMrr || "0").toLocaleString()}</div>,
                             },
                             {
-                                header: "Start Date",
-                                accessorKey: "startDate",
-                                cell: (item: any) =>
-                                    new Date(item.startDate).toLocaleDateString(),
+                                id: "startDate", header: "Start Date", width: "150px",
+                                cell: (item: any) => <div className="p-2">{new Date(item.startDate).toLocaleDateString()}</div>,
                             },
                             {
-                                header: "End Date",
-                                accessorKey: "endDate",
-                                cell: (item: any) =>
-                                    item.endDate ? new Date(item.endDate).toLocaleDateString() : "—",
+                                id: "endDate", header: "End Date", width: "150px",
+                                cell: (item: any) => <div className="p-2">{item.endDate ? new Date(item.endDate).toLocaleDateString() : "—"}</div>,
                             },
                             {
-                                header: "Actions",
+                                id: "actions", header: "Actions", width: "200px",
                                 cell: (item: any) => (
-                                    <div className="flex gap-2">
+                                    <div className="flex gap-2 p-2">
                                         <Button
                                             variant="ghost"
                                             size="sm"
@@ -366,11 +359,8 @@ export default function SubscriptionLifecycleManager() {
                                 ),
                             },
                         ]}
-                        keyExtractor={(item) => item.id}
-                        isLoading={isLoading}
-                        onRowClick={(item) => setSelectedSub(item)}
-                        filterColumn="contractNumber"
-                        filterPlaceholder="Search contracts..."
+                        onChange={() => { }}
+                        virtualized={true} containerHeight="400px"
                     />
                 </CardContent>
             </Card>

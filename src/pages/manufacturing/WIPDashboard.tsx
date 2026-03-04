@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
     Card, CardContent, CardHeader, CardTitle, CardDescription
 } from "@/components/ui/card";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from "recharts";
@@ -39,17 +39,19 @@ export default function WIPDashboard() {
         }
     });
 
-    const columns: Column<WipBalance>[] = [
-        { header: "Order ID", accessorKey: "productionOrderId" },
+    const columns: SpreadsheetColumn<any>[] = [
+        { id: "productionOrderId", header: "Order ID", width: "150px", cell: (row: any) => <div className="p-2">{row.productionOrderId}</div> },
         {
+            id: "balance",
             header: "Total Balance",
-            accessorKey: "balance",
-            cell: (row) => `$${Number(row.balance).toFixed(2)}`
+            width: "150px",
+            cell: (row: any) => <div className="p-2">${Number(row.balance).toFixed(2)}</div>
         },
         {
+            id: "lastUpdated",
             header: "Last Updated",
-            accessorKey: "lastUpdated",
-            cell: (row) => new Date(row.lastUpdated!).toLocaleString()
+            width: "200px",
+            cell: (row: any) => <div className="p-2">{new Date(row.lastUpdated!).toLocaleString()}</div>
         }
     ];
 
@@ -133,13 +135,10 @@ export default function WIPDashboard() {
                         <CardDescription>Detailed financial standing of manufacturing orders.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <StandardTable
+                        <InteractiveSpreadsheet
                             columns={columns}
                             data={wipBalances}
-                            page={page}
-                            onPageChange={setPage}
-                            totalItems={totalItems}
-                            pageSize={limit}
+                            onChange={() => { }} virtualized={true} containerHeight="400px"
                         />
                     </CardContent>
                 </Card>

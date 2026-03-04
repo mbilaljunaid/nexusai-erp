@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -130,23 +130,29 @@ export default function BOMDesigner() {
         return { ...b, displayName: product ? product.itemName : b.productId };
     });
 
-    const columns: Column<BomHeader & { displayName: string }>[] = [
+    const columns: SpreadsheetColumn<any>[] = [
         {
+            id: "bomNumber",
             header: "BOM #",
-            accessorKey: "bomNumber",
-            cell: (row: any) => <span className="font-mono font-bold text-blue-700">{row.bomNumber}</span>
+            width: "150px",
+            cell: (row: any) => <div className="p-2"><span className="font-mono font-bold text-blue-700">{row.bomNumber}</span></div>
         },
         {
+            id: "displayName",
             header: "Product",
-            accessorKey: "displayName",
+            width: "250px",
+            cell: (row: any) => <div className="p-2">{row.displayName}</div>
         },
         {
+            id: "status",
             header: "Status",
-            accessorKey: "status",
+            width: "150px",
             cell: (row: any) => (
-                <Badge variant={row.status === "active" ? "default" : "secondary"}>
-                    {row.status}
-                </Badge>
+                <div className="p-2">
+                    <Badge variant={row.status === "active" ? "default" : "secondary"}>
+                        {row.status}
+                    </Badge>
+                </div>
             )
         }
     ];
@@ -255,17 +261,10 @@ export default function BOMDesigner() {
                 </Sheet>
             }
         >
-            <StandardTable
+            <InteractiveSpreadsheet
                 data={bomsWithNames}
                 columns={columns}
-                isLoading={bomsLoading}
-                keyExtractor={(item) => item.id}
-                filterColumn="displayName"
-                filterPlaceholder="Filter by product name..."
-                page={page}
-                pageSize={pageSize}
-                totalItems={totalItems}
-                onPageChange={setPage}
+                onChange={() => { }} virtualized={true} containerHeight="600px"
             />
         </StandardPage>
     );

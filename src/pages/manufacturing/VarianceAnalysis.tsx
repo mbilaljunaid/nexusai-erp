@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
     Card, CardContent, CardHeader, CardTitle, CardDescription
 } from "@/components/ui/card";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import {
     PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend
 } from "recharts";
@@ -61,23 +61,25 @@ export default function VarianceAnalysis() {
         { name: "Yield Variance", value: 800, color: "#f59e0b" },
     ];
 
-    const columns: Column<VarianceJournal>[] = [
-        { header: "Order ID", accessorKey: "productionOrderId" },
-        { header: "Type", accessorKey: "varianceType" },
+    const columns: SpreadsheetColumn<any>[] = [
+        { id: "productionOrderId", header: "Order ID", width: "150px", cell: (row: any) => <div className="p-2">{row.productionOrderId}</div> },
+        { id: "varianceType", header: "Type", width: "150px", cell: (row: any) => <div className="p-2">{row.varianceType}</div> },
         {
+            id: "amount",
             header: "Amount",
-            accessorKey: "amount",
-            cell: (row) => (
-                <span className={Number(row.amount) > 0 ? "text-red-500 font-medium" : "text-green-500 font-medium"}>
+            width: "150px",
+            cell: (row: any) => (
+                <div className={`p-2 ${Number(row.amount) > 0 ? "text-red-500 font-medium" : "text-green-500 font-medium"}`}>
                     ${Number(row.amount).toFixed(2)}
-                </span>
+                </div>
             )
         },
-        { header: "Description", accessorKey: "description" },
+        { id: "description", header: "Description", width: "300px", cell: (row: any) => <div className="p-2">{row.description}</div> },
         {
+            id: "glPosted",
             header: "GL Posted",
-            accessorKey: "glPosted",
-            cell: (row) => row.glPosted ? "✅" : "⏳"
+            width: "120px",
+            cell: (row: any) => <div className="p-2">{row.glPosted ? "✅" : "⏳"}</div>
         }
     ];
 
@@ -189,13 +191,10 @@ export default function VarianceAnalysis() {
                         <FileSpreadsheet className="h-5 w-5 text-muted-foreground cursor-pointer hover:text-primary transition-colors" />
                     </CardHeader>
                     <CardContent>
-                        <StandardTable
+                        <InteractiveSpreadsheet
                             columns={columns}
                             data={journals}
-                            page={page}
-                            onPageChange={setPage}
-                            totalItems={totalItems}
-                            pageSize={limit}
+                            onChange={() => { }} virtualized={true} containerHeight="400px"
                         />
                     </CardContent>
                 </Card>

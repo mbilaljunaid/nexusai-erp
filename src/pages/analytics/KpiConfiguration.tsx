@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Settings, Save, AlertCircle } from "lucide-react";
@@ -35,12 +35,19 @@ export default function KpiConfiguration() {
         }
     });
 
-    const columns: Column<any>[] = [
-        { accessorKey: "name", header: "KPI Name" },
-        { accessorKey: "code", header: "Code" },
-        { accessorKey: "category", header: "Category" },
-        { accessorKey: "periodicity", header: "Frequency" },
-        { accessorKey: "isActive", header: "Active", cell: (info) => info.getValue() ? "Yes" : "No" }
+    const columns: SpreadsheetColumn<any>[] = [
+        { id: "name", header: "KPI Name", width: "200px", cell: (r) => <div className="p-2">{r.name}</div> },
+        { id: "code", header: "Code", width: "150px", cell: (r) => <div className="p-2">{r.code}</div> },
+        { id: "category", header: "Category", width: "150px", cell: (r) => <div className="p-2">{r.category}</div> },
+        { id: "periodicity", header: "Frequency", width: "150px", cell: (r) => <div className="p-2">{r.periodicity}</div> },
+        { id: "isActive", header: "Active", width: "100px", cell: (r) => <div className="p-2">{r.isActive ? "Yes" : "No"}</div> },
+        {
+            id: "actions", header: "Actions", width: "100px", cell: (row) => (
+                <div className="p-2">
+                    <Button variant="ghost" size="sm" onClick={() => setSelectedKpi(row)}>Edit</Button>
+                </div>
+            )
+        }
     ];
 
     return (
@@ -56,12 +63,11 @@ export default function KpiConfiguration() {
             <Card>
                 <CardHeader><CardTitle>Metric Repository</CardTitle></CardHeader>
                 <CardContent>
-                    <StandardTable
+                    <InteractiveSpreadsheet
                         data={kpis}
                         columns={columns}
-                        isLoading={isLoading}
-                        // Row click opens editor sheet
-                        onRowClick={(row) => setSelectedKpi(row)}
+                        onChange={() => { }}
+                        virtualized={true} containerHeight="400px"
                     />
                 </CardContent>
             </Card>

@@ -7,7 +7,7 @@ import { PlayCircle, CheckCircle, AlertCircle, ScanEye } from "lucide-react";
 import { Link } from "wouter";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import type { BillingEvent } from "@/types/erp-types";
 import {
     Breadcrumb,
@@ -68,17 +68,15 @@ export default function BillingWorkbench() {
         }
     });
 
-    const columns: Column<BillingEvent>[] = [
+    const columns: SpreadsheetColumn<BillingEvent>[] = [
         {
-            header: "Event Date",
-            accessorKey: "eventDate",
-            cell: (e) => new Date(e.eventDate).toLocaleDateString()
+            id: "eventDate", header: "Event Date", width: "150px",
+            cell: (e) => <div className="p-2">{new Date(e.eventDate).toLocaleDateString()}</div>
         },
         {
-            header: "Source",
-            accessorKey: "sourceSystem",
+            id: "sourceSystem", header: "Source", width: "150px",
             cell: (e) => (
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-1 p-2">
                     <Badge variant="outline" className="w-fit">{e.sourceSystem}</Badge>
                     {e.sourceSystem === 'Projects' && (
                         <Link href={`/projects/${e.sourceTransactionId}`} className="text-xs text-primary hover:underline">
@@ -94,30 +92,35 @@ export default function BillingWorkbench() {
             )
         },
         {
-            header: "Customer",
-            accessorKey: "customerId",
+            id: "customerId", header: "Customer", width: "200px",
             cell: (e) => (
-                <div className="flex flex-col">
+                <div className="flex flex-col p-2">
                     <span className="font-medium">{customerMap.get(e.customerId) || "External Customer"}</span>
                     <span className="text-xs text-muted-foreground font-mono">{e.customerId.substring(0, 8)}...</span>
                 </div>
             )
         },
         {
-            header: "Description",
-            accessorKey: "description",
-            className: "max-w-md truncate"
+            id: "description", header: "Description", width: "250px",
+            cell: (e) => <div className="p-2 max-w-md truncate">{e.description}</div>
         },
         {
-            header: "Amount",
-            accessorKey: "amount",
-            cell: (e) => `$${Number(e.amount).toFixed(2)}`,
-            className: "font-mono font-bold text-right"
+            id: "amount", header: "Amount", width: "150px",
+            cell: (e) => <div className="p-2 font-mono font-bold text-right">${Number(e.amount).toFixed(2)}</div>
         },
         {
-            header: "Status",
-            accessorKey: "status",
-            cell: (e) => <Badge variant={e.status === 'Pending' ? 'secondary' : 'default'}>{e.status}</Badge>
+            id: "status", header: "Status", width: "150px",
+            cell: (e) => <div className="p-2"><Badge variant={e.status === 'Pending' ? 'secondary' : 'default'}>{e.status}</Badge></div>
+        },
+        {
+            id: "actions", header: "Actions", width: "100px",
+            cell: (e) => (
+                <div className="p-2 flex justify-center">
+                    <Button variant="ghost" size="sm" onClick={() => setSelectedEvent(e)}>
+                        View Details
+                    </Button>
+                </div>
+            )
         }
     ];
 
@@ -195,16 +198,11 @@ export default function BillingWorkbench() {
 
             <Card>
                 <CardContent className="p-0">
-                    <StandardTable
+                    <InteractiveSpreadsheet
                         data={events}
                         columns={columns}
-                        isLoading={isLoading}
-                        page={page}
-                        pageSize={pageSize}
-                        totalItems={events.length}
-                        onPageChange={setPage}
-                        keyExtractor={(e) => e.id}
-                        onRowClick={(e) => setSelectedEvent(e)}
+                        onChange={() => { }}
+                        virtualized={true} containerHeight="500px"
                     />
                 </CardContent>
             </Card>

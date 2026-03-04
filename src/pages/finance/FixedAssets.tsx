@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -48,13 +48,13 @@ export default function FixedAssets() {
         },
     });
 
-    const columns: Column<Asset>[] = [
-        { header: "Asset Name", accessorKey: "assetName", cell: (row) => <span className="font-semibold">{row.assetName}</span> },
-        { header: "Category", accessorKey: "category" },
-        { header: "Cost", accessorKey: "cost", cell: (row) => <span>${parseFloat(row.cost || "0").toLocaleString()}</span> },
-        { header: "Status", accessorKey: "status", cell: (row) => <Badge variant={row.status === "active" ? "default" : "secondary"}>{row.status}</Badge> },
+    const columns: SpreadsheetColumn<any>[] = [
+        { id: "assetName", header: "Asset Name", width: "200px", cell: (row: any) => <span className="font-semibold">{row.assetName}</span> },
+        { id: "category", header: "Category", width: "150px", cell: (row: any) => <span>{row.category}</span> },
+        { id: "cost", header: "Cost", width: "150px", cell: (row: any) => <span>${parseFloat(row.cost || "0").toLocaleString()}</span> },
+        { id: "status", header: "Status", width: "120px", cell: (row: any) => <Badge variant={row.status === "active" ? "default" : "secondary"}>{row.status}</Badge> },
         {
-            header: "Actions", id: "actions", cell: (row) => (
+            id: "actions", header: "Actions", width: "100px", cell: (row: any) => (
                 <Button variant="ghost" size="sm" onClick={() => deleteMutation.mutate(row.id)}>
                     <Trash2 className="h-4 w-4 text-red-500" />
                 </Button>
@@ -100,13 +100,12 @@ export default function FixedAssets() {
                 </Sheet>
             }
         >
-            <StandardTable
+            <InteractiveSpreadsheet
                 data={assets}
                 columns={columns}
-                isLoading={isLoading}
-                keyExtractor={(item) => item.id || Math.random().toString()}
-                filterColumn="assetName"
-                filterPlaceholder="Search assets..."
+                virtualized={true}
+                containerHeight="600px"
+                onChange={() => { }}
             />
         </StandardPage>
     );

@@ -8,7 +8,7 @@ import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 import { Loader2 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -93,11 +93,10 @@ export default function HRAnalyticsDashboard() {
     Object.entries(metrics["HR_GENDER_RATIO"].dimensions).map(([name, value]) => ({ name, value }))
     : []; // No data fallback instead of mock
 
-  // Column Definitions for Drill Down
-  const columns: Column<any>[] = [
-    { accessorKey: "personName", header: "Name" },
-    { accessorKey: "assignmentNumber", header: "Number" },
-    { accessorKey: "startDate", header: "Start Date" },
+  const columns: SpreadsheetColumn<any>[] = [
+    { id: "personName", header: "Name", width: "250px", cell: (r) => <div className="p-2">{r.personName}</div> },
+    { id: "assignmentNumber", header: "Number", width: "150px", cell: (r) => <div className="p-2">{r.assignmentNumber}</div> },
+    { id: "startDate", header: "Start Date", width: "150px", cell: (r) => <div className="p-2">{r.startDate}</div> },
   ];
 
   return (
@@ -219,9 +218,11 @@ export default function HRAnalyticsDashboard() {
             {isLoadingDetails ? (
               <Loader2 className="h-6 w-6 animate-spin" />
             ) : (
-              <StandardTable
+              <InteractiveSpreadsheet
                 data={detailsData || []}
                 columns={columns}
+                onChange={() => { }}
+                virtualized={true} containerHeight="400px"
               />
             )}
           </div>

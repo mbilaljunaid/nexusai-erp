@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tantml:react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { DollarSign, TrendingUp, TrendingDown, PlayCircle } from "lucide-react";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function CurrencyRevaluation() {
     const { toast } = useToast();
@@ -55,27 +55,31 @@ export default function CurrencyRevaluation() {
         revalueMutation.mutate(selectedAccount);
     };
 
-    const columns: Column<any>[] = [
+    const columns: SpreadsheetColumn<any>[] = [
         {
+            id: "revaluationDate",
             header: "Date",
-            accessorKey: "revaluationDate",
-            cell: (row) => new Date(row.revaluationDate).toLocaleDateString()
+            width: "150px",
+            cell: (row: any) => <span>{new Date(row.revaluationDate).toLocaleDateString()}</span>
         },
-        { header: "Currency", accessorKey: "currency" },
+        { id: "currency", header: "Currency", width: "120px", cell: (row: any) => <span>{row.currency}</span> },
         {
+            id: "oldRate",
             header: "Old Rate",
-            accessorKey: "oldRate",
-            cell: (row) => row.oldRate?.toFixed(4)
+            width: "120px",
+            cell: (row: any) => <span>{row.oldRate?.toFixed(4)}</span>
         },
         {
+            id: "newRate",
             header: "New Rate",
-            accessorKey: "newRate",
-            cell: (row) => row.newRate?.toFixed(4)
+            width: "120px",
+            cell: (row: any) => <span>{row.newRate?.toFixed(4)}</span>
         },
         {
+            id: "gainLoss",
             header: "Gain/Loss",
-            accessorKey: "gainLoss",
-            cell: (row) => {
+            width: "150px",
+            cell: (row: any) => {
                 const gainLoss = row.gainLoss || 0;
                 return (
                     <div className="flex items-center gap-2">
@@ -92,9 +96,10 @@ export default function CurrencyRevaluation() {
             }
         },
         {
+            id: "glJournalId",
             header: "GL Journal",
-            accessorKey: "glJournalId",
-            cell: (row) => row.glJournalId ? (
+            width: "150px",
+            cell: (row: any) => row.glJournalId ? (
                 <Badge variant="default">Created</Badge>
             ) : (
                 <Badge variant="outline">Pending</Badge>
@@ -183,11 +188,12 @@ export default function CurrencyRevaluation() {
                         <CardDescription>Historical revaluation runs for this account</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <StandardTable
+                        <InteractiveSpreadsheet
                             data={history || []}
                             columns={columns}
-                            totalItems={history?.length || 0}
-                            pageSize={10}
+                            virtualized={true}
+                            containerHeight="400px"
+                            onChange={() => { }}
                         />
                     </CardContent>
                 </Card>

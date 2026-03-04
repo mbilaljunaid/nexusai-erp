@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,22 +24,26 @@ export default function ReferenceDataList() {
     });
 
     // Table Columns
-    const columns = [
-        { header: "Lookup Type", accessorKey: "lookupType", sortable: true },
-        { header: "Display Name", accessorKey: "userLookupName", sortable: true },
+    const columns: SpreadsheetColumn<any>[] = [
+        { id: "lookupType", header: "Lookup Type", width: "200px", cell: (r) => <div className="p-2">{r.lookupType}</div> },
+        { id: "userLookupName", header: "Display Name", width: "200px", cell: (r) => <div className="p-2">{r.userLookupName}</div> },
         {
-            header: "Level", accessorKey: "customizationLevel", cell: (row: any) => (
-                <span className={`px-2 py-1 rounded text-xs ${row.customizationLevel === 'S' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
-                    {row.customizationLevel === 'S' ? 'System' : 'User'}
-                </span>
+            id: "customizationLevel", header: "Level", width: "150px", cell: (row: any) => (
+                <div className="p-2">
+                    <span className={`px-2 py-1 rounded text-xs ${row.customizationLevel === 'S' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
+                        {row.customizationLevel === 'S' ? 'System' : 'User'}
+                    </span>
+                </div>
             )
         },
-        { header: "Description", accessorKey: "description" },
+        { id: "description", header: "Description", width: "300px", cell: (r) => <div className="p-2">{r.description}</div> },
         {
-            header: "Actions", id: "actions", cell: (row: any) => (
-                <Button variant="ghost" size="sm" onClick={() => setLocation(`/mdm/reference-data/${row.id}`)}>
-                    <Eye className="h-4 w-4 mr-2" /> View Values
-                </Button>
+            id: "actions", header: "Actions", width: "150px", cell: (row: any) => (
+                <div className="p-2">
+                    <Button variant="ghost" size="sm" onClick={() => setLocation(`/mdm/reference-data/${row.id}`)}>
+                        <Eye className="h-4 w-4 mr-2" /> View Values
+                    </Button>
+                </div>
             )
         }
     ];
@@ -139,12 +143,11 @@ export default function ReferenceDataList() {
         >
             <Card>
                 <CardContent className="p-0">
-                    <StandardTable
+                    <InteractiveSpreadsheet
                         data={lookupTypes as any[]}
                         columns={columns}
-                        isLoading={isLoading}
-                        filterColumn="userLookupName"
-                        filterPlaceholder="Search lookup types..."
+                        onChange={() => { }}
+                        virtualized={true} containerHeight="500px"
                     />
                 </CardContent>
             </Card>

@@ -33,7 +33,7 @@ import {
     Download,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -234,21 +234,20 @@ export default function UsageMeteringDashboard() {
                         </CardHeader>
                         <CardContent>
                             {selectedCustomer ? (
-                                <StandardTable
+                                <InteractiveSpreadsheet
                                     data={usageSummary}
                                     columns={[
-                                        { header: "Meter Name", accessorKey: "meterName", className: "font-medium" },
-                                        { header: "Total Quantity", accessorKey: "totalQuantity" },
-                                        { header: "Unit", accessorKey: "unit" },
-                                        { header: "Event Count", accessorKey: "eventCount" },
+                                        { id: "meterName", header: "Meter Name", width: "150px", cell: (item: any) => <div className="p-2 font-medium">{item.meterName}</div> },
+                                        { id: "totalQuantity", header: "Total Quantity", width: "150px", cell: (item: any) => <div className="p-2">{item.totalQuantity}</div> },
+                                        { id: "unit", header: "Unit", width: "100px", cell: (item: any) => <div className="p-2">{item.unit}</div> },
+                                        { id: "eventCount", header: "Event Count", width: "150px", cell: (item: any) => <div className="p-2">{item.eventCount}</div> },
                                         {
-                                            header: "Billable Amount",
-                                            accessorKey: "billableAmount",
-                                            cell: (item: any) => <span className="font-bold text-primary">${item.billableAmount}</span>,
+                                            id: "billableAmount", header: "Billable Amount", width: "150px",
+                                            cell: (item: any) => <div className="p-2 font-bold text-primary">${item.billableAmount}</div>,
                                         },
                                     ]}
-                                    keyExtractor={(item) => item.meterId}
-                                    isLoading={false}
+                                    onChange={() => { }}
+                                    virtualized={true} containerHeight="300px"
                                 />
                             ) : (
                                 <div className="text-center py-12 text-muted-foreground">
@@ -273,34 +272,35 @@ export default function UsageMeteringDashboard() {
                             />
                         </CardHeader>
                         <CardContent>
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={meters}
                                 columns={[
-                                    { header: "Meter Name", accessorKey: "name", className: "font-medium" },
-                                    { header: "Unit of Measure", accessorKey: "unitOfMeasure" },
-                                    { header: "Type", accessorKey: "meterType" },
+                                    { id: "name", header: "Meter Name", width: "200px", cell: (item: any) => <div className="p-2 font-medium">{item.name}</div> },
+                                    { id: "unitOfMeasure", header: "Unit of Measure", width: "150px", cell: (item: any) => <div className="p-2">{item.unitOfMeasure}</div> },
+                                    { id: "meterType", header: "Type", width: "150px", cell: (item: any) => <div className="p-2">{item.meterType}</div> },
                                     {
-                                        header: "Status",
-                                        accessorKey: "isActive",
+                                        id: "isActive", header: "Status", width: "100px",
                                         cell: (item: any) => (
-                                            <Badge variant={item.isActive ? "default" : "secondary"}>
-                                                {item.isActive ? "Active" : "Inactive"}
-                                            </Badge>
+                                            <div className="p-2">
+                                                <Badge variant={item.isActive ? "default" : "secondary"}>
+                                                    {item.isActive ? "Active" : "Inactive"}
+                                                </Badge>
+                                            </div>
                                         ),
                                     },
                                     {
-                                        header: "Actions",
+                                        id: "actions", header: "Actions", width: "100px",
                                         cell: (item: any) => (
-                                            <Button variant="ghost" size="sm">
-                                                <Settings className="h-4 w-4" />
-                                            </Button>
+                                            <div className="p-2">
+                                                <Button variant="ghost" size="sm">
+                                                    <Settings className="h-4 w-4" />
+                                                </Button>
+                                            </div>
                                         ),
                                     },
                                 ]}
-                                keyExtractor={(item) => item.id}
-                                isLoading={metersLoading}
-                                filterColumn="name"
-                                filterPlaceholder="Search meters..."
+                                onChange={() => { }}
+                                virtualized={true} containerHeight="400px"
                             />
                         </CardContent>
                     </Card>

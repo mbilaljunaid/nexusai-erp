@@ -31,7 +31,7 @@ import {
   SheetDescription,
   SheetFooter
 } from "@/components/ui/sheet";
-import { StandardTable, Column } from "@/components/tables/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { useLocation } from "wouter";
 
 export default function ExpenseManagement() {
@@ -150,22 +150,24 @@ export default function ExpenseManagement() {
     }
   });
 
-  const reportColumns: Column<any>[] = [
+  const reportColumns: SpreadsheetColumn<any>[] = [
     {
+      id: "reportNumber",
       header: "Report #",
-      accessorKey: "reportNumber",
-      sortable: true,
-      cell: (r) => <span className="font-mono font-bold">{r.reportNumber || `EXP-${r.id.slice(0, 6)}`}</span>
+      width: "150px",
+      cell: (r: any) => <div className="p-2 font-mono font-bold">{r.reportNumber || `EXP-${r.id.slice(0, 6)}`}</div>
     },
     {
+      id: "title",
       header: "Title",
-      accessorKey: "title",
-      cell: (r) => r.title || r.purpose || "Untitled Report"
+      width: "300px",
+      cell: (r: any) => <div className="p-2">{r.title || r.purpose || "Untitled Report"}</div>
     },
     {
+      id: "status",
       header: "Status",
-      accessorKey: "status",
-      cell: (r) => {
+      width: "150px",
+      cell: (r: any) => {
         const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline" | "success" | "warning" | "premium"> = {
           DRAFT: 'outline',
           SUBMITTED: 'default',
@@ -173,28 +175,53 @@ export default function ExpenseManagement() {
           REJECTED: 'destructive',
         };
         return (
-          <Badge variant={statusColors[r.status] || 'outline'}>
-            {r.status}
-          </Badge>
+          <div className="p-2">
+            <Badge variant={statusColors[r.status] || 'outline'}>
+              {r.status}
+            </Badge>
+          </div>
         );
       }
     },
     {
+      id: "totalAmount",
       header: "Total Amount",
-      accessorKey: "totalAmount",
-      sortable: true,
-      cell: (r) => <span className="font-mono font-bold">${Number(r.totalAmount || 0).toFixed(2)}</span>
+      width: "150px",
+      cell: (r: any) => <div className="p-2 font-mono font-bold">${Number(r.totalAmount || 0).toFixed(2)}</div>
     },
     {
+      id: "createdAt",
       header: "Created",
-      accessorKey: "createdAt",
-      sortable: true,
-      cell: (r) => new Date(r.createdAt).toLocaleDateString()
+      width: "150px",
+      cell: (r: any) => <div className="p-2">{new Date(r.createdAt).toLocaleDateString()}</div>
     },
     {
+      id: "employeeId",
       header: "Employee",
-      accessorKey: "employeeId",
-      cell: (r) => r.employeeName || r.employeeId
+      width: "200px",
+      cell: (r: any) => <div className="p-2">{r.employeeName || r.employeeId}</div>
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      width: "150px",
+      cell: (r: any) => (
+        <div className="flex gap-2 p-2">
+          {r.status === 'DRAFT' && (
+            <Button size="sm" onClick={() => submitReportMutation.mutate(r.id)} disabled={submitReportMutation.isPending}>
+              {submitReportMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
+            </Button>
+          )}
+          {r.status === 'SUBMITTED' && (
+            <Button size="sm" variant="secondary" onClick={() => approveReportMutation.mutate({ reportId: r.id })} disabled={approveReportMutation.isPending}>
+              {approveReportMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <CheckCircle className="h-3 w-3" />}
+            </Button>
+          )}
+          <Button variant="outline" size="sm" onClick={() => setLocation(`/finance/expenses/${r.id}`)}>
+            <ArrowRight className="h-3 w-3" />
+          </Button>
+        </div>
+      )
     }
   ];
 
@@ -314,49 +341,11 @@ export default function ExpenseManagement() {
       {/* Expense Reports Table */}
       <Card className="border-none shadow-none bg-transparent">
         <CardContent className="p-0">
-          <StandardTable
+          <InteractiveSpreadsheet
             data={reports}
             columns={reportColumns}
-            isLoading={reportsLoading}
-            actions={(r) => (
-              <div className="flex gap-2">
-                {r.status === 'DRAFT' && (
-                  <Button
-                    size="sm"
-                    onClick={() => submitReportMutation.mutate(r.id)}
-                    disabled={submitReportMutation.isPending}
-                  >
-                    {submitReportMutation.isPending ? (
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                    ) : (
-                      <Send className="h-3 w-3" />
-                    )}
-                  </Button>
-                )}
-                {r.status === 'SUBMITTED' && (
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => approveReportMutation.mutate({ reportId: r.id })}
-                    disabled={approveReportMutation.isPending}
-                  >
-                    {approveReportMutation.isPending ? (
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                    ) : (
-                      <CheckCircle className="h-3 w-3" />
-                    )}
-                  </Button>
-                )}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setLocation(`/finance/expenses/${r.id}`)}
-                >
-                  <ArrowRight className="h-3 w-3" />
-                </Button>
-              </div>
-            )}
-            pagination={{ currentPage: 1, totalPages: 1, onPageChange: () => { } }}
+            onChange={() => { }}
+            virtualized={true} containerHeight="500px"
           />
         </CardContent>
       </Card>

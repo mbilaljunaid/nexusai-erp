@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -90,35 +90,42 @@ export default function MRPWorkbench() {
         }
     });
 
-    const columns: Column<MrpRecommendation>[] = [
+    const columns: SpreadsheetColumn<any>[] = [
         {
+            id: "productId",
             header: "Product",
-            accessorKey: "productId",
-            cell: (row: MrpRecommendation) => <span className="font-semibold">{row.productId}</span>
+            width: "200px",
+            cell: (row: any) => <div className="p-2"><span className="font-semibold">{row.productId}</span></div>
         },
         {
+            id: "recommendationType",
             header: "Action Recommended",
-            accessorKey: "recommendationType",
-            cell: (row: MrpRecommendation) => (
-                <Badge variant={row.recommendationType.startsWith('PLANNED') ? 'default' : 'outline'}>
-                    {row.recommendationType.replace('_', ' ')}
-                </Badge>
+            width: "200px",
+            cell: (row: any) => (
+                <div className="p-2">
+                    <Badge variant={row.recommendationType.startsWith('PLANNED') ? 'default' : 'outline'}>
+                        {row.recommendationType.replace('_', ' ')}
+                    </Badge>
+                </div>
             )
         },
         {
+            id: "suggestedQuantity",
             header: "Quantity",
-            accessorKey: "suggestedQuantity",
-            cell: (row: MrpRecommendation) => <span className="font-mono">{parseFloat(row.suggestedQuantity).toLocaleString()}</span>
+            width: "150px",
+            cell: (row: any) => <div className="p-2 font-mono">{parseFloat(row.suggestedQuantity).toLocaleString()}</div>
         },
         {
+            id: "suggestedDate",
             header: "Requested Date",
-            accessorKey: "suggestedDate",
-            cell: (row: MrpRecommendation) => new Date(row.suggestedDate).toLocaleDateString()
+            width: "150px",
+            cell: (row: any) => <div className="p-2">{new Date(row.suggestedDate).toLocaleDateString()}</div>
         },
         {
+            id: "status",
             header: "Status",
-            accessorKey: "status",
-            cell: (row: MrpRecommendation) => <Badge variant="secondary">{row.status}</Badge>
+            width: "120px",
+            cell: (row: any) => <div className="p-2"><Badge variant="secondary">{row.status}</Badge></div>
         }
     ];
 
@@ -201,17 +208,10 @@ export default function MRPWorkbench() {
                     </CardHeader>
                     <CardContent>
                         {selectedPlanId ? (
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 data={recommendations}
                                 columns={columns}
-                                isLoading={recsLoading}
-                                keyExtractor={(item) => item.id}
-                                page={page}
-                                pageSize={pageSize}
-                                totalItems={totalRecs}
-                                onPageChange={setPage}
-                                filterColumn="productId"
-                                filterPlaceholder="Filter by product..."
+                                onChange={() => { }} virtualized={true} containerHeight="600px"
                             />
                         ) : (
                             <div className="py-20 text-center text-muted-foreground">

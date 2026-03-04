@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
@@ -102,33 +102,35 @@ export default function ARCustomers() {
   });
 
   // Columns
-  const customerCols: Column<ArCustomer>[] = [
-    { header: "BU", accessorKey: "businessUnitId", className: "text-muted-foreground font-mono text-xs w-20", cell: (r: any) => r.businessUnitId || "Default" },
-    { header: "Customer Name", accessorKey: "name" },
-    { header: "Type", accessorKey: "customerType" },
-    { header: "Status", accessorKey: "status" },
-    { header: "Tax ID", accessorKey: "taxId" },
+  const customerCols: SpreadsheetColumn<any>[] = [
+    { id: "bu", header: "BU", width: "100px", cell: (r: any) => <span className="text-muted-foreground font-mono text-xs">{r.businessUnitId || "Default"}</span> },
+    { id: "name", header: "Customer Name", width: "200px", cell: (r: any) => <span>{r.name}</span> },
+    { id: "customerType", header: "Type", width: "150px", cell: (r: any) => <span>{r.customerType}</span> },
+    { id: "status", header: "Status", width: "150px", cell: (r: any) => <span>{r.status}</span> },
+    { id: "taxId", header: "Tax ID", width: "150px", cell: (r: any) => <span>{r.taxId}</span> },
+    { id: "actions", header: "Actions", width: "100px", cell: (r: any) => <Button variant="outline" size="sm" onClick={() => { setSelectedCustomerId(r.id); setSelectedAccountId(null); }}>Select</Button> },
   ];
 
-  const accountCols: Column<ArCustomerAccount>[] = [
-    { header: "Account Number", accessorKey: "accountNumber" },
-    { header: "Account Name", accessorKey: "accountName" },
-    { header: "Risk", accessorKey: "riskCategory" },
-    { header: "Balance", accessorKey: "balance", cell: (row) => `$${Number(row.balance).toFixed(2)}` },
+  const accountCols: SpreadsheetColumn<any>[] = [
+    { id: "accountNumber", header: "Account Number", width: "150px", cell: (r: any) => <span>{r.accountNumber}</span> },
+    { id: "accountName", header: "Account Name", width: "200px", cell: (r: any) => <span>{r.accountName}</span> },
+    { id: "riskCategory", header: "Risk", width: "120px", cell: (r: any) => <span>{r.riskCategory}</span> },
+    { id: "balance", header: "Balance", width: "120px", cell: (row: any) => <span>${Number(row.balance).toFixed(2)}</span> },
+    { id: "actions", header: "Actions", width: "100px", cell: (r: any) => <Button variant="outline" size="sm" onClick={() => setSelectedAccountId(r.id)}>Select</Button> },
   ];
 
-  const siteCols: Column<ArCustomerSite>[] = [
-    { header: "BU", accessorKey: "orgId", className: "text-muted-foreground font-mono text-xs w-16" },
-    { header: "Site Name", accessorKey: "siteName" },
-    { header: "Address", accessorKey: "address" },
-    { header: "Bill-To", accessorKey: "isBillTo", cell: (r) => r.isBillTo ? "Yes" : "No" },
+  const siteCols: SpreadsheetColumn<any>[] = [
+    { id: "orgId", header: "BU", width: "100px", cell: (r: any) => <span className="text-muted-foreground font-mono text-xs">{r.orgId}</span> },
+    { id: "siteName", header: "Site Name", width: "200px", cell: (r: any) => <span>{r.siteName}</span> },
+    { id: "address", header: "Address", width: "250px", cell: (r: any) => <span>{r.address}</span> },
+    { id: "isBillTo", header: "Bill-To", width: "100px", cell: (r: any) => <span>{r.isBillTo ? "Yes" : "No"}</span> },
   ];
 
-  const contactCols: Column<ArCustomerContact>[] = [
-    { header: "Name", accessorKey: "firstName", cell: (r) => `${r.firstName} ${r.lastName}` },
-    { header: "Email", accessorKey: "email" },
-    { header: "Role", accessorKey: "role" },
-    { header: "Primary", accessorKey: "isPrimary", cell: (r) => r.isPrimary ? "Yes" : "No" },
+  const contactCols: SpreadsheetColumn<any>[] = [
+    { id: "name", header: "Name", width: "200px", cell: (r: any) => <span>{r.firstName} {r.lastName}</span> },
+    { id: "email", header: "Email", width: "200px", cell: (r: any) => <span>{r.email}</span> },
+    { id: "role", header: "Role", width: "150px", cell: (r: any) => <span>{r.role}</span> },
+    { id: "isPrimary", header: "Primary", width: "100px", cell: (r: any) => <span>{r.isPrimary ? "Yes" : "No"}</span> },
   ];
 
   return (
@@ -168,14 +170,12 @@ export default function ARCustomers() {
               </DialogContent>
             </Dialog>
           </div>
-          <StandardTable
+          <InteractiveSpreadsheet
             data={customers}
             columns={customerCols}
-            isLoading={loadingCustomers}
-            onRowClick={(row) => { setSelectedCustomerId(row.id); setSelectedAccountId(null); }}
-            className="w-full"
-            filterColumn="name"
-            filterPlaceholder="Search customers..."
+            virtualized={true}
+            containerHeight="400px"
+            onChange={() => { }}
           />
         </div>
 
@@ -202,14 +202,12 @@ export default function ARCustomers() {
             </Dialog>
           </div>
           {selectedCustomerId ? (
-            <StandardTable
+            <InteractiveSpreadsheet
               data={accounts}
               columns={accountCols}
-              isLoading={loadingAccounts}
-              onRowClick={(row) => setSelectedAccountId(row.id)}
-              className="w-full"
-              filterColumn="accountName"
-              filterPlaceholder="Search accounts..."
+              virtualized={true}
+              containerHeight="400px"
+              onChange={() => { }}
             />
           ) : (
             <div className="text-center text-muted-foreground p-8">Select a customer parameter to view accounts...</div>
@@ -251,12 +249,12 @@ export default function ARCustomers() {
             </Dialog>
           </div>
           {selectedAccountId ? (
-            <StandardTable
+            <InteractiveSpreadsheet
               data={sites}
               columns={siteCols}
-              isLoading={loadingSites}
-              filterColumn="siteName"
-              filterPlaceholder="Search sites..."
+              virtualized={true}
+              containerHeight="400px"
+              onChange={() => { }}
             />
           ) : (
             <div className="text-center text-muted-foreground p-8">Select an account to view nested sites...</div>
@@ -308,12 +306,12 @@ export default function ARCustomers() {
             </Dialog>
           </div>
           {selectedCustomerId ? (
-            <StandardTable
+            <InteractiveSpreadsheet
               data={contacts}
               columns={contactCols}
-              isLoading={loadingContacts}
-              filterColumn="firstName"
-              filterPlaceholder="Search contacts..."
+              virtualized={true}
+              containerHeight="400px"
+              onChange={() => { }}
             />
           ) : (
             <div className="text-center text-muted-foreground p-8">Select a customer to view linked contacts...</div>

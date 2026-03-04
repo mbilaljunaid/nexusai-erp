@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,33 +25,37 @@ export default function ItemDirectory() {
     });
 
     // Table Columns
-    const columns = [
+    const columns: SpreadsheetColumn<any>[] = [
         {
-            header: "Item Number", accessorKey: "itemNumber", sortable: true, cell: (row: any) => (
-                <span className="font-mono font-medium">{row.itemNumber}</span>
+            id: "itemNumber", header: "Item Number", width: "150px", cell: (row: any) => (
+                <div className="p-2"><span className="font-mono font-medium">{row.itemNumber}</span></div>
             )
         },
-        { header: "Name", accessorKey: "itemName", sortable: true },
+        { id: "itemName", header: "Name", width: "250px", cell: (row: any) => <div className="p-2">{row.itemName}</div> },
         {
-            header: "Type", accessorKey: "itemType", cell: (row: any) => (
-                <Badge variant="outline">{row.itemType}</Badge>
+            id: "itemType", header: "Type", width: "150px", cell: (row: any) => (
+                <div className="p-2"><Badge variant="outline">{row.itemType}</Badge></div>
             )
         },
-        { header: "UOM", accessorKey: "primaryUomCode" },
+        { id: "primaryUomCode", header: "UOM", width: "100px", cell: (row: any) => <div className="p-2">{row.primaryUomCode}</div> },
         {
-            header: "Status", accessorKey: "itemStatus", cell: (row: any) => (
-                <span className={`px-2 py-1 rounded text-xs ${row.itemStatus === 'ACTIVE' ? 'bg-green-100 text-green-800' :
-                    row.itemStatus === 'OBSOLETE' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
-                    }`}>
-                    {row.itemStatus}
-                </span>
+            id: "itemStatus", header: "Status", width: "150px", cell: (row: any) => (
+                <div className="p-2">
+                    <span className={`px-2 py-1 rounded text-xs ${row.itemStatus === 'ACTIVE' ? 'bg-green-100 text-green-800' :
+                        row.itemStatus === 'OBSOLETE' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
+                        }`}>
+                        {row.itemStatus}
+                    </span>
+                </div>
             )
         },
         {
-            header: "Actions", id: "actions", cell: (row: any) => (
-                <Button variant="ghost" size="sm" onClick={() => setLocation(`/mdm/items/${row.id}`)}>
-                    <Eye className="h-4 w-4 mr-2" /> View
-                </Button>
+            id: "actions", header: "Actions", width: "150px", cell: (row: any) => (
+                <div className="p-2">
+                    <Button variant="ghost" size="sm" onClick={() => setLocation(`/mdm/items/${row.id}`)}>
+                        <Eye className="h-4 w-4 mr-2" /> View
+                    </Button>
+                </div>
             )
         }
     ];
@@ -166,12 +170,10 @@ export default function ItemDirectory() {
         >
             <Card>
                 <CardContent className="p-0">
-                    <StandardTable
+                    <InteractiveSpreadsheet
                         data={items}
                         columns={columns}
-                        isLoading={isLoading}
-                        filterColumn="itemName"
-                        filterPlaceholder="Search items..."
+                        onChange={() => { }} virtualized={true} containerHeight="600px"
                     />
                 </CardContent>
             </Card>

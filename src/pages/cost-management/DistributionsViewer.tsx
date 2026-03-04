@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { StandardTable, Column } from '@/components/ui/StandardTable';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from '@/components/ui/InteractiveSpreadsheet';
 import { Download } from 'lucide-react';
 
 interface Distribution {
@@ -22,22 +22,16 @@ export default function DistributionsViewer() {
         { id: '4', date: '2026-01-13', doc: 'WO-1001', type: 'WIP Charge', account: '01-000-1510-0000', dr: 10.00, cr: 0.00 },
     ];
 
-    const columns: Column<Distribution>[] = [
-        { header: "Date", accessorKey: "date" },
-        { header: "Document", accessorKey: "doc" },
-        { header: "Transaction Type", accessorKey: "type" },
-        { header: "GL Account", accessorKey: "account", className: "font-mono text-xs" },
+    const columns: SpreadsheetColumn<Distribution>[] = [
+        { id: "date", header: "Date", width: "150px", cell: (row) => <div className="p-2">{row.date}</div> },
+        { id: "doc", header: "Document", width: "150px", cell: (row) => <div className="p-2">{row.doc}</div> },
+        { id: "type", header: "Transaction Type", width: "200px", cell: (row) => <div className="p-2">{row.type}</div> },
+        { id: "account", header: "GL Account", width: "200px", cell: (row) => <div className="p-2 font-mono text-xs">{row.account}</div> },
         {
-            header: "Debit",
-            accessorKey: "dr",
-            className: "text-right",
-            cell: (row) => row.dr > 0 ? row.dr.toFixed(2) : '-'
+            id: "dr", header: "Debit", width: "150px", cell: (row) => <div className="p-2 text-right">{row.dr > 0 ? row.dr.toFixed(2) : '-'}</div>
         },
         {
-            header: "Credit",
-            accessorKey: "cr",
-            className: "text-right",
-            cell: (row) => row.cr > 0 ? row.cr.toFixed(2) : '-'
+            id: "cr", header: "Credit", width: "150px", cell: (row) => <div className="p-2 text-right">{row.cr > 0 ? row.cr.toFixed(2) : '-'}</div>
         }
     ];
 
@@ -52,12 +46,11 @@ export default function DistributionsViewer() {
                 <Button variant="outline" size="sm"><Download className="mr-2 h-4 w-4" /> Export</Button>
             </div>
 
-            <StandardTable
+            <InteractiveSpreadsheet
                 data={distributions}
                 columns={columns}
-                keyExtractor={(item) => item.id}
-                filterColumn="doc"
-                filterPlaceholder="Search document number..."
+                onChange={() => { }}
+                virtualized={true} containerHeight="500px"
             />
         </div>
     );

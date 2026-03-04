@@ -1,5 +1,5 @@
 import React from 'react';
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -30,26 +30,32 @@ export default function ShipmentList() {
 
     const columns: any[] = [
         {
-            header: "Shipment #",
-            accessorKey: "number",
+            id: "carrier",
+            header: "Carrier",
+            width: "150px",
             cell: (row: Shipment) => (
                 <div className="flex items-center gap-2">
-                    <Truck className="h-4 w-4 text-blue-600" />
-                    <span className="font-mono font-bold">{row.number}</span>
+                    <Truck className="h-4 w-4 text-muted-foreground" />
+                    <span>{row.carrier}</span>
                 </div>
             )
         },
         {
-            header: "Destination",
-            accessorKey: "destination",
+            id: "origin",
+            header: "Origin",
+            width: "150px",
+            cell: (row: Shipment) => <span>{row.destination}</span>
         },
         {
-            header: "Carrier",
-            accessorKey: "carrier",
+            id: "shipmentNumber",
+            header: "Shipment #",
+            width: "150px",
+            cell: (row: Shipment) => <span className="font-semibold text-blue-600">{row.number}</span>
         },
         {
+            id: "status",
             header: "Status",
-            accessorKey: "status",
+            width: "150px",
             cell: (row: Shipment) => {
                 const variants: Record<string, "default" | "secondary" | "outline" | "destructive"> = {
                     "in-transit": "default",
@@ -61,8 +67,10 @@ export default function ShipmentList() {
             }
         },
         {
+            id: "eta",
             header: "ETA",
-            accessorKey: "eta",
+            width: 150,
+            cell: (row: Shipment) => <span>{row.eta}</span>
         }
     ];
 
@@ -76,13 +84,15 @@ export default function ShipmentList() {
                 </Button>
             }
         >
-            <StandardTable
-                data={shipments}
-                columns={columns}
-                keyExtractor={(item) => item.id}
-                filterColumn="number"
-                filterPlaceholder="Search shipment #..."
-            />
+            <div className="bg-white rounded-md border shadow-sm">
+                <InteractiveSpreadsheet
+                    data={shipments}
+                    columns={columns}
+                    onChange={() => { }}
+                    virtualized={true}
+                    containerHeight="600px"
+                />
+            </div>
         </StandardPage>
     );
 }

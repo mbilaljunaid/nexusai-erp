@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { StandardTable, Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import type { ArInvoice } from "@/types/erp-types";
 import { CreditMemoDialog } from "@/components/billing/CreditMemoDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -147,55 +147,66 @@ export default function ARInvoices() {
     cancelled: "secondary",
   };
 
-  const columns: Column<ArInvoice>[] = [
+  const columns: SpreadsheetColumn<any>[] = [
     {
+      id: "bu",
       header: "BU",
-      accessorKey: "businessUnitId",
-      className: "text-muted-foreground font-mono text-xs w-20",
-      cell: (inv) => inv.businessUnitId || "Default"
+      width: "100px",
+      cell: (inv: any) => <span className="text-muted-foreground font-mono text-xs">{inv.businessUnitId || "Default"}</span>
     },
     {
+      id: "invoiceNumber",
       header: "Invoice #",
-      accessorKey: "invoiceNumber",
-      className: "font-semibold"
+      width: "150px",
+      cell: (inv: any) => <span className="font-semibold">{inv.invoiceNumber}</span>
     },
     {
+      id: "customer",
       header: "Customer",
-      cell: (inv) => {
+      width: "200px",
+      cell: (inv: any) => {
         const customer = customers?.find((c: any) => c.id === inv.customerId);
-        return customer ? customer.name : inv.customerName || inv.customerId;
+        return <span>{customer ? customer.name : inv.customerName || inv.customerId}</span>;
       }
     },
     {
+      id: "amount",
       header: "Amount",
-      cell: (inv) => `$${inv.totalAmount}`
+      width: "120px",
+      cell: (inv: any) => <span>${inv.totalAmount}</span>
     },
     {
+      id: "status",
       header: "Status",
-      cell: (inv) => (
+      width: "120px",
+      cell: (inv: any) => (
         <Badge variant={statusColors[inv.status || "issued"] || "default"}>
           {inv.status}
         </Badge>
       )
     },
     {
+      id: "taxAmount",
       header: "Tax",
-      accessorKey: "taxAmount",
-      cell: (inv) => inv.taxAmount ? `$${inv.taxAmount}` : '-'
+      width: "120px",
+      cell: (inv: any) => <span>{inv.taxAmount ? `$${inv.taxAmount}` : '-'}</span>
     },
     {
+      id: "glStatus",
       header: "Accounting",
-      accessorKey: "glStatus",
-      cell: (inv) => (
+      width: "150px",
+      cell: (inv: any) => (
         <Badge variant="outline" className={inv.glStatus === 'Posted' ? "bg-green-50 text-green-700" : "bg-yellow-50 text-yellow-700"}>
           {inv.glStatus || 'Pending'}
         </Badge>
       )
     },
     {
+      id: "actions",
       header: "Actions",
-      cell: (inv) => (
-        <div className="flex gap-2">
+      width: "250px",
+      cell: (inv: any) => (
+        <div className="flex gap-2 items-center">
           <Button
             variant="ghost"
             size="icon"
@@ -379,18 +390,12 @@ export default function ARInvoices() {
           <CardTitle>Customer Invoices</CardTitle>
         </CardHeader>
         <CardContent>
-          <StandardTable
+          <InteractiveSpreadsheet
             data={invoices}
             columns={columns}
-            isLoading={isLoading}
-            page={page}
-            pageSize={pageSize}
-            totalItems={totalCount}
-            onPageChange={setPage}
-            keyExtractor={(i) => i.id}
-            filterColumn="invoiceNumber"
-            filterPlaceholder="Search invoice #..."
-            onRowClick={(item) => setLocation(`/finance/ar/invoices/${item.id}`)}
+            virtualized={true}
+            containerHeight="500px"
+            onChange={() => { }}
           />
         </CardContent>
       </Card>

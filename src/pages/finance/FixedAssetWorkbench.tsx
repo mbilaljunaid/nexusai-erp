@@ -17,7 +17,7 @@ import {
     Filter, Download, Calendar, Building2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -77,19 +77,37 @@ export default function FixedAssetWorkbench() {
         }
     });
 
-    const assetColumns: Column<any>[] = [
-        { header: "Asset #", accessorKey: "assetNumber", cell: (row) => <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400">{row.assetNumber}</span> },
-        { header: "Description", accessorKey: "description" },
-        { header: "In Service", accessorKey: "datePlacedInService", cell: (row) => <span>{new Date(row.datePlacedInService).toLocaleDateString()}</span> },
-        { header: "Cost", accessorKey: "originalCost", cell: (row) => <span className="text-right tabular-nums">${parseFloat(row.originalCost || "0").toLocaleString()}</span> },
-        { header: "Method", accessorKey: "method" },
+    const assetColumns: any[] = [
+        { id: "assetNumber", header: "Asset #", width: "150px", cell: (row: any) => <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400">{row.assetNumber}</span> },
         {
-            header: "Status", accessorKey: "status", cell: (row) => (
+            id: "assetTag",
+            header: "Asset Tag",
+            width: "150px",
+            cell: (row: any) => <span className="font-mono text-blue-600 font-semibold">{row.assetTag}</span>
+        },
+        {
+            id: "description",
+            header: "Description",
+            width: "250px", cell: (row: any) => <span>{row.description}</span>
+        },
+        { id: "datePlacedInService", header: "In Service", width: "150px", cell: (row: any) => <span>{new Date(row.datePlacedInService).toLocaleDateString()}</span> },
+        { id: "originalCost", header: "Cost", width: "150px", cell: (row: any) => <span className="tabular-nums">${parseFloat(row.originalCost || "0").toLocaleString()}</span> },
+        {
+            id: "category",
+            header: "Category",
+            width: "150px",
+            cell: (row: any) => <Badge variant="outline">{row.category}</Badge>
+        },
+        { id: "method", header: "Method", width: "150px", cell: (row: any) => <span>{row.method}</span> },
+        {
+            id: "status",
+            header: "Status",
+            width: "150px", cell: (row: any) => (
                 <Badge variant={row.status === "ACTIVE" ? "default" : "secondary"}>{row.status}</Badge>
             )
         },
         {
-            header: "Actions", id: "actions", cell: (row) => (
+            id: "actions", header: "Actions", width: "150px", cell: (row: any) => (
                 <div className="flex gap-2">
                     <Button variant="ghost" size="sm" className="h-8 w-8 p-0"><ArrowRightLeft className="h-4 w-4" /></Button>
                     <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-red-500"><Trash2 className="h-4 w-4" /></Button>
@@ -296,12 +314,12 @@ export default function FixedAssetWorkbench() {
                                 </div>
                             </CardHeader>
                             <CardContent>
-                                <StandardTable
+                                <InteractiveSpreadsheet
                                     columns={assetColumns}
                                     data={assets}
-                                    isLoading={loadingAssets}
-                                    keyExtractor={(r) => r.id}
-                                    filterColumn="description"
+                                    onChange={() => { }}
+                                    virtualized={true}
+                                    containerHeight="600px"
                                 />
                             </CardContent>
                         </Card>

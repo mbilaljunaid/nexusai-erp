@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,21 +24,21 @@ export default function SurvivorshipRuleList() {
     });
 
     // Table Columns
-    const columns = [
-        { header: "Rule Name", accessorKey: "ruleName", sortable: true },
+    const columns: SpreadsheetColumn<any>[] = [
+        { id: "ruleName", header: "Rule Name", width: "250px", cell: (row) => <div className="p-2">{row.ruleName}</div> },
         {
-            header: "Source System", accessorKey: "sourceSystem", cell: (row: any) => (
-                <Badge variant="secondary">{row.sourceSystem}</Badge>
+            id: "sourceSystem", header: "Source System", width: "150px", cell: (row: any) => (
+                <div className="p-2"><Badge variant="secondary">{row.sourceSystem}</Badge></div>
             )
         },
         {
-            header: "Confidence", accessorKey: "confidenceScore", cell: (row: any) => (
-                <span className="font-mono">{row.confidenceScore}%</span>
+            id: "confidenceScore", header: "Confidence", width: "120px", cell: (row: any) => (
+                <div className="p-2 font-mono">{row.confidenceScore}%</div>
             )
         },
         {
-            header: "Status", accessorKey: "activeFlag", cell: (row: any) => (
-                <div className="flex items-center gap-2">
+            id: "activeFlag", header: "Status", width: "120px", cell: (row: any) => (
+                <div className="flex items-center gap-2 p-2">
                     {row.activeFlag ?
                         <CheckCircle2 className="w-4 h-4 text-green-600" /> :
                         <XCircle className="w-4 h-4 text-gray-400" />
@@ -47,10 +47,12 @@ export default function SurvivorshipRuleList() {
             )
         },
         {
-            header: "Actions", id: "actions", cell: (row: any) => (
-                <Button variant="ghost" size="sm" onClick={() => handleToggle(row)}>
-                    Toggle Status
-                </Button>
+            id: "actions", header: "Actions", width: "150px", cell: (row: any) => (
+                <div className="p-2">
+                    <Button variant="ghost" size="sm" onClick={() => handleToggle(row)}>
+                        Toggle Status
+                    </Button>
+                </div>
             )
         }
     ];
@@ -159,12 +161,11 @@ export default function SurvivorshipRuleList() {
         >
             <Card>
                 <CardContent className="p-0">
-                    <StandardTable
+                    <InteractiveSpreadsheet
                         data={rules as any[]}
                         columns={columns}
-                        isLoading={isLoading}
-                        filterColumn="ruleName"
-                        filterPlaceholder="Search rules..."
+                        onChange={() => { }}
+                        virtualized={true} containerHeight="500px"
                     />
                 </CardContent>
             </Card>

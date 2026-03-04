@@ -19,7 +19,7 @@ import {
     CheckCircle2
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { StandardTable } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -197,22 +197,25 @@ export default function RevenueAuditConsole() {
                                         <CardDescription>Historical and future entries generated from this transaction lifecycle.</CardDescription>
                                     </CardHeader>
                                     <CardContent className="p-0">
-                                        <StandardTable
+                                        <InteractiveSpreadsheet
                                             data={auditTrace.recognitions}
+                                            onChange={() => { }}
+                                            virtualized={true}
+                                            containerHeight="400px"
                                             columns={[
-                                                { header: "Period", accessorKey: "periodName", cell: (info: any) => <span className="font-semibold">{info.getValue()}</span> },
-                                                { header: "Date", accessorKey: "scheduleDate", cell: (info: any) => format(new Date(info.getValue()), "MMM dd, yyyy") },
-                                                { header: "Type", accessorKey: "eventType", cell: (info: any) => <Badge variant="outline">{info.getValue()}</Badge> },
-                                                { header: "Account", accessorKey: "accountType" },
-                                                { header: "Amount", accessorKey: "amount", cell: (info: any) => <span className="font-mono">${parseFloat(info.getValue()).toLocaleString()}</span> },
+                                                { id: "periodName", header: "Period", width: "150px", cell: (row: any) => <span className="font-semibold">{row.periodName}</span> },
+                                                { id: "scheduleDate", header: "Date", width: "150px", cell: (row: any) => format(new Date(row.scheduleDate), "MMM dd, yyyy") },
+                                                { id: "eventType", header: "Type", width: "150px", cell: (row: any) => <Badge variant="outline">{row.eventType}</Badge> },
+                                                { id: "accountType", header: "Account", width: "150px", cell: (row: any) => <span>{row.accountType}</span> },
+                                                { id: "amount", header: "Amount", width: "150px", cell: (row: any) => <span className="font-mono">${parseFloat(row.amount).toLocaleString()}</span> },
                                                 {
-                                                    header: "Status", accessorKey: "status", cell: (info: any) => (
-                                                        <Badge className={info.getValue() === "Posted" ? "bg-green-100 text-green-700 hover:bg-green-100 border-none" : "bg-blue-100 text-blue-700 hover:bg-blue-100 border-none"}>
-                                                            {info.getValue()}
+                                                    id: "status", header: "Status", width: "150px", cell: (row: any) => (
+                                                        <Badge className={row.status === "Posted" ? "bg-green-100 text-green-700 hover:bg-green-100 border-none" : "bg-blue-100 text-blue-700 hover:bg-blue-100 border-none"}>
+                                                            {row.status}
                                                         </Badge>
                                                     )
                                                 },
-                                                { header: "GL Journal", accessorKey: "glJournalId", cell: (info: any) => info.getValue() ? <span className="font-mono text-xs">{info.getValue()}</span> : "-" }
+                                                { id: "glJournalId", header: "GL Journal", width: "150px", cell: (row: any) => row.glJournalId ? <span className="font-mono text-xs">{row.glJournalId}</span> : "-" }
                                             ]}
                                         />
                                     </CardContent>
@@ -281,18 +284,21 @@ export default function RevenueAuditConsole() {
                             <CardDescription>All manual adjustments and rule changes are logged here for audit purposes.</CardDescription>
                         </CardHeader>
                         <CardContent className="p-0">
-                            <StandardTable
+                            <InteractiveSpreadsheet
+                                virtualized={true}
+                                containerHeight="400px"
+                                onChange={() => { }}
                                 data={[
-                                    { date: new Date(), user: "Admin", action: "Updated SSP Book", detail: "Revised pricing for Subscription v2", ip: "10.0.1.45" },
-                                    { date: new Date(Date.now() - 86400000), user: "System", action: "Period Close Sweep", detail: "Feb-26 period sweep completed.", ip: "internal" },
-                                    { date: new Date(Date.now() - 172800000), user: "Finance-Lead", action: "Override Allocation", detail: "Manual override for Contract REV-2026-X812", ip: "10.4.2.11" }
+                                    { id: "1", date: new Date(), user: "Admin", action: "Updated SSP Book", detail: "Revised pricing for Subscription v2", ip: "10.0.1.45" },
+                                    { id: "2", date: new Date(Date.now() - 86400000), user: "System", action: "Period Close Sweep", detail: "Feb-26 period sweep completed.", ip: "internal" },
+                                    { id: "3", date: new Date(Date.now() - 172800000), user: "Finance-Lead", action: "Override Allocation", detail: "Manual override for Contract REV-2026-X812", ip: "10.4.2.11" }
                                 ]}
                                 columns={[
-                                    { header: "Date & Time", accessorKey: "date", cell: (info: any) => format(info.getValue(), "MMM dd, yyyy HH:mm") },
-                                    { header: "User", accessorKey: "user" },
-                                    { header: "Action", accessorKey: "action", cell: (info: any) => <span className="font-semibold text-indigo-600">{info.getValue()}</span> },
-                                    { header: "Details", accessorKey: "detail" },
-                                    { header: "Auditable IP", accessorKey: "ip", cell: (info: any) => <span className="font-mono text-xs opacity-50">{info.getValue()}</span> }
+                                    { id: "date", header: "Date & Time", width: "200px", cell: (row: any) => format(row.date, "MMM dd, yyyy HH:mm") },
+                                    { id: "user", header: "User", width: "150px", cell: (row: any) => <span>{row.user}</span> },
+                                    { id: "action", header: "Action", width: "200px", cell: (row: any) => <span className="font-semibold text-indigo-600">{row.action}</span> },
+                                    { id: "detail", header: "Details", width: "300px", cell: (row: any) => <span>{row.detail}</span> },
+                                    { id: "ip", header: "Auditable IP", width: "150px", cell: (row: any) => <span className="font-mono text-xs opacity-50">{row.ip}</span> }
                                 ]}
                             />
                         </CardContent>

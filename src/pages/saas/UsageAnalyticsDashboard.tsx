@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { StandardTable } from '@/components/ui/StandardTable';
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import UsageAnalyticsService, { FeatureAdoptionMetric, StickinessStat } from '@/services/usageAnalyticsService';
 import { TrendingUp, Users, Activity, Target } from 'lucide-react';
 
@@ -33,22 +33,25 @@ export default function UsageAnalyticsDashboard() {
         }
     };
 
-    const featureColumns = [
-        { key: 'feature_name', label: 'Feature' },
+    const featureColumns: SpreadsheetColumn<any>[] = [
+        { id: 'feature_name', header: 'Feature', width: "250px", cell: (row: any) => <div className="p-2">{row.feature_name}</div> },
         {
-            key: 'unique_users',
-            label: 'Users',
-            render: (row: any) => <span className="font-medium">{row.unique_users?.toLocaleString()}</span>
+            id: 'unique_users',
+            header: 'Users',
+            width: "150px",
+            cell: (row: any) => <div className="p-2 font-medium">{row.unique_users?.toLocaleString()}</div>
         },
         {
-            key: 'total_events',
-            label: 'Events',
-            render: (row: any) => <span>{row.total_events?.toLocaleString()}</span>
+            id: 'total_events',
+            header: 'Events',
+            width: "150px",
+            cell: (row: any) => <div className="p-2">{row.total_events?.toLocaleString()}</div>
         },
         {
-            key: 'unique_sessions',
-            label: 'Sessions',
-            render: (row: any) => <span>{row.unique_sessions?.toLocaleString()}</span>
+            id: 'unique_sessions',
+            header: 'Sessions',
+            width: "150px",
+            cell: (row: any) => <div className="p-2">{row.unique_sessions?.toLocaleString()}</div>
         }
     ];
 
@@ -140,10 +143,10 @@ export default function UsageAnalyticsDashboard() {
                             <CardTitle>Most Used Features (Last 30 Days)</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <StandardTable
+                            <InteractiveSpreadsheet
                                 columns={featureColumns}
                                 data={topFeatures}
-                                pageSize={10}
+                                onChange={() => { }} virtualized={true} containerHeight="400px"
                             />
                         </CardContent>
                     </Card>

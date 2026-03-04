@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -76,47 +76,56 @@ export default function BatchWorkbench() {
         }
     });
 
-    const columns: Column<BatchOrder>[] = [
+    const columns: SpreadsheetColumn<any>[] = [
         {
+            id: "batchNumber",
             header: "Batch #",
-            accessorKey: "batchNumber",
-            cell: (row: BatchOrder) => <span className="font-mono font-bold text-indigo-700">{row.batchNumber}</span>
+            width: "150px",
+            cell: (row: any) => <div className="p-2"><span className="font-mono font-bold text-indigo-700">{row.batchNumber}</span></div>
         },
         {
+            id: "recipeName",
             header: "Recipe / Product",
-            accessorKey: "recipeName",
-            cell: (row: BatchOrder) => (
-                <div className="flex flex-col">
+            width: "250px",
+            cell: (row: any) => (
+                <div className="flex flex-col p-2">
                     <span className="font-medium">{row.recipeName || 'Standard Recipe'}</span>
                     <span className="text-[10px] text-muted-foreground">{row.productName}</span>
                 </div>
             )
         },
         {
+            id: "plannedQuantity",
             header: "Planned Qty",
-            accessorKey: "plannedQuantity",
-            cell: (row: BatchOrder) => <span className="font-mono">{row.plannedQuantity.toLocaleString()} KG</span>
+            width: "150px",
+            cell: (row: any) => <div className="p-2"><span className="font-mono">{row.plannedQuantity.toLocaleString()} KG</span></div>
         },
         {
+            id: "status",
             header: "Status",
-            accessorKey: "status",
-            cell: (row: BatchOrder) => (
-                <Badge className="capitalize" variant={
-                    row.status === 'completed' ? 'default' :
-                        row.status === 'qc_pending' ? 'outline' :
-                            row.status === 'in_progress' ? 'secondary' : 'outline'
-                }>
-                    {row.status.replace('_', ' ')}
-                </Badge>
+            width: "150px",
+            cell: (row: any) => (
+                <div className="p-2">
+                    <Badge className="capitalize" variant={
+                        row.status === 'completed' ? 'default' :
+                            row.status === 'qc_pending' ? 'outline' :
+                                row.status === 'in_progress' ? 'secondary' : 'outline'
+                    }>
+                        {row.status.replace('_', ' ')}
+                    </Badge>
+                </div>
             )
         },
         {
-            header: "Actions",
             id: "actions",
-            cell: (row: BatchOrder) => (
-                <Button variant="ghost" size="sm" onClick={() => { setSelectedBatch(row); setIsSheetOpen(true); }}>
-                    Manage
-                </Button>
+            header: "Actions",
+            width: "150px",
+            cell: (row: any) => (
+                <div className="p-2">
+                    <Button variant="ghost" size="sm" onClick={() => { setSelectedBatch(row); setIsSheetOpen(true); }}>
+                        Manage
+                    </Button>
+                </div>
             )
         }
     ];
@@ -173,17 +182,10 @@ export default function BatchWorkbench() {
 
             <Card>
                 <CardContent className="pt-6">
-                    <StandardTable
+                    <InteractiveSpreadsheet
                         data={batches}
                         columns={columns}
-                        isLoading={isLoading}
-                        keyExtractor={(item) => item.id}
-                        filterColumn="batchNumber"
-                        filterPlaceholder="Filter by batch ID..."
-                        page={page}
-                        pageSize={pageSize}
-                        totalItems={totalItems}
-                        onPageChange={setPage}
+                        onChange={() => { }} virtualized={true} containerHeight="600px"
                     />
                 </CardContent>
             </Card>

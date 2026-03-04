@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StandardTable, type Column } from "@/components/ui/StandardTable";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -123,20 +123,24 @@ export default function RoutingEditor() {
         return { ...r, displayName: product ? product.itemName : r.productId };
     });
 
-    const columns: Column<RoutingHeader & { displayName: string }>[] = [
+    const columns: SpreadsheetColumn<any>[] = [
         {
+            id: "routingNumber",
             header: "Routing #",
-            accessorKey: "routingNumber",
-            cell: (row: any) => <span className="font-mono font-bold text-indigo-600">{row.routingNumber}</span>
+            width: "150px",
+            cell: (row: any) => <div className="p-2"><span className="font-mono font-bold text-indigo-600">{row.routingNumber}</span></div>
         },
         {
+            id: "displayName",
             header: "Product",
-            accessorKey: "displayName",
+            width: "250px",
+            cell: (row: any) => <div className="p-2">{row.displayName}</div>
         },
         {
+            id: "status",
             header: "Status",
-            accessorKey: "status",
-            cell: (row: any) => <Badge variant="outline">{row.status}</Badge>
+            width: "150px",
+            cell: (row: any) => <div className="p-2"><Badge variant="outline">{row.status}</Badge></div>
         }
     ];
 
@@ -274,13 +278,10 @@ export default function RoutingEditor() {
                 </Sheet>
             }
         >
-            <StandardTable
+            <InteractiveSpreadsheet
                 data={routingsWithNames}
                 columns={columns}
-                isLoading={routingsLoading}
-                keyExtractor={(item) => item.id}
-                filterColumn="displayName"
-                filterPlaceholder="Filter by product..."
+                onChange={() => { }} virtualized={true} containerHeight="600px"
             />
         </StandardPage>
     );
