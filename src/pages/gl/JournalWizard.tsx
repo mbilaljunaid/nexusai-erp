@@ -11,9 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { apiRequest } from "@/lib/queryClient";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Card } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface JournalLine {
     id: number;
@@ -131,6 +130,89 @@ export default function JournalWizard() {
         }
     };
 
+    const columns: SpreadsheetColumn<JournalLine>[] = [
+        {
+            id: "index",
+            header: "#",
+            width: "60px",
+            headerClassName: "text-center",
+            cellClassName: "text-center text-xs text-muted-foreground font-mono flex items-center justify-center",
+            cell: (row, index) => index + 1
+        },
+        {
+            id: "account",
+            header: "Account",
+            width: "1fr",
+            cellClassName: "flex items-center",
+            cell: (line, index, updateRow) => (
+                <Input
+                    value={line.account}
+                    onChange={(e) => updateRow("account", e.target.value)}
+                    className="h-8 font-mono text-xs w-full"
+                    placeholder="Account Code"
+                />
+            )
+        },
+        {
+            id: "debit",
+            header: "Debit",
+            width: "120px",
+            headerClassName: "text-right",
+            cellClassName: "flex items-center",
+            cell: (line, index, updateRow) => (
+                <Input
+                    type="number"
+                    value={line.debit || ''}
+                    onChange={(e) => updateRow("debit", Number(e.target.value))}
+                    className="h-8 font-mono text-xs text-right w-full"
+                    onFocus={(e) => e.target.select()}
+                />
+            )
+        },
+        {
+            id: "credit",
+            header: "Credit",
+            width: "120px",
+            headerClassName: "text-right",
+            cellClassName: "flex items-center",
+            cell: (line, index, updateRow) => (
+                <Input
+                    type="number"
+                    value={line.credit || ''}
+                    onChange={(e) => updateRow("credit", Number(e.target.value))}
+                    className="h-8 font-mono text-xs text-right w-full"
+                    onFocus={(e) => e.target.select()}
+                />
+            )
+        },
+        {
+            id: "description",
+            header: "Description",
+            width: "1fr",
+            cellClassName: "flex items-center",
+            cell: (line, index, updateRow) => (
+                <Input
+                    value={line.description}
+                    onChange={(e) => updateRow("description", e.target.value)}
+                    className="h-8 text-xs w-full"
+                />
+            )
+        },
+        {
+            id: "actions",
+            header: "",
+            width: "50px",
+            cellClassName: "flex justify-center items-center",
+            cell: (line) => (
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-red-500" onClick={() => {
+                    setLines(prev => prev.filter(l => l.id !== line.id));
+                }}>
+                    <Trash2 className="h-3 w-3" />
+                </Button>
+            )
+        }
+    ];
+
     const totalDebit = lines.reduce((acc, l) => acc + (l.debit || 0), 0);
     const totalCredit = lines.reduce((acc, l) => acc + (l.credit || 0), 0);
 
@@ -164,81 +246,16 @@ export default function JournalWizard() {
             </div>
 
             {/* Virtualized Table Container */}
-            <div className="border rounded-md bg-white flex-1 overflow-hidden flex flex-col min-h-[500px]">
-                {/* Header (Fixed) */}
-                <div className="grid grid-cols-[60px_1fr_120px_120px_1fr_50px] gap-2 p-3 bg-muted/50 border-b font-medium text-sm text-muted-foreground">
-                    <div className="text-center">#</div>
-                    <div>Account</div>
-                    <div className="text-right">Debit</div>
-                    <div className="text-right">Credit</div>
-                    <div>Description</div>
-                    <div></div>
-                </div>
-
-                {/* Body (Scrollable) */}
-                <div ref={parentRef} className="flex-1 overflow-auto">
-                    <div
-                        className="w-full relative"
-                        style={{
-                            // eslint-disable-next-line react-dom/no-unsafe-styles
-                            height: `${rowVirtualizer.getTotalSize()}px`,
-                        }}
-                    >
-                        {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                            const line = lines[virtualRow.index];
-                            return (
-                                <div
-                                    key={line.id}
-                                    style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: 0,
-                                        // eslint-disable-next-line react-dom/no-unsafe-styles
-                                        height: `${virtualRow.size}px`,
-                                        transform: `translateY(${virtualRow.start}px)`,
-                                    }}
-                                    className="grid grid-cols-[60px_1fr_120px_120px_1fr_50px] gap-2 p-1 px-3 items-center hover:bg-slate-50 border-b border-slate-50 w-full"
-                                >
-                                    <div className="text-center text-xs text-muted-foreground font-mono">{virtualRow.index + 1}</div>
-                                    <Input
-                                        value={line.account}
-                                        onChange={(e) => handleLineChange(line.id, "account", e.target.value)}
-                                        className="h-8 font-mono text-xs"
-                                        placeholder="Account Code"
-                                    />
-                                    <Input
-                                        type="number"
-                                        value={line.debit || ''}
-                                        onChange={(e) => handleLineChange(line.id, "debit", Number(e.target.value))}
-                                        className="h-8 font-mono text-xs text-right"
-                                        onFocus={(e) => e.target.select()}
-                                    />
-                                    <Input
-                                        type="number"
-                                        value={line.credit || ''}
-                                        onChange={(e) => handleLineChange(line.id, "credit", Number(e.target.value))}
-                                        className="h-8 font-mono text-xs text-right"
-                                        onFocus={(e) => e.target.select()}
-                                    />
-                                    <Input
-                                        value={line.description}
-                                        onChange={(e) => handleLineChange(line.id, "description", e.target.value)}
-                                        className="h-8 text-xs"
-                                    />
-                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-red-500" onClick={() => {
-                                        setLines(prev => prev.filter(l => l.id !== line.id));
-                                    }}>
-                                        <Trash2 className="h-3 w-3" />
-                                    </Button>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
+            <div className="flex-1 overflow-hidden min-h-[500px]">
+                <InteractiveSpreadsheet
+                    data={lines}
+                    columns={columns}
+                    onChange={setLines}
+                    virtualized={true}
+                    rowHeight={45}
+                    containerHeight="500px"
+                />
             </div>
-            <p className="text-xs text-muted-foreground text-center">
-                Showing {lines.length} lines. Optimized for high-volume data entry.
-            </p>
         </div>
     );
 

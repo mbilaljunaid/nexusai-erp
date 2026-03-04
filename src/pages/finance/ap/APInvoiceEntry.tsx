@@ -12,8 +12,8 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Plus, Trash2, Save, ArrowLeft, Calculator, Network, Building2 } from "lucide-react";
 import { APInvoiceDistributions } from "./APInvoiceDistributions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
-
 function useActiveBu() {
     return useMemo(() => ({
         id: localStorage.getItem("nexus_active_bu") || null,
@@ -197,11 +197,204 @@ export default function APInvoiceEntry() {
         setLines(lines.filter((_, i) => i !== index).map((l, i) => ({ ...l, lineNumber: i + 1 })));
     };
 
-    const handleLineChange = (index: number, field: string, value: string) => {
+    const handleLineChange = (index: number, updates: Partial<InvoiceLine>) => {
         const newLines = [...lines];
-        newLines[index] = { ...newLines[index], [field]: value };
+        newLines[index] = { ...newLines[index], ...updates };
         setLines(newLines);
     };
+
+    const invoiceColumns: SpreadsheetColumn<InvoiceLine>[] = [
+        {
+            id: "lineNumber",
+            header: "#",
+            width: "w-12",
+            headerClassName: "text-center",
+            cellClassName: "text-center text-slate-500 font-medium",
+            cell: (row) => row.lineNumber
+        },
+        {
+            id: "lineType",
+            header: "Line Type",
+            width: "w-36",
+            cell: (line, index, updateRow) => (
+                <Select value={line.lineType} onValueChange={v => updateRow("lineType", v)}>
+                    <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="ITEM">Item</SelectItem>
+                        <SelectItem value="FREIGHT">Freight</SelectItem>
+                        <SelectItem value="TAX">Tax</SelectItem>
+                        <SelectItem value="MISC">Miscellaneous</SelectItem>
+                    </SelectContent>
+                </Select>
+            )
+        },
+        {
+            id: "item",
+            header: "Item",
+            width: "w-48",
+            cell: (line, index) => line.lineType === 'ITEM' ? (
+                <Select value={line.itemId || undefined} onValueChange={(v) => {
+                    const selectedItem = items?.find((i: any) => i.id === v);
+                    const updates: Partial<InvoiceLine> = { itemId: v };
+                    if (selectedItem) {
+                        updates.description = selectedItem.name || selectedItem.description || "";
+                        if (selectedItem.primaryUom) updates.uom = selectedItem.primaryUom;
+                    }
+                    handleLineChange(index, updates);
+                }}>
+                    <SelectTrigger className="h-9"><SelectValue placeholder="Item..." /></SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="none">None</SelectItem>
+                        {Array.isArray(items) ? items.map((item: any) => (
+                            <SelectItem key={item.id} value={item.id}>{item.itemNumber || item.name}</SelectItem>
+                        )) : null}
+                    </SelectContent>
+                </Select>
+            ) : <div className="h-9" />
+        },
+        {
+            id: "description",
+            header: "Description",
+            width: "min-w-[200px]",
+            cell: (line, index, updateRow) => (
+                <Input className="h-9" value={line.description} onChange={e => updateRow("description", e.target.value)} placeholder="Description..." />
+            )
+        },
+        {
+            id: "qty",
+            header: "Qty",
+            width: "w-24",
+            cell: (line, index) => (
+                <Input className="h-9" type="number" step="0.01" value={line.quantityInvoiced} onChange={e => {
+                    const qty = e.target.value;
+                    const price = line.unitPrice || "0";
+                    handleLineChange(index, {
+                        quantityInvoiced: qty,
+                        amount: (parseFloat(qty || "0") * parseFloat(price)).toFixed(2)
+                    });
+                }} placeholder="0" />
+            )
+        },
+        {
+            id: "uom",
+            header: "UOM",
+            width: "w-24",
+            cell: (line, index, updateRow) => (
+                <Input className="h-9 text-center px-1" value={line.uom} onChange={e => updateRow("uom", e.target.value)} placeholder="EA" />
+            )
+        },
+        {
+            id: "unitPrice",
+            header: "Unit Price",
+            width: "w-32",
+            cell: (line, index) => (
+                <Input className="h-9" type="number" step="0.01" value={line.unitPrice} onChange={e => {
+                    const price = e.target.value;
+                    const qty = line.quantityInvoiced || "0";
+                    handleLineChange(index, {
+                        unitPrice: price,
+                        amount: (parseFloat(qty) * parseFloat(price || "0")).toFixed(2)
+                    });
+                }} placeholder="0.00" />
+            )
+        },
+        {
+            id: "amount",
+            header: "Amount",
+            width: "w-32",
+            cell: (line, index, updateRow) => (
+                <Input className="h-9 bg-slate-50 font-medium text-slate-700" type="number" step="0.01" value={line.amount} readOnly title="Auto-calculated from Qty * Price. Override manually if needed." onChange={e => updateRow("amount", e.target.value)} placeholder="0.00" />
+            )
+        },
+        {
+            id: "taxAsset",
+            header: "Tax / Asset",
+            width: "w-48",
+            cell: (line, index, updateRow) => (
+                <div className="flex flex-col gap-2">
+                    <Select value={line.taxClassificationCode} onValueChange={v => updateRow("taxClassificationCode", v)}>
+                        <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="STANDARD_20">Standard (20%)</SelectItem>
+                            <SelectItem value="REDUCED_5">Reduced (5%)</SelectItem>
+                            <SelectItem value="EXEMPT">Exempt (0%)</SelectItem>
+                            <SelectItem value="ZERO">Zero-Rated</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    {line.lineType === 'ITEM' && (
+                        <label className="flex items-center gap-2 text-xs text-slate-600 px-1 hover:text-slate-900 cursor-pointer">
+                            <input type="checkbox" className="rounded text-primary focus:ring-primary h-3.5 w-3.5" checked={line.trackAsAssetFlag} onChange={e => updateRow("trackAsAssetFlag", e.target.checked)} />
+                            Track as Asset
+                        </label>
+                    )}
+                </div>
+            )
+        },
+        {
+            id: "poMatch",
+            header: "Match to PO",
+            width: "w-56",
+            cell: (line, index, updateRow) => (
+                <div className="flex gap-2">
+                    <Select value={(line.poHeaderId === "none" ? undefined : line.poHeaderId) || undefined} onValueChange={v => updateRow("poHeaderId", v)}>
+                        <SelectTrigger className="h-9 flex-1">
+                            <SelectValue placeholder="PO" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="none">None</SelectItem>
+                            {Array.isArray(purchaseOrders) ? purchaseOrders.filter((po: any) => po && po.id && (!header.supplierId || po.supplierId === header.supplierId)).map((po: any) => (
+                                <SelectItem key={po.id} value={po.id}>{String(po.poNumber)}</SelectItem>
+                            )) : null}
+                        </SelectContent>
+                    </Select>
+                    <Input
+                        placeholder="Ln"
+                        className="h-9 w-12 px-2 text-center"
+                        value={line.poLineId || ""}
+                        onChange={e => updateRow("poLineId", e.target.value)}
+                        disabled={!line.poHeaderId || line.poHeaderId === "none"}
+                    />
+                </div>
+            )
+        },
+        {
+            id: "actions",
+            header: "Actions",
+            width: "w-24",
+            headerClassName: "text-center",
+            cell: (line, index) => (
+                <div className="flex justify-center items-center gap-1">
+                    <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-500 hover:text-slate-900" title="View Distributions" onClick={(e) => {
+                        e.preventDefault();
+                        setSelectedLineForDistributions(selectedLineForDistributions === index ? null : index);
+                    }}>
+                        <Network className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-400 hover:text-red-700 hover:bg-red-50" onClick={() => removeLine(index)} disabled={lines.length === 1}>
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+
+                    <Dialog open={selectedLineForDistributions === index} onOpenChange={(open) => {
+                        if (!open) setSelectedLineForDistributions(null);
+                    }}>
+                        <DialogContent className="max-w-5xl">
+                            <DialogHeader>
+                                <DialogTitle>Line Distributions - Line #{line.lineNumber}</DialogTitle>
+                            </DialogHeader>
+                            <div className="pt-4">
+                                <APInvoiceDistributions
+                                    invoiceId="draft"
+                                    invoiceLineId="draft_line"
+                                    lineAmount={parseFloat(line.amount || "0")}
+                                    onClose={() => setSelectedLineForDistributions(null)}
+                                />
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                </div>
+            )
+        }
+    ];
 
     const handleSave = () => {
         if (!header.businessUnitId || !header.supplierId || !header.invoiceNumber || !header.invoiceAmount) {
@@ -436,161 +629,11 @@ export default function APInvoiceEntry() {
                         </div>
                     </CardHeader>
                     <CardContent className="p-0">
-                        <div className="overflow-x-auto">
-                            <table className="w-full border-collapse">
-                                <thead className="bg-slate-100/50 border-b">
-                                    <tr>
-                                        <th className="p-3 text-center w-12 text-sm font-medium text-muted-foreground whitespace-nowrap">#</th>
-                                        <th className="p-3 text-left w-36 text-sm font-medium text-muted-foreground whitespace-nowrap">Line Type</th>
-                                        <th className="p-3 text-left w-48 text-sm font-medium text-muted-foreground whitespace-nowrap">Item</th>
-                                        <th className="p-3 text-left min-w-[200px] text-sm font-medium text-muted-foreground whitespace-nowrap">Description</th>
-                                        <th className="p-3 text-left w-24 text-sm font-medium text-muted-foreground whitespace-nowrap">Qty</th>
-                                        <th className="p-3 text-left w-24 text-sm font-medium text-muted-foreground whitespace-nowrap">UOM</th>
-                                        <th className="p-3 text-left w-32 text-sm font-medium text-muted-foreground whitespace-nowrap">Unit Price</th>
-                                        <th className="p-3 text-left w-32 text-sm font-medium text-muted-foreground whitespace-nowrap">Amount</th>
-                                        <th className="p-3 text-left w-48 text-sm font-medium text-muted-foreground whitespace-nowrap">Tax / Asset</th>
-                                        <th className="p-3 text-left w-56 text-sm font-medium text-muted-foreground whitespace-nowrap">Match to PO</th>
-                                        <th className="p-3 text-center w-24 text-sm font-medium text-muted-foreground whitespace-nowrap">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {lines.map((line, index) => (
-                                        <tr key={index} className="border-b group hover:bg-slate-50/50 transition-colors">
-                                            <td className="p-3 text-center text-sm font-medium text-slate-500">
-                                                {line.lineNumber}
-                                            </td>
-                                            <td className="p-2 align-top">
-                                                <Select value={line.lineType} onValueChange={v => handleLineChange(index, "lineType", v)}>
-                                                    <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="ITEM">Item</SelectItem>
-                                                        <SelectItem value="FREIGHT">Freight</SelectItem>
-                                                        <SelectItem value="TAX">Tax</SelectItem>
-                                                        <SelectItem value="MISC">Miscellaneous</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </td>
-                                            <td className="p-2 align-top">
-                                                {line.lineType === 'ITEM' ? (
-                                                    <Select value={line.itemId || undefined} onValueChange={(v) => {
-                                                        const selectedItem = items?.find((i: any) => i.id === v);
-                                                        handleLineChange(index, "itemId", v);
-                                                        if (selectedItem) {
-                                                            handleLineChange(index, "description", selectedItem.name || selectedItem.description || "");
-                                                            if (selectedItem.primaryUom) handleLineChange(index, "uom", selectedItem.primaryUom);
-                                                        }
-                                                    }}>
-                                                        <SelectTrigger className="h-9"><SelectValue placeholder="Item..." /></SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="none">None</SelectItem>
-                                                            {Array.isArray(items) ? items.map((item: any) => (
-                                                                <SelectItem key={item.id} value={item.id}>{item.itemNumber || item.name}</SelectItem>
-                                                            )) : null}
-                                                        </SelectContent>
-                                                    </Select>
-                                                ) : <div className="h-9" />}
-                                            </td>
-                                            <td className="p-2 align-top">
-                                                <Input className="h-9" value={line.description} onChange={e => handleLineChange(index, "description", e.target.value)} placeholder="Description..." />
-                                            </td>
-                                            <td className="p-2 align-top">
-                                                <Input className="h-9" type="number" step="0.01" value={line.quantityInvoiced} onChange={e => {
-                                                    const qty = e.target.value;
-                                                    const price = line.unitPrice || "0";
-                                                    handleLineChange(index, "quantityInvoiced", qty);
-                                                    handleLineChange(index, "amount", (parseFloat(qty || "0") * parseFloat(price)).toFixed(2));
-                                                }} placeholder="0" />
-                                            </td>
-                                            <td className="p-2 align-top">
-                                                <Input className="h-9 text-center px-1" value={line.uom} onChange={e => handleLineChange(index, "uom", e.target.value)} placeholder="EA" />
-                                            </td>
-                                            <td className="p-2 align-top">
-                                                <Input className="h-9" type="number" step="0.01" value={line.unitPrice} onChange={e => {
-                                                    const price = e.target.value;
-                                                    const qty = line.quantityInvoiced || "0";
-                                                    handleLineChange(index, "unitPrice", price);
-                                                    handleLineChange(index, "amount", (parseFloat(qty) * parseFloat(price || "0")).toFixed(2));
-                                                }} placeholder="0.00" />
-                                            </td>
-                                            <td className="p-2 align-top">
-                                                <Input className="h-9 bg-slate-50 font-medium text-slate-700" type="number" step="0.01" value={line.amount} readOnly title="Auto-calculated from Qty * Price. Override manually if needed." onChange={e => handleLineChange(index, "amount", e.target.value)} placeholder="0.00" />
-                                            </td>
-                                            <td className="p-2 align-top">
-                                                <div className="flex flex-col gap-2">
-                                                    <Select value={line.taxClassificationCode} onValueChange={v => handleLineChange(index, "taxClassificationCode", v)}>
-                                                        <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="STANDARD_20">Standard (20%)</SelectItem>
-                                                            <SelectItem value="REDUCED_5">Reduced (5%)</SelectItem>
-                                                            <SelectItem value="EXEMPT">Exempt (0%)</SelectItem>
-                                                            <SelectItem value="ZERO">Zero-Rated</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
-                                                    {line.lineType === 'ITEM' && (
-                                                        <label className="flex items-center gap-2 text-xs text-slate-600 px-1 hover:text-slate-900 cursor-pointer">
-                                                            <input type="checkbox" className="rounded text-primary focus:ring-primary h-3.5 w-3.5" checked={line.trackAsAssetFlag} onChange={e => handleLineChange(index, "trackAsAssetFlag", e.target.checked.toString())} />
-                                                            Track as Asset
-                                                        </label>
-                                                    )}
-                                                </div>
-                                            </td>
-                                            <td className="p-2 align-top">
-                                                <div className="flex gap-2">
-                                                    <Select value={(line.poHeaderId === "none" ? undefined : line.poHeaderId) || undefined} onValueChange={v => handleLineChange(index, "poHeaderId", v)}>
-                                                        <SelectTrigger className="h-9 flex-1">
-                                                            <SelectValue placeholder="PO" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="none">None</SelectItem>
-                                                            {Array.isArray(purchaseOrders) ? purchaseOrders.filter((po: any) => po && po.id && (!header.supplierId || po.supplierId === header.supplierId)).map((po: any) => (
-                                                                <SelectItem key={po.id} value={po.id}>{String(po.poNumber)}</SelectItem>
-                                                            )) : null}
-                                                        </SelectContent>
-                                                    </Select>
-                                                    <Input
-                                                        placeholder="Ln"
-                                                        className="h-9 w-12 px-2 text-center"
-                                                        value={line.poLineId || ""}
-                                                        onChange={e => handleLineChange(index, "poLineId", e.target.value)}
-                                                        disabled={!line.poHeaderId || line.poHeaderId === "none"}
-                                                    />
-                                                </div>
-                                            </td>
-                                            <td className="p-2 align-top relative">
-                                                <div className="flex justify-center items-center gap-1">
-                                                    <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-500 hover:text-slate-900" title="View Distributions" onClick={(e) => {
-                                                        e.preventDefault();
-                                                        setSelectedLineForDistributions(selectedLineForDistributions === index ? null : index);
-                                                    }}>
-                                                        <Network className="h-4 w-4" />
-                                                    </Button>
-                                                    <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-400 hover:text-red-700 hover:bg-red-50" onClick={() => removeLine(index)} disabled={lines.length === 1}>
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                                <Dialog open={selectedLineForDistributions === index} onOpenChange={(open) => {
-                                                    if (!open) setSelectedLineForDistributions(null);
-                                                }}>
-                                                    <DialogContent className="max-w-5xl">
-                                                        <DialogHeader>
-                                                            <DialogTitle>Line Distributions - Line #{line.lineNumber}</DialogTitle>
-                                                        </DialogHeader>
-                                                        <div className="pt-4">
-                                                            <APInvoiceDistributions
-                                                                invoiceId="draft"
-                                                                invoiceLineId="draft_line"
-                                                                lineAmount={parseFloat(line.amount || "0")}
-                                                                onClose={() => setSelectedLineForDistributions(null)}
-                                                            />
-                                                        </div>
-                                                    </DialogContent>
-                                                </Dialog>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                        <InteractiveSpreadsheet
+                            data={lines}
+                            columns={invoiceColumns}
+                            onChange={setLines}
+                        />
                     </CardContent>
                 </Card>
             </div>

@@ -1,49 +1,113 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Eye, Plus, Trash2 } from "lucide-react";
-import { queryClient } from "@/lib/queryClient";
+import { Eye, Plus, Trash2, Save, Loader2 } from "lucide-react";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function InspectionPlansITP() {
   const { toast } = useToast();
-  const [newITP, setNewITP] = useState({ partNumber: "", itpType: "incoming", sampleSize: "5", status: "active" });
+  const [localPlans, setLocalPlans] = useState<any[]>([]);
 
   const { data: plans = [], isLoading } = useQuery({
     queryKey: ["/api/inspection-plans"],
     queryFn: () => fetch("/api/inspection-plans").then(r => r.json()).catch(() => []),
   });
 
-  const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/inspection-plans", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/inspection-plans"] });
-      setNewITP({ partNumber: "", itpType: "incoming", sampleSize: "5", status: "active" });
-      toast({ title: "Inspection plan created" });
-    },
-  });
+  useEffect(() => {
+    if (plans) {
+      setLocalPlans(plans);
+    }
+  }, [plans]);
 
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/inspection-plans/${id}`, { method: "DELETE" }),
+  const saveMutation = useMutation({
+    mutationFn: async (updatedPlans: any[]) => {
+      for (const plan of updatedPlans) {
+        if (!plan.id || String(plan.id).startsWith('temp-')) {
+          await fetch("/api/inspection-plans", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...plan, id: undefined }) });
+        } else {
+          await apiRequest("PATCH", `/api/inspection-plans/${plan.id}`, plan).catch(() => { });
+        }
+      }
+
+      const deletedIds = plans.filter((c: any) => !updatedPlans.find((uc) => uc.id === c.id)).map((c: any) => c.id);
+      for (const id of deletedIds) {
+        await fetch(`/api/inspection-plans/${id}`, { method: "DELETE" });
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/inspection-plans"] });
-      toast({ title: "Plan deleted" });
+      toast({ title: "Inspection plans saved successfully" });
     },
   });
 
   const active = plans.filter((p: any) => p.status === "active").length;
   const avgSampleSize = plans.length > 0 ? (plans.reduce((sum: number, p: any) => sum + (parseFloat(p.sampleSize) || 0), 0) / plans.length).toFixed(0) : 0;
 
+  const columns: SpreadsheetColumn<any>[] = [
+    {
+      id: "partNumber",
+      header: "Part Number",
+      width: "200px",
+      cell: (row, index, updateRow) => (
+        <Input className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent font-medium" placeholder="Part #" value={row.partNumber || ''} onChange={(e) => updateRow("partNumber", e.target.value)} />
+      )
+    },
+    {
+      id: "itpType",
+      header: "Inspection Type",
+      width: "150px",
+      cell: (row, index, updateRow) => (
+        <Select value={row.itpType || 'incoming'} onValueChange={(val) => updateRow("itpType", val)}>
+          <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="incoming">Incoming</SelectItem>
+            <SelectItem value="in-process">In-Process</SelectItem>
+            <SelectItem value="final">Final</SelectItem>
+          </SelectContent>
+        </Select>
+      )
+    },
+    {
+      id: "sampleSize",
+      header: "Sample Size",
+      width: "120px",
+      cell: (row, index, updateRow) => (
+        <Input type="number" className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent text-right" placeholder="0" value={row.sampleSize || ''} onChange={(e) => updateRow("sampleSize", e.target.value)} />
+      )
+    },
+    {
+      id: "status",
+      header: "Status",
+      width: "150px",
+      cell: (row, index, updateRow) => (
+        <Select value={row.status || 'active'} onValueChange={(val) => updateRow("status", val)}>
+          <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="draft">Draft</SelectItem>
+            <SelectItem value="active">Active</SelectItem>
+          </SelectContent>
+        </Select>
+      )
+    }
+  ];
+
   return (
     <StandardPage
-      title="Inspection ent
+      title="Inspection Plans (ITP)"
+      breadcrumbs={[{ label: "Manufacturing", href: "/manufacturing" }, { label: "Inspection Plans" }]}
+    >
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900 border-none">
+          Inspection Plans (ITP)
         </h1>
-        <p className="text-muted-foreground mt-2">Incoming, in-process, final inspections, and SPC monitoring</p>
+        <p className="text-muted-foreground mt-2 text-sm max-w-2xl text-slate-600">Incoming, in-process, final inspections, and SPC monitoring</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
@@ -73,51 +137,32 @@ export default function InspectionPlansITP() {
         </Card>
       </div>
 
-      <Card data-testid="card-new-itp">
-        <CardHeader><CardTitle className="text-base">Create Inspection Plan</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-5 gap-2">
-            <Input placeholder="Part Number" value={newITP.partNumber} onChange={(e) => setNewITP({ ...newITP, partNumber: e.target.value })} data-testid="input-part" className="text-sm" />
-            <Select value={newITP.itpType} onValueChange={(v) => setNewITP({ ...newITP, itpType: v })}>
-              <SelectTrigger data-testid="select-type" className="text-sm"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="incoming">Incoming</SelectItem>
-                <SelectItem value="in-process">In-Process</SelectItem>
-                <SelectItem value="final">Final</SelectItem>
-              </SelectContent>
-            </Select>
-            <Input placeholder="Sample Size" type="number" value={newITP.sampleSize} onChange={(e) => setNewITP({ ...newITP, sampleSize: e.target.value })} data-testid="input-sample" className="text-sm" />
-            <Select value={newITP.status} onValueChange={(v) => setNewITP({ ...newITP, status: v })}>
-              <SelectTrigger data-testid="select-status" className="text-sm"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="draft">Draft</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button disabled={createMutation.isPending || !newITP.partNumber} size="sm" data-testid="button-create-plan">
-              <Plus className="w-3 h-3" />
+      <Card className="mt-6 border-none shadow-lg">
+        <CardHeader className="bg-muted/30 pb-4 border-b flex flex-row items-center justify-between">
+          <div>
+            <CardTitle className="text-xl">Inspection Plans Grid</CardTitle>
+            <CardDescription>Inline editable spreadsheet for quality test plans</CardDescription>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setLocalPlans([...localPlans, { id: `temp-${Date.now()}`, partNumber: '', itpType: 'incoming', sampleSize: '5', status: 'draft' }])}>
+              <Plus className="w-4 h-4 mr-2" /> Add Plan
+            </Button>
+            <Button onClick={() => saveMutation.mutate(localPlans)} disabled={saveMutation.isPending}>
+              {saveMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+              Save Changes
             </Button>
           </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader><CardTitle className="text-base">Inspection Plans</CardTitle></CardHeader>
-        <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : plans.length === 0 ? <p className="text-muted-foreground text-center py-4">No plans</p> : plans.map((p: any) => (
-            <div key={p.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`plan-${p.id}`}>
-              <div>
-                <p className="font-semibold">{p.partNumber}</p>
-                <p className="text-xs text-muted-foreground">{p.itpType} • Sample: {p.sampleSize}</p>
-              </div>
-              <div className="flex gap-2 items-center">
-                <Badge variant={p.status === "active" ? "default" : "secondary"} className="text-xs">{p.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${p.id}`} className="h-7 w-7">
-                  <Trash2 className="w-3 h-3" />
-                </Button>
-              </div>
-            </div>
-          ))}
+        </CardHeader>
+        <CardContent className="p-0">
+          {isLoading ? (
+            <div className="p-8 flex items-center justify-center text-muted-foreground"><Loader2 className="animate-spin h-6 w-6 mr-2" /> Loading plans...</div>
+          ) : (
+            <InteractiveSpreadsheet
+              data={localPlans}
+              columns={columns}
+              onChange={setLocalPlans}
+            />
+          )}
         </CardContent>
       </Card>
     </StandardPage>

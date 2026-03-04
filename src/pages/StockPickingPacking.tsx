@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,33 +6,44 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { CheckSquare, Plus, Trash2 } from "lucide-react";
-import { queryClient } from "@/lib/queryClient";
+import { CheckSquare, Plus, Trash2, Save, Loader2 } from "lucide-react";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function StockPickingPacking() {
   const { toast } = useToast();
-  const [newTask, setNewTask] = useState({ orderId: "", productId: "", quantity: "1", status: "pending", taskType: "pick" });
+  const [localTasks, setLocalTasks] = useState<any[]>([]);
 
   const { data: tasks = [], isLoading } = useQuery({
     queryKey: ["/api/pick-pack-tasks"],
     queryFn: () => fetch("/api/pick-pack-tasks").then(r => r.json()).catch(() => []),
   });
 
-  const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/pick-pack-tasks", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/pick-pack-tasks"] });
-      setNewTask({ orderId: "", productId: "", quantity: "1", status: "pending", taskType: "pick" });
-      toast({ title: "Task created" });
-    },
-  });
+  useEffect(() => {
+    if (tasks) {
+      setLocalTasks(tasks);
+    }
+  }, [tasks]);
 
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/pick-pack-tasks/${id}`, { method: "DELETE" }),
+  const saveMutation = useMutation({
+    mutationFn: async (updatedTasks: any[]) => {
+      for (const t of updatedTasks) {
+        if (!t.id || String(t.id).startsWith('temp-')) {
+          await fetch('/api/pick-pack-tasks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...t, id: undefined }) }).catch(() => { });
+        } else {
+          await apiRequest('PATCH', `/api/pick-pack-tasks/${t.id}`, t).catch(() => { });
+        }
+      }
+
+      const deletedIds = tasks.filter((c: any) => !updatedTasks.find((uc: any) => uc.id === c.id)).map((c: any) => c.id);
+      for (const id of deletedIds) {
+        await fetch(`/api/pick-pack-tasks/${id}`, { method: 'DELETE' }).catch(() => { });
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/pick-pack-tasks"] });
-      toast({ title: "Task deleted" });
+      toast({ title: "Tasks saved successfully" });
     },
   });
 
@@ -41,10 +52,9 @@ export default function StockPickingPacking() {
 
   return (
     <StandardPage
-      title="Stock Picki  </h1>
-        <p className="text-muted-foreground mt-2">Order picking, packing, quality verification, and dispatch preparation</p>
-      </div>
-
+      title="Stock Picking & Packing"
+      description="Order picking, packing, quality verification, and dispatch preparation"
+    >
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">
           <CardContent className="pt-0">
@@ -72,47 +82,82 @@ export default function StockPickingPacking() {
         </Card>
       </div>
 
-      <Card data-testid="card-new-task">
-        <CardHeader><CardTitle className="text-base">Create Pick/Pack Task</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-5 gap-2">
-            <Input placeholder="Order ID" value={newTask.orderId} onChange={(e) => setNewTask({ ...newTask, orderId: e.target.value })} data-testid="input-orderid" className="text-sm" />
-            <Input placeholder="Product ID" value={newTask.productId} onChange={(e) => setNewTask({ ...newTask, productId: e.target.value })} data-testid="input-prodid" className="text-sm" />
-            <Input placeholder="Quantity" type="number" value={newTask.quantity} onChange={(e) => setNewTask({ ...newTask, quantity: e.target.value })} data-testid="input-qty" className="text-sm" />
-            <Select value={newTask.taskType} onValueChange={(v) => setNewTask({ ...newTask, taskType: v })}>
-              <SelectTrigger data-testid="select-type" className="text-sm"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pick">Pick</SelectItem>
-                <SelectItem value="pack">Pack</SelectItem>
-                <SelectItem value="verify">Verify</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button disabled={createMutation.isPending || !newTask.orderId} size="sm" data-testid="button-create">
-              <Plus className="w-3 h-3" />
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="text-base">Pick/Pack Tasks</CardTitle>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => setLocalTasks([...localTasks, { id: `temp-${Date.now()}`, orderId: "", productId: "", quantity: "1", status: "pending", taskType: "pick" }])}>
+              <Plus className="w-4 h-4 mr-2" /> Add Task
             </Button>
+            <Button size="sm" onClick={() => saveMutation.mutate(localTasks)} disabled={saveMutation.isPending}>
+              {saveMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />} Save Changes
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="border rounded-md bg-white">
+            <InteractiveSpreadsheet
+              data={localTasks}
+              columns={[
+                {
+                  id: "orderId",
+                  header: "Order ID",
+                  width: "200px",
+                  cell: (row, index, updateRow) => (
+                    <Input className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent" placeholder="Order ID" value={row.orderId || ''} onChange={(e) => updateRow("orderId", e.target.value)} />
+                  )
+                },
+                {
+                  id: "productId",
+                  header: "Product ID",
+                  width: "200px",
+                  cell: (row, index, updateRow) => (
+                    <Input className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent" placeholder="Product ID" value={row.productId || ''} onChange={(e) => updateRow("productId", e.target.value)} />
+                  )
+                },
+                {
+                  id: "quantity",
+                  header: "Quantity",
+                  width: "120px",
+                  cell: (row, index, updateRow) => (
+                    <Input type="number" className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent" placeholder="1" value={row.quantity || ''} onChange={(e) => updateRow("quantity", e.target.value)} />
+                  )
+                },
+                {
+                  id: "taskType",
+                  header: "Type",
+                  width: "150px",
+                  cell: (row, index, updateRow) => (
+                    <Select value={row.taskType || 'pick'} onValueChange={(val) => updateRow("taskType", val)}>
+                      <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent"><SelectValue placeholder="Type" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pick">Pick</SelectItem>
+                        <SelectItem value="pack">Pack</SelectItem>
+                        <SelectItem value="verify">Verify</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )
+                },
+                {
+                  id: "status",
+                  header: "Status",
+                  width: "150px",
+                  cell: (row, index, updateRow) => (
+                    <Select value={row.status || 'pending'} onValueChange={(val) => updateRow("status", val)}>
+                      <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent"><SelectValue placeholder="Status" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="completed">Completed</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )
+                }
+              ]}
+              onChange={setLocalTasks}
+            />
           </div>
         </CardContent>
       </Card>
-
-      <Card>
-        <CardHeader><CardTitle className="text-base">Tasks</CardTitle></CardHeader>
-        <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : tasks.length === 0 ? <p className="text-muted-foreground text-center py-4">No tasks</p> : tasks.map((t: any) => (
-            <div key={t.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`task-${t.id}`}>
-              <div className="flex-1">
-                <p className="font-semibold">{t.orderId}</p>
-                <p className="text-xs text-muted-foreground">{t.taskType}: {t.productId} • {t.quantity}</p>
-              </div>
-              <div className="flex gap-2 items-center">
-                <Badge variant={t.status === "completed" ? "default" : "secondary"} className="text-xs">{t.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${t.id}`} className="h-7 w-7">
-                  <Trash2 className="w-3 h-3" />
-                </Button>
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-    </StandardPage>
+    </StandardPage >
   );
 }

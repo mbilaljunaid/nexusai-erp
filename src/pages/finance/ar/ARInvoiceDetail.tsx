@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { useRoute } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
@@ -53,14 +54,23 @@ export default function ARInvoiceDetail() {
         enabled: !!selectedLineId,
     });
 
-    const createCreditMutation = useMutation({
-        mutationFn: async (data: z.infer<typeof salesCreditSchema>) => {
-            const res = await apiRequest("POST", "/api/ar/sales-credits", { ...data, invoiceLineId: selectedLineId });
-            return res.json();
+    const [localCredits, setLocalCredits] = useState<any[]>([]);
+
+    useEffect(() => {
+        if (salesCredits) {
+            setLocalCredits(salesCredits);
+        }
+    }, [salesCredits, selectedLineId]);
+
+    const saveCreditsMutation = useMutation({
+        mutationFn: async (credits: any[]) => {
+            await Promise.all(credits.map(credit =>
+                apiRequest("POST", "/api/ar/sales-credits", { ...credit, invoiceLineId: selectedLineId })
+            ));
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/ar/sales-credits", selectedLineId] });
-            toast({ title: "Sales Credit Added" });
+            toast({ title: "Sales Credits Saved" });
         },
         onError: (err: any) => {
             toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -83,6 +93,53 @@ export default function ARInvoiceDetail() {
     const invoice = invoiceData.invoice || invoiceData;
     const lines = invoiceData.lines || [];
     const status = invoice.status?.toUpperCase() || (invoice.glStatus ? 'ISSUED' : 'DRAFT');
+
+    const creditColumns: SpreadsheetColumn<any>[] = [
+        {
+            id: "salespersonId",
+            header: "Salesperson",
+            width: "200px",
+            cell: (row, index, updateRow) => (
+                <Input className="h-9 w-full" value={row.salespersonId || ''} onChange={(e) => updateRow("salespersonId", e.target.value)} placeholder="Salesperson ID" />
+            )
+        },
+        {
+            id: "salesCreditType",
+            header: "Type",
+            width: "150px",
+            cell: (row, index, updateRow) => (
+                <Select value={row.salesCreditType || 'Quota'} onValueChange={(val) => updateRow("salesCreditType", val)}>
+                    <SelectTrigger className="h-9 w-full"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="Quota">Quota</SelectItem>
+                        <SelectItem value="Non-Quota">Non-Quota</SelectItem>
+                    </SelectContent>
+                </Select>
+            )
+        },
+        {
+            id: "percentage",
+            header: "Percentage (%)",
+            width: "120px",
+            cell: (row, index, updateRow) => {
+                const handlePctChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+                    const pct = Number(e.target.value);
+                    const lineAmount = lines.find((l: any) => l.id === selectedLineId)?.amount || 0;
+                    updateRow("percentage", pct);
+                    updateRow("amount", (pct / 100) * lineAmount);
+                };
+                return <Input type="number" step="0.01" className="h-9 w-full text-right" value={row.percentage || ''} onChange={handlePctChange} />;
+            }
+        },
+        {
+            id: "amount",
+            header: "Amount ($)",
+            width: "150px",
+            cell: (row, index, updateRow) => (
+                <Input type="number" step="0.01" className="h-9 w-full text-right" value={row.amount || ''} onChange={(e) => updateRow("amount", Number(e.target.value))} />
+            )
+        }
+    ];
 
     return (
         <StandardPage
@@ -211,77 +268,30 @@ export default function ARInvoiceDetail() {
                                             <div className="space-y-4">
                                                 <div className="flex justify-between items-center">
                                                     <h3 className="font-semibold">Revenue Splits for Line</h3>
-                                                    <Dialog>
-                                                        <DialogTrigger asChild>
-                                                            <Button size="sm">Add Credit</Button>
-                                                        </DialogTrigger>
-                                                        <DialogContent>
-                                                            <DialogHeader><DialogTitle>Add Sales Credit</DialogTitle></DialogHeader>
-                                                            <Form {...form}>
-                                                                <form onSubmit={form.handleSubmit((d) => createCreditMutation.mutate(d))} className="space-y-4">
-                                                                    <FormField control={form.control} name="salespersonId" render={({ field }) => (
-                                                                        <FormItem><FormLabel>Salesperson ID</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
-                                                                    )} />
-                                                                    <FormField control={form.control} name="salesCreditType" render={({ field }) => (
-                                                                        <FormItem><FormLabel>Type</FormLabel>
-                                                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                                                <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
-                                                                                <SelectContent>
-                                                                                    <SelectItem value="Quota">Quota</SelectItem>
-                                                                                    <SelectItem value="Non-Quota">Non-Quota</SelectItem>
-                                                                                </SelectContent>
-                                                                            </Select>
-                                                                        </FormItem>
-                                                                    )} />
-                                                                    <div className="grid grid-cols-2 gap-4">
-                                                                        <FormField control={form.control} name="percentage" render={({ field }) => (
-                                                                            <FormItem><FormLabel>Percentage (%)</FormLabel><FormControl><Input type="number" step="0.01" {...field} /></FormControl></FormItem>
-                                                                        )} />
-                                                                        <FormField control={form.control} name="amount" render={({ field }) => (
-                                                                            <FormItem><FormLabel>Amount ($)</FormLabel><FormControl><Input type="number" step="0.01" {...field} /></FormControl></FormItem>
-                                                                        )} />
-                                                                    </div>
-                                                                    <Button type="submit" className="w-full" disabled={createCreditMutation.isPending}>Save</Button>
-                                                                </form>
-                                                            </Form>
-                                                        </DialogContent>
-                                                    </Dialog>
+                                                    <div className="flex gap-2">
+                                                        <Button size="sm" variant="outline" onClick={() => setLocalCredits([...localCredits, { id: Date.now(), salesCreditType: 'Quota', percentage: 0, amount: 0, salespersonId: '' }])}>
+                                                            Add Row
+                                                        </Button>
+                                                        <Button size="sm" onClick={() => saveCreditsMutation.mutate(localCredits)} disabled={saveCreditsMutation.isPending}>
+                                                            Save Credits
+                                                        </Button>
+                                                    </div>
                                                 </div>
 
                                                 {loadingCredits ? <Loader2 className="animate-spin w-4 h-4 mx-auto" /> : (
                                                     <div className="border rounded-md overflow-hidden">
-                                                        <table className="w-full text-sm">
-                                                            <thead className="bg-slate-50 border-b">
-                                                                <tr>
-                                                                    <th className="p-2 text-left font-medium">Salesperson</th>
-                                                                    <th className="p-2 text-left font-medium">Type</th>
-                                                                    <th className="p-2 text-right font-medium">%</th>
-                                                                    <th className="p-2 text-right font-medium">Amount</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                {salesCredits.map((c: any) => (
-                                                                    <tr key={c.id} className="border-b last:border-0 hover:bg-slate-50">
-                                                                        <td className="p-2">{c.salespersonId}</td>
-                                                                        <td className="p-2">
-                                                                            <Badge variant={c.salesCreditType === 'Quota' ? 'default' : 'secondary'}>{c.salesCreditType}</Badge>
-                                                                        </td>
-                                                                        <td className="p-2 text-right">{c.percentage}%</td>
-                                                                        <td className="p-2 text-right">${c.amount}</td>
-                                                                    </tr>
-                                                                ))}
-                                                                {salesCredits.length === 0 && (
-                                                                    <tr><td colSpan={4} className="p-4 text-center text-muted-foreground">No credits assigned</td></tr>
-                                                                )}
-                                                            </tbody>
-                                                        </table>
+                                                        <InteractiveSpreadsheet
+                                                            data={localCredits}
+                                                            columns={creditColumns}
+                                                            onChange={setLocalCredits}
+                                                        />
                                                     </div>
                                                 )}
 
                                                 {/* Quota Balancer Warning */}
-                                                {!loadingCredits && salesCredits.length > 0 && (
+                                                {!loadingCredits && localCredits.length > 0 && (
                                                     (() => {
-                                                        const quotaSum = salesCredits.filter((c: any) => c.salesCreditType === 'Quota').reduce((acc: number, val: any) => acc + Number(val.percentage), 0);
+                                                        const quotaSum = localCredits.filter((c: any) => c.salesCreditType === 'Quota').reduce((acc: number, val: any) => acc + Number(val.percentage), 0);
                                                         if (quotaSum !== 100) {
                                                             return (
                                                                 <div className="flex items-center gap-2 p-3 bg-destructive/10 text-destructive text-sm rounded-md border border-destructive/20 mt-4">

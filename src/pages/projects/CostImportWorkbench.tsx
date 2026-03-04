@@ -10,8 +10,11 @@ import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface ImportRow {
+    id?: string | number;
     rowNumber: number;
     taskId: string;
     expenditureTypeId: string;
@@ -126,7 +129,7 @@ export default function CostImportWorkbench() {
 
             const validated: ImportRow[] = dataLines.map((line, idx) => {
                 const values = line.split(",").map(v => v.trim());
-                const row: any = { rowNumber: idx + 2, status: "pending", errors: [] };
+                const row: any = { id: idx, rowNumber: idx + 2, status: "pending", errors: [] };
 
                 fieldMappings.forEach((mapping, i) => {
                     if (mapping.targetField && values[i]) {
@@ -176,6 +179,95 @@ export default function CostImportWorkbench() {
 
     const validCount = previewData.filter(r => r.status === "valid").length;
     const errorCount = previewData.filter(r => r.status === "error").length;
+
+    const handlePreviewDataChange = (newData: unknown[]) => {
+        const rows = newData as ImportRow[];
+        const validated = rows.map((row) => {
+            row.errors = [];
+            if (!row.taskId) row.errors.push("Task ID is required");
+            if (!row.expenditureTypeId) row.errors.push("Expenditure Type is required");
+            if (!row.expenditureItemDate) row.errors.push("Date is required");
+            if (!row.quantity || isNaN(Number(row.quantity))) row.errors.push("Valid quantity is required");
+            if (!row.rawCost || isNaN(Number(row.rawCost))) row.errors.push("Valid cost is required");
+            if (!row.transactionSource) row.errors.push("Transaction source is required");
+
+            row.status = row.errors.length === 0 ? "valid" : "error";
+            return row;
+        });
+        setPreviewData(validated);
+    };
+
+    const columns: SpreadsheetColumn<ImportRow>[] = [
+        {
+            id: "rowNumber",
+            header: "Row",
+            width: "60px",
+            cell: (row) => <div className="p-2 text-muted-foreground">{row.rowNumber}</div>
+        },
+        {
+            id: "taskId",
+            header: "Task ID",
+            width: "150px",
+            cell: (row, index, updateRow) => (
+                <Input className="h-9 w-full font-mono text-xs" value={row.taskId || ''} onChange={(e) => updateRow("taskId", e.target.value)} />
+            )
+        },
+        {
+            id: "expenditureTypeId",
+            header: "Type",
+            width: "150px",
+            cell: (row, index, updateRow) => (
+                <Input className="h-9 w-full text-xs" value={row.expenditureTypeId || ''} onChange={(e) => updateRow("expenditureTypeId", e.target.value)} />
+            )
+        },
+        {
+            id: "expenditureItemDate",
+            header: "Date",
+            width: "130px",
+            cell: (row, index, updateRow) => (
+                <Input type="date" className="h-9 w-full text-xs" value={row.expenditureItemDate || ''} onChange={(e) => updateRow("expenditureItemDate", e.target.value)} />
+            )
+        },
+        {
+            id: "quantity",
+            header: "Quantity",
+            width: "100px",
+            cell: (row, index, updateRow) => (
+                <Input type="number" step="0.01" className="h-9 w-full" value={row.quantity || ''} onChange={(e) => updateRow("quantity", e.target.value ? Number(e.target.value) : 0)} />
+            )
+        },
+        {
+            id: "rawCost",
+            header: "Cost",
+            width: "120px",
+            cell: (row, index, updateRow) => (
+                <Input type="number" step="0.01" className="h-9 w-full" value={row.rawCost || ''} onChange={(e) => updateRow("rawCost", e.target.value ? Number(e.target.value) : 0)} />
+            )
+        },
+        {
+            id: "status",
+            header: "Status",
+            width: "200px",
+            cell: (row) => (
+                <div className="flex items-center h-full p-1">
+                    {row.status === "valid" ? (
+                        <Badge variant="default" className="gap-1 whitespace-nowrap">
+                            <CheckCircle2 className="h-3 w-3" /> Valid
+                        </Badge>
+                    ) : (
+                        <div className="space-y-1">
+                            <Badge variant="destructive" className="gap-1 whitespace-nowrap">
+                                <AlertCircle className="h-3 w-3" /> Error
+                            </Badge>
+                            {row.errors?.map((err, i) => (
+                                <p key={i} className="text-[10px] text-red-600 leading-tight">{err}</p>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )
+        }
+    ];
 
     return (
         <StandardPage
@@ -321,47 +413,14 @@ export default function CostImportWorkbench() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="max-h-96 overflow-y-auto">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Row</TableHead>
-                                            <TableHead>Task ID</TableHead>
-                                            <TableHead>Type</TableHead>
-                                            <TableHead>Date</TableHead>
-                                            <TableHead>Quantity</TableHead>
-                                            <TableHead>Cost</TableHead>
-                                            <TableHead>Status</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {previewData.map((row) => (
-                                            <TableRow key={row.rowNumber} className={row.status === "error" ? "bg-red-50" : ""}>
-                                                <TableCell>{row.rowNumber}</TableCell>
-                                                <TableCell className="font-mono text-xs">{row.taskId}</TableCell>
-                                                <TableCell className="text-xs">{row.expenditureTypeId}</TableCell>
-                                                <TableCell className="text-xs">{row.expenditureItemDate}</TableCell>
-                                                <TableCell>{row.quantity}</TableCell>
-                                                <TableCell>${row.rawCost}</TableCell>
-                                                <TableCell>
-                                                    {row.status === "valid" ? (
-                                                        <Badge variant="default" className="gap-1">
-                                                            <CheckCircle2 className="h-3 w-3" /> Valid
-                                                        </Badge>
-                                                    ) : (
-                                                        <div className="space-y-1">
-                                                            <Badge variant="destructive" className="gap-1">
-                                                                <AlertCircle className="h-3 w-3" /> Error
-                                                            </Badge>
-                                                            {row.errors?.map((err, i) => (
-                                                                <p key={i} className="text-[10px] text-red-600">{err}</p>
-                                                            ))}
-                                                        </div>
-                                                    )}
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
+                                <div className="max-h-96 overflow-y-auto">
+                                    <InteractiveSpreadsheet
+                                        data={previewData}
+                                        columns={columns}
+                                        onChange={handlePreviewDataChange}
+                                        rowHeight={60}
+                                    />
+                                </div>
                             </div>
                             <div className="flex justify-end gap-2">
                                 <Button variant="outline" onClick={() => setImportStep("mapping")}>Back to Mapping</Button>

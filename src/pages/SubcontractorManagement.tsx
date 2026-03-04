@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,33 +6,44 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Users, Plus, Trash2 } from "lucide-react";
-import { queryClient } from "@/lib/queryClient";
+import { Users, Plus, Trash2, Save, Loader2 } from "lucide-react";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function SubcontractorManagement() {
   const { toast } = useToast();
-  const [newSub, setNewSub] = useState({ name: "", scope: "Concrete", contractValue: "100000", retentionPct: "10", status: "active" });
+  const [localSubs, setLocalSubs] = useState<any[]>([]);
 
   const { data: subs = [], isLoading } = useQuery({
     queryKey: ["/api/subcontractors"],
     queryFn: () => fetch("/api/subcontractors").then(r => r.json()).catch(() => []),
   });
 
-  const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/subcontractors", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/subcontractors"] });
-      setNewSub({ name: "", scope: "Concrete", contractValue: "100000", retentionPct: "10", status: "active" });
-      toast({ title: "Subcontractor added" });
-    },
-  });
+  useEffect(() => {
+    if (subs) {
+      setLocalSubs(subs);
+    }
+  }, [subs]);
 
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/subcontractors/${id}`, { method: "DELETE" }),
+  const saveMutation = useMutation({
+    mutationFn: async (updatedSubs: any[]) => {
+      for (const s of updatedSubs) {
+        if (!s.id || String(s.id).startsWith('temp-')) {
+          await fetch('/api/subcontractors', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...s, id: undefined }) }).catch(() => { });
+        } else {
+          await apiRequest('PATCH', `/api/subcontractors/${s.id}`, s).catch(() => { });
+        }
+      }
+
+      const deletedIds = subs.filter((c: any) => !updatedSubs.find((uc: any) => uc.id === c.id)).map((c: any) => c.id);
+      for (const id of deletedIds) {
+        await fetch(`/api/subcontractors/${id}`, { method: 'DELETE' }).catch(() => { });
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/subcontractors"] });
-      toast({ title: "Subcontractor deleted" });
+      toast({ title: "Subcontractors saved successfully" });
     },
   });
 
@@ -41,9 +52,9 @@ export default function SubcontractorManagement() {
 
   return (
     <StandardPage
-      title="Subcontract   </h1>
-        <p className="text-muted-foreground mt-2">Contracts, payments, retention, and performance</p>
-      </div>
+      title="Subcontractor Management"
+      description="Contracts, payments, retention, and performance"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">
@@ -72,38 +83,73 @@ export default function SubcontractorManagement() {
         </Card>
       </div>
 
-      <Card data-testid="card-new-sub">
-        <CardHeader><CardTitle className="text-base">Add Subcontractor</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-5 gap-2">
-            <Input placeholder="Name" value={newSub.name} onChange={(e) => setNewSub({ ...newSub, name: e.target.value })} data-testid="input-name" className="text-sm" />
-            <Input placeholder="Scope" value={newSub.scope} onChange={(e) => setNewSub({ ...newSub, scope: e.target.value })} data-testid="input-scope" className="text-sm" />
-            <Input placeholder="Contract Value" type="number" value={newSub.contractValue} onChange={(e) => setNewSub({ ...newSub, contractValue: e.target.value })} data-testid="input-value" className="text-sm" />
-            <Input placeholder="Retention %" type="number" value={newSub.retentionPct} onChange={(e) => setNewSub({ ...newSub, retentionPct: e.target.value })} data-testid="input-retention" className="text-sm" />
-            <Button disabled={createMutation.isPending || !newSub.name} size="sm" data-testid="button-add-sub">
-              <Plus className="w-3 h-3" />
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="text-base">Subcontractors</CardTitle>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => setLocalSubs([...localSubs, { id: `temp-${Date.now()}`, name: "", scope: "Concrete", contractValue: "100000", retentionPct: "10", status: "active" }])}>
+              <Plus className="w-4 h-4 mr-2" /> Add Subcontractor
+            </Button>
+            <Button size="sm" onClick={() => saveMutation.mutate(localSubs)} disabled={saveMutation.isPending}>
+              {saveMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />} Save Changes
             </Button>
           </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader><CardTitle className="text-base">Subcontractors</CardTitle></CardHeader>
-        <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : subs.length === 0 ? <p className="text-muted-foreground text-center py-4">No subcontractors</p> : subs.map((s: any) => (
-            <div key={s.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`sub-${s.id}`}>
-              <div>
-                <p className="font-semibold">{s.name}</p>
-                <p className="text-xs text-muted-foreground">{s.scope} • ${s.contractValue} • {s.retentionPct}% retention</p>
-              </div>
-              <div className="flex gap-2 items-center">
-                <Badge variant="default" className="text-xs">{s.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${s.id}`} className="h-7 w-7">
-                  <Trash2 className="w-3 h-3" />
-                </Button>
-              </div>
-            </div>
-          ))}
+        </CardHeader>
+        <CardContent>
+          <div className="border rounded-md bg-white">
+            <InteractiveSpreadsheet
+              data={localSubs}
+              columns={[
+                {
+                  id: "name",
+                  header: "Name",
+                  width: "250px",
+                  cell: (row, index, updateRow) => (
+                    <Input className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent" placeholder="Name" value={row.name || ''} onChange={(e) => updateRow("name", e.target.value)} />
+                  )
+                },
+                {
+                  id: "scope",
+                  header: "Scope",
+                  width: "200px",
+                  cell: (row, index, updateRow) => (
+                    <Input className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent" placeholder="Scope" value={row.scope || ''} onChange={(e) => updateRow("scope", e.target.value)} />
+                  )
+                },
+                {
+                  id: "contractValue",
+                  header: "Contract Value",
+                  width: "150px",
+                  cell: (row, index, updateRow) => (
+                    <Input type="number" className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent" placeholder="100000" value={row.contractValue || ''} onChange={(e) => updateRow("contractValue", e.target.value)} />
+                  )
+                },
+                {
+                  id: "retentionPct",
+                  header: "Retention %",
+                  width: "120px",
+                  cell: (row, index, updateRow) => (
+                    <Input type="number" className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent" placeholder="10" value={row.retentionPct || ''} onChange={(e) => updateRow("retentionPct", e.target.value)} />
+                  )
+                },
+                {
+                  id: "status",
+                  header: "Status",
+                  width: "150px",
+                  cell: (row, index, updateRow) => (
+                    <Select value={row.status || 'active'} onValueChange={(val) => updateRow("status", val)}>
+                      <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent"><SelectValue placeholder="Status" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="inactive">Inactive</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )
+                }
+              ]}
+              onChange={setLocalSubs}
+            />
+          </div>
         </CardContent>
       </Card>
     </StandardPage>

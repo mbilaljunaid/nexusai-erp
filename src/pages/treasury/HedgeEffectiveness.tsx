@@ -1,6 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Shield, AlertTriangle, CheckCircle2, TrendingUp, TrendingDown, Search } from 'lucide-react';
+import { Shield, AlertTriangle, CheckCircle2, TrendingUp, TrendingDown, Search, Plus, Save, Loader2, Trash2 } from 'lucide-react';
+import { InteractiveSpreadsheet } from '@/components/ui/InteractiveSpreadsheet';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { apiRequest } from '@/lib/queryClient';
+import { useToast } from '@/hooks/use-toast';
 
 interface Facility {
     id: string;
@@ -47,9 +53,11 @@ const fmt = (n: number, c = 'USD') => new Intl.NumberFormat('en-US', { style: 'c
 const pct = (drawn: number, total: number) => total > 0 ? Math.round((drawn / total) * 100) : 0;
 
 export default function HedgeEffectiveness() {
+    const { toast } = useToast();
     const [activeTab, setActiveTab] = useState<'hedges' | 'covenants' | 'debt'>('hedges');
     const [testForm, setTestForm] = useState({ hedgeRelId: '', testDate: new Date().toISOString().slice(0, 10), hedgingGainLoss: '', hedgedItemGainLoss: '' });
     const [testResult, setTestResult] = useState<any>(null);
+    const [localHedges, setLocalHedges] = useState<any[]>([]);
     const qc = useQueryClient();
 
     const { data: hedges = [] } = useQuery<HedgeRel[]>({
@@ -73,10 +81,31 @@ export default function HedgeEffectiveness() {
         onSuccess: (res) => { setTestResult(res); qc.invalidateQueries({ queryKey: ['hedge-rels'] }); },
     });
 
-    const createHedgeMutation = useMutation({
-        mutationFn: (data: any) =>
-            fetch('/api/treasury/hedge-relationships', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).then(r => r.json()),
-        onSuccess: () => qc.invalidateQueries({ queryKey: ['hedge-rels'] }),
+    useEffect(() => {
+        if (hedges) {
+            setLocalHedges(hedges);
+        }
+    }, [hedges]);
+
+    const saveMutation = useMutation({
+        mutationFn: async (updatedHedges: any[]) => {
+            for (const h of updatedHedges) {
+                if (!h.id || String(h.id).startsWith('temp-')) {
+                    await fetch('/api/treasury/hedge-relationships', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...h, id: undefined }) });
+                } else {
+                    await apiRequest('PATCH', `/api/treasury/hedge-relationships/${h.id}`, h).catch(() => { });
+                }
+            }
+
+            const deletedIds = hedges.filter((c: any) => !updatedHedges.find((uc: any) => uc.id === c.id)).map((c: any) => c.id);
+            for (const id of deletedIds) {
+                await fetch(`/api/treasury/hedge-relationships/${id}`, { method: 'DELETE' }).catch(() => { });
+            }
+        },
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: ['hedge-rels'] });
+            toast({ title: "Hedge relationships saved" });
+        },
     });
 
     const totalNotional = hedges.reduce((s, h) => s + Number(h.notional_amount), 0);
@@ -113,31 +142,99 @@ export default function HedgeEffectiveness() {
                 <div className="panel">
                     <div className="panel-layout">
                         {/* Hedge Table */}
-                        <div className="he-card">
-                            <h3 className="card-title">Hedge Relationships</h3>
-                            <table className="he-table">
-                                <thead><tr><th>Hedge ID</th><th>Type</th><th>Std</th><th>Notional</th><th>Maturity</th><th>Status</th><th>Effectiveness</th></tr></thead>
-                                <tbody>
-                                    {hedges.map(h => (
-                                        <tr key={h.id} className="he-row" onClick={() => setTestForm(p => ({ ...p, hedgeRelId: h.id }))}>
-                                            <td className="mono">{h.hedge_id}</td>
-                                            <td><span className="type-chip">{h.hedge_type}</span></td>
-                                            <td><span className="std-chip">{h.accounting_std}</span></td>
-                                            <td className="mono">{fmt(h.notional_amount, h.currency_code)}</td>
-                                            <td className="mono small">{h.maturity_date}</td>
-                                            <td><span className={`status-chip ${h.status === 'Designated' ? 'green' : 'red'}`}>{h.status}</span></td>
-                                            <td>
-                                                {h.last_effectiveness === null
-                                                    ? <span className="grey-chip">Not Tested</span>
-                                                    : h.last_effectiveness
-                                                        ? <span className="eff-pass"><CheckCircle2 size={12} /> Effective</span>
-                                                        : <span className="eff-fail"><TrendingDown size={12} /> Ineffective</span>}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {hedges.length === 0 && <tr><td colSpan={7} className="empty">No hedge relationships</td></tr>}
-                                </tbody>
-                            </table>
+                        <div className="he-card flex flex-col gap-4">
+                            <div className="flex justify-between items-center">
+                                <h3 className="card-title m-0">Hedge Relationships</h3>
+                                <div className="flex gap-2">
+                                    <Button variant="outline" size="sm" onClick={() => setLocalHedges([...localHedges, { id: `temp-${Date.now()}`, hedge_id: '', hedge_type: 'Cash Flow', accounting_std: 'IFRS 9', notional_amount: 0, currency_code: 'USD', status: 'Draft', last_effectiveness: null }])}>
+                                        <Plus className="w-4 h-4 mr-2" /> Add Hedge
+                                    </Button>
+                                    <Button size="sm" onClick={() => saveMutation.mutate(localHedges)} disabled={saveMutation.isPending}>
+                                        {saveMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                                        Save Changes
+                                    </Button>
+                                </div>
+                            </div>
+                            <div className="border rounded-md bg-white">
+                                <InteractiveSpreadsheet
+                                    data={localHedges}
+                                    columns={[
+                                        {
+                                            id: "hedge_id",
+                                            header: "Hedge ID",
+                                            width: "120px",
+                                            cell: (row, index, updateRow) => (
+                                                <div onClick={() => setTestForm(p => ({ ...p, hedgeRelId: row.id }))} className="w-full h-full cursor-pointer">
+                                                    <Input className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent font-medium" placeholder="ID" value={row.hedge_id || ''} onChange={(e) => updateRow("hedge_id", e.target.value)} />
+                                                </div>
+                                            )
+                                        },
+                                        {
+                                            id: "hedge_type",
+                                            header: "Type",
+                                            width: "150px",
+                                            cell: (row, index, updateRow) => (
+                                                <Select value={row.hedge_type || ''} onValueChange={(val) => updateRow("hedge_type", val)}>
+                                                    <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent"><SelectValue placeholder="Type" /></SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="Fair Value">Fair Value</SelectItem>
+                                                        <SelectItem value="Cash Flow">Cash Flow</SelectItem>
+                                                        <SelectItem value="Net Investment">Net Investment</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )
+                                        },
+                                        {
+                                            id: "notional_amount",
+                                            header: "Notional",
+                                            width: "150px",
+                                            cell: (row, index, updateRow) => (
+                                                <Input type="number" className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent text-right" placeholder="0" value={row.notional_amount || ''} onChange={(e) => updateRow("notional_amount", e.target.value)} />
+                                            )
+                                        },
+                                        {
+                                            id: "currency_code",
+                                            header: "CCY",
+                                            width: "100px",
+                                            cell: (row, index, updateRow) => (
+                                                <Input className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent uppercase" placeholder="USD" maxLength={3} value={row.currency_code || ''} onChange={(e) => updateRow("currency_code", e.target.value.toUpperCase())} />
+                                            )
+                                        },
+                                        {
+                                            id: "status",
+                                            header: "Status",
+                                            width: "150px",
+                                            cell: (row, index, updateRow) => (
+                                                <Select value={row.status || ''} onValueChange={(val) => updateRow("status", val)}>
+                                                    <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent"><SelectValue placeholder="Status" /></SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="Draft">Draft</SelectItem>
+                                                        <SelectItem value="Designated">Designated</SelectItem>
+                                                        <SelectItem value="Discontinued">Discontinued</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )
+                                        },
+                                        {
+                                            id: "last_effectiveness",
+                                            header: "Effectiveness",
+                                            width: "150px",
+                                            cell: (row) => (
+                                                <div className="flex items-center h-full px-3">
+                                                    {row.last_effectiveness === null ? (
+                                                        <span className="grey-chip">Not Tested</span>
+                                                    ) : row.last_effectiveness ? (
+                                                        <span className="eff-pass"><CheckCircle2 size={12} /> Effective</span>
+                                                    ) : (
+                                                        <span className="eff-fail"><TrendingDown size={12} /> Ineffective</span>
+                                                    )}
+                                                </div>
+                                            )
+                                        }
+                                    ]}
+                                    onChange={setLocalHedges}
+                                />
+                            </div>
                         </div>
 
                         {/* Effectiveness Test Form */}

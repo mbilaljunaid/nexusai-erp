@@ -1,43 +1,55 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { IconNavigation } from "@/components/IconNavigation";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { Building2, Plus, Trash2, LayoutDashboard, Settings } from "lucide-react";
-import { queryClient } from "@/lib/queryClient";
+import { Building2, Plus, Trash2, LayoutDashboard, Settings, Save, Loader2 } from "lucide-react";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function Warehouse() {
     const { toast } = useToast();
     const [activeNav, setActiveNav] = useState("dashboard");
-    const [newWarehouse, setNewWarehouse] = useState({ warehouseName: "", location: "", capacity: "" });
+    const [localWarehouses, setLocalWarehouses] = useState<any[]>([]);
 
     const { data: warehouse = [], isLoading } = useQuery<any[]>({
         queryKey: ["/api/warehouse/locations"],
         queryFn: () => fetch("/api/warehouse/locations").then(r => r.json()).catch(() => []),
     });
 
+    useEffect(() => {
+        if (warehouse) {
+            setLocalWarehouses(warehouse);
+        }
+    }, [warehouse]);
+
     const active = warehouse.filter((w: any) => w.status === "active").length;
     // Handle mixed types for capacity safely
     const totalCapacity = warehouse.reduce((sum: number, w: any) => sum + (parseInt(w.capacity) || 0), 0);
 
-    const createMutation = useMutation({
-        mutationFn: (data: any) => fetch("/api/warehouse/locations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["/api/warehouse/locations"] });
-            setNewWarehouse({ warehouseName: "", location: "", capacity: "" });
-            toast({ title: "Warehouse created" });
-        },
-    });
+    const saveMutation = useMutation({
+        mutationFn: async (updatedWarehouses: any[]) => {
+            for (const w of updatedWarehouses) {
+                if (!w.id || String(w.id).startsWith('temp-')) {
+                    await fetch('/api/warehouse/locations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...w, id: undefined }) }).catch(() => { });
+                } else {
+                    await apiRequest('PATCH', `/api/warehouse/locations/${w.id}`, w).catch(() => { });
+                }
+            }
 
-    const deleteMutation = useMutation({
-        mutationFn: (id: string) => fetch(`/api/warehouse/locations/${id}`, { method: "DELETE" }),
+            const deletedIds = warehouse.filter((c: any) => !updatedWarehouses.find((uc: any) => uc.id === c.id)).map((c: any) => c.id);
+            for (const id of deletedIds) {
+                await fetch(`/api/warehouse/locations/${id}`, { method: 'DELETE' }).catch(() => { });
+            }
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/warehouse/locations"] });
-            toast({ title: "Warehouse deleted" });
+            toast({ title: "Warehouses saved successfully" });
         },
     });
 
@@ -69,39 +81,66 @@ export default function Warehouse() {
                 {activeNav === "locations" && (
                     <div className="space-y-4">
                         <Card>
-                            <CardHeader><CardTitle className="text-base">Add Warehouse</CardTitle></CardHeader>
-                            <CardContent className="space-y-3">
-                                <div className="grid grid-cols-3 gap-3">
-                                    <Input placeholder="Warehouse name" value={newWarehouse.warehouseName} onChange={(e) => setNewWarehouse({ ...newWarehouse, warehouseName: e.target.value })} />
-                                    <Input placeholder="Location" value={newWarehouse.location} onChange={(e) => setNewWarehouse({ ...newWarehouse, location: e.target.value })} />
-                                    <Input placeholder="Capacity" type="number" value={newWarehouse.capacity} onChange={(e) => setNewWarehouse({ ...newWarehouse, capacity: e.target.value })} />
+                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                <CardTitle className="text-base">Locations</CardTitle>
+                                <div className="flex gap-2">
+                                    <Button variant="outline" size="sm" onClick={() => setLocalWarehouses([...localWarehouses, { id: `temp-${Date.now()}`, warehouseName: "", location: "", capacity: "1000", status: "active" }])}>
+                                        <Plus className="w-4 h-4 mr-2" /> Add Warehouse
+                                    </Button>
+                                    <Button size="sm" onClick={() => saveMutation.mutate(localWarehouses)} disabled={saveMutation.isPending}>
+                                        {saveMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />} Save Changes
+                                    </Button>
                                 </div>
-                                <Button disabled={createMutation.isPending || !newWarehouse.warehouseName} className="w-full" onClick={() => createMutation.mutate(newWarehouse)}>
-                                    <Plus className="w-4 h-4 mr-2" /> Add Warehouse
-                                </Button>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="border rounded-md bg-white">
+                                    <InteractiveSpreadsheet
+                                        data={localWarehouses}
+                                        columns={[
+                                            {
+                                                id: "warehouseName",
+                                                header: "Warehouse Name",
+                                                width: "250px",
+                                                cell: (row, index, updateRow) => (
+                                                    <Input className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent" placeholder="Name" value={row.warehouseName || row.name || ''} onChange={(e) => updateRow("warehouseName", e.target.value)} />
+                                                )
+                                            },
+                                            {
+                                                id: "location",
+                                                header: "Location",
+                                                width: "250px",
+                                                cell: (row, index, updateRow) => (
+                                                    <Input className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent" placeholder="Location" value={row.location || ''} onChange={(e) => updateRow("location", e.target.value)} />
+                                                )
+                                            },
+                                            {
+                                                id: "capacity",
+                                                header: "Capacity",
+                                                width: "150px",
+                                                cell: (row, index, updateRow) => (
+                                                    <Input type="number" className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent" placeholder="1000" value={row.capacity || ''} onChange={(e) => updateRow("capacity", e.target.value)} />
+                                                )
+                                            },
+                                            {
+                                                id: "status",
+                                                header: "Status",
+                                                width: "150px",
+                                                cell: (row, index, updateRow) => (
+                                                    <Select value={row.status || 'active'} onValueChange={(val) => updateRow("status", val)}>
+                                                        <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent"><SelectValue placeholder="Status" /></SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="active">Active</SelectItem>
+                                                            <SelectItem value="inactive">Inactive</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                )
+                                            }
+                                        ]}
+                                        onChange={setLocalWarehouses}
+                                    />
+                                </div>
                             </CardContent>
                         </Card>
-
-                        <div className="sap-table-container">
-                            {isLoading ? <p>Loading...</p> : warehouse.length === 0 ? <p className="text-muted-foreground">No warehouses</p> : (
-                                <div className="space-y-2">
-                                    {warehouse.map((w: any) => (
-                                        <div key={w.id} className="p-3 border rounded hover-elevate flex items-center justify-between bg-card text-card-foreground">
-                                            <div>
-                                                <p className="font-semibold">{w.warehouseName || w.name || w.warehouseId}</p>
-                                                <p className="text-sm text-muted-foreground">{w.location} • Cap: {w.capacity}</p>
-                                            </div>
-                                            <div className="flex gap-2 items-center">
-                                                <Badge variant={w.status === "active" ? "default" : "secondary"}>{w.status || "active"}</Badge>
-                                                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(w.id)}>
-                                                    <Trash2 className="w-4 h-4" />
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
                     </div>
                 )}
 

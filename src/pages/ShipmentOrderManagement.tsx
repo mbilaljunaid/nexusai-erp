@@ -1,38 +1,49 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Package, Plus, Trash2, Navigation, CheckCircle2, Clock, Truck, Activity } from "lucide-react";
-import { queryClient } from "@/lib/queryClient";
+import { Package, Plus, Trash2, Navigation, CheckCircle2, Clock, Truck, Save, Loader2 } from "lucide-react";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from '@/components/layout/StandardPage';
-import { Skeleton } from "@/components/ui/skeleton";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 export default function ShipmentOrderManagement() {
   const { toast } = useToast();
-  const [newShipment, setNewShipment] = useState({ shipmentId: "", origin: "", destination: "", weight: "0", service: "standard", status: "pending" });
+  const [localShipments, setLocalShipments] = useState<any[]>([]);
 
   const { data: shipments = [], isLoading } = useQuery({
     queryKey: ["/api/tl-shipments"],
     queryFn: () => fetch("/api/tl-shipments").then(r => r.json()).catch(() => []),
   });
 
-  const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/tl-shipments", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/tl-shipments"] });
-      setNewShipment({ shipmentId: "", origin: "", destination: "", weight: "0", service: "standard", status: "pending" });
-      toast({ title: "Shipment created" });
-    },
-  });
+  useEffect(() => {
+    if (shipments) {
+      setLocalShipments(shipments);
+    }
+  }, [shipments]);
 
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/tl-shipments/${id}`, { method: "DELETE" }),
+  const saveMutation = useMutation({
+    mutationFn: async (updatedShipments: any[]) => {
+      for (const shipment of updatedShipments) {
+        if (!shipment.id || String(shipment.id).startsWith('temp-')) {
+          await fetch("/api/tl-shipments", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...shipment, id: undefined }) });
+        } else {
+          await apiRequest("PATCH", `/api/tl-shipments/${shipment.id}`, shipment).catch(() => { });
+        }
+      }
+
+      const deletedIds = shipments.filter((c: any) => !updatedShipments.find((uc) => uc.id === c.id)).map((c: any) => c.id);
+      for (const id of deletedIds) {
+        await fetch(`/api/tl-shipments/${id}`, { method: "DELETE" });
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tl-shipments"] });
-      toast({ title: "Shipment deleted" });
+      toast({ title: "Shipment orders saved successfully" });
     },
   });
 
@@ -104,75 +115,81 @@ export default function ShipmentOrderManagement() {
           </Card>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
-              <Plus className="h-4 w-4" />
-              Authorize New Shipment
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Shipment Reference</label>
-                <Input placeholder="REF-000" value={newShipment.shipmentId} onChange={(e) => setNewShipment({ ...newShipment, shipmentId: e.target.value })} data-testid="input-sid" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Origin Node</label>
-                <Input placeholder="City / Port" value={newShipment.origin} onChange={(e) => setNewShipment({ ...newShipment, origin: e.target.value })} data-testid="input-origin" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Destination Node</label>
-                <Input placeholder="City / Port" value={newShipment.destination} onChange={(e) => setNewShipment({ ...newShipment, destination: e.target.value })} data-testid="input-dest" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Gross Weight (kg)</label>
-                <Input placeholder="0" type="number" value={newShipment.weight} onChange={(e) => setNewShipment({ ...newShipment, weight: e.target.value })} data-testid="input-weight" />
-              </div>
-              <Button onClick={() => createMutation.mutate(newShipment)} disabled={createMutation.isPending || !newShipment.shipmentId} className="w-full" data-testid="button-create">
-                {createMutation.isPending ? <Activity className="h-4 w-4 animate-spin" /> : "Dispatch Order"}
+        <Card className="mt-6 border-none shadow-lg">
+          <CardHeader className="bg-muted/30 pb-4 border-b flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-xl">Global Logistics Registry</CardTitle>
+              <CardDescription>Inline editable shipment order tracking sheet</CardDescription>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setLocalShipments([...localShipments, { id: `temp-${Date.now()}`, shipmentId: '', origin: '', destination: '', weight: '0', service: 'standard', status: 'pending' }])}>
+                <Plus className="w-4 h-4 mr-2" />
+                New Shipment
+              </Button>
+              <Button onClick={() => saveMutation.mutate(localShipments)} disabled={saveMutation.isPending}>
+                {saveMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                Save Schedule
               </Button>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
-              <Truck className="h-4 w-4" />
-              Global Logistics Registry
-            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {isLoading ? (
-                Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)
-              ) : shipments.length === 0 ? (
-                <p className="text-muted-foreground text-center py-8 font-medium">No shipment orders active in the current window</p>
-              ) : (
-                shipments.map((s: any) => (
-                  <div key={s.id} className="p-4 border rounded-lg hover:bg-accent/50 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4" data-testid={`shipment-${s.id}`}>
-                    <div className="flex-1 space-y-1">
-                      <div className="flex items-center gap-2">
-                        <p className="font-semibold">{s.shipmentId}</p>
-                        <Badge variant="outline" className="text-[10px] uppercase font-mono tracking-tighter">
-                          {s.origin} → {s.destination}
-                        </Badge>
-                      </div>
-                      <p className="text-xs text-muted-foreground">Payload: {s.weight} kg • Priority: Standard</p>
-                    </div>
-                    <div className="flex flex-row items-center gap-3">
-                      <Badge variant={s.status === "delivered" ? "default" : "secondary"} className="text-[10px] uppercase font-mono">
-                        {s.status}
-                      </Badge>
-                      <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => deleteMutation.mutate(s.id)} data-testid={`button-delete-${s.id}`}>
-                        <Trash2 className="w-3 h-3" />
-                      </Button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
+          <CardContent className="p-0">
+            {isLoading ? (
+              <div className="p-8 flex items-center justify-center text-muted-foreground"><Loader2 className="animate-spin h-6 w-6 mr-2" /> Loading registry...</div>
+            ) : (
+              <InteractiveSpreadsheet
+                data={localShipments}
+                columns={[
+                  {
+                    id: "shipmentId",
+                    header: "Shipment Reference",
+                    width: "200px",
+                    cell: (row, index, updateRow) => (
+                      <Input className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent font-medium" placeholder="REF-000" value={row.shipmentId || ''} onChange={(e) => updateRow("shipmentId", e.target.value)} />
+                    )
+                  },
+                  {
+                    id: "origin",
+                    header: "Origin Node",
+                    width: "200px",
+                    cell: (row, index, updateRow) => (
+                      <Input className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent" placeholder="City / Port" value={row.origin || ''} onChange={(e) => updateRow("origin", e.target.value)} />
+                    )
+                  },
+                  {
+                    id: "destination",
+                    header: "Destination Node",
+                    width: "200px",
+                    cell: (row, index, updateRow) => (
+                      <Input className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent" placeholder="City / Port" value={row.destination || ''} onChange={(e) => updateRow("destination", e.target.value)} />
+                    )
+                  },
+                  {
+                    id: "weight",
+                    header: "Gross Weight (kg)",
+                    width: "150px",
+                    cell: (row, index, updateRow) => (
+                      <Input type="number" className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent text-right" placeholder="0" value={row.weight || ''} onChange={(e) => updateRow("weight", e.target.value)} />
+                    )
+                  },
+                  {
+                    id: "status",
+                    header: "Status",
+                    width: "150px",
+                    cell: (row, index, updateRow) => (
+                      <Select value={row.status || 'pending'} onValueChange={(val) => updateRow("status", val)}>
+                        <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="in-transit">In Transit</SelectItem>
+                          <SelectItem value="delivered">Delivered</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )
+                  }
+                ]}
+                onChange={setLocalShipments}
+              />
+            )}
           </CardContent>
         </Card>
       </div>

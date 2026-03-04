@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { PieChart, PlayCircle, Plus, Search, Loader2, CheckCircle2 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -75,6 +75,72 @@ export default function GLAllocations() {
         a.description?.toLowerCase().includes(searchQuery.toLowerCase())
     ) || [];
 
+    const columns: SpreadsheetColumn<any>[] = [
+        {
+            id: "name",
+            header: "Rule Name",
+            width: "250px",
+            cellClassName: "font-semibold pl-6 border-transparent",
+            headerClassName: "pl-6",
+            cell: (row) => <span>{row.name}</span>
+        },
+        {
+            id: "description",
+            header: "Description",
+            width: "350px",
+            cellClassName: "text-sm max-w-sm truncate border-transparent",
+            cell: (row) => <span>{row.description}</span>
+        },
+        {
+            id: "type",
+            header: "Type",
+            width: "150px",
+            cellClassName: "border-transparent",
+            cell: (row) => <Badge variant="secondary" className="font-normal text-xs">{row.type || 'Standard'}</Badge>
+        },
+        {
+            id: "lastRunDate",
+            header: "Last Run",
+            width: "200px",
+            cellClassName: "text-sm font-mono text-muted-foreground border-transparent",
+            cell: (row) => <span>{row.lastRunDate ? format(new Date(row.lastRunDate), "MMM dd, yyyy HH:mm") : "Never"}</span>
+        },
+        {
+            id: "status",
+            header: "Status",
+            width: "150px",
+            headerClassName: "text-center",
+            cellClassName: "text-center border-transparent",
+            cell: (row) => (
+                <div className="flex justify-center w-full">
+                    <Badge className={row.active ? "bg-green-100 text-green-800 hover:bg-green-100" : "bg-slate-100 text-slate-800 hover:bg-slate-100"}>
+                        {row.active ? "Active" : "Inactive"}
+                    </Badge>
+                </div>
+            )
+        },
+        {
+            id: "actions",
+            header: "Actions",
+            width: "150px",
+            headerClassName: "text-right pr-6",
+            cellClassName: "text-right pr-6 border-transparent",
+            cell: (row) => (
+                <div className="flex justify-end w-full">
+                    <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-orange-600 hover:bg-orange-50 transition-opacity"
+                        onClick={() => handleRunClick(row)}
+                        disabled={!row.active}
+                    >
+                        <PlayCircle className="w-4 h-4 mr-2" /> Run
+                    </Button>
+                </div>
+            )
+        }
+    ];
+
     return (
         <StandardPage
             title="Mass Allocations"
@@ -125,63 +191,24 @@ export default function GLAllocations() {
                     </div>
                 </CardHeader>
                 <CardContent className="p-0">
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="hover:bg-transparent">
-                                <TableHead className="pl-6">Rule Name</TableHead>
-                                <TableHead>Description</TableHead>
-                                <TableHead>Type</TableHead>
-                                <TableHead>Last Run</TableHead>
-                                <TableHead className="text-center">Status</TableHead>
-                                <TableHead className="text-right pr-6">Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {isLoading ? (
-                                <TableRow>
-                                    <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
-                                        <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
-                                        Loading rules...
-                                    </TableCell>
-                                </TableRow>
-                            ) : filteredAllocations.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
-                                        No allocation rules found in this ledger.
-                                    </TableCell>
-                                </TableRow>
-                            ) : (
-                                filteredAllocations.map((rule) => (
-                                    <TableRow key={rule.id} className="hover:bg-muted/30 group">
-                                        <TableCell className="pl-6 font-semibold">{rule.name}</TableCell>
-                                        <TableCell className="text-sm max-w-sm truncate">{rule.description}</TableCell>
-                                        <TableCell>
-                                            <Badge variant="secondary" className="font-normal text-xs">{rule.type || 'Standard'}</Badge>
-                                        </TableCell>
-                                        <TableCell className="text-sm font-mono text-muted-foreground">
-                                            {rule.lastRunDate ? format(new Date(rule.lastRunDate), "MMM dd, yyyy HH:mm") : "Never"}
-                                        </TableCell>
-                                        <TableCell className="text-center">
-                                            <Badge className={rule.active ? "bg-green-100 text-green-800 hover:bg-green-100" : "bg-slate-100 text-slate-800 hover:bg-slate-100"}>
-                                                {rule.active ? "Active" : "Inactive"}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="text-right pr-6">
-                                            <Button
-                                                size="sm"
-                                                variant="ghost"
-                                                className="text-orange-600 hover:bg-orange-50 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                onClick={() => handleRunClick(rule)}
-                                                disabled={!rule.active}
-                                            >
-                                                <PlayCircle className="w-4 h-4 mr-2" /> Run
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
+                    {isLoading ? (
+                        <div className="h-32 flex flex-col items-center justify-center text-muted-foreground">
+                            <Loader2 className="h-6 w-6 animate-spin mb-2" />
+                            Loading rules...
+                        </div>
+                    ) : filteredAllocations.length === 0 ? (
+                        <div className="h-32 flex items-center justify-center text-muted-foreground">
+                            No allocation rules found in this ledger.
+                        </div>
+                    ) : (
+                        <div className="w-full">
+                            <InteractiveSpreadsheet
+                                data={filteredAllocations}
+                                columns={columns}
+                                onChange={() => { }}
+                            />
+                        </div>
+                    )}
                 </CardContent>
             </Card>
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,33 +6,44 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, Plus, Trash2 } from "lucide-react";
-import { queryClient } from "@/lib/queryClient";
+import { AlertTriangle, Plus, Trash2, Save, Loader2 } from "lucide-react";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function NCRManagement() {
   const { toast } = useToast();
-  const [newNCR, setNewNCR] = useState({ product: "Product-A", defectCode: "DEF-001", severity: "medium", status: "open" });
+  const [localNCRs, setLocalNCRs] = useState<any[]>([]);
 
   const { data: ncrs = [], isLoading } = useQuery({
     queryKey: ["/api/ncr"],
     queryFn: () => fetch("/api/ncr").then(r => r.json()).catch(() => []),
   });
 
-  const createMutation = useMutation({
-    mutationFn: (data: any) => fetch("/api/ncr", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/ncr"] });
-      setNewNCR({ product: "Product-A", defectCode: "DEF-001", severity: "medium", status: "open" });
-      toast({ title: "NCR created" });
-    },
-  });
+  useEffect(() => {
+    if (ncrs) {
+      setLocalNCRs(ncrs);
+    }
+  }, [ncrs]);
 
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => fetch(`/api/ncr/${id}`, { method: "DELETE" }),
+  const saveMutation = useMutation({
+    mutationFn: async (updatedNCRs: any[]) => {
+      for (const n of updatedNCRs) {
+        if (!n.id || String(n.id).startsWith('temp-')) {
+          await fetch('/api/ncr', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...n, id: undefined }) }).catch(() => { });
+        } else {
+          await apiRequest('PATCH', `/api/ncr/${n.id}`, n).catch(() => { });
+        }
+      }
+
+      const deletedIds = ncrs.filter((c: any) => !updatedNCRs.find((uc: any) => uc.id === c.id)).map((c: any) => c.id);
+      for (const id of deletedIds) {
+        await fetch(`/api/ncr/${id}`, { method: 'DELETE' }).catch(() => { });
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ncr"] });
-      toast({ title: "NCR deleted" });
+      toast({ title: "NCRs saved successfully" });
     },
   });
 
@@ -41,9 +52,9 @@ export default function NCRManagement() {
 
   return (
     <StandardPage
-      title="Non-Conform        </h1>
-        <p className="text-muted-foreground mt-2">Manage quality issues and corrective actions</p>
-      </div>
+      title="Non-Conformance Reports"
+      description="Manage quality issues and corrective actions"
+    >
 
       <div className="grid grid-cols-4 gap-3">
         <Card className="p-3">
@@ -72,53 +83,74 @@ export default function NCRManagement() {
         </Card>
       </div>
 
-      <Card data-testid="card-new-ncr">
-        <CardHeader><CardTitle className="text-base">Create NCR</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-4 gap-3">
-            <Input placeholder="Product" value={newNCR.product} onChange={(e) => setNewNCR({ ...newNCR, product: e.target.value })} data-testid="input-product" />
-            <Input placeholder="Defect Code" value={newNCR.defectCode} onChange={(e) => setNewNCR({ ...newNCR, defectCode: e.target.value })} data-testid="input-defect" />
-            <Select value={newNCR.severity} onValueChange={(v) => setNewNCR({ ...newNCR, severity: v })}>
-              <SelectTrigger data-testid="select-severity"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="low">Low</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-                <SelectItem value="critical">Critical</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={newNCR.status} onValueChange={(v) => setNewNCR({ ...newNCR, status: v })}>
-              <SelectTrigger data-testid="select-status"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="open">Open</SelectItem>
-                <SelectItem value="investigating">Investigating</SelectItem>
-                <SelectItem value="closed">Closed</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <Button disabled={createMutation.isPending} className="w-full" data-testid="button-create-ncr">
-            <Plus className="w-4 h-4 mr-2" /> Create NCR
-          </Button>
-        </CardContent>
-      </Card>
-
       <Card>
-        <CardHeader><CardTitle className="text-base">NCRs</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : ncrs.length === 0 ? <p className="text-muted-foreground text-center py-4">No NCRs</p> : ncrs.map((n: any) => (
-            <div key={n.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`ncr-${n.id}`}>
-              <div>
-                <p className="font-semibold text-sm">{n.defectCode}</p>
-                <p className="text-xs text-muted-foreground">{n.product} • {n.status}</p>
-              </div>
-              <div className="flex gap-2 items-center">
-                <Badge variant={n.severity === "critical" ? "destructive" : "secondary"}>{n.severity}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${n.id}`}>
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          ))}
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="text-base">Non-Conformance Reports (NCRs)</CardTitle>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => setLocalNCRs([...localNCRs, { id: `temp-${Date.now()}`, product: "Product-A", defectCode: "DEF-001", severity: "medium", status: "open" }])}>
+              <Plus className="w-4 h-4 mr-2" /> Add NCR
+            </Button>
+            <Button size="sm" onClick={() => saveMutation.mutate(localNCRs)} disabled={saveMutation.isPending}>
+              {saveMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />} Save Changes
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="border rounded-md bg-white">
+            <InteractiveSpreadsheet
+              data={localNCRs}
+              columns={[
+                {
+                  id: "product",
+                  header: "Product",
+                  width: "250px",
+                  cell: (row, index, updateRow) => (
+                    <Input className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent" placeholder="Product name" value={row.product || ''} onChange={(e) => updateRow("product", e.target.value)} />
+                  )
+                },
+                {
+                  id: "defectCode",
+                  header: "Defect Code",
+                  width: "200px",
+                  cell: (row, index, updateRow) => (
+                    <Input className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent" placeholder="Defect Code" value={row.defectCode || ''} onChange={(e) => updateRow("defectCode", e.target.value)} />
+                  )
+                },
+                {
+                  id: "severity",
+                  header: "Severity",
+                  width: "150px",
+                  cell: (row, index, updateRow) => (
+                    <Select value={row.severity || 'medium'} onValueChange={(val) => updateRow("severity", val)}>
+                      <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent"><SelectValue placeholder="Severity" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="low">Low</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                        <SelectItem value="critical">Critical</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )
+                },
+                {
+                  id: "status",
+                  header: "Status",
+                  width: "150px",
+                  cell: (row, index, updateRow) => (
+                    <Select value={row.status || 'open'} onValueChange={(val) => updateRow("status", val)}>
+                      <SelectTrigger className="h-9 w-full border-0 focus:ring-0 bg-transparent"><SelectValue placeholder="Status" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="open">Open</SelectItem>
+                        <SelectItem value="investigating">Investigating</SelectItem>
+                        <SelectItem value="closed">Closed</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )
+                }
+              ]}
+              onChange={setLocalNCRs}
+            />
+          </div>
         </CardContent>
       </Card>
     </StandardPage>
