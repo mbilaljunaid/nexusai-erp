@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Leaf } from "lucide-react";
 
 export default function SustainabilityTraceability() {
-  const { data: metrics = [], isLoading } = useQuery({
+  const { data: metrics = [], isLoading } = useQuery<any>({
     queryKey: ["/api/fb-sustainability"],
     queryFn: () => fetch("/api/fb-sustainability").then(r => r.json()).catch(() => []),
   });

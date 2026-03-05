@@ -13,7 +13,7 @@ export default function ReportBuilder() {
   const { toast } = useToast();
   const [newReport, setNewReport] = useState({ name: "", type: "Sales", frequency: "Monthly" });
 
-  const { data: reports = [], isLoading } = useQuery({
+  const { data: reports = [], isLoading } = useQuery<any>({
     queryKey: ["/api/analytics/reports"],
     queryFn: () => fetch("/api/analytics/reports").then(r => r.json()).catch(() => []),
   });

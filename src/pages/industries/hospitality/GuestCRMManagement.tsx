@@ -14,7 +14,7 @@ export default function GuestCRMManagement() {
   const { toast } = useToast();
   const [newGuest, setNewGuest] = useState({ guestId: "", name: "", email: "", tier: "standard", points: "0" });
 
-  const { data: guests = [], isLoading } = useQuery({
+  const { data: guests = [], isLoading } = useQuery<any>({
     queryKey: ["/api/hospitality-guests"],
     queryFn: () => fetch("/api/hospitality-guests").then(r => r.json()),
   });

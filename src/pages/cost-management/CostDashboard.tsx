@@ -20,7 +20,7 @@ export default function CostDashboard() {
         'inventory-org': activeInvOrgId,
     });
 
-    const { data: apiMetrics, isLoading } = useQuery({
+    const { data: apiMetrics, isLoading } = useQuery<any>({
         queryKey: ["/api/manufacturing/costs/metrics", period, activeBuId, activeInvOrgId],
         queryFn: async () => {
             const res = await fetch(

@@ -13,7 +13,7 @@ export default function ResourceAllocation() {
   const { toast } = useToast();
   const [newResource, setNewResource] = useState({ resourceName: "", role: "Developer", allocation: "" });
 
-  const { data: resources = [], isLoading } = useQuery({
+  const { data: resources = [], isLoading } = useQuery<any>({
     queryKey: ["/api/resources"],
     queryFn: () => fetch("/api/resources").then(r => r.json()),
   });

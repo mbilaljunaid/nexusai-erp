@@ -15,7 +15,7 @@ export default function NCRManagement() {
   const { toast } = useToast();
   const [localNCRs, setLocalNCRs] = useState<any[]>([]);
 
-  const { data: ncrs = [], isLoading } = useQuery({
+  const { data: ncrs = [], isLoading } = useQuery<any>({
     queryKey: ["/api/ncr"],
     queryFn: () => fetch("/api/ncr").then(r => r.json()).catch(() => []),
   });

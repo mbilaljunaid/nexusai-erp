@@ -13,7 +13,7 @@ export default function CarrierProcurement() {
   const { toast } = useToast();
   const [newRate, setNewRate] = useState({ rateId: "", lane: "", rate: "100", effectiveFrom: "", status: "active" });
 
-  const { data: rates = [], isLoading } = useQuery({
+  const { data: rates = [], isLoading } = useQuery<any>({
     queryKey: ["/api/tl-rates"],
     queryFn: () => fetch("/api/tl-rates").then(r => r.json()),
   });

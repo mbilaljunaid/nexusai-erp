@@ -8,9 +8,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 
 export default function PerformanceDashboard() {
-    const { data: performance } = useQuery({
+    const { data: performance } = useQuery<any>({
         queryKey: ["/api/sla/performance"],
-        queryFn: () => apiRequest("/api/sla/performance"),
+        queryFn: () => apiRequest("GET", "/api/sla/performance").then(res => res.json()),
     });
 
     return (

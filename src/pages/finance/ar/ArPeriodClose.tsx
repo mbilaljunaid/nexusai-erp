@@ -27,12 +27,12 @@ export default function ArPeriodClose() {
     const [activeTab, setActiveTab] = useState("control");
     const { legalEntityId } = useEnterpriseStore();
 
-    const { data: periods, isLoading } = useQuery({
+    const { data: periods, isLoading } = useQuery<any>({
         queryKey: ["ar-periods", legalEntityId],
         queryFn: api.ar.periods.list,
     });
 
-    const { data: reconciliation } = useQuery({
+    const { data: reconciliation } = useQuery<any>({
         queryKey: ["ar-reconciliation", legalEntityId],
         queryFn: api.ar.periods.getReconciliation,
     });

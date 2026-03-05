@@ -11,7 +11,7 @@ const MOCK_TENANT_ID = "test-tenant-wfm-001";
 
 export default function ViolationsDashboard() {
     // Fetch Violations
-    const { data: violations, isLoading } = useQuery({
+    const { data: violations, isLoading } = useQuery<any>({
         queryKey: ["wfm-violations"],
         queryFn: async () => {
             const res = await fetch(`/api/wfm/violations?tenantId=${MOCK_TENANT_ID}`);

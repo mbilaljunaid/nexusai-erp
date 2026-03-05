@@ -17,18 +17,15 @@ export default function ShiftPlanning() {
     const [selectedWeek, setSelectedWeek] = useState("2026-W07");
     const [department, setDepartment] = useState("");
 
-    const { data: schedule } = useQuery({
+    const { data: schedule } = useQuery<any>({
         queryKey: ["/api/wfm/shift-schedule", selectedWeek, department],
-        queryFn: () => apiRequest(`/api/wfm/shift-schedule?week=${selectedWeek}&department=${department}`),
+        queryFn: () => apiRequest("GET", `/api/wfm/shift-schedule?week=${selectedWeek}&department=${department}`).then(res => res.json()),
         enabled: !!department,
     });
 
     const autoScheduleMutation = useMutation({
         mutationFn: (params: any) =>
-            apiRequest("/api/wfm/auto-schedule", {
-                method: "POST",
-                body: JSON.stringify(params),
-            }),
+            apiRequest("POST", "/api/wfm/auto-schedule", params),
         onSuccess: () => {
             toast({ title: "Success", description: "Shifts auto-scheduled based on demand" });
             queryClient.invalidateQueries({ queryKey: ["/api/wfm/shift-schedule"] });
@@ -37,7 +34,7 @@ export default function ShiftPlanning() {
 
     const publishMutation = useMutation({
         mutationFn: (week: string) =>
-            apiRequest(`/api/wfm/shift-schedule/${week}/publish`, { method: "POST" }),
+            apiRequest("POST", `/api/wfm/shift-schedule/${week}/publish`),
         onSuccess: () => {
             toast({ title: "Success", description: "Schedule published to employees" });
             queryClient.invalidateQueries({ queryKey: ["/api/wfm/shift-schedule"] });

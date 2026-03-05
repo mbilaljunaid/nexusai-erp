@@ -47,7 +47,7 @@ export default function BillingProfileManager() {
 
     // --- Fetch Data ---
     // 1. Fetch Customers to map names
-    const { data: customers = [] } = useQuery({
+    const { data: customers = [] } = useQuery<any>({
         queryKey: ["customers", businessUnitId],
         queryFn: async () => fetch("/api/ar/customers", {
             headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
@@ -59,7 +59,7 @@ export default function BillingProfileManager() {
     // Given I cannot touch backend logic without strict approval, I will first check if generic crud exists.
     // Actually, I should probably implement a quick fetch for this.
     // For safety, I will rely on standard patterns.
-    const { data: profiles = [], isLoading } = useQuery({
+    const { data: profiles = [], isLoading } = useQuery<any>({
         queryKey: ["billing-profiles", businessUnitId],
         queryFn: async () => {
             const res = await fetch("/api/billing/profiles", {
@@ -238,7 +238,7 @@ export default function BillingProfileManager() {
                     <InteractiveSpreadsheet
                         data={profiles || []}
                         columns={columns}
-                        onChange={(newData) => queryClient.setQueryData(["billing-profiles"], newData)}
+                        onChange={(newData) => queryClient.setQueryData(["billing-profiles"], newData as any)}
                         virtualized={true}
                         containerHeight="600px"
                     />

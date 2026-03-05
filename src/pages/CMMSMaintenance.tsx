@@ -18,7 +18,7 @@ export default function CMMSMaintenance() {
 
 
 
-  const { data: workOrders = [], isLoading } = useQuery({
+  const { data: workOrders = [], isLoading } = useQuery<any>({
     queryKey: ["/api/maintenance/work-orders"],
     queryFn: () => fetch("/api/maintenance/work-orders").then(r => r.json()),
   });

@@ -14,7 +14,7 @@ export default function RMAManagement() {
   const { toast } = useToast();
   const [newRMA, setNewRMA] = useState({ rmaId: "", reason: "defective", status: "open", disposition: "replace", refundAmount: "0" });
 
-  const { data: rmas = [], isLoading } = useQuery({
+  const { data: rmas = [], isLoading } = useQuery<any>({
     queryKey: ["/api/rma"],
     queryFn: () => fetch("/api/rma").then(r => r.json()).catch(() => []),
   });

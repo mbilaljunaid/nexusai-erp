@@ -44,23 +44,20 @@ export default function RCAWorkbench() {
     const [rootCauses, setRootCauses] = useState<RootCause[]>([]);
     const [correctiveActions, setCorrectiveActions] = useState<CorrectiveAction[]>([]);
 
-    const { data: failures } = useQuery({
+    const { data: failures } = useQuery<any>({
         queryKey: ["/api/maintenance/failures"],
-        queryFn: () => apiRequest("/api/maintenance/failures?status=OPEN"),
+        queryFn: () => apiRequest("GET", "/api/maintenance/failures?status=OPEN").then(res => res.json()),
     });
 
-    const { data: rcaData } = useQuery({
+    const { data: rcaData } = useQuery<any>({
         queryKey: ["/api/maintenance/rca", selectedFailure],
-        queryFn: () => apiRequest(`/api/maintenance/rca/${selectedFailure}`),
+        queryFn: () => apiRequest("GET", `/api/maintenance/rca/${selectedFailure}`).then(res => res.json()),
         enabled: !!selectedFailure,
     });
 
     const saveMutation = useMutation({
         mutationFn: (data: RCAAnalysis) =>
-            apiRequest("/api/maintenance/rca", {
-                method: "POST",
-                body: JSON.stringify(data),
-            }),
+            apiRequest("POST", "/api/maintenance/rca", data),
         onSuccess: () => {
             toast({ title: "Success", description: "RCA analysis saved" });
             queryClient.invalidateQueries({ queryKey: ["/api/maintenance/rca"] });

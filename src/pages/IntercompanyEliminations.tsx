@@ -14,7 +14,7 @@ export default function IntercompanyEliminations() {
   const { toast } = useToast();
   const [newTx, setNewTx] = useState({ entity: "Entity A", partner: "Entity B", amount: "", currency: "USD", status: "pending" });
 
-  const { data: transactions = [], isLoading } = useQuery({
+  const { data: transactions = [], isLoading } = useQuery<any>({
     queryKey: ["/api/intercompany-transactions"],
     queryFn: () => fetch("/api/intercompany-transactions").then(r => r.json()).catch(() => []),
   });

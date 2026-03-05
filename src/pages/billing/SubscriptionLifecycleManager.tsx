@@ -70,7 +70,7 @@ export default function SubscriptionLifecycleManager() {
     const [statusFilter, setStatusFilter] = useState<string>("all");
 
     // Fetch subscriptions
-    const { data: subscriptionsResult, isLoading } = useQuery({
+    const { data: subscriptionsResult, isLoading } = useQuery<any>({
         queryKey: ["subscriptions", statusFilter, businessUnitId],
         queryFn: async () => {
             const params = new URLSearchParams();
@@ -89,7 +89,7 @@ export default function SubscriptionLifecycleManager() {
     });
 
     // Fetch customers for picker
-    const { data: customers = [] } = useQuery({
+    const { data: customers = [] } = useQuery<any>({
         queryKey: ["customers", businessUnitId],
         queryFn: async () => {
             const res = await fetch("/api/ar/customers", {

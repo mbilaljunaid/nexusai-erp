@@ -30,7 +30,7 @@ export default function WIPDashboard() {
     const wipBalances = data?.items || [];
     const totalItems = data?.total || 0;
 
-    const { data: trendData = [] } = useQuery({
+    const { data: trendData = [] } = useQuery<any>({
         queryKey: ["/api/manufacturing/wip-trend"],
         queryFn: async () => {
             const res = await fetch("/api/manufacturing/wip-trend");

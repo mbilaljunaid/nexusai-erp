@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { GitBranch } from "lucide-react";
 
 export default function BatchTraceabilityGeology() {
-  const { data: traces = [], isLoading } = useQuery({
+  const { data: traces = [], isLoading } = useQuery<any>({
     queryKey: ["/api/batch-genealogy"],
     queryFn: () => fetch("/api/batch-genealogy").then(r => r.json()),
   });

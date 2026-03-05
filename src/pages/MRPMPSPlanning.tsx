@@ -14,7 +14,7 @@ export default function MRPMPSPlanning() {
   const { toast } = useToast();
   const [newPlan, setNewPlan] = useState({ sku: "", demand: "1000", onHand: "500", planType: "buy", status: "suggested" });
 
-  const { data: plans = [], isLoading } = useQuery({
+  const { data: plans = [], isLoading } = useQuery<any>({
     queryKey: ["/api/mrp-plans"],
     queryFn: () => fetch("/api/mrp-plans").then(r => r.json()).catch(() => []),
   });

@@ -49,11 +49,11 @@ export default function EInvoicingDashboard() {
     });
 
     const qc = useQueryClient();
-    const { data: docs = [], isLoading } = useQuery({
+    const { data: docs = [], isLoading } = useQuery<any>({
         queryKey: ['einvoices', statusFilter, standardFilter],
         queryFn: () => fetchDocs({ ...(statusFilter && { status: statusFilter }), ...(standardFilter && { standard: standardFilter }) }),
     });
-    const { data: stats = [] } = useQuery({ queryKey: ['einvoice-stats'], queryFn: fetchStats });
+    const { data: stats = [] } = useQuery<any>({ queryKey: ['einvoice-stats'], queryFn: fetchStats });
 
     const submitMutation = useMutation({
         mutationFn: (data: any) =>

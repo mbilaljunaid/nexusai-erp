@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { TrendingUp } from "lucide-react";
 
 export default function FBDemandPlanning() {
-  const { data: forecasts = [], isLoading } = useQuery({
+  const { data: forecasts = [], isLoading } = useQuery<any>({
     queryKey: ["/api/fb-planning"],
     queryFn: () => fetch("/api/fb-planning").then(r => r.json()),
   });

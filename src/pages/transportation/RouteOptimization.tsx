@@ -17,18 +17,17 @@ export default function RouteOptimization() {
     const [selectedRegion, setSelectedRegion] = useState("");
     const [optimizationMode, setOptimizationMode] = useState<'DISTANCE' | 'TIME' | 'COST'>('DISTANCE');
 
-    const { data: routes } = useQuery({
+    const { data: routes } = useQuery<any>({
         queryKey: ["/api/transportation/routes", selectedRegion],
-        queryFn: () => apiRequest(`/api/transportation/routes?region=${selectedRegion}`),
+        queryFn: () => apiRequest("GET", `/api/transportation/routes?region=${selectedRegion}`).then(res => res.json()),
         enabled: !!selectedRegion,
     });
 
     const optimizeMutation = useMutation({
-        mutationFn: (params: any) =>
-            apiRequest("/api/transportation/optimize-routes", {
-                method: "POST",
-                body: JSON.stringify(params),
-            }),
+        mutationFn: async (params: any) => {
+            const res = await apiRequest("POST", "/api/transportation/optimize-routes", params);
+            return res.json();
+        },
         onSuccess: (data) => {
             toast({
                 title: "Success",
@@ -82,7 +81,7 @@ export default function RouteOptimization() {
         <StandardPage title="Route Optimization Engine">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground">AI-powered route planning and optimization</p>
                 </div>
                 <div className="flex gap-2">

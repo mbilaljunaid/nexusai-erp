@@ -182,5 +182,8 @@
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8"
+  },
+  "peerDependencies": {
+    "hono": "^4.12.5"
   }
 }

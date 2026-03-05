@@ -9,7 +9,7 @@ import { StandardPage } from '@/components/layout/StandardPage';
 export default function LeaseDisclosureReport() {
     // In a real app, this would be a dedicated aggregated endpoint.
     // Simulating aggregation from the list endpoint for now.
-    const { data: leases, isLoading } = useQuery({
+    const { data: leases, isLoading } = useQuery<any>({
         queryKey: ["leases", "all"],
         queryFn: async () => {
             const res = await fetch(`/api/lease/leases`); // Assuming list endpoint returns all

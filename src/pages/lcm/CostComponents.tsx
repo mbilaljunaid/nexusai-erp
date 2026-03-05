@@ -41,7 +41,7 @@ export default function CostComponents() {
     const queryClient = useQueryClient();
     const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-    const { data: components, isLoading } = useQuery({
+    const { data: components, isLoading } = useQuery<any>({
         queryKey: ["/api/lcm/components"],
         queryFn: async () => {
             const res = await fetch("/api/lcm/components");

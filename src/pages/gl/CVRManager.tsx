@@ -12,7 +12,7 @@ export default function CVRManager() {
     const queryClient = useQueryClient();
     const ledgerId = "PRIMARY"; // Context
 
-    const { data: rules = [], isLoading } = useQuery({
+    const { data: rules = [], isLoading } = useQuery<any>({
         queryKey: ["/api/gl/cvr", ledgerId],
         queryFn: async () => {
             const res = await apiRequest("GET", `/api/gl/cvr?ledgerId=${ledgerId}`);

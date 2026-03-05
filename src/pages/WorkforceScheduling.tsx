@@ -14,7 +14,7 @@ export default function WorkforceScheduling() {
   const { toast } = useToast();
   const [newSchedule, setNewSchedule] = useState({ employeeId: "", storeId: "", date: "", shift: "day", status: "scheduled" });
 
-  const { data: schedules = [], isLoading } = useQuery({
+  const { data: schedules = [], isLoading } = useQuery<any>({
     queryKey: ["/api/workforce-schedule"],
     queryFn: () => fetch("/api/workforce-schedule").then(r => r.json()).catch(() => []),
   });

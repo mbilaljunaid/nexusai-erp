@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Truck, CheckCircle, DollarSign } from "lucide-react";
 
 export default function TransportationBIDashboard() {
-  const { data: metrics = [], isLoading } = useQuery({
+  const { data: metrics = [], isLoading } = useQuery<any>({
     queryKey: ["/api/tl-analytics"],
     queryFn: () => fetch("/api/tl-analytics").then(r => r.json()).catch(() => []),
   });

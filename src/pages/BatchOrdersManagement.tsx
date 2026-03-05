@@ -15,7 +15,7 @@ export default function BatchOrdersManagement() {
   const { toast } = useToast();
   const [localBatches, setLocalBatches] = useState<any[]>([]);
 
-  const { data: batches = [], isLoading } = useQuery({
+  const { data: batches = [], isLoading } = useQuery<any>({
     queryKey: ["/api/batch-orders"],
     queryFn: () => fetch("/api/batch-orders").then(r => r.json()).catch(() => []),
   });

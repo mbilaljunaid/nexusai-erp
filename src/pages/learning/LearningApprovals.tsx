@@ -21,7 +21,7 @@ interface EnrollmentRequest {
 export default function LearningApprovals() {
     const queryClient = useQueryClient();
 
-    const { data: requests = [] } = useQuery({
+    const { data: requests = [] } = useQuery<any>({
         queryKey: ["/api/learning/approvals/pending"],
     });
 

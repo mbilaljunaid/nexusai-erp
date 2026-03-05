@@ -47,7 +47,7 @@ export default function CompensationDashboard() {
     });
 
     // === QUERIES ===
-    const { data: salaryBases, isLoading: isBasesLoading } = useQuery({
+    const { data: salaryBases, isLoading: isBasesLoading } = useQuery<any>({
         queryKey: ["salary-bases"],
         queryFn: async () => {
             const res = await fetch("/api/rewards/salary-bases");

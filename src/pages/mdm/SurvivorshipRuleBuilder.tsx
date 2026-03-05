@@ -35,7 +35,7 @@ export default function SurvivorshipRuleBuilder() {
 
     const queryClient = useQueryClient();
 
-    const { data: rules = [] } = useQuery({
+    const { data: rules = [] } = useQuery<any>({
         queryKey: ["/api/mdm/survivorship-rules"],
     });
 

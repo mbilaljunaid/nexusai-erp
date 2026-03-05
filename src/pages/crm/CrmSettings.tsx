@@ -48,7 +48,7 @@ export default function CrmSettings() {
         ]
     });
 
-    const { data: tenant, isLoading } = useQuery({
+    const { data: tenant, isLoading } = useQuery<any>({
         queryKey: ["/api/tenant/current"],
         queryFn: async () => {
             const res = await fetch("/api/tenant/current");

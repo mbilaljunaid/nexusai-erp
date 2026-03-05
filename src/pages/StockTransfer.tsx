@@ -13,7 +13,7 @@ export default function StockTransfer() {
   const { toast } = useToast();
   const [newTransfer, setNewTransfer] = useState({ item: "Item A", quantity: "", fromLocation: "Bin-01", toLocation: "Bin-02", status: "pending" });
 
-  const { data: transfers = [], isLoading } = useQuery({
+  const { data: transfers = [], isLoading } = useQuery<any>({
     queryKey: ["/api/stock-transfer"],
     queryFn: () => fetch("/api/stock-transfer").then(r => r.json()).catch(() => []),
   });

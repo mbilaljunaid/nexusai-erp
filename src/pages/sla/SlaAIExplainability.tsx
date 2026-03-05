@@ -19,7 +19,7 @@ export default function SlaAIExplainability() {
     const { toast } = useToast();
 
     // Fetch recent explanations
-    const { data: recentTraces = [], isLoading } = useQuery({
+    const { data: recentTraces = [], isLoading } = useQuery<any>({
         queryKey: ["sla-recent-traces"],
         queryFn: async () => {
             // Mock data for recent AI explanations
@@ -32,7 +32,7 @@ export default function SlaAIExplainability() {
     });
 
     // Fetch Proactive Insights
-    const { data: insights = [], refetch: refetchInsights } = useQuery({
+    const { data: insights = [], refetch: refetchInsights } = useQuery<any>({
         queryKey: ["sla-insights"],
         queryFn: async () => {
             const res = await fetch("/api/sla/insights");

@@ -29,7 +29,7 @@ export default function PartnerDashboard() {
         }).then(r => r.json()).then(setPartner);
     }, []);
 
-    const { data: deals = [] } = useQuery({
+    const { data: deals = [] } = useQuery<any>({
         queryKey: ["/api/crm/partner/deals", partner?.id],
         queryFn: () => fetch(`/api/crm/partner/deals?partnerId=${partner.id}`).then(r => r.json()),
         enabled: !!partner

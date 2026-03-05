@@ -15,7 +15,7 @@ export default function AuditManagement() {
   const { toast } = useToast();
   const [localAudits, setLocalAudits] = useState<any[]>([]);
 
-  const { data: audits = [], isLoading } = useQuery({
+  const { data: audits = [], isLoading } = useQuery<any>({
     queryKey: ["/api/audits"],
     queryFn: () => fetch("/api/audits").then(r => r.json()),
   });

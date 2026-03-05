@@ -50,13 +50,13 @@ export default function MultiPeriodQuery() {
     // Fetch ledgers - handled by EnterpriseContextSwitcher
 
     // Fetch periods
-    const { data: periods } = useQuery({
+    const { data: periods } = useQuery<any>({
         queryKey: ["/api/gl/periods"],
         queryFn: () => fetch("/api/gl/periods?status=OPEN,CLOSED").then(r => r.json()),
     });
 
     // Fetch multi-period data
-    const { data: queryData, isLoading } = useQuery({
+    const { data: queryData, isLoading } = useQuery<any>({
         queryKey: [
             "/api/gl/multi-period-query",
             ledgerId,

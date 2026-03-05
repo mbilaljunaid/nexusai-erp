@@ -13,7 +13,7 @@ export default function AccountReconciliation() {
   const { toast } = useToast();
   const [newRecon, setNewRecon] = useState({ accountId: "", glBalance: "", subledgerBalance: "" });
 
-  const { data: reconciliations = [], isLoading } = useQuery({
+  const { data: reconciliations = [], isLoading } = useQuery<any>({
     queryKey: ["/api/reconciliations"],
     queryFn: () => fetch("/api/reconciliations").then(r => r.json()),
   });

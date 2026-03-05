@@ -14,7 +14,7 @@ export default function ProductReviewsRatings() {
   const { toast } = useToast();
   const [newReview, setNewReview] = useState({ productId: "", customerName: "", rating: "5", status: "pending" });
 
-  const { data: reviews = [], isLoading } = useQuery({
+  const { data: reviews = [], isLoading } = useQuery<any>({
     queryKey: ["/api/product-reviews"],
     queryFn: () => fetch("/api/product-reviews").then(r => r.json()).catch(() => []),
   });

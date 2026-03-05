@@ -14,7 +14,7 @@ export default function RecommendationEngine() {
   const { toast } = useToast();
   const [newRec, setNewRec] = useState({ recommendation: "", category: "sales", confidence: "0.85" });
 
-  const { data: recommendations = [], isLoading } = useQuery({
+  const { data: recommendations = [], isLoading } = useQuery<any>({
     queryKey: ["/api/recommendations"],
     queryFn: () => fetch("/api/recommendations").then(r => r.json()),
   });

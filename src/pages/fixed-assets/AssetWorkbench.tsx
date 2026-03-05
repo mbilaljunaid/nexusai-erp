@@ -40,7 +40,7 @@ export default function AssetWorkbench() {
         queryFn: () => api.fa.assets.list({ limit: pageSize, offset: (page - 1) * pageSize })
     });
 
-    const { data: stats, isLoading: isLoadingStats } = useQuery({
+    const { data: stats, isLoading: isLoadingStats } = useQuery<any>({
         queryKey: ["/api/fa/stats"],
         queryFn: api.fa.assets.getStats
     });

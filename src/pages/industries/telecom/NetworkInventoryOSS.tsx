@@ -14,7 +14,7 @@ export default function NetworkInventoryOSS() {
   const { toast } = useToast();
   const [newNode, setNewNode] = useState({ nodeId: "", nodeType: "cell-tower", location: "", capacity: "1000", utilization: "0" });
 
-  const { data: nodes = [], isLoading } = useQuery({
+  const { data: nodes = [], isLoading } = useQuery<any>({
     queryKey: ["/api/network-nodes"],
     queryFn: () => fetch("/api/network-nodes").then(r => r.json()).catch(() => []),
   });

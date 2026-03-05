@@ -36,7 +36,7 @@ export default function SoDMatrix() {
     const [riskLevel, setRiskLevel] = useState("CRITICAL");
     const [description, setDescription] = useState("");
 
-    const { data: rules, isLoading } = useQuery({
+    const { data: rules, isLoading } = useQuery<any>({
         queryKey: ["sod-rules"],
         queryFn: async () => {
             const res = await fetch("/api/hr/compliance/sod/rules");

@@ -28,7 +28,7 @@ export default function MobileWarehouse() {
     const [scanInput, setScanInput] = useState("");
     const [activeTask, setActiveTask] = useState<any>(null);
 
-    const { data: tasksData = { data: [] } } = useQuery({
+    const { data: tasksData = { data: [] } } = useQuery<any>({
         queryKey: ["/api/scm/wms/tasks", "WH-001"],
         queryFn: async () => {
             const res = await fetch("/api/scm/wms/tasks?warehouseId=WH-001&status=PENDING");

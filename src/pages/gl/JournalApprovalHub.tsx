@@ -36,7 +36,7 @@ export default function JournalApprovalHub() {
     const [comments, setComments] = useState("");
 
     // Fetch Pending Approvals
-    const { data: pendingApprovals, isLoading } = useQuery({
+    const { data: pendingApprovals, isLoading } = useQuery<any>({
         queryKey: ["journal-approvals"],
         queryFn: async () => {
             const res = await fetch("/api/gl/approvals/pending");

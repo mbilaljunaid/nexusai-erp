@@ -15,7 +15,7 @@ export default function TenantSettings() {
     const queryClient = useQueryClient();
 
     // Fetch current tenant settings
-    const { data: tenant = {}, isLoading } = useQuery({
+    const { data: tenant = {}, isLoading } = useQuery<any>({
         queryKey: ["/api/tenant/current"],
         queryFn: async () => {
             const res = await fetch("/api/tenant/current");

@@ -11,7 +11,7 @@ import { AlertCircle } from "lucide-react";
 export default function RevenueWaterfall() {
     const [year, setYear] = useState<string>(new Date().getFullYear().toString());
 
-    const { data: waterfallData, isLoading, error } = useQuery({
+    const { data: waterfallData, isLoading, error } = useQuery<any>({
         queryKey: ['revenue-waterfall', year],
         queryFn: async () => {
             const res = await fetch(`/api/revenue/reporting/waterfall?year=${year}`);

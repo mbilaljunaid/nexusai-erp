@@ -15,7 +15,7 @@ export default function ShipmentOrderManagement() {
   const { toast } = useToast();
   const [localShipments, setLocalShipments] = useState<any[]>([]);
 
-  const { data: shipments = [], isLoading } = useQuery({
+  const { data: shipments = [], isLoading } = useQuery<any>({
     queryKey: ["/api/tl-shipments"],
     queryFn: () => fetch("/api/tl-shipments").then(r => r.json()).catch(() => []),
   });

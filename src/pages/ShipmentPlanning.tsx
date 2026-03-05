@@ -14,7 +14,7 @@ export default function ShipmentPlanning() {
   const { toast } = useToast();
   const [newShipment, setNewShipment] = useState({ order: "SO-001", carrier: "FedEx", items: "", destination: "City", status: "planning" });
 
-  const { data: shipments = [], isLoading } = useQuery({
+  const { data: shipments = [], isLoading } = useQuery<any>({
     queryKey: ["/api/shipment-planning"],
     queryFn: () => fetch("/api/shipment-planning").then(r => r.json()).catch(() => []),
   });

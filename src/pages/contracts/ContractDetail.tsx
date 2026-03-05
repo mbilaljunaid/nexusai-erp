@@ -27,7 +27,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function ContractDetail() {
     const [, params] = useRoute("/contracts/:id");
-    const contractId = params?.id;
+    const contractId = (params as any)?.id || "";
     const queryClient = useQueryClient();
 
     const [showClauseLibrary, setShowClauseLibrary] = useState(false);
@@ -35,7 +35,7 @@ export default function ContractDetail() {
     const [showESignature, setShowESignature] = useState(false);
 
     // Fetch contract details
-    const { data: contract, isLoading } = useQuery({
+    const { data: contract, isLoading } = useQuery<any>({
         queryKey: [`/api/contract-portal/contracts/${contractId}`],
         queryFn: async () => {
             const res = await fetch(`/api/contract-portal/contracts/${contractId}`);
@@ -119,7 +119,7 @@ export default function ContractDetail() {
                     <div className="flex items-center gap-3">
                         <FileText className="h-8 w-8 text-blue-600" />
                         <div>
-                            
+
                             <p className="text-sm text-muted-foreground">Contract #{contract.contractNumber}</p>
                         </div>
                     </div>

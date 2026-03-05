@@ -15,7 +15,7 @@ import { AlertCircle, TrendingUp, Sparkles, BrainCircuit, Activity } from "lucid
 import { format } from "date-fns";
 
 export default function CostInsights() {
-    const { data: anomalies, isLoading: loadingAnomalies } = useQuery({
+    const { data: anomalies, isLoading: loadingAnomalies } = useQuery<any>({
         queryKey: ["costAnomalies"],
         queryFn: async () => {
             const res = await fetch("/api/manufacturing/cost-anomalies");

@@ -27,7 +27,7 @@ export default function RecruitmentManagement() {
 
   const { legalEntityId, businessUnitId } = useEnterpriseStore();
 
-  const { data: jobs = [], isLoading } = useQuery({
+  const { data: jobs = [], isLoading } = useQuery<any>({
     queryKey: ["/api/recruitment/jobs", page, legalEntityId], // Add deps to re-fetch on switch
     queryFn: () => fetch(`/api/recruitment/jobs?limit=${pageSize}&offset=${page * pageSize}`, {
       headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined

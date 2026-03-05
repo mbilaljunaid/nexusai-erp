@@ -17,7 +17,7 @@ import {
 import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function YardManagement() {
-    const { data: appointments = [], isLoading } = useQuery({
+    const { data: appointments = [], isLoading } = useQuery<any>({
         queryKey: ["/api/scm/wms/dock-appointments"],
         queryFn: async () => {
             const res = await fetch("/api/scm/wms/dock-appointments");

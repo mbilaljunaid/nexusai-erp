@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -11,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, DollarSign, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from '@/components/layout/StandardPage';
-import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 interface BillRateSchedule {
     id: string;

@@ -25,7 +25,7 @@ export default function CurriculumBuilder() {
     const [selectedCurriculum, setSelectedCurriculum] = useState<any>(null);
 
     // Fetch Curricula
-    const { data: curricula, isLoading: loadingCurricula } = useQuery({
+    const { data: curricula, isLoading: loadingCurricula } = useQuery<any>({
         queryKey: ["curricula"],
         queryFn: async () => {
             const res = await fetch("/api/learning/curricula");
@@ -150,7 +150,7 @@ function CurriculumEditor({ curriculumId, title }: { curriculumId: string, title
     const queryClient = useQueryClient();
     const [isAddOpen, setIsAddOpen] = useState(false);
 
-    const { data: details, isLoading } = useQuery({
+    const { data: details, isLoading } = useQuery<any>({
         queryKey: ["curriculum", curriculumId],
         queryFn: async () => {
             const res = await fetch(`/api/learning/curricula/${curriculumId}`);
@@ -213,7 +213,7 @@ function CurriculumEditor({ curriculumId, title }: { curriculumId: string, title
 
 function CoursePicker({ onSelect }: { onSelect: (id: string) => void }) {
     // Simple fetch of all courses
-    const { data: courses } = useQuery({
+    const { data: courses } = useQuery<any>({
         queryKey: ["courses-picker"],
         queryFn: async () => {
             const res = await fetch("/api/learning/courses?pageSize=50");

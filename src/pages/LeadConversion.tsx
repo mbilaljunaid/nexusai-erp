@@ -14,7 +14,7 @@ export default function LeadConversion() {
   const { toast } = useToast();
   const [newLead, setNewLead] = useState({ name: "", email: "", company: "", status: "new" });
 
-  const { data: leads = [], isLoading } = useQuery({
+  const { data: leads = [], isLoading } = useQuery<any>({
     queryKey: ["/api/crm/leads"],
     queryFn: () => fetch("/api/crm/leads").then(r => r.json()).catch(() => []),
   });

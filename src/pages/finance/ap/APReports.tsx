@@ -29,13 +29,13 @@ export default function APReports() {
     });
 
     // Aging Report
-    const { data: agingData, isLoading: agingLoading } = useQuery({
+    const { data: agingData, isLoading: agingLoading } = useQuery<any>({
         queryKey: ["/api/ap/reports/aging"],
         queryFn: () => fetch("/api/ap/reports/aging").then(r => r.json())
     });
 
     // Audit Trail
-    const { data: auditData, isLoading: auditLoading } = useQuery({
+    const { data: auditData, isLoading: auditLoading } = useQuery<any>({
         queryKey: ["/api/ap/reports/audit-trail", auditFilters],
         queryFn: () => {
             const params = new URLSearchParams();

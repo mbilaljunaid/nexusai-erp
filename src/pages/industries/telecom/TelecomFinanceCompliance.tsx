@@ -5,7 +5,7 @@ import { StandardDashboard, DashboardWidget } from "@/components/layout/Standard
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function TelecomFinanceCompliance() {
-  const { data: transactions = [], isLoading } = useQuery({
+  const { data: transactions = [], isLoading } = useQuery<any>({
     queryKey: ["/api/telecom-finance"],
     queryFn: () => fetch("/api/telecom-finance").then(r => r.json()),
   });

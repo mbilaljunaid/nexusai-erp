@@ -14,7 +14,7 @@ export default function ProcessAnalytics() {
   const { toast } = useToast();
   const [newKPI, setNewKPI] = useState({ process: "Order to Cash", metric: "Avg Cycle Time", target: "5 days", status: "on-track" });
 
-  const { data: kpis = [], isLoading } = useQuery({
+  const { data: kpis = [], isLoading } = useQuery<any>({
     queryKey: ["/api/process-kpis"],
     queryFn: () => fetch("/api/process-kpis").then(r => r.json()).catch(() => []),
   });

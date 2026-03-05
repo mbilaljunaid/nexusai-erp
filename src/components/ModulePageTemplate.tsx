@@ -18,7 +18,7 @@ import { animations } from '@/lib/animations';
 export interface ModuleFeature {
     title: string;
     description: string;
-    icon?: React.ReactNode;
+    icon: React.ReactNode;
 }
 
 export interface ModulePageProps {
@@ -177,7 +177,7 @@ export function ModulePageTemplate({
                                         {...animations.fadeInUp}
                                         transition={{ delay: index * 0.1 }}
                                     >
-                                        <GradientCard variant="purple" className="h-full p-8">
+                                        <GradientCard variant="primary" className="h-full p-8">
                                             <h3 className="text-2xl font-semibold mb-3 text-white">
                                                 {benefit.title}
                                             </h3>

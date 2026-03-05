@@ -10,7 +10,7 @@ import { ContextualSearch } from "@/components/ContextualSearch";
 
 
 export default function CarrierManager() {
-    const { data: carriers, isLoading } = useQuery({
+    const { data: carriers, isLoading } = useQuery<any>({
         queryKey: ["/api/transportation/carriers"],
         queryFn: () => fetch("/api/transportation/carriers").then(res => res.json())
     });

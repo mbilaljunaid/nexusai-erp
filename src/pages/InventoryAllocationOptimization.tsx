@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Lightbulb } from "lucide-react";
 
 export default function InventoryAllocationOptimization() {
-  const { data: allocations = [], isLoading } = useQuery({
+  const { data: allocations = [], isLoading } = useQuery<any>({
     queryKey: ["/api/inventory-allocation"],
     queryFn: () => fetch("/api/inventory-allocation").then(r => r.json()).catch(() => []),
   });

@@ -7,9 +7,9 @@ import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, L
 import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function RevenueIntelligence() {
-    const { data: analytics } = useQuery({
+    const { data: analytics } = useQuery<any>({
         queryKey: ["/api/crm/revenue-intelligence"],
-        queryFn: () => apiRequest("/api/crm/revenue-intelligence"),
+        queryFn: () => apiRequest("GET", "/api/crm/revenue-intelligence").then(res => res.json()),
     });
 
     return (

@@ -14,7 +14,7 @@ export default function AccountDirectory() {
   const { toast } = useToast();
   const [newAccount, setNewAccount] = useState({ name: "", industry: "", employees: "", revenue: "" });
 
-  const { data: accounts = [], isLoading } = useQuery({
+  const { data: accounts = [], isLoading } = useQuery<any>({
     queryKey: ["/api/crm/accounts"],
     queryFn: () => fetch("/api/crm/accounts").then(r => r.json()).catch(() => []),
   });

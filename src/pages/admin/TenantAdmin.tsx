@@ -27,7 +27,7 @@ import {
   BarChart3,
   CreditCard,
 } from "lucide-react";
-import InteractiveSpreadsheet, { SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { ContextualSearch } from "@/components/ContextualSearch";
 

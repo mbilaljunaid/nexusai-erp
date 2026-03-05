@@ -41,7 +41,7 @@ export default function ItemMasterUI() {
     const setHeaders = activeSetId ? { "x-set-id": activeSetId } : {};
 
     // Fetch items
-    const { data: items = [], isLoading } = useQuery({
+    const { data: items = [], isLoading } = useQuery<any>({
         queryKey: ["/api/mdm/items", searchQuery, activeSetId],
         queryFn: async () => {
             const params = searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : "";

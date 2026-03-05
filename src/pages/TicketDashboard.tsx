@@ -19,7 +19,7 @@ export default function TicketDashboard() {
       description="Overview of support ticket metrics"
       breadcrumbs={formMetadata?.breadcrumbs?.slice(1) || []}
     >
-      <FormSearchWithMetadata formMetadata={formMetadata} onSearch={setSearchQuery} />
+      <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={[]} onFilter={setFiltered} />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>

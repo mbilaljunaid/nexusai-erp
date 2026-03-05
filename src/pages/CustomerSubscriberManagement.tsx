@@ -14,7 +14,7 @@ export default function CustomerSubscriberManagement() {
   const { toast } = useToast();
   const [newSubscriber, setNewSubscriber] = useState({ subscriberId: "", name: "", email: "", phone: "", status: "active" });
 
-  const { data: subscribers = [], isLoading } = useQuery({
+  const { data: subscribers = [], isLoading } = useQuery<any>({
     queryKey: ["/api/telecom-subscribers"],
     queryFn: () => fetch("/api/telecom-subscribers").then(r => r.json()).catch(() => []),
   });

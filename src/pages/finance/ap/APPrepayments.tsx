@@ -23,7 +23,7 @@ export default function APPrepayments() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    const { data: prepayments, isLoading } = useQuery({
+    const { data: prepayments, isLoading } = useQuery<any>({
         queryKey: ["/api/ap/prepayments"],
         queryFn: async () => {
             // Fetch all invoices and filter for prepayments
@@ -36,7 +36,7 @@ export default function APPrepayments() {
         }
     });
 
-    const { data: standardInvoices } = useQuery({
+    const { data: standardInvoices } = useQuery<any>({
         queryKey: ["/api/ap/invoices", "standard"],
         queryFn: async () => {
             const response = await apiRequest("GET", "/api/ap/invoices");

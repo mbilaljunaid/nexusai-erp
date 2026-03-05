@@ -12,7 +12,7 @@ export default function SlaReconciliationWorkbench() {
     const [period, setPeriod] = useState("FEB-2026");
 
     // Fetch reconciliation data
-    const { data: report, isLoading } = useQuery({
+    const { data: report, isLoading } = useQuery<any>({
         queryKey: ["sla-recon-report", period],
         queryFn: async () => {
             // Mock subledger-to-GL reconciliation data

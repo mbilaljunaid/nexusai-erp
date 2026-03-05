@@ -14,7 +14,7 @@ export default function VehicleInventoryManagement() {
   const { toast } = useToast();
   const [newVehicle, setNewVehicle] = useState({ vin: "", model: "", year: "2024", status: "available", price: "0" });
 
-  const { data: vehicles = [], isLoading } = useQuery({
+  const { data: vehicles = [], isLoading } = useQuery<any>({
     queryKey: ["/api/auto-inventory"],
     queryFn: () => fetch("/api/auto-inventory").then(r => r.json()).catch(() => []),
   });

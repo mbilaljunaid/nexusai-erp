@@ -15,7 +15,7 @@ export default function StockPickingPacking() {
   const { toast } = useToast();
   const [localTasks, setLocalTasks] = useState<any[]>([]);
 
-  const { data: tasks = [], isLoading } = useQuery({
+  const { data: tasks = [], isLoading } = useQuery<any>({
     queryKey: ["/api/pick-pack-tasks"],
     queryFn: () => fetch("/api/pick-pack-tasks").then(r => r.json()).catch(() => []),
   });

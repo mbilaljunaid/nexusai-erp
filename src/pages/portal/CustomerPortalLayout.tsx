@@ -21,7 +21,7 @@ export default function CustomerPortalLayout({ children }: { children: ReactNode
     const customer = JSON.parse(localStorage.getItem("portal_customer") || "null");
 
     // Fetch unread notification count
-    const { data: unreadData } = useQuery({
+    const { data: unreadData } = useQuery<any>({
         queryKey: ["/api/portal/notifications/unread"],
         queryFn: async () => {
             const res = await apiRequest("GET", "/api/portal/notifications/unread");

@@ -15,7 +15,7 @@ export default function DemandForecastingPage() {
   const { toast } = useToast();
   const [localForecasts, setLocalForecasts] = useState<any[]>([]);
 
-  const { data: forecasts = [], isLoading } = useQuery({
+  const { data: forecasts = [], isLoading } = useQuery<any>({
     queryKey: ["/api/demand-forecasts"],
     queryFn: () => fetch("/api/demand-forecasts").then(r => r.json()).catch(() => []),
   });

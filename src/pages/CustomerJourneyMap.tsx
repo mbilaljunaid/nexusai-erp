@@ -13,7 +13,7 @@ export default function CustomerJourneyMap() {
   const { toast } = useToast();
   const [newStage, setNewStage] = useState({ stage: "", count: "", conversion: "" });
 
-  const { data: stages = [], isLoading } = useQuery({
+  const { data: stages = [], isLoading } = useQuery<any>({
     queryKey: ["/api/journey-stages"],
     queryFn: () => fetch("/api/journey-stages").then(r => r.json()).catch(() => []),
   });

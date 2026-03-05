@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Navigation } from "lucide-react";
 
 export default function RouteLoadOptimization() {
-  const { data: routes = [], isLoading } = useQuery({
+  const { data: routes = [], isLoading } = useQuery<any>({
     queryKey: ["/api/tl-routes"],
     queryFn: () => fetch("/api/tl-routes").then(r => r.json()).catch(() => []),
   });

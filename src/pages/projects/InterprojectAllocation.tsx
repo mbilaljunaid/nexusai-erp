@@ -53,21 +53,21 @@ export default function InterprojectAllocation() {
     const scopeHeaders = buildScopeHeaders({ "business-unit": buId });
 
     // Fetch allocation rules
-    const { data: rules, isLoading } = useQuery({
+    const { data: rules, isLoading } = useQuery<any>({
         queryKey: ["/api/ppm/allocation-rules", buId],
         queryFn: () =>
             fetch("/api/ppm/allocation-rules", { headers: scopeHeaders }).then(r => r.json()),
     });
 
     // Fetch projects
-    const { data: projects } = useQuery({
+    const { data: projects } = useQuery<any>({
         queryKey: ["/api/ppm/projects", buId],
         queryFn: () =>
             fetch("/api/ppm/projects", { headers: scopeHeaders }).then(r => r.json()),
     });
 
     // Fetch allocation preview
-    const { data: preview } = useQuery({
+    const { data: preview } = useQuery<any>({
         queryKey: ["/api/ppm/allocation-preview", sourceProject, targetProjects, allocationBasis, buId],
         queryFn: () =>
             fetch("/api/ppm/allocation-preview", {
@@ -408,7 +408,7 @@ export default function InterprojectAllocation() {
                                 <InteractiveSpreadsheet
                                     data={targetProjects}
                                     columns={targetColumns}
-                                    containerHeight={300}
+                                    containerHeight="300px"
                                     virtualized={true}
                                 />
                             </div>

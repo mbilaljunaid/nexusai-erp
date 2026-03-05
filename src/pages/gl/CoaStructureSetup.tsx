@@ -10,13 +10,8 @@ import {
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "@/components/ui/select";
-import {
-    Dialog, DialogContent, DialogHeader, DialogTitle
-} from "@/components/ui/dialog";
-import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Settings, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -148,7 +143,7 @@ function SegmentManager({ structureId, structureName }: { structureId: string, s
                 <InteractiveSpreadsheet
                     data={segments}
                     columns={columns}
-                    onChange={(newData) => queryClient.setQueryData(["/api/finance/gl/segments", structureId], newData)}
+                    onChange={(newData) => queryClient.setQueryData(["/api/finance/gl/segments", structureId], newData as any)}
                     virtualized={true}
                     containerHeight="500px"
                 />
@@ -225,7 +220,7 @@ export default function CoaStructureSetup() {
                 data={structures}
                 columns={columns}
                 isLoading={isLoading}
-             onChange={() => {}} containerHeight="600px" />
+                onChange={() => { }} containerHeight="600px" />
 
             {/* Create Sheet */}
             <Sheet open={isAddOpen} onOpenChange={setIsAddOpen}>

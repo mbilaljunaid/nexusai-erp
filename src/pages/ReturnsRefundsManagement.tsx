@@ -14,7 +14,7 @@ export default function ReturnsRefundsManagement() {
   const { toast } = useToast();
   const [newReturn, setNewReturn] = useState({ orderId: "", reason: "defective", status: "pending", refundAmount: "0" });
 
-  const { data: returns = [], isLoading } = useQuery({
+  const { data: returns = [], isLoading } = useQuery<any>({
     queryKey: ["/api/returns-refunds"],
     queryFn: () => fetch("/api/returns-refunds").then(r => r.json()).catch(() => []),
   });

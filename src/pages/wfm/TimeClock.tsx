@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@/hooks/use-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -16,10 +16,7 @@ export default function TimeClock() {
 
     const clockInMutation = useMutation({
         mutationFn: (location: { lat: number; lng: number }) =>
-            apiRequest("/api/wfm/clock-in", {
-                method: "POST",
-                body: JSON.stringify({ timestamp: new Date(), location }),
-            }),
+            apiRequest("POST", "/api/wfm/clock-in", { timestamp: new Date(), location }),
         onSuccess: () => {
             toast({ title: "Success", description: "Clocked in successfully" });
         },
@@ -27,10 +24,7 @@ export default function TimeClock() {
 
     const clockOutMutation = useMutation({
         mutationFn: () =>
-            apiRequest("/api/wfm/clock-out", {
-                method: "POST",
-                body: JSON.stringify({ timestamp: new Date() }),
-            }),
+            apiRequest("POST", "/api/wfm/clock-out", { timestamp: new Date() }),
         onSuccess: () => {
             toast({ title: "Success", description: "Clocked out successfully" });
         },
@@ -57,7 +51,7 @@ export default function TimeClock() {
     return (
         <StandardPage title="Time Clock">
             <div>
-                
+
                 <p className="text-muted-foreground">GPS-enabled time tracking and attendance</p>
             </div>
 

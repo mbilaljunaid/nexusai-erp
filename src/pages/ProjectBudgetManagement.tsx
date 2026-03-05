@@ -18,7 +18,7 @@ export default function ProjectBudgetManagement() {
 
   const scopeHeaders = buildScopeHeaders({ "business-unit": buId });
 
-  const { data: budgets = [], isLoading } = useQuery({
+  const { data: budgets = [], isLoading } = useQuery<any>({
     queryKey: ["/api/project-budgets", buId],
     queryFn: () =>
       fetch("/api/project-budgets", { headers: scopeHeaders })

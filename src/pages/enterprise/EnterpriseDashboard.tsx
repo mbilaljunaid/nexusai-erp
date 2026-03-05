@@ -9,12 +9,12 @@ export default function EnterpriseDashboard() {
     const [, setLocation] = useLocation();
 
     // Fetch high-level stats
-    const { data: legalGroups } = useQuery({
+    const { data: legalGroups } = useQuery<any>({
         queryKey: ["/api/enterprise/legal-groups"],
         queryFn: () => fetch("/api/enterprise/legal-groups").then(r => r.json())
     });
 
-    const { data: businessUnits } = useQuery({
+    const { data: businessUnits } = useQuery<any>({
         queryKey: ["/api/enterprise/business-units"],
         queryFn: () => fetch("/api/enterprise/business-units").then(r => r.json())
     });

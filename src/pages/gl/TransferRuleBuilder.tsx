@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tantml:react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -73,9 +73,9 @@ export default function TransferRuleBuilder() {
     const [conditions, setConditions] = useState<TransferCondition[]>([]);
 
     // Fetch transfer rules
-    const { data: rules, isLoading } = useQuery({
+    const { data: rules, isLoading } = useQuery<any>({
         queryKey: ["/api/gl/transfer-rules"],
-        queryFn: () => apiRequest("/api/gl/transfer-rules"),
+        queryFn: () => apiRequest("GET", "/api/gl/transfer-rules").then(res => res.json()),
     });
 
     // Fetch ledgers - handled by EnterpriseContextSwitcher
@@ -84,14 +84,8 @@ export default function TransferRuleBuilder() {
     const saveMutation = useMutation({
         mutationFn: (data: TransferRule) =>
             selectedRule
-                ? apiRequest(`/api/gl/transfer-rules/${selectedRule}`, {
-                    method: "PUT",
-                    body: JSON.stringify(data),
-                })
-                : apiRequest("/api/gl/transfer-rules", {
-                    method: "POST",
-                    body: JSON.stringify(data),
-                }),
+                ? apiRequest("PUT", `/api/gl/transfer-rules/${selectedRule}`, data)
+                : apiRequest("POST", "/api/gl/transfer-rules", data),
         onSuccess: () => {
             toast({
                 title: "Success",
@@ -103,9 +97,11 @@ export default function TransferRuleBuilder() {
 
     // Run rule mutation
     const runMutation = useMutation({
-        mutationFn: (ruleId: number) =>
-            apiRequest(`/api/gl/transfer-rules/${ruleId}/run`, { method: "POST" }),
-        onSuccess: (data) => {
+        mutationFn: async (ruleId: number) => {
+            const res = await apiRequest("POST", `/api/gl/transfer-rules/${ruleId}/run`);
+            return res.json();
+        },
+        onSuccess: (data: any) => {
             toast({
                 title: "Transfer Complete",
                 description: `Transferred ${data.journalCount} journals, ${data.totalAmount} amount`,

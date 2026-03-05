@@ -22,7 +22,7 @@ export default function DunningConfiguration() {
         { daysOverdue: 30, action: "SUSPEND_SERVICES", template: "Final Notice" },
     ]);
 
-    const { data: campaigns } = useQuery({
+    const { data: campaigns } = useQuery<any>({
         queryKey: ["/api/billing/dunning-campaigns", businessUnitId],
         queryFn: async () => {
             const res = await fetch("/api/billing/dunning-campaigns", {

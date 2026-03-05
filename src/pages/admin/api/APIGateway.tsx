@@ -19,7 +19,7 @@ export default function APIGateway() {
   const tenantId = "tenant1";
   const formMetadata = getFormMetadata("apiGateway");
 
-  const { data: apiKeys = [] } = useQuery({
+  const { data: apiKeys = [] } = useQuery<any>({
     queryKey: ["/api/api-keys", tenantId],
     queryFn: () => fetch(`/api/api-keys?tenantId=${tenantId}`).then(r => r.json())
   });

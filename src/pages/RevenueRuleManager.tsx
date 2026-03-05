@@ -37,7 +37,7 @@ export default function RevenueRuleManager() {
     });
 
     // --- Queries ---
-    const { data: idRules, isLoading: idLoading } = useQuery({
+    const { data: idRules, isLoading: idLoading } = useQuery<any>({
         queryKey: ["revenueIdRules"],
         queryFn: async () => {
             const res = await fetch("/api/revenue/rules/identification");
@@ -46,7 +46,7 @@ export default function RevenueRuleManager() {
         }
     });
 
-    const { data: pobRules, isLoading: pobLoading } = useQuery({
+    const { data: pobRules, isLoading: pobLoading } = useQuery<any>({
         queryKey: ["revenuePobRules"],
         queryFn: async () => {
             const res = await fetch("/api/revenue/rules/pob");

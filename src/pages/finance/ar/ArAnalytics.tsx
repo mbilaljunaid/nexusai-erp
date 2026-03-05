@@ -28,7 +28,7 @@ import { StandardPage } from '@/components/layout/StandardPage';
 export default function ArAnalytics() {
     const [selectedCustomer, setSelectedCustomer] = useState("");
 
-    const { data: predictions, isLoading: loadingPredictions } = useQuery({
+    const { data: predictions, isLoading: loadingPredictions } = useQuery<any>({
         queryKey: ["/api/ar/ai/predictions"],
         // For demo, we might need an endpoint that returns predictions for top overdue invoices
         // Since we only implemented POST /predict-payment, let's mock the fetch or create a GET endpoint?
@@ -47,13 +47,13 @@ export default function ArAnalytics() {
         }
     });
 
-    const { data: advice, isLoading: loadingAdvice } = useQuery({
+    const { data: advice, isLoading: loadingAdvice } = useQuery<any>({
         queryKey: ["/api/ar/ai/collection-advice", selectedCustomer],
         enabled: !!selectedCustomer,
         queryFn: async () => (await apiRequest("GET", `/api/ar/ai/collection-advice/${selectedCustomer}`)).json()
     });
 
-    const { data: dsoTrend = [] } = useQuery({
+    const { data: dsoTrend = [] } = useQuery<any>({
         queryKey: ["/api/ar/reports/dso-trend"],
         queryFn: async () => {
             const res = await apiRequest("GET", "/api/ar/reports/dso-trend");

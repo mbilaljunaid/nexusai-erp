@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 const InventoryDashboard = () => {
   // Mock Data (Simulating API Responses)
   // In a real scenario, these would ideally be separate widgets fetching their own data or a verified hook
-  const { data: stats } = useQuery({
+  const { data: stats } = useQuery<any>({
     queryKey: ['inventoryStats'],
     queryFn: async () => {
       // Mock data for now, preserving the logic structure from original file
@@ -27,7 +27,7 @@ const InventoryDashboard = () => {
     }
   });
 
-  const { data: transactions = [] } = useQuery({
+  const { data: transactions = [] } = useQuery<any>({
     queryKey: ['recentTransactions'],
     queryFn: async () => ([
       { id: 1, type: 'PO Receipt', item: 'Laptop Dell 15"', qty: 50, date: '2025-10-25', status: 'Completed' },
@@ -36,7 +36,7 @@ const InventoryDashboard = () => {
     ])
   });
 
-  const { data: replenishment = [] } = useQuery({
+  const { data: replenishment = [] } = useQuery<any>({
     queryKey: ['replenishment'],
     queryFn: async () => ([
       { id: 101, item: 'Wireless Mouse', onHand: 5, min: 20, suggest: 50 },

@@ -10,7 +10,7 @@ import { Plus } from "lucide-react";
 export default function TenantAdmin() {
   const [newTenant, setNewTenant] = useState({ name: "", slug: "" });
 
-  const { data: tenants = [] } = useQuery({
+  const { data: tenants = [] } = useQuery<any>({
     queryKey: ["/api/tenants"],
     queryFn: () => fetch("/api/tenants").then(r => r.json())
   });

@@ -13,7 +13,7 @@ export default function StoreOutletManagement() {
   const { toast } = useToast();
   const [newStore, setNewStore] = useState({ storeCode: "", storeName: "", city: "", country: "" });
 
-  const { data: stores = [], isLoading } = useQuery({
+  const { data: stores = [], isLoading } = useQuery<any>({
     queryKey: ["/api/stores"],
     queryFn: () => fetch("/api/stores").then(r => r.json()).catch(() => []),
   });

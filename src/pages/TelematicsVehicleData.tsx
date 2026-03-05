@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Activity } from "lucide-react";
 
 export default function TelematicsVehicleData() {
-  const { data: telemetry = [], isLoading } = useQuery({
+  const { data: telemetry = [], isLoading } = useQuery<any>({
     queryKey: ["/api/auto-telematics"],
     queryFn: () => fetch("/api/auto-telematics").then(r => r.json()).catch(() => []),
   });

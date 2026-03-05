@@ -11,7 +11,7 @@ import { ExportButton } from "@/components/ExportButton";
 
 
 export default function PortalPayments() {
-    const { data: payments, isLoading } = useQuery({
+    const { data: payments, isLoading } = useQuery<any>({
         queryKey: ["/api/portal/payments"],
         queryFn: async () => {
             const res = await apiRequest("GET", "/api/portal/payments");

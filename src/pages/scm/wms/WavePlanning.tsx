@@ -23,7 +23,7 @@ export default function WavePlanning() {
     const { toast } = useToast();
     const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
 
-    const { data: readyOrders = [], isLoading } = useQuery({
+    const { data: readyOrders = [], isLoading } = useQuery<any>({
         queryKey: ["/api/scm/wms/orders/ready"],
         queryFn: async () => {
             const res = await fetch("/api/scm/wms/orders/ready");

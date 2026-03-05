@@ -32,7 +32,7 @@ export default function APSystemConfig() {
     });
 
     // System Parameters
-    const { data: systemParams, isLoading: paramsLoading } = useQuery({
+    const { data: systemParams, isLoading: paramsLoading } = useQuery<any>({
         queryKey: ["/api/ap/system-parameters"],
         queryFn: () => fetch("/api/ap/system-parameters").then(r => r.json())
     });
@@ -59,7 +59,7 @@ export default function APSystemConfig() {
     });
 
     // Distribution Sets
-    const { data: distSets, isLoading: distSetsLoading } = useQuery({
+    const { data: distSets, isLoading: distSetsLoading } = useQuery<any>({
         queryKey: ["/api/ap/distribution-sets"],
         queryFn: () => fetch("/api/ap/distribution-sets").then(r => r.json())
     });
@@ -79,7 +79,7 @@ export default function APSystemConfig() {
     });
 
     // AP Periods
-    const { data: periods, isLoading: periodsLoading } = useQuery({
+    const { data: periods, isLoading: periodsLoading } = useQuery<any>({
         queryKey: ["/api/ap/periods"],
         queryFn: () => fetch("/api/ap/periods").then(r => r.json())
     });

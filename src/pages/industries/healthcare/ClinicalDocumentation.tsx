@@ -14,7 +14,7 @@ export default function ClinicalDocumentation() {
   const { toast } = useToast();
   const [newNote, setNewNote] = useState({ noteId: "", encounterId: "", providerId: "", chiefComplaint: "", status: "draft" });
 
-  const { data: notes = [], isLoading } = useQuery({
+  const { data: notes = [], isLoading } = useQuery<any>({
     queryKey: ["/api/healthcare-notes"],
     queryFn: () => fetch("/api/healthcare-notes").then(r => r.json()).catch(() => []),
   });

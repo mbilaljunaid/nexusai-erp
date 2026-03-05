@@ -46,35 +46,29 @@ export default function CrossChargeInvoicing() {
     const [lineItems, setLineItems] = useState<CrossChargeLineItem[]>([]);
 
     // Fetch invoices
-    const { data: invoices, isLoading } = useQuery({
+    const { data: invoices, isLoading } = useQuery<any>({
         queryKey: ["/api/ppm/cross-charge-invoices"],
-        queryFn: () => apiRequest("/api/ppm/cross-charge-invoices"),
+        queryFn: () => apiRequest("GET", "/api/ppm/cross-charge-invoices").then(res => res.json()),
     });
 
     // Fetch projects
-    const { data: projects } = useQuery({
+    const { data: projects } = useQuery<any>({
         queryKey: ["/api/ppm/projects"],
-        queryFn: () => apiRequest("/api/ppm/projects?status=ACTIVE"),
+        queryFn: () => apiRequest("GET", "/api/ppm/projects?status=ACTIVE").then(res => res.json()),
     });
 
     // Fetch expenditure types
-    const { data: expenditureTypes } = useQuery({
+    const { data: expenditureTypes } = useQuery<any>({
         queryKey: ["/api/ppm/expenditure-types"],
-        queryFn: () => apiRequest("/api/ppm/expenditure-types"),
+        queryFn: () => apiRequest("GET", "/api/ppm/expenditure-types").then(res => res.json()),
     });
 
     // Save invoice mutation
     const saveMutation = useMutation({
         mutationFn: (data: CrossChargeInvoice) =>
             selectedInvoice
-                ? apiRequest(`/api/ppm/cross-charge-invoices/${selectedInvoice}`, {
-                    method: "PUT",
-                    body: JSON.stringify(data),
-                })
-                : apiRequest("/api/ppm/cross-charge-invoices", {
-                    method: "POST",
-                    body: JSON.stringify(data),
-                }),
+                ? apiRequest("PUT", `/api/ppm/cross-charge-invoices/${selectedInvoice}`, data)
+                : apiRequest("POST", "/api/ppm/cross-charge-invoices", data),
         onSuccess: () => {
             toast({ title: "Success", description: "Cross-charge invoice saved" });
             queryClient.invalidateQueries({ queryKey: ["/api/ppm/cross-charge-invoices"] });
@@ -84,7 +78,7 @@ export default function CrossChargeInvoicing() {
     // Submit for approval mutation
     const submitMutation = useMutation({
         mutationFn: (invoiceId: number) =>
-            apiRequest(`/api/ppm/cross-charge-invoices/${invoiceId}/submit`, { method: "POST" }),
+            apiRequest("POST", `/api/ppm/cross-charge-invoices/${invoiceId}/submit`),
         onSuccess: () => {
             toast({ title: "Success", description: "Invoice submitted for approval" });
             queryClient.invalidateQueries({ queryKey: ["/api/ppm/cross-charge-invoices"] });
@@ -94,7 +88,7 @@ export default function CrossChargeInvoicing() {
     // Approve mutation
     const approveMutation = useMutation({
         mutationFn: (invoiceId: number) =>
-            apiRequest(`/api/ppm/cross-charge-invoices/${invoiceId}/approve`, { method: "POST" }),
+            apiRequest("POST", `/api/ppm/cross-charge-invoices/${invoiceId}/approve`),
         onSuccess: () => {
             toast({ title: "Success", description: "Invoice approved" });
             queryClient.invalidateQueries({ queryKey: ["/api/ppm/cross-charge-invoices"] });
@@ -104,10 +98,7 @@ export default function CrossChargeInvoicing() {
     // Reject mutation
     const rejectMutation = useMutation({
         mutationFn: ({ invoiceId, reason }: { invoiceId: number; reason: string }) =>
-            apiRequest(`/api/ppm/cross-charge-invoices/${invoiceId}/reject`, {
-                method: "POST",
-                body: JSON.stringify({ reason }),
-            }),
+            apiRequest("POST", `/api/ppm/cross-charge-invoices/${invoiceId}/reject`, { reason }),
         onSuccess: () => {
             toast({ title: "Success", description: "Invoice rejected" });
             queryClient.invalidateQueries({ queryKey: ["/api/ppm/cross-charge-invoices"] });
@@ -270,7 +261,7 @@ export default function CrossChargeInvoicing() {
         <StandardPage title="Cross-Charge Invoicing">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground">
                         Generate invoices for interproject cost transfers
                     </p>
@@ -389,7 +380,7 @@ export default function CrossChargeInvoicing() {
                                 <InteractiveSpreadsheet
                                     data={lineItems}
                                     columns={columns}
-                                    containerHeight={400}
+                                    containerHeight="400px"
                                     virtualized={true}
                                 />
                             </div>

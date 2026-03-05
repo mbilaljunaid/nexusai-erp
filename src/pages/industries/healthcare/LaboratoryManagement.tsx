@@ -15,7 +15,7 @@ export default function LaboratoryManagement() {
   const { toast } = useToast();
   const [newTest, setNewTest] = useState({ testId: "", specimenId: "", testType: "blood", status: "pending" });
 
-  const { data: tests = [], isLoading } = useQuery({
+  const { data: tests = [], isLoading } = useQuery<any>({
     queryKey: ["/api/healthcare-labs"],
     queryFn: () => fetch("/api/healthcare-labs").then(r => r.json()).catch(() => []),
   });

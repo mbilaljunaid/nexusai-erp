@@ -25,7 +25,7 @@ export default function TransportationManagementSystem() {
     return h;
   };
 
-  const { data: shipments = [], isLoading } = useQuery({
+  const { data: shipments = [], isLoading } = useQuery<any>({
     queryKey: ["/api/transportation/shipments", activeBuId, activeInvOrgId],
     queryFn: () => fetch("/api/transportation/shipments", { headers: buildHeaders() }).then(r => r.json()).catch(() => []),
   });

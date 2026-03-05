@@ -15,7 +15,7 @@ export default function ReservationBooking() {
   const { toast } = useToast();
   const [newRes, setNewRes] = useState({ reservationId: "", guestName: "", checkIn: "", checkOut: "", roomType: "standard", status: "confirmed" });
 
-  const { data: reservations = [], isLoading } = useQuery({
+  const { data: reservations = [], isLoading } = useQuery<any>({
     queryKey: ["/api/hospitality-reservations"],
     queryFn: () => fetch("/api/hospitality-reservations").then(r => r.json()).catch(() => []),
   });

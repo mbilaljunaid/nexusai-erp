@@ -6,7 +6,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 
 export default function TelecomBIDashboard() {
-  const { data: metrics = [], isLoading } = useQuery({
+  const { data: metrics = [], isLoading } = useQuery<any>({
     queryKey: ["/api/telecom-bi"],
     queryFn: () => fetch("/api/telecom-bi").then(r => r.json()).catch(() => []),
   });

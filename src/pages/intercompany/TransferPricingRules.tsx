@@ -10,7 +10,7 @@ export default function TransferPricingRules() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    const { data: rules = [], isLoading } = useQuery({
+    const { data: rules = [], isLoading } = useQuery<any>({
         queryKey: ["ic-tp-rules"],
         queryFn: async () => {
             const res = await fetch("/api/intercompany/rules/tp");

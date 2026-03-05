@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Zap } from "lucide-react";
 
 export default function OmniChannelFulfillment() {
-  const { data: orders = [], isLoading } = useQuery({
+  const { data: orders = [], isLoading } = useQuery<any>({
     queryKey: ["/api/omni-fulfillment"],
     queryFn: () => fetch("/api/omni-fulfillment").then(r => r.json()).catch(() => []),
   });

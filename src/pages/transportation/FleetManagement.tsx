@@ -13,9 +13,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function FleetManagement() {
     const [filterStatus, setFilterStatus] = useState("ALL");
 
-    const { data: fleet } = useQuery({
+    const { data: fleet } = useQuery<any>({
         queryKey: ["/api/transportation/fleet", filterStatus],
-        queryFn: () => apiRequest(`/api/transportation/fleet?status=${filterStatus}`),
+        queryFn: () => apiRequest("GET", `/api/transportation/fleet?status=${filterStatus}`).then(res => res.json()),
     });
 
     const getStatusBadge = (status: string) => {

@@ -16,17 +16,16 @@ export default function TaxRuleEngine() {
         { field: "amount", operator: ">", value: "1000" },
     ]);
 
-    const { data: rules } = useQuery({
+    const { data: rules } = useQuery<any>({
         queryKey: ["/api/tax/rules"],
-        queryFn: () => apiRequest("/api/tax/rules"),
+        queryFn: () => apiRequest("GET", "/api/tax/rules").then(res => res.json()),
     });
 
     const testMutation = useMutation({
-        mutationFn: (ruleId: number) =>
-            apiRequest(`/api/tax/rules/${ruleId}/test`, {
-                method: "POST",
-                body: JSON.stringify({ testData: { amount: 1500, jurisdiction: "CA" } }),
-            }),
+        mutationFn: async (ruleId: number) => {
+            const res = await apiRequest("POST", `/api/tax/rules/${ruleId}/test`, { testData: { amount: 1500, jurisdiction: "CA" } });
+            return res.json();
+        },
         onSuccess: (data) => {
             toast({
                 title: "Test Result",

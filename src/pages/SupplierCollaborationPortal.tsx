@@ -22,7 +22,7 @@ export default function SupplierCollaborationPortal() {
     ? { "x-business-unit-id": activeBuId }
     : {};
 
-  const { data: interactions = [], isLoading } = useQuery({
+  const { data: interactions = [], isLoading } = useQuery<any>({
     queryKey: ["/api/supplier-collab", activeBuId],
     queryFn: () => fetch("/api/supplier-collab", { headers: scopeHeaders }).then(r => r.json()).catch(() => []),
   });

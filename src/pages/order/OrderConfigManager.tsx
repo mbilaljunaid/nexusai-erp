@@ -28,8 +28,8 @@ const fetchHolds = async () => {
 export function OrderConfigManager() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
-    const { data: orderTypes, isLoading: loadingTypes } = useQuery({ queryKey: ["om-types"], queryFn: fetchOrderTypes });
-    const { data: holds, isLoading: loadingHolds } = useQuery({ queryKey: ["om-holds"], queryFn: fetchHolds });
+    const { data: orderTypes, isLoading: loadingTypes } = useQuery<any>({ queryKey: ["om-types"], queryFn: fetchOrderTypes });
+    const { data: holds, isLoading: loadingHolds } = useQuery<any>({ queryKey: ["om-holds"], queryFn: fetchHolds });
 
     const typesMutation = useMutation({
         mutationFn: async (data: any[]) => { return {}; },

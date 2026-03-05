@@ -21,7 +21,7 @@ export default function PMManager() {
         triggerType: "TIME"
     });
 
-    const { data: pms = [], isLoading } = useQuery({
+    const { data: pms = [], isLoading } = useQuery<any>({
         queryKey: ["/api/maintenance/pm-definitions"],
         queryFn: () => fetch("/api/maintenance/pm-definitions").then(r => r.json())
     });

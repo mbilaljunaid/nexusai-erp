@@ -6,12 +6,12 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 
 export default function StoreOperationsDashboard() {
-  const { data: stores = [], isLoading } = useQuery({
+  const { data: stores = [], isLoading } = useQuery<any>({
     queryKey: ["/api/stores"],
     queryFn: () => fetch("/api/stores").then(r => r.json()).catch(() => []),
   });
 
-  const { data: staffing = [], isLoading: staffingLoading } = useQuery({
+  const { data: staffing = [], isLoading: staffingLoading } = useQuery<any>({
     queryKey: ["/api/store-staffing"],
     queryFn: () => fetch("/api/store-staffing").then(r => r.json()).catch(() => []),
   });

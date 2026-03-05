@@ -14,7 +14,7 @@ export default function ShopFloorDataCollection() {
   const { toast } = useToast();
   const [newEvent, setNewEvent] = useState({ woId: "", operation: "", eventType: "start", qty: "100", status: "recorded" });
 
-  const { data: events = [], isLoading } = useQuery({
+  const { data: events = [], isLoading } = useQuery<any>({
     queryKey: ["/api/shop-floor-events"],
     queryFn: () => fetch("/api/shop-floor-events").then(r => r.json()).catch(() => []),
   });

@@ -16,7 +16,7 @@ export default function InstructorDashboard() {
     // Fetch My Teaching Offerings (Mock: Assume endpoint exists or filter courses)
     // For MVP Phase 8, we might reuse `getOfferings` but filter client-side or add "my-teaching" endpoint
     // To safe time, let's mock it for now as "My Offerings" aren't explicitly in DB schema yet (instructorId is metadata)
-    const { data: teachingData, isLoading } = useQuery({
+    const { data: teachingData, isLoading } = useQuery<any>({
         queryKey: ["/api/hr/learning/instructor/offerings"],
         queryFn: async () => {
             const res = await fetch('/api/hr-self-service/learning/instructor/offerings');

@@ -62,7 +62,7 @@ export default function APInvoices() {
     }
   });
 
-  const { data: holds } = useQuery({
+  const { data: holds } = useQuery<any>({
     queryKey: ["/api/ap/invoices", selectedInvoice?.id, "holds"],
     queryFn: () => fetch(`/api/ap/invoices/${selectedInvoice?.id}/holds`).then(r => r.json()),
     enabled: !!selectedInvoice?.id && holdsDialogOpen

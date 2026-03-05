@@ -45,7 +45,7 @@ export default function CrmQuotaManagement() {
 
     // 1. Fetch Sales Reps (Users with CRM access or specific roles)
     // For V1, we'll fetch all users or a subset.
-    const { data: users = [] } = useQuery({
+    const { data: users = [] } = useQuery<any>({
         queryKey: ["/api/crm/quotas/users"],
         queryFn: async () => {
             // Mocking user fetch since specific CRM reps list might not exist as a single route
@@ -61,7 +61,7 @@ export default function CrmQuotaManagement() {
     });
 
     // 2. Fetch Quotas for Period
-    const { data: quotas = [], isLoading } = useQuery({
+    const { data: quotas = [], isLoading } = useQuery<any>({
         queryKey: ["/api/crm/quotas", selectedPeriod],
         queryFn: async () => {
             const res = await fetch(`/api/crm/quotas?periodName=${selectedPeriod}`);
@@ -73,7 +73,7 @@ export default function CrmQuotaManagement() {
     // 3. Fetch Performance for each rep
     // To WOW the user, we will map over users and get their individual performance
     // In a high-perf app, this would be a single bulk endpoint
-    const { data: performanceMap = {} } = useQuery({
+    const { data: performanceMap = {} } = useQuery<any>({
         queryKey: ["/api/crm/quotas/performance/bulk", selectedPeriod, users],
         queryFn: async () => {
             const results: Record<string, any> = {};

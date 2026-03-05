@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Map, Truck, CheckCircle, Clock } from "lucide-react";
 
 export default function TrackingDashboard() {
-  const { data: shipments = [], isLoading } = useQuery({
+  const { data: shipments = [], isLoading } = useQuery<any>({
     queryKey: ["/api/shipment-planning"],
     queryFn: () => fetch("/api/shipment-planning").then(r => r.json()).catch(() => []),
   });

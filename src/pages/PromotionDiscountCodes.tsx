@@ -14,7 +14,7 @@ export default function PromotionDiscountCodes() {
   const { toast } = useToast();
   const [newPromo, setNewPromo] = useState({ code: "", discountPercent: "10", usageLimit: "100", status: "active" });
 
-  const { data: promos = [], isLoading } = useQuery({
+  const { data: promos = [], isLoading } = useQuery<any>({
     queryKey: ["/api/promotions"],
     queryFn: () => fetch("/api/promotions").then(r => r.json()),
   });

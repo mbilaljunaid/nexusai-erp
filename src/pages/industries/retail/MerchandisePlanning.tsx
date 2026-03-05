@@ -15,7 +15,7 @@ export default function MerchandisePlanning() {
   const { toast } = useToast();
   const [newPlan, setNewPlan] = useState({ sku: "", season: "spring", targetQty: "100", status: "draft" });
 
-  const { data: plans = [], isLoading } = useQuery({
+  const { data: plans = [], isLoading } = useQuery<any>({
     queryKey: ["/api/merch-plans"],
     queryFn: () => fetch("/api/merch-plans").then(r => r.json()).catch(() => []),
   });

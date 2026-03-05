@@ -14,17 +14,14 @@ export default function CycleCountManager() {
     const queryClient = useQueryClient();
     const [abcClass, setAbcClass] = useState("ALL");
 
-    const { data: counts } = useQuery({
+    const { data: counts } = useQuery<any>({
         queryKey: ["/api/wms/cycle-counts", abcClass],
-        queryFn: () => apiRequest(`/api/wms/cycle-counts?abcClass=${abcClass}`),
+        queryFn: () => apiRequest("GET", `/api/wms/cycle-counts?abcClass=${abcClass}`).then(res => res.json()),
     });
 
     const createCountMutation = useMutation({
         mutationFn: (data: any) =>
-            apiRequest("/api/wms/cycle-counts", {
-                method: "POST",
-                body: JSON.stringify(data),
-            }),
+            apiRequest("POST", "/api/wms/cycle-counts", data),
         onSuccess: () => {
             toast({ title: "Success", description: "Cycle count created" });
             queryClient.invalidateQueries({ queryKey: ["/api/wms/cycle-counts"] });

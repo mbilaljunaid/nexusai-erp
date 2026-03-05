@@ -53,7 +53,7 @@ export default function UsageMeteringDashboard() {
     const [createMeterOpen, setCreateMeterOpen] = useState(false);
 
     // Fetch meters
-    const { data: meters = [], isLoading: metersLoading } = useQuery({
+    const { data: meters = [], isLoading: metersLoading } = useQuery<any>({
         queryKey: ["usage-meters", businessUnitId],
         queryFn: async () => {
             const res = await fetch("/api/billing/usage/meters", {
@@ -65,7 +65,7 @@ export default function UsageMeteringDashboard() {
     });
 
     // Fetch usage metrics
-    const { data: metrics } = useQuery({
+    const { data: metrics } = useQuery<any>({
         queryKey: ["usage-metrics", selectedCustomer, businessUnitId],
         queryFn: async () => {
             const params = new URLSearchParams();
@@ -80,7 +80,7 @@ export default function UsageMeteringDashboard() {
     });
 
     // Fetch customers
-    const { data: customers = [] } = useQuery({
+    const { data: customers = [] } = useQuery<any>({
         queryKey: ["customers", businessUnitId],
         queryFn: async () => {
             const res = await fetch("/api/ar/customers", {
@@ -91,7 +91,7 @@ export default function UsageMeteringDashboard() {
     });
 
     // Usage summary query (for selected customer)
-    const { data: usageSummary = [] } = useQuery({
+    const { data: usageSummary = [] } = useQuery<any>({
         queryKey: ["usage-summary", selectedCustomer, businessUnitId],
         queryFn: async () => {
             if (!selectedCustomer) return [];

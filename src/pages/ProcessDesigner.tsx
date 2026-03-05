@@ -13,7 +13,7 @@ export default function ProcessDesigner() {
   const { toast } = useToast();
   const [newProcess, setNewProcess] = useState({ name: "", module: "Finance", status: "draft", owner: "" });
 
-  const { data: processes = [], isLoading } = useQuery({
+  const { data: processes = [], isLoading } = useQuery<any>({
     queryKey: ["/api/processes"],
     queryFn: () => fetch("/api/processes").then(r => r.json()).catch(() => []),
   });

@@ -15,7 +15,7 @@ export default function TelecomCustomerSupport() {
   const { toast } = useToast();
   const [newTicket, setNewTicket] = useState({ ticketId: "", subscriberId: "", category: "billing", priority: "normal", status: "open" });
 
-  const { data: tickets = [], isLoading } = useQuery({
+  const { data: tickets = [], isLoading } = useQuery<any>({
     queryKey: ["/api/telecom-tickets"],
     queryFn: () => fetch("/api/telecom-tickets").then(r => r.json()).catch(() => []),
   });

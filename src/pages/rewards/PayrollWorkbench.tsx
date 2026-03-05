@@ -82,17 +82,17 @@ export default function PayrollWorkbench() {
     });
 
     // === QUERIES ===
-    const { data: runs, isLoading: isRunsLoading } = useQuery({
+    const { data: runs, isLoading: isRunsLoading } = useQuery<any>({
         queryKey: ["payroll-runs"],
         queryFn: async () => (await fetch("/api/rewards/payroll-runs")).json()
     });
 
-    const { data: groups } = useQuery({
+    const { data: groups } = useQuery<any>({
         queryKey: ["pay-groups"],
         queryFn: async () => (await fetch("/api/rewards/pay-groups")).json()
     });
 
-    const { data: elements } = useQuery({
+    const { data: elements } = useQuery<any>({
         queryKey: ["pay-elements"],
         queryFn: async () => (await fetch("/api/rewards/elements")).json()
     });

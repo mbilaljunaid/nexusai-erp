@@ -33,15 +33,15 @@ type BudgetForm = z.infer<typeof budgetSchema>;
 export default function Planning() {
   const [activeTab, setActiveTab] = useState<"revenue" | "budget" | "scenarios">("revenue");
 
-  const { data: forecasts = [] } = useQuery({
+  const { data: forecasts = [] } = useQuery<any>({
     queryKey: ["/api/planning/revenue-forecasts"],
   }) as { data: any[] };
 
-  const { data: budgets = [] } = useQuery({
+  const { data: budgets = [] } = useQuery<any>({
     queryKey: ["/api/planning/budgets"],
   }) as { data: any[] };
 
-  const { data: scenarios = [] } = useQuery({
+  const { data: scenarios = [] } = useQuery<any>({
     queryKey: ["/api/planning/scenarios"],
   }) as { data: any[] };
 

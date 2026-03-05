@@ -13,7 +13,7 @@ export default function PartsInventory() {
   const { toast } = useToast();
   const [newPart, setNewPart] = useState({ partId: "", partName: "", quantity: "0", reorder: "50" });
 
-  const { data: parts = [], isLoading } = useQuery({
+  const { data: parts = [], isLoading } = useQuery<any>({
     queryKey: ["/api/auto-parts"],
     queryFn: () => fetch("/api/auto-parts").then(r => r.json()).catch(() => []),
   });

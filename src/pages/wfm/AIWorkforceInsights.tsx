@@ -19,7 +19,7 @@ export default function AIWorkforceInsights() {
     const tenantId = "default_tenant";
 
     // Query Forecast
-    const { data: forecast, isLoading: isForecastLoading } = useQuery({
+    const { data: forecast, isLoading: isForecastLoading } = useQuery<any>({
         queryKey: ["ai-forecast", departmentId, date],
         queryFn: async () => {
             const formattedDate = format(date, "yyyy-MM-dd");
@@ -32,7 +32,7 @@ export default function AIWorkforceInsights() {
     // Query Fatigue Risks (Mock scanning all employees for demo)
     // In real app, this would iterate a list or be a bulk endpoint
     const personId = "user_001"; // Demo user
-    const { data: riskScan, isLoading: isRiskLoading } = useQuery({
+    const { data: riskScan, isLoading: isRiskLoading } = useQuery<any>({
         queryKey: ["ai-risk", personId],
         queryFn: async () => {
             const res = await fetch(`/api/wfm/ai/risk-scan?tenantId=${tenantId}&personId=${personId}`);

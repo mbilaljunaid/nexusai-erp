@@ -16,7 +16,7 @@ interface Certificate {
 }
 
 export default function CertificateManager() {
-    const { data: certificates = [] } = useQuery({
+    const { data: certificates = [] } = useQuery<any>({
         queryKey: ["/api/learning/my-certificates"],
     });
 

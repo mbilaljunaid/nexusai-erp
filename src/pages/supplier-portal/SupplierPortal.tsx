@@ -15,14 +15,14 @@ export default function SupplierPortal() {
     const queryClient = useQueryClient();
     const [selectedPO, setSelectedPO] = useState<any>(null);
 
-    const { data: orders } = useQuery({
+    const { data: orders } = useQuery<any>({
         queryKey: ["/api/supplier-portal/purchase-orders"],
-        queryFn: () => apiRequest("/api/supplier-portal/purchase-orders"),
+        queryFn: () => apiRequest("GET", "/api/supplier-portal/purchase-orders").then(res => res.json()),
     });
 
     const confirmMutation = useMutation({
         mutationFn: (poId: number) =>
-            apiRequest(`/api/supplier-portal/purchase-orders/${poId}/confirm`, { method: "POST" }),
+            apiRequest("POST", `/api/supplier-portal/purchase-orders/${poId}/confirm`),
         onSuccess: () => {
             toast({ title: "Success", description: "Purchase order confirmed" });
             queryClient.invalidateQueries({ queryKey: ["/api/supplier-portal/purchase-orders"] });

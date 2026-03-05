@@ -19,7 +19,7 @@ export default function ReferenceDataList() {
     const queryClient = useQueryClient();
 
     // Fetch Lookup Types
-    const { data: lookupTypes = [], isLoading } = useQuery({
+    const { data: lookupTypes = [], isLoading } = useQuery<any>({
         queryKey: ["/api/mdm/lookups"],
     });
 

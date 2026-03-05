@@ -25,7 +25,7 @@ export default function SupplierASNs() {
     const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({ from: undefined, to: undefined });
     const [selectedAsns, setSelectedAsns] = useState<Set<string>>(new Set());
 
-    const { data: asns, isLoading } = useQuery({
+    const { data: asns, isLoading } = useQuery<any>({
         queryKey: ["/api/portal/supplier/asns"],
         queryFn: async () => {
             const res = await fetch("/api/portal/supplier/asns", {

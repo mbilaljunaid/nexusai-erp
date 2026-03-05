@@ -15,7 +15,7 @@ export default function SLAServiceTierManagement() {
   const { toast } = useToast();
   const [newSLA, setNewSLA] = useState({ slaId: "", tier: "gold", uptime: "99.9", responseTime: "1" });
 
-  const { data: slas = [], isLoading } = useQuery({
+  const { data: slas = [], isLoading } = useQuery<any>({
     queryKey: ["/api/sla-tiers"],
     queryFn: () => fetch("/api/sla-tiers").then(r => r.json()),
   });

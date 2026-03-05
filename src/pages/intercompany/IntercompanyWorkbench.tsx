@@ -30,7 +30,7 @@ export default function IntercompanyWorkbench() {
 
     // --- Outbound: My Batches ---
     const [page, setPage] = useState(1);
-    const { data: batchData, isLoading: isLoadingBatches } = useQuery({
+    const { data: batchData, isLoading: isLoadingBatches } = useQuery<any>({
         queryKey: ["ic-batches-outbound", currentOrgId, page],
         queryFn: async () => {
             const res = await fetch(`/api/intercompany/batches?initiatorOrgId=${currentOrgId}&role=INITIATOR&page=${page}&limit=10`, { headers: scopeHeaders });
@@ -71,7 +71,7 @@ export default function IntercompanyWorkbench() {
     });
 
     // --- Inbound: Action Required ---
-    const { data: inboundTransactions, isLoading: inboundLoading } = useQuery({
+    const { data: inboundTransactions, isLoading: inboundLoading } = useQuery<any>({
         queryKey: ["ic-inbound", currentOrgId],
         queryFn: async () => {
             const res = await fetch(`/api/intercompany/transactions/inbound?receiverOrgId=${currentOrgId}`, { headers: scopeHeaders });

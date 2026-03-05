@@ -14,7 +14,7 @@ export default function ApprovalEscalations() {
   const { toast } = useToast();
   const [newEscalation, setNewEscalation] = useState({ rule: "", trigger: "overdue", action: "notify_manager", days: "2" });
 
-  const { data: escalations = [], isLoading } = useQuery({
+  const { data: escalations = [], isLoading } = useQuery<any>({
     queryKey: ["/api/escalation-rules"],
     queryFn: () => fetch("/api/escalation-rules").then(r => r.json()),
   });

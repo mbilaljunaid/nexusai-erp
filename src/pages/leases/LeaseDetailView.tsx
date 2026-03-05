@@ -29,7 +29,7 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
     });
     const [showRouAssetModal, setShowRouAssetModal] = useState(false);
 
-    const { data: lease, isLoading } = useQuery({
+    const { data: lease, isLoading } = useQuery<any>({
         queryKey: ["lease", leaseId],
         queryFn: async () => {
             const res = await fetch(`/api/lease/leases/${leaseId}`);

@@ -13,7 +13,7 @@ export default function SupplierCarrierManagement() {
   const { toast } = useToast();
   const [newSupplier, setNewSupplier] = useState({ supplierId: "", name: "", type: "carrier", rating: "4.5" });
 
-  const { data: suppliers = [], isLoading } = useQuery({
+  const { data: suppliers = [], isLoading } = useQuery<any>({
     queryKey: ["/api/suppliers-carriers"],
     queryFn: () => fetch("/api/suppliers-carriers").then(r => r.json()),
   });

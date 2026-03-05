@@ -26,7 +26,7 @@ export function CandidateProfileDrawer({ open, onClose, candidate, applicationId
     const { toast } = useToast();
 
     // Fetch Interviews
-    const { data: interviews = [], isLoading } = useQuery({
+    const { data: interviews = [], isLoading } = useQuery<any>({
         queryKey: [`/api/recruitment/applications/${applicationId}/interviews`],
         queryFn: () => fetch(`/api/recruitment/applications/${applicationId}/interviews`).then(r => r.json()).catch(() => []),
         enabled: !!applicationId

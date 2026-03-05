@@ -14,7 +14,7 @@ export default function MaintenanceScheduling() {
   const { toast } = useToast();
   const [newMaint, setNewMaint] = useState({ vehicleId: "", maintenanceType: "oil-change", scheduledDate: "", status: "scheduled" });
 
-  const { data: maintenance = [], isLoading } = useQuery({
+  const { data: maintenance = [], isLoading } = useQuery<any>({
     queryKey: ["/api/maintenance-schedule"],
     queryFn: () => fetch("/api/maintenance-schedule").then(r => r.json()).catch(() => []),
   });

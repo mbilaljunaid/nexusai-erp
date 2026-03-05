@@ -6,9 +6,9 @@ import { Users, TrendingUp, Download } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { StandardPage } from "@/components/layout/StandardPage";
 export default function WorkforcePlanning() {
-    const { data: plan } = useQuery({
+    const { data: plan } = useQuery<any>({
         queryKey: ["/api/hr/workforce-plan"],
-        queryFn: () => apiRequest("/api/hr/workforce-plan"),
+        queryFn: () => apiRequest("GET", "/api/hr/workforce-plan").then(res => res.json()),
     });
 
     return (

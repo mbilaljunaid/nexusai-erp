@@ -41,7 +41,7 @@ export default function BillingAnomalyDashboard() {
     const { open, sendMessage } = useNexusAI();
 
     // Fetch Anomalies
-    const { data: anomalies = [], isLoading } = useQuery({
+    const { data: anomalies = [], isLoading } = useQuery<any>({
         queryKey: ["billing-anomalies", businessUnitId],
         queryFn: async () => {
             const res = await fetch("/api/billing/anomalies", {

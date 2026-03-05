@@ -6,7 +6,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 
 export default function HealthcareBIDashboard() {
-  const { data: metrics = [], isLoading } = useQuery({
+  const { data: metrics = [], isLoading } = useQuery<any>({
     queryKey: ["/api/healthcare-bi"],
     queryFn: () => fetch("/api/healthcare-bi").then(r => r.json()).catch(() => []),
   });

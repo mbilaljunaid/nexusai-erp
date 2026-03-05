@@ -245,7 +245,7 @@ export default function BurdenRuleBuilder() {
                                     </TabsContent>
 
                                     <TabsContent value="simulate" className="space-y-4 pt-4 border-t">
-                                        <AlertTitle className="font-bold">Test Rule Engine</AlertTitle>
+                                        <h4 className="font-bold">Test Rule Engine</h4>
                                         <p className="text-sm text-muted-foreground mb-4">
                                             Run this rule against historical expenditure item data to dry-run the burden calculations before activating.
                                         </p>

@@ -13,7 +13,7 @@ export default function LeadScoringAnalytics() {
   const { toast } = useToast();
   const [newInsight, setNewInsight] = useState({ metric: "", value: "" });
 
-  const { data: insights = [], isLoading } = useQuery({
+  const { data: insights = [], isLoading } = useQuery<any>({
     queryKey: ["/api/lead-scoring-insights"],
     queryFn: () => fetch("/api/lead-scoring-insights").then(r => r.json()),
   });

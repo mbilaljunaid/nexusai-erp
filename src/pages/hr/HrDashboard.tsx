@@ -13,7 +13,7 @@ export default function HrDashboard() {
     const [leId, setLeId] = useState<string | undefined>();
     const scopeHeaders = buildScopeHeaders({ 'legal-entity': leId });
 
-    const { data: analytics, isLoading } = useQuery({
+    const { data: analytics, isLoading } = useQuery<any>({
         queryKey: ['hr-analytics', leId],
         queryFn: () => fetch('/api/hr/analytics', { headers: scopeHeaders, credentials: 'include' }).then(r => r.json()),
     });

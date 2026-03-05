@@ -123,7 +123,7 @@ export default function ExpenseTracking() {
           APPROVED: 'secondary',
           REJECTED: 'destructive',
         };
-        return <Badge variant={colors[r.status as keyof typeof colors] || 'outline'}>{r.status}</Badge>;
+        return <Badge variant={(colors[r.status as keyof typeof colors] || 'outline') as any}>{r.status}</Badge>;
       }
     },
     {

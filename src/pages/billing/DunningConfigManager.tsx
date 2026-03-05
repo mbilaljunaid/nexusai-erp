@@ -48,7 +48,7 @@ export default function DunningConfigManager() {
     });
 
     // Fetch dunning templates from AR module
-    const { data: templates = [] } = useQuery({
+    const { data: templates = [] } = useQuery<any>({
         queryKey: ["dunning-templates"],
         queryFn: async () => {
             const res = await fetch("/api/ar/dunning/templates");

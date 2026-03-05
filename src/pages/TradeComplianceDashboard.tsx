@@ -14,7 +14,7 @@ export default function TradeComplianceDashboard() {
   const { toast } = useToast();
   const [newTrade, setNewTrade] = useState({ hsCode: "8471.30", country: "China", dutyPct: "5", status: "cleared" });
 
-  const { data: trades = [], isLoading } = useQuery({
+  const { data: trades = [], isLoading } = useQuery<any>({
     queryKey: ["/api/trade-compliance"],
     queryFn: () => fetch("/api/trade-compliance").then(r => r.json()).catch(() => []),
   });

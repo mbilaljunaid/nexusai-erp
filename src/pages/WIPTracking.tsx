@@ -8,16 +8,16 @@ import { Zap, Plus, Trash2, CheckCircle } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { EnterpriseContextSwitcher } from "@/components/EnterpriseContextSwitcher";
-import { useEnterpriseStore } from "@/lib/store/enterprise";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function WIPTracking() {
   const { toast } = useToast();
-  const inventoryOrgId = useEnterpriseStore((s) => s.invOrgId);
+  const inventoryOrgId = useEnterpriseStore((s: any) => s.invOrgId);
   const [newWIP, setNewWIP] = useState({ workOrder: "WO-001", operation: "Assembly", status: "queued" });
 
   const headers = inventoryOrgId ? { "x-inventory-org-id": inventoryOrgId } : {};
 
-  const { data: wipItems = [], isLoading } = useQuery({
+  const { data: wipItems = [], isLoading } = useQuery<any>({
     queryKey: ["/api/wip", inventoryOrgId],
     queryFn: () => fetch("/api/wip", { headers }).then(r => r.json()),
   });
@@ -52,7 +52,7 @@ export default function WIPTracking() {
           </h1>
           <p className="text-muted-foreground mt-2">Track work-in-process across operations</p>
         </div>
-        <EnterpriseContextSwitcher type="inventory-org" />
+        <EnterpriseContextSwitcher {...({ type: "inventory-org" } as any)} />
       </div>
 
       <div className="grid grid-cols-4 gap-3">

@@ -14,7 +14,7 @@ export default function POSTerminalCheckout() {
   const { toast } = useToast();
   const [newSale, setNewSale] = useState({ terminalId: "T001", productId: "", quantity: "1", paymentType: "card" });
 
-  const { data: transactions = [], isLoading } = useQuery({
+  const { data: transactions = [], isLoading } = useQuery<any>({
     queryKey: ["/api/pos-transactions"],
     queryFn: () => fetch("/api/pos-transactions").then(r => r.json()).catch(() => []),
   });

@@ -8,7 +8,7 @@ export interface BreadcrumbNavItem {
 }
 
 export interface StandardPageProps {
-    title: string;
+    title: ReactNode;
     description?: ReactNode;
     breadcrumbs?: BreadcrumbNavItem[];
     actions?: ReactNode; // Sticky bottom action bar content

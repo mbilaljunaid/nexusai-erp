@@ -38,7 +38,7 @@ export default function SupplierOrders() {
     const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set());
 
     // Fetch Orders
-    const { data: orders, isLoading } = useQuery({
+    const { data: orders, isLoading } = useQuery<any>({
         queryKey: ["/api/portal/supplier/orders"],
         queryFn: async () => {
             const res = await fetch("/api/portal/supplier/orders", {

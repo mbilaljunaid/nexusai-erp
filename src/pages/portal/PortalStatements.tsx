@@ -9,7 +9,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 
 export default function PortalStatements() {
-    const { data: statements, isLoading } = useQuery({
+    const { data: statements, isLoading } = useQuery<any>({
         queryKey: ["/api/portal/statements"],
         queryFn: async () => {
             const res = await apiRequest("GET", "/api/portal/statements");

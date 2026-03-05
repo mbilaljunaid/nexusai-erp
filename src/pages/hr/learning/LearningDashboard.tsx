@@ -44,7 +44,7 @@ export default function LearningManagement() {
   const { legalEntityId } = useEnterpriseStore();
 
   // Fetch Catalog
-  const { data: courses, isLoading: isCatalogLoading } = useQuery({
+  const { data: courses, isLoading: isCatalogLoading } = useQuery<any>({
     queryKey: ["learning-courses", searchQuery, categoryFilter, providerFilter, legalEntityId],
     queryFn: async () => {
       const res = await fetch(`/api/learning/courses?q=${searchQuery}&category=${categoryFilter}&provider=${providerFilter}`, {
@@ -56,7 +56,7 @@ export default function LearningManagement() {
   });
 
   // Fetch Recommendations
-  const { data: recommendations } = useQuery({
+  const { data: recommendations } = useQuery<any>({
     queryKey: ["learning-recommendations", legalEntityId],
     queryFn: async () => {
       // Fallback for MVP if user context is missing in strict fetch
@@ -69,7 +69,7 @@ export default function LearningManagement() {
   });
 
   // Fetch My Learning (Mocking PersonID for MVP dev)
-  const { data: enrollments, isLoading: isMyLearningLoading } = useQuery({
+  const { data: enrollments, isLoading: isMyLearningLoading } = useQuery<any>({
     queryKey: ["my-learning"],
     queryFn: async () => {
       // Assuming context middleware provides user, but for now we might need a fallback if not logged in

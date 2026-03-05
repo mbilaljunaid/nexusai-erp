@@ -15,7 +15,7 @@ export default function FoodBeveragePOS() {
   const { toast } = useToast();
   const [newOrder, setNewOrder] = useState({ orderId: "", tableId: "", items: "1", total: "0", status: "pending" });
 
-  const { data: orders = [], isLoading } = useQuery({
+  const { data: orders = [], isLoading } = useQuery<any>({
     queryKey: ["/api/hospitality-orders"],
     queryFn: () => fetch("/api/hospitality-orders").then(r => r.json()),
   });

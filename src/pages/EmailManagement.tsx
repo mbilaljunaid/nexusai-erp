@@ -21,7 +21,7 @@ export default function EmailManagement() {
     { id: "subscribers", label: "Subscribers", icon: Users, color: "text-green-500" },
   ];
 
-  const { data: campaigns = [], isLoading } = useQuery({
+  const { data: campaigns = [], isLoading } = useQuery<any>({
     queryKey: ["/api/email-campaigns"],
     queryFn: () => fetch("/api/email-campaigns").then(r => r.json()).catch(() => []),
   });

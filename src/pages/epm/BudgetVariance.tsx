@@ -13,9 +13,9 @@ export default function BudgetVariance() {
     const [period, setPeriod] = useState("2026-02");
     const [dimension, setDimension] = useState("DEPARTMENT");
 
-    const { data: variance } = useQuery({
+    const { data: variance } = useQuery<any>({
         queryKey: ["/api/epm/budget-variance", period, dimension],
-        queryFn: () => apiRequest(`/api/epm/budget-variance?period=${period}&dimension=${dimension}`),
+        queryFn: () => apiRequest("GET", `/api/epm/budget-variance?period=${period}&dimension=${dimension}`).then(res => res.json()),
     });
 
     const getVarianceBadge = (variance: number) => {

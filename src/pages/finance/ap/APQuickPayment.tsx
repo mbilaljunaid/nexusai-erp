@@ -30,17 +30,17 @@ export default function APQuickPayment() {
     const [selectedInvoices, setSelectedInvoices] = useState<Set<string>>(new Set());
 
     // Lookups
-    const { data: bankAccounts = [] } = useQuery({
+    const { data: bankAccounts = [] } = useQuery<any>({
         queryKey: ["/api/cash/accounts"],
     });
 
-    const { data: suppliers = [] } = useQuery({
+    const { data: suppliers = [] } = useQuery<any>({
         queryKey: ["/api/ap/suppliers"],
         queryFn: () => fetch("/api/ap/suppliers").then(r => r.json())
     });
 
     // Fetch invoices for the selected supplier
-    const { data: supplierInvoices, isLoading: loadingInvoices } = useQuery({
+    const { data: supplierInvoices, isLoading: loadingInvoices } = useQuery<any>({
         queryKey: ["/api/ap/invoices", { supplierId: formData.supplierId }],
         queryFn: () => fetch(`/api/ap/invoices?supplierId=${formData.supplierId}&status=Approved&validationStatus=Validated`).then(r => r.json()),
         enabled: !!formData.supplierId

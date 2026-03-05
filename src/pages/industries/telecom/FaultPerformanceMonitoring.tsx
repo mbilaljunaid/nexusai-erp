@@ -15,7 +15,7 @@ export default function FaultPerformanceMonitoring() {
   const { toast } = useToast();
   const [newFault, setNewFault] = useState({ eventId: "", nodeId: "", severity: "medium", status: "open" });
 
-  const { data: faults = [], isLoading } = useQuery({
+  const { data: faults = [], isLoading } = useQuery<any>({
     queryKey: ["/api/network-faults"],
     queryFn: () => fetch("/api/network-faults").then(r => r.json()).catch(() => []),
   });

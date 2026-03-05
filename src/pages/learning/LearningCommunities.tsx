@@ -22,11 +22,11 @@ export default function LearningCommunities() {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCommunityId, setSelectedCommunityId] = useState<string | null>(null);
 
-    const { data: communities = [] } = useQuery({
+    const { data: communities = [] } = useQuery<any>({
         queryKey: ["/api/learning/communities"],
     });
 
-    const { data: communityCourses = [] } = useQuery({
+    const { data: communityCourses = [] } = useQuery<any>({
         queryKey: ["/api/learning/communities", selectedCommunityId, "courses"],
         enabled: !!selectedCommunityId,
     });

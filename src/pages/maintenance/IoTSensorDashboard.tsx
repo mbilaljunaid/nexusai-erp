@@ -13,14 +13,14 @@ export default function IoTSensorDashboard() {
     const [assetId, setAssetId] = useState("");
     const [timeRange, setTimeRange] = useState("24H");
 
-    const { data: assets } = useQuery({
+    const { data: assets } = useQuery<any>({
         queryKey: ["/api/maintenance/assets"],
-        queryFn: () => apiRequest("/api/maintenance/assets"),
+        queryFn: () => apiRequest("GET", "/api/maintenance/assets").then(res => res.json()),
     });
 
-    const { data: sensorData } = useQuery({
+    const { data: sensorData } = useQuery<any>({
         queryKey: ["/api/maintenance/iot-data", assetId, timeRange],
-        queryFn: () => apiRequest(`/api/maintenance/iot-data?assetId=${assetId}&timeRange=${timeRange}`),
+        queryFn: () => apiRequest("GET", `/api/maintenance/iot-data?assetId=${assetId}&timeRange=${timeRange}`).then(res => res.json()),
         enabled: !!assetId,
         refetchInterval: 30000, // Refresh every 30 seconds
     });

@@ -21,7 +21,7 @@ export default function AppointmentScheduling() {
   const formMetadata = getFormMetadata("appointmentScheduling");
   const [newAppt, setNewAppt] = useState({ appointmentId: "", patientId: "", providerId: "", date: "", visitType: "OPD", status: "scheduled" });
 
-  const { data: appointments = [], isLoading } = useQuery({
+  const { data: appointments = [], isLoading } = useQuery<any>({
     queryKey: ["/api/healthcare-appointments"],
     queryFn: () => fetch("/api/healthcare-appointments").then(r => r.json()),
   });

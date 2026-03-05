@@ -19,7 +19,7 @@ export default function CareersPage() {
   const [formData, setFormData] = useState({ firstName: "", lastName: "", email: "", phone: "", resumeText: "" });
 
   // Fetch Public Jobs
-  const { data: jobs = [], isLoading } = useQuery({
+  const { data: jobs = [], isLoading } = useQuery<any>({
     queryKey: ["/api/public/jobs"],
     queryFn: () => fetch("/api/public/jobs").then(res => res.json())
   });

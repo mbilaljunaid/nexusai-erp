@@ -30,7 +30,7 @@ import {
 
 
 export default function WmsLaborPerformance() {
-    const { data: performanceData = [] } = useQuery({
+    const { data: performanceData = [] } = useQuery<any>({
         queryKey: ['wms-labor-performance'],
         queryFn: async () => {
             const res = await fetch('/api/scm/wms/labor-performance');

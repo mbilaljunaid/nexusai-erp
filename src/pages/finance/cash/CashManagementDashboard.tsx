@@ -64,7 +64,7 @@ export default function CashManagementDashboard() {
     });
 
     // Fetch recent reconciliation activity
-    const { data: recentActivity = [] } = useQuery({
+    const { data: recentActivity = [] } = useQuery<any>({
         queryKey: ["/api/finance/cash/accounts", leId],
         queryFn: async () => {
             const res = await fetch("/api/finance/cash/accounts", { headers: scopeHeaders });

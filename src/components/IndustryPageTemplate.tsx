@@ -43,7 +43,7 @@ export interface IndustryPageProps {
     features: Array<{
         title: string;
         description: string;
-        icon?: React.ReactNode;
+        icon: React.ReactNode;
     }>;
 
     // Compliance & Regulations

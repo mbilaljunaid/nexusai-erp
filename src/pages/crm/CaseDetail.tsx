@@ -18,7 +18,7 @@ export default function CaseDetail() {
     const queryClient = useQueryClient();
     const [comment, setComment] = useState("");
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading } = useQuery<any>({
         queryKey: [`/api/crm/cases/${id}`],
         queryFn: async () => {
             const res = await fetch(`/api/crm/cases/${id}`);
@@ -199,7 +199,7 @@ export default function CaseDetail() {
 }
 
 function SuggestedArticles({ subject }: { subject: string }) {
-    const { data: articles } = useQuery({
+    const { data: articles } = useQuery<any>({
         queryKey: ["/api/crm/knowledge/suggest", subject],
         queryFn: () => fetch(`/api/crm/knowledge/suggest?query=${encodeURIComponent(subject)}`).then(r => r.json()),
         enabled: !!subject

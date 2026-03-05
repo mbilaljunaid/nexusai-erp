@@ -21,7 +21,7 @@ export default function APSuppliers() {
     const queryClient = useQueryClient();
     const [, setLocation] = useLocation();
 
-    const { data: suppliers, isLoading } = useQuery({
+    const { data: suppliers, isLoading } = useQuery<any>({
         queryKey: ["/api/ap/suppliers"],
         queryFn: () => fetch("/api/ap/suppliers").then(r => r.json())
     });
@@ -107,7 +107,7 @@ export default function APSuppliers() {
         }
     ];
 
-    const { data: whtGroups } = useQuery({
+    const { data: whtGroups } = useQuery<any>({
         queryKey: ["/api/ap/wht-groups"],
         queryFn: () => fetch("/api/ap/wht-groups").then(r => r.json())
     });

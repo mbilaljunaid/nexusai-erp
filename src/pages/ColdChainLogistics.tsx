@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Truck } from "lucide-react";
 
 export default function ColdChainLogistics() {
-  const { data: shipments = [], isLoading } = useQuery({
+  const { data: shipments = [], isLoading } = useQuery<any>({
     queryKey: ["/api/fb-coldchain"],
     queryFn: () => fetch("/api/fb-coldchain").then(r => r.json()).catch(() => []),
   });

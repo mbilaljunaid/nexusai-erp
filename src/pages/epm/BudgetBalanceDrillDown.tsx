@@ -32,7 +32,7 @@ interface Transaction {
 
 export default function BudgetBalanceDrillDown() {
     const [, params] = useRoute("/epm/budget-balances/:periodId");
-    const periodId = params?.periodId ?? "Jan-2026";
+    const periodId = (params as any)?.periodId ?? "Jan-2026";
 
     const [selectedPeriod, setSelectedPeriod] = useState<string>(periodId);
     const [expandedAccounts, setExpandedAccounts] = useState<Set<string>>(new Set());

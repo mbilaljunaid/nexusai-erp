@@ -63,7 +63,7 @@ export default function RevenueAccountingSetup() {
     const [activeTab, setActiveTab] = useState("accounts");
 
     // 1. Accounting Configs (GL Accounts)
-    const { data: configs, isLoading: isLoadingConfig } = useQuery({
+    const { data: configs, isLoading: isLoadingConfig } = useQuery<any>({
         queryKey: ["revenueAccountingConfig"],
         queryFn: async () => {
             const res = await fetch("/api/revenue/config/accounting");
@@ -73,7 +73,7 @@ export default function RevenueAccountingSetup() {
     });
 
     // 2. POB Rules
-    const { data: pobRules = [], isLoading: isLoadingPob } = useQuery({
+    const { data: pobRules = [], isLoading: isLoadingPob } = useQuery<any>({
         queryKey: ["revenuePobRules"],
         queryFn: async () => {
             const res = await fetch("/api/revenue/config/pob-rules");
@@ -83,7 +83,7 @@ export default function RevenueAccountingSetup() {
     });
 
     // 3. Identification Rules
-    const { data: idRules = [], isLoading: isLoadingId } = useQuery({
+    const { data: idRules = [], isLoading: isLoadingId } = useQuery<any>({
         queryKey: ["revenueIdRules"],
         queryFn: async () => {
             const res = await fetch("/api/revenue/config/id-rules");

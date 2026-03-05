@@ -13,7 +13,7 @@ export default function DigitalRetailLeads() {
   const { toast } = useToast();
   const [newLead, setNewLead] = useState({ leadId: "", name: "", email: "", source: "website", status: "new" });
 
-  const { data: leads = [], isLoading } = useQuery({
+  const { data: leads = [], isLoading } = useQuery<any>({
     queryKey: ["/api/auto-leads"],
     queryFn: () => fetch("/api/auto-leads").then(r => r.json()).catch(() => []),
   });

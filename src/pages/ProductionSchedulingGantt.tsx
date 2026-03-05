@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, AlertTriangle } from "lucide-react";
 
 export default function ProductionSchedulingGantt() {
-  const { data: schedules = [], isLoading } = useQuery({
+  const { data: schedules = [], isLoading } = useQuery<any>({
     queryKey: ["/api/production-schedule"],
     queryFn: () => fetch("/api/production-schedule").then(r => r.json()).catch(() => []),
   });

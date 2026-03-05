@@ -7,9 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function CollectionsWorkbench() {
-    const { data: collections } = useQuery({
+    const { data: collections } = useQuery<any>({
         queryKey: ["/api/ar/collections"],
-        queryFn: () => apiRequest("/api/ar/collections"),
+        queryFn: () => apiRequest("GET", "/api/ar/collections").then(res => res.json()),
     });
 
     return (

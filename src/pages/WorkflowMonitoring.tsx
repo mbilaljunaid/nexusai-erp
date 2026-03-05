@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { TrendingUp } from "lucide-react";
 
 export default function WorkflowMonitoring() {
-  const { data: executions = [] } = useQuery({
+  const { data: executions = [] } = useQuery<any>({
     queryKey: ["/api/workflow-executions"],
     queryFn: () => fetch("/api/workflow-executions").then(r => r.json()).catch(() => [
       { id: "we1", workflow: "Auto-assign leads", status: "success", executionTime: "145ms", records: 42, timestamp: "Nov 30, 10:15 AM" },

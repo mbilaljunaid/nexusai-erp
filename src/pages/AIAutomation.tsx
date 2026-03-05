@@ -14,7 +14,7 @@ export default function AIAutomation() {
   const { toast } = useToast();
   const [newWorkflow, setNewWorkflow] = useState({ name: "", trigger: "created", status: "active" });
 
-  const { data: workflows = [], isLoading } = useQuery({
+  const { data: workflows = [], isLoading } = useQuery<any>({
     queryKey: ["/api/ai-automations"],
     queryFn: () => fetch("/api/ai-automations").then(r => r.json()),
   });

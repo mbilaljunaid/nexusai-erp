@@ -13,7 +13,7 @@ export default function BudgetPlanning() {
   const { toast } = useToast();
   const [newBudget, setNewBudget] = useState({ planName: "", department: "Finance", budgetAmount: "", forecastAmount: "" });
 
-  const { data: budgets = [], isLoading } = useQuery({
+  const { data: budgets = [], isLoading } = useQuery<any>({
     queryKey: ["/api/budgets"],
     queryFn: () => fetch("/api/budgets").then(r => r.json()),
   });

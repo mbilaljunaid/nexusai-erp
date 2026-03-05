@@ -18,7 +18,7 @@ import { Progress } from "@/components/ui/progress";
 export default function CandidateMatchingView() {
     const [selectedCandidate, setSelectedCandidate] = useState<string | null>(null);
 
-    const { data: matches = [] } = useQuery({
+    const { data: matches = [] } = useQuery<any>({
         queryKey: ["/api/recruitment/ai-matching"],
         queryFn: async () => {
             return [

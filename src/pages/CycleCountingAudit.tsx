@@ -13,7 +13,7 @@ export default function CycleCountingAudit() {
   const { toast } = useToast();
   const [newCount, setNewCount] = useState({ productId: "", binId: "", systemQty: "100", countedQty: "100", variance: "0" });
 
-  const { data: counts = [], isLoading } = useQuery({
+  const { data: counts = [], isLoading } = useQuery<any>({
     queryKey: ["/api/cycle-count"],
     queryFn: () => fetch("/api/cycle-count").then(r => r.json()).catch(() => []),
   });

@@ -22,19 +22,19 @@ export default function CloseDashboard() {
     const [newTask, setNewTask] = useState({ taskName: "", description: "", dueDate: "" });
 
     // 1. Fetch Dependency Statuses
-    const { data: statuses = [], isLoading: loadingStatuses } = useQuery({
+    const { data: statuses = [], isLoading: loadingStatuses } = useQuery<any>({
         queryKey: ["/api/finance/gl/period-statuses", selectedLedger],
         queryFn: () => fetch(`/api/finance/gl/period-statuses?ledgerId=${selectedLedger}`).then(r => r.json()),
     });
 
     // 2. Fetch Tasks
-    const { data: tasks = [], isLoading: loadingTasks } = useQuery({
+    const { data: tasks = [], isLoading: loadingTasks } = useQuery<any>({
         queryKey: ["/api/finance/gl/close-tasks", selectedLedger],
         queryFn: () => fetch(`/api/finance/gl/close-tasks?ledgerId=${selectedLedger}`).then(r => r.json()),
     });
 
     // 3. Fetch AI Predictions
-    const { data: prediction, isLoading: loadingPrediction } = useQuery({
+    const { data: prediction, isLoading: loadingPrediction } = useQuery<any>({
         queryKey: ["/api/gl/predict-close", selectedLedger, selectedPeriod],
         queryFn: () => fetch(`/api/gl/predict-close?ledgerId=${selectedLedger}&periodName=${selectedPeriod}`).then(r => r.json()),
     });

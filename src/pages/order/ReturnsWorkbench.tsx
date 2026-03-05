@@ -19,7 +19,7 @@ const fetchRMAs = async () => {
 
 export function ReturnsWorkbench() {
     const [searchTerm, setSearchTerm] = useState("");
-    const { data: rmas, isLoading } = useQuery({ queryKey: ["om-rmas"], queryFn: fetchRMAs });
+    const { data: rmas, isLoading } = useQuery<any>({ queryKey: ["om-rmas"], queryFn: fetchRMAs });
 
     const columns: any[] = [
         { header: "RMA #", accessorKey: "orderNumber" },

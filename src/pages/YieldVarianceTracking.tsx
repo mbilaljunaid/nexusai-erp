@@ -5,7 +5,7 @@ import { BarChart3, AlertTriangle } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function YieldVarianceTracking() {
-  const { data: records = [], isLoading } = useQuery({
+  const { data: records = [], isLoading } = useQuery<any>({
     queryKey: ["/api/yield-tracking"],
     queryFn: () => fetch("/api/yield-tracking").then(r => r.json()).catch(() => []),
   });

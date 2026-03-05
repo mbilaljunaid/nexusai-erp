@@ -1,5 +1,5 @@
-
 import React, { useState } from "react";
+import { cn } from "@/lib/utils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,7 @@ export default function BenefitsEnrollment() {
     const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
     const [selections, setSelections] = useState<Record<string, string>>({}); // planId -> planOptionId
 
-    const { data: openPrograms, isLoading: loadingPrograms } = useQuery({
+    const { data: openPrograms, isLoading: loadingPrograms } = useQuery<any>({
         queryKey: ["open-programs"],
         queryFn: async () => {
             const res = await fetch("/api/me/benefits/programs/open");
@@ -33,7 +33,7 @@ export default function BenefitsEnrollment() {
         }
     });
 
-    const { data: plans, isLoading: loadingPlans } = useQuery({
+    const { data: plans, isLoading: loadingPlans } = useQuery<any>({
         queryKey: ["program-plans", selectedProgramId],
         enabled: !!selectedProgramId,
         queryFn: async () => {

@@ -24,7 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function LeaseComplianceDashboard() {
-    const { data: stats } = useQuery({
+    const { data: stats } = useQuery<any>({
         queryKey: ["/api/lease/compliance/stats"],
         queryFn: async () => {
             const res = await fetch("/api/lease/compliance/stats");

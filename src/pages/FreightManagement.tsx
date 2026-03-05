@@ -14,7 +14,7 @@ export default function FreightManagement() {
   const { toast } = useToast();
   const [newShipment, setNewShipment] = useState({ shipmentId: "", carrier: "UPS", mode: "road", cost: "500", status: "booked" });
 
-  const { data: shipments = [], isLoading } = useQuery({
+  const { data: shipments = [], isLoading } = useQuery<any>({
     queryKey: ["/api/freight"],
     queryFn: () => fetch("/api/freight").then(r => r.json()).catch(() => []),
   });

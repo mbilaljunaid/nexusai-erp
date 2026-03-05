@@ -25,7 +25,7 @@ export default function RecruitmentPipelineBoard() {
     const { toast } = useToast();
     const [filterDept, setFilterDept] = useState("all");
 
-    const { data: pipeline = {}, isLoading } = useQuery({
+    const { data: pipeline = {}, isLoading } = useQuery<any>({
         queryKey: ["/api/recruitment/pipeline/all"],
         queryFn: async () => {
             // In a real app we'd fetch all applications and group them,

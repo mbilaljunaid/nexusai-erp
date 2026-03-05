@@ -52,11 +52,11 @@ export default function AssessmentBuilder() {
 
     const queryClient = useQueryClient();
 
-    const { data: assessments = [] } = useQuery({
+    const { data: assessments = [] } = useQuery<any>({
         queryKey: ["/api/learning/assessments"],
     });
 
-    const { data: questions = [] } = useQuery({
+    const { data: questions = [] } = useQuery<any>({
         queryKey: ["/api/learning/assessments", selectedAssessmentId, "questions"],
         enabled: !!selectedAssessmentId,
     });

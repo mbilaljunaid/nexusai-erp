@@ -14,7 +14,7 @@ export default function PricingRebatesEngine() {
   const { toast } = useToast();
   const [newRebate, setNewRebate] = useState({ customer: "", tierQty: "1000", rebateRate: "5", period: "monthly", status: "active" });
 
-  const { data: rebates = [], isLoading } = useQuery({
+  const { data: rebates = [], isLoading } = useQuery<any>({
     queryKey: ["/api/rebates"],
     queryFn: () => fetch("/api/rebates").then(r => r.json()).catch(() => []),
   });

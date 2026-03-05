@@ -21,11 +21,11 @@ interface Enrollment {
 }
 
 export default function MyLearning() {
-    const { data: enrollments = [] } = useQuery({
+    const { data: enrollments = [] } = useQuery<any>({
         queryKey: ["/api/learning/my-learning"],
     });
 
-    const { data: certificates = [] } = useQuery({
+    const { data: certificates = [] } = useQuery<any>({
         queryKey: ["/api/learning/my-certificates"],
     });
 

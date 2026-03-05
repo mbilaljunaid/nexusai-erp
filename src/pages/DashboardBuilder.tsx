@@ -12,7 +12,7 @@ export default function DashboardBuilder() {
   const { toast } = useToast();
   const [newDash, setNewDash] = useState({ name: "", type: "sales", owner: "" });
 
-  const { data: dashboards = [], isLoading } = useQuery({
+  const { data: dashboards = [], isLoading } = useQuery<any>({
     queryKey: ["/api/analytics/dashboards"],
     queryFn: () => fetch("/api/analytics/dashboards").then(r => r.json()),
   });

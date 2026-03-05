@@ -14,14 +14,14 @@ export default function PredictiveLeadScoring() {
     const [filterStatus, setFilterStatus] = useState("ALL");
     const [minScore, setMinScore] = useState(0);
 
-    const { data: leads } = useQuery({
+    const { data: leads } = useQuery<any>({
         queryKey: ["/api/crm/leads-with-scores", filterStatus, minScore],
-        queryFn: () => apiRequest(`/api/crm/leads-with-scores?status=${filterStatus}&minScore=${minScore}`),
+        queryFn: () => apiRequest("GET", `/api/crm/leads-with-scores?status=${filterStatus}&minScore=${minScore}`).then(res => res.json()),
     });
 
-    const { data: scoringModel } = useQuery({
+    const { data: scoringModel } = useQuery<any>({
         queryKey: ["/api/crm/scoring-model"],
-        queryFn: () => apiRequest("/api/crm/scoring-model"),
+        queryFn: () => apiRequest("GET", "/api/crm/scoring-model").then(res => res.json()),
     });
 
     const getScoreColor = (score: number) => {

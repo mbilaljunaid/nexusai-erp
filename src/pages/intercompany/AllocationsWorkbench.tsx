@@ -20,7 +20,7 @@ export default function AllocationsWorkbench() {
     const queryClient = useQueryClient();
 
     // Queries
-    const { data: rules = [], isLoading } = useQuery({
+    const { data: rules = [], isLoading } = useQuery<any>({
         queryKey: ["ic-allocation-rules"],
         queryFn: async () => {
             const res = await fetch("/api/intercompany/rules/allocations");
@@ -29,7 +29,7 @@ export default function AllocationsWorkbench() {
         }
     });
 
-    const { data: orgs = [] } = useQuery({
+    const { data: orgs = [] } = useQuery<any>({
         queryKey: ["ic-orgs"],
         queryFn: async () => {
             const res = await fetch("/api/intercompany/setup/orgs");

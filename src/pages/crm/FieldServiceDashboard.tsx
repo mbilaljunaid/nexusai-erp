@@ -21,9 +21,9 @@ export default function FieldServiceDashboard() {
     const [newItem, setNewItem] = useState({ subject: "", priority: "Medium", street: "", city: "" });
 
     // Queries
-    const { data: queue } = useQuery({ queryKey: ["/api/crm/field-service/queue"], queryFn: () => fetch("/api/crm/field-service/queue").then(r => r.json()) });
-    const { data: allOrders } = useQuery({ queryKey: ["/api/crm/field-service"], queryFn: () => fetch("/api/crm/field-service").then(r => r.json()) });
-    const { data: technicians } = useQuery({ queryKey: ["/api/crm/field-service/technicians/list"], queryFn: () => fetch("/api/crm/field-service/technicians/list").then(r => r.json()) });
+    const { data: queue } = useQuery<any>({ queryKey: ["/api/crm/field-service/queue"], queryFn: () => fetch("/api/crm/field-service/queue").then(r => r.json()) });
+    const { data: allOrders } = useQuery<any>({ queryKey: ["/api/crm/field-service"], queryFn: () => fetch("/api/crm/field-service").then(r => r.json()) });
+    const { data: technicians } = useQuery<any>({ queryKey: ["/api/crm/field-service/technicians/list"], queryFn: () => fetch("/api/crm/field-service/technicians/list").then(r => r.json()) });
 
     const createMutation = useMutation({
         mutationFn: async (data: any) => {

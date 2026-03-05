@@ -14,7 +14,7 @@ export default function NCRCAMAManagement() {
   const { toast } = useToast();
   const [newNCR, setNewNCR] = useState({ ncrId: "", description: "", severity: "major", status: "open" });
 
-  const { data: records = [], isLoading } = useQuery({
+  const { data: records = [], isLoading } = useQuery<any>({
     queryKey: ["/api/ncr-cama"],
     queryFn: () => fetch("/api/ncr-cama").then(r => r.json()).catch(() => []),
   });

@@ -8,12 +8,12 @@ import { AlertTriangle, TrendingUp, AlertCircle, LineChart, ShieldAlert } from "
 import { CartesianGrid, Line, LineChart as RechartsLine, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 export function RevenueIntelligence() {
-    const { data: forecast, isLoading: isLoadingForecast } = useQuery({
+    const { data: forecast, isLoading: isLoadingForecast } = useQuery<any>({
         queryKey: ["revenue-forecast"],
         queryFn: () => fetch("/api/revenue/forecasting/projection?months=6").then((res) => res.json()),
     });
 
-    const { data: risks, isLoading: isLoadingRisks } = useQuery({
+    const { data: risks, isLoading: isLoadingRisks } = useQuery<any>({
         queryKey: ["revenue-risks"],
         queryFn: () => fetch("/api/revenue/intelligence/risk-analysis").then((res) => res.json()),
     });

@@ -8,9 +8,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 
 export default function ASNManagement() {
-    const { data: asns } = useQuery({
+    const { data: asns } = useQuery<any>({
         queryKey: ["/api/supplier-portal/asn"],
-        queryFn: () => apiRequest("/api/supplier-portal/asn"),
+        queryFn: () => apiRequest("GET", "/api/supplier-portal/asn").then(res => res.json()),
     });
 
     return (

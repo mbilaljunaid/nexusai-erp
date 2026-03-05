@@ -18,12 +18,12 @@ export default function WorkOrderDetail() {
     const [isAssignOpen, setIsAssignOpen] = useState(false);
     const [assignData, setAssignData] = useState({ technicianId: "", start: "", end: "" });
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading } = useQuery<any>({
         queryKey: [`/api/crm/field-service/${id}`],
         queryFn: () => fetch(`/api/crm/field-service/${id}`).then(r => r.json())
     });
 
-    const { data: technicians } = useQuery({
+    const { data: technicians } = useQuery<any>({
         queryKey: ["/api/crm/field-service/technicians/list"],
         queryFn: () => fetch("/api/crm/field-service/technicians/list").then(r => r.json())
     });

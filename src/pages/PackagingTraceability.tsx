@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tag } from "lucide-react";
 
 export default function PackagingTraceability() {
-  const { data: labels = [], isLoading } = useQuery({
+  const { data: labels = [], isLoading } = useQuery<any>({
     queryKey: ["/api/fb-labels"],
     queryFn: () => fetch("/api/fb-labels").then(r => r.json()).catch(() => []),
   });

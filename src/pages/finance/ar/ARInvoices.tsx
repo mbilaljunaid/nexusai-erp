@@ -48,17 +48,17 @@ export default function ARInvoices() {
     queryFn: () => fetch(`/api/ar/invoices?limit=${pageSize}&offset=${(page - 1) * pageSize}`, { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json())
   });
 
-  const { data: customers } = useQuery({
+  const { data: customers } = useQuery<any>({
     queryKey: ["/api/ar/customers", businessUnitId],
     queryFn: () => fetch("/api/ar/customers", { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json())
   });
 
-  const { data: accounts } = useQuery({
+  const { data: accounts } = useQuery<any>({
     queryKey: ["/api/ar/accounts", businessUnitId],
     queryFn: () => fetch("/api/ar/accounts", { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json())
   });
 
-  const { data: sites } = useQuery({
+  const { data: sites } = useQuery<any>({
     queryKey: ["/api/ar/sites", { accountId: debitMemoData.accountId }, businessUnitId],
     queryFn: () => fetch(`/api/ar/sites?accountId=${debitMemoData.accountId}`, { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json()),
     enabled: !!debitMemoData.accountId,

@@ -13,7 +13,7 @@ export default function WebsiteManagement() {
   const { toast } = useToast();
   const [newPage, setNewPage] = useState({ pageName: "", pageUrl: "", status: "draft" });
 
-  const { data: pages = [], isLoading } = useQuery({
+  const { data: pages = [], isLoading } = useQuery<any>({
     queryKey: ["/api/website-pages"],
     queryFn: () => fetch("/api/website-pages").then(r => r.json()),
   });

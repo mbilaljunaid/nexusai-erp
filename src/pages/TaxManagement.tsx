@@ -92,7 +92,7 @@ function TaxCodesTab({ legalEntityId }: { legalEntityId: string | null }) {
   const [filterType, setFilterType] = useState('ALL');
   const [filterStatus, setFilterStatus] = useState('ALL');
 
-  const { data: codes = [], isLoading } = useQuery({
+  const { data: codes = [], isLoading } = useQuery<any>({
     queryKey: ['/api/tax/codes', legalEntityId ?? 'all'],
     queryFn: async () => {
       const res = await fetch('/api/tax/codes', { headers: leHeaders });
@@ -101,7 +101,7 @@ function TaxCodesTab({ legalEntityId }: { legalEntityId: string | null }) {
     }
   });
 
-  const { data: jurisdictions = [] } = useQuery({
+  const { data: jurisdictions = [] } = useQuery<any>({
     queryKey: ['/api/tax/jurisdictions', legalEntityId ?? 'all'],
     queryFn: async () => {
       const res = await fetch('/api/tax/jurisdictions', { headers: leHeaders });
@@ -249,7 +249,7 @@ function TaxJurisdictionsTab({ legalEntityId }: { legalEntityId: string | null }
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('ALL');
 
-  const { data: jurisdictions = [], isLoading } = useQuery({
+  const { data: jurisdictions = [], isLoading } = useQuery<any>({
     queryKey: ['/api/tax/jurisdictions', legalEntityId ?? 'all'],
     queryFn: async () => {
       const res = await fetch('/api/tax/jurisdictions', { headers: leHeaders });
@@ -379,7 +379,7 @@ function TaxExemptionsTab({ legalEntityId }: { legalEntityId: string | null }) {
   const leHeaders: Record<string, string> = legalEntityId ? { 'x-legal-entity-id': legalEntityId } : {};
   const [newItem, setNewItem] = useState({ customerId: "", siteId: "", taxCodeId: "", exemptionType: "Full", exemptionValue: "0" });
 
-  const { data: exemptions = [], isLoading } = useQuery({
+  const { data: exemptions = [], isLoading } = useQuery<any>({
     queryKey: ["/api/tax/exemptions", legalEntityId ?? 'all'],
     queryFn: async () => {
       const res = await fetch('/api/tax/exemptions', { headers: leHeaders });
@@ -388,7 +388,7 @@ function TaxExemptionsTab({ legalEntityId }: { legalEntityId: string | null }) {
     }
   });
 
-  const { data: codes = [] } = useQuery({
+  const { data: codes = [] } = useQuery<any>({
     queryKey: ["/api/tax/codes", legalEntityId ?? 'all'],
     queryFn: async () => {
       const res = await fetch('/api/tax/codes', { headers: leHeaders });

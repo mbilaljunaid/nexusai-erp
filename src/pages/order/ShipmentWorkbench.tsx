@@ -26,7 +26,7 @@ const fetchShipments = async () => {
 
 export function ShipmentWorkbench() {
     const [searchTerm, setSearchTerm] = useState("");
-    const { data: shipments, isLoading } = useQuery({ queryKey: ["om-shipments"], queryFn: fetchShipments });
+    const { data: shipments, isLoading } = useQuery<any>({ queryKey: ["om-shipments"], queryFn: fetchShipments });
 
     const columns: any[] = [
         { header: "Order #", accessorKey: "orderNumber" },

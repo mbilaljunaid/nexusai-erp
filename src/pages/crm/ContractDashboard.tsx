@@ -22,12 +22,12 @@ export default function ContractDashboard() {
     const [newItem, setNewItem] = useState({ title: "", type: "MSA", totalValue: 0, startDate: "", endDate: "" });
     const { businessUnitId } = useEnterpriseStore();
 
-    const { data: contractsData } = useQuery({
+    const { data: contractsData } = useQuery<any>({
         queryKey: ["/api/crm/contracts", businessUnitId],
         queryFn: () => fetch("/api/crm/contracts", { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json())
     });
     const contracts = contractsData?.data || [];
-    const { data: expiring = [] } = useQuery({
+    const { data: expiring = [] } = useQuery<any>({
         queryKey: ["/api/crm/contracts/expiring", businessUnitId],
         queryFn: () => fetch("/api/crm/contracts/expiring", { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json())
     });

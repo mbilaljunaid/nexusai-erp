@@ -39,7 +39,7 @@ export default function ContractObligations() {
     const [newOb, setNewOb] = useState({ contractId: '', supplierId: '', obligationType: 'DELIVERY', title: '', dueDate: '', recurrence: 'NONE', penaltyAmount: '' });
     const qc = useQueryClient();
 
-    const { data: summary } = useQuery({ queryKey: ['ob-summary'], queryFn: () => fetch('/api/supplier/obligations/summary').then(r => r.json()) });
+    const { data: summary } = useQuery<any>({ queryKey: ['ob-summary'], queryFn: () => fetch('/api/supplier/obligations/summary').then(r => r.json()) });
     const { data: obligations = [] } = useQuery<Obligation[]>({ queryKey: ['obligations', filter], queryFn: () => fetch(`/api/supplier/obligations${filter ? `?status=${filter}` : ''}`).then(r => r.json()) });
     const { data: upcoming = [] } = useQuery<Obligation[]>({ queryKey: ['ob-upcoming'], queryFn: () => fetch('/api/supplier/obligations/upcoming?days=30').then(r => r.json()) });
 

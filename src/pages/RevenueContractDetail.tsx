@@ -47,7 +47,7 @@ export default function RevenueContractDetail() {
     const [modReason, setModReason] = useState("");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const { data: contract, isLoading } = useQuery({
+    const { data: contract, isLoading } = useQuery<any>({
         queryKey: ["revenueContract", id],
         queryFn: async () => {
             const res = await fetch(`/api/revenue/contracts/${id}`);

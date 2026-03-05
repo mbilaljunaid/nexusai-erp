@@ -14,7 +14,7 @@ export default function EquipmentManagement() {
   const { toast } = useToast();
   const [newEq, setNewEq] = useState({ equipmentId: "", type: "Excavator", location: "Site-A", hourMeter: "0", status: "operational", fuelCost: "50" });
 
-  const { data: equipment = [], isLoading } = useQuery({
+  const { data: equipment = [], isLoading } = useQuery<any>({
     queryKey: ["/api/equipment"],
     queryFn: () => fetch("/api/equipment").then(r => r.json()),
   });

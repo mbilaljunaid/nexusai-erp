@@ -94,7 +94,7 @@ export default function ComplianceGovernance() {
     queryFn: () => fetch("/api/hr/compliance-rules").then(r => r.json()),
   });
 
-  const { data: analyticsData } = useQuery({
+  const { data: analyticsData } = useQuery<any>({
     queryKey: ["/api/hr/compliance/analytics"],
     queryFn: () => fetch("/api/hr/compliance/analytics").then(r => r.json()),
   });

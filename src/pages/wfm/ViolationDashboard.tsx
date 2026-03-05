@@ -8,9 +8,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 
 export default function ViolationDashboard() {
-    const { data: violations } = useQuery({
+    const { data: violations } = useQuery<any>({
         queryKey: ["/api/wfm/violations"],
-        queryFn: () => apiRequest("/api/wfm/violations"),
+        queryFn: () => apiRequest("GET", "/api/wfm/violations").then(res => res.json()),
     });
 
     return (

@@ -163,7 +163,7 @@ export function MappingSetList() {
                 <InteractiveSpreadsheet
                     data={mappings}
                     columns={columns}
-                    onChange={(newData) => queryClient.setQueryData(["sla-mappings"], newData)}
+                    onChange={(newData) => queryClient.setQueryData(["sla-mappings"], newData as any)}
                     virtualized={true}
                     containerHeight="498px"
                 />

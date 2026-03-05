@@ -7,9 +7,9 @@ import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 
 export default function LeaseScheduleViewer() {
-    const { data: schedule } = useQuery({
+    const { data: schedule } = useQuery<any>({
         queryKey: ["/api/leases/schedule/1"],
-        queryFn: () => apiRequest("/api/leases/schedule/1"),
+        queryFn: () => apiRequest("GET", "/api/leases/schedule/1").then(res => res.json()),
     });
 
     const scheduleColumns: SpreadsheetColumn<any>[] = [

@@ -5,7 +5,7 @@ import { TrendingUp, ShoppingCart, DollarSign, Percent } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function EcommerceBIDashboard() {
-  const { data: metrics = [], isLoading } = useQuery({
+  const { data: metrics = [], isLoading } = useQuery<any>({
     queryKey: ["/api/ecommerce-metrics"],
     queryFn: () => fetch("/api/ecommerce-metrics").then(r => r.json()).catch(() => []),
   });

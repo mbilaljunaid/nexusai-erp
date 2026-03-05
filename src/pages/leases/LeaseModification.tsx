@@ -18,10 +18,7 @@ export default function LeaseModification() {
 
     const modifyMutation = useMutation({
         mutationFn: (data: any) =>
-            apiRequest("/api/leases/modify", {
-                method: "POST",
-                body: JSON.stringify(data),
-            }),
+            apiRequest("POST", "/api/leases/modify", data),
         onSuccess: () => {
             toast({ title: "Success", description: "Lease modification processed" });
             queryClient.invalidateQueries({ queryKey: ["/api/leases"] });

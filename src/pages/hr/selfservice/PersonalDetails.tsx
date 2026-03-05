@@ -52,7 +52,7 @@ export default function PersonalDetails() {
 
     const { legalEntityId } = useEnterpriseStore();
 
-    const { data: activeBenefits, isLoading: loadingBenefits } = useQuery({
+    const { data: activeBenefits, isLoading: loadingBenefits } = useQuery<any>({
         queryKey: ["active-benefits", legalEntityId],
         queryFn: async () => {
             const res = await fetch("/api/me/benefits/active", { headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined });

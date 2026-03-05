@@ -22,27 +22,27 @@ export default function EnterpriseMappings() {
     const [selectedLedger, setSelectedLedger] = useState<string>("");
 
     // Data Fetching
-    const { data: legalGroups } = useQuery({
+    const { data: legalGroups } = useQuery<any>({
         queryKey: ["/api/enterprise/legal-groups"],
         queryFn: () => fetch("/api/enterprise/legal-groups").then(r => r.json())
     });
 
-    const { data: businessUnits } = useQuery({
+    const { data: businessUnits } = useQuery<any>({
         queryKey: ["/api/enterprise/business-units"],
         queryFn: () => fetch("/api/enterprise/business-units").then(r => r.json())
     });
 
-    const { data: ledgers } = useQuery({
+    const { data: ledgers } = useQuery<any>({
         queryKey: ["/api/finance/gl/ledgers"],
         queryFn: () => fetch("/api/finance/gl/ledgers").then(r => r.json())
     });
 
-    const { data: lgBuMappings } = useQuery({
+    const { data: lgBuMappings } = useQuery<any>({
         queryKey: ["/api/enterprise/mappings/legal-group-bu"],
         queryFn: () => fetch("/api/enterprise/mappings/legal-group-bu").then(r => r.json())
     });
 
-    const { data: buLedgerMappings } = useQuery({
+    const { data: buLedgerMappings } = useQuery<any>({
         queryKey: ["/api/enterprise/mappings/bu-ledger"],
         queryFn: () => fetch("/api/enterprise/mappings/bu-ledger").then(r => r.json())
     });

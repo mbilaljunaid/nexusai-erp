@@ -20,7 +20,7 @@ export default function ManagerLearningDashboard() {
     const MANAGER_ID = "Alice";
 
     // Fetch Team
-    const { data: team, isLoading: isTeamLoading } = useQuery({
+    const { data: team, isLoading: isTeamLoading } = useQuery<any>({
         queryKey: ["manager-team", MANAGER_ID],
         queryFn: async () => {
             const res = await fetch(`/api/learning/manager/team?managerId=${MANAGER_ID}`);
@@ -30,7 +30,7 @@ export default function ManagerLearningDashboard() {
     });
 
     // Fetch Courses for Assignment Dropdown
-    const { data: courses } = useQuery({
+    const { data: courses } = useQuery<any>({
         queryKey: ["learning-courses"],
         queryFn: async () => {
             const res = await fetch(`/api/learning/courses`);

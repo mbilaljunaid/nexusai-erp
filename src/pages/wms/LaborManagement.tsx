@@ -8,9 +8,9 @@ import { Progress } from "@/components/ui/progress";
 import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function LaborManagement() {
-    const { data: labor } = useQuery({
+    const { data: labor } = useQuery<any>({
         queryKey: ["/api/wms/labor"],
-        queryFn: () => apiRequest("/api/wms/labor"),
+        queryFn: () => apiRequest("GET", "/api/wms/labor").then(res => res.json()),
     });
 
     return (

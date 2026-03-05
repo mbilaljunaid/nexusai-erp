@@ -14,7 +14,7 @@ export default function Email() {
   const [activeNav, setActiveNav] = useState("inbox");
   const [newTemplate, setNewTemplate] = useState({ name: "", category: "general", subject: "" });
 
-  const { data: templates = [], isLoading } = useQuery({
+  const { data: templates = [], isLoading } = useQuery<any>({
     queryKey: ["/api/email-templates"],
     queryFn: () => fetch("/api/email-templates").then(r => r.json()).catch(() => []),
   });

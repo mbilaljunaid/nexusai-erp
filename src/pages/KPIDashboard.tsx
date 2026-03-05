@@ -13,7 +13,7 @@ export default function KPIDashboard() {
   const { toast } = useToast();
   const [newKPI, setNewKPI] = useState({ name: "", value: "", target: "", status: "on-track" });
 
-  const { data: kpis = [], isLoading } = useQuery({
+  const { data: kpis = [], isLoading } = useQuery<any>({
     queryKey: ["/api/kpis"],
     queryFn: () => fetch("/api/kpis").then(r => r.json()).catch(() => []),
   });

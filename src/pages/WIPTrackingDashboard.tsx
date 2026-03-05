@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Clock } from "lucide-react";
 
 export default function WIPTrackingDashboard() {
-  const { data: wipData = [], isLoading } = useQuery({
+  const { data: wipData = [], isLoading } = useQuery<any>({
     queryKey: ["/api/wip-tracking"],
     queryFn: () => fetch("/api/wip-tracking").then(r => r.json()).catch(() => []),
   });

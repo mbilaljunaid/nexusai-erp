@@ -27,27 +27,27 @@ export default function CashReconciliation() {
     const [autoReconcileProgress, setAutoReconcileProgress] = useState(0);
 
     // Fetch bank accounts
-    const { data: accounts } = useQuery({
+    const { data: accounts } = useQuery<any>({
         queryKey: ["/api/finance/cash/accounts"],
         queryFn: () => fetch("/api/finance/cash/accounts").then(r => r.json())
     });
 
     // Fetch reconciliation summary
-    const { data: summary } = useQuery({
+    const { data: summary } = useQuery<any>({
         queryKey: ["/api/finance/cash/reconcile/summary", selectedAccount],
         queryFn: () => fetch(`/api/finance/cash/reconcile/summary?accountId=${selectedAccount}`).then(r => r.json()),
         enabled: !!selectedAccount
     });
 
     // Fetch unreconciled statement lines
-    const { data: statementLines } = useQuery({
+    const { data: statementLines } = useQuery<any>({
         queryKey: ["/api/finance/cash/accounts", selectedAccount, "statement-lines"],
         queryFn: () => fetch(`/api/finance/cash/accounts/${selectedAccount}/statement-lines`).then(r => r.json()),
         enabled: !!selectedAccount
     });
 
     // Fetch unreconciled transactions
-    const { data: transactions } = useQuery({
+    const { data: transactions } = useQuery<any>({
         queryKey: ["/api/finance/cash/accounts", selectedAccount, "transactions"],
         queryFn: () => fetch(`/api/finance/cash/accounts/${selectedAccount}/transactions`).then(r => r.json()),
         enabled: !!selectedAccount

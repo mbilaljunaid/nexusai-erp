@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/db';
 
 /**
  * Usage Analytics Service
@@ -447,7 +447,7 @@ export class UsageAnalyticsService {
                 .gte('timestamp', startDate.toISOString())
                 .lte('timestamp', endDate.toISOString());
 
-            const stepUsers = new Set(stepData?.map(d => d.user_id));
+            const stepUsers = new Set<string>(stepData?.map(d => d.user_id));
             const stepCount = stepUsers.size;
 
             // Calculate conversion from previous step

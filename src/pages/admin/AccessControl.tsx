@@ -17,7 +17,7 @@ export default function AccessControl() {
     const queryClient = useQueryClient();
 
     // Fetch Users
-    const { data: users, isLoading: usersLoading } = useQuery({
+    const { data: users, isLoading: usersLoading } = useQuery<any>({
         queryKey: ["/api/users"],
         queryFn: async () => {
             const res = await fetch("/api/admin/users");
@@ -27,7 +27,7 @@ export default function AccessControl() {
     });
 
     // Fetch Audit Logs
-    const { data: auditLogs, isLoading: logsLoading } = useQuery({
+    const { data: auditLogs, isLoading: logsLoading } = useQuery<any>({
         queryKey: ["/api/audit-logs"],
         queryFn: async () => {
             const res = await fetch("/api/admin/audit-logs");

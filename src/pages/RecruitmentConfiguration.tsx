@@ -19,12 +19,12 @@ export default function RecruitmentConfiguration() {
     const [activeTab, setActiveTab] = useState("pipelines");
 
     // --- DATA FETCHING ---
-    const { data: pipelines = [] } = useQuery({
+    const { data: pipelines = [] } = useQuery<any>({
         queryKey: ["/api/recruitment/config/pipelines"],
         queryFn: () => fetch("/api/recruitment/config/pipelines").then(r => r.json())
     });
 
-    const { data: emailTemplates = [] } = useQuery({
+    const { data: emailTemplates = [] } = useQuery<any>({
         queryKey: ["/api/recruitment/config/emails"],
         queryFn: () => fetch("/api/recruitment/config/emails").then(r => r.json())
     });
@@ -87,7 +87,7 @@ export default function RecruitmentConfiguration() {
 
 function PipelineEditor({ pipeline }: { pipeline: any }) {
     const { toast } = useToast();
-    const { data: stages = [] } = useQuery({
+    const { data: stages = [] } = useQuery<any>({
         queryKey: [`/api/recruitment/config/pipelines/${pipeline.id}/stages`],
         queryFn: () => fetch(`/api/recruitment/config/pipelines/${pipeline.id}/stages`).then(r => r.json())
     });

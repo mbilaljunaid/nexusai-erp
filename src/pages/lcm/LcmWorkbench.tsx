@@ -39,7 +39,7 @@ export default function LcmWorkbench() {
     const invOrgHeaders = buildScopeHeaders({ "inventory-org": inventoryOrgId });
 
     // Fetch Trade Operations
-    const { data: operationsData, isLoading } = useQuery({
+    const { data: operationsData, isLoading } = useQuery<any>({
         queryKey: ["/api/lcm/trade-operations", page, inventoryOrgId],
         queryFn: async () => {
             const res = await fetch(`/api/lcm/trade-operations?page=${page}&limit=20`, { headers: invOrgHeaders });

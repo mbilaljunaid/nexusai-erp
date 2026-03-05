@@ -13,7 +13,7 @@ export default function YardDockManagement() {
   const { toast } = useToast();
   const [newAppt, setNewAppt] = useState({ appointmentId: "", carrierId: "", dockId: "", arrivalTime: "", status: "scheduled" });
 
-  const { data: appointments = [], isLoading } = useQuery({
+  const { data: appointments = [], isLoading } = useQuery<any>({
     queryKey: ["/api/tl-dock-appointments"],
     queryFn: () => fetch("/api/tl-dock-appointments").then(r => r.json()).catch(() => []),
   });

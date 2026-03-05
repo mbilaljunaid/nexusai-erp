@@ -14,7 +14,7 @@ export default function FreightRateCalculation() {
   const { toast } = useToast();
   const [newRate, setNewRate] = useState({ carrier: "UPS", weight: "50", origin: "US", destination: "US", rate: "25.00" });
 
-  const { data: rates = [], isLoading } = useQuery({
+  const { data: rates = [], isLoading } = useQuery<any>({
     queryKey: ["/api/freight-rates"],
     queryFn: () => fetch("/api/freight-rates").then(r => r.json()),
   });

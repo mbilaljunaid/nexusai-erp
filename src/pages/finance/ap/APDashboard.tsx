@@ -60,7 +60,7 @@ export default function APDashboard() {
         }
     });
 
-    const { data: recentInvoices } = useQuery({
+    const { data: recentInvoices } = useQuery<any>({
         queryKey: ["/api/ap/invoices", 1, 10, buId],
         queryFn: () => fetch("/api/ap/invoices?limit=10&offset=0", { headers: scopeHeaders }).then(r => r.json())
     });

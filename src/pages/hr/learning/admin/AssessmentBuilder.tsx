@@ -145,7 +145,7 @@ function QuestionEditor({ assessment }: { assessment: any }) {
     const queryClient = useQueryClient();
     const [isAddOpen, setIsAddOpen] = useState(false);
 
-    const { data: details, isLoading } = useQuery({
+    const { data: details, isLoading } = useQuery<any>({
         queryKey: ["assessment", assessment.id],
         queryFn: async () => {
             const res = await fetch(`/api/learning/assessments/${assessment.id}`);

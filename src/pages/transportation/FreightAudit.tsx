@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tantml:react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -14,14 +14,14 @@ export default function FreightAudit() {
     const queryClient = useQueryClient();
     const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
 
-    const { data: invoices } = useQuery({
+    const { data: invoices } = useQuery<any>({
         queryKey: ["/api/transportation/freight-invoices"],
-        queryFn: () => apiRequest("/api/transportation/freight-invoices?status=PENDING_AUDIT"),
+        queryFn: () => apiRequest("GET", "/api/transportation/freight-invoices?status=PENDING_AUDIT").then(res => res.json()),
     });
 
     const approveMutation = useMutation({
         mutationFn: (invoiceId: number) =>
-            apiRequest(`/api/transportation/freight-invoices/${invoiceId}/approve`, { method: "POST" }),
+            apiRequest("POST", `/api/transportation/freight-invoices/${invoiceId}/approve`),
         onSuccess: () => {
             toast({ title: "Success", description: "Invoice approved for payment" });
             queryClient.invalidateQueries({ queryKey: ["/api/transportation/freight-invoices"] });
@@ -31,10 +31,7 @@ export default function FreightAudit() {
 
     const disputeMutation = useMutation({
         mutationFn: ({ invoiceId, reason }: { invoiceId: number; reason: string }) =>
-            apiRequest(`/api/transportation/freight-invoices/${invoiceId}/dispute`, {
-                method: "POST",
-                body: JSON.stringify({ reason }),
-            }),
+            apiRequest("POST", `/api/transportation/freight-invoices/${invoiceId}/dispute`, { reason }),
         onSuccess: () => {
             toast({ title: "Success", description: "Invoice disputed" });
             queryClient.invalidateQueries({ queryKey: ["/api/transportation/freight-invoices"] });

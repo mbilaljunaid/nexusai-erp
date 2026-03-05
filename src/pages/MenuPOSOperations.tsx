@@ -13,7 +13,7 @@ export default function MenuPOSOperations() {
   const { toast } = useToast();
   const [newItem, setNewItem] = useState({ menuId: "", itemName: "", price: "0", status: "active" });
 
-  const { data: items = [], isLoading } = useQuery({
+  const { data: items = [], isLoading } = useQuery<any>({
     queryKey: ["/api/fb-menu"],
     queryFn: () => fetch("/api/fb-menu").then(r => r.json()).catch(() => []),
   });

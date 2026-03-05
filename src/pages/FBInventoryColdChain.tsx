@@ -13,7 +13,7 @@ export default function FBInventoryColdChain() {
   const { toast } = useToast();
   const [newItem, setNewItem] = useState({ itemId: "", itemName: "", quantity: "0", tempZone: "chilled" });
 
-  const { data: items = [], isLoading } = useQuery({
+  const { data: items = [], isLoading } = useQuery<any>({
     queryKey: ["/api/fb-inventory"],
     queryFn: () => fetch("/api/fb-inventory").then(r => r.json()),
   });

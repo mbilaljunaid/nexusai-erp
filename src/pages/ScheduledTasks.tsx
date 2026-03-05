@@ -13,7 +13,7 @@ export default function ScheduledTasks() {
   const { toast } = useToast();
   const [newTask, setNewTask] = useState({ taskName: "", schedule: "", frequency: "daily", status: "active" });
 
-  const { data: tasks = [], isLoading } = useQuery({
+  const { data: tasks = [], isLoading } = useQuery<any>({
     queryKey: ["/api/scheduled-tasks"],
     queryFn: () => fetch("/api/scheduled-tasks").then(r => r.json()).catch(() => []),
   });

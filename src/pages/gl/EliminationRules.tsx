@@ -37,7 +37,7 @@ export default function EliminationRules() {
     const queryClient = useQueryClient();
 
     // Fetch Rules
-    const { data: rules = [], isLoading } = useQuery({
+    const { data: rules = [], isLoading } = useQuery<any>({
         queryKey: ["elimination-rules"],
         queryFn: async () => {
             const res = await fetch("/api/gl/elimination-rules");

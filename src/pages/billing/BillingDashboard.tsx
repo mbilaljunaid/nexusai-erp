@@ -10,7 +10,7 @@ import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function BillingDashboard() {
     const { businessUnitId } = useEnterpriseStore();
-    const { data: metrics, isLoading } = useQuery({
+    const { data: metrics, isLoading } = useQuery<any>({
         queryKey: ["billing-metrics", businessUnitId],
         queryFn: async () => {
             const res = await fetch("/api/billing/metrics", {

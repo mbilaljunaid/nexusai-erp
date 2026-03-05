@@ -23,7 +23,7 @@ export default function SupplierSourcing() {
     const [bidLines, setBidLines] = useState<any[]>([]);
     const [notes, setNotes] = useState("");
 
-    const { data: rfqs, isLoading } = useQuery({
+    const { data: rfqs, isLoading } = useQuery<any>({
         queryKey: ["/api/portal/supplier/rfqs"],
         queryFn: async () => {
             const token = localStorage.getItem("supplier_portal_token");
@@ -34,7 +34,7 @@ export default function SupplierSourcing() {
         }
     }) as any;
 
-    const { data: rfqDetails, isLoading: isLoadingDetails } = useQuery({
+    const { data: rfqDetails, isLoading: isLoadingDetails } = useQuery<any>({
         queryKey: [`/api/portal/supplier/rfqs/${selectedRFQ?.id}`],
         queryFn: async () => {
             const token = localStorage.getItem("supplier_portal_token");

@@ -41,11 +41,11 @@ export default function CreatePPR() {
     const [selectedInvoices, setSelectedInvoices] = useState<Set<string>>(new Set());
     const [proposedPayments, setProposedPayments] = useState<any[]>([]);
 
-    const { data: bankAccounts = [] } = useQuery({
+    const { data: bankAccounts = [] } = useQuery<any>({
         queryKey: ["/api/cash/accounts"],
     });
 
-    const { data: eligibleInvoices, isLoading: loadingInvoices } = useQuery({
+    const { data: eligibleInvoices, isLoading: loadingInvoices } = useQuery<any>({
         queryKey: ["/api/ap/invoices/eligible-for-payment", formData.payThroughDate, formData.paymentMethodCode],
         queryFn: () => fetch(`/api/ap/invoices?status=Approved&validationStatus=Validated&limit=100`).then(r => r.json()),
         enabled: currentStep === 2

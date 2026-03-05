@@ -14,7 +14,7 @@ export default function PerformanceReviews() {
   const { toast } = useToast();
   const [newReview, setNewReview] = useState({ employee: "", rating: "4.0", status: "In Progress" });
 
-  const { data: reviews = [], isLoading } = useQuery({
+  const { data: reviews = [], isLoading } = useQuery<any>({
     queryKey: ["/api/hr/performance-reviews"],
     queryFn: () => fetch("/api/hr/performance-reviews").then(r => r.json()).catch(() => []),
   });

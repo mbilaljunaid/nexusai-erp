@@ -45,7 +45,7 @@ export default function RevenueContractWorkbench() {
     const { toast } = useToast();
     const { businessUnitId } = useEnterpriseStore();
 
-    const { data: result, isLoading } = useQuery({
+    const { data: result, isLoading } = useQuery<any>({
         queryKey: ["revenueContracts", page, businessUnitId],
         queryFn: async () => {
             const res = await fetch(`/api/revenue/contracts?page=${page}&limit=${LIMIT}`, { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined });

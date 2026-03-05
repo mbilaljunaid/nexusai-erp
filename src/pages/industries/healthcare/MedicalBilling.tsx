@@ -15,7 +15,7 @@ export default function MedicalBilling() {
   const { toast } = useToast();
   const [newClaim, setNewClaim] = useState({ claimId: "", encounterId: "", amount: "1000", status: "pending" });
 
-  const { data: claims = [], isLoading } = useQuery({
+  const { data: claims = [], isLoading } = useQuery<any>({
     queryKey: ["/api/healthcare-billing"],
     queryFn: () => fetch("/api/healthcare-billing").then(r => r.json()).catch(() => []),
   });

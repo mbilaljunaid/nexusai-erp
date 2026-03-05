@@ -14,7 +14,7 @@ export default function BOQManagementConstruction() {
   const { toast } = useToast();
   const [newBOQ, setNewBOQ] = useState({ project: "Project-A", item: "Excavation", qty: "1000", uom: "m3", rate: "50", costCode: "CC-001", status: "active" });
 
-  const { data: boqs = [], isLoading } = useQuery({
+  const { data: boqs = [], isLoading } = useQuery<any>({
     queryKey: ["/api/boq-construction"],
     queryFn: () => fetch("/api/boq-construction").then(r => r.json()).catch(() => []),
   });

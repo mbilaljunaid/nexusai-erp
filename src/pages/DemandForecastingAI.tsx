@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 export default function DemandForecastingAI() {
   const { open, sendMessage } = useNexusAI();
-  const { data: forecasts = [], isLoading } = useQuery({
+  const { data: forecasts = [], isLoading } = useQuery<any>({
     queryKey: ["/api/demand-forecast"],
     queryFn: () => fetch("/api/demand-forecast").then(r => r.json()).catch(() => []),
   });

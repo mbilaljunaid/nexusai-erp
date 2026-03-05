@@ -15,7 +15,7 @@ export default function BatchManufacturing() {
   const { toast } = useToast();
   const [localBatches, setLocalBatches] = useState<any[]>([]);
 
-  const { data: batches = [], isLoading } = useQuery({
+  const { data: batches = [], isLoading } = useQuery<any>({
     queryKey: ["/api/fb-batches"],
     queryFn: () => fetch("/api/fb-batches").then(r => r.json()),
   });

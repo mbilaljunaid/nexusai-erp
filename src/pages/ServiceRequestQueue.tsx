@@ -13,7 +13,7 @@ export default function ServiceRequestQueue() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    const { data: requests, isLoading } = useQuery({
+    const { data: requests, isLoading } = useQuery<any>({
         queryKey: ["/api/maintenance/service-requests"],
         queryFn: () => fetch("/api/maintenance/service-requests").then(r => r.json())
     });

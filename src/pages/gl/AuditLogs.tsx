@@ -12,7 +12,6 @@ export default function AuditLogsPage() {
             title="Audit & Compliance"
             description="Review immutable logs and manage data access."
             actions={<LedgerContextBadge />}
-            backHref="/gl/dashboard"
         >
             <div className="grid grid-cols-1 gap-6">
                 <AuditLogViewer />

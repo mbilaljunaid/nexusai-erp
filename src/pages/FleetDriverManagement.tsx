@@ -13,7 +13,7 @@ export default function FleetDriverManagement() {
   const { toast } = useToast();
   const [newDriver, setNewDriver] = useState({ driverId: "", name: "", license: "", status: "active" });
 
-  const { data: drivers = [], isLoading } = useQuery({
+  const { data: drivers = [], isLoading } = useQuery<any>({
     queryKey: ["/api/tl-drivers"],
     queryFn: () => fetch("/api/tl-drivers").then(r => r.json()).catch(() => []),
   });

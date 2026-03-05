@@ -23,7 +23,7 @@ export default function ManagerApprovals() {
     const [selectedSheetId, setSelectedSheetId] = useState<string | null>(null);
 
     // Fetch Pending Approvals
-    const { data: pendingSheets, isLoading } = useQuery({
+    const { data: pendingSheets, isLoading } = useQuery<any>({
         queryKey: ["approvals-pending"],
         queryFn: async () => {
             const res = await fetch(`/api/wfm/approvals/pending?tenantId=${MOCK_TENANT_ID}`);
@@ -33,7 +33,7 @@ export default function ManagerApprovals() {
     });
 
     // Fetch Details for Selected Sheet
-    const { data: selectedSheetDetails } = useQuery({
+    const { data: selectedSheetDetails } = useQuery<any>({
         queryKey: ["timesheet", selectedSheetId],
         enabled: !!selectedSheetId,
         queryFn: async () => {

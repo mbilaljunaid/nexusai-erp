@@ -92,13 +92,10 @@ export default function ModuleLandingPage() {
                 <CTASection
                     title={`Ready to optimize your ${moduleData.title}?`}
                     subtitle="Join thousands of organizations using NexusAI."
-                    primaryCTA={
-                        <Link to="/signup">
-                            <Button size="lg" variant="secondary" className="text-primary font-bold">
-                                Get Started
-                            </Button>
-                        </Link>
-                    }
+                    primaryCTA={{
+                        label: "Get Started",
+                        onClick: () => { window.location.href = "/signup"; }
+                    }}
                 />
             </main>
 

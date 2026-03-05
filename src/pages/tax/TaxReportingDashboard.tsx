@@ -15,7 +15,7 @@ export default function TaxReportingDashboard() {
     const [leId, setLeId] = useState<string>();
     const scopeHeaders = buildScopeHeaders({ "legal-entity": leId });
 
-    const { data: reporting } = useQuery({
+    const { data: reporting } = useQuery<any>({
         queryKey: ["/api/tax/reporting", period, leId],
         queryFn: () => fetch(`/api/tax/reporting?period=${period}`, { headers: scopeHeaders }).then(r => r.json()),
     });

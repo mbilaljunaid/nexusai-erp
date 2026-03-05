@@ -7,9 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function TalentAcquisition() {
-    const { data: pipeline } = useQuery({
+    const { data: pipeline } = useQuery<any>({
         queryKey: ["/api/hr/talent-pipeline"],
-        queryFn: () => apiRequest("/api/hr/talent-pipeline"),
+        queryFn: () => apiRequest("GET", "/api/hr/talent-pipeline").then(res => res.json()),
     });
 
     return (

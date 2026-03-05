@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { BarChart3, TrendingUp, DollarSign, Trash2 } from "lucide-react";
 
 export default function FoodBeverageBIDashboard() {
-  const { data: metrics = [], isLoading } = useQuery({
+  const { data: metrics = [], isLoading } = useQuery<any>({
     queryKey: ["/api/fb-analytics"],
     queryFn: () => fetch("/api/fb-analytics").then(r => r.json()),
   });

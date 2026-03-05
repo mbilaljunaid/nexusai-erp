@@ -27,7 +27,7 @@ import { StandardPage } from '@/components/layout/StandardPage';
 export function TaxDashboardTab() {
     const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
 
-    const { data: metrics = [] } = useQuery({
+    const { data: metrics = [] } = useQuery<any>({
         queryKey: ["/api/tax/dashboard/metrics"],
         queryFn: async () => {
             const res = await fetch("/api/tax/dashboard/metrics");
@@ -36,7 +36,7 @@ export function TaxDashboardTab() {
         }
     });
 
-    const { data: transactions = [] } = useQuery({
+    const { data: transactions = [] } = useQuery<any>({
         queryKey: ["/api/tax/dashboard/recent-transactions"],
         queryFn: async () => {
             const res = await fetch("/api/tax/dashboard/recent-transactions");

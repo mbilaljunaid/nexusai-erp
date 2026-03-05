@@ -20,14 +20,14 @@ export default function ServiceRequestPortal() {
     });
 
     // Fetch Assets
-    const { data: assets, isLoading: loadingAssets } = useQuery({
+    const { data: assets, isLoading: loadingAssets } = useQuery<any>({
         queryKey: ["/api/maintenance/assets"],
         queryFn: () => fetch("/api/maintenance/assets").then(r => r.json())
     });
 
     // Fetch My Requests (Optional, just list all for now or filter by user if auth exists)
     // For demo, we list all recent "NEW" requests to show immediate feedback
-    const { data: myRequests } = useQuery({
+    const { data: myRequests } = useQuery<any>({
         queryKey: ["/api/maintenance/service-requests"],
         queryFn: () => fetch("/api/maintenance/service-requests").then(r => r.json())
     });

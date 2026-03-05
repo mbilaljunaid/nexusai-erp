@@ -9,19 +9,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function DataWarehouse() {
   const formMetadata = getFormMetadata("data-warehouse");
 
-  const { data: lakes = [], isLoading: lakesLoading } = useQuery({
+  const { data: lakes = [], isLoading: lakesLoading } = useQuery<any>({
     queryKey: ["/api/data-warehouse/lakes"],
   }) as { data: any[], isLoading: boolean };
 
-  const { data: pipelines = [], isLoading: pipelinesLoading } = useQuery({
+  const { data: pipelines = [], isLoading: pipelinesLoading } = useQuery<any>({
     queryKey: ["/api/etl/pipelines"],
   }) as { data: any[], isLoading: boolean };
 
-  const { data: dashboards = [], isLoading: dashboardsLoading } = useQuery({
+  const { data: dashboards = [], isLoading: dashboardsLoading } = useQuery<any>({
     queryKey: ["/api/bi/dashboards"],
   }) as { data: any[], isLoading: boolean };
 
-  const { data: jobs = [], isLoading: jobsLoading } = useQuery({
+  const { data: jobs = [], isLoading: jobsLoading } = useQuery<any>({
     queryKey: ["/api/field-service/jobs"],
   }) as { data: any[], isLoading: boolean };
 

@@ -14,7 +14,7 @@ export default function EventBanquetingManagement() {
   const { toast } = useToast();
   const [newEvent, setNewEvent] = useState({ eventId: "", eventName: "", venue: "", pax: "100", status: "proposal" });
 
-  const { data: events = [], isLoading } = useQuery({
+  const { data: events = [], isLoading } = useQuery<any>({
     queryKey: ["/api/hospitality-events"],
     queryFn: () => fetch("/api/hospitality-events").then(r => r.json()),
   });

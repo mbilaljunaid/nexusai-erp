@@ -36,7 +36,7 @@ export default function AdrBuilder() {
     const [searchQuery, setSearchQuery] = useState("");
 
     // Fetch Event Classes
-    const { data: eventClasses = [] } = useQuery({
+    const { data: eventClasses = [] } = useQuery<any>({
         queryKey: ["sla-event-classes"],
         queryFn: async () => {
             const res = await fetch("/api/sla/event-classes");
@@ -45,7 +45,7 @@ export default function AdrBuilder() {
     });
 
     // Fetch ADRs
-    const { data: rules = [], isLoading } = useQuery({
+    const { data: rules = [], isLoading } = useQuery<any>({
         queryKey: ["sla-rules"],
         queryFn: async () => {
             const res = await fetch("/api/sla/rules");
@@ -54,7 +54,7 @@ export default function AdrBuilder() {
     });
 
     // Fetch Mapping Sets for ADR linking
-    const { data: mappingSets = [] } = useQuery({
+    const { data: mappingSets = [] } = useQuery<any>({
         queryKey: ["sla-mapping-sets"],
         queryFn: async () => {
             const res = await fetch("/api/sla/mapping-sets");

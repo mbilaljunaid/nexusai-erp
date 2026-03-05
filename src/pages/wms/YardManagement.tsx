@@ -7,9 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function YardManagement() {
-    const { data: yard } = useQuery({
+    const { data: yard } = useQuery<any>({
         queryKey: ["/api/wms/yard"],
-        queryFn: () => apiRequest("/api/wms/yard"),
+        queryFn: () => apiRequest("GET", "/api/wms/yard").then(res => res.json()),
     });
 
     return (

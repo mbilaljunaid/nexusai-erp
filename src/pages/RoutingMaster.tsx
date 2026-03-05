@@ -13,7 +13,7 @@ export default function RoutingMaster() {
   const { toast } = useToast();
   const [newRouting, setNewRouting] = useState({ product: "Product-A", operation: "Assembly", workCenter: "WC-01", cycleTime: "30", status: "active" });
 
-  const { data: routings = [], isLoading } = useQuery({
+  const { data: routings = [], isLoading } = useQuery<any>({
     queryKey: ["/api/routing"],
     queryFn: () => fetch("/api/routing").then(r => r.json()).catch(() => []),
   });

@@ -34,7 +34,7 @@ interface PayrollRunDetailsProps {
 export default function PayrollRunDetails({ runId, isOpen, onClose }: PayrollRunDetailsProps) {
     const [selectedAssignmentId, setSelectedAssignmentId] = useState<string | null>(null);
 
-    const { data: results, isLoading } = useQuery({
+    const { data: results, isLoading } = useQuery<any>({
         queryKey: ["payroll-run-results", runId],
         queryFn: async () => {
             if (!runId) return [];
@@ -45,7 +45,7 @@ export default function PayrollRunDetails({ runId, isOpen, onClose }: PayrollRun
         enabled: !!runId,
     });
 
-    const { data: anomalies } = useQuery({
+    const { data: anomalies } = useQuery<any>({
         queryKey: ["payroll-run-anomalies", runId],
         queryFn: async () => {
             if (!runId) return [];

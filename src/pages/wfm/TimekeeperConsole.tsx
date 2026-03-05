@@ -24,7 +24,7 @@ export default function TimekeeperConsole() {
     const [edits, setEdits] = useState<Record<string, any>>({});
 
     // 1. Fetch Daily Status
-    const { data: dailyStatus, isLoading } = useQuery({
+    const { data: dailyStatus, isLoading } = useQuery<any>({
         queryKey: ["wfm-daily-status", selectedDate],
         queryFn: async () => {
             const res = await fetch(`/api/wfm/daily-status?tenantId=${MOCK_TENANT_ID}&date=${selectedDate}`);
@@ -94,6 +94,8 @@ export default function TimekeeperConsole() {
                             className="bg-transparent text-sm focus:outline-none"
                             value={selectedDate}
                             onChange={(e) => setSelectedDate(e.target.value)}
+                            title="Select Date"
+                            aria-label="Select Date"
                         />
                     </div>
                     <Button onClick={() => saveMutation.mutate()} disabled={Object.keys(edits).length === 0 || saveMutation.isPending}>
@@ -152,6 +154,8 @@ export default function TimekeeperConsole() {
                                                         type="time"
                                                         value={currentStart}
                                                         onChange={e => handleEdit(row.person.id, 'startTime', e.target.value)}
+                                                        title="Shift Start Time"
+                                                        aria-label="Shift Start Time"
                                                     />
                                                 </TableCell>
                                                 <TableCell>
@@ -159,6 +163,8 @@ export default function TimekeeperConsole() {
                                                         type="time"
                                                         value={currentEnd}
                                                         onChange={e => handleEdit(row.person.id, 'endTime', e.target.value)}
+                                                        title="Shift End Time"
+                                                        aria-label="Shift End Time"
                                                     />
                                                 </TableCell>
                                                 <TableCell className="text-right">

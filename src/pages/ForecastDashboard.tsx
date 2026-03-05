@@ -14,7 +14,7 @@ export default function ForecastDashboard() {
   const { toast } = useToast();
   const [newForecast, setNewForecast] = useState({ forecastName: "", period: "Q1", value: "", confidence: "medium" });
 
-  const { data: forecasts = [], isLoading } = useQuery({
+  const { data: forecasts = [], isLoading } = useQuery<any>({
     queryKey: ["/api/forecasts"],
     queryFn: () => fetch("/api/forecasts").then(r => r.json()).catch(() => []),
   });

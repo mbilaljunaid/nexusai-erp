@@ -15,15 +15,15 @@ export default function DataLineageViewer() {
     const [recordId, setRecordId] = useState("");
     const [viewType, setViewType] = useState<'UPSTREAM' | 'DOWNSTREAM' | 'FULL'>('FULL');
 
-    const { data: lineageData } = useQuery({
+    const { data: lineageData } = useQuery<any>({
         queryKey: ["/api/mdm/lineage", entityType, recordId, viewType],
-        queryFn: () => apiRequest(`/api/mdm/lineage?entityType=${entityType}&recordId=${recordId}&viewType=${viewType}`),
+        queryFn: () => apiRequest("GET", `/api/mdm/lineage?entityType=${entityType}&recordId=${recordId}&viewType=${viewType}`).then(res => res.json()),
         enabled: !!recordId,
     });
 
-    const { data: searchResults } = useQuery({
+    const { data: searchResults } = useQuery<any>({
         queryKey: ["/api/mdm/lineage-search", entityType],
-        queryFn: () => apiRequest(`/api/mdm/lineage-search?entityType=${entityType}`),
+        queryFn: () => apiRequest("GET", `/api/mdm/lineage-search?entityType=${entityType}`).then(res => res.json()),
     });
 
     return (

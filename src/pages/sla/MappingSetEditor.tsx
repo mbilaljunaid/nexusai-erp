@@ -22,7 +22,7 @@ export function MappingSetEditor({ setId, onBack }: { setId: string, onBack: () 
     const [localValues, setLocalValues] = useState<MappingValue[]>([]);
 
     // Fetch Set Metadata
-    const { data: setDetails } = useQuery({
+    const { data: setDetails } = useQuery<any>({
         queryKey: ["sla-mapping-set", setId],
         queryFn: async () => {
             const res = await fetch(`/api/sla/mapping-sets`);
@@ -32,7 +32,7 @@ export function MappingSetEditor({ setId, onBack }: { setId: string, onBack: () 
     });
 
     // Fetch Values
-    const { isLoading } = useQuery({
+    const { isLoading } = useQuery<any>({
         queryKey: ["sla-mapping-values", setId],
         queryFn: async () => {
             const res = await fetch(`/api/sla/mapping-sets/${setId}/values`);

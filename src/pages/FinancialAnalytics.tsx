@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
 
 export default function FinancialAnalytics() {
-  const { data: analytics = {} } = useQuery({
+  const { data: analytics = {} } = useQuery<any>({
     queryKey: ["/api/analytics/financial"],
     queryFn: () => fetch("/api/analytics/financial").then(r => r.json()).catch(() => ({ revenue: 2400000, profitMargin: 32.5, costs: 1600000 })),
   });

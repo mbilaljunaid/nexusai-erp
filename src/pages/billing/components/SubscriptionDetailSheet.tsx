@@ -27,7 +27,7 @@ export function SubscriptionDetailSheet({ subscriptionId, open, onOpenChange }: 
     const { toast } = useToast();
 
     // Fetch Full Details
-    const { data: sub, isLoading } = useQuery({
+    const { data: sub, isLoading } = useQuery<any>({
         queryKey: ["subscription", subscriptionId],
         queryFn: () => fetch(`/api/billing/subscriptions/${subscriptionId}`).then(res => res.json()),
         enabled: !!subscriptionId

@@ -21,7 +21,7 @@ export default function AccrualTesting() {
     });
 
     // 1. Fetch Balances
-    const { data: balances, isLoading } = useQuery({
+    const { data: balances, isLoading } = useQuery<any>({
         queryKey: ["leave-balances", MOCK_PERSON_ID],
         queryFn: async () => {
             const res = await fetch(`/api/wfm/balances/${MOCK_PERSON_ID}?tenantId=${MOCK_TENANT_ID}`);

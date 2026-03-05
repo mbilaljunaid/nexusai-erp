@@ -35,7 +35,7 @@ export default function MyTime() {
     // In real app, we'd query /wfm/time-periods first to get ID.
     // Here we need to mock a Period ID or implement the full lookup.
     // Let's create a temporary period ID concept or fetch active period.
-    const { data: periods } = useQuery({
+    const { data: periods } = useQuery<any>({
         queryKey: ["time-periods"],
         queryFn: async () => {
             const res = await fetch(`/api/wfm/time-periods?tenantId=${MOCK_USER.tenantId}`);
@@ -49,7 +49,7 @@ export default function MyTime() {
     // Let's rely on the one active period for now.
     const activePeriod = periods?.[0];
 
-    const { data: timesheet, isLoading: timeSheetLoading } = useQuery({
+    const { data: timesheet, isLoading: timeSheetLoading } = useQuery<any>({
         queryKey: ["timesheet", activePeriod?.id],
         enabled: !!activePeriod,
         queryFn: async () => {
@@ -60,7 +60,7 @@ export default function MyTime() {
     });
 
     // 2. Fetch Balances
-    const { data: balances, isLoading: balanceLoading } = useQuery({
+    const { data: balances, isLoading: balanceLoading } = useQuery<any>({
         queryKey: ["leave-balances", MOCK_USER.personId],
         queryFn: async () => {
             const res = await fetch(`/api/wfm/balances/${MOCK_USER.personId}?tenantId=${MOCK_USER.tenantId}`);

@@ -13,7 +13,7 @@ export default function FreightCostingBilling() {
   const { toast } = useToast();
   const [newInvoice, setNewInvoice] = useState({ invoiceId: "", shipmentId: "", freightCharge: "0", status: "pending" });
 
-  const { data: invoices = [], isLoading } = useQuery({
+  const { data: invoices = [], isLoading } = useQuery<any>({
     queryKey: ["/api/tl-invoices"],
     queryFn: () => fetch("/api/tl-invoices").then(r => r.json()).catch(() => []),
   });

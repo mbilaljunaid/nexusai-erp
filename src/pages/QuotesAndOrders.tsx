@@ -14,7 +14,7 @@ export default function QuotesAndOrders() {
   const { toast } = useToast();
   const [newQuote, setNewQuote] = useState({ number: "", customer: "", amount: "", type: "quote", status: "draft" });
 
-  const { data: items = [], isLoading } = useQuery({
+  const { data: items = [], isLoading } = useQuery<any>({
     queryKey: ["/api/crm/quotes"],
     queryFn: () => fetch("/api/crm/quotes").then(r => r.json()).catch(() => []),
   });

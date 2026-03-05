@@ -90,13 +90,13 @@ export default function AdvancedFSGDesigner() {
     const [columnEditor, setColumnEditor] = useState<FSGColumn | null>(null);
 
     // Fetch FSG reports
-    const { data: reports, isLoading } = useQuery({
+    const { data: reports, isLoading } = useQuery<any>({
         queryKey: ["/api/gl/fsg-reports"],
         queryFn: () => apiRequest("GET", "/api/gl/fsg-reports"),
     });
 
     // Fetch single report
-    const { data: reportData } = useQuery({
+    const { data: reportData } = useQuery<any>({
         queryKey: ["/api/gl/fsg-reports", selectedReport],
         queryFn: () => apiRequest("GET", `/api/gl/fsg-reports/${selectedReport}`),
         enabled: !!selectedReport,

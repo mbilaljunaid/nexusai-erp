@@ -7,9 +7,9 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function RollingForecast() {
-    const { data: forecast } = useQuery({
+    const { data: forecast } = useQuery<any>({
         queryKey: ["/api/epm/rolling-forecast"],
-        queryFn: () => apiRequest("/api/epm/rolling-forecast"),
+        queryFn: () => apiRequest("GET", "/api/epm/rolling-forecast").then(res => res.json()),
     });
 
     return (

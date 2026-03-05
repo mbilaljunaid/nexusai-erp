@@ -14,7 +14,7 @@ export default function PortalManagement() {
   const { toast } = useToast();
   const [newPortal, setNewPortal] = useState({ portalName: "", portalType: "External", userCount: "" });
 
-  const { data: portals = [], isLoading } = useQuery({
+  const { data: portals = [], isLoading } = useQuery<any>({
     queryKey: ["/api/portals"],
     queryFn: () => fetch("/api/portals").then(r => r.json()),
   });

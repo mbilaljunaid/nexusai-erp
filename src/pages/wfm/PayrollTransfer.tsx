@@ -22,7 +22,7 @@ export default function PayrollTransfer() {
     const [selectedPeriod, setSelectedPeriod] = useState<string>("");
 
     // 1. Fetch Periods
-    const { data: periods } = useQuery({
+    const { data: periods } = useQuery<any>({
         queryKey: ["wfm-periods"],
         queryFn: async () => {
             const res = await fetch(`/api/wfm/time-periods?tenantId=${MOCK_TENANT_ID}`);
@@ -32,7 +32,7 @@ export default function PayrollTransfer() {
     });
 
     // 2. Fetch Batches (History)
-    const { data: batches, isLoading } = useQuery({
+    const { data: batches, isLoading } = useQuery<any>({
         queryKey: ["wfm-payroll-batches"],
         queryFn: async () => {
             const res = await fetch(`/api/wfm/payroll/batches?tenantId=${MOCK_TENANT_ID}`);

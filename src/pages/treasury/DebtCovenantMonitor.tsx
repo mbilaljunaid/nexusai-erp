@@ -59,7 +59,7 @@ export default function DebtCovenantMonitor() {
         queryFn: () => fetch('/api/treasury/sanctions/history').then(r => r.json()),
     });
 
-    const { data: stats } = useQuery({
+    const { data: stats } = useQuery<any>({
         queryKey: ['sanctions-stats'],
         queryFn: () => fetch('/api/treasury/sanctions/stats').then(r => r.json()),
     });
@@ -69,7 +69,7 @@ export default function DebtCovenantMonitor() {
         queryFn: () => fetch('/api/treasury/recon/signoffs').then(r => r.json()),
     });
 
-    const { data: reconSummary } = useQuery({
+    const { data: reconSummary } = useQuery<any>({
         queryKey: ['recon-summary'],
         queryFn: () => fetch('/api/treasury/recon/summary').then(r => r.json()),
     });

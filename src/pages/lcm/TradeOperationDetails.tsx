@@ -39,7 +39,7 @@ export default function TradeOperationDetails() {
     const [activeTab, setActiveTab] = useState("header");
 
     // Fetch Details
-    const { data: op, isLoading, isError } = useQuery({
+    const { data: op, isLoading, isError } = useQuery<any>({
         queryKey: [`/api/lcm/trade-operations/${id}`],
         queryFn: async () => {
             const res = await fetch(`/api/lcm/trade-operations/${id}`);

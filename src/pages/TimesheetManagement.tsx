@@ -15,7 +15,7 @@ export default function TimesheetManagement() {
   const { toast } = useToast();
   const [localTimesheets, setLocalTimesheets] = useState<any[]>([]);
 
-  const { data: timesheets = [], isLoading } = useQuery({
+  const { data: timesheets = [], isLoading } = useQuery<any>({
     queryKey: ["/api/timesheets"],
     queryFn: () => fetch("/api/timesheets").then(r => r.json()).catch(() => []),
   });

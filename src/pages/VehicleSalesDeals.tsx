@@ -14,7 +14,7 @@ export default function VehicleSalesDeals() {
   const { toast } = useToast();
   const [localDeals, setLocalDeals] = useState<any[]>([]);
 
-  const { data: deals = [], isLoading } = useQuery({
+  const { data: deals = [], isLoading } = useQuery<any>({
     queryKey: ["/api/auto-deals"],
     queryFn: () => fetch("/api/auto-deals").then(r => r.json()).catch(() => []),
   });

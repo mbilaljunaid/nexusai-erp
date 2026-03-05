@@ -32,7 +32,7 @@ export default function SSPManager() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [newBookName, setNewBookName] = useState("");
 
-    const { data: sspBooks, isLoading: booksLoading } = useQuery({
+    const { data: sspBooks, isLoading: booksLoading } = useQuery<any>({
         queryKey: ["sspBooks"],
         queryFn: async () => {
             const res = await fetch("/api/revenue/ssp/books");
@@ -44,7 +44,7 @@ export default function SSPManager() {
         }
     });
 
-    const { data: sspLines, isLoading: linesLoading } = useQuery({
+    const { data: sspLines, isLoading: linesLoading } = useQuery<any>({
         queryKey: ["sspLines", selectedBook],
         queryFn: async () => {
             if (!selectedBook) return [];

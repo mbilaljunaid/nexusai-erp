@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 export default function CreditManagementCollections() {
   const { open, sendMessage } = useNexusAI();
-  const { data: creditData = [], isLoading } = useQuery({
+  const { data: creditData = [], isLoading } = useQuery<any>({
     queryKey: ["/api/credit-management"],
     queryFn: () => fetch("/api/credit-management").then(r => r.json()).catch(() => []),
   });

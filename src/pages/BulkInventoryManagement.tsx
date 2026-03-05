@@ -14,7 +14,7 @@ export default function BulkInventoryManagement() {
   const { toast } = useToast();
   const [newItem, setNewItem] = useState({ materialId: "", containerType: "tank", quantity: "1000", status: "available" });
 
-  const { data: items = [], isLoading } = useQuery({
+  const { data: items = [], isLoading } = useQuery<any>({
     queryKey: ["/api/bulk-inventory"],
     queryFn: () => fetch("/api/bulk-inventory").then(r => r.json()).catch(() => []),
   });

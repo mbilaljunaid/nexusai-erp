@@ -13,7 +13,7 @@ export default function ProcurementSourcing() {
   const { toast } = useToast();
   const [newPO, setNewPO] = useState({ poId: "", supplierId: "", itemId: "", quantity: "0", status: "draft" });
 
-  const { data: orders = [], isLoading } = useQuery({
+  const { data: orders = [], isLoading } = useQuery<any>({
     queryKey: ["/api/fb-procurement"],
     queryFn: () => fetch("/api/fb-procurement").then(r => r.json()).catch(() => []),
   });

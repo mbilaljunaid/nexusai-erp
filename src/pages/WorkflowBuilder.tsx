@@ -12,7 +12,7 @@ export default function WorkflowBuilder() {
   const { toast } = useToast();
   const [newWorkflow, setNewWorkflow] = useState({ name: "", trigger: "manual", status: "active" });
 
-  const { data: workflows = [], isLoading } = useQuery({
+  const { data: workflows = [], isLoading } = useQuery<any>({
     queryKey: ["/api/workflows"],
     queryFn: () => fetch("/api/workflows").then(r => r.json()).catch(() => []),
   });

@@ -20,7 +20,7 @@ export default function SupplierPerformance() {
     const { open } = useNexusAI();
     const token = localStorage.getItem("supplier_token");
 
-    const { data: scorecard, isLoading } = useQuery({
+    const { data: scorecard, isLoading } = useQuery<any>({
         queryKey: ["/api/portal/supplier/scorecard"],
         queryFn: async () => {
             const res = await fetch("/api/portal/supplier/scorecard", {

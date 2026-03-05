@@ -152,6 +152,7 @@ export default function ShipmentTrackingDashboard() {
                     <div className="w-16 h-2 bg-slate-200 rounded-full overflow-hidden">
                         <div
                             className={`h-full ${val >= 80 ? "bg-green-500" : val >= 60 ? "bg-amber-500" : "bg-red-500"}`}
+                            // eslint-disable-next-line react-native/no-inline-styles
                             style={{ width: `${Number(val)}%` }}
                         />
                     </div>
@@ -164,7 +165,7 @@ export default function ShipmentTrackingDashboard() {
     return (
         <div className="p-6 space-y-6">
             <div>
-                
+
                 <p className="text-muted-foreground">Real-time shipment monitoring and ETA management</p>
             </div>
 
@@ -254,7 +255,7 @@ export default function ShipmentTrackingDashboard() {
                                             >
                                                 {shipmentColumns.map((col) => (
                                                     <TableCell key={col.key}>
-                                                        {col.render ? col.render(shipment[col.key as keyof ActiveShipment] as any) : shipment[col.key as keyof ActiveShipment]}
+                                                        {col.render ? (col as any).render(shipment[col.key as keyof ActiveShipment]) : shipment[col.key as keyof ActiveShipment] as any}
                                                     </TableCell>
                                                 ))}
                                             </TableRow>
@@ -341,7 +342,7 @@ export default function ShipmentTrackingDashboard() {
                                             >
                                                 {shipmentColumns.map((col) => (
                                                     <TableCell key={col.key}>
-                                                        {col.render ? col.render(shipment[col.key as keyof ActiveShipment] as any) : shipment[col.key as keyof ActiveShipment]}
+                                                        {col.render ? (col as any).render(shipment[col.key as keyof ActiveShipment]) : shipment[col.key as keyof ActiveShipment] as any}
                                                     </TableCell>
                                                 ))}
                                             </TableRow>

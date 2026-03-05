@@ -13,7 +13,7 @@ export default function InterviewerDashboard() {
     // For V1 demo, if no user is logged in, we might default to a test ID, but useUser should handle it.
     // We'll pass user.id to the query.
 
-    const { data: schedule = [], isLoading } = useQuery({
+    const { data: schedule = [], isLoading } = useQuery<any>({
         queryKey: ["/api/recruitment/my-interviews", user?.id],
         queryFn: () => {
             if (!user?.id) return [];

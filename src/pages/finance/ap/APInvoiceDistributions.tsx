@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Trash2, Save, Network } from "lucide-react";
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
@@ -48,7 +47,7 @@ export function APInvoiceDistributions({ invoiceId, invoiceLineId, lineAmount, o
         }
     ]);
 
-    const { data: accounts } = useQuery({
+    const { data: accounts } = useQuery<any>({
         queryKey: ["/api/gl/accounts"],
         queryFn: () => fetch("/api/gl/accounts").then(r => r.json()),
     });

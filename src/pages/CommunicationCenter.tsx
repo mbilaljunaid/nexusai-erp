@@ -13,7 +13,7 @@ export default function CommunicationCenter() {
   const { toast } = useToast();
   const [newComm, setNewComm] = useState({ commType: "Email", recipient: "", subject: "" });
 
-  const { data: communications = [], isLoading } = useQuery({
+  const { data: communications = [], isLoading } = useQuery<any>({
     queryKey: ["/api/communications"],
     queryFn: () => fetch("/api/communications").then(r => r.json()),
   });

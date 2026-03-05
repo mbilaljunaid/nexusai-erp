@@ -18,7 +18,7 @@ export default function JobRequisitionDetail() {
     const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
 
     // Fetch Pipeline
-    const { data: pipeline = {}, isLoading } = useQuery({
+    const { data: pipeline = {}, isLoading } = useQuery<any>({
         queryKey: [`/api/recruitment/requisitions/${id}/pipeline`],
         queryFn: () => fetch(`/api/recruitment/requisitions/${id}/pipeline`).then(r => r.json())
     });

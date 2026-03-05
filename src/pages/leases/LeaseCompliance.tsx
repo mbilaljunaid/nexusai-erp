@@ -7,9 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function LeaseCompliance() {
-    const { data: compliance } = useQuery({
+    const { data: compliance } = useQuery<any>({
         queryKey: ["/api/leases/compliance"],
-        queryFn: () => apiRequest("/api/leases/compliance"),
+        queryFn: () => apiRequest("GET", "/api/leases/compliance").then(res => res.json()),
     });
 
     return (

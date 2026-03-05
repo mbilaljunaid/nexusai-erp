@@ -21,7 +21,7 @@ import { useMutation } from "@tanstack/react-query";
 import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function ArReports() {
-    const { data: aging, refetch: refetchAging } = useQuery({
+    const { data: aging, refetch: refetchAging } = useQuery<any>({
         queryKey: ["/api/ar/reports/aging"],
         queryFn: async () => {
             try { return await (await apiRequest("GET", "/api/ar/reports/aging")).json(); }
@@ -29,7 +29,7 @@ export default function ArReports() {
         }
     });
 
-    const { data: recon, refetch: refetchRecon } = useQuery({
+    const { data: recon, refetch: refetchRecon } = useQuery<any>({
         queryKey: ["/api/ar/reports/reconciliation"],
         queryFn: async () => {
             try { return await (await apiRequest("GET", "/api/ar/reports/reconciliation")).json(); }

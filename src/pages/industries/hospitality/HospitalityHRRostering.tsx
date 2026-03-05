@@ -14,7 +14,7 @@ export default function HospitalityHRRostering() {
   const { toast } = useToast();
   const [newShift, setNewShift] = useState({ employeeId: "", name: "", role: "housekeeping", date: "", status: "scheduled" });
 
-  const { data: shifts = [], isLoading } = useQuery({
+  const { data: shifts = [], isLoading } = useQuery<any>({
     queryKey: ["/api/hospitality-rostering"],
     queryFn: () => fetch("/api/hospitality-rostering").then(r => r.json()).catch(() => []),
   });

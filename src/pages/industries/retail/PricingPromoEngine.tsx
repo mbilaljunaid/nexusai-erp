@@ -15,7 +15,7 @@ export default function PricingPromoEngine() {
   const { toast } = useToast();
   const [newPromo, setNewPromo] = useState({ name: "", type: "discount", discountPct: "10", startDate: "", endDate: "", status: "draft" });
 
-  const { data: promos = [], isLoading } = useQuery({
+  const { data: promos = [], isLoading } = useQuery<any>({
     queryKey: ["/api/promotions"],
     queryFn: () => fetch("/api/promotions").then(r => r.json()).catch(() => []),
   });

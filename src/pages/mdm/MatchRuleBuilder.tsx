@@ -42,7 +42,7 @@ export default function MatchRuleBuilder() {
     const queryClient = useQueryClient();
 
     // Fetch rules
-    const { data: rules = [] } = useQuery({
+    const { data: rules = [] } = useQuery<any>({
         queryKey: ["/api/mdm/match-rules"],
     });
 

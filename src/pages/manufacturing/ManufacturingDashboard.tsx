@@ -59,7 +59,7 @@ export default function ManufacturingDashboard() {
         }
     });
 
-    const { data: eventsData = [], isLoading: eventsLoading } = useQuery({
+    const { data: eventsData = [], isLoading: eventsLoading } = useQuery<any>({
         queryKey: ["/api/manufacturing/events", inventoryOrgId],
         queryFn: async () => {
             const res = await fetch("/api/manufacturing/events", { headers: invOrgHeaders });

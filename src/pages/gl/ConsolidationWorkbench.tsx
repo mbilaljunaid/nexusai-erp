@@ -45,7 +45,7 @@ export default function ConsolidationWorkbench() {
     const [runProgress, setRunProgress] = useState(0);
 
     // Fetch History
-    const { data: history = [], isLoading } = useQuery({
+    const { data: history = [], isLoading } = useQuery<any>({
         queryKey: ["consolidation-history"],
         queryFn: async () => {
             const res = await fetch("/api/gl/consolidation/history");
@@ -55,7 +55,7 @@ export default function ConsolidationWorkbench() {
     });
 
     // Fetch ledger sets
-    const { data: ledgerSets = [] } = useQuery({
+    const { data: ledgerSets = [] } = useQuery<any>({
         queryKey: ["ledger-sets"],
         queryFn: async () => {
             return [

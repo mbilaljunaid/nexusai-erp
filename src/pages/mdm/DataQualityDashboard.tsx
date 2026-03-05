@@ -7,11 +7,11 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 
 export default function DataQualityDashboard() {
-    const { data: stats } = useQuery({
+    const { data: stats } = useQuery<any>({
         queryKey: ["/api/mdm/stats"],
     });
 
-    const { data: dqStats } = useQuery({
+    const { data: dqStats } = useQuery<any>({
         queryKey: ["/api/mdm/dq-dashboard/stats"],
     });
 

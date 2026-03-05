@@ -32,7 +32,7 @@ export function SubscriptionWorkbench() {
     // --- Fetch Query ---
 
     // Fetch Customers for Lookup
-    const { data: customers = [] } = useQuery({
+    const { data: customers = [] } = useQuery<any>({
         queryKey: ["customers", businessUnitId],
         queryFn: async () => fetch("/api/ar/customers", {
             headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined
@@ -44,7 +44,7 @@ export function SubscriptionWorkbench() {
         return c ? c.name : id;
     };
 
-    const { data: subscriptions, isLoading } = useQuery({
+    const { data: subscriptions, isLoading } = useQuery<any>({
         queryKey: ["subscriptions", businessUnitId],
         queryFn: async () => {
             const res = await fetch("/api/billing/subscriptions", {

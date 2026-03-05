@@ -13,7 +13,7 @@ import { Loader2 } from "lucide-react";
 export default function PredictiveAnalytics() {
   const { toast } = useToast();
 
-  const { data: forecast, isLoading } = useQuery({
+  const { data: forecast, isLoading } = useQuery<any>({
     queryKey: ["/api/hr/predictive/attrition"],
     queryFn: () => fetch("/api/hr/predictive/attrition").then(r => r.json()),
   });
@@ -40,9 +40,9 @@ export default function PredictiveAnalytics() {
   // In a real application, this would likely come from a hook or prop.
   const formMetadata = {
     breadcrumbs: [
-      { label: "Home", href: "/" },
-      { label: "HR", href: "/hr" },
-      { label: "Predictive Analytics", href: "/hr/predictive" },
+      { label: "Home", path: "/" },
+      { label: "HR", path: "/hr" },
+      { label: "Predictive Analytics", path: "/hr/predictive" },
     ]
   };
 

@@ -16,7 +16,7 @@ export default function FailureCodeConfig() {
     const [selectedParent, setSelectedParent] = useState<string | null>(null);
 
     // 1. Fetch Tree
-    const { data: tree } = useQuery({
+    const { data: tree } = useQuery<any>({
         queryKey: ["/api/maintenance/failure-codes/tree"],
         queryFn: async () => {
             const res = await fetch("/api/maintenance/failure-codes/tree");
@@ -26,7 +26,7 @@ export default function FailureCodeConfig() {
     });
 
     // 2. Fetch Flat List (for table)
-    const { data: list = [], isLoading } = useQuery({
+    const { data: list = [], isLoading } = useQuery<any>({
         queryKey: ["/api/maintenance/failure-codes", selectedType, selectedParent],
         queryFn: async () => {
             const res = await fetch(`/api/maintenance/failure-codes?type=${selectedType}${selectedParent ? `&parentId=${selectedParent}` : ''}`);

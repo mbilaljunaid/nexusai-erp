@@ -12,7 +12,7 @@ export default function CustomerDetails() {
     const [, params] = useRoute("/finance/ar/customers/:id");
     const customerId = (params as any)?.id;
 
-    const { data: customer, isLoading } = useQuery({
+    const { data: customer, isLoading } = useQuery<any>({
         queryKey: [`/api/ar/customers/${customerId}`],
         enabled: !!customerId,
         queryFn: async () => {

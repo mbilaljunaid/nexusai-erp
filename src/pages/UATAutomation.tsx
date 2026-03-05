@@ -32,7 +32,7 @@ export default function UATAutomation() {
       ),
   });
 
-  const { data: coverage, refetch: refetchCoverage } = useQuery({
+  const { data: coverage, refetch: refetchCoverage } = useQuery<any>({
     queryKey: ["/api/uat/coverage", selectedIndustry],
     enabled: !!selectedIndustry,
     queryFn: () =>

@@ -45,7 +45,7 @@ export default function CreditMemoWorkbench() {
     const [statusFilter, setStatusFilter] = useState<string>("all");
 
     // Fetch credit memos
-    const { data: creditMemosResult, isLoading } = useQuery({
+    const { data: creditMemosResult, isLoading } = useQuery<any>({
         queryKey: ["credit-memos", statusFilter, businessUnitId],
         queryFn: async () => {
             const params = new URLSearchParams();
@@ -64,7 +64,7 @@ export default function CreditMemoWorkbench() {
     });
 
     // Fetch invoices for credit memo creation
-    const { data: invoices = [] } = useQuery({
+    const { data: invoices = [] } = useQuery<any>({
         queryKey: ["invoices", businessUnitId],
         queryFn: async () => {
             const res = await fetch("/api/ar/invoices?status=Issued", {

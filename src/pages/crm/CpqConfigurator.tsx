@@ -48,7 +48,7 @@ export default function CpqConfigurator() {
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     // Fetch available products for configuration
-    const { data: products = [] } = useQuery({
+    const { data: products = [] } = useQuery<any>({
         queryKey: ["configurable-products"],
         queryFn: async () => {
             const res = await fetch("/api/crm/cpq/products");
@@ -67,7 +67,7 @@ export default function CpqConfigurator() {
     });
 
     // Validate configuration
-    const { data: validation } = useQuery({
+    const { data: validation } = useQuery<any>({
         queryKey: ["config-validation", selectedProduct, configValues],
         queryFn: async () => {
             const res = await fetch(`/api/crm/cpq/products/${selectedProduct}/validate`, {
@@ -81,7 +81,7 @@ export default function CpqConfigurator() {
     });
 
     // Calculate pricing
-    const { data: pricing } = useQuery({
+    const { data: pricing } = useQuery<any>({
         queryKey: ["config-pricing", selectedProduct, configValues],
         queryFn: async () => {
             const res = await fetch(`/api/crm/cpq/products/${selectedProduct}/price`, {

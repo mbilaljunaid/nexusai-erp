@@ -19,7 +19,7 @@ export default function CampaignDashboard() {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [newItem, setNewItem] = useState({ name: "", type: "Email", budgetedCost: "" });
 
-    const { data: campaigns, isLoading } = useQuery({
+    const { data: campaigns, isLoading } = useQuery<any>({
         queryKey: ["/api/crm/campaigns"],
         queryFn: async () => {
             const res = await fetch("/api/crm/campaigns");

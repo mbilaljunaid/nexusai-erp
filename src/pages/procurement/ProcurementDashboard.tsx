@@ -19,9 +19,10 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { EnterpriseContextSwitcher } from "@/components/EnterpriseContextSwitcher";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { useEnterprise } from "@/contexts/EnterpriseContext";
 
 export default function ProcurementDashboard() {
-    const [activeBuId, setActiveBuId] = useState<string | undefined>();
+    const { activeBuId } = useEnterprise();
 
     const scopeHeaders = activeBuId ? { "x-business-unit-id": activeBuId } : {};
 
@@ -72,11 +73,7 @@ export default function ProcurementDashboard() {
             description="Monitor metrics, analyze spend, and manage supply chain operations."
             actions={
                 <div className="flex gap-2 items-center">
-                    <EnterpriseContextSwitcher
-                        type="business-unit"
-                        value={activeBuId}
-                        onChange={setActiveBuId}
-                    />
+                    <EnterpriseContextSwitcher />
                     <Link href="/procurement/orders/new">
                         <Button>
                             <ShoppingCart className="mr-2 h-4 w-4" /> Create Order

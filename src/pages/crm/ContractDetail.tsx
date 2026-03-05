@@ -13,7 +13,7 @@ export default function ContractDetail() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    const { data: contract, isLoading } = useQuery({
+    const { data: contract, isLoading } = useQuery<any>({
         queryKey: [`/api/crm/contracts/${id}`],
         queryFn: () => fetch(`/api/crm/contracts/${id}`).then(r => r.json())
     });

@@ -28,7 +28,7 @@ export function LotSerialManager() {
     });
 
     // Queries
-    const { data: lotsData, isLoading: lotsLoading } = useQuery({
+    const { data: lotsData, isLoading: lotsLoading } = useQuery<any>({
         queryKey: ["/api/inventory/lots", lotPage, pageSize, search, activeInvOrgId],
         queryFn: async () => {
             const query = new URLSearchParams();
@@ -44,7 +44,7 @@ export function LotSerialManager() {
         }
     });
 
-    const { data: serialsData, isLoading: serialsLoading } = useQuery({
+    const { data: serialsData, isLoading: serialsLoading } = useQuery<any>({
         queryKey: ["/api/inventory/serials", serialPage, pageSize, search, activeInvOrgId],
         queryFn: async () => {
             const query = new URLSearchParams();
@@ -60,7 +60,7 @@ export function LotSerialManager() {
         }
     });
 
-    const { data: items = [] } = useQuery({
+    const { data: items = [] } = useQuery<any>({
         queryKey: ["/api/inventory/items", activeInvOrgId],
         queryFn: async () => {
             const res = await fetch(`/api/inventory/products`, {

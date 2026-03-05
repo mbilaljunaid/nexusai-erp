@@ -34,7 +34,7 @@ export default function OfferLetterSign() {
 
     const { data: summary } = useQuery<EsigSummary>({ queryKey: ['esig-summary'], queryFn: () => fetch('/api/recruiting/esignature/summary').then(r => r.json()) });
     const { data: docs = [] } = useQuery<EsigDoc[]>({ queryKey: ['esig-docs'], queryFn: () => fetch('/api/recruiting/esignature/documents').then(r => r.json()) });
-    const { data: audit } = useQuery({ queryKey: ['esig-audit', auditDoc?.id], enabled: !!auditDoc, queryFn: () => fetch(`/api/recruiting/esignature/documents/${auditDoc!.id}/audit`).then(r => r.json()) });
+    const { data: audit } = useQuery<any>({ queryKey: ['esig-audit', auditDoc?.id], enabled: !!auditDoc, queryFn: () => fetch(`/api/recruiting/esignature/documents/${auditDoc!.id}/audit`).then(r => r.json()) });
 
     const createMut = useMutation({ mutationFn: (d: any) => fetch('/api/recruiting/esignature/documents', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }).then(r => r.json()), onSuccess: () => { qc.invalidateQueries({ queryKey: ['esig-docs', 'esig-summary'] }); setTab('docs'); } });
     const sendMut = useMutation({ mutationFn: (id: string) => fetch(`/api/recruiting/esignature/documents/${id}/send`, { method: 'POST' }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['esig-docs', 'esig-summary'] }) });

@@ -13,7 +13,7 @@ export default function WorkflowTemplates() {
   const { toast } = useToast();
   const [newTemplate, setNewTemplate] = useState({ name: "", category: "Sales" });
 
-  const { data: templates = [], isLoading } = useQuery({
+  const { data: templates = [], isLoading } = useQuery<any>({
     queryKey: ["/api/workflow-templates"],
     queryFn: () => fetch("/api/workflow-templates").then(r => r.json()).catch(() => []),
   });

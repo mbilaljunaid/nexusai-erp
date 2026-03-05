@@ -12,13 +12,13 @@ export default function CashPositionDashboard() {
     const [scenario, setScenario] = useState("BASELINE");
 
     // Fetch cash position
-    const { data: position } = useQuery({
+    const { data: position } = useQuery<any>({
         queryKey: ["/api/finance/cash/position"],
         queryFn: () => fetch("/api/finance/cash/position").then(r => r.json())
     });
 
     // Fetch cash forecast
-    const { data: forecast } = useQuery({
+    const { data: forecast } = useQuery<any>({
         queryKey: ["/api/finance/cash/forecast", forecastDays, scenario],
         queryFn: () => fetch(`/api/finance/cash/forecast?days=${forecastDays}&scenario=${scenario}`).then(r => r.json())
     });

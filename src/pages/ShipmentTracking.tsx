@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin } from "lucide-react";
 
 export default function ShipmentTracking() {
-  const { data: events = [], isLoading } = useQuery({
+  const { data: events = [], isLoading } = useQuery<any>({
     queryKey: ["/api/tl-tracking"],
     queryFn: () => fetch("/api/tl-tracking").then(r => r.json()).catch(() => []),
   });

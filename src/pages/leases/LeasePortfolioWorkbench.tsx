@@ -31,7 +31,7 @@ export default function LeasePortfolioWorkbench() {
 
     const scopeHeaders = buildScopeHeaders({ "business-unit": activeBuId });
 
-    const { data: fetchResult, isLoading } = useQuery({
+    const { data: fetchResult, isLoading } = useQuery<any>({
         queryKey: ["leases", search, page, activeBuId],
         queryFn: async () => {
             const res = await fetch(

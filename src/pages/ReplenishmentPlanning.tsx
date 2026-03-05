@@ -14,7 +14,7 @@ export default function ReplenishmentPlanning() {
   const { toast } = useToast();
   const [newReplen, setNewReplen] = useState({ productId: "", supplierId: "", quantity: "100", status: "suggested" });
 
-  const { data: replenishments = [], isLoading } = useQuery({
+  const { data: replenishments = [], isLoading } = useQuery<any>({
     queryKey: ["/api/replenishment-plan"],
     queryFn: () => fetch("/api/replenishment-plan").then(r => r.json()).catch(() => []),
   });

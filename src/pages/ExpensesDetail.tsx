@@ -42,7 +42,7 @@ export default function ExpensesDetail() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
-  const reportId = params?.id || "";
+  const reportId = (params as any)?.id || "";
 
   const [isAddLineOpen, setIsAddLineOpen] = useState(false);
   const [isRejectOpen, setIsRejectOpen] = useState(false);
@@ -360,8 +360,8 @@ export default function ExpensesDetail() {
   if (reportLoading) {
     return (
       <StandardPage
-        title={report?.title || `Loading Expense Report...`}
-        description={report?.description || "Please wait while we load the expense report."}
+        title="Loading Expense Report..."
+        description="Please wait while we load the expense report."
         className="flex items-center justify-center h-64"
       >
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -441,7 +441,7 @@ export default function ExpensesDetail() {
       {
         report.status === 'DRAFT' && (
           <div className="flex gap-2">
-            <Button onClick={() => submitMutation.mutate(undefined)} disabled={submitMutation.isPending || lines.length === 0}>
+            <Button onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending || lines.length === 0}>
               {submitMutation.isPending ? (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               ) : (
@@ -462,7 +462,7 @@ export default function ExpensesDetail() {
       {
         report.status === 'SUBMITTED' && (
           <div className="flex gap-2">
-            <Button onClick={() => approveMutation.mutate()} disabled={approveMutation.isPending}>
+            <Button onClick={() => approveMutation.mutate("")} disabled={approveMutation.isPending}>
               {approveMutation.isPending ? (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               ) : (

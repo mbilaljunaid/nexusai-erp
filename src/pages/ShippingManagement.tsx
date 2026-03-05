@@ -14,7 +14,7 @@ export default function ShippingManagement() {
   const { toast } = useToast();
   const [newShip, setNewShip] = useState({ orderId: "", carrier: "UPS", method: "standard", status: "pending" });
 
-  const { data: shipments = [], isLoading } = useQuery({
+  const { data: shipments = [], isLoading } = useQuery<any>({
     queryKey: ["/api/shipments"],
     queryFn: () => fetch("/api/shipments").then(r => r.json()),
   });

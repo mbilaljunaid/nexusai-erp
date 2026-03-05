@@ -11,9 +11,9 @@ import { StandardPage } from '@/components/layout/StandardPage';
 export default function WarehouseAnalytics() {
     const [period, setPeriod] = useState("WEEK");
 
-    const { data: analytics } = useQuery({
+    const { data: analytics } = useQuery<any>({
         queryKey: ["/api/wms/analytics", period],
-        queryFn: () => apiRequest(`/api/wms/analytics?period=${period}`),
+        queryFn: () => apiRequest("GET", `/api/wms/analytics?period=${period}`).then(res => res.json()),
     });
 
     return (
@@ -107,7 +107,6 @@ export default function WarehouseAnalytics() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
-        </StandardPage >
+        </StandardPage>
     );
 }

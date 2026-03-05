@@ -44,7 +44,7 @@ export default function HRPredictiveAnalytics() {
     const [dateRange, setDateRange] = useState('12');
     const [riskFilter, setRiskFilter] = useState('ALL');
 
-    const { data: analytics, isLoading } = useQuery({
+    const { data: analytics, isLoading } = useQuery<any>({
         queryKey: ['/analytics/hr-predictive', dateRange],
         queryFn: async () => {
             const res = await fetch(`/api/analytics/hr-predictive?months=${dateRange}`);

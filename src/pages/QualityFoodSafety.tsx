@@ -13,7 +13,7 @@ export default function QualityFoodSafety() {
   const { toast } = useToast();
   const [newTest, setNewTest] = useState({ testId: "", batchId: "", testType: "microbial", result: "pass" });
 
-  const { data: tests = [], isLoading } = useQuery({
+  const { data: tests = [], isLoading } = useQuery<any>({
     queryKey: ["/api/fb-quality"],
     queryFn: () => fetch("/api/fb-quality").then(r => r.json()).catch(() => []),
   });

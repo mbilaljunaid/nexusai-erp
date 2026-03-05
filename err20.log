@@ -1,0 +1,21 @@
+src/pages/epm/BudgetBalanceDrillDown.tsx(35,22): error TS18047: 'params' is possibly 'null'.
+src/pages/ExpensesDetail.tsx(363,32): error TS2339: Property 'title' does not exist on type 'never'.
+src/pages/ExpensesDetail.tsx(364,38): error TS2339: Property 'description' does not exist on type 'never'.
+src/pages/gl/AuditLogs.tsx(15,13): error TS2322: Type '{ children: Element; title: string; description: string; actions: Element; backHref: string; }' is not assignable to type 'IntrinsicAttributes & StandardPageProps'.
+  Property 'backHref' does not exist on type 'IntrinsicAttributes & StandardPageProps'.
+src/pages/industries/IndustryLandingPage.tsx(104,21): error TS2739: Type 'ReactElement<any, any>' is missing the following properties from type '{ label: string; onClick: () => void; }': label, onClick
+src/pages/modules/ModuleLandingPage.tsx(95,21): error TS2739: Type 'ReactElement<any, any>' is missing the following properties from type '{ label: string; onClick: () => void; }': label, onClick
+src/pages/PredictiveAnalytics.tsx(55,21): error TS2322: Type '{ label: string; href: string; }[]' is not assignable to type 'BreadcrumbItem[]'.
+  Property 'path' is missing in type '{ label: string; href: string; }' but required in type 'BreadcrumbItem'.
+src/pages/procurement/ProcurementDashboard.tsx(76,25): error TS2322: Type '{ type: string; value: string; onChange: Dispatch<SetStateAction<string>>; }' is not assignable to type 'IntrinsicAttributes'.
+  Property 'type' does not exist on type 'IntrinsicAttributes'.
+src/pages/tax/TaxRuleEngine.tsx(30,43): error TS2339: Property 'passed' does not exist on type 'Response'.
+src/pages/tax/TaxRuleEngine.tsx(30,87): error TS2339: Property 'taxAmount' does not exist on type 'Response'.
+src/pages/TicketDashboard.tsx(22,59): error TS2322: Type '{ formMetadata: FormMetadata; onSearch: Dispatch<SetStateAction<string>>; }' is not assignable to type 'IntrinsicAttributes & FormSearchWithMetadataProps'.
+  Property 'onSearch' does not exist on type 'IntrinsicAttributes & FormSearchWithMetadataProps'.
+src/pages/transportation/LoadTendering.tsx(38,55): error TS2339: Property 'carrierName' does not exist on type 'Response'.
+src/pages/transportation/LoadTendering.tsx(38,83): error TS2339: Property 'rate' does not exist on type 'Response'.
+src/pages/transportation/LoadTendering.tsx(50,55): error TS2339: Property 'carrierName' does not exist on type 'Response'.
+src/pages/transportation/LoadTendering.tsx(50,86): error TS2339: Property 'savings' does not exist on type 'Response'.
+src/pages/transportation/RouteOptimization.tsx(32,65): error TS2339: Property 'savingsPercent' does not exist on type 'Response'.
+src/pages/transportation/RouteOptimization.tsx(32,90): error TS2339: Property 'distance' does not exist on type 'Response'.

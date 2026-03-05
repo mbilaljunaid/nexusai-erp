@@ -13,7 +13,7 @@ export default function WarrantyClaimsManagement() {
   const { toast } = useToast();
   const [newClaim, setNewClaim] = useState({ claimId: "", vin: "", claimAmount: "0", status: "pending" });
 
-  const { data: claims = [], isLoading } = useQuery({
+  const { data: claims = [], isLoading } = useQuery<any>({
     queryKey: ["/api/auto-warranty"],
     queryFn: () => fetch("/api/auto-warranty").then(r => r.json()),
   });

@@ -16,7 +16,7 @@ export default function OnboardingWorkbench() {
     const queryClient = useQueryClient();
     const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
-    const { data: hires = [], isLoading } = useQuery({
+    const { data: hires = [], isLoading } = useQuery<any>({
         queryKey: ["/api/recruitment/onboarding/progress"],
         queryFn: () => fetch("/api/recruitment/onboarding/progress").then(r => r.json())
     });

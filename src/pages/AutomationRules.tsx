@@ -13,7 +13,7 @@ export default function AutomationRules() {
   const { toast } = useToast();
   const [newRule, setNewRule] = useState({ name: "", module: "CRM", trigger: "created", priority: "80" });
 
-  const { data: rules = [], isLoading } = useQuery({
+  const { data: rules = [], isLoading } = useQuery<any>({
     queryKey: ["/api/automation-rules"],
     queryFn: () => fetch("/api/automation-rules").then(r => r.json()),
   });

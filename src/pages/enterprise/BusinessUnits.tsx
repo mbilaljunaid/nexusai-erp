@@ -11,7 +11,7 @@ export default function BusinessUnits() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    const { data: businessUnits = [], isLoading } = useQuery({
+    const { data: businessUnits = [], isLoading } = useQuery<any>({
         queryKey: ["/api/enterprise/business-units"],
         queryFn: async () => {
             const res = await fetch("/api/enterprise/business-units");

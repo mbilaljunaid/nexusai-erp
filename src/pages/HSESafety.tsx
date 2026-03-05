@@ -14,7 +14,7 @@ export default function HSESafety() {
   const { toast } = useToast();
   const [newHSE, setNewHSE] = useState({ incidentType: "Near Miss", severity: "low", location: "Site-A", status: "open" });
 
-  const { data: incidents = [], isLoading } = useQuery({
+  const { data: incidents = [], isLoading } = useQuery<any>({
     queryKey: ["/api/hse"],
     queryFn: () => fetch("/api/hse").then(r => r.json()).catch(() => []),
   });

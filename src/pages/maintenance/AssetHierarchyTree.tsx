@@ -51,7 +51,7 @@ const TreeNode = ({ node, level = 0 }: { node: AssetNode, level?: number }) => {
 };
 
 export default function AssetHierarchyTree() {
-    const { data: hierarchy, isLoading } = useQuery({
+    const { data: hierarchy, isLoading } = useQuery<any>({
         queryKey: ["/api/maintenance/assets/hierarchy"],
         queryFn: () => fetch("/api/maintenance/assets/hierarchy").then(r => r.json())
     });

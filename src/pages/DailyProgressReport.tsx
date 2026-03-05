@@ -14,7 +14,7 @@ export default function DailyProgressReport() {
   const { toast } = useToast();
   const [newDPR, setNewDPR] = useState({ date: new Date().toISOString().split('T')[0], progress: "50", manHours: "100", materialUsed: "500", status: "submitted" });
 
-  const { data: dprs = [], isLoading } = useQuery({
+  const { data: dprs = [], isLoading } = useQuery<any>({
     queryKey: ["/api/dpr"],
     queryFn: () => fetch("/api/dpr").then(r => r.json()).catch(() => []),
   });

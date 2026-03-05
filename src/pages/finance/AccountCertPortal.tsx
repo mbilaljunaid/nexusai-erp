@@ -51,11 +51,11 @@ export default function AccountCertPortal() {
     const [actionTarget, setActionTarget] = useState<string | null>(null);
 
     const qc = useQueryClient();
-    const { data: certs = [], isLoading } = useQuery({
+    const { data: certs = [], isLoading } = useQuery<any>({
         queryKey: ['account-certs', period],
         queryFn: () => fetchCerts(period),
     });
-    const { data: summary = [] } = useQuery({
+    const { data: summary = [] } = useQuery<any>({
         queryKey: ['account-certs-summary', period],
         queryFn: () => fetchSummary(period),
     });

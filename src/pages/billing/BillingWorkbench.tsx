@@ -38,7 +38,7 @@ export default function BillingWorkbench() {
     });
 
     // Fetch Customers for Name Resolution
-    const { data: customers = [] } = useQuery({
+    const { data: customers = [] } = useQuery<any>({
         queryKey: ["/api/customers", businessUnitId], // Assuming this exists or using profiles
         queryFn: () => fetch("/api/billing/profiles", { headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined }).then(r => r.json()) // Fallback to profiles if customers API not direct
     });

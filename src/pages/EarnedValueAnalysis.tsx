@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { TrendingUp } from "lucide-react";
 
 export default function EarnedValueAnalysis() {
-  const { data: evas = [], isLoading } = useQuery({
+  const { data: evas = [], isLoading } = useQuery<any>({
     queryKey: ["/api/eva"],
     queryFn: () => fetch("/api/eva").then(r => r.json()).catch(() => []),
   });

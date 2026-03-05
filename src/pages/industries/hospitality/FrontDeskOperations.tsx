@@ -15,7 +15,7 @@ export default function FrontDeskOperations() {
   const { toast } = useToast();
   const [newFolio, setNewFolio] = useState({ folioId: "", guestName: "", roomId: "", checkIn: "", status: "checked-in" });
 
-  const { data: folios = [], isLoading } = useQuery({
+  const { data: folios = [], isLoading } = useQuery<any>({
     queryKey: ["/api/hospitality-folios"],
     queryFn: () => fetch("/api/hospitality-folios").then(r => r.json()).catch(() => []),
   });

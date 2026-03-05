@@ -20,7 +20,7 @@ export default function KnowledgeBaseDashboard() {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [newItem, setNewItem] = useState({ title: "", category: "General", content: "", tags: "" });
 
-    const { data: articles = [] } = useQuery({
+    const { data: articles = [] } = useQuery<any>({
         queryKey: ["/api/crm/knowledge", search],
         queryFn: () => fetch(`/api/crm/knowledge?query=${search}`).then(r => r.json())
     });

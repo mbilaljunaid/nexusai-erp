@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Network, TrendingDown, BarChart3 } from "lucide-react";
 
 export default function SupplyNetworkOptimization() {
-  const { data: plans = [], isLoading } = useQuery({
+  const { data: plans = [], isLoading } = useQuery<any>({
     queryKey: ["/api/network-plan"],
     queryFn: () => fetch("/api/network-plan").then(r => r.json()).catch(() => []),
   });

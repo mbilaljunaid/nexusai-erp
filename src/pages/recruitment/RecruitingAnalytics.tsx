@@ -12,7 +12,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
 export default function RecruitingAnalytics() {
-    const { data: analytics, isLoading } = useQuery({
+    const { data: analytics, isLoading } = useQuery<any>({
         queryKey: ["/api/recruitment/analytics"],
         queryFn: () => fetch("/api/recruitment/analytics").then(r => r.json())
     });

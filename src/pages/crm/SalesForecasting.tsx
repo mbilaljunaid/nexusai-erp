@@ -13,7 +13,7 @@ export default function SalesForecasting() {
     const userId = "current-user-id";
     const [period, setPeriod] = useState("Q1-2026");
 
-    const { data: forecast, isLoading } = useQuery({
+    const { data: forecast, isLoading } = useQuery<any>({
         queryKey: ["/api/crm/forecast/summary", userId, period],
         queryFn: async () => {
             const res = await fetch(`/api/crm/forecast/summary?userId=${userId}&period=${period}`);

@@ -19,22 +19,19 @@ export default function SubscriptionManagement() {
     const queryClient = useQueryClient();
     const [selectedPlan, setSelectedPlan] = useState("");
 
-    const { data: subscription } = useQuery({
+    const { data: subscription } = useQuery<any>({
         queryKey: ["/api/portal/subscription"],
-        queryFn: () => apiRequest("/api/portal/subscription"),
+        queryFn: () => apiRequest("GET", "/api/portal/subscription").then(res => res.json()),
     });
 
-    const { data: availablePlans } = useQuery({
+    const { data: availablePlans } = useQuery<any>({
         queryKey: ["/api/portal/subscription-plans"],
-        queryFn: () => apiRequest("/api/portal/subscription-plans"),
+        queryFn: () => apiRequest("GET", "/api/portal/subscription-plans").then(res => res.json()),
     });
 
     const upgradeMutation = useMutation({
         mutationFn: (planId: string) =>
-            apiRequest("/api/portal/subscription/upgrade", {
-                method: "POST",
-                body: JSON.stringify({ planId }),
-            }),
+            apiRequest("POST", "/api/portal/subscription/upgrade", { planId }),
         onSuccess: () => {
             toast({ title: "Success", description: "Subscription upgraded successfully" });
             queryClient.invalidateQueries({ queryKey: ["/api/portal/subscription"] });
@@ -42,7 +39,7 @@ export default function SubscriptionManagement() {
     });
 
     const cancelMutation = useMutation({
-        mutationFn: () => apiRequest("/api/portal/subscription/cancel", { method: "POST" }),
+        mutationFn: () => apiRequest("POST", "/api/portal/subscription/cancel"),
         onSuccess: () => {
             toast({ title: "Success", description: "Subscription cancelled" });
             queryClient.invalidateQueries({ queryKey: ["/api/portal/subscription"] });

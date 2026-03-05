@@ -13,12 +13,12 @@ export default function AnomalyDetection() {
   const { toast } = useToast();
   const [newRule, setNewRule] = useState({ metric: "Revenue", threshold: "20", frequency: "daily", recipients: "" });
 
-  const { data: rules = [], isLoading } = useQuery({
+  const { data: rules = [], isLoading } = useQuery<any>({
     queryKey: ["/api/anomaly-rules"],
     queryFn: () => fetch("/api/anomaly-rules").then(r => r.json()).catch(() => []),
   });
 
-  const { data: anomalies = [] } = useQuery({
+  const { data: anomalies = [] } = useQuery<any>({
     queryKey: ["/api/anomalies"],
     queryFn: () => fetch("/api/anomalies").then(r => r.json()).catch(() => []),
   });

@@ -8,7 +8,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function CampaignDetail() {
     const params = useParams() as any;
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading } = useQuery<any>({
         queryKey: [`/api/crm/campaigns/${params?.id}/stats`],
         queryFn: async () => {
             const res = await fetch(`/api/crm/campaigns/${params?.id}/stats`);

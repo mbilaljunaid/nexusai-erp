@@ -23,7 +23,7 @@ export default function MaintenanceWorkbench({ initialTab = "overview" }: { init
     const scopeHeaders = buildScopeHeaders({ "inventory-org": activeInvOrgId });
 
     // KPI Queries
-    const { data: metrics } = useQuery({
+    const { data: metrics } = useQuery<any>({
         queryKey: ["/api/maintenance/metrics", activeInvOrgId],
         queryFn: async () => {
             const res = await fetch(

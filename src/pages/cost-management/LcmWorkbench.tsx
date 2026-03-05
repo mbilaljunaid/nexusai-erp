@@ -26,7 +26,7 @@ export default function LcmWorkbench() {
     const [page, setPage] = useState(1);
 
     // Fetch Trade Operations
-    const { data: operationsData, isLoading } = useQuery({
+    const { data: operationsData, isLoading } = useQuery<any>({
         queryKey: ["/api/lcm/trade-operations", page],
         queryFn: async () => {
             const res = await fetch(`/api/lcm/trade-operations?page=${page}&limit=20`);

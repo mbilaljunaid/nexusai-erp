@@ -32,7 +32,7 @@ export default function ChangeRequestWorkbench() {
     const queryClient = useQueryClient();
 
     // Fetch pending requests
-    const { data: requests = [] } = useQuery({
+    const { data: requests = [] } = useQuery<any>({
         queryKey: ["/api/mdm/change-requests/pending"],
     });
 

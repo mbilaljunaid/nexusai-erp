@@ -25,7 +25,7 @@ const fetchOrders = async () => {
 
 export function OrderWorkbench() {
     const [searchTerm, setSearchTerm] = useState("");
-    const { data: orders, isLoading } = useQuery({ queryKey: ["om-orders"], queryFn: fetchOrders });
+    const { data: orders, isLoading } = useQuery<any>({ queryKey: ["om-orders"], queryFn: fetchOrders });
 
     const columns: any[] = [
         {

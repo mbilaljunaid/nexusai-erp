@@ -17,7 +17,7 @@ export default function Asset360View() {
     const assetId = "ASSET-1001";
 
     // Fetch Asset Details
-    const { data: asset } = useQuery({
+    const { data: asset } = useQuery<any>({
         queryKey: ["/api/maintenance/assets", assetId],
         queryFn: async () => ({
             id: assetId,
@@ -31,7 +31,7 @@ export default function Asset360View() {
         })
     });
 
-    const { data: telemetry = [] } = useQuery({
+    const { data: telemetry = [] } = useQuery<any>({
         queryKey: ["/api/maintenance/assets", assetId, "telemetry"],
         queryFn: async () => {
             const res = await fetch(`/api/maintenance/assets/${assetId}/telemetry`);

@@ -14,7 +14,7 @@ export default function ToolingManagement() {
   const { toast } = useToast();
   const [newTool, setNewTool] = useState({ toolId: "", toolType: "cutting", status: "calibrated", usageCount: "0" });
 
-  const { data: tools = [], isLoading } = useQuery({
+  const { data: tools = [], isLoading } = useQuery<any>({
     queryKey: ["/api/tooling"],
     queryFn: () => fetch("/api/tooling").then(r => r.json()).catch(() => []),
   });

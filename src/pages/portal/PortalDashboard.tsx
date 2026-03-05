@@ -19,7 +19,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 
 export default function PortalDashboard() {
-    const { data: profile, isLoading: profileLoading } = useQuery({
+    const { data: profile, isLoading: profileLoading } = useQuery<any>({
         queryKey: ["/api/portal/me"],
         queryFn: async () => {
             const res = await apiRequest("GET", "/api/portal/me");
@@ -27,7 +27,7 @@ export default function PortalDashboard() {
         }
     });
 
-    const { data: recentPayments, isLoading: paymentsLoading } = useQuery({
+    const { data: recentPayments, isLoading: paymentsLoading } = useQuery<any>({
         queryKey: ["/api/portal/payments", { limit: 5 }],
         queryFn: async () => {
             const res = await apiRequest("GET", "/api/portal/payments?limit=5");

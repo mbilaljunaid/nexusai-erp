@@ -4,7 +4,7 @@ import { DashboardWidget } from "@/components/ui/DashboardWidget";
 import { BarChart3, TrendingUp, Users, DollarSign } from "lucide-react";
 
 export default function RetailAnalyticsDashboard() {
-  const { data: analytics = [], isLoading } = useQuery({
+  const { data: analytics = [], isLoading } = useQuery<any>({
     queryKey: ["/api/retail-analytics"],
     queryFn: () => fetch("/api/retail-analytics").then(r => r.json()).catch(() => []),
   });

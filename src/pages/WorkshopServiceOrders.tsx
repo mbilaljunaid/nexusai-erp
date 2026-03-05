@@ -13,7 +13,7 @@ export default function WorkshopServiceOrders() {
   const { toast } = useToast();
   const [newRO, setNewRO] = useState({ roId: "", vin: "", complaint: "", status: "booked" });
 
-  const { data: orders = [], isLoading } = useQuery({
+  const { data: orders = [], isLoading } = useQuery<any>({
     queryKey: ["/api/auto-service-orders"],
     queryFn: () => fetch("/api/auto-service-orders").then(r => r.json()),
   });

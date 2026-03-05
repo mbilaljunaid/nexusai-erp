@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { AlertCircle, TrendingDown, TrendingUp, Clock } from "lucide-react";
 
 export default function MRPDashboardFull() {
-  const { data: recommendations = [], isLoading } = useQuery({
+  const { data: recommendations = [], isLoading } = useQuery<any>({
     queryKey: ["/api/mrp"],
     queryFn: () => fetch("/api/mrp").then(r => r.json()).catch(() => []),
   });

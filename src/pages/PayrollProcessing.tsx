@@ -13,7 +13,7 @@ export default function PayrollProcessing() {
   const { toast } = useToast();
   const [newPayroll, setNewPayroll] = useState({ month: "", year: "2025", amount: "" });
 
-  const { data: payrolls = [], isLoading } = useQuery({
+  const { data: payrolls = [], isLoading } = useQuery<any>({
     queryKey: ["/api/payroll/runs"],
     queryFn: () => fetch("/api/payroll/runs").then(r => r.json()).catch(() => []),
   });

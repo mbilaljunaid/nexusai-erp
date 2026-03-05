@@ -5,7 +5,7 @@ import { StandardDashboard } from "@/components/ui/StandardDashboard";
 import { DashboardWidget } from "@/components/ui/DashboardWidget";
 
 export default function RetailBIDashboard() {
-  const { data: metrics = [], isLoading } = useQuery({
+  const { data: metrics = [], isLoading } = useQuery<any>({
     queryKey: ["/api/retail-bi"],
     queryFn: () => fetch("/api/retail-bi").then(r => r.json()),
   });

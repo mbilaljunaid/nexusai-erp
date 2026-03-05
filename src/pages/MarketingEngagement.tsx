@@ -16,7 +16,7 @@ export default function MarketingEngagement() {
   const { toast } = useToast();
   const [newCampaign, setNewCampaign] = useState({ campaignId: "", type: "email", targetSegment: "all", status: "draft" });
 
-  const { data: campaigns = [], isLoading } = useQuery({
+  const { data: campaigns = [], isLoading } = useQuery<any>({
     queryKey: ["/api/telecom-campaigns"],
     queryFn: () => fetch("/api/telecom-campaigns").then(r => r.json()).catch(() => []),
   });

@@ -91,7 +91,7 @@ export default function FxTranslationDashboard() {
     });
 
     // Historical rates for chart
-    const { data: historicalRates = [] } = useQuery({
+    const { data: historicalRates = [] } = useQuery<any>({
         queryKey: ["fx-historical", selectedPair],
         queryFn: async () => {
             // Mock - replace with API

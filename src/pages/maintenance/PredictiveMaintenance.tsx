@@ -12,14 +12,14 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function PredictiveMaintenance() {
     const [assetId, setAssetId] = useState("");
 
-    const { data: assets } = useQuery({
+    const { data: assets } = useQuery<any>({
         queryKey: ["/api/maintenance/assets"],
-        queryFn: () => apiRequest("/api/maintenance/assets"),
+        queryFn: () => apiRequest("GET", "/api/maintenance/assets").then(res => res.json()),
     });
 
-    const { data: predictions } = useQuery({
+    const { data: predictions } = useQuery<any>({
         queryKey: ["/api/maintenance/predictions", assetId],
-        queryFn: () => apiRequest(`/api/maintenance/predictions?assetId=${assetId}`),
+        queryFn: () => apiRequest("GET", `/api/maintenance/predictions?assetId=${assetId}`).then(res => res.json()),
         enabled: !!assetId,
     });
 

@@ -42,7 +42,7 @@ export default function HRAnalyticsDashboard() {
   const [departmentId, setDepartmentId] = useState<string>("ALL");
 
   // Fetch Departments
-  const { data: departments } = useQuery({
+  const { data: departments } = useQuery<any>({
     queryKey: ["/api/hr/analytics/departments"],
     queryFn: async () => {
       const res = await fetch("/api/hr/analytics/departments");
@@ -65,7 +65,7 @@ export default function HRAnalyticsDashboard() {
   });
 
   // Drill-down Query
-  const { data: detailsData, isLoading: isLoadingDetails } = useQuery({
+  const { data: detailsData, isLoading: isLoadingDetails } = useQuery<any>({
     queryKey: ["/api/hr/analytics/details", selectedKpi], // Drill down query needs to know filters too? Logic in drill down route?
     queryFn: async () => {
       if (!selectedKpi) return [];

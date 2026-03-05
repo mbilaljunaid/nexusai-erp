@@ -13,7 +13,7 @@ export default function StockIssue() {
   const { toast } = useToast();
   const [newIssue, setNewIssue] = useState({ item: "Item A", quantity: "", location: "Bin-01", reason: "sales" });
 
-  const { data: issues = [], isLoading } = useQuery({
+  const { data: issues = [], isLoading } = useQuery<any>({
     queryKey: ["/api/stock-issue"],
     queryFn: () => fetch("/api/stock-issue").then(r => r.json()).catch(() => []),
   });

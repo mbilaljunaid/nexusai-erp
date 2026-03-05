@@ -15,7 +15,7 @@ export default function OpportunityList() {
   const { toast } = useToast();
   const [newOpp, setNewOpp] = useState({ name: "", account: "", stage: "Prospecting", value: "" });
 
-  const { data: opportunities = [], isLoading } = useQuery({
+  const { data: opportunities = [], isLoading } = useQuery<any>({
     queryKey: ["/api/crm/opportunities"],
     queryFn: () => fetch("/api/crm/opportunities").then(r => r.json()),
   });

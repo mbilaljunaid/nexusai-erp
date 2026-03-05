@@ -12,9 +12,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function DirectedPutaway() {
     const [strategy, setStrategy] = useState("PROXIMITY");
 
-    const { data: tasks } = useQuery({
+    const { data: tasks } = useQuery<any>({
         queryKey: ["/api/wms/putaway-tasks"],
-        queryFn: () => apiRequest("/api/wms/putaway-tasks?status=PENDING"),
+        queryFn: () => apiRequest("GET", "/api/wms/putaway-tasks?status=PENDING").then(res => res.json()),
     });
 
     return (

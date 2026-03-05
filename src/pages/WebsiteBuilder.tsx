@@ -15,7 +15,7 @@ export default function WebsiteBuilder() {
   const [activeNav, setActiveNav] = useState("pages");
   const [newPage, setNewPage] = useState({ name: "", status: "draft", template: "blank" });
 
-  const { data: pages = [], isLoading } = useQuery({
+  const { data: pages = [], isLoading } = useQuery<any>({
     queryKey: ["/api/website-pages-builder"],
     queryFn: () => fetch("/api/website-pages-builder").then(r => r.json()).catch(() => []),
   });

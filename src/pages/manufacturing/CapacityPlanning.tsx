@@ -15,20 +15,20 @@ export default function CapacityPlanning() {
     const [periodType, setPeriodType] = useState<'WEEK' | 'MONTH' | 'QUARTER'>('MONTH');
     const [scenarioId, setScenarioId] = useState<string | null>(null);
 
-    const { data: workCenters } = useQuery({
+    const { data: workCenters } = useQuery<any>({
         queryKey: ["/api/manufacturing/work-centers"],
-        queryFn: () => apiRequest("/api/manufacturing/work-centers"),
+        queryFn: () => apiRequest("GET", "/api/manufacturing/work-centers").then(res => res.json()),
     });
 
-    const { data: capacityData } = useQuery({
+    const { data: capacityData } = useQuery<any>({
         queryKey: ["/api/manufacturing/capacity-analysis", workCenterId, periodType],
-        queryFn: () => apiRequest(`/api/manufacturing/capacity-analysis?workCenterId=${workCenterId}&periodType=${periodType}`),
+        queryFn: () => apiRequest("GET", `/api/manufacturing/capacity-analysis?workCenterId=${workCenterId}&periodType=${periodType}`).then(res => res.json()),
         enabled: !!workCenterId,
     });
 
-    const { data: bottlenecks } = useQuery({
+    const { data: bottlenecks } = useQuery<any>({
         queryKey: ["/api/manufacturing/bottlenecks", workCenterId],
-        queryFn: () => apiRequest(`/api/manufacturing/bottlenecks?workCenterId=${workCenterId}`),
+        queryFn: () => apiRequest("GET", `/api/manufacturing/bottlenecks?workCenterId=${workCenterId}`).then(res => res.json()),
         enabled: !!workCenterId,
     });
 

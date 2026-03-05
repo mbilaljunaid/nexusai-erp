@@ -19,12 +19,12 @@ export default function ReportScheduler() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [newItem, setNewItem] = useState({ reportType: "", cronExpression: "0 9 * * 1", recipients: "" });
 
-    const { data: reportTypes } = useQuery({
+    const { data: reportTypes } = useQuery<any>({
         queryKey: ["/api/hr/reports/types"],
         queryFn: () => fetch("/api/hr/reports/types").then(r => r.json())
     });
 
-    const { data: schedules = [], isLoading } = useQuery({
+    const { data: schedules = [], isLoading } = useQuery<any>({
         queryKey: ["/api/hr/config/schedules"],
         queryFn: () => fetch("/api/hr/config/schedules").then(r => r.json())
     });

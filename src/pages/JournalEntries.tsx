@@ -86,8 +86,7 @@ export default function JournalEntries() {
   const columns: SpreadsheetColumn<GlJournal>[] = [
     {
       header: "Batch #",
-      id: "journalNumber", width: "150px",
-      width: "15%",
+      id: "journalNumber", width: "15%",
       cell: (item) => <span className="font-mono font-bold text-indigo-600">{item.journalNumber}</span>
     },
     {
@@ -102,8 +101,7 @@ export default function JournalEntries() {
     },
     {
       header: "Description",
-      id: "description", width: "150px",
-      width: "35%",
+      id: "description", width: "35%",
       cell: (item: any) => (
         <div className="flex flex-col">
           <span className="font-medium truncate max-w-[300px]">{item.description}</span>
@@ -213,7 +211,7 @@ export default function JournalEntries() {
             columns={columns}
             isLoading={isLoading}
             onRowClick={handleRowClick}
-           onChange={() => {}} containerHeight="600px" />
+            onChange={() => { }} containerHeight="600px" />
         </CardContent>
       </Card>
 

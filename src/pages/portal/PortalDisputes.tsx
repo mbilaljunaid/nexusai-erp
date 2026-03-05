@@ -48,7 +48,7 @@ export default function PortalDisputes() {
         }
     });
 
-    const { data: invoices } = useQuery({
+    const { data: invoices } = useQuery<any>({
         queryKey: ["/api/portal/invoices"],
         queryFn: async () => {
             const res = await apiRequest("GET", "/api/portal/invoices");
@@ -57,7 +57,7 @@ export default function PortalDisputes() {
     });
 
     // Fetch existing disputes
-    const { data: disputes = [] } = useQuery({
+    const { data: disputes = [] } = useQuery<any>({
         queryKey: ["/api/portal/disputes"],
         queryFn: async () => {
             const res = await apiRequest("GET", "/api/portal/disputes");

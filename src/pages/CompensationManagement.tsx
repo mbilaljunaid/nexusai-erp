@@ -12,7 +12,7 @@ export default function CompensationManagement() {
   const { toast } = useToast();
   const [newComp, setNewComp] = useState({ employee: "", baseSalary: "", bonus: "", benefits: "" });
 
-  const { data: compensations = [], isLoading } = useQuery({
+  const { data: compensations = [], isLoading } = useQuery<any>({
     queryKey: ["/api/compensation"],
     queryFn: () => fetch("/api/compensation").then(r => r.json()),
   });

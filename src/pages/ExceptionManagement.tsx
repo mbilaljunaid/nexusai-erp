@@ -14,7 +14,7 @@ export default function ExceptionManagement() {
   const { toast } = useToast();
   const [newException, setNewException] = useState({ module: "Finance", variance: "", status: "pending", severity: "medium" });
 
-  const { data: exceptions = [], isLoading } = useQuery({
+  const { data: exceptions = [], isLoading } = useQuery<any>({
     queryKey: ["/api/exceptions"],
     queryFn: () => fetch("/api/exceptions").then(r => r.json()),
   });

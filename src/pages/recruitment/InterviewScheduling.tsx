@@ -15,17 +15,14 @@ export default function InterviewScheduling() {
     const queryClient = useQueryClient();
     const [candidateId, setCandidateId] = useState("");
 
-    const { data: interviews } = useQuery({
+    const { data: interviews } = useQuery<any>({
         queryKey: ["/api/recruitment/interviews"],
-        queryFn: () => apiRequest("/api/recruitment/interviews"),
+        queryFn: () => apiRequest("GET", "/api/recruitment/interviews").then(res => res.json()),
     });
 
     const scheduleMutation = useMutation({
         mutationFn: (data: any) =>
-            apiRequest("/api/recruitment/interviews", {
-                method: "POST",
-                body: JSON.stringify(data),
-            }),
+            apiRequest("POST", "/api/recruitment/interviews", data),
         onSuccess: () => {
             toast({ title: "Success", description: "Interview scheduled" });
             queryClient.invalidateQueries({ queryKey: ["/api/recruitment/interviews"] });

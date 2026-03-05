@@ -13,7 +13,7 @@ export default function ComplianceReports() {
   const { toast } = useToast();
   const [newReport, setNewReport] = useState({ name: "", framework: "GDPR", format: "PDF" });
 
-  const { data: reports = [], isLoading } = useQuery({
+  const { data: reports = [], isLoading } = useQuery<any>({
     queryKey: ["/api/compliance/reports"],
     queryFn: () => fetch("/api/compliance/reports").then(r => r.json()).catch(() => []),
   });

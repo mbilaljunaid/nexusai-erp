@@ -11,9 +11,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
 export default function CustomerAnalytics() {
-    const { data: analytics } = useQuery({
+    const { data: analytics } = useQuery<any>({
         queryKey: ["/api/portal/customer-analytics"],
-        queryFn: () => apiRequest("/api/portal/customer-analytics"),
+        queryFn: () => apiRequest("GET", "/api/portal/customer-analytics").then(res => res.json()),
     });
 
     const columns: SpreadsheetColumn<any>[] = [

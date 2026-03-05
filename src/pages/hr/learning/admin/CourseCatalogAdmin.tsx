@@ -30,7 +30,7 @@ export default function CourseCatalogAdmin() {
     const pageSize = 10;
 
     // Fetch Courses (Paginated)
-    const { data: catalogData, isLoading } = useQuery({
+    const { data: catalogData, isLoading } = useQuery<any>({
         queryKey: ["learning-courses", searchQuery, page],
         queryFn: async () => {
             const res = await fetch(`/api/learning/courses?q=${searchQuery}&page=${page}&pageSize=${pageSize}`);
@@ -43,7 +43,7 @@ export default function CourseCatalogAdmin() {
     const totalCourses = catalogData?.total || 0;
 
     // Fetch Audit Logs
-    const { data: auditLogs } = useQuery({
+    const { data: auditLogs } = useQuery<any>({
         queryKey: ["learning-audit-logs"],
         queryFn: async () => {
             // Mocking Price update for existing items if missing in fetch, or ensuring backend returns it

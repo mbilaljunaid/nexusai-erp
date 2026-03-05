@@ -13,12 +13,12 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function FreightSettlementConsole() {
     const { toast } = useToast();
 
-    const { data: charges, isLoading } = useQuery({
+    const { data: charges, isLoading } = useQuery<any>({
         queryKey: ["/api/transportation/charges"],
         queryFn: () => fetch("/api/transportation/charges").then(res => res.json())
     });
 
-    const { data: accruals } = useQuery({
+    const { data: accruals } = useQuery<any>({
         queryKey: ["/api/transportation/settlement/accruals"],
         queryFn: () => fetch("/api/transportation/settlement/accruals").then(res => res.json())
     });

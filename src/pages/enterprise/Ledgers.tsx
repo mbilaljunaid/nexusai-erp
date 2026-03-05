@@ -11,7 +11,7 @@ export default function EnterpriseLedgers() {
     const [, setLocation] = useLocation();
 
     // Read-only view for Enterprise Setup. Detailed config happens in Finance -> GL Config.
-    const { data: ledgers, isLoading } = useQuery({
+    const { data: ledgers, isLoading } = useQuery<any>({
         queryKey: ["/api/finance/gl/ledgers"],
         queryFn: () => fetch("/api/finance/gl/ledgers").then(r => r.json())
     });

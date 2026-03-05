@@ -3,19 +3,22 @@ import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 
-export interface SpreadsheetColumn<T> {
-    id: string;
-    header: React.ReactNode;
-    width?: string;
+export interface SpreadsheetColumn<T = any> {
+    id?: string;
+    header?: React.ReactNode;
+    label?: React.ReactNode;
+    width?: string | number;
+    className?: string;
     headerClassName?: string;
     cellClassName?: string;
-    cell: (row: T, index: number, updateRow: (field: keyof T, value: any) => void) => React.ReactNode;
+    cell?: (row: T, index: number, updateRow: (field: keyof T, value: any) => void) => React.ReactNode;
+    [key: string]: any; // Allow legacy properties
 }
 
-export interface InteractiveSpreadsheetProps<T> {
+export interface InteractiveSpreadsheetProps<T = any> {
     data: T[];
     columns: SpreadsheetColumn<T>[];
-    onChange: (newData: T[]) => void;
+    onChange?: (newData: T[]) => void;
 
     // Virtualization features
     virtualized?: boolean;
@@ -31,9 +34,18 @@ export interface InteractiveSpreadsheetProps<T> {
     // Selection Features
     activeRow?: string | number | null;
     onRowSelect?: (row: T) => void;
+
+    // Added optional legacy unused props for compatibility
+    isLoading?: boolean;
+    isSaving?: boolean;
+    onSave?: (data: T[]) => void;
+    rowKey?: string;
+    onRowClick?: (item: T) => void;
+    actions?: (row: T) => React.ReactNode;
+    filterPlaceholder?: string;
 }
 
-export function InteractiveSpreadsheet<T extends { id?: string | number, lineNumber?: number }>({
+export function InteractiveSpreadsheet<T = any>({
     data,
     columns,
     onChange,
@@ -56,7 +68,7 @@ export function InteractiveSpreadsheet<T extends { id?: string | number, lineNum
     });
 
     const handleUpdateRow = useCallback((index: number, field: keyof T, value: any) => {
-        onChange(data.map((row, i) => i === index ? { ...row, [field]: value } : row));
+        onChange?.(data.map((row, i) => i === index ? { ...row, [field]: value } : row));
     }, [data, onChange]);
 
     // Render traditional table
@@ -74,25 +86,26 @@ export function InteractiveSpreadsheet<T extends { id?: string | number, lineNum
                     <table className="w-full border-collapse">
                         <thead className="bg-slate-100/50 border-b">
                             <tr>
-                                {columns.map(col => (
-                                    <th key={col.id} className={`p-3 text-left text-sm font-medium text-muted-foreground whitespace-nowrap ${col.width || ''} ${col.headerClassName || ''}`}>
-                                        {col.header}
+                                {columns.map((col, i) => (
+                                    <th key={col.id || `col-${i}`} className={`p-3 text-left text-sm font-medium text-muted-foreground whitespace-nowrap ${col.width || ''} ${col.headerClassName || ''}`}>
+                                        {col.header || col.label}
                                     </th>
                                 ))}
                             </tr>
                         </thead>
                         <tbody>
                             {data.map((row, index) => {
-                                const isSelected = activeRow !== undefined && (activeRow === row.id || activeRow === row.lineNumber);
+                                const rowAny = row as any;
+                                const isSelected = activeRow !== undefined && (activeRow === rowAny.id || activeRow === rowAny.lineNumber);
                                 return (
                                     <tr
-                                        key={row.id || row.lineNumber || index}
+                                        key={rowAny.id || rowAny.lineNumber || index}
                                         className={`border-b group transition-colors ${isSelected ? 'bg-slate-100' : 'hover:bg-slate-50/50'} ${onRowSelect ? 'cursor-pointer' : ''}`}
                                         onClick={() => onRowSelect && onRowSelect(row)}
                                     >
-                                        {columns.map(col => (
-                                            <td key={`${row.id || index}-${col.id}`} className={`p-2 align-top ${col.cellClassName || ''}`}>
-                                                {col.cell(row, index, (field, val) => handleUpdateRow(index, field, val))}
+                                        {columns.map((col, cIdx) => (
+                                            <td key={`${(row as any).id || index}-${col.id || cIdx}`} className={`p-2 align-top ${col.cellClassName || ''}`}>
+                                                {col.cell ? col.cell(row, index, (field, val) => handleUpdateRow(index, field, val)) : (col.id ? String((row as any)[col.id] ?? '') : '')}
                                             </td>
                                         ))}
                                     </tr>
@@ -144,8 +157,8 @@ export function InteractiveSpreadsheet<T extends { id?: string | number, lineNum
                 <div
                     className={`grid gap-2 p-3 bg-slate-100/50 border-b font-medium text-sm text-muted-foreground is-header-${uId}`}
                 >
-                    {columns.map(col => (
-                        <div key={col.id} className={`truncate ${col.headerClassName || ''}`}>{col.header}</div>
+                    {columns.map((col, i) => (
+                        <div key={col.id || `col-${i}`} className={`truncate ${col.headerClassName || ''}`}>{col.header || col.label}</div>
                     ))}
                 </div>
 
@@ -155,17 +168,18 @@ export function InteractiveSpreadsheet<T extends { id?: string | number, lineNum
                     <div className={`w-full relative is-totalsize-${uId}`}>
                         {rowVirtualizer.getVirtualItems().map((virtualRow) => {
                             const row = data[virtualRow.index];
-                            const isSelected = activeRow !== undefined && (activeRow === row.id || activeRow === row.lineNumber);
+                            const rowAny = row as any;
+                            const isSelected = activeRow !== undefined && (activeRow === rowAny.id || activeRow === rowAny.lineNumber);
                             // eslint-disable-next-line react/forbid-dom-props
                             return (
                                 <div
-                                    key={row.id || virtualRow.index}
+                                    key={rowAny.id || virtualRow.index}
                                     className={`grid gap-2 p-1 px-3 items-center border-b border-slate-50 absolute top-0 left-0 w-full ${isSelected ? 'bg-slate-100' : 'hover:bg-slate-50'} ${onRowSelect ? 'cursor-pointer' : ''} is-row-${uId}-${virtualRow.index}`}
                                     onClick={() => onRowSelect && onRowSelect(row)}
                                 >
-                                    {columns.map(col => (
-                                        <div key={`${row.id || virtualRow.index}-${col.id}`} className={`w-full ${col.cellClassName || ''}`}>
-                                            {col.cell(row, virtualRow.index, (field, val) => handleUpdateRow(virtualRow.index, field, val))}
+                                    {columns.map((col, cIdx) => (
+                                        <div key={`${(row as any).id || virtualRow.index}-${col.id || cIdx}`} className={`w-full ${col.cellClassName || ''}`}>
+                                            {col.cell ? col.cell(row, virtualRow.index, (field, val) => handleUpdateRow(virtualRow.index, field, val)) : (col.id ? String((row as any)[col.id] ?? '') : '')}
                                         </div>
                                     ))}
                                 </div>

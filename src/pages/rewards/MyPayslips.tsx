@@ -13,7 +13,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function MyPayslips() {
     const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
 
-    const { data: payslips, isLoading } = useQuery({
+    const { data: payslips, isLoading } = useQuery<any>({
         queryKey: ['my-payslips'],
         queryFn: async () => {
             const res = await fetch("/api/me/payslips");
@@ -22,7 +22,7 @@ export default function MyPayslips() {
         }
     });
 
-    const { data: details, isLoading: isLoadingDetails } = useQuery({
+    const { data: details, isLoading: isLoadingDetails } = useQuery<any>({
         queryKey: ['my-payslip-details', selectedRunId],
         enabled: !!selectedRunId,
         queryFn: async () => {

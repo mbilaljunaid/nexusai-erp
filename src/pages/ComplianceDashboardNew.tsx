@@ -6,7 +6,7 @@ import { ComplianceAnalytics } from "@/components/compliance/ComplianceAnalytics
 import { Breadcrumb } from "@/components/Breadcrumb";
 
 export default function ComplianceDashboardNew() {
-  const { data: analyticsData, isLoading } = useQuery({
+  const { data: analyticsData, isLoading } = useQuery<any>({
     queryKey: ["/api/hr/compliance/analytics"],
     queryFn: () => fetch("/api/hr/compliance/analytics").then(r => r.json()),
   });

@@ -32,12 +32,12 @@ export default function DuplicateDetectionWorkbench() {
     const queryClient = useQueryClient();
 
     // Fetch duplicate sets
-    const { data: duplicateSets = [], isLoading: loadingSets } = useQuery({
+    const { data: duplicateSets = [], isLoading: loadingSets } = useQuery<any>({
         queryKey: ["/api/mdm/quality/duplicates"],
     });
 
     // Fetch party details for selected set
-    const { data: partyDetails = [] } = useQuery({
+    const { data: partyDetails = [] } = useQuery<any>({
         queryKey: ["/api/mdm/parties", selectedSet],
         enabled: !!selectedSet,
         queryFn: async () => {

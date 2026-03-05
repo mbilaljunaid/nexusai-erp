@@ -14,7 +14,7 @@ export default function GoodsReceiptPutaway() {
   const { toast } = useToast();
   const [newReceipt, setNewReceipt] = useState({ poId: "", productId: "", quantity: "100", warehouseId: "WH-001", status: "received" });
 
-  const { data: receipts = [], isLoading } = useQuery({
+  const { data: receipts = [], isLoading } = useQuery<any>({
     queryKey: ["/api/goods-receipt"],
     queryFn: () => fetch("/api/goods-receipt").then(r => r.json()).catch(() => []),
   });

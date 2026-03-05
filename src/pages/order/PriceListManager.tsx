@@ -23,7 +23,7 @@ export function PriceListManager() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [searchTerm, setSearchTerm] = useState("");
-    const { data: priceLists, isLoading } = useQuery({ queryKey: ["om-pricelists"], queryFn: fetchPriceLists });
+    const { data: priceLists, isLoading } = useQuery<any>({ queryKey: ["om-pricelists"], queryFn: fetchPriceLists });
 
     const mutation = useMutation({
         mutationFn: async (data: any[]) => {

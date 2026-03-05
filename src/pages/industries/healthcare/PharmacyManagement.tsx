@@ -15,7 +15,7 @@ export default function PharmacyManagement() {
   const { toast } = useToast();
   const [newOrder, setNewOrder] = useState({ orderId: "", patientId: "", medicationId: "", dose: "", status: "pending" });
 
-  const { data: orders = [], isLoading } = useQuery({
+  const { data: orders = [], isLoading } = useQuery<any>({
     queryKey: ["/api/healthcare-pharmacy"],
     queryFn: () => fetch("/api/healthcare-pharmacy").then(r => r.json()),
   });

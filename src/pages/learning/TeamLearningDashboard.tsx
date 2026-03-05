@@ -16,15 +16,15 @@ interface TeamMember {
 }
 
 export default function TeamLearningDashboard() {
-    const { data: teamStats } = useQuery({
+    const { data: teamStats } = useQuery<any>({
         queryKey: ["/api/learning/team/stats"],
     });
 
-    const { data: teamMembers = [] } = useQuery({
+    const { data: teamMembers = [] } = useQuery<any>({
         queryKey: ["/api/learning/team/members"],
     });
 
-    const { data: complianceAlerts = [] } = useQuery({
+    const { data: complianceAlerts = [] } = useQuery<any>({
         queryKey: ["/api/learning/team/compliance-alerts"],
     });
 

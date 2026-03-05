@@ -20,7 +20,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { ContextualSearch } from "@/components/ContextualSearch";
 
 export default function TaskDashboard() {
-    const { data: tasksData = { data: [] }, isLoading } = useQuery({
+    const { data: tasksData = { data: [] }, isLoading } = useQuery<any>({
         queryKey: ["/api/scm/wms/tasks"],
         queryFn: async () => {
             const res = await fetch("/api/scm/wms/tasks?warehouseId=WH-001");

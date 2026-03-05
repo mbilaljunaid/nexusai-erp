@@ -39,7 +39,7 @@ export default function SupplierDocuments() {
     });
 
     // Fetch Documents
-    const { data: documents, isLoading } = useQuery({
+    const { data: documents, isLoading } = useQuery<any>({
         queryKey: ["/api/portal/supplier/documents"],
         queryFn: async () => {
             const res = await fetch("/api/portal/supplier/documents", {

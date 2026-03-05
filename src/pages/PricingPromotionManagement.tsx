@@ -14,7 +14,7 @@ export default function PricingPromotionManagement() {
   const { toast } = useToast();
   const [newPrice, setNewPrice] = useState({ productId: "", basePrice: "100", discountPercent: "0", status: "active" });
 
-  const { data: prices = [], isLoading } = useQuery({
+  const { data: prices = [], isLoading } = useQuery<any>({
     queryKey: ["/api/pricing-promotion"],
     queryFn: () => fetch("/api/pricing-promotion").then(r => r.json()),
   });

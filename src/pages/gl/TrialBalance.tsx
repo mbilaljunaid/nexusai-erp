@@ -42,7 +42,7 @@ export default function TrialBalance() {
     const [page, setPage] = useState(1);
     const pageSize = 25;
 
-    const { data: report, isLoading } = useQuery({
+    const { data: report, isLoading } = useQuery<any>({
         queryKey: ["/api/gl/reporting/trial-balance", { periodId: selectedPeriod, ledgerId: currentLedgerId, page, limit: pageSize, accountType: accountTypeFilter }],
         queryFn: async () => {
             const offset = (page - 1) * pageSize;
@@ -69,7 +69,7 @@ export default function TrialBalance() {
     };
 
 
-    const { data: insights, isLoading: isLoadingInsights } = useQuery({
+    const { data: insights, isLoading: isLoadingInsights } = useQuery<any>({
         queryKey: ["/api/gl/reporting/explain-variance", selectedPeriod, currentLedgerId],
         queryFn: async () => {
             const benchmark = "PRIMARY_NOV23";
@@ -79,7 +79,7 @@ export default function TrialBalance() {
         }
     });
 
-    const { data: drillDown, isLoading: isLoadingDrill } = useQuery({
+    const { data: drillDown, isLoading: isLoadingDrill } = useQuery<any>({
         queryKey: ["/api/gl/reporting/drill-down", selectedCCID, selectedPeriod, currentLedgerId],
         queryFn: async () => {
             if (!selectedCCID) return null;
@@ -235,11 +235,11 @@ export default function TrialBalance() {
                                 data={report?.rows || []}
                                 isLoading={isLoading}
                                 onRowClick={(row: TrialBalanceRow) => setSelectedCCID(row.ccid)}
-                                isVirtualized={false} // Disabled for paginated high-level view
+                                virtualized={false} // Disabled for paginated high-level view
                                 columns={[
                                     {
                                         header: "Code Combination",
-                                        id: "code", width: "150px",
+                                        id: "code",
                                         width: "35%",
                                         cell: (row: TrialBalanceRow) => (
                                             <div className="flex flex-col">
@@ -252,7 +252,7 @@ export default function TrialBalance() {
                                     },
                                     {
                                         header: "Type",
-                                        id: "accountType", width: "150px",
+                                        id: "accountType",
                                         width: "15%",
                                         cell: (row: TrialBalanceRow) => (
                                             <Badge variant={row.accountType === "Asset" ? "default" : "secondary"} className="text-[10px] uppercase">
@@ -262,21 +262,21 @@ export default function TrialBalance() {
                                     },
                                     {
                                         header: "Debit",
-                                        id: "totalDebit", width: "150px",
+                                        id: "totalDebit",
                                         width: "15%",
                                         className: "text-right tabular-nums",
                                         cell: (row: TrialBalanceRow) => row.totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2 })
                                     },
                                     {
                                         header: "Credit",
-                                        id: "totalCredit", width: "150px",
+                                        id: "totalCredit",
                                         width: "15%",
                                         className: "text-right tabular-nums",
                                         cell: (row: TrialBalanceRow) => row.totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2 })
                                     },
                                     {
                                         header: "Net Balance",
-                                        id: "netBalance", width: "150px",
+                                        id: "netBalance",
                                         width: "15%",
                                         className: "text-right font-bold tabular-nums",
                                         cell: (row: TrialBalanceRow) => (
@@ -288,7 +288,7 @@ export default function TrialBalance() {
                                     {
                                         header: "",
                                         width: "5%",
-                                        cell: () => <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" onChange={() => { }} containerHeight="600px" />
+                                        cell: () => <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                                     }
                                 ]}
                             />

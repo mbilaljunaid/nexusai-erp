@@ -14,7 +14,7 @@ export default function ThirdPartyLogistics() {
   const { toast } = useToast();
   const [new3PL, setNew3PL] = useState({ partner: "3PL-001", storageRate: "10", status: "active", vmiEnabled: false });
 
-  const { data: partners = [], isLoading } = useQuery({
+  const { data: partners = [], isLoading } = useQuery<any>({
     queryKey: ["/api/3pl"],
     queryFn: () => fetch("/api/3pl").then(r => r.json()).catch(() => []),
   });

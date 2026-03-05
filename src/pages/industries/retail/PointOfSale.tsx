@@ -15,7 +15,7 @@ export default function PointOfSale() {
   const { toast } = useToast();
   const [newSale, setNewSale] = useState({ saleId: "", items: "1", amount: "0", tender: "card", status: "completed" });
 
-  const { data: sales = [], isLoading } = useQuery({
+  const { data: sales = [], isLoading } = useQuery<any>({
     queryKey: ["/api/pos-sales"],
     queryFn: () => fetch("/api/pos-sales").then(r => r.json()).catch(() => []),
   });

@@ -15,7 +15,7 @@ export default function HousekeepingManagement() {
   const { toast } = useToast();
   const [newTask, setNewTask] = useState({ taskId: "", roomId: "", housekeeper: "", status: "pending" });
 
-  const { data: tasks = [], isLoading } = useQuery({
+  const { data: tasks = [], isLoading } = useQuery<any>({
     queryKey: ["/api/hospitality-housekeeping"],
     queryFn: () => fetch("/api/hospitality-housekeeping").then(r => r.json()).catch(() => []),
   });

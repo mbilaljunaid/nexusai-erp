@@ -9,7 +9,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 
 export default function IntercompanyReconciliation() {
-    const { data: report, isLoading } = useQuery({
+    const { data: report, isLoading } = useQuery<any>({
         queryKey: ["ic-reconciliation"],
         queryFn: async () => {
             const res = await fetch("/api/intercompany/reports/reconciliation?period=All");
@@ -84,7 +84,7 @@ export default function IntercompanyReconciliation() {
     return (
         <StandardPage title="Intercompany Reconciliation">
             <div>
-                
+
                 <p className="text-muted-foreground">Eliminations Monitor (Provider vs Receiver).</p>
             </div>
 
@@ -120,7 +120,7 @@ export default function IntercompanyReconciliation() {
                         <InteractiveSpreadsheet
                             data={report?.details || []}
                             columns={detailsColumns}
-                            containerHeight={400}
+                            containerHeight="400px"
                             virtualized={true}
                         />
                     </div>

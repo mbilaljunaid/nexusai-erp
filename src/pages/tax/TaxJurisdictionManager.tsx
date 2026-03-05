@@ -17,17 +17,14 @@ export default function TaxJurisdictionManager() {
     const [jurisdictionName, setJurisdictionName] = useState("");
     const [taxRate, setTaxRate] = useState("");
 
-    const { data: jurisdictions } = useQuery({
+    const { data: jurisdictions } = useQuery<any>({
         queryKey: ["/api/tax/jurisdictions"],
-        queryFn: () => apiRequest("/api/tax/jurisdictions"),
+        queryFn: () => apiRequest("GET", "/api/tax/jurisdictions").then(res => res.json()),
     });
 
     const createMutation = useMutation({
         mutationFn: (data: any) =>
-            apiRequest("/api/tax/jurisdictions", {
-                method: "POST",
-                body: JSON.stringify(data),
-            }),
+            apiRequest("POST", "/api/tax/jurisdictions", data),
         onSuccess: () => {
             toast({ title: "Success", description: "Jurisdiction created" });
             queryClient.invalidateQueries({ queryKey: ["/api/tax/jurisdictions"] });

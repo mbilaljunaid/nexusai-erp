@@ -38,11 +38,11 @@ export default function LearningPathBuilder() {
 
     const queryClient = useQueryClient();
 
-    const { data: paths = [] } = useQuery({
+    const { data: paths = [] } = useQuery<any>({
         queryKey: ["/api/learning/paths"],
     });
 
-    const { data: availableCourses = [] } = useQuery({
+    const { data: availableCourses = [] } = useQuery<any>({
         queryKey: ["/api/learning/courses"],
     });
 

@@ -24,7 +24,7 @@ export default function ICDataAccessManager() {
     const queryClient = useQueryClient();
 
     // Fetch IC Organizations
-    const { data: icOrgs = [] } = useQuery({
+    const { data: icOrgs = [] } = useQuery<any>({
         queryKey: ["ic-orgs"],
         queryFn: async () => {
             const res = await fetch("/api/intercompany/orgs");
@@ -34,7 +34,7 @@ export default function ICDataAccessManager() {
     });
 
     // Fetch Data Access Sets
-    const { data: accessSets = [], isLoading } = useQuery({
+    const { data: accessSets = [], isLoading } = useQuery<any>({
         queryKey: ["ic-data-access"],
         queryFn: async () => {
             const res = await fetch("/api/intercompany/data-access");
@@ -44,7 +44,7 @@ export default function ICDataAccessManager() {
     });
 
     // Fetch Users (simplified - in production would search from user service)
-    const { data: users = [] } = useQuery({
+    const { data: users = [] } = useQuery<any>({
         queryKey: ["users-search", searchTerm],
         queryFn: async () => {
             if (!searchTerm) return [];

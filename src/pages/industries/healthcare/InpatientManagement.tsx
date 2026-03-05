@@ -14,7 +14,7 @@ export default function InpatientManagement() {
   const { toast } = useToast();
   const [newAdmit, setNewAdmit] = useState({ admissionId: "", patientId: "", bedId: "", status: "admitted" });
 
-  const { data: admissions = [], isLoading } = useQuery({
+  const { data: admissions = [], isLoading } = useQuery<any>({
     queryKey: ["/api/healthcare-admissions"],
     queryFn: () => fetch("/api/healthcare-admissions").then(r => r.json()).catch(() => []),
   });

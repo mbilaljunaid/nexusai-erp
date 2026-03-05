@@ -14,7 +14,7 @@ export default function PLMEngineeringChangeControl() {
   const { toast } = useToast();
   const [newCR, setNewCR] = useState({ crId: "", title: "", changeType: "design", impactedParts: "", status: "submitted" });
 
-  const { data: changes = [], isLoading } = useQuery({
+  const { data: changes = [], isLoading } = useQuery<any>({
     queryKey: ["/api/engineering-changes"],
     queryFn: () => fetch("/api/engineering-changes").then(r => r.json()).catch(() => []),
   });

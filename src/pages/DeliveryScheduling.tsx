@@ -14,7 +14,7 @@ export default function DeliveryScheduling() {
   const { toast } = useToast();
   const [newDelivery, setNewDelivery] = useState({ shipment: "SHP-001", date: "", time: "09:00", customer: "Cust-A", status: "scheduled" });
 
-  const { data: deliveries = [], isLoading } = useQuery({
+  const { data: deliveries = [], isLoading } = useQuery<any>({
     queryKey: ["/api/delivery-scheduling"],
     queryFn: () => fetch("/api/delivery-scheduling").then(r => r.json()).catch(() => []),
   });

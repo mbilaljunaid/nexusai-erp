@@ -21,7 +21,7 @@ export default function RevenueWaterfallDashboard() {
     const { businessUnitId } = useEnterpriseStore();
     const [selectedCustomer, setSelectedCustomer] = React.useState<string>("");
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading } = useQuery<any>({
         queryKey: ["/api/billing/revenue/waterfall", selectedCustomer, businessUnitId],
         queryFn: async () => {
             const url = selectedCustomer ? `/api/billing/revenue/waterfall?customerId=${selectedCustomer}` : `/api/billing/revenue/waterfall`;
@@ -33,7 +33,7 @@ export default function RevenueWaterfallDashboard() {
         }
     });
 
-    const { data: schedules = [], isLoading: isSchedulesLoading } = useQuery({
+    const { data: schedules = [], isLoading: isSchedulesLoading } = useQuery<any>({
         queryKey: ["/api/ar/revenue/schedules", businessUnitId],
         queryFn: async () => {
             const res = await fetch("/api/ar/revenue/schedules", {

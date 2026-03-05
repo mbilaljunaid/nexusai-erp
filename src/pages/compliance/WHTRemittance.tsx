@@ -70,8 +70,8 @@ export default function WHTRemittance() {
     });
 
     const qc = useQueryClient();
-    const { data: rules = [] } = useQuery({ queryKey: ['wht-rules', country], queryFn: () => fetchRules(country || undefined) });
-    const { data: batches = [] } = useQuery({ queryKey: ['wht-batches'], queryFn: fetchBatches });
+    const { data: rules = [] } = useQuery<any>({ queryKey: ['wht-rules', country], queryFn: () => fetchRules(country || undefined) });
+    const { data: batches = [] } = useQuery<any>({ queryKey: ['wht-batches'], queryFn: fetchBatches });
 
     const { data: transactions = [] } = useQuery<WHTTransaction[]>({
         queryKey: ['wht-txns', period, country],

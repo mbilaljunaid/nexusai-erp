@@ -30,7 +30,7 @@ export default function LearningCatalog() {
     const queryClient = useQueryClient();
 
     // Fetch courses
-    const { data: courses = [], isLoading } = useQuery({
+    const { data: courses = [], isLoading } = useQuery<any>({
         queryKey: ["/api/learning/courses", searchQuery, selectedCategory],
         queryFn: async () => {
             const params = new URLSearchParams();

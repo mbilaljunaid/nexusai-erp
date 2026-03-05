@@ -54,7 +54,7 @@ export default function TaxProvisionWorkbench() {
     const [result, setResult] = useState<any>(null);
     const qc = useQueryClient();
 
-    const { data: provisions = [] } = useQuery({
+    const { data: provisions = [] } = useQuery<any>({
         queryKey: ['tax-provisions', year],
         queryFn: () => listProvisions(year),
     });

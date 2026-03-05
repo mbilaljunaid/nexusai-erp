@@ -11,7 +11,7 @@ export default function DataAccessManager() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    const { data: sets = [], isLoading: setsLoading } = useQuery({
+    const { data: sets = [], isLoading: setsLoading } = useQuery<any>({
         queryKey: ["/api/gl/access-sets"],
         queryFn: async () => {
             const res = await apiRequest("GET", "/api/gl/access-sets");
@@ -19,7 +19,7 @@ export default function DataAccessManager() {
         }
     });
 
-    const { data: ledgers = [], isLoading: ledgersLoading } = useQuery({
+    const { data: ledgers = [], isLoading: ledgersLoading } = useQuery<any>({
         queryKey: ["/api/finance/gl/ledgers"],
         queryFn: async () => {
             const res = await apiRequest("GET", "/api/finance/gl/ledgers");

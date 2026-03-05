@@ -14,7 +14,7 @@ export default function HospitalityInventory() {
   const { toast } = useToast();
   const [newItem, setNewItem] = useState({ itemId: "", itemName: "", category: "F&B", quantity: "0", reorder: "50" });
 
-  const { data: items = [], isLoading } = useQuery({
+  const { data: items = [], isLoading } = useQuery<any>({
     queryKey: ["/api/hospitality-inventory"],
     queryFn: () => fetch("/api/hospitality-inventory").then(r => r.json()).catch(() => []),
   });

@@ -33,13 +33,13 @@ export default function PMDefinitionBuilder() {
     });
 
     // 1. Fetch Assets
-    const { data: assets } = useQuery({
+    const { data: assets } = useQuery<any>({
         queryKey: ["/api/maintenance/assets"],
         queryFn: () => fetch("/api/maintenance/assets").then(r => r.json())
     });
 
     // 2. Fetch Work Definitions (Templates)
-    const { data: templates } = useQuery({
+    const { data: templates } = useQuery<any>({
         queryKey: ["/api/maintenance/library/definitions"],
         queryFn: () => fetch("/api/maintenance/library/definitions").then(r => r.json())
     });

@@ -13,7 +13,7 @@ export default function ShoppingCartCheckout() {
   const { toast } = useToast();
   const [newItem, setNewItem] = useState({ productId: "", quantity: "1", price: "29.99" });
 
-  const { data: cartItems = [], isLoading } = useQuery({
+  const { data: cartItems = [], isLoading } = useQuery<any>({
     queryKey: ["/api/shopping-cart"],
     queryFn: () => fetch("/api/shopping-cart").then(r => r.json()),
   });

@@ -15,7 +15,7 @@ export default function OmniChannelOrders() {
   const { toast } = useToast();
   const [newOrder, setNewOrder] = useState({ orderId: "", channel: "web", fulfillmentType: "ship", status: "pending" });
 
-  const { data: orders = [], isLoading } = useQuery({
+  const { data: orders = [], isLoading } = useQuery<any>({
     queryKey: ["/api/omni-orders"],
     queryFn: () => fetch("/api/omni-orders").then(r => r.json()).catch(() => []),
   });

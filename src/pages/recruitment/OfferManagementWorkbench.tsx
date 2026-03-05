@@ -23,7 +23,7 @@ export default function OfferManagementWorkbench() {
     const { toast } = useToast();
     const [filterStatus, setFilterStatus] = useState("all");
 
-    const { data: offers = [], isLoading } = useQuery({
+    const { data: offers = [], isLoading } = useQuery<any>({
         queryKey: ["/api/recruitment/offers"],
         queryFn: async () => {
             // Mocking offer list for V1

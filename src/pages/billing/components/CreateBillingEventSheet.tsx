@@ -50,7 +50,7 @@ export function CreateBillingEventSheet() {
     const [open, setOpen] = useState(false);
 
     // Fetch Customers
-    const { data: customers = [] } = useQuery({
+    const { data: customers = [] } = useQuery<any>({
         queryKey: ["/api/customers"],
         queryFn: () => fetch("/api/billing/profiles").then(r => r.json())
     });

@@ -69,7 +69,7 @@ export default function FSGReportBuilder() {
     const [selectedReport, setSelectedReport] = useState<string | null>(null);
 
     const qc = useQueryClient();
-    const { data: reports = [] } = useQuery({ queryKey: ['fsg-reports'], queryFn: listReports });
+    const { data: reports = [] } = useQuery<any>({ queryKey: ['fsg-reports'], queryFn: listReports });
 
     const runMutation = useMutation({
         mutationFn: runReport,

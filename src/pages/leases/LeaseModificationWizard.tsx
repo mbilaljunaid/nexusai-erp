@@ -30,7 +30,7 @@ export default function LeaseModificationWizard({ leaseId }: { leaseId: string }
         reason: ""
     });
 
-    const { data: lease } = useQuery({
+    const { data: lease } = useQuery<any>({
         queryKey: [`/api/lease/leases/${leaseId}`],
         queryFn: async () => {
             const res = await fetch(`/api/lease/leases/${leaseId}`);

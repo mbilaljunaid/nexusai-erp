@@ -14,7 +14,7 @@ export default function SalesCommissionManagement() {
   const { toast } = useToast();
   const [newComm, setNewComm] = useState({ salesRep: "", territory: "", commissionRate: "5", period: "monthly", status: "accrued" });
 
-  const { data: commissions = [], isLoading } = useQuery({
+  const { data: commissions = [], isLoading } = useQuery<any>({
     queryKey: ["/api/commissions"],
     queryFn: () => fetch("/api/commissions").then(r => r.json()).catch(() => []),
   });

@@ -19,10 +19,7 @@ export default function TaxCodeBuilder() {
 
     const createMutation = useMutation({
         mutationFn: (data: any) =>
-            apiRequest("/api/tax/tax-codes", {
-                method: "POST",
-                body: JSON.stringify(data),
-            }),
+            apiRequest("POST", "/api/tax/tax-codes", data),
         onSuccess: () => {
             toast({ title: "Success", description: "Tax code created" });
             queryClient.invalidateQueries({ queryKey: ["/api/tax/tax-codes"] });
@@ -31,7 +28,6 @@ export default function TaxCodeBuilder() {
         },
     });
 
-    return (
     return (
         <StandardPage
             title="Tax Code Builder"

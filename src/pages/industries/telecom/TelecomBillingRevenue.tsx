@@ -17,7 +17,7 @@ export default function TelecomBillingRevenue() {
   const { toast } = useToast();
   const [newInvoice, setNewInvoice] = useState({ invoiceId: "", subscriberId: "", amount: "50.00", usageType: "data", status: "pending" });
 
-  const { data: invoices = [], isLoading } = useQuery({
+  const { data: invoices = [], isLoading } = useQuery<any>({
     queryKey: ["/api/telecom-invoices", businessUnitId],
     queryFn: () => fetch("/api/telecom-invoices", {
       headers: businessUnitId ? { "x-business-unit-id": businessUnitId } : undefined

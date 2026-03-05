@@ -101,7 +101,7 @@ export default function JournalEntry() {
     const [approvalStatus, setApprovalStatus] = useState<string>('Not Required');
 
     // Fetch existing Journal Details if editing
-    useQuery({
+    useQuery<any>({
         queryKey: ["journal", journalId],
         queryFn: async () => {
             if (!journalId) return null;
@@ -151,7 +151,7 @@ export default function JournalEntry() {
     });
 
     // Fetch Audit Logs
-    const { data: realAuditLogs = [] } = useQuery({
+    const { data: realAuditLogs = [] } = useQuery<any>({
         queryKey: ["journal-audit", journalId],
         queryFn: async () => {
             if (!journalId) return [];
@@ -162,7 +162,7 @@ export default function JournalEntry() {
     });
 
     // Fetch GL Periods
-    const { data: periods = [] } = useQuery({
+    const { data: periods = [] } = useQuery<any>({
         queryKey: ["gl-periods", currentLedgerId],
         queryFn: async () => {
             const res = await apiRequest("GET", `/api/gl/periods?ledgerId=${currentLedgerId}`);

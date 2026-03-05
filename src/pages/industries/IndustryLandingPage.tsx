@@ -101,11 +101,10 @@ export default function IndustryLandingPage() {
                 <CTASection
                     title={`Ready to transform your ${industry.name} business?`}
                     subtitle="Join thousands of organizations using NexusAI today."
-                    primaryCTA={
-                        <Button size="lg" variant="secondary" className="text-primary font-bold">
-                            Get Started Now
-                        </Button>
-                    }
+                    primaryCTA={{
+                        label: "Get Started Now",
+                        onClick: () => { window.location.href = "/signup"; }
+                    }}
                 />
             </main>
 

@@ -14,7 +14,7 @@ export default function VehicleFleetManagement() {
   const { toast } = useToast();
   const [newVehicle, setNewVehicle] = useState({ vehicleId: "", type: "box-truck", capacity: "5000", status: "available", mileage: "0" });
 
-  const { data: vehicles = [], isLoading } = useQuery({
+  const { data: vehicles = [], isLoading } = useQuery<any>({
     queryKey: ["/api/fleet-vehicles"],
     queryFn: () => fetch("/api/fleet-vehicles").then(r => r.json()).catch(() => []),
   });

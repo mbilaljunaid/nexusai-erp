@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Award } from "lucide-react";
 
 export default function SupplierQualityScorecard() {
-  const { data: scorecards = [], isLoading } = useQuery({
+  const { data: scorecards = [], isLoading } = useQuery<any>({
     queryKey: ["/api/supplier-scorecards"],
     queryFn: () => fetch("/api/supplier-scorecards").then(r => r.json()).catch(() => []),
   });

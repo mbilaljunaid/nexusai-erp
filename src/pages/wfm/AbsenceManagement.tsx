@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -22,17 +22,14 @@ export default function AbsenceManagement() {
     const [endDate, setEndDate] = useState<Date>();
     const [reason, setReason] = useState("");
 
-    const { data: requests } = useQuery({
+    const { data: requests } = useQuery<any>({
         queryKey: ["/api/wfm/absence-requests"],
-        queryFn: () => apiRequest("/api/wfm/absence-requests?status=PENDING"),
+        queryFn: () => apiRequest("GET", "/api/wfm/absence-requests?status=PENDING").then(res => res.json()),
     });
 
     const submitMutation = useMutation({
         mutationFn: (data: any) =>
-            apiRequest("/api/wfm/absence-requests", {
-                method: "POST",
-                body: JSON.stringify(data),
-            }),
+            apiRequest("POST", "/api/wfm/absence-requests", data),
         onSuccess: () => {
             toast({ title: "Success", description: "Absence request submitted" });
             queryClient.invalidateQueries({ queryKey: ["/api/wfm/absence-requests"] });
@@ -41,7 +38,7 @@ export default function AbsenceManagement() {
 
     const approveMutation = useMutation({
         mutationFn: (requestId: number) =>
-            apiRequest(`/api/wfm/absence-requests/${requestId}/approve`, { method: "POST" }),
+            apiRequest("POST", `/api/wfm/absence-requests/${requestId}/approve`),
         onSuccess: () => {
             toast({ title: "Success", description: "Request approved" });
             queryClient.invalidateQueries({ queryKey: ["/api/wfm/absence-requests"] });
@@ -51,7 +48,7 @@ export default function AbsenceManagement() {
     return (
         <StandardPage title="Absence Management">
             <div>
-                
+
                 <p className="text-muted-foreground">Leave requests and approvals</p>
             </div>
 

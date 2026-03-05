@@ -6,12 +6,12 @@ import { Check } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function BillingPlans() {
-  const { data: plans = [] } = useQuery({
+  const { data: plans = [] } = useQuery<any>({
     queryKey: ["/api/plans"],
     queryFn: () => fetch("/api/plans").then(r => r.json())
   });
 
-  const { data: currentSub = [] } = useQuery({
+  const { data: currentSub = [] } = useQuery<any>({
     queryKey: ["/api/subscriptions/tenant1"],
     queryFn: () => fetch("/api/subscriptions/tenant1").then(r => r.json())
   });

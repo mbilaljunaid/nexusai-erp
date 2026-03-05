@@ -13,7 +13,7 @@ export default function POSCashReconciliation() {
   const { toast } = useToast();
   const [newRecon, setNewRecon] = useState({ terminalId: "", dateOfDay: new Date().toISOString().split('T')[0], expectedCash: "0", actualCash: "0" });
 
-  const { data: reconciliations = [], isLoading } = useQuery({
+  const { data: reconciliations = [], isLoading } = useQuery<any>({
     queryKey: ["/api/cash-reconciliation"],
     queryFn: () => fetch("/api/cash-reconciliation").then(r => r.json()),
   });

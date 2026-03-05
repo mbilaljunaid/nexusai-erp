@@ -14,7 +14,7 @@ export default function LearningPlayer() {
     const [progress, setProgress] = useState(0);
 
     // Fetch Launch Data
-    const { data: launchData, isLoading, error } = useQuery({
+    const { data: launchData, isLoading, error } = useQuery<any>({
         queryKey: ["learning-launch", enrollmentId],
         queryFn: async () => {
             const res = await fetch(`/api/learning/player/${enrollmentId}/launch`);

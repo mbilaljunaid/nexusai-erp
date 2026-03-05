@@ -12,7 +12,7 @@ import {
     PlayCircle,
     Award,
 } from "lucide-react";
-import { useQuery, useMutation, useQueryClient } from "@tantml:react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "wouter";
 import { StandardPage } from "@/components/layout/StandardPage";
 
@@ -37,11 +37,11 @@ interface Module {
 }
 
 export default function CoursePlayer() {
-    const { enrollmentId } = useParams();
+    const { enrollmentId } = useParams() as any;
     const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
     const queryClient = useQueryClient();
 
-    const { data: courseContent } = useQuery({
+    const { data: courseContent } = useQuery<any>({
         queryKey: ["/api/learning/enrollments", enrollmentId, "content"],
         enabled: !!enrollmentId,
     });
@@ -98,7 +98,7 @@ export default function CoursePlayer() {
             <div className="border-b p-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        
+
                         <p className="text-sm text-muted-foreground">
                             Module {currentModuleIndex + 1} of {modules.length}
                         </p>
@@ -122,8 +122,8 @@ export default function CoursePlayer() {
                         <div
                             key={module.id}
                             className={`p-3 border rounded-lg cursor-pointer transition-colors ${idx === currentModuleIndex
-                                    ? "bg-primary text-primary-foreground"
-                                    : "hover:bg-accent"
+                                ? "bg-primary text-primary-foreground"
+                                : "hover:bg-accent"
                                 }`}
                             onClick={() => setCurrentModuleIndex(idx)}
                         >

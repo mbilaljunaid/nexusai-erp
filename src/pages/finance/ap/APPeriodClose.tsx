@@ -24,7 +24,7 @@ export default function APPeriodClose() {
     const [activeTab, setActiveTab] = useState("control");
     const { legalEntityId } = useEnterpriseStore();
 
-    const { data: periods, isLoading } = useQuery({
+    const { data: periods, isLoading } = useQuery<any>({
         queryKey: ["ap-periods", legalEntityId],
         queryFn: api.ap.periods.list,
     });

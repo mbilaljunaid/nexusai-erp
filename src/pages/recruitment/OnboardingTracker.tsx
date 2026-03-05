@@ -186,7 +186,7 @@ export default function OnboardingTracker() {
     return (
         <StandardPage title="Onboarding Tracker">
             <div>
-                
+
                 <p className="text-muted-foreground mt-2">
                     Monitor new hire onboarding progress and tasks
                 </p>
@@ -311,7 +311,7 @@ export default function OnboardingTracker() {
                                         <InteractiveSpreadsheet
                                             data={hire.tasks}
                                             columns={getTaskColumns()}
-                                            containerHeight={300}
+                                            containerHeight="300px"
                                             virtualized={true}
                                         />
                                     </div>

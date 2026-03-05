@@ -14,7 +14,7 @@ export default function EDIMarketplaceConnectors() {
   const { toast } = useToast();
   const [newConn, setNewConn] = useState({ partner: "", type: "edi", status: "active" });
 
-  const { data: connections = [], isLoading } = useQuery({
+  const { data: connections = [], isLoading } = useQuery<any>({
     queryKey: ["/api/edi-connectors"],
     queryFn: () => fetch("/api/edi-connectors").then(r => r.json()).catch(() => []),
   });

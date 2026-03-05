@@ -80,11 +80,7 @@ export default function BillingEventsManager() {
             queryClient.invalidateQueries({ queryKey: ["billing-events"] });
             toast({
                 title: "Invoice Created",
-                description: `Draft invoice ${result.invoiceNumber} created successfully.`,
-                action: {
-                    label: "View Invoice",
-                    onClick: () => window.location.href = `/projects/invoices/${result.invoiceId}`
-                }
+                description: `Draft invoice ${result.invoiceNumber} created successfully.`
             });
         }
     });

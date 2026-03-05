@@ -21,7 +21,7 @@ export default function ContractWorkbench() {
   const [page, setPage] = useState(1);
   const limit = 20;
 
-  const { data: response, isLoading } = useQuery({
+  const { data: response, isLoading } = useQuery<any>({
     queryKey: ["contracts", search, statusFilter, page],
     queryFn: async () => {
       const params = new URLSearchParams({

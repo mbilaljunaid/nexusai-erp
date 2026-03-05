@@ -14,7 +14,7 @@ export default function LIMSLabIntegration() {
   const { toast } = useToast();
   const [newTest, setNewTest] = useState({ sampleId: "", testType: "chemical", result: "pending", status: "active" });
 
-  const { data: tests = [], isLoading } = useQuery({
+  const { data: tests = [], isLoading } = useQuery<any>({
     queryKey: ["/api/lab-tests"],
     queryFn: () => fetch("/api/lab-tests").then(r => r.json()).catch(() => []),
   });

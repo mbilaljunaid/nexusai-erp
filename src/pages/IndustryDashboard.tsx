@@ -171,7 +171,7 @@ DEFAULT_INDUSTRIES.forEach((code) => {
 
 export default function IndustryDashboard() {
     const [, params] = useRoute("/industry/:industryCode/dashboard");
-    const industryCode = params?.industryCode || "";
+    const industryCode = (params as any)?.industryCode || "";
     const industry = INDUSTRY_DATA[industryCode];
 
     if (!industry) {

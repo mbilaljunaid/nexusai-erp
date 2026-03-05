@@ -14,7 +14,7 @@ export default function PredictiveModeling() {
   const { toast } = useToast();
   const [newModel, setNewModel] = useState({ name: "", module: "Finance", algorithm: "linear", status: "active" });
 
-  const { data: models = [], isLoading } = useQuery({
+  const { data: models = [], isLoading } = useQuery<any>({
     queryKey: ["/api/predictive-models"],
     queryFn: () => fetch("/api/predictive-models").then(r => r.json()).catch(() => []),
   });

@@ -15,13 +15,13 @@ export default function CurrencyRevaluation() {
     const [selectedAccount, setSelectedAccount] = useState<string>("");
 
     // Fetch bank accounts
-    const { data: accounts } = useQuery({
+    const { data: accounts } = useQuery<any>({
         queryKey: ["/api/finance/cash/accounts"],
         queryFn: () => fetch("/api/finance/cash/accounts").then(r => r.json())
     });
 
     // Fetch revaluation history
-    const { data: history } = useQuery({
+    const { data: history } = useQuery<any>({
         queryKey: ["/api/finance/cash/accounts", selectedAccount, "revalue/history"],
         queryFn: () => fetch(`/api/finance/cash/accounts/${selectedAccount}/revalue/history`).then(r => r.json()),
         enabled: !!selectedAccount

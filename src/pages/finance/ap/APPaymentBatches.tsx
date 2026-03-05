@@ -42,7 +42,7 @@ export default function APPaymentBatches() {
     const [accountingModalOpen, setAccountingModalOpen] = useState(false);
     const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
 
-    const { data: batches, isLoading } = useQuery({
+    const { data: batches, isLoading } = useQuery<any>({
         queryKey: ["/api/ap/payment-batches"],
         queryFn: () => fetch("/api/ap/payment-batches").then(r => r.json()),
         refetchInterval: 3000,

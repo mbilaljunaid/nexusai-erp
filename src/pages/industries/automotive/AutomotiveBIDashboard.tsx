@@ -5,7 +5,7 @@ import { StandardDashboard } from "@/components/ui/StandardDashboard";
 import { DashboardWidget } from "@/components/ui/DashboardWidget";
 
 export default function AutomotiveBIDashboard() {
-  const { data: metrics = [], isLoading } = useQuery({
+  const { data: metrics = [], isLoading } = useQuery<any>({
     queryKey: ["/api/auto-analytics"],
     queryFn: () => fetch("/api/auto-analytics").then(r => r.json()),
   });

@@ -42,7 +42,7 @@ export default function ArDunningWorkbench() {
         queryFn: () => fetch("/api/ar/dunning/runs").then(r => r.json()).catch(() => []),
     });
 
-    const { data: customers } = useQuery({
+    const { data: customers } = useQuery<any>({
         queryKey: ["/api/ar/customers"],
         queryFn: () => fetch("/api/ar/customers").then(r => r.json()),
     });

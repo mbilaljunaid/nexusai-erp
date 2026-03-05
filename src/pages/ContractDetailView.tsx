@@ -16,7 +16,7 @@ export default function ContractDetailView() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    const { data: contract, isLoading } = useQuery({
+    const { data: contract, isLoading } = useQuery<any>({
         queryKey: ["contract", id],
         queryFn: async () => {
             const res = await fetch(`/api/contracts/${id}`);

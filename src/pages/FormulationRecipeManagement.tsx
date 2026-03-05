@@ -14,7 +14,7 @@ export default function FormulationRecipeManagement() {
   const { toast } = useToast();
   const [newFormula, setNewFormula] = useState({ formulaId: "", productName: "", batchSize: "100", yieldPct: "95", status: "draft" });
 
-  const { data: formulas = [], isLoading } = useQuery({
+  const { data: formulas = [], isLoading } = useQuery<any>({
     queryKey: ["/api/formulations"],
     queryFn: () => fetch("/api/formulations").then(r => r.json()),
   });

@@ -44,7 +44,7 @@ export default function GLDashboard() {
         }
     });
 
-    const { data: recentJournals } = useQuery({
+    const { data: recentJournals } = useQuery<any>({
         queryKey: ["/api/gl/journals", 1, 10],
         queryFn: () => fetch("/api/gl/journals?limit=10&offset=0").then(r => r.json())
     });

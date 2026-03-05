@@ -43,7 +43,7 @@ export default function CostImportWorkbench() {
     const [importStep, setImportStep] = useState<"upload" | "mapping" | "validation" | "complete">("upload");
 
     // Fetch expenditure types for validation
-    const { data: expenditureTypes = [] } = useQuery({
+    const { data: expenditureTypes = [] } = useQuery<any>({
         queryKey: ["expenditure-types"],
         queryFn: async () => {
             const res = await fetch("/api/ppm/expenditure-types");

@@ -30,7 +30,7 @@ export default function RevenueAuditConsole() {
     const [isSearching, setIsSearching] = useState(false);
     const [error, setError] = useState("");
 
-    const { data: complianceHealth, isLoading: isLoadingHealth } = useQuery({
+    const { data: complianceHealth, isLoading: isLoadingHealth } = useQuery<any>({
         queryKey: ["revenueComplianceHealth"],
         queryFn: async () => {
             const res = await fetch("/api/revenue/audit/compliance-health");

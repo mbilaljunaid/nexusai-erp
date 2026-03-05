@@ -34,7 +34,7 @@ export default function MDMAuditViewer() {
     const [entityId, setEntityId] = useState("");
     const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
 
-    const { data: auditLogs = [] } = useQuery({
+    const { data: auditLogs = [] } = useQuery<any>({
         queryKey: ["/api/mdm/audit", entityType, entityId],
         queryFn: async () => {
             let url = "/api/mdm/audit";

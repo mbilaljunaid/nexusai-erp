@@ -27,7 +27,7 @@ export default function HRReports() {
     });
 
     // Fetch Report Data (Only when type is selected)
-    const { data: reportData, isLoading: isLoadingData, refetch } = useQuery({
+    const { data: reportData, isLoading: isLoadingData, refetch } = useQuery<any>({
         queryKey: ["/api/hr/reports/generate", selectedType, dateRange],
         queryFn: async () => {
             if (!selectedType) return [];

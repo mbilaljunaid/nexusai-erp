@@ -23,7 +23,7 @@ export default function CommunityBrowser() {
     const [currentId, setCurrentId] = useState<string | null>(null);
 
     // Fetch Roots
-    const { data: roots, isLoading: loadingRoots } = useQuery({
+    const { data: roots, isLoading: loadingRoots } = useQuery<any>({
         queryKey: ["communities", "roots"],
         queryFn: async () => {
             const res = await fetch("/api/learning/communities/roots");
@@ -33,7 +33,7 @@ export default function CommunityBrowser() {
     });
 
     // Fetch Children & Courses
-    const { data: children, isLoading: loadingChildren } = useQuery({
+    const { data: children, isLoading: loadingChildren } = useQuery<any>({
         queryKey: ["communities", currentId, "children"],
         queryFn: async () => {
             const res = await fetch(`/api/learning/communities/${currentId}/children`);
@@ -43,7 +43,7 @@ export default function CommunityBrowser() {
     });
 
     // Fetch Breadcrumbs
-    const { data: breadcrumbs } = useQuery({
+    const { data: breadcrumbs } = useQuery<any>({
         queryKey: ["communities", currentId, "breadcrumbs"],
         queryFn: async () => {
             const res = await fetch(`/api/learning/communities/${currentId}/breadcrumbs`);

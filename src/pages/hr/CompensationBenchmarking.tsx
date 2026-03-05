@@ -7,9 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function CompensationBenchmarking() {
-    const { data: benchmark } = useQuery({
+    const { data: benchmark } = useQuery<any>({
         queryKey: ["/api/hr/compensation-benchmark"],
-        queryFn: () => apiRequest("/api/hr/compensation-benchmark"),
+        queryFn: () => apiRequest("GET", "/api/hr/compensation-benchmark").then(res => res.json()),
     });
 
     return (

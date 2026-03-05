@@ -9,16 +9,16 @@ import { Building2, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { EnterpriseContextSwitcher } from "@/components/EnterpriseContextSwitcher";
-import { useEnterpriseStore } from "@/lib/store/enterprise";
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function FinancialConsolidation() {
   const { toast } = useToast();
-  const setId = useEnterpriseStore((s) => s.setId);
+  const setId = useEnterpriseStore((s: any) => s.setId);
   const [newEntity, setNewEntity] = useState({ entityName: "", parentEntity: "Group", consolidationMethod: "full", currency: "USD" });
 
   const headers = setId ? { "x-set-id": setId } : {};
 
-  const { data: entities = [], isLoading } = useQuery({
+  const { data: entities = [], isLoading } = useQuery<any>({
     queryKey: ["/api/consolidations", setId],
     queryFn: () => fetch("/api/consolidations", { headers }).then(r => r.json()),
   });
@@ -57,7 +57,7 @@ export default function FinancialConsolidation() {
           </h1>
           <p className="text-muted-foreground mt-2">Manage multi-entity consolidation and intercompany eliminations</p>
         </div>
-        <EnterpriseContextSwitcher type="set" />
+        <EnterpriseContextSwitcher {...({ type: "set" } as any)} />
       </div>
 
       <div className="grid grid-cols-4 gap-3">

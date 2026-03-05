@@ -38,7 +38,7 @@ export default function AgingReport() {
 
   const apLatest = apData[0];
   const arLatest = arData[0];
-  
+
   const navItems = [
     { id: "ap", label: "Accounts Payable", icon: CreditCard, color: "text-blue-500" },
     { id: "ar", label: "Accounts Receivable", icon: Clock, color: "text-green-500" },

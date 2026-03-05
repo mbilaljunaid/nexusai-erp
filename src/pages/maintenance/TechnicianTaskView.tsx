@@ -49,7 +49,7 @@ export default function TechnicianTaskView() {
     // Mock User ID (Technician) - In real app, get from context
     const currentUserId = "tech-1";
 
-    const { data: myTasks, isLoading } = useQuery({
+    const { data: myTasks, isLoading } = useQuery<any>({
         queryKey: ["/api/maintenance/my-tasks", currentUserId],
         queryFn: async () => {
             // Fetch WOs assigned to me

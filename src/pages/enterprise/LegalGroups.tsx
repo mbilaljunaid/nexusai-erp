@@ -21,7 +21,7 @@ export default function LegalGroups() {
     const [search, setSearch] = useState("");
     const [formData, setFormData] = useState({ name: "", registrationNumber: "", currency: "USD", description: "" });
 
-    const { data: legalGroups, isLoading } = useQuery({
+    const { data: legalGroups, isLoading } = useQuery<any>({
         queryKey: ["/api/enterprise/legal-groups"],
         queryFn: () => fetch("/api/enterprise/legal-groups").then(r => r.json())
     });

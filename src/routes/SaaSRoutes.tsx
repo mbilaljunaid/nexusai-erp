@@ -8,8 +8,8 @@ import TrialPlanManagementDashboard from "@/pages/saas/TrialPlanManagementDashbo
 export default function SaaSRoutes() {
     return (
         <>
-            <Route path="/saas/customer-success" component={CustomerHealthDashboard} />
-            <Route path="/saas/customer-success/:customerId" component={CustomerHealthDashboard} />
+            <Route path="/saas/customer-success" component={CustomerHealthDashboard as any} />
+            <Route path="/saas/customer-success/:customerId" component={CustomerHealthDashboard as any} />
             <Route path="/saas/playbooks" component={PlaybookBuilder} />
             <Route path="/saas/usage-analytics" component={UsageAnalyticsDashboard} />
             <Route path="/saas/mrr-analytics" component={MRRAnalyticsDashboard} />

@@ -12,7 +12,7 @@ export function APTolerances() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    const { data: tolerances, isLoading } = useQuery({
+    const { data: tolerances, isLoading } = useQuery<any>({
         queryKey: ["/api/ap/tolerances"],
         queryFn: async () => {
             try {

@@ -15,7 +15,7 @@ export default function SupplierDashboard() {
     const token = localStorage.getItem("supplier_token");
 
     // Fetch Supplier Profile
-    const { data: supplier, isLoading } = useQuery({
+    const { data: supplier, isLoading } = useQuery<any>({
         queryKey: ["/api/portal/supplier/me"],
         queryFn: async () => {
             const res = await fetch("/api/portal/supplier/me", {
@@ -27,7 +27,7 @@ export default function SupplierDashboard() {
     });
 
     // Fetch Orders - We'll just fetch orders to count stats for now
-    const { data: orders } = useQuery({
+    const { data: orders } = useQuery<any>({
         queryKey: ["/api/portal/supplier/orders"],
         queryFn: async () => {
             const res = await fetch("/api/portal/supplier/orders", {
@@ -39,7 +39,7 @@ export default function SupplierDashboard() {
     });
 
     // Fetch Scorecard
-    const { data: scorecard } = useQuery({
+    const { data: scorecard } = useQuery<any>({
         queryKey: ["/api/portal/supplier/scorecard"],
         queryFn: async () => {
             const res = await fetch("/api/portal/supplier/scorecard", {
@@ -63,7 +63,7 @@ export default function SupplierDashboard() {
     });
 
     // Fetch ASNs for shipment chart
-    const { data: asns } = useQuery({
+    const { data: asns } = useQuery<any>({
         queryKey: ["/api/portal/supplier/asns"],
         queryFn: async () => {
             const res = await fetch("/api/portal/supplier/asns", {

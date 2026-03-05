@@ -46,7 +46,7 @@ export default function LocationManager() {
     const queryClient = useQueryClient();
 
     // Fetch locations for selected party
-    const { data: locations = [], isLoading } = useQuery({
+    const { data: locations = [], isLoading } = useQuery<any>({
         queryKey: ["/api/mdm/parties", selectedParty, "locations"],
         enabled: !!selectedParty,
         queryFn: async () => {

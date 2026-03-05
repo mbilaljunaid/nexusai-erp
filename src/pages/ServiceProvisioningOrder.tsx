@@ -14,7 +14,7 @@ export default function ServiceProvisioningOrder() {
   const { toast } = useToast();
   const [newOrder, setNewOrder] = useState({ orderId: "", subscriberId: "", serviceId: "", deviceId: "", status: "pending" });
 
-  const { data: orders = [], isLoading } = useQuery({
+  const { data: orders = [], isLoading } = useQuery<any>({
     queryKey: ["/api/service-orders"],
     queryFn: () => fetch("/api/service-orders").then(r => r.json()).catch(() => []),
   });

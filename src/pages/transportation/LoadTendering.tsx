@@ -19,22 +19,21 @@ export default function LoadTendering() {
     const [shipmentId, setShipmentId] = useState("");
     const [tenderMode, setTenderMode] = useState<'SPOT' | 'CONTRACT'>('CONTRACT');
 
-    const { data: shipments } = useQuery({
+    const { data: shipments } = useQuery<any>({
         queryKey: ["/api/transportation/shipments"],
-        queryFn: () => apiRequest("/api/transportation/shipments?status=READY_TO_TENDER"),
+        queryFn: () => apiRequest("GET", "/api/transportation/shipments?status=READY_TO_TENDER").then(res => res.json()),
     });
 
-    const { data: carriers } = useQuery({
+    const { data: carriers } = useQuery<any>({
         queryKey: ["/api/transportation/carriers", tenderMode],
-        queryFn: () => apiRequest(`/api/transportation/carriers?mode=${tenderMode}`),
+        queryFn: () => apiRequest("GET", `/api/transportation/carriers?mode=${tenderMode}`).then(res => res.json()),
     });
 
     const tenderMutation = useMutation({
-        mutationFn: (params: any) =>
-            apiRequest("/api/transportation/tender-load", {
-                method: "POST",
-                body: JSON.stringify(params),
-            }),
+        mutationFn: async (params: any) => {
+            const res = await apiRequest("POST", "/api/transportation/tender-load", params);
+            return res.json();
+        },
         onSuccess: (data) => {
             toast({
                 title: "Success",
@@ -45,11 +44,10 @@ export default function LoadTendering() {
     });
 
     const autoTenderMutation = useMutation({
-        mutationFn: (shipmentId: string) =>
-            apiRequest("/api/transportation/auto-tender", {
-                method: "POST",
-                body: JSON.stringify({ shipmentId }),
-            }),
+        mutationFn: async (shipmentId: string) => {
+            const res = await apiRequest("POST", "/api/transportation/auto-tender", { shipmentId });
+            return res.json();
+        },
         onSuccess: (data) => {
             toast({
                 title: "Success",
@@ -105,7 +103,7 @@ export default function LoadTendering() {
     return (
         <StandardPage title="Load Tendering & Carrier Selection">
             <div>
-                
+
                 <p className="text-muted-foreground">Automated carrier selection and rate optimization</p>
             </div>
 

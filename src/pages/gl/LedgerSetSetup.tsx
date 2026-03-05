@@ -34,7 +34,7 @@ export default function LedgerSetSetup() {
     const [assignment, setAssignment] = useState({ ledgerSetId: "", ledgerId: "" });
 
     // Fetch Ledger Sets
-    const { data: ledgerSets = [], isLoading: setsLoading } = useQuery({
+    const { data: ledgerSets = [], isLoading: setsLoading } = useQuery<any>({
         queryKey: ["/api/gl/ledger-sets"],
         queryFn: async () => {
             const res = await apiRequest("GET", "/api/gl/ledger-sets");
@@ -43,7 +43,7 @@ export default function LedgerSetSetup() {
     });
 
     // Fetch Ledgers for Assignment
-    const { data: ledgers = [] } = useQuery({
+    const { data: ledgers = [] } = useQuery<any>({
         queryKey: ["/api/finance/gl/ledgers"],
         queryFn: async () => {
             const res = await apiRequest("GET", "/api/finance/gl/ledgers");

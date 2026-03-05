@@ -5,6 +5,7 @@ import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Building, ArrowUpRight, DollarSign, CheckCircle2 } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 interface ProjectAsset {
     id: string;

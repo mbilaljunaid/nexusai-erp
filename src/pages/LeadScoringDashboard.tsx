@@ -17,7 +17,7 @@ export default function LeadScoringDashboard() {
   const { toast } = useToast();
   const [newLead, setNewLead] = useState({ name: "", email: "", company: "", score: "", status: "new" });
 
-  const { data: leads = [], isLoading } = useQuery({
+  const { data: leads = [], isLoading } = useQuery<any>({
     queryKey: ["/api/crm/leads"],
     queryFn: () => fetch("/api/crm/leads").then(r => r.json()).catch(() => []),
   });

@@ -15,14 +15,14 @@ export default function BatchScheduler() {
     const queryClient = useQueryClient();
     const [frequency, setFrequency] = useState("HOURLY");
 
-    const { data: jobs } = useQuery({
+    const { data: jobs } = useQuery<any>({
         queryKey: ["/api/sla/batch-jobs"],
-        queryFn: () => apiRequest("/api/sla/batch-jobs"),
+        queryFn: () => apiRequest("GET", "/api/sla/batch-jobs").then(res => res.json()),
     });
 
     const runMutation = useMutation({
         mutationFn: (jobId: number) =>
-            apiRequest(`/api/sla/batch-jobs/${jobId}/run`, { method: "POST" }),
+            apiRequest("POST", `/api/sla/batch-jobs/${jobId}/run`),
         onSuccess: () => {
             toast({ title: "Success", description: "Batch job started" });
             queryClient.invalidateQueries({ queryKey: ["/api/sla/batch-jobs"] });

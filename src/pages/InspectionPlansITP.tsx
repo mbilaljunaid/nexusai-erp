@@ -15,7 +15,7 @@ export default function InspectionPlansITP() {
   const { toast } = useToast();
   const [localPlans, setLocalPlans] = useState<any[]>([]);
 
-  const { data: plans = [], isLoading } = useQuery({
+  const { data: plans = [], isLoading } = useQuery<any>({
     queryKey: ["/api/inspection-plans"],
     queryFn: () => fetch("/api/inspection-plans").then(r => r.json()).catch(() => []),
   });

@@ -12,9 +12,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function SkillTracking() {
     const [searchTerm, setSearchTerm] = useState("");
 
-    const { data: employees } = useQuery({
+    const { data: employees } = useQuery<any>({
         queryKey: ["/api/wfm/employees-with-skills", searchTerm],
-        queryFn: () => apiRequest(`/api/wfm/employees-with-skills?search=${searchTerm}`),
+        queryFn: () => apiRequest("GET", `/api/wfm/employees-with-skills?search=${searchTerm}`).then(res => res.json()),
     });
 
     return (

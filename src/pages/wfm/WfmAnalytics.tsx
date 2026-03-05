@@ -16,7 +16,7 @@ export default function WfmAnalytics() {
         end: format(endOfMonth(new Date()), "yyyy-MM-dd")
     });
 
-    const { data: metrics, isLoading } = useQuery({
+    const { data: metrics, isLoading } = useQuery<any>({
         queryKey: ["wfm-analytics", dateRange],
         queryFn: async () => {
             const res = await fetch(`/api/wfm/analytics?tenantId=${MOCK_TENANT_ID}&startDate=${dateRange.start}&endDate=${dateRange.end}`);

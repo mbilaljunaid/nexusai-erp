@@ -29,7 +29,7 @@ import { format } from "date-fns";
 export default function RevenuePeriodClose() {
     const { toast } = useToast();
 
-    const { data: periods, isLoading } = useQuery({
+    const { data: periods, isLoading } = useQuery<any>({
         queryKey: ["revenuePeriods"],
         queryFn: async () => {
             const res = await fetch("/api/revenue/periods");

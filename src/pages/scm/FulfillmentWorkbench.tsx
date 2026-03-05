@@ -17,7 +17,7 @@ export default function FulfillmentWorkbench() {
     const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
 
     // 1. Fetch Orders Ready for Fulfillment
-    const { data: readyOrders = [], isLoading: isLoadingOrders } = useQuery({
+    const { data: readyOrders = [], isLoading: isLoadingOrders } = useQuery<any>({
         queryKey: ["/api/scm/wms/orders/ready"],
         queryFn: async () => {
             const res = await fetch("/api/scm/wms/orders/ready");
@@ -26,7 +26,7 @@ export default function FulfillmentWorkbench() {
     });
 
     // 2. Fetch Tasks (For Execution Tab)
-    const { data: tasksData } = useQuery({
+    const { data: tasksData } = useQuery<any>({
         queryKey: ["/api/scm/wms/tasks", "warehouse-1"],
         queryFn: async () => {
             const res = await fetch("/api/scm/wms/tasks?warehouseId=warehouse-1");

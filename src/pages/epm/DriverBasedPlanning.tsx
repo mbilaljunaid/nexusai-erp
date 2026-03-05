@@ -19,10 +19,7 @@ export default function DriverBasedPlanning() {
 
     const saveMutation = useMutation({
         mutationFn: (data: any) =>
-            apiRequest("/api/epm/drivers", {
-                method: "POST",
-                body: JSON.stringify(data),
-            }),
+            apiRequest("POST", "/api/epm/drivers", data),
         onSuccess: () => {
             toast({ title: "Success", description: "Drivers saved" });
             queryClient.invalidateQueries({ queryKey: ["/api/epm/drivers"] });

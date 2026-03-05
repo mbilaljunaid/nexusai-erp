@@ -15,7 +15,7 @@ export default function StandardCosting() {
   const { toast } = useToast();
   const [localCosts, setLocalCosts] = useState<any[]>([]);
 
-  const { data: costs = [], isLoading } = useQuery({
+  const { data: costs = [], isLoading } = useQuery<any>({
     queryKey: ["/api/costing"],
     queryFn: () => fetch("/api/costing").then(r => r.json()).catch(() => []),
   });

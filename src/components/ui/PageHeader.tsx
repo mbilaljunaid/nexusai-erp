@@ -15,8 +15,8 @@ interface BreadcrumbNavItem {
     href?: string;
 }
 
-interface PageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-    title: string;
+interface PageHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
+    title: React.ReactNode;
     description?: React.ReactNode; // Changed to allow ReactNode (badges etc)
     actions?: React.ReactNode;
     breadcrumbs?: BreadcrumbNavItem[];

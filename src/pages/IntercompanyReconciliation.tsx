@@ -19,7 +19,7 @@ export default function IntercompanyReconciliation() {
 
   const [newMatch, setNewMatch] = useState({ entity: "Entity A", partner: "Entity B", amount: "", status: "unmatched" });
 
-  const { data: matches = [], isLoading } = useQuery({
+  const { data: matches = [], isLoading } = useQuery<any>({
     queryKey: ["/api/intercompany-reconciliation", legalEntityId],
     queryFn: () => fetch("/api/intercompany-reconciliation", { headers: icHeaders }).then(r => r.json()).catch(() => []),
   });

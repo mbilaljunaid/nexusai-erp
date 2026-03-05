@@ -19,7 +19,7 @@ export default function HolidayCalendar() {
     const [newHoliday, setNewHoliday] = useState({ date: "", name: "", countryCode: "US" });
 
     // 1. Fetch Holidays
-    const { data: holidays, isLoading } = useQuery({
+    const { data: holidays, isLoading } = useQuery<any>({
         queryKey: ["holidays", filterCountry],
         queryFn: async () => {
             const res = await fetch(`/api/wfm/holidays?tenantId=${MOCK_TENANT_ID}&countryCode=${filterCountry}`);

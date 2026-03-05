@@ -14,7 +14,7 @@ export default function ChurnRiskAnalysis() {
   const { toast } = useToast();
   const [newRisk, setNewRisk] = useState({ customer: "", risk: "Medium", score: "" });
 
-  const { data: risks = [], isLoading } = useQuery({
+  const { data: risks = [], isLoading } = useQuery<any>({
     queryKey: ["/api/churn-risks"],
     queryFn: () => fetch("/api/churn-risks").then(r => r.json()).catch(() => []),
   });

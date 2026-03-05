@@ -6,7 +6,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 
 export default function RevenueManagement() {
-  const { data: metrics = [], isLoading } = useQuery({
+  const { data: metrics = [], isLoading } = useQuery<any>({
     queryKey: ["/api/hospitality-revenue"],
     queryFn: () => fetch("/api/hospitality-revenue").then(r => r.json()).catch(() => []),
   });

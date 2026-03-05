@@ -13,7 +13,7 @@ export default function RecipeFormulation() {
   const { toast } = useToast();
   const [newRecipe, setNewRecipe] = useState({ recipeId: "", name: "", yield: "100", status: "draft" });
 
-  const { data: recipes = [], isLoading } = useQuery({
+  const { data: recipes = [], isLoading } = useQuery<any>({
     queryKey: ["/api/fb-recipes"],
     queryFn: () => fetch("/api/fb-recipes").then(r => r.json()).catch(() => []),
   });

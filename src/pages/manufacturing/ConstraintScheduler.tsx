@@ -31,30 +31,29 @@ export default function ConstraintScheduler() {
     const [drumResource, setDrumResource] = useState("");
     const [bufferTime, setBufferTime] = useState(24);
 
-    const { data: plants } = useQuery({
+    const { data: plants } = useQuery<any>({
         queryKey: ["/api/manufacturing/plants"],
-        queryFn: () => apiRequest("/api/manufacturing/plants"),
+        queryFn: () => apiRequest("GET", "/api/manufacturing/plants").then(res => res.json()),
     });
 
-    const { data: resources } = useQuery({
+    const { data: resources } = useQuery<any>({
         queryKey: ["/api/manufacturing/resources", selectedPlant],
-        queryFn: () => apiRequest(`/api/manufacturing/resources?plantId=${selectedPlant}`),
+        queryFn: () => apiRequest("GET", `/api/manufacturing/resources?plantId=${selectedPlant}`).then(res => res.json()),
         enabled: !!selectedPlant,
     });
 
-    const { data: schedule } = useQuery({
+    const { data: schedule } = useQuery<any>({
         queryKey: ["/api/manufacturing/constraint-schedule", selectedPlant, drumResource],
-        queryFn: () => apiRequest(`/api/manufacturing/constraint-schedule?plantId=${selectedPlant}&drumResourceId=${drumResource}`),
+        queryFn: () => apiRequest("GET", `/api/manufacturing/constraint-schedule?plantId=${selectedPlant}&drumResourceId=${drumResource}`).then(res => res.json()),
         enabled: !!selectedPlant && !!drumResource,
     });
 
     const runScheduleMutation = useMutation({
-        mutationFn: (params: any) =>
-            apiRequest("/api/manufacturing/run-constraint-schedule", {
-                method: "POST",
-                body: JSON.stringify(params),
-            }),
-        onSuccess: (data) => {
+        mutationFn: async (params: any) => {
+            const res = await apiRequest("POST", "/api/manufacturing/run-constraint-schedule", params);
+            return res.json();
+        },
+        onSuccess: (data: any) => {
             toast({ title: "Success", description: `Scheduled ${data.ordersScheduled} orders` });
             queryClient.invalidateQueries({ queryKey: ["/api/manufacturing/constraint-schedule"] });
         },
@@ -88,7 +87,7 @@ export default function ConstraintScheduler() {
         <StandardPage title="Constraint-Based Scheduler">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground">Theory of Constraints (TOC) scheduling with Drum-Buffer-Rope</p>
                 </div>
                 <div className="flex gap-2">

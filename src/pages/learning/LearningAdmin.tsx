@@ -42,7 +42,7 @@ export default function LearningAdmin() {
 
     const queryClient = useQueryClient();
 
-    const { data: courses = [] } = useQuery({
+    const { data: courses = [] } = useQuery<any>({
         queryKey: ["/api/learning/admin/courses"],
     });
 

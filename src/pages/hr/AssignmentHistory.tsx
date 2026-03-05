@@ -90,7 +90,7 @@ export default function AssignmentHistory() {
     const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(['hist_3'])); // Expand the current one initially
 
     // In a real app this would use the global router context to fetch for a specific employee
-    const { data: history = MOCK_ASSIGNMENT_HISTORY, isLoading } = useQuery({
+    const { data: history = MOCK_ASSIGNMENT_HISTORY, isLoading } = useQuery<any>({
         queryKey: ['/api/hr-self-service/me/assignment-history', legalEntityId],
         queryFn: async () => {
             // Simulate network latency

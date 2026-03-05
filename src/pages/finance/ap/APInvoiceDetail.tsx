@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, CheckCircle, AlertCircle, FileText, Paperclip, Loader2 } from "lucide-react";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
-import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 
@@ -138,11 +137,11 @@ export default function APInvoiceDetail() {
                         <InteractiveSpreadsheet<any>
                             data={lines}
                             columns={[
-                                { header: "Line #", id: "lineNumber", width: "150px", width: "10%" },
-                                { header: "Type", id: "lineType", width: "150px", width: "15%" },
-                                { header: "Description", id: "description", width: "150px", width: "35%" },
+                                { header: "Line #", id: "lineNumber", width: "10%" },
+                                { header: "Type", id: "lineType", width: "15%" },
+                                { header: "Description", id: "description", width: "35%" },
                                 { header: "Amount", cell: (r) => `$${parseFloat(r.amount || 0).toLocaleString()}`, width: "10%" },
-                                { header: "PO Header ID", id: "poHeaderId", width: "150px", width: "15%" },
+                                { header: "PO Header ID", id: "poHeaderId", width: "15%" },
                                 {
                                     header: "Actions",
                                     width: "15%",
@@ -161,7 +160,7 @@ export default function APInvoiceDetail() {
                                     )
                                 }
                             ]}
-                         onChange={() => {}} containerHeight="600px" />
+                            onChange={() => { }} containerHeight="600px" />
                     ) : (
                         <div className="text-center py-8 text-muted-foreground bg-slate-50 rounded-lg border border-dashed">
                             No lines found for this invoice.

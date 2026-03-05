@@ -11,7 +11,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function SupplierPortal() {
     const [page, setPage] = useState(1);
 
-    const { data: invoices, isLoading } = useQuery({
+    const { data: invoices, isLoading } = useQuery<any>({
         queryKey: ["/api/ap/portal/invoices"],
         queryFn: async () => {
             return [
@@ -22,7 +22,7 @@ export default function SupplierPortal() {
         }
     });
 
-    const { data: purchaseOrders } = useQuery({
+    const { data: purchaseOrders } = useQuery<any>({
         queryKey: ["/api/ap/portal/pos"],
         queryFn: async () => {
             return [

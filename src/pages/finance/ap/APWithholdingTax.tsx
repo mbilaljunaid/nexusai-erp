@@ -43,12 +43,12 @@ export default function APWithholdingTax() {
     const [newGroup, setNewGroup] = useState({ groupName: "", description: "" });
     const [newRate, setNewRate] = useState({ taxRateName: "", ratePercent: "", priority: "1" });
 
-    const { data: groups, isLoading: groupsLoading } = useQuery({
+    const { data: groups, isLoading: groupsLoading } = useQuery<any>({
         queryKey: ["/api/ap/wht-groups"],
         queryFn: () => fetch("/api/ap/wht-groups").then((res) => res.json()),
     });
 
-    const { data: rates, isLoading: ratesLoading } = useQuery({
+    const { data: rates, isLoading: ratesLoading } = useQuery<any>({
         queryKey: ["/api/ap/wht-groups", selectedGroupId, "rates"],
         queryFn: () => fetch(`/api/ap/wht-groups/${selectedGroupId}/rates`).then((res) => res.json()),
         enabled: !!selectedGroupId,

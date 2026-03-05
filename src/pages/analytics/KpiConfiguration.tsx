@@ -19,7 +19,7 @@ export default function KpiConfiguration() {
     const { toast } = useToast();
     const [selectedKpi, setSelectedKpi] = useState<any>(null);
 
-    const { data: kpis = [], isLoading } = useQuery({
+    const { data: kpis = [], isLoading } = useQuery<any>({
         queryKey: ["/api/hr/config/kpis"],
         queryFn: () => fetch("/api/hr/config/kpis").then(r => r.json())
     });

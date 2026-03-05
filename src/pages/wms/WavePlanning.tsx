@@ -14,17 +14,14 @@ export default function WavePlanning() {
     const queryClient = useQueryClient();
     const [strategy, setStrategy] = useState("FIFO");
 
-    const { data: waves } = useQuery({
+    const { data: waves } = useQuery<any>({
         queryKey: ["/api/wms/waves"],
-        queryFn: () => apiRequest("/api/wms/waves"),
+        queryFn: () => apiRequest("GET", "/api/wms/waves").then(res => res.json()),
     });
 
     const createWaveMutation = useMutation({
         mutationFn: (data: any) =>
-            apiRequest("/api/wms/waves", {
-                method: "POST",
-                body: JSON.stringify(data),
-            }),
+            apiRequest("POST", "/api/wms/waves", data),
         onSuccess: () => {
             toast({ title: "Success", description: "Wave created" });
             queryClient.invalidateQueries({ queryKey: ["/api/wms/waves"] });
@@ -33,7 +30,7 @@ export default function WavePlanning() {
 
     const releaseWaveMutation = useMutation({
         mutationFn: (waveId: number) =>
-            apiRequest(`/api/wms/waves/${waveId}/release`, { method: "POST" }),
+            apiRequest("POST", `/api/wms/waves/${waveId}/release`),
         onSuccess: () => {
             toast({ title: "Success", description: "Wave released for picking" });
             queryClient.invalidateQueries({ queryKey: ["/api/wms/waves"] });

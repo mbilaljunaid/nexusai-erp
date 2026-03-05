@@ -26,7 +26,7 @@ export default function TeamSchedule() {
     const [showAIOptimizer, setShowAIOptimizer] = useState(false);
 
     // 1. Fetch Shifts (Definitions)
-    const { data: shifts } = useQuery({
+    const { data: shifts } = useQuery<any>({
         queryKey: ["wfm-shifts"],
         queryFn: async () => {
             const res = await fetch(`/api/wfm/shifts?tenantId=${MOCK_TENANT_ID}`);
@@ -36,7 +36,7 @@ export default function TeamSchedule() {
     });
 
     // 2. Fetch Assignments (Schedule) - In real app, filter by Manager's Team
-    const { data: scheduleData, isLoading } = useQuery({
+    const { data: scheduleData, isLoading } = useQuery<any>({
         queryKey: ["wfm-team-schedule", weekStart],
         queryFn: async () => {
             const res = await fetch(`/api/wfm/schedule/team?tenantId=${MOCK_TENANT_ID}`);

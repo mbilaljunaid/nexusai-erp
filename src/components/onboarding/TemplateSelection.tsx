@@ -10,8 +10,8 @@ import {
     DialogTitle,
     DialogDescription,
 } from '@/components/ui/dialog';
-import type { ConfigurationTemplate, TemplatePreviewResponse } from '@/shared/types/industry';
-
+type ConfigurationTemplate = any;
+type TemplatePreviewResponse = any;
 interface TemplateSelectionProps {
     industryId: string;
     selectedModules: string[];

@@ -10,32 +10,32 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Progress } from "@/components/ui/progress";
 
 export default function CrmAnalyticsDashboard() {
-    const { data, isLoading } = useQuery({
+    const { data, isLoading } = useQuery<any>({
         queryKey: ["/api/crm/analytics/metrics"],
         queryFn: () => fetch("/api/crm/analytics/metrics").then(r => r.json())
     });
 
-    const { data: pipelineVelocity = [] } = useQuery({
+    const { data: pipelineVelocity = [] } = useQuery<any>({
         queryKey: ["/api/crm/analytics/pipeline-velocity"],
         queryFn: () => fetch("/api/crm/analytics/pipeline-velocity").then(r => r.json())
     });
 
-    const { data: revenueWaterfall = [] } = useQuery({
+    const { data: revenueWaterfall = [] } = useQuery<any>({
         queryKey: ["/api/crm/analytics/revenue-waterfall"],
         queryFn: () => fetch("/api/crm/analytics/revenue-waterfall").then(r => r.json())
     });
 
-    const { data: repPerformance = [] } = useQuery({
+    const { data: repPerformance = [] } = useQuery<any>({
         queryKey: ["/api/crm/analytics/rep-performance"],
         queryFn: () => fetch("/api/crm/analytics/rep-performance").then(r => r.json())
     });
 
-    const { data: forecastAccuracy } = useQuery({
+    const { data: forecastAccuracy } = useQuery<any>({
         queryKey: ["/api/crm/forecast/accuracy"],
         queryFn: () => fetch("/api/crm/forecast/accuracy").then(r => r.json())
     });
 
-    const { data: productPerformance = [] } = useQuery({
+    const { data: productPerformance = [] } = useQuery<any>({
         queryKey: ["/api/crm/analytics/product-performance"],
         queryFn: () => fetch("/api/crm/analytics/product-performance").then(r => r.json())
     });

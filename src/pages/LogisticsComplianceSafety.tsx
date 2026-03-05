@@ -14,7 +14,7 @@ export default function LogisticsComplianceSafety() {
   const { toast } = useToast();
   const [newIncident, setNewIncident] = useState({ incidentId: "", type: "near-miss", severity: "medium", location: "", status: "open" });
 
-  const { data: incidents = [], isLoading } = useQuery({
+  const { data: incidents = [], isLoading } = useQuery<any>({
     queryKey: ["/api/compliance-incidents"],
     queryFn: () => fetch("/api/compliance-incidents").then(r => r.json()).catch(() => []),
   });

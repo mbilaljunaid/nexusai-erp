@@ -30,7 +30,7 @@ export default function APInvoiceEntry() {
     const [advancedOptionsOpen, setAdvancedOptionsOpen] = useState(false);
     const [selectedLineForDistributions, setSelectedLineForDistributions] = useState<number | null>(null);
 
-    const { data: items } = useQuery({
+    const { data: items } = useQuery<any>({
         queryKey: ["/api/mdm/items"],
         queryFn: () => fetch("/api/mdm/items").then(r => r.json()),
     });
@@ -118,23 +118,23 @@ export default function APInvoiceEntry() {
         }
     };
 
-    const { data: suppliers } = useQuery({
+    const { data: suppliers } = useQuery<any>({
         queryKey: ["/api/ap/suppliers"],
         queryFn: api.ap.suppliers.list,
     });
 
-    const { data: supplierSites } = useQuery({
+    const { data: supplierSites } = useQuery<any>({
         queryKey: ["/api/finance/ap/supplier-sites", header.supplierId],
         queryFn: () => fetch(`/api/finance/ap/suppliers/${header.supplierId}/sites`).then(r => r.json()),
         enabled: !!header.supplierId,
     });
 
-    const { data: purchaseOrders } = useQuery({
+    const { data: purchaseOrders } = useQuery<any>({
         queryKey: ["/api/scm/procurement/purchase-orders"],
         queryFn: () => fetch("/api/scm/procurement/purchase-orders").then(r => r.json()),
     });
 
-    const { data: payGroups } = useQuery({
+    const { data: payGroups } = useQuery<any>({
         queryKey: ["/api/finance/ap/pay-groups"],
         queryFn: () => fetch("/api/finance/ap/pay-groups").then(r => r.json()),
     });

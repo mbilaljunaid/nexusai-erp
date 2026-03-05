@@ -39,18 +39,17 @@ export default function AdvancedMatchWorkbench() {
     const [selectedMatch, setSelectedMatch] = useState<MatchCandidate | null>(null);
     const [resolutions, setResolutions] = useState<Record<string, string>>({});
 
-    const { data: matchCandidates, isLoading } = useQuery({
+    const { data: matchCandidates, isLoading } = useQuery<any>({
         queryKey: ["/api/mdm/match-candidates", entityType, matchThreshold],
-        queryFn: () => apiRequest(`/api/mdm/match-candidates?entityType=${entityType}&threshold=${matchThreshold}`),
+        queryFn: () => apiRequest("GET", `/api/mdm/match-candidates?entityType=${entityType}&threshold=${matchThreshold}`).then(res => res.json()),
     });
 
     const runMatchMutation = useMutation({
-        mutationFn: (params: any) =>
-            apiRequest("/api/mdm/run-matching", {
-                method: "POST",
-                body: JSON.stringify(params),
-            }),
-        onSuccess: (data) => {
+        mutationFn: async (params: any) => {
+            const res = await apiRequest("POST", "/api/mdm/run-matching", params);
+            return res.json();
+        },
+        onSuccess: (data: any) => {
             toast({ title: "Success", description: `Found ${data.matchCount} potential matches` });
             queryClient.invalidateQueries({ queryKey: ["/api/mdm/match-candidates"] });
         },
@@ -58,10 +57,7 @@ export default function AdvancedMatchWorkbench() {
 
     const approveMergeMutation = useMutation({
         mutationFn: ({ matchId, resolutions }: { matchId: number; resolutions: Record<string, string> }) =>
-            apiRequest(`/api/mdm/match-candidates/${matchId}/merge`, {
-                method: "POST",
-                body: JSON.stringify({ resolutions }),
-            }),
+            apiRequest("POST", `/api/mdm/match-candidates/${matchId}/merge`, { resolutions }),
         onSuccess: () => {
             toast({ title: "Success", description: "Records merged successfully" });
             queryClient.invalidateQueries({ queryKey: ["/api/mdm/match-candidates"] });
@@ -72,7 +68,7 @@ export default function AdvancedMatchWorkbench() {
 
     const rejectMutation = useMutation({
         mutationFn: (matchId: number) =>
-            apiRequest(`/api/mdm/match-candidates/${matchId}/reject`, { method: "POST" }),
+            apiRequest("POST", `/api/mdm/match-candidates/${matchId}/reject`),
         onSuccess: () => {
             toast({ title: "Success", description: "Match rejected" });
             queryClient.invalidateQueries({ queryKey: ["/api/mdm/match-candidates"] });
@@ -103,7 +99,7 @@ export default function AdvancedMatchWorkbench() {
         <StandardPage title="Advanced Match Workbench">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground">AI-powered duplicate detection and merge resolution</p>
                 </div>
                 <div className="flex gap-2">
@@ -216,8 +212,8 @@ export default function AdvancedMatchWorkbench() {
                                                     <div className="grid grid-cols-2 gap-4">
                                                         <div
                                                             className={`p-3 rounded border-2 cursor-pointer ${resolutions[conflict.field] === 'KEEP_MASTER'
-                                                                    ? "border-primary bg-primary/5"
-                                                                    : "border-border"
+                                                                ? "border-primary bg-primary/5"
+                                                                : "border-border"
                                                                 }`}
                                                             onClick={() => resolveConflict(conflict.field, 'KEEP_MASTER')}
                                                         >
@@ -229,8 +225,8 @@ export default function AdvancedMatchWorkbench() {
                                                         </div>
                                                         <div
                                                             className={`p-3 rounded border-2 cursor-pointer ${resolutions[conflict.field] === 'USE_CANDIDATE'
-                                                                    ? "border-primary bg-primary/5"
-                                                                    : "border-border"
+                                                                ? "border-primary bg-primary/5"
+                                                                : "border-border"
                                                                 }`}
                                                             onClick={() => resolveConflict(conflict.field, 'USE_CANDIDATE')}
                                                         >

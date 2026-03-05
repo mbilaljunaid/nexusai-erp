@@ -14,7 +14,7 @@ export default function PortalInvoices() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    const { data: invoices, isLoading } = useQuery({
+    const { data: invoices, isLoading } = useQuery<any>({
         queryKey: ["/api/portal/invoices"],
         queryFn: async () => (await apiRequest("GET", "/api/portal/invoices")).json()
     });

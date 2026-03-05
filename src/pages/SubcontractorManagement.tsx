@@ -15,7 +15,7 @@ export default function SubcontractorManagement() {
   const { toast } = useToast();
   const [localSubs, setLocalSubs] = useState<any[]>([]);
 
-  const { data: subs = [], isLoading } = useQuery({
+  const { data: subs = [], isLoading } = useQuery<any>({
     queryKey: ["/api/subcontractors"],
     queryFn: () => fetch("/api/subcontractors").then(r => r.json()).catch(() => []),
   });

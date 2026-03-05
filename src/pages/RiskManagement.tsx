@@ -13,7 +13,7 @@ export default function RiskManagement() {
   const { toast } = useToast();
   const [newRisk, setNewRisk] = useState({ riskDescription: "", likelihood: "medium", impact: "medium", riskCategory: "operational" });
 
-  const { data: risks = [], isLoading } = useQuery({
+  const { data: risks = [], isLoading } = useQuery<any>({
     queryKey: ["/api/risk-register"],
     queryFn: () => fetch("/api/risk-register").then(r => r.json()),
   });

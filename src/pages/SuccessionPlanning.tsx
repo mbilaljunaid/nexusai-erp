@@ -42,7 +42,7 @@ export default function SuccessionPlanning() {
   }>({ isOpen: false, candidate: null });
 
   // Fetch Plans
-  const { data: plans = [], isLoading: isPlansLoading } = useQuery({
+  const { data: plans = [], isLoading: isPlansLoading } = useQuery<any>({
     queryKey: ["/succession/plans"],
     queryFn: async () => {
       const res = await fetch("/api/succession/plans");
@@ -83,7 +83,7 @@ export default function SuccessionPlanning() {
   });
 
   // Fetch Pools
-  const { data: pools = [], isLoading: isPoolsLoading } = useQuery({
+  const { data: pools = [], isLoading: isPoolsLoading } = useQuery<any>({
     queryKey: ["/succession/pools"],
     queryFn: async () => {
       const res = await fetch("/api/succession/pools");
@@ -118,7 +118,7 @@ export default function SuccessionPlanning() {
   });
 
   // Fetch candidates for a plan
-  const { data: candidates = [] } = useQuery({
+  const { data: candidates = [] } = useQuery<any>({
     queryKey: ["/succession/plans/candidates", candidateModal.planId],
     queryFn: async () => {
       if (!candidateModal.planId) return [];

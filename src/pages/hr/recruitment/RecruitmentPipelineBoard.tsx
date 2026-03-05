@@ -48,7 +48,7 @@ export default function RecruitmentPipelineBoard() {
     const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 
     // 1. Fetch Job Requisitions
-    const { data: jobs = [] } = useQuery({
+    const { data: jobs = [] } = useQuery<any>({
         queryKey: ["/api/recruitment/jobs"],
         queryFn: async () => {
             const res = await fetch("/api/recruitment/jobs");
@@ -58,7 +58,7 @@ export default function RecruitmentPipelineBoard() {
     });
 
     // 2. Fetch Pipeline for selected job
-    const { data: pipeline = {}, isLoading } = useQuery({
+    const { data: pipeline = {}, isLoading } = useQuery<any>({
         queryKey: ["/api/recruitment/pipeline", selectedJobId],
         queryFn: async () => {
             if (!selectedJobId) return {};

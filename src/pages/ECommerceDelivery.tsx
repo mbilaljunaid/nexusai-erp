@@ -13,7 +13,7 @@ export default function ECommerceDelivery() {
   const { toast } = useToast();
   const [newOrder, setNewOrder] = useState({ orderId: "", customerEmail: "", total: "0", status: "pending" });
 
-  const { data: orders = [], isLoading } = useQuery({
+  const { data: orders = [], isLoading } = useQuery<any>({
     queryKey: ["/api/fb-ecommerce"],
     queryFn: () => fetch("/api/fb-ecommerce").then(r => r.json()).catch(() => []),
   });

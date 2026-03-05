@@ -21,7 +21,7 @@ export default function CaseDashboard() {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [newItem, setNewItem] = useState({ subject: "", description: "", priority: "Medium", origin: "Web" });
 
-    const { data: cases, isLoading } = useQuery({
+    const { data: cases, isLoading } = useQuery<any>({
         queryKey: ["/api/crm/cases"],
         queryFn: async () => {
             const res = await fetch("/api/crm/cases");

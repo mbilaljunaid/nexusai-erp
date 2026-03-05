@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { TrendingUp, DollarSign, Clock, CheckCircle, Package } from "lucide-react";
 
 export default function LogisticsBIDashboard() {
-  const { data: metrics = [], isLoading } = useQuery({
+  const { data: metrics = [], isLoading } = useQuery<any>({
     queryKey: ["/api/logistics-bi"],
     queryFn: () => fetch("/api/logistics-bi").then(r => r.json()).catch(() => []),
   });

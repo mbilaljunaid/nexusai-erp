@@ -25,7 +25,7 @@ export default function AdminRoles() {
   const tenantId = "tenant1";
   const formMetadata = getFormMetadata("adminRoles");
 
-  const { data: roles = [] } = useQuery({
+  const { data: roles = [] } = useQuery<any>({
     queryKey: ["/api/roles", tenantId],
     queryFn: () => fetch(`/api/roles?tenantId=${tenantId}`).then(r => r.json())
   });

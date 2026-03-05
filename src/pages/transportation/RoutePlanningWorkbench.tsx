@@ -17,7 +17,7 @@ export default function RoutePlanningWorkbench() {
     const [selectedShipmentId, setSelectedShipmentId] = useState<string | null>(null);
     const [isSideSheetOpen, setIsSideSheetOpen] = useState(false);
 
-    const { data: shipments, isLoading } = useQuery({
+    const { data: shipments, isLoading } = useQuery<any>({
         queryKey: ["/api/transportation/shipments"],
         queryFn: () => fetch("/api/transportation/shipments").then(res => res.json())
     });

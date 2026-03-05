@@ -8,9 +8,9 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 
 export default function ProfitElimination() {
-    const { data: elimination } = useQuery({
+    const { data: elimination } = useQuery<any>({
         queryKey: ["/api/intercompany/profit-elimination"],
-        queryFn: () => apiRequest("/api/intercompany/profit-elimination"),
+        queryFn: () => apiRequest("GET", "/api/intercompany/profit-elimination").then(res => res.json()),
     });
 
     return (

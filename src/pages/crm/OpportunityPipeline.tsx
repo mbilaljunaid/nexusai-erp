@@ -63,7 +63,7 @@ export default function OpportunityPipeline() {
     });
 
     // Fetch AI analysis
-    const { data: aiAnalysis } = useQuery({
+    const { data: aiAnalysis } = useQuery<any>({
         queryKey: ["opportunity-ai", selectedOpportunity?.id],
         queryFn: async () => {
             if (!selectedOpportunity) return null;
