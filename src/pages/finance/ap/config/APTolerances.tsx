@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -59,7 +60,7 @@ export function APTolerances() {
         }
     });
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <PageSkeleton />;
 
     return (
         <StandardPage

@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     Card,
@@ -173,7 +174,7 @@ export default function BillingAnomalyDashboard() {
                         </TableHeader>
                         <TableBody>
                             {isLoading ? (
-                                <TableRow><TableCell colSpan={6}>Loading...</TableCell></TableRow>
+                                <TableRow><TableCell colSpan={6}><TableSkeleton rows={4} /></TableCell></TableRow>
                             ) : anomalies.length === 0 ? (
                                 <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No anomalies found. System healthy.</TableCell></TableRow>
                             ) : (

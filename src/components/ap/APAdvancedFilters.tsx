@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Filter, X, Save, ChevronDown, ChevronUp } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface APAdvancedFiltersProps {
     onFilterChange: (filters: any) => void;
@@ -215,27 +216,15 @@ export function APAdvancedFilters({ onFilterChange, suppliers = [] }: APAdvanced
                         <div className="grid grid-cols-3 gap-4">
                             <div className="space-y-2">
                                 <Label>Invoice Date From</Label>
-                                <Input
-                                    type="date"
-                                    value={filters.invoiceDateFrom}
-                                    onChange={(e) => handleFilterChange('invoiceDateFrom', e.target.value)}
-                                />
+                                <DatePicker value={filters.invoiceDateFrom} onChange={(v) => handleFilterChange('invoiceDateFrom', v)} />
                             </div>
                             <div className="space-y-2">
                                 <Label>Invoice Date To</Label>
-                                <Input
-                                    type="date"
-                                    value={filters.invoiceDateTo}
-                                    onChange={(e) => handleFilterChange('invoiceDateTo', e.target.value)}
-                                />
+                                <DatePicker value={filters.invoiceDateTo} onChange={(v) => handleFilterChange('invoiceDateTo', v)} />
                             </div>
                             <div className="space-y-2">
                                 <Label>Due Date From</Label>
-                                <Input
-                                    type="date"
-                                    value={filters.dueDateFrom}
-                                    onChange={(e) => handleFilterChange('dueDateFrom', e.target.value)}
-                                />
+                                <DatePicker value={filters.dueDateFrom} onChange={(v) => handleFilterChange('dueDateFrom', v)} />
                             </div>
                         </div>
 

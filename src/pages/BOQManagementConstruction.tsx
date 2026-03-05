@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -84,7 +85,7 @@ export default function BOQManagementConstruction() {
       <Card>
         <CardHeader><CardTitle className="text-base">BOQ Lines</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : boqs.length === 0 ? <p className="text-muted-foreground text-center py-4">No lines</p> : boqs.map((b: any) => {
+          {isLoading ? <TableSkeleton rows={4} /> : boqs.length === 0 ? <p className="text-muted-foreground text-center py-4">No lines</p> : boqs.map((b: any) => {
             const amount = (parseFloat(b.qty) || 0) * (parseFloat(b.rate) || 0);
             return (
               <div key={b.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`boq-${b.id}`}>

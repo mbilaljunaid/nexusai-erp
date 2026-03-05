@@ -4,6 +4,7 @@ import { Plus, Calendar, Clock, Percent, ChevronRight, CheckCircle2 } from 'luci
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 
 interface PaymentTerm {
@@ -153,7 +154,7 @@ export default function PaymentTermsMaster() {
                             </div>
                             <div className="sf">
                                 <label className="sl">Invoice Date</label>
-                                <Input className="si" type="date" value={schedTest.invoiceDate} onChange={e => setSchedTest(p => ({ ...p, invoiceDate: e.target.value }))} aria-label="Invoice date" />
+                                <DatePicker className="si" value={schedTest.invoiceDate} onChange={v => setSchedTest(p => ({ ...p, invoiceDate: v }))} aria-label="Invoice date" />
                             </div>
                             <div className="sf">
                                 <label className="sl">Amount</label>

@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Workflow, Play, Pause, GitBranch, Zap, Clock, Users, Mail, CheckCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 interface WorkflowStep {
     id: string;
@@ -94,14 +95,7 @@ export default function MarketingAutomation() {
     const activeJourneys = journeys.filter(j => j.status === "ACTIVE");
     const draftJourneys = journeys.filter(j => j.status === "DRAFT");
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "ACTIVE": return "bg-green-100 text-green-800 border-green-200";
-            case "PAUSED": return "bg-amber-100 text-amber-800 border-amber-200";
-            case "DRAFT": return "bg-gray-100 text-gray-800 border-gray-200";
-            default: return "bg-gray-100 text-gray-800 border-gray-200";
-        }
-    };
+
 
     const getStepIcon = (type: string) => {
         switch (type) {
@@ -207,9 +201,7 @@ export default function MarketingAutomation() {
                                         <div className="flex-1">
                                             <div className="flex items-center gap-2">
                                                 <CardTitle className="text-lg">{journey.name}</CardTitle>
-                                                <Badge className={getStatusColor(journey.status)}>
-                                                    {journey.status}
-                                                </Badge>
+                                                <StatusBadge status={journey.status} />
                                             </div>
                                             <CardDescription className="mt-2 flex items-center gap-2">
                                                 <Zap className="h-3 w-3" />

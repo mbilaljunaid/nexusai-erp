@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import { PlayCircle, RefreshCw, CheckCircle2 } from "lucide-react";
 import { StandardPage } from '@/components/layout/StandardPage';
@@ -78,18 +79,7 @@ export default function CurrencyRevaluationView() {
         });
     };
 
-    const getStatusBadge = (status: string) => {
-        switch (status) {
-            case "completed":
-                return <Badge className="bg-green-600"><CheckCircle2 className="mr-1 h-3 w-3" />Completed</Badge>;
-            case "pending":
-                return <Badge variant="secondary"><RefreshCw className="mr-1 h-3 w-3" />Pending</Badge>;
-            case "failed":
-                return <Badge variant="destructive">Failed</Badge>;
-            default:
-                return <Badge variant="outline">{status}</Badge>;
-        }
-    };
+
 
     return (
         <StandardPage
@@ -147,7 +137,7 @@ export default function CurrencyRevaluationView() {
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-2 mb-2">
                                                     <p className="font-medium">Revaluation Run</p>
-                                                    {getStatusBadge(run.status)}
+                                                    <StatusBadge status={run.status} />
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-4 text-sm">
                                                     <div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Wrench, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export default function MaintenanceScheduling() {
   const { toast } = useToast();
@@ -85,7 +87,7 @@ export default function MaintenanceScheduling() {
                 <SelectItem value="repair">Repair</SelectItem>
               </SelectContent>
             </Select>
-            <Input placeholder="Date" type="date" value={newMaint.scheduledDate} onChange={(e) => setNewMaint({ ...newMaint, scheduledDate: e.target.value })} data-testid="input-date" className="text-sm" />
+            <DatePicker className="text-sm" value={newMaint.scheduledDate} onChange={(v) => setNewMaint({ ...newMaint, scheduledDate: v })} placeholder="Date" />
             <Select value={newMaint.status} onValueChange={(v) => setNewMaint({ ...newMaint, status: v })}>
               <SelectTrigger data-testid="select-status" className="text-sm"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -104,7 +106,7 @@ export default function MaintenanceScheduling() {
       <Card>
         <CardHeader><CardTitle className="text-base">Maintenance</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : maintenance.length === 0 ? <p className="text-muted-foreground text-center py-4">No records</p> : maintenance.map((m: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : maintenance.length === 0 ? <p className="text-muted-foreground text-center py-4">No records</p> : maintenance.map((m: any) => (
             <div key={m.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`maint-${m.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{m.vehicleId}</p>

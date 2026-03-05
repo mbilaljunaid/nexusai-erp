@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -54,7 +55,7 @@ export default function ProductionSchedulingGantt() {
       <Card>
         <CardHeader><CardTitle className="text-base">Production Schedule</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : schedules.length === 0 ? <p className="text-muted-foreground text-center py-4">No schedules</p> : schedules.map((s: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : schedules.length === 0 ? <p className="text-muted-foreground text-center py-4">No schedules</p> : schedules.map((s: any) => (
             <div key={s.id} className="p-3 border rounded hover-elevate" data-testid={`sched-${s.id}`}>
               <div className="flex justify-between items-start mb-2">
                 <p className="font-semibold text-sm">{s.workOrderId || "WO"}</p>

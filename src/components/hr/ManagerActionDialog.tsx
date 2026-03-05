@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface ManagerActionDialogProps {
     isOpen: boolean;
@@ -83,7 +84,7 @@ export const ManagerActionDialog: React.FC<ManagerActionDialogProps> = ({ isOpen
 
                         <div className="space-y-2">
                             <Label>Effective Date</Label>
-                            <Input type="date" />
+                            <DatePicker onChange={() => {}} />
                         </div>
 
                         <div className="space-y-2">

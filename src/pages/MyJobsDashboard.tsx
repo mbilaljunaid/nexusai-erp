@@ -1,9 +1,11 @@
+import { DatePicker } from '@/components/ui/DatePicker';
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -12,8 +14,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { 
-  Briefcase, Plus, Clock, DollarSign, Users, Calendar, 
+import {
+  Briefcase, Plus, Clock, DollarSign, Users, Calendar,
   CheckCircle, XCircle, Eye, MessageSquare, ChevronRight,
   AlertCircle, Edit, Trash2, FileText
 } from "lucide-react";
@@ -124,26 +126,7 @@ export default function MyJobsDashboard() {
     },
   });
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "open": return <Badge className="bg-green-500/10 text-green-600 dark:text-green-400">Open</Badge>;
-      case "in_progress": return <Badge className="bg-blue-500/10 text-blue-600 dark:text-blue-400">In Progress</Badge>;
-      case "completed": return <Badge variant="secondary">Completed</Badge>;
-      case "cancelled": return <Badge variant="destructive">Cancelled</Badge>;
-      default: return <Badge variant="outline">{status}</Badge>;
-    }
-  };
 
-  const getProposalStatusBadge = (status: string) => {
-    switch (status) {
-      case "pending": return <Badge className="bg-yellow-500/10 text-yellow-600 dark:text-yellow-400">Pending</Badge>;
-      case "accepted": return <Badge className="bg-green-500/10 text-green-600 dark:text-green-400">Accepted</Badge>;
-      case "rejected": return <Badge variant="destructive">Rejected</Badge>;
-      case "shortlisted": return <Badge className="bg-blue-500/10 text-blue-600 dark:text-blue-400">Shortlisted</Badge>;
-      case "withdrawn": return <Badge variant="secondary">Withdrawn</Badge>;
-      default: return <Badge variant="outline">{status}</Badge>;
-    }
-  };
 
   const formatBudget = (min: string, max: string, currency: string) => {
     const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: currency || 'USD', minimumFractionDigits: 0 });
@@ -236,7 +219,7 @@ export default function MyJobsDashboard() {
                         <h4 className="font-semibold truncate">{job.title}</h4>
                         <p className="text-sm text-muted-foreground truncate">{job.category_name}</p>
                       </div>
-                      {getStatusBadge(job.status)}
+                      <StatusBadge status={job.status} />
                     </div>
                     <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1">
@@ -293,7 +276,7 @@ export default function MyJobsDashboard() {
                             Submitted {formatDate(proposal.created_at)}
                           </p>
                         </div>
-                        {getProposalStatusBadge(proposal.status)}
+                        <StatusBadge status={proposal.status} />
                       </div>
                       <p className="text-sm line-clamp-2 mb-3">{proposal.cover_letter}</p>
                       <div className="flex items-center justify-between">
@@ -435,12 +418,7 @@ export default function MyJobsDashboard() {
             </div>
             <div>
               <label className="text-sm font-medium mb-1.5 block">Deadline</label>
-              <Input
-                type="date"
-                value={newJob.deadline}
-                onChange={(e) => setNewJob({ ...newJob, deadline: e.target.value })}
-                data-testid="input-job-deadline"
-              />
+              <DatePicker value={newJob.deadline} onChange={(v) => setNewJob({ ...newJob, deadline: v })} />
             </div>
             <div>
               <label className="text-sm font-medium mb-1.5 block">Required Skills (comma-separated)</label>

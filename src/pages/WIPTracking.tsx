@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -106,7 +107,7 @@ export default function WIPTracking() {
       <Card>
         <CardHeader><CardTitle className="text-base">WIP Items</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : wipItems.length === 0 ? <p className="text-muted-foreground text-center py-4">No WIP items</p> : wipItems.map((w: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : wipItems.length === 0 ? <p className="text-muted-foreground text-center py-4">No WIP items</p> : wipItems.map((w: any) => (
             <div key={w.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`wip-${w.id}`}>
               <div className="flex items-start gap-2 flex-1">
                 {w.status === "completed" && <CheckCircle className="w-4 h-4 text-green-600 mt-0.5" />}

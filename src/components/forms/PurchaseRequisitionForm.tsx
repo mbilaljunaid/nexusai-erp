@@ -10,6 +10,7 @@ import { FileText, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface RequisitionLine {
   id: number;
@@ -121,11 +122,11 @@ export function PurchaseRequisitionForm() {
             </div>
             <div>
               <Label htmlFor="request-date">Request Date</Label>
-              <Input id="request-date" type="date" value={requestDate} onChange={(e) => setRequestDate(e.target.value)} data-testid="input-request-date" />
+              <DatePicker value={requestDate} onChange={v => setRequestDate(v)} />
             </div>
             <div>
               <Label htmlFor="required-date">Required Date</Label>
-              <Input id="required-date" type="date" value={requiredDate} onChange={(e) => setRequiredDate(e.target.value)} data-testid="input-required-date" />
+              <DatePicker value={requiredDate} onChange={v => setRequiredDate(v)} />
             </div>
           </div>
           <div>

@@ -4,12 +4,13 @@ import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  User, Briefcase, FileText, ShoppingCart, Star, Award, 
+import {
+  User, Briefcase, FileText, ShoppingCart, Star, Award,
   TrendingUp, Clock, DollarSign, CheckCircle, Package,
   MessageSquare, Calendar, ArrowRight, ExternalLink, Shield
 } from "lucide-react";
@@ -97,20 +98,7 @@ export default function ContributorDashboard() {
     return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "open": case "active": case "pending":
-        return <Badge className="bg-yellow-500/10 text-yellow-600 dark:text-yellow-400">{status}</Badge>;
-      case "in_progress": case "accepted": case "shortlisted":
-        return <Badge className="bg-blue-500/10 text-blue-600 dark:text-blue-400">{status.replace("_", " ")}</Badge>;
-      case "completed": case "delivered":
-        return <Badge className="bg-green-500/10 text-green-600 dark:text-green-400">{status}</Badge>;
-      case "cancelled": case "rejected": case "withdrawn":
-        return <Badge variant="destructive">{status}</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
-    }
-  };
+
 
   const getTrustLevelBadge = (level: number) => {
     const levels: Record<number, { label: string; color: string }> = {
@@ -274,7 +262,7 @@ export default function ContributorDashboard() {
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="font-semibold">${Number(order.amount).toLocaleString()}</span>
-                          {getStatusBadge(order.status)}
+                          <StatusBadge status={order.status} />
                         </div>
                       </div>
                     ))}
@@ -310,7 +298,7 @@ export default function ContributorDashboard() {
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="font-semibold">${Number(proposal.proposed_price).toLocaleString()}</span>
-                          {getStatusBadge(proposal.status)}
+                          <StatusBadge status={proposal.status} />
                         </div>
                       </div>
                     ))}
@@ -351,7 +339,7 @@ export default function ContributorDashboard() {
                         <h4 className="font-semibold truncate mb-2">{service.title}</h4>
                         <div className="flex items-center justify-between text-sm mb-2">
                           <span className="font-bold" style={{ color: 'hsl(var(--primary))' }}>${Number(service.price).toLocaleString()}</span>
-                          {getStatusBadge(service.status)}
+                          <StatusBadge status={service.status} />
                         </div>
                         <div className="flex items-center gap-3 text-xs text-muted-foreground">
                           <span className="flex items-center gap-1">
@@ -398,7 +386,7 @@ export default function ContributorDashboard() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <h4 className="font-semibold">{service.title}</h4>
-                          {getStatusBadge(service.status)}
+                          <StatusBadge status={service.status} />
                         </div>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <span className="font-semibold" style={{ color: 'hsl(var(--primary))' }}>${Number(service.price).toLocaleString()}</span>
@@ -450,7 +438,7 @@ export default function ContributorDashboard() {
                       </div>
                       <div className="flex items-center gap-4">
                         <span className="font-bold text-lg">${Number(order.amount).toLocaleString()}</span>
-                        {getStatusBadge(order.status)}
+                        <StatusBadge status={order.status} />
                       </div>
                     </div>
                   ))}
@@ -492,7 +480,7 @@ export default function ContributorDashboard() {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <h4 className="font-semibold">{job.title}</h4>
-                            {getStatusBadge(job.status)}
+                            <StatusBadge status={job.status} />
                           </div>
                           <p className="text-sm text-muted-foreground">
                             Posted {formatDate(job.created_at)} • {job.proposal_count || 0} proposals
@@ -542,7 +530,7 @@ export default function ContributorDashboard() {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <h4 className="font-semibold">{proposal.job_title}</h4>
-                            {getStatusBadge(proposal.status)}
+                            <StatusBadge status={proposal.status} />
                           </div>
                           <p className="text-sm text-muted-foreground">
                             Submitted {formatDate(proposal.created_at)}

@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { format } from "date-fns";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 const insertGlPeriodSchema = z.object({
     periodName: z.string().min(1),
@@ -123,14 +124,14 @@ export function FiscalPeriods() {
                                     <FormField control={form.control} name="startDate" render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Start Date</FormLabel>
-                                            <FormControl><Input type="date" value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''} onChange={e => field.onChange(new Date(e.target.value))} /></FormControl>
+                                            <FormControl><DatePicker value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''} onChange={v => field.onChange(new Date(v))} /></FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )} />
                                     <FormField control={form.control} name="endDate" render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>End Date</FormLabel>
-                                            <FormControl><Input type="date" value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''} onChange={e => field.onChange(new Date(e.target.value))} /></FormControl>
+                                            <FormControl><DatePicker value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''} onChange={v => field.onChange(new Date(v))} /></FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )} />

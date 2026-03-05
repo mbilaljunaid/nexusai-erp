@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { BookOpen, Search, ThumbsUp, Eye, Edit, Star, TrendingUp, Users } from "lucide-react";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 interface KnowledgeArticle {
     id: string;
@@ -104,14 +105,7 @@ export default function KnowledgeBase() {
     const totalViews = articles.reduce((sum, a) => sum + a.views, 0);
     const topArticles = [...articles].sort((a, b) => b.views - a.views).slice(0, 5);
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "PUBLISHED": return "bg-green-100 text-green-800 border-green-200";
-            case "DRAFT": return "bg-gray-100 text-gray-800 border-gray-200";
-            case "ARCHIVED": return "bg-amber-100 text-amber-800 border-amber-200";
-            default: return "bg-gray-100 text-gray-800 border-gray-200";
-        }
-    };
+
 
     return (
         <StandardPage
@@ -223,9 +217,7 @@ export default function KnowledgeBase() {
                                                     <div className="flex-1">
                                                         <div className="flex items-center gap-2">
                                                             <CardTitle className="text-lg">{article.title}</CardTitle>
-                                                            <Badge className={getStatusColor(article.status)}>
-                                                                {article.status}
-                                                            </Badge>
+                                                            <StatusBadge status={article.status} />
                                                         </div>
                                                         <CardDescription className="mt-2 line-clamp-2">
                                                             {article.summary}
@@ -354,9 +346,7 @@ export default function KnowledgeBase() {
                                     </CardDescription>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Badge className={getStatusColor(selectedArticle.status)}>
-                                        {selectedArticle.status}
-                                    </Badge>
+                                    <StatusBadge status={selectedArticle.status} />
                                     <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
                                         <Edit className="h-4 w-4 mr-1" />
                                         Edit

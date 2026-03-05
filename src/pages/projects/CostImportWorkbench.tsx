@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface ImportRow {
     id?: string | number;
@@ -225,7 +226,7 @@ export default function CostImportWorkbench() {
             header: "Date",
             width: "130px",
             cell: (row, index, updateRow) => (
-                <Input type="date" className="h-9 w-full text-xs" value={row.expenditureItemDate || ''} onChange={(e) => updateRow("expenditureItemDate", e.target.value)} />
+                <DatePicker className="h-9 w-full text-xs" value={row.expenditureItemDate || ''} onChange={(v) => updateRow("expenditureItemDate", v)} />
             )
         },
         {

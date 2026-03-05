@@ -10,6 +10,7 @@ import { ShoppingCart, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface POLine {
   id: number;
@@ -137,11 +138,11 @@ export function PurchaseOrderForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="podate">PO Date *</Label>
-              <Input id="podate" type="date" value={poDate} onChange={(e) => setPoDate(e.target.value)} />
+              <DatePicker value={poDate} onChange={v => setPoDate(v)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="duedate">Due Date *</Label>
-              <Input id="duedate" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+              <DatePicker value={dueDate} onChange={v => setDueDate(v)} />
             </div>
           </div>
 

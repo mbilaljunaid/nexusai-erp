@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { FileText, CheckCircle2, Send, AlertCircle, Edit, DollarSign } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -114,31 +115,7 @@ export default function DraftInvoiceWorkbench() {
 
     const selectedInvoice = invoices.find(inv => inv.id === selectedInvoiceId);
 
-    const getStatusBadge = (status: ProjectInvoice["status"]) => {
-        const config: Record<typeof status, { variant: any; icon: any; label: string }> = {
-            "DRAFT": { variant: "secondary", icon: Edit, label: "Draft" },
-            "APPROVED": { variant: "default", icon: CheckCircle2, label: "Approved" },
-            "SUBMITTED": { variant: "default", icon: Send, label: "Submitted" },
-            "RELEASED": { variant: "default", icon: CheckCircle2, label: "Released" }
-        };
 
-        const { variant, icon: Icon, label } = config[status];
-
-        return (
-            <Badge variant={variant} className={status === "RELEASED" || status === "APPROVED" ? "bg-green-600" : ""}>
-                <Icon className="h-3 w-3 mr-1" /> {label}
-            </Badge>
-        );
-    };
-
-    const getTransferBadge = (transferStatus: ProjectInvoice["transferStatus"]) => {
-        if (transferStatus === "TRANSFERRED") {
-            return <Badge variant="default" className="bg-green-600"><CheckCircle2 className="h-3 w-3 mr-1" /> Transferred</Badge>;
-        } else if (transferStatus === "REJECTED") {
-            return <Badge variant="destructive"><AlertCircle className="h-3 w-3 mr-1" /> Rejected</Badge>;
-        }
-        return <Badge variant="secondary">Pending</Badge>;
-    };
 
     return (
         <StandardPage
@@ -235,8 +212,8 @@ export default function DraftInvoiceWorkbench() {
                                                 <TableCell className="text-right font-mono font-bold">
                                                     ${invoice.amount.toFixed(2)}
                                                 </TableCell>
-                                                <TableCell>{getStatusBadge(invoice.status)}</TableCell>
-                                                <TableCell>{getTransferBadge(invoice.transferStatus)}</TableCell>
+                                                <TableCell><StatusBadge status={invoice.status} /></TableCell>
+                                                <TableCell><StatusBadge status={invoice.transferStatus} /></TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
@@ -261,7 +238,7 @@ export default function DraftInvoiceWorkbench() {
                                         <h4 className="font-bold text-sm">{selectedInvoice.invoiceNumber}</h4>
                                         <div className="flex justify-between text-xs pt-2 border-t">
                                             <span className="text-muted-foreground">Status:</span>
-                                            {getStatusBadge(selectedInvoice.status)}
+                                            <StatusBadge status={selectedInvoice.status} />
                                         </div>
                                         <div className="flex justify-between text-xs">
                                             <span className="text-muted-foreground">Amount:</span>

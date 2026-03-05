@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -106,7 +107,7 @@ export default function AutomationRules() {
       <Card>
         <CardHeader><CardTitle className="text-base">Active Rules</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : rules.length === 0 ? <p className="text-muted-foreground text-center py-4">No rules</p> : rules.map((rule: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : rules.length === 0 ? <p className="text-muted-foreground text-center py-4">No rules</p> : rules.map((rule: any) => (
             <div key={rule.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`rule-${rule.id}`}>
               <div>
                 <h3 className="font-semibold">{rule.name}</h3>

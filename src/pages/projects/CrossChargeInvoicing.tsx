@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Plus, Save, Send, FileText, DollarSign, Calendar, Check, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Textarea } from "@/components/ui/textarea";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -246,16 +247,7 @@ export default function CrossChargeInvoicing() {
         setLineItems([]);
     };
 
-    const getStatusBadge = (status: string) => {
-        const variants: Record<string, { variant: any; label: string }> = {
-            DRAFT: { variant: "secondary", label: "Draft" },
-            PENDING_APPROVAL: { variant: "default", label: "Pending Approval" },
-            APPROVED: { variant: "default", label: "Approved" },
-            REJECTED: { variant: "destructive", label: "Rejected" },
-        };
-        const config = variants[status] || variants.DRAFT;
-        return <Badge variant={config.variant}>{config.label}</Badge>;
-    };
+
 
     return (
         <StandardPage title="Cross-Charge Invoicing">
@@ -300,7 +292,7 @@ export default function CrossChargeInvoicing() {
                             >
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="font-medium">{invoice.invoiceNumber || "Draft"}</div>
-                                    {getStatusBadge(invoice.approvalStatus)}
+                                    <StatusBadge status={invoice.approvalStatus} />
                                 </div>
                                 <div className="text-sm text-muted-foreground">
                                     Source: {projects?.find((p: any) => p.id === invoice.sourceProjectId)?.projectNumber}

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface Facility {
     id: string;
@@ -259,7 +260,7 @@ export default function HedgeEffectiveness() {
                             </div>
                             <div className="tf">
                                 <label className="tl">Test Date</label>
-                                <Input className="ti" type="date" value={testForm.testDate} onChange={e => setTestForm(p => ({ ...p, testDate: e.target.value }))} aria-label="Test date" />
+                                <DatePicker className="ti" value={testForm.testDate} onChange={v => setTestForm(p => ({ ...p, testDate: v }))} aria-label="Test date" />
                             </div>
                             <div className="tf">
                                 <label className="tl">Hedging Instrument G/L</label>

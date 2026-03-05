@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -130,7 +131,7 @@ export default function ProjectBudgetManagement() {
           <CardHeader><CardTitle className="text-base">Budget Details</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             {isLoading ? (
-              <p>Loading...</p>
+              <TableSkeleton rows={4} />
             ) : budgets.length === 0 ? (
               <p className="text-muted-foreground text-center py-4">No budgets</p>
             ) : (

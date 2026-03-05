@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -109,7 +110,7 @@ export default function RecruitmentManagement() {
           </div>
         </CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : jobs.length === 0 ? <p className="text-muted-foreground text-center py-4">No open positions</p> : jobs.map((job: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : jobs.length === 0 ? <p className="text-muted-foreground text-center py-4">No open positions</p> : jobs.map((job: any) => (
             <div key={job.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`job-${job.id}`}>
               <div>
                 <Link href={`/hr/recruitment/requisitions/${job.id}`}>

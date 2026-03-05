@@ -173,7 +173,7 @@ export default function BillingRulesManager() {
                     </CardHeader>
                     <CardContent>
                         {isLoading ? (
-                            <div className="p-8 text-center text-muted-foreground">Loading...</div>
+                            <TableSkeleton rows={5} />
                         ) : (
                             <InteractiveSpreadsheet
                                 data={rules}

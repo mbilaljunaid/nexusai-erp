@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Database, Play, CheckCircle, Download, AlertTriangle, Clock } from 'lucide-react';
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
@@ -102,34 +103,14 @@ export default function BackupRestoreManager() {
         }
     };
 
-    const getStatusBadge = (status: string) => {
-        switch (status) {
-            case 'verified':
-                return <span className="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded flex items-center gap-1">
-                    <CheckCircle className="w-3 h-3" />
-                    Verified
-                </span>;
-            case 'pending':
-                return <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    Pending
-                </span>;
-            case 'failed':
-                return <span className="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded flex items-center gap-1">
-                    <AlertTriangle className="w-3 h-3" />
-                    Failed
-                </span>;
-            default:
-                return null;
-        }
-    };
+
 
     const restorePointColumns: SpreadsheetColumn[] = [
         { id: "timestamp", header: "Timestamp", width: 200, cell: (item) => <span className="text-sm text-gray-900">{new Date(item.timestamp).toLocaleString()}</span> },
         { id: "type", header: "Type", width: 150, cell: (item) => <span className="text-sm capitalize">{item.type}</span> },
         { id: "dataSize", header: "Size", width: 120, cell: (item) => <span className="text-sm text-gray-900">{item.dataSize}</span> },
         { id: "itemCount", header: "Items", width: 120, cell: (item) => <span className="text-sm text-gray-900">{item.itemCount.toLocaleString()}</span> },
-        { id: "status", header: "Status", width: 150, cell: (item) => getStatusBadge(item.status) },
+        { id: "status", header: "Status", width: 150, cell: (item) => <StatusBadge status={item.status} /> },
         { id: "lastVerified", header: "Last Verified", width: 200, cell: (item) => <span className="text-sm text-gray-500">{item.lastVerified ? new Date(item.lastVerified).toLocaleString() : 'Never'}</span> },
         {
             id: "actions", header: "Actions", width: 150, cell: (item) => (

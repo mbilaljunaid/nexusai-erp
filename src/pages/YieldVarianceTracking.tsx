@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3, AlertTriangle } from "lucide-react";
@@ -55,7 +56,7 @@ export default function YieldVarianceTracking() {
       <Card>
         <CardHeader><CardTitle className="text-base">Batch Yield Analysis</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : records.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : records.map((r: any) => {
+          {isLoading ? <TableSkeleton rows={4} /> : records.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : records.map((r: any) => {
             const variance = parseFloat(r.variance) || 0;
             return (
               <div key={r.id} className="p-3 border rounded hover-elevate" data-testid={`yield-${r.id}`}>

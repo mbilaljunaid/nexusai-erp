@@ -107,7 +107,7 @@ export default function CommunicationCenter() {
         </CardHeader>
         <CardContent className="space-y-3">
           {isLoading ? (
-            <div className="text-center py-4">Loading...</div>
+            <TableSkeleton rows={4} />
           ) : communications.length === 0 ? (
             <div className="text-center py-4 text-muted-foreground">No messages sent</div>
           ) : (

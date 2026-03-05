@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -98,7 +99,7 @@ export default function SLAServiceTierManagement() {
       <Card>
         <CardHeader><CardTitle className="text-base">SLAs</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : slas.length === 0 ? <p className="text-muted-foreground text-center py-4">No SLAs</p> : slas.map((s: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : slas.length === 0 ? <p className="text-muted-foreground text-center py-4">No SLAs</p> : slas.map((s: any) => (
             <div key={s.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`sla-${s.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{s.slaId} - {s.tier}</p>

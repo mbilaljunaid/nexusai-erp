@@ -13,7 +13,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from '@/components/ui/Inter
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useDemoEnvironments, useDeleteDemoEnvironment, useUpdateDemoStatus } from '@/hooks/admin/useAdminData';
 import { exportToCSV } from '@/utils/exportUtils';
-import { toast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 import CreateDemoDialog from '@/components/admin/dialogs/CreateDemoDialog';
 import EditDemoDialog from '@/components/admin/dialogs/EditDemoDialog';
 
@@ -34,6 +34,7 @@ interface Demo {
 
 export default function DemoManagement() {
     // Fetch real data from API
+    const { toast } = useToast();
     const { data: demos = [], isLoading, error } = useDemoEnvironments();
     const deleteMutation = useDeleteDemoEnvironment();
     const updateStatusMutation = useUpdateDemoStatus();
@@ -252,7 +253,7 @@ export default function DemoManagement() {
 
     const handleCopyUrl = (url: string) => {
         navigator.clipboard.writeText(url);
-        toast.success('URL copied to clipboard');
+        toast({ title: 'Copied', description: 'URL copied to clipboard' });
     };
 
     const performDelete = async () => {

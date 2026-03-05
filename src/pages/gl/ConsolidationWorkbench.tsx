@@ -13,6 +13,7 @@ import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -122,14 +123,7 @@ export default function ConsolidationWorkbench() {
         }
     });
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "Completed": return "bg-green-100 text-green-800";
-            case "Running": return "bg-blue-100 text-blue-800";
-            case "Error": return "bg-red-100 text-red-800";
-            default: return "bg-gray-100 text-gray-800";
-        }
-    };
+
 
     const selectedSet = ledgerSets.find(s => s.id === selectedLedgerSet);
     const hasErrors = preflightResults.some(r => r.type === "error");
@@ -468,9 +462,7 @@ export default function ConsolidationWorkbench() {
                                             <TableCell>{run.ledgerSetId}</TableCell>
                                             <TableCell>{run.periodId}</TableCell>
                                             <TableCell>
-                                                <Badge variant="secondary" className={getStatusColor(run.status)}>
-                                                    {run.status}
-                                                </Badge>
+                                                <StatusBadge status={run.status} />
                                             </TableCell>
                                             <TableCell>${run.totalEliminations || 0}</TableCell>
                                             <TableCell className="text-right">

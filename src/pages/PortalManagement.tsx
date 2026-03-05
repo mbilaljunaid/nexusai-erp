@@ -103,7 +103,7 @@ export default function PortalManagement() {
         </CardHeader>
         <CardContent className="space-y-3">
           {isLoading ? (
-            <div className="text-center py-4">Loading...</div>
+            <TableSkeleton rows={4} />
           ) : portals.length === 0 ? (
             <div className="text-center py-4 text-muted-foreground">No portals created</div>
           ) : (

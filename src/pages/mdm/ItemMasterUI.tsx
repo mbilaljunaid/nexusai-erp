@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Search, Plus, Package, Tag, Image as ImageIcon } from "lucide-react";
@@ -82,7 +83,7 @@ export default function ItemMasterUI() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    
+
                     <p className="text-muted-foreground">
                         Product Information Management
                     </p>
@@ -182,9 +183,7 @@ export default function ItemMasterUI() {
             {/* Items Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {isLoading ? (
-                    <p className="col-span-full text-center py-12 text-muted-foreground">
-                        Loading items...
-                    </p>
+                    <div className="col-span-full"><TableSkeleton rows={4} /></div>
                 ) : items.length === 0 ? (
                     <div className="col-span-full text-center py-12 text-muted-foreground">
                         <Package className="w-12 h-12 mx-auto mb-4 opacity-50" />

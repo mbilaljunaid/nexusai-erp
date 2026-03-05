@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TrendingUp, Plus, CheckCircle2, BarChart3, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -111,18 +112,7 @@ export default function BudgetConfiguration() {
     const selectedVersion = versions.find(v => v.id === selectedVersionId);
     const currentVersion = versions.find(v => v.currentFlag);
 
-    const getStatusBadge = (status: BudgetVersion["status"], isCurrentinvoice: boolean) => {
-        if (isCurrentinvoice) {
-            return <Badge variant="default" className="bg-green-600"><CheckCircle2 className="h-3 w-3 mr-1" /> Current</Badge>;
-        }
-        if (status === "BASELINED") {
-            return <Badge variant="default"><CheckCircle2 className="h-3 w-3 mr-1" /> Baselined</Badge>;
-        }
-        if (status === "DRAFT") {
-            return <Badge variant="secondary">Draft</Badge>;
-        }
-        return <Badge variant="outline">Historical</Badge>;
-    };
+
 
     return (
         <StandardPage
@@ -264,7 +254,7 @@ export default function BudgetConfiguration() {
                                                 <TableCell className="text-right font-mono">
                                                     ${(version.totalAmount || 0).toFixed(2)}
                                                 </TableCell>
-                                                <TableCell>{getStatusBadge(version.status, version.currentFlag)}</TableCell>
+                                                <TableCell><StatusBadge status={version.currentFlag ? "CURRENT" : version.status} /></TableCell>
                                                 <TableCell className="text-xs text-muted-foreground">
                                                     {version.baselineDate ? new Date(version.baselineDate).toLocaleDateString() : "—"}
                                                 </TableCell>
@@ -292,7 +282,7 @@ export default function BudgetConfiguration() {
                                         <h4 className="font-bold text-sm">{selectedVersion.versionName}</h4>
                                         <div className="flex justify-between text-xs pt-2 border-t">
                                             <span className="text-muted-foreground">Status:</span>
-                                            {getStatusBadge(selectedVersion.status, selectedVersion.currentFlag)}
+                                            <StatusBadge status={selectedVersion.currentFlag ? "CURRENT" : selectedVersion.status} />
                                         </div>
                                         <div className="flex justify-between text-xs">
                                             <span className="text-muted-foreground">Total:</span>

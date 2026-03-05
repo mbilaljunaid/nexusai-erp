@@ -178,7 +178,7 @@ export default function ProjectTemplateManager() {
 
             <Card className="border-0 shadow-none bg-transparent">
                 {isLoading ? (
-                    <div className="p-8 text-center text-muted-foreground">Loading...</div>
+                    <TableSkeleton rows={5} />
                 ) : (
                     <InteractiveSpreadsheet
                         data={templates || []}

@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Mail, Send, Users, BarChart3, Eye, Calendar, Target, Zap } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 interface EmailCampaign {
     id: string;
@@ -113,15 +114,7 @@ export default function EmailCampaignBuilder() {
     const scheduledCampaigns = campaigns.filter(c => c.status === "SCHEDULED");
     const sentCampaigns = campaigns.filter(c => c.status === "SENT");
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "DRAFT": return "bg-gray-100 text-gray-800 border-gray-200";
-            case "SCHEDULED": return "bg-blue-100 text-blue-800 border-blue-200";
-            case "SENT": return "bg-green-100 text-green-800 border-green-200";
-            case "PAUSED": return "bg-amber-100 text-amber-800 border-amber-200";
-            default: return "bg-gray-100 text-gray-800 border-gray-200";
-        }
-    };
+
 
     return (
         <StandardPage
@@ -248,9 +241,7 @@ export default function EmailCampaignBuilder() {
                                                             </Badge>
                                                         </TableCell>
                                                         <TableCell>
-                                                            <Badge className={getStatusColor(campaign.status)}>
-                                                                {campaign.status}
-                                                            </Badge>
+                                                            <StatusBadge status={campaign.status} />
                                                         </TableCell>
                                                         <TableCell className="text-right font-mono">
                                                             {campaign.stats?.sent.toLocaleString() || "—"}
@@ -318,9 +309,7 @@ export default function EmailCampaignBuilder() {
                                                             Subject: {campaign.subject}
                                                         </CardDescription>
                                                     </div>
-                                                    <Badge className={getStatusColor(campaign.status)}>
-                                                        {campaign.status}
-                                                    </Badge>
+                                                    <StatusBadge status={campaign.status} />
                                                 </div>
                                             </CardHeader>
                                             <CardContent>
@@ -372,9 +361,7 @@ export default function EmailCampaignBuilder() {
                                                             Scheduled: {campaign.scheduledDate}
                                                         </CardDescription>
                                                     </div>
-                                                    <Badge className={getStatusColor(campaign.status)}>
-                                                        {campaign.status}
-                                                    </Badge>
+                                                    <StatusBadge status={campaign.status} />
                                                 </div>
                                             </CardHeader>
                                         </Card>

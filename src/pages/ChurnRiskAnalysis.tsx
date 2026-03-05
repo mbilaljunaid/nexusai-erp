@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -65,14 +67,14 @@ export default function ChurnRiskAnalysis() {
 
       <Card>
         <CardContent className="pt-6 space-y-3">
-          {isLoading ? <p>Loading...</p> : risks.length === 0 ? <p className="text-muted-foreground text-center py-4">No churn risks</p> : risks.map((item: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : risks.length === 0 ? <p className="text-muted-foreground text-center py-4">No churn risks</p> : risks.map((item: any) => (
             <div key={item.id} className="p-3 border rounded flex items-start justify-between" data-testid={`risk-${item.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{item.customer}</p>
                 <p className="text-sm text-muted-foreground">Risk Score: {item.score}</p>
               </div>
               <div className="flex gap-2 items-center">
-                <Badge className={item.risk === "High" ? "bg-red-100 text-red-800" : item.risk === "Medium" ? "bg-amber-100 text-amber-800" : "bg-green-100 text-green-800"}>{item.risk} Risk</Badge>
+                <StatusBadge status={item.risk} />
                 <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(item.id)} data-testid={`button-delete-${item.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>

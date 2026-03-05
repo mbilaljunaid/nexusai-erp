@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, FileDown, DollarSign, Search, History } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface Product {
     id: string;
@@ -207,11 +208,7 @@ export default function QuoteBuilder() {
                         </div>
                         <div className="space-y-2">
                             <Label>Valid Until</Label>
-                            <Input
-                                type="date"
-                                value={quoteHeader.validUntil}
-                                onChange={(e) => setQuoteHeader({ ...quoteHeader, validUntil: e.target.value })}
-                            />
+                            <DatePicker value={quoteHeader.validUntil} onChange={(v) => setQuoteHeader({ ...quoteHeader, validUntil: v })} />
                         </div>
                         <div className="space-y-2">
                             <Label>Payment Terms</Label>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -74,7 +75,7 @@ export default function RecommendationEngine() {
       <Card>
         <CardHeader><CardTitle className="text-base">AI Recommendations</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : recommendations.length === 0 ? <p className="text-muted-foreground text-center py-4">No recommendations</p> : recommendations.map((r: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : recommendations.length === 0 ? <p className="text-muted-foreground text-center py-4">No recommendations</p> : recommendations.map((r: any) => (
             <div key={r.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`recommendation-${r.id}`}>
               <div>
                 <h3 className="font-semibold">{r.recommendation}</h3>

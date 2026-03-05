@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -97,7 +98,7 @@ export default function PricingPromotionManagement() {
       <Card>
         <CardHeader><CardTitle className="text-base">Price Rules</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : prices.length === 0 ? <p className="text-muted-foreground text-center py-4">No rules</p> : prices.map((p: any) => {
+          {isLoading ? <TableSkeleton rows={4} /> : prices.length === 0 ? <p className="text-muted-foreground text-center py-4">No rules</p> : prices.map((p: any) => {
             const finalPrice = (parseFloat(p.basePrice) || 0) * (1 - (parseFloat(p.discountPercent) || 0) / 100);
             return (
               <div key={p.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`price-${p.id}`}>

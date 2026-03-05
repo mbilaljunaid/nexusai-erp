@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
@@ -51,7 +52,7 @@ export default function AccountDetail() {
         queryFn: () => fetch(`/api/crm/cases?accountId=${accountId}`).then(r => r.json())
     });
 
-    if (!account) return <div className="p-8">Loading...</div>;
+    if (!account) return <PageSkeleton />;
 
     return (
         <StandardPage title="Account Overview" description="Manage account data and relationships">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
@@ -95,7 +96,7 @@ export default function ContactList() {
             }
         >
             {isLoading ? (
-                <div className="p-8 text-center text-muted-foreground">Loading...</div>
+                <TableSkeleton rows={5} />
             ) : (
                 <div className="border rounded-md">
                     <InteractiveSpreadsheet

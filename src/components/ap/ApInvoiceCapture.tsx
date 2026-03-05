@@ -29,6 +29,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface ApInvoiceCaptureProps {
     open: boolean;
@@ -334,11 +335,7 @@ export function ApInvoiceCapture({ open, onOpenChange }: ApInvoiceCaptureProps) 
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Date</Label>
-                                        <Input
-                                            type="date"
-                                            value={extractedData.Date || extractedData.date ? new Date(extractedData.Date || extractedData.date).toISOString().split('T')[0] : ""}
-                                            onChange={(e) => setExtractedData({ ...extractedData, Date: e.target.value })}
-                                        />
+                                        <DatePicker value={extractedData.Date || extractedData.date ? new Date(extractedData.Date || extractedData.date).toISOString().split('T')[0] : ""} onChange={(v) => setExtractedData({ ...extractedData, Date: v })} />
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Total Amount</Label>

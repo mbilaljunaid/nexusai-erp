@@ -45,6 +45,7 @@ import {
 } from "recharts";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface ForecastDetail {
     source: "AR" | "AP" | "MANUAL";
@@ -163,13 +164,7 @@ export function CashForecastWidget() {
                                 <form onSubmit={handleSubmit} className="space-y-4 py-2">
                                     <div className="grid w-full items-center gap-1.5">
                                         <Label htmlFor="date">Date</Label>
-                                        <Input
-                                            type="date"
-                                            id="date"
-                                            value={formData.forecastDate}
-                                            onChange={e => setFormData({ ...formData, forecastDate: e.target.value })}
-                                            required
-                                        />
+                                        <DatePicker value={formData.forecastDate} onChange={v => setFormData({ ...formData, forecastDate: v })} />
                                     </div>
                                     <div className="grid w-full items-center gap-1.5">
                                         <Label htmlFor="amount">Amount</Label>

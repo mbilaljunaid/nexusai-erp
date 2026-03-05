@@ -1,5 +1,6 @@
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Edit2, Trash2, Plus } from "lucide-react";
@@ -73,7 +74,7 @@ export default function RetailProductCatalog() {
       }
     >
       {isLoading ? (
-        <div className="p-8 text-center text-muted-foreground">Loading...</div>
+        <TableSkeleton rows={5} />
       ) : (
         <div className="border rounded-md">
           <InteractiveSpreadsheet

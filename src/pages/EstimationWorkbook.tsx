@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -96,7 +97,7 @@ export default function EstimationWorkbook() {
       <Card>
         <CardHeader><CardTitle className="text-base">Estimates</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : estimates.length === 0 ? <p className="text-muted-foreground text-center py-4">No estimates</p> : estimates.map((e: any) => {
+          {isLoading ? <TableSkeleton rows={4} /> : estimates.length === 0 ? <p className="text-muted-foreground text-center py-4">No estimates</p> : estimates.map((e: any) => {
             const amount = (parseFloat(e.qty) || 0) * (parseFloat(e.rate) || 0);
             const withMargin = amount * (1 + (parseFloat(e.margin) || 0) / 100);
             return (

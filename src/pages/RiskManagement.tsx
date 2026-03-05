@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -134,7 +135,7 @@ export default function RiskManagement() {
         </CardHeader>
         <CardContent className="space-y-3">
           {isLoading ? (
-            <div className="text-center py-4">Loading...</div>
+            <TableSkeleton rows={4} />
           ) : risks.length === 0 ? (
             <div className="text-center py-4 text-muted-foreground">No risks registered</div>
           ) : (

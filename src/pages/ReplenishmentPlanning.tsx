@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -97,7 +98,7 @@ export default function ReplenishmentPlanning() {
       <Card>
         <CardHeader><CardTitle className="text-base">Plans</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : replenishments.length === 0 ? <p className="text-muted-foreground text-center py-4">No plans</p> : replenishments.map((r: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : replenishments.length === 0 ? <p className="text-muted-foreground text-center py-4">No plans</p> : replenishments.map((r: any) => (
             <div key={r.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`plan-${r.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{r.productId}</p>

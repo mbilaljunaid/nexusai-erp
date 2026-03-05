@@ -1,6 +1,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +17,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage, FormDes
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { DatePickerField } from '@/components/forms/DatePickerField';
 
 const documentSchema = z.object({
     documentType: z.string().min(1, "Document type is required"),
@@ -130,7 +132,7 @@ export default function SupplierDocuments() {
                                     <FormItem>
                                         <FormLabel>Expiry Date (Optional)</FormLabel>
                                         <FormControl>
-                                            <Input type="date" {...field} />
+                                            <DatePickerField {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -190,7 +192,7 @@ export default function SupplierDocuments() {
                         </TableHeader>
                         <TableBody>
                             {isLoading ? (
-                                <TableRow><TableCell colSpan={5}>Loading...</TableCell></TableRow>
+                                <TableRow><TableCell colSpan={5}><TableSkeleton rows={4} /></TableCell></TableRow>
                             ) : documents?.length === 0 ? (
                                 <TableRow><TableCell colSpan={5} className="text-center">No documents found</TableCell></TableRow>
                             ) : (

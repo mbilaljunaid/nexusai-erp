@@ -13,6 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, Clock, CheckCircle, XCircle, TrendingUp, User, MessageSquare } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { ContextualSearch } from "@/components/ContextualSearch";
+import { StatusBadge } from "@/components/shared/StatusBadge";
+import { getStatusVariant } from "@/lib/statusUtils";
 
 interface ServiceCase {
     id: string;
@@ -73,35 +75,6 @@ export default function CaseManagement() {
     const criticalCases = cases.filter(c => c.priority === "CRITICAL");
     const breachedSLA = cases.filter(c => c.slaStatus === "BREACHED");
 
-    const getPriorityColor = (priority: string) => {
-        switch (priority) {
-            case "CRITICAL": return "bg-red-100 text-red-800 border-red-200";
-            case "HIGH": return "bg-orange-100 text-orange-800 border-orange-200";
-            case "MEDIUM": return "bg-yellow-100 text-yellow-800 border-yellow-200";
-            case "LOW": return "bg-green-100 text-green-800 border-green-200";
-            default: return "bg-gray-100 text-gray-800 border-gray-200";
-        }
-    };
-
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "NEW": return "bg-blue-100 text-blue-800 border-blue-200";
-            case "IN_PROGRESS": return "bg-purple-100 text-purple-800 border-purple-200";
-            case "WAITING": return "bg-amber-100 text-amber-800 border-amber-200";
-            case "RESOLVED": return "bg-green-100 text-green-800 border-green-200";
-            case "CLOSED": return "bg-gray-100 text-gray-800 border-gray-200";
-            default: return "bg-gray-100 text-gray-800 border-gray-200";
-        }
-    };
-
-    const getSLAStatusColor = (status?: string) => {
-        switch (status) {
-            case "ON_TIME": return "text-green-700";
-            case "AT_RISK": return "text-amber-700";
-            case "BREACHED": return "text-red-700";
-            default: return "text-muted-foreground";
-        }
-    };
 
     return (
         <StandardPage
@@ -247,24 +220,15 @@ export default function CaseManagement() {
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Badge className={getPriorityColor(caseItem.priority)}>
-                                                        {caseItem.priority}
-                                                    </Badge>
+                                                    <StatusBadge status={caseItem.priority} />
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Badge className={getStatusColor(caseItem.status)}>
-                                                        {caseItem.status.replace('_', ' ')}
-                                                    </Badge>
+                                                    <StatusBadge status={caseItem.status} />
                                                 </TableCell>
                                                 <TableCell>{caseItem.assignedTo || <span className="text-muted-foreground">—</span>}</TableCell>
                                                 <TableCell>
                                                     {caseItem.slaDeadline ? (
-                                                        <div className={`text-sm font-semibold ${getSLAStatusColor(caseItem.slaStatus)}`}>
-                                                            {caseItem.slaStatus === "BREACHED" && <XCircle className="h-3 w-3 inline mr-1" />}
-                                                            {caseItem.slaStatus === "AT_RISK" && <Clock className="h-3 w-3 inline mr-1" />}
-                                                            {caseItem.slaStatus === "ON_TIME" && <CheckCircle className="h-3 w-3 inline mr-1" />}
-                                                            {caseItem.slaDeadline}
-                                                        </div>
+                                                        <StatusBadge status={caseItem.slaStatus} label={caseItem.slaDeadline} />
                                                     ) : (
                                                         <span className="text-muted-foreground">—</span>
                                                     )}
@@ -295,9 +259,7 @@ export default function CaseManagement() {
                                             <div>
                                                 <div className="flex items-center gap-2">
                                                     <CardTitle className="text-lg">{caseItem.caseNumber}</CardTitle>
-                                                    <Badge className={getPriorityColor(caseItem.priority)}>
-                                                        {caseItem.priority}
-                                                    </Badge>
+                                                    <StatusBadge status={caseItem.priority} />
                                                 </div>
                                                 <CardDescription className="mt-1">{caseItem.subject}</CardDescription>
                                             </div>
@@ -335,13 +297,9 @@ export default function CaseManagement() {
                                             <div>
                                                 <div className="flex items-center gap-2">
                                                     <CardTitle className="text-lg">{caseItem.caseNumber}</CardTitle>
-                                                    <Badge className={getPriorityColor(caseItem.priority)}>
-                                                        {caseItem.priority}
-                                                    </Badge>
+                                                    <StatusBadge status={caseItem.priority} />
                                                     {caseItem.slaStatus && (
-                                                        <Badge variant="outline" className={getSLAStatusColor(caseItem.slaStatus)}>
-                                                            SLA: {caseItem.slaStatus.replace('_', ' ')}
-                                                        </Badge>
+                                                        <StatusBadge status={caseItem.slaStatus} label={`SLA: ${caseItem.slaStatus.replace('_', ' ')}`} />
                                                     )}
                                                 </div>
                                                 <CardDescription className="mt-1">{caseItem.subject}</CardDescription>
@@ -388,12 +346,8 @@ export default function CaseManagement() {
                                             <div>
                                                 <div className="flex items-center gap-2">
                                                     <CardTitle className="text-lg">{caseItem.caseNumber}</CardTitle>
-                                                    <Badge className={getPriorityColor(caseItem.priority)}>
-                                                        {caseItem.priority}
-                                                    </Badge>
-                                                    <Badge className={getStatusColor(caseItem.status)}>
-                                                        {caseItem.status.replace('_', ' ')}
-                                                    </Badge>
+                                                    <StatusBadge status={caseItem.priority} />
+                                                    <StatusBadge status={caseItem.status} />
                                                 </div>
                                                 <CardDescription className="mt-1">{caseItem.subject}</CardDescription>
                                             </div>
@@ -431,9 +385,7 @@ export default function CaseManagement() {
                                             <div>
                                                 <div className="flex items-center gap-2">
                                                     <CardTitle className="text-lg">{caseItem.caseNumber}</CardTitle>
-                                                    <Badge className={getStatusColor(caseItem.status)}>
-                                                        {caseItem.status}
-                                                    </Badge>
+                                                    <StatusBadge status={caseItem.status} />
                                                 </div>
                                                 <CardDescription className="mt-1">{caseItem.subject}</CardDescription>
                                             </div>

@@ -1,3 +1,4 @@
+import { DatePicker } from '@/components/ui/DatePicker';
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -130,7 +131,7 @@ export default function AccrualTesting() {
                                     </div>
                                     <div className="space-y-1.5">
                                         <Label className="text-sm">Hire / Seniority Date</Label>
-                                        <Input type="date" value={hireDate} onChange={e => setHireDate(e.target.value)} />
+                                        <DatePicker value={hireDate} onChange={v => setHireDate(v)} />
                                     </div>
                                 </div>
                             </div>
@@ -139,7 +140,7 @@ export default function AccrualTesting() {
                                 <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5"><CalendarDays className="h-4 w-4" /> Period Data</h3>
                                 <div className="space-y-1.5">
                                     <Label className="text-sm">Simulation Date</Label>
-                                    <Input type="date" value={simDate} onChange={e => setSimDate(e.target.value)} />
+                                    <DatePicker value={simDate} onChange={v => setSimDate(v)} />
                                     <p className="text-[10px] text-muted-foreground">Used to calculate tenure.</p>
                                 </div>
                                 <div className="space-y-1.5">

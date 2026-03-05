@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Users, Award, TrendingUp, DollarSign, Building, CheckCircle, Clock } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { ContextualSearch } from "@/components/ContextualSearch";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 interface Partner {
     id: string;
@@ -81,14 +82,7 @@ export default function PartnerManagement() {
         }
     };
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "ACTIVE": return "bg-green-100 text-green-800 border-green-200";
-            case "INACTIVE": return "bg-gray-100 text-gray-800 border-gray-200";
-            case "PENDING": return "bg-blue-100 text-blue-800 border-blue-200";
-            default: return "bg-gray-100 text-gray-800 border-gray-200";
-        }
-    };
+
 
     return (
         <StandardPage
@@ -222,9 +216,7 @@ export default function PartnerManagement() {
                                                     </Badge>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Badge className={getStatusColor(partner.status)}>
-                                                        {partner.status}
-                                                    </Badge>
+                                                    <StatusBadge status={partner.status} />
                                                 </TableCell>
                                                 <TableCell className="text-right font-mono">{partner.dealsRegistered}</TableCell>
                                                 <TableCell className="text-right font-mono">

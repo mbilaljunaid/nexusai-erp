@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -102,7 +103,7 @@ export default function AdvancedAnalytics() {
             </CardContent>
           </Card>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {dashLoading ? <p>Loading...</p> : dashboards.map((dash: any) => (
+            {dashLoading ? <TableSkeleton rows={4} /> : dashboards.map((dash: any) => (
               <Card key={dash.id} data-testid={`card-dashboard-${dash.id}`}>
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center justify-between">

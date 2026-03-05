@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -56,7 +57,7 @@ export default function CustomerJourneyMap() {
       </Card>
 
       <div className="grid gap-4">
-        {isLoading ? <p>Loading...</p> : stages.length === 0 ? <p className="text-muted-foreground text-center py-4">No journey stages</p> : stages.map((s: any) => (
+        {isLoading ? <TableSkeleton rows={4} /> : stages.length === 0 ? <p className="text-muted-foreground text-center py-4">No journey stages</p> : stages.map((s: any) => (
           <Card key={s.id} data-testid={`stage-${s.id}`} className="hover-elevate">
             <CardContent className="pt-6">
               <div className="flex items-start justify-between">

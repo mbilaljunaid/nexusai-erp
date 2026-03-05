@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface MrpRecommendation {
     id: string;
@@ -158,11 +159,11 @@ export default function MRPWorkbench() {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label>Horizon Start</Label>
-                                        <Input type="date" value={horizonStart} onChange={e => setHorizonStart(e.target.value)} />
+                                        <DatePicker value={horizonStart} onChange={v => setHorizonStart(v)} />
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Horizon End</Label>
-                                        <Input type="date" value={horizonEnd} onChange={e => setHorizonEnd(e.target.value)} />
+                                        <DatePicker value={horizonEnd} onChange={v => setHorizonEnd(v)} />
                                     </div>
                                 </div>
                                 <Button className="w-full" onClick={handleCreatePlan} disabled={createPlanMutation.isPending}>

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -49,7 +50,7 @@ export default function RouteLoadOptimization() {
       <Card>
         <CardHeader><CardTitle className="text-base">Routes</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : routes.length === 0 ? <p className="text-muted-foreground text-center py-4">No routes</p> : routes.slice(0, 10).map((r: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : routes.length === 0 ? <p className="text-muted-foreground text-center py-4">No routes</p> : routes.slice(0, 10).map((r: any) => (
             <div key={r.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`route-${r.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{r.routeId}</p>

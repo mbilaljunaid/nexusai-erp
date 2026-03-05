@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { AlertTriangle } from "lucide-react";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface TerminateWorkerDialogProps {
     personId: string;
@@ -52,13 +53,7 @@ export function TerminateWorkerDialog({ personId, isOpen, onClose }: TerminateWo
                         <Label htmlFor="term-date" className="text-right">
                             Termination Date
                         </Label>
-                        <Input
-                            id="term-date"
-                            type="date"
-                            className="col-span-3"
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                        />
+                        <DatePicker className="col-span-3" value={date} onChange={v => setDate(v)} />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="reason" className="text-right">

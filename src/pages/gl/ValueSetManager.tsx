@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     Card, CardContent, CardHeader, CardTitle, CardDescription
@@ -290,7 +291,7 @@ export default function ValueSetManager() {
                             </TableHeader>
                             <TableBody>
                                 {isLoading ? (
-                                    <TableRow><TableCell colSpan={6} className="h-24 text-center">Loading...</TableCell></TableRow>
+                                    <TableRow><TableCell colSpan={6} className="h-24 text-center"><TableSkeleton rows={4} /></TableCell></TableRow>
                                 ) : valueSets.length === 0 ? (
                                     <TableRow><TableCell colSpan={6} className="h-24 text-center">No value sets found.</TableCell></TableRow>
                                 ) : (

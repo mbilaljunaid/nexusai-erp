@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -100,7 +101,7 @@ export default function StockIssue() {
       <Card>
         <CardHeader><CardTitle className="text-base">Issues</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : issues.length === 0 ? <p className="text-muted-foreground text-center py-4">No issues</p> : issues.map((i: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : issues.length === 0 ? <p className="text-muted-foreground text-center py-4">No issues</p> : issues.map((i: any) => (
             <div key={i.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`issue-${i.id}`}>
               <div>
                 <p className="font-semibold text-sm">{i.item}</p>

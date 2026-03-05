@@ -16,6 +16,7 @@ import { Loader2, Upload, FileText, CheckCircle2, AlertCircle, Sparkles } from "
 import { toast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface AIExtractionModalProps {
     isOpen: boolean;
@@ -228,27 +229,19 @@ export function LeaseAIExtractionModal({ isOpen, onClose, onSuccess }: AIExtract
 
                                     <div className="space-y-2">
                                         <Label>Commencement Date</Label>
-                                        <Input
-                                            type="date"
-                                            value={extractedData.commencementDate}
-                                            onChange={(e) => setExtractedData({
-                                                ...extractedData,
-                                                commencementDate: e.target.value
-                                            })}
-                                        />
+                                        <DatePicker value={extractedData.commencementDate} onChange={(v) => setExtractedData({
+                                            ...extractedData,
+                                            commencementDate: v
+                                        })} />
                                         {getConfidenceBadge(extractedData.confidence.commencementDate)}
                                     </div>
 
                                     <div className="space-y-2">
                                         <Label>Expiration Date</Label>
-                                        <Input
-                                            type="date"
-                                            value={extractedData.expirationDate}
-                                            onChange={(e) => setExtractedData({
-                                                ...extractedData,
-                                                expirationDate: e.target.value
-                                            })}
-                                        />
+                                        <DatePicker value={extractedData.expirationDate} onChange={(v) => setExtractedData({
+                                            ...extractedData,
+                                            expirationDate: v
+                                        })} />
                                         {getConfidenceBadge(extractedData.confidence.expirationDate)}
                                     </div>
 

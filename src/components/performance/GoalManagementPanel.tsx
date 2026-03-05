@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface Goal {
     id: string;
@@ -413,13 +414,7 @@ function GoalModal({
 
                         <div className="space-y-2">
                             <Label htmlFor="targetDate">Target Date *</Label>
-                            <Input
-                                id="targetDate"
-                                type="date"
-                                value={formData.targetDate ? new Date(formData.targetDate).toISOString().split('T')[0] : ''}
-                                onChange={(e) => setFormData({ ...formData, targetDate: e.target.value })}
-                                required
-                            />
+                            <DatePicker value={formData.targetDate ? new Date(formData.targetDate).toISOString().split('T')[0] : ''} onChange={(v) => setFormData({ ...formData, targetDate: v })} />
                         </div>
                     </div>
 

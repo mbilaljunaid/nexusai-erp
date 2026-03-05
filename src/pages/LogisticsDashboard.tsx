@@ -65,7 +65,7 @@ export default function LogisticsDashboard() {
                 >
                     <div className="space-y-2 max-h-[400px] overflow-y-auto">
                         {isLoading ? (
-                            <p className="text-muted-foreground text-sm">Loading metrics...</p>
+                            <TableSkeleton rows={3} />
                         ) : dashboard.length === 0 ? (
                             <p className="text-muted-foreground text-center py-4">No data available</p>
                         ) : (

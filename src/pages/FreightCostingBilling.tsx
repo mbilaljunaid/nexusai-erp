@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -89,7 +90,7 @@ export default function FreightCostingBilling() {
       <Card>
         <CardHeader><CardTitle className="text-base">Invoices</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : invoices.length === 0 ? <p className="text-muted-foreground text-center py-4">No invoices</p> : invoices.map((i: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : invoices.length === 0 ? <p className="text-muted-foreground text-center py-4">No invoices</p> : invoices.map((i: any) => (
             <div key={i.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`invoice-${i.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{i.invoiceId}</p>

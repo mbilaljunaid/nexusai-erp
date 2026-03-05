@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -85,7 +86,7 @@ export default function LegalGroups() {
                     </TableHeader>
                     <TableBody>
                         {isLoading ? (
-                            <TableRow><TableCell colSpan={5} className="text-center py-8">Loading...</TableCell></TableRow>
+                            <TableRow><TableCell colSpan={5}><TableSkeleton rows={5} /></TableCell></TableRow>
                         ) : filteredGroups.length === 0 ? (
                             <TableRow><TableCell colSpan={5} className="text-center py-8">No Legal Groups Found</TableCell></TableRow>
                         ) : (

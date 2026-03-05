@@ -10,6 +10,7 @@ import { Loader2, Download, FileText } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { downloadFile } from "@/lib/utils";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface ReportType {
     id: string;
@@ -103,11 +104,11 @@ export default function HRReports() {
                         </div>
                         <div className="space-y-2">
                             <Label>Start Date</Label>
-                            <Input type="date" value={dateRange.start} onChange={e => setDateRange({ ...dateRange, start: e.target.value })} />
+                            <DatePicker value={dateRange.start} onChange={v => setDateRange({ ...dateRange, start: v })} />
                         </div>
                         <div className="space-y-2">
                             <Label>End Date</Label>
-                            <Input type="date" value={dateRange.end} onChange={e => setDateRange({ ...dateRange, end: e.target.value })} />
+                            <DatePicker value={dateRange.end} onChange={v => setDateRange({ ...dateRange, end: v })} />
                         </div>
                     </div>
 

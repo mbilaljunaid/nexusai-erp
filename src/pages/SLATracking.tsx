@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 export default function SLATracking() {
   return (
@@ -21,7 +22,7 @@ export default function SLATracking() {
               <p className="font-semibold">{sla.tier}</p>
               <p className="text-sm text-muted-foreground">Response: {sla.response} • Resolution: {sla.resolution}</p>
               <p className="text-sm mt-1">Current: {sla.current}</p>
-              <Badge className={sla.status === "On Track" ? "mt-2 bg-green-100 text-green-800" : "mt-2 bg-amber-100 text-amber-800"}>{sla.status}</Badge>
+              <StatusBadge status={sla.status} className="mt-2" />
             </div>
           ))}
         </CardContent>

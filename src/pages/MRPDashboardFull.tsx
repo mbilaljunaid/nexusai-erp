@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -65,7 +66,7 @@ export default function MRPDashboardFull() {
       <Card>
         <CardHeader><CardTitle className="text-base">MRP Recommendations</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : recommendations.length === 0 ? <p className="text-muted-foreground text-center py-4">No recommendations</p> : recommendations.map((r: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : recommendations.length === 0 ? <p className="text-muted-foreground text-center py-4">No recommendations</p> : recommendations.map((r: any) => (
             <div key={r.id} className="p-3 border rounded-lg hover-elevate" data-testid={`rec-${r.id}`}>
               <div className="flex justify-between items-start mb-2">
                 <div>

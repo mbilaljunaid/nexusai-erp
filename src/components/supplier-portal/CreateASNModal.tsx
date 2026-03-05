@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface CreateASNModalProps {
     isOpen: boolean;
@@ -126,17 +127,11 @@ export function CreateASNModal({ isOpen, onClose }: CreateASNModalProps) {
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label>Shipped Date</Label>
-                            <Input type="date"
-                                value={shipmentDetails.shippedDate}
-                                onChange={(e) => setShipmentDetails({ ...shipmentDetails, shippedDate: e.target.value })}
-                            />
+                            <DatePicker value={shipmentDetails.shippedDate} onChange={(v) => setShipmentDetails({ ...shipmentDetails, shippedDate: v })} />
                         </div>
                         <div className="space-y-2">
                             <Label>Expected Arrival</Label>
-                            <Input type="date"
-                                value={shipmentDetails.expectedArrivalDate}
-                                onChange={(e) => setShipmentDetails({ ...shipmentDetails, expectedArrivalDate: e.target.value })}
-                            />
+                            <DatePicker value={shipmentDetails.expectedArrivalDate} onChange={(v) => setShipmentDetails({ ...shipmentDetails, expectedArrivalDate: v })} />
                         </div>
                     </div>
 

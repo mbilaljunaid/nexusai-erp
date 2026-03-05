@@ -11,6 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { FileText, ArrowRight, ArrowLeft, CheckCircle, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 
 export default function ContractCreationWizard() {
@@ -168,22 +169,12 @@ export default function ContractCreationWizard() {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="startDate">Start Date *</Label>
-                                        <Input
-                                            id="startDate"
-                                            type="date"
-                                            value={formData.startDate}
-                                            onChange={(e) => updateField("startDate", e.target.value)}
-                                        />
+                                        <DatePicker value={formData.startDate} onChange={(v) => updateField("startDate", v)} />
                                     </div>
 
                                     <div className="space-y-2">
                                         <Label htmlFor="endDate">End Date *</Label>
-                                        <Input
-                                            id="endDate"
-                                            type="date"
-                                            value={formData.endDate}
-                                            onChange={(e) => updateField("endDate", e.target.value)}
-                                        />
+                                        <DatePicker value={formData.endDate} onChange={(v) => updateField("endDate", v)} />
                                     </div>
                                 </div>
 

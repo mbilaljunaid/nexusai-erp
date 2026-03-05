@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { Key, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 
 export default function FrontDeskOperations() {
@@ -81,7 +83,7 @@ export default function FrontDeskOperations() {
             <Input placeholder="Folio ID" value={newFolio.folioId} onChange={(e) => setNewFolio({ ...newFolio, folioId: e.target.value })} data-testid="input-folioid" className="text-sm" />
             <Input placeholder="Guest Name" value={newFolio.guestName} onChange={(e) => setNewFolio({ ...newFolio, guestName: e.target.value })} data-testid="input-name" className="text-sm" />
             <Input placeholder="Room ID" value={newFolio.roomId} onChange={(e) => setNewFolio({ ...newFolio, roomId: e.target.value })} data-testid="input-roomid" className="text-sm" />
-            <Input placeholder="Check-in" type="date" value={newFolio.checkIn} onChange={(e) => setNewFolio({ ...newFolio, checkIn: e.target.value })} data-testid="input-checkin" className="text-sm" />
+            <DatePicker className="text-sm" value={newFolio.checkIn} onChange={(v) => setNewFolio({ ...newFolio, checkIn: v })} placeholder="Check-in" />
             <Button onClick={() => createMutation.mutate(newFolio)} disabled={createMutation.isPending || !newFolio.folioId} size="sm" data-testid="button-checkin">
               <Plus className="w-3 h-3" />
             </Button>
@@ -92,7 +94,7 @@ export default function FrontDeskOperations() {
       <Card>
         <CardHeader><CardTitle className="text-base">Guest Folios</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : folios.length === 0 ? <p className="text-muted-foreground text-center py-4">No folios</p> : folios.map((f: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : folios.length === 0 ? <p className="text-muted-foreground text-center py-4">No folios</p> : folios.map((f: any) => (
             <div key={f.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`folio-${f.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{f.folioId} - {f.guestName}</p>

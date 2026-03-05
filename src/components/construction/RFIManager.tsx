@@ -26,6 +26,7 @@ import { MessageSquare, Plus, AlertCircle, CheckCircle, Clock, Send } from "luci
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface RFI {
     id: string;
@@ -267,11 +268,7 @@ export function RFIManager({ projectId }: RFIManagerProps) {
 
                             <div className="space-y-2">
                                 <Label htmlFor="dueDate">Due Date</Label>
-                                <Input
-                                    id="dueDate"
-                                    name="dueDate"
-                                    type="date"
-                                />
+                                <DatePicker onChange={() => {}} />
                             </div>
                         </div>
 

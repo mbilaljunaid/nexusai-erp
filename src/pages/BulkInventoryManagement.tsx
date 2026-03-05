@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -105,7 +106,7 @@ export default function BulkInventoryManagement() {
       <Card>
         <CardHeader><CardTitle className="text-base">Inventory Items</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : items.length === 0 ? <p className="text-muted-foreground text-center py-4">No items</p> : items.map((i: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : items.length === 0 ? <p className="text-muted-foreground text-center py-4">No items</p> : items.map((i: any) => (
             <div key={i.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`inv-${i.id}`}>
               <div>
                 <p className="font-semibold">{i.materialId}</p>

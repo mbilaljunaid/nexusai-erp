@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -243,7 +244,7 @@ export default function MyInterviews() {
 
                 <TabsContent value="upcoming" className="space-y-3 mt-4">
                     {isLoading ? (
-                        <p className="text-center py-8 text-muted-foreground">Loading...</p>
+                        <TableSkeleton rows={4} />
                     ) : upcomingInterviews.length === 0 ? (
                         <Card>
                             <CardContent className="p-8 text-center text-muted-foreground">

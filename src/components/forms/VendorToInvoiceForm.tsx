@@ -8,6 +8,7 @@ import { Users, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface Vendor {
   id: string;
@@ -145,23 +146,11 @@ export function VendorToInvoiceForm({ vendor, onClose }: { vendor: Vendor; onClo
             </div>
             <div>
               <Label htmlFor="invoice-date">Invoice Date</Label>
-              <Input
-                id="invoice-date"
-                type="date"
-                value={invoiceDate}
-                onChange={(e) => setInvoiceDate(e.target.value)}
-                data-testid="input-invoice-date"
-              />
+              <DatePicker value={invoiceDate} onChange={v => setInvoiceDate(v)} />
             </div>
             <div>
               <Label htmlFor="due-date">Due Date</Label>
-              <Input
-                id="due-date"
-                type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-                data-testid="input-due-date"
-              />
+              <DatePicker value={dueDate} onChange={v => setDueDate(v)} />
             </div>
           </div>
 

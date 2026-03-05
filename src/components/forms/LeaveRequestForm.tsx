@@ -10,6 +10,7 @@ import { Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export function LeaveRequestForm() {
   const { toast } = useToast();
@@ -111,21 +112,11 @@ export function LeaveRequestForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="start">Start Date *</Label>
-              <Input
-                id="start"
-                type="date"
-                value={formData.startDate}
-                onChange={(e) => handleChange("startDate", e.target.value)}
-              />
+              <DatePicker value={formData.startDate} onChange={(v) => handleChange("startDate", v)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="end">End Date *</Label>
-              <Input
-                id="end"
-                type="date"
-                value={formData.endDate}
-                onChange={(e) => handleChange("endDate", e.target.value)}
-              />
+              <DatePicker value={formData.endDate} onChange={(v) => handleChange("endDate", v)} />
             </div>
           </div>
 

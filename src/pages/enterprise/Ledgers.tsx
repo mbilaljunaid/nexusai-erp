@@ -1,6 +1,7 @@
 import React from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
@@ -38,7 +39,7 @@ export default function EnterpriseLedgers() {
                     </TableHeader>
                     <TableBody>
                         {isLoading ? (
-                            <TableRow><TableCell colSpan={5} className="text-center py-8">Loading...</TableCell></TableRow>
+                            <TableRow><TableCell colSpan={5}><TableSkeleton rows={5} /></TableCell></TableRow>
                         ) : ledgers?.length === 0 ? (
                             <TableRow><TableCell colSpan={5} className="text-center py-8">No Ledgers defined</TableCell></TableRow>
                         ) : (

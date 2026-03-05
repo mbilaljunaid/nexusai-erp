@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminApi } from '@/lib/api/admin';
-import { toast } from 'sonner';
+import { toast } from '@/hooks/use-toast';
 
 // Demo Environments
 export const useDemoEnvironments = () => {
@@ -32,10 +32,10 @@ export const useCreateDemoEnvironment = () => {
             adminApi.demoEnvironments.create(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'demo-environments'] });
-            toast.success('Demo environment created successfully');
+            toast({ title: 'Demo environment created successfully' });
         },
         onError: () => {
-            toast.error('Failed to create demo environment');
+            toast({ variant: 'destructive', title: 'Failed to create demo environment' });
         },
     });
 };
@@ -48,10 +48,10 @@ export const useUpdateDemoEnvironment = () => {
             adminApi.demoEnvironments.update(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'demo-environments'] });
-            toast.success('Demo environment updated successfully');
+            toast({ title: 'Demo environment updated successfully' });
         },
         onError: () => {
-            toast.error('Failed to update demo environment');
+            toast({ variant: 'destructive', title: 'Failed to update demo environment' });
         },
     });
 };
@@ -64,10 +64,10 @@ export const useUpdateDemoStatus = () => {
             adminApi.demoEnvironments.updateStatus(id, status, accessUrl),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'demo-environments'] });
-            toast.success('Demo environment updated');
+            toast({ title: 'Demo environment updated' });
         },
         onError: () => {
-            toast.error('Failed to update demo environment');
+            toast({ variant: 'destructive', title: 'Failed to update demo environment' });
         },
     });
 };
@@ -79,10 +79,10 @@ export const useDeleteDemoEnvironment = () => {
         mutationFn: (id: string) => adminApi.demoEnvironments.delete(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'demo-environments'] });
-            toast.success('Demo environment deleted');
+            toast({ title: 'Demo environment deleted' });
         },
         onError: () => {
-            toast.error('Failed to delete demo environment');
+            toast({ variant: 'destructive', title: 'Failed to delete demo environment' });
         },
     });
 };
@@ -106,10 +106,10 @@ export const useCreateSupportRequest = () => {
             adminApi.supportRequests.create(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'support-requests'] });
-            toast.success('Support request created successfully');
+            toast({ title: 'Support request created successfully' });
         },
         onError: () => {
-            toast.error('Failed to create support request');
+            toast({ variant: 'destructive', title: 'Failed to create support request' });
         },
     });
 };
@@ -122,10 +122,10 @@ export const useUpdateSupportRequest = () => {
             adminApi.supportRequests.update(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'support-requests'] });
-            toast.success('Support request updated successfully');
+            toast({ title: 'Support request updated successfully' });
         },
         onError: () => {
-            toast.error('Failed to update support request');
+            toast({ variant: 'destructive', title: 'Failed to update support request' });
         },
     });
 };
@@ -138,10 +138,10 @@ export const useAssignSupportRequest = () => {
             adminApi.supportRequests.assign(id, userId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'support-requests'] });
-            toast.success('Request assigned');
+            toast({ title: 'Request assigned' });
         },
         onError: () => {
-            toast.error('Failed to assign request');
+            toast({ variant: 'destructive', title: 'Failed to assign request' });
         },
     });
 };
@@ -153,10 +153,10 @@ export const useCloseSupportRequest = () => {
         mutationFn: (id: string) => adminApi.supportRequests.close(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'support-requests'] });
-            toast.success('Request closed');
+            toast({ title: 'Request closed' });
         },
         onError: () => {
-            toast.error('Failed to close request');
+            toast({ variant: 'destructive', title: 'Failed to close request' });
         },
     });
 };
@@ -202,10 +202,10 @@ export const useCreateAffiliate = () => {
             adminApi.affiliates.create(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'affiliates'] });
-            toast.success('Affiliate created successfully');
+            toast({ title: 'Affiliate created successfully' });
         },
         onError: () => {
-            toast.error('Failed to create affiliate');
+            toast({ variant: 'destructive', title: 'Failed to create affiliate' });
         },
     });
 };
@@ -218,10 +218,10 @@ export const useUpdateAffiliate = () => {
             adminApi.affiliates.update(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'affiliates'] });
-            toast.success('Affiliate updated successfully');
+            toast({ title: 'Affiliate updated successfully' });
         },
         onError: () => {
-            toast.error('Failed to update affiliate');
+            toast({ variant: 'destructive', title: 'Failed to update affiliate' });
         },
     });
 };
@@ -234,10 +234,10 @@ export const useUpdateAffiliateStatus = () => {
             adminApi.affiliates.updateStatus(id, status),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'affiliates'] });
-            toast.success('Affiliate status updated');
+            toast({ title: 'Affiliate status updated' });
         },
         onError: () => {
-            toast.error('Failed to update affiliate status');
+            toast({ variant: 'destructive', title: 'Failed to update affiliate status' });
         },
     });
 };
@@ -261,10 +261,10 @@ export const useToggleFeatureFlag = () => {
             enabled ? adminApi.system.enableFlag(name) : adminApi.system.disableFlag(name),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'feature-flags'] });
-            toast.success('Feature flag updated');
+            toast({ title: 'Feature flag updated' });
         },
         onError: () => {
-            toast.error('Failed to update feature flag');
+            toast({ variant: 'destructive', title: 'Failed to update feature flag' });
         },
     });
 };
@@ -288,10 +288,10 @@ export const useUpdateSystemConfig = () => {
             adminApi.system.setConfig(key, value, category, description),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'system-config'] });
-            toast.success('Configuration updated');
+            toast({ title: 'Configuration updated' });
         },
         onError: () => {
-            toast.error('Failed to update configuration');
+            toast({ variant: 'destructive', title: 'Failed to update configuration' });
         },
     });
 };
@@ -316,9 +316,9 @@ export const useCreateTenant = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'tenants'] });
             queryClient.invalidateQueries({ queryKey: ['admin', 'metrics'] });
-            toast.success('Tenant created successfully');
+            toast({ title: 'Tenant created successfully' });
         },
-        onError: () => toast.error('Failed to create tenant'),
+        onError: () => toast({ variant: 'destructive', title: 'Failed to create tenant' }),
     });
 };
 
@@ -329,9 +329,9 @@ export const useUpdateTenant = () => {
             adminApi.tenants.update(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'tenants'] });
-            toast.success('Tenant updated');
+            toast({ title: 'Tenant updated' });
         },
-        onError: () => toast.error('Failed to update tenant'),
+        onError: () => toast({ variant: 'destructive', title: 'Failed to update tenant' }),
     });
 };
 
@@ -342,9 +342,9 @@ export const useUpdateTenantStatus = () => {
             adminApi.tenants.updateStatus(id, status),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'tenants'] });
-            toast.success('Tenant status updated');
+            toast({ title: 'Tenant status updated' });
         },
-        onError: () => toast.error('Failed to update tenant status'),
+        onError: () => toast({ variant: 'destructive', title: 'Failed to update tenant status' }),
     });
 };
 
@@ -355,9 +355,9 @@ export const useDeleteTenant = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'tenants'] });
             queryClient.invalidateQueries({ queryKey: ['admin', 'metrics'] });
-            toast.success('Tenant deleted');
+            toast({ title: 'Tenant deleted' });
         },
-        onError: () => toast.error('Failed to delete tenant'),
+        onError: () => toast({ variant: 'destructive', title: 'Failed to delete tenant' }),
     });
 };
 

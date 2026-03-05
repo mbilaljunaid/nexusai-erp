@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export default function SourcingWorkbench() {
     const { toast } = useToast();
@@ -170,7 +171,7 @@ export default function SourcingWorkbench() {
                             </div>
                             <div className="space-y-2">
                                 <Label className="text-xs">Close Date</Label>
-                                <Input type="date" value={newRFQ.closeDate} onChange={e => setNewRFQ({ ...newRFQ, closeDate: e.target.value })} />
+                                <DatePicker value={newRFQ.closeDate} onChange={v => setNewRFQ({ ...newRFQ, closeDate: v })} />
                             </div>
                         </div>
                         <div className="space-y-2">

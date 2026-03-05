@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Package, Plus, Edit, Trash2, Archive, Eye, DollarSign, Layers } from "lucide-react";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 interface Product {
     id: string;
@@ -116,14 +117,7 @@ export default function ProductCatalogManager() {
     const bundles = products.filter(p => p.isBundle);
     const categories = [...new Set(products.map(p => p.category))];
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "ACTIVE": return "bg-green-100 text-green-800 border-green-200";
-            case "INACTIVE": return "bg-amber-100 text-amber-800 border-amber-200";
-            case "ARCHIVED": return "bg-gray-100 text-gray-800 border-gray-200";
-            default: return "bg-gray-100 text-gray-800 border-gray-200";
-        }
-    };
+
 
     return (
         <StandardPage
@@ -284,9 +278,7 @@ export default function ProductCatalogManager() {
                                                             </span>
                                                         </TableCell>
                                                         <TableCell>
-                                                            <Badge className={getStatusColor(product.status)}>
-                                                                {product.status}
-                                                            </Badge>
+                                                            <StatusBadge status={product.status} />
                                                         </TableCell>
                                                         <TableCell>
                                                             <div className="flex items-center gap-2">
@@ -344,9 +336,7 @@ export default function ProductCatalogManager() {
                                                             SKU: {bundle.sku} • List Price: ${bundle.listPrice.toLocaleString()}
                                                         </CardDescription>
                                                     </div>
-                                                    <Badge className={getStatusColor(bundle.status)}>
-                                                        {bundle.status}
-                                                    </Badge>
+                                                    <StatusBadge status={bundle.status} />
                                                 </div>
                                             </CardHeader>
                                             <CardContent>

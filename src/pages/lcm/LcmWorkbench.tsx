@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Plus, Ship, Calendar, DollarSign, ExternalLink, Filter, Search, MoreHorizontal, Building2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { StatusBadge } from '@/components/shared/StatusBadge';
 import { format } from 'date-fns';
 import { StandardPage } from '@/components/layout/StandardPage';
 import { ContextualSearch } from "@/components/ContextualSearch";
@@ -74,23 +75,7 @@ export default function LcmWorkbench() {
         }
     });
 
-    const getStatusVariant = (status: string) => {
-        switch (status) {
-            case 'OPEN': return 'default';
-            case 'CLOSED': return 'secondary';
-            case 'CANCELLED': return 'destructive';
-            default: return 'outline';
-        }
-    };
 
-    const getApprovalVariant = (status: string) => {
-        switch (status) {
-            case 'APPROVED': return 'success';
-            case 'PENDING_APPROVAL': return 'warning';
-            case 'REJECTED': return 'destructive';
-            default: return 'outline';
-        }
-    };
 
     return (
         <StandardPage
@@ -252,14 +237,10 @@ export default function LcmWorkbench() {
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Badge variant={getStatusVariant(op.status)} className="text-[10px] uppercase">
-                                                        {op.status}
-                                                    </Badge>
+                                                    <StatusBadge status={op.status} className="text-[10px] uppercase" />
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Badge variant={getApprovalVariant(op.approvalStatus)} className="text-[10px] uppercase">
-                                                        {op.approvalStatus?.replace('_', ' ') || 'DRAFT'}
-                                                    </Badge>
+                                                    <StatusBadge status={op.approvalStatus?.replace('_', ' ') || 'DRAFT'} className="text-[10px] uppercase" />
                                                 </TableCell>
                                                 <TableCell className="text-right">
                                                     <DropdownMenu>

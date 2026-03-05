@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart } from "lucide-react";
@@ -23,7 +24,7 @@ export default function OrderManagementRetail() {
                 <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Pending</p><p className="text-2xl font-bold text-yellow-600">{orders.filter((o: any) => o.status === "pending").length}</p></CardContent></Card>
                 <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Total Value</p><p className="text-2xl font-bold text-blue-600">${(totalValue / 1000).toFixed(0)}K</p></CardContent></Card>
             </div>
-            <Card> <CardHeader><CardTitle className="text-base">Orders</CardTitle></CardHeader> <CardContent className="space-y-2"> {isLoading ? <p>Loading...</p> : orders.length === 0 ? <p className="text-muted-foreground text-center py-4">No orders</p> : orders.slice(0, 10).map((o: any) => (<div key={o.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`order-${o.id}`}> <div className="flex-1"><p className="font-semibold">{o.orderId}</p><p className="text-xs text-muted-foreground">${o.totalAmount}</p></div> <Badge variant={o.status === "completed" ? "default" : "secondary"} className="text-xs">{o.status}</Badge> </div>))} </CardContent> </Card>
+            <Card> <CardHeader><CardTitle className="text-base">Orders</CardTitle></CardHeader> <CardContent className="space-y-2"> {isLoading ? <TableSkeleton rows={4} /> : orders.length === 0 ? <p className="text-muted-foreground text-center py-4">No orders</p> : orders.slice(0, 10).map((o: any) => (<div key={o.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`order-${o.id}`}> <div className="flex-1"><p className="font-semibold">{o.orderId}</p><p className="text-xs text-muted-foreground">${o.totalAmount}</p></div> <Badge variant={o.status === "completed" ? "default" : "secondary"} className="text-xs">{o.status}</Badge> </div>))} </CardContent> </Card>
         </StandardPage>
     );
 }

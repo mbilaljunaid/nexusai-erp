@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -98,7 +99,7 @@ export default function FreightManagement() {
       <Card>
         <CardHeader><CardTitle className="text-base">Shipments</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : shipments.length === 0 ? <p className="text-muted-foreground text-center py-4">No shipments</p> : shipments.map((s: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : shipments.length === 0 ? <p className="text-muted-foreground text-center py-4">No shipments</p> : shipments.map((s: any) => (
             <div key={s.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`ship-${s.id}`}>
               <div>
                 <p className="font-semibold">{s.shipmentId}</p>

@@ -5,6 +5,7 @@ import { api } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertCircle, CheckCircle, Lock, Calendar, AlertTriangle, Building2 } from "lucide-react";
@@ -69,20 +70,7 @@ export default function ArPeriodClose() {
         setClosingPeriodName(periodName);
     };
 
-    const getStatusBadge = (status: string) => {
-        switch (status) {
-            case "Open":
-                return <Badge className="bg-green-500">Open</Badge>;
-            case "Closed":
-                return <Badge variant="secondary">Closed</Badge>;
-            case "Future":
-                return <Badge variant="outline">Future</Badge>;
-            case "Never Opened":
-                return <Badge variant="outline" className="text-gray-400">Never Opened</Badge>;
-            default:
-                return <Badge variant="outline">{status}</Badge>;
-        }
-    };
+
 
     return (
         <StandardPage
@@ -136,7 +124,7 @@ export default function ArPeriodClose() {
                                                         <Calendar className="h-4 w-4 text-muted-foreground" />
                                                         {period.periodName}
                                                     </TableCell>
-                                                    <TableCell>{getStatusBadge(period.status)}</TableCell>
+                                                    <TableCell><StatusBadge status={period.status} /></TableCell>
                                                     <TableCell>
                                                         {/* Mock GL Status for context */}
                                                         <Badge variant="outline">Open</Badge>

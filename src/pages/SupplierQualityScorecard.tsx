@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -49,7 +50,7 @@ export default function SupplierQualityScorecard() {
       <Card>
         <CardHeader><CardTitle className="text-base">Supplier Performance</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : scorecards.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : scorecards.map((s: any) => {
+          {isLoading ? <TableSkeleton rows={4} /> : scorecards.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : scorecards.map((s: any) => {
             const score = parseFloat(s.score) || 0;
             return (
               <div key={s.id} className="p-3 border rounded hover-elevate" data-testid={`scorecard-${s.id}`}>

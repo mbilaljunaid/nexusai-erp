@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Plus, Sparkles, Loader2 } from "lucide-react";
 import type { Task } from "./TaskCard";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface AddTaskDialogProps {
   onAddTask?: (task: Omit<Task, "id">) => void;
@@ -164,13 +165,7 @@ export function AddTaskDialog({ onAddTask, trigger }: AddTaskDialogProps) {
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="dueDate">Due Date</Label>
-                <Input
-                  id="dueDate"
-                  type="date"
-                  value={formData.dueDate}
-                  onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                  data-testid="input-task-duedate"
-                />
+                <DatePicker value={formData.dueDate} onChange={(v) => setFormData({ ...formData, dueDate: v })} />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="project">Project</Label>

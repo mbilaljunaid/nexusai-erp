@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
@@ -17,7 +18,7 @@ export default function QualityControl() {
   return (
     <div className="space-y-6">
       <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      
+
       <div>
         <h1 className="text-3xl font-bold">Quality Control</h1>
         <p className="text-muted-foreground mt-1">Manage QC inspections and defect tracking</p>
@@ -58,7 +59,7 @@ export default function QualityControl() {
           {filteredQC.length > 0 ? filteredQC.map((insp: any, idx: number) => (
             <div key={idx} className="flex justify-between items-center p-2 border rounded">
               <span className="text-sm">{insp.product}</span>
-              <div><Badge className={insp.status === "Pass" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>{insp.status}</Badge></div>
+              <div><StatusBadge status={insp.status} /></div>
             </div>
           )) : <p className="text-muted-foreground text-center py-4">No inspections found</p>}
         </CardContent>

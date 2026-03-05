@@ -4,6 +4,7 @@ import { useRoute, Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
@@ -12,8 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { 
-  ArrowLeft, Briefcase, Clock, DollarSign, Calendar, Users, 
+import {
+  ArrowLeft, Briefcase, Clock, DollarSign, Calendar, Users,
   MessageSquare, CheckCircle, XCircle, AlertCircle, User, Star,
   MapPin, Globe, Award, Shield
 } from "lucide-react";
@@ -105,11 +106,11 @@ export default function MarketplaceJobDetail() {
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { 
+    return date.toLocaleDateString('en-US', {
       weekday: 'long',
-      month: 'long', 
-      day: 'numeric', 
-      year: 'numeric' 
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
     });
   };
 
@@ -128,34 +129,7 @@ export default function MarketplaceJobDetail() {
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "open": return <Badge className="bg-green-500/10 text-green-600 dark:text-green-400">Open</Badge>;
-      case "in_progress": return <Badge className="bg-blue-500/10 text-blue-600 dark:text-blue-400">In Progress</Badge>;
-      case "completed": return <Badge variant="secondary">Completed</Badge>;
-      case "cancelled": return <Badge variant="destructive">Cancelled</Badge>;
-      default: return <Badge variant="outline">{status}</Badge>;
-    }
-  };
 
-  const getProposalStatusIcon = (status: string) => {
-    switch (status) {
-      case "accepted": return <CheckCircle className="w-4 h-4 text-green-500" />;
-      case "rejected": return <XCircle className="w-4 h-4 text-red-500" />;
-      case "shortlisted": return <Star className="w-4 h-4 text-yellow-500" />;
-      default: return <Clock className="w-4 h-4 text-blue-500" />;
-    }
-  };
-
-  const getProposalStatusBadge = (status: string) => {
-    switch (status) {
-      case "accepted": return <Badge className="bg-green-500/10 text-green-600 dark:text-green-400">Accepted</Badge>;
-      case "rejected": return <Badge variant="destructive">Rejected</Badge>;
-      case "shortlisted": return <Badge className="bg-yellow-500/10 text-yellow-600 dark:text-yellow-400">Shortlisted</Badge>;
-      case "withdrawn": return <Badge variant="secondary">Withdrawn</Badge>;
-      default: return <Badge className="bg-blue-500/10 text-blue-600 dark:text-blue-400">Pending</Badge>;
-    }
-  };
 
   if (isLoading) {
     return (
@@ -201,11 +175,11 @@ export default function MarketplaceJobDetail() {
               Back to Jobs
             </Button>
           </Link>
-          
+
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-3 flex-wrap">
-                {getStatusBadge(job.status)}
+                <StatusBadge status={job.status} />
                 {getUrgencyBadge(job.urgency)}
               </div>
               <h1 className="text-3xl font-bold mb-3" data-testid="text-job-title">
@@ -228,7 +202,7 @@ export default function MarketplaceJobDetail() {
                 </span>
               </div>
             </div>
-            
+
             <div className="lg:text-right">
               <div className="text-2xl font-bold mb-2" style={{ color: 'hsl(var(--primary))' }} data-testid="text-job-budget">
                 {formatBudget(job.budget_min, job.budget_max, job.currency)}
@@ -290,8 +264,8 @@ export default function MarketplaceJobDetail() {
                 ) : (
                   <div className="space-y-4">
                     {job.proposals.map((proposalItem) => (
-                      <div 
-                        key={proposalItem.id} 
+                      <div
+                        key={proposalItem.id}
                         className="p-4 border rounded-lg hover-elevate"
                         data-testid={`card-proposal-${proposalItem.id}`}
                       >
@@ -314,15 +288,14 @@ export default function MarketplaceJobDetail() {
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            {getProposalStatusIcon(proposalItem.status)}
-                            {getProposalStatusBadge(proposalItem.status)}
+                            <StatusBadge status={proposalItem.status} />
                           </div>
                         </div>
-                        
+
                         <p className="text-sm mb-4 line-clamp-3">
                           {proposalItem.proposal_message}
                         </p>
-                        
+
                         <div className="flex items-center justify-between pt-3 border-t">
                           <div className="flex items-center gap-4 text-sm">
                             <span className="flex items-center gap-1.5 font-semibold" style={{ color: 'hsl(var(--primary))' }}>
@@ -362,9 +335,9 @@ export default function MarketplaceJobDetail() {
                     </p>
                   </div>
                 </div>
-                
+
                 <Separator />
-                
+
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-blue-500/10 rounded-lg">
                     <Calendar className="w-5 h-5 text-blue-500" />
@@ -374,9 +347,9 @@ export default function MarketplaceJobDetail() {
                     <p className="font-semibold">{formatDate(job.deadline)}</p>
                   </div>
                 </div>
-                
+
                 <Separator />
-                
+
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-purple-500/10 rounded-lg">
                     <Users className="w-5 h-5 text-purple-500" />
@@ -386,9 +359,9 @@ export default function MarketplaceJobDetail() {
                     <p className="font-semibold">{job.proposals?.length || 0} submitted</p>
                   </div>
                 </div>
-                
+
                 <Separator />
-                
+
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-muted rounded-lg">
                     <Clock className="w-5 h-5 text-muted-foreground" />

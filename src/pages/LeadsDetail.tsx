@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
@@ -370,7 +371,7 @@ export default function LeadsDetail() {
       </div>
 
       {isLoading ? (
-        <div className="p-8 text-center text-muted-foreground">Loading...</div>
+        <TableSkeleton rows={5} />
       ) : (
         <div className="border rounded-md">
           <InteractiveSpreadsheet

@@ -73,7 +73,7 @@ export default function ResourceAllocation() {
         <CardHeader><CardTitle>Resources</CardTitle></CardHeader>
         <CardContent className="space-y-2">
           {isLoading ? (
-            <p>Loading...</p>
+            <TableSkeleton rows={4} />
           ) : resources.length === 0 ? (
             <p className="text-muted-foreground text-center py-4">No resources</p>
           ) : (

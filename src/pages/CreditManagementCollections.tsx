@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingDown, AlertTriangle, DollarSign, Sparkles } from "lucide-react";
@@ -78,7 +79,7 @@ export default function CreditManagementCollections() {
         <Card>
           <CardHeader><CardTitle className="text-base">Aging Analysis (Invoices)</CardTitle></CardHeader>
           <CardContent className="space-y-2">
-            {isLoading ? <p>Loading...</p> : creditData.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : creditData.map((c: any) => (
+            {isLoading ? <TableSkeleton rows={4} /> : creditData.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : creditData.map((c: any) => (
               <div key={c.id} className="p-2 border rounded text-sm hover-elevate flex justify-between" data-testid={`credit-${c.id}`}>
                 <span className="font-semibold">{c.customer || "Customer"}</span>
                 <Badge variant={c.overdueDays >= 60 ? "destructive" : c.overdueDays >= 30 ? "destructive" : "secondary"} className="text-xs">{c.overdueDays} days</Badge>
@@ -90,7 +91,7 @@ export default function CreditManagementCollections() {
         <Card>
           <CardHeader><CardTitle className="text-base">Credit Limits</CardTitle></CardHeader>
           <CardContent className="space-y-2">
-            {isLoading ? <p>Loading...</p> : creditData.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : creditData.slice(0, 5).map((c: any) => {
+            {isLoading ? <TableSkeleton rows={4} /> : creditData.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : creditData.slice(0, 5).map((c: any) => {
               const usage = ((parseFloat(c.currentBalance) || 0) / (parseFloat(c.creditLimit) || 1)) * 100;
               return (
                 <div key={c.id} className="p-2 border rounded text-sm hover-elevate" data-testid={`limit-${c.id}`}>

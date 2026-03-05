@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Check, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export function InvoiceEntryForm() {
   const { toast } = useToast();
@@ -111,14 +112,7 @@ export function InvoiceEntryForm() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="dueDate">Due Date</Label>
-              <Input
-                id="dueDate"
-                type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-                className="text-sm"
-                data-testid="input-invoice-duedate"
-              />
+              <DatePicker className="text-sm" value={dueDate} onChange={v => setDueDate(v)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>

@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,8 +17,8 @@ import {
   ExternalLink, Settings, CheckCircle, Clock, AlertCircle
 } from "lucide-react";
 import type { MarketplaceApp } from "@/types/erp-types";
-interface AppInstallation { id: string; appId?: string; app?: MarketplaceApp; status?: string; installedAt?: string; [key: string]: any; }
-interface AppReview { id: string; appId?: string; rating?: number; comment?: string; [key: string]: any; }
+interface AppInstallation { id: string; appId?: string; app?: MarketplaceApp; status?: string; installedAt?: string;[key: string]: any; }
+interface AppReview { id: string; appId?: string; rating?: number; comment?: string;[key: string]: any; }
 
 interface InstalledAppCardProps {
   installation: AppInstallation & { app?: MarketplaceApp };
@@ -30,18 +31,7 @@ function InstalledAppCard({ installation, onUninstall, onReview, isUninstalling 
   const app = installation.app;
   if (!app) return null;
 
-  const getStatusBadge = () => {
-    switch (installation.status) {
-      case "active":
-        return <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-200"><CheckCircle className="w-3 h-3 mr-1" />Active</Badge>;
-      case "suspended":
-        return <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-200"><AlertCircle className="w-3 h-3 mr-1" />Suspended</Badge>;
-      case "pending":
-        return <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-200"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
-      default:
-        return null;
-    }
-  };
+
 
   return (
     <Card className="group" data-testid={`card-installed-app-${app.id}`}>
@@ -62,7 +52,7 @@ function InstalledAppCard({ installation, onUninstall, onReview, isUninstalling 
               </CardDescription>
             </div>
           </div>
-          {getStatusBadge()}
+          {installation.status && <StatusBadge status={installation.status} />}
         </div>
       </CardHeader>
       <CardContent className="pb-3">

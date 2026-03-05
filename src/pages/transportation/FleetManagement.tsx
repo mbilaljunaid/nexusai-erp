@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { apiRequest } from "@/lib/queryClient";
 import { Truck, Gauge, Wrench, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -18,22 +19,13 @@ export default function FleetManagement() {
         queryFn: () => apiRequest("GET", `/api/transportation/fleet?status=${filterStatus}`).then(res => res.json()),
     });
 
-    const getStatusBadge = (status: string) => {
-        const configs: Record<string, any> = {
-            ACTIVE: { variant: "default", label: "Active" },
-            MAINTENANCE: { variant: "secondary", label: "Maintenance" },
-            IDLE: { variant: "outline", label: "Idle" },
-            OUT_OF_SERVICE: { variant: "destructive", label: "Out of Service" },
-        };
-        const config = configs[status] || configs.IDLE;
-        return <Badge variant={config.variant}>{config.label}</Badge>;
-    };
+
 
     return (
         <StandardPage title="Fleet Management Dashboard">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground">Vehicle tracking, utilization, and maintenance</p>
                 </div>
                 <Button variant="outline">
@@ -103,7 +95,7 @@ export default function FleetManagement() {
                                         <div className="flex items-center gap-3">
                                             <Truck className="h-5 w-5 text-blue-600" />
                                             <div className="font-semibold text-lg">{vehicle.vehicleNumber}</div>
-                                            {getStatusBadge(vehicle.status)}
+                                            <StatusBadge status={vehicle.status} />
                                         </div>
                                         <div className="text-sm text-muted-foreground mt-1">
                                             {vehicle.make} {vehicle.model} • {vehicle.year}

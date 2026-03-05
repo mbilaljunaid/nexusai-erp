@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -111,7 +112,7 @@ export default function IntercompanyEliminations() {
       <Card>
         <CardHeader><CardTitle className="text-base">Transactions</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : transactions.length === 0 ? <p className="text-muted-foreground text-center py-4">No transactions</p> : transactions.map((t: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : transactions.length === 0 ? <p className="text-muted-foreground text-center py-4">No transactions</p> : transactions.map((t: any) => (
             <div key={t.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`tx-${t.id}`}>
               <div className="flex-1">
                 <div className="flex items-center gap-2">

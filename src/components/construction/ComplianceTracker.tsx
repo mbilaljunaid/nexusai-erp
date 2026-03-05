@@ -30,6 +30,7 @@ import { DocumentUpload } from "./DocumentUpload";
 import { DocumentViewer } from "./DocumentViewer";
 import { useAnalyticsTracking } from "@/hooks/usePerformanceMonitoring";
 import { generateCompliancePDF } from "./reports/CompliancePDFReport";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface Attachment {
     id: string;
@@ -508,12 +509,12 @@ export function ComplianceTracker({ projectId }: ComplianceTrackerProps) {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="issuedDate">Issued Date *</Label>
-                                <Input id="issuedDate" name="issuedDate" type="date" required />
+                                <DatePicker onChange={() => {}} />
                             </div>
 
                             <div className="space-y-2">
                                 <Label htmlFor="expiryDate">Expiry Date (if applicable)</Label>
-                                <Input id="expiryDate" name="expiryDate" type="date" />
+                                <DatePicker onChange={() => {}} />
                             </div>
                         </div>
 

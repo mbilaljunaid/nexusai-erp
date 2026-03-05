@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -88,7 +89,7 @@ export default function YardDockManagement() {
       <Card>
         <CardHeader><CardTitle className="text-base">Appointments</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : appointments.length === 0 ? <p className="text-muted-foreground text-center py-4">No appointments</p> : appointments.map((a: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : appointments.length === 0 ? <p className="text-muted-foreground text-center py-4">No appointments</p> : appointments.map((a: any) => (
             <div key={a.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`appt-${a.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{a.appointmentId}</p>

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -58,7 +59,7 @@ export default function RevenueOptimization() {
         </CardHeader>
         <CardContent className="space-y-2">
           {isLoading ? (
-            <p>Loading...</p>
+            <TableSkeleton rows={4} />
           ) : optimization.length === 0 ? (
             <p className="text-muted-foreground text-center py-4">No data</p>
           ) : (

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,6 +15,7 @@ import { Plus, TrendingUp, FileText, Upload, DollarSign, Calculator, Download } 
 import { exportToExcel, exportToCSV } from "@/lib/exportUtils";
 import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 
 interface CarrierRate {
@@ -200,12 +202,7 @@ export default function CarrierRateWorkbench() {
             header: "Effective Date",
             width: "150px",
             cell: (row: any, index: number, updateRow: (field: string, val: any) => void) => (
-                <Input
-                    type="date"
-                    className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent"
-                    value={row.effectiveDate?.split('T')[0] || ''}
-                    onChange={(e) => updateRow("effectiveDate", e.target.value)}
-                />
+                <DatePicker className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent" value={row.effectiveDate?.split('T')[0] || ''} onChange={(v) => updateRow("effectiveDate", v)} />
             )
         },
         {
@@ -285,7 +282,7 @@ export default function CarrierRateWorkbench() {
                         </CardHeader>
                         <CardContent>
                             {loadingRates ? (
-                                <p className="text-center py-8 text-muted-foreground">Loading...</p>
+                                <TableSkeleton rows={4} />
                             ) : rateCards.length === 0 ? (
                                 <p className="text-center py-8 text-muted-foreground">No rate cards</p>
                             ) : (
@@ -375,7 +372,7 @@ export default function CarrierRateWorkbench() {
                     <Card>
                         <CardContent className="p-0">
                             {loadingRates && rateCards.length === 0 ? (
-                                <p className="text-center py-8 text-muted-foreground">Loading...</p>
+                                <TableSkeleton rows={4} />
                             ) : (
                                 <div className="h-[600px] p-4">
                                     <InteractiveSpreadsheet

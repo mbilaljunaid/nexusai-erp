@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -100,7 +101,7 @@ export default function ForecastDashboard() {
       <Card>
         <CardHeader><CardTitle className="text-base">Forecast Registry</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : forecasts.length === 0 ? <p className="text-muted-foreground text-center py-4">No forecasts</p> : forecasts.map((f: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : forecasts.length === 0 ? <p className="text-muted-foreground text-center py-4">No forecasts</p> : forecasts.map((f: any) => (
             <div key={f.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`forecast-${f.id}`}>
               <div>
                 <h3 className="font-semibold">{f.forecastName}</h3>

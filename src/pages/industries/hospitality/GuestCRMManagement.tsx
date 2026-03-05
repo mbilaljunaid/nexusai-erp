@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -91,7 +92,7 @@ export default function GuestCRMManagement() {
       <Card>
         <CardHeader><CardTitle className="text-base">Guests</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : guests.length === 0 ? <p className="text-muted-foreground text-center py-4">No guests</p> : guests.map((g: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : guests.length === 0 ? <p className="text-muted-foreground text-center py-4">No guests</p> : guests.map((g: any) => (
             <div key={g.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`guest-${g.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{g.guestId} - {g.name}</p>

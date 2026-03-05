@@ -38,6 +38,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { TreasuryFxDeal } from "@/types/erp-types";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface HedgeRelationship {
     id: string;
@@ -385,14 +386,8 @@ export function HedgeAccountingWorkbench() {
 
                                 <div className="space-y-2">
                                     <Label htmlFor="startDate">Hedge Start Date</Label>
-                                    <Input
-                                        id="startDate"
-                                        type="date"
-                                        value={formData.startDate}
-                                        onChange={(e) =>
-                                            setFormData({ ...formData, startDate: e.target.value })
-                                        }
-                                    />
+                                    <DatePicker value={formData.startDate} onChange={(v) =>
+                                        setFormData({ ...formData, startDate: v })} />
                                 </div>
                             </div>
 

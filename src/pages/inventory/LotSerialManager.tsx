@@ -13,6 +13,7 @@ import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export function LotSerialManager() {
     const { toast } = useToast();
@@ -176,7 +177,7 @@ export function LotSerialManager() {
             header: "Expiration Date",
             width: "150px",
             cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
-                <Input type="date" className="h-9 w-full bg-transparent border-0" value={row.expirationDate ? new Date(row.expirationDate).toISOString().split('T')[0] : ""} onChange={e => updateRow("expirationDate", e.target.value)} />
+                <DatePicker className="h-9 w-full bg-transparent border-0" value={row.expirationDate ? new Date(row.expirationDate).toISOString().split('T')[0] : ""} onChange={v => updateRow("expirationDate", v)} />
             )
         }
     ];

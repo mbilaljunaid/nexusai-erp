@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Camera, MapPin, Users, Clock, CloudRain, ThermometerSun, Save, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface DailyLogEntry {
     date: string;
@@ -166,13 +167,7 @@ export function MobileDailyLogForm({ projectId, onSubmit, onCancel }: MobileDail
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <Input
-                            type="date"
-                            name="date"
-                            defaultValue={new Date().toISOString().split("T")[0]}
-                            required
-                            className="text-base h-12"
-                        />
+                        <DatePicker className="text-base h-12" onChange={() => {}} />
                     </CardContent>
                 </Card>
 

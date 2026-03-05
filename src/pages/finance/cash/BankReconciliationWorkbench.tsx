@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileUploadZone } from "@/components/shared/FileUploadZone";
 import { PDFExportButton } from "@/components/shared/PDFExportButton";
@@ -225,18 +226,7 @@ export default function BankReconciliationWorkbench() {
         });
     };
 
-    const getStatusBadge = (status: string) => {
-        switch (status) {
-            case "matched":
-                return <Badge className="bg-green-600"><CheckCircle2 className="mr-1 h-3 w-3" />Matched</Badge>;
-            case "unmatched":
-                return <Badge variant="secondary"><AlertCircle className="mr-1 h-3 w-3" />Unmatched</Badge>;
-            case "discrepancy":
-                return <Badge variant="destructive"><XCircle className="mr-1 h-3 w-3" />Discrepancy</Badge>;
-            default:
-                return <Badge variant="outline">{status}</Badge>;
-        }
-    };
+
 
     const filteredTransactions = unreconciledItems.filter((txn) => {
         const matchesSearch = txn.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -418,7 +408,7 @@ export default function BankReconciliationWorkbench() {
                                                                 <div className="flex-1">
                                                                     <div className="flex items-center gap-2 mb-1">
                                                                         <p className="font-medium">{txn.description}</p>
-                                                                        {getStatusBadge(txn.status)}
+                                                                        <StatusBadge status={txn.status} />
                                                                     </div>
                                                                     <p className="text-sm text-muted-foreground">
                                                                         {formatDate(txn.date)} • {txn.type === "debit" ? "Debit" : "Credit"}

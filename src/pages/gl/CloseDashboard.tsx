@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -13,6 +14,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Link } from "wouter";
 import { useLedger } from "@/context/LedgerContext";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 
 export default function CloseDashboard() {
@@ -291,7 +293,7 @@ export default function CloseDashboard() {
                         <CardContent className="space-y-3">
                             <Input placeholder="Task Name" value={newTask.taskName} onChange={(e) => setNewTask({ ...newTask, taskName: e.target.value })} />
                             <Input placeholder="Description" value={newTask.description} onChange={(e) => setNewTask({ ...newTask, description: e.target.value })} />
-                            <Input type="date" value={newTask.dueDate} onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })} />
+                            <DatePicker value={newTask.dueDate} onChange={(v) => setNewTask({ ...newTask, dueDate: v })} />
 
                             <Button disabled={createMutation.isPending || !newTask.taskName} className="w-full" onClick={() => createMutation.mutate(newTask)}>
                                 <Plus className="w-4 h-4 mr-2" /> Add Task
@@ -306,7 +308,7 @@ export default function CloseDashboard() {
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {loadingTasks ? (
-                                <div className="text-center py-4">Loading...</div>
+                                <TableSkeleton rows={4} />
                             ) : !Array.isArray(tasks) || tasks.length === 0 ? (
                                 <div className="text-center py-4 text-muted-foreground">No tasks found for this period.</div>
                             ) : (

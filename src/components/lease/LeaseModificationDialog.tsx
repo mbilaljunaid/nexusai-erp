@@ -11,6 +11,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface LeaseModificationDialogProps {
     isOpen: boolean;
@@ -100,7 +101,7 @@ export function LeaseModificationDialog({ isOpen, onClose, leaseId, currentTerms
                         </div>
                         <div className="space-y-2">
                             <Label>Effective Date</Label>
-                            <Input type="date" value={effectiveDate} onChange={e => setEffectiveDate(e.target.value)} />
+                            <DatePicker value={effectiveDate} onChange={v => setEffectiveDate(v)} />
                         </div>
                         <div className="space-y-2">
                             <Label>Reason for Change</Label>

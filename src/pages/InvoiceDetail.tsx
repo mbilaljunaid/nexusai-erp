@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { ArrowLeft, Download, Send } from "lucide-react";
 
 export default function InvoiceDetail() {
@@ -48,7 +49,7 @@ export default function InvoiceDetail() {
           <Card>
             <CardContent className="pt-6">
               <p className="text-sm text-muted-foreground">Status</p>
-              <Badge className="mt-2 bg-green-100 text-green-800">Paid</Badge>
+              <StatusBadge status="paid" className="mt-2" />
             </CardContent>
           </Card>
 

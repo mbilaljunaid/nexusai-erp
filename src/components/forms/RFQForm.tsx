@@ -9,6 +9,7 @@ import { Mail, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface RFQLine {
   id: number;
@@ -127,11 +128,11 @@ export function RFQForm() {
             </div>
             <div>
               <Label htmlFor="created-date">Created Date</Label>
-              <Input id="created-date" type="date" value={createdDate} onChange={(e) => setCreatedDate(e.target.value)} data-testid="input-created-date" />
+              <DatePicker value={createdDate} onChange={v => setCreatedDate(v)} />
             </div>
             <div>
               <Label htmlFor="due-date">Quote Due Date</Label>
-              <Input id="due-date" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} data-testid="input-due-date" />
+              <DatePicker value={dueDate} onChange={v => setDueDate(v)} />
             </div>
           </div>
           <div>

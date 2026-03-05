@@ -4,13 +4,14 @@ import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { 
-  FileText, Clock, DollarSign, Briefcase, Calendar, 
-  CheckCircle, XCircle, Eye, AlertCircle, ExternalLink, 
+import {
+  FileText, Clock, DollarSign, Briefcase, Calendar,
+  CheckCircle, XCircle, Eye, AlertCircle, ExternalLink,
   TrendingUp, ArrowRight
 } from "lucide-react";
 
@@ -53,16 +54,7 @@ export default function MyProposalsDashboard() {
     },
   });
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "pending": return <Badge className="bg-yellow-500/10 text-yellow-600 dark:text-yellow-400">Pending</Badge>;
-      case "accepted": return <Badge className="bg-green-500/10 text-green-600 dark:text-green-400">Accepted</Badge>;
-      case "rejected": return <Badge variant="destructive">Rejected</Badge>;
-      case "shortlisted": return <Badge className="bg-blue-500/10 text-blue-600 dark:text-blue-400">Shortlisted</Badge>;
-      case "withdrawn": return <Badge variant="secondary">Withdrawn</Badge>;
-      default: return <Badge variant="outline">{status}</Badge>;
-    }
-  };
+
 
   const formatBudget = (min: string, max: string, currency: string) => {
     const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: currency || 'USD', minimumFractionDigits: 0 });
@@ -78,13 +70,13 @@ export default function MyProposalsDashboard() {
   const acceptedProposals = proposals?.filter(p => p.status === "accepted") || [];
   const rejectedProposals = proposals?.filter(p => p.status === "rejected" || p.status === "withdrawn") || [];
 
-  const filteredProposals = activeTab === "all" ? proposals : 
+  const filteredProposals = activeTab === "all" ? proposals :
     activeTab === "pending" ? pendingProposals :
-    activeTab === "shortlisted" ? shortlistedProposals :
-    activeTab === "accepted" ? acceptedProposals :
-    rejectedProposals;
+      activeTab === "shortlisted" ? shortlistedProposals :
+        activeTab === "accepted" ? acceptedProposals :
+          rejectedProposals;
 
-  const successRate = proposals?.length ? 
+  const successRate = proposals?.length ?
     Math.round((acceptedProposals.length / proposals.length) * 100) : 0;
 
   return (
@@ -170,7 +162,7 @@ export default function MyProposalsDashboard() {
                   {activeTab === "all" ? "No proposals yet" : `No ${activeTab} proposals`}
                 </h3>
                 <p className="text-muted-foreground mb-4">
-                  {activeTab === "all" 
+                  {activeTab === "all"
                     ? "Start by browsing available jobs and submitting proposals"
                     : `You don't have any ${activeTab} proposals at the moment`}
                 </p>
@@ -194,7 +186,7 @@ export default function MyProposalsDashboard() {
                               {proposal.job_title}
                             </h3>
                           </Link>
-                          {getStatusBadge(proposal.status)}
+                          <StatusBadge status={proposal.status} />
                         </div>
                         <p className="text-sm text-muted-foreground mb-2">
                           Posted by {proposal.buyer_name}

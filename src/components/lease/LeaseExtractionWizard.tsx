@@ -9,6 +9,7 @@ import { Sparkles, ArrowRight, CheckCircle, Loader2 } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export function LeaseExtractionWizard({ onClose }: { onClose: () => void }) {
     const { toast } = useToast();
@@ -129,11 +130,11 @@ export function LeaseExtractionWizard({ onClose }: { onClose: () => void }) {
                             </div>
                             <div className="space-y-2">
                                 <Label>Start Date</Label>
-                                <Input type="date" value={data.commencementDate} onChange={e => setData({ ...data, commencementDate: e.target.value })} />
+                                <DatePicker value={data.commencementDate} onChange={v => setData({ ...data, commencementDate: v })} />
                             </div>
                             <div className="space-y-2">
                                 <Label>End Date</Label>
-                                <Input type="date" value={data.expirationDate} onChange={e => setData({ ...data, expirationDate: e.target.value })} />
+                                <DatePicker value={data.expirationDate} onChange={v => setData({ ...data, expirationDate: v })} />
                             </div>
                             <div className="space-y-2">
                                 <Label>Monthly Rent</Label>

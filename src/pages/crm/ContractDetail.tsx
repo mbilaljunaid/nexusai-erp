@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useParams, Link } from "wouter";
 import { FileText, ArrowLeft, CheckCircle, AlertOctagon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,7 +31,7 @@ export default function ContractDetail() {
         }
     });
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <PageSkeleton />;
     if (!contract) return <div>Contract not found</div>;
 
     return (

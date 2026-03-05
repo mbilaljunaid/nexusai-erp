@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface EmploymentProfileProps {
     personId: string;
@@ -78,12 +79,7 @@ export function EmploymentProfile({ personId }: EmploymentProfileProps) {
                 <div className="flex flex-col items-end gap-2">
                     <div className="flex items-center gap-2">
                         <span className="text-sm font-medium text-muted-foreground">As Of Date:</span>
-                        <Input
-                            type="date"
-                            className="w-40"
-                            value={format(effectiveDate, "yyyy-MM-dd")}
-                            onChange={(e) => setEffectiveDate(new Date(e.target.value))}
-                        />
+                        <DatePicker className="w-40" value={format(effectiveDate, "yyyy-MM-dd")} onChange={(v) => setEffectiveDate(new Date(v))} />
                     </div>
                     <Badge variant={displayAssignment?.assignmentStatus === "ACTIVE" ? "default" : "destructive"}>
                         {displayAssignment?.assignmentStatus || "INACTIVE"}

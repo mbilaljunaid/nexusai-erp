@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckSquare, Loader2 } from "lucide-react";
 import { api } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export function TaskEntryForm() {
   const [formData, setFormData] = useState({
@@ -158,21 +159,11 @@ export function TaskEntryForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="start">Start Date</Label>
-              <Input
-                id="start"
-                type="date"
-                value={formData.startDate}
-                onChange={(e) => handleChange("startDate", e.target.value)}
-              />
+              <DatePicker value={formData.startDate} onChange={(v) => handleChange("startDate", v)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="due">Due Date *</Label>
-              <Input
-                id="due"
-                type="date"
-                value={formData.dueDate}
-                onChange={(e) => handleChange("dueDate", e.target.value)}
-              />
+              <DatePicker value={formData.dueDate} onChange={(v) => handleChange("dueDate", v)} />
             </div>
           </div>
 

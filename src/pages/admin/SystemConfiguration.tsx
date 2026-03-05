@@ -8,10 +8,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { useFeatureFlags, useToggleFeatureFlag, useSystemConfig, useUpdateSystemConfig } from '@/hooks/admin/useAdminData';
-import { toast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function SystemConfiguration() {
+    const { toast } = useToast();
     // Feature Flags
     const { data: featureFlags = [], isLoading, error } = useFeatureFlags();
     const toggleMutation = useToggleFeatureFlag();
@@ -58,13 +59,13 @@ export default function SystemConfiguration() {
     const handleSaveGeneral = async () => {
         // Validation
         if (!formData.platformName || formData.platformName.trim().length < 3) {
-            toast.error('Platform name must be at least 3 characters');
+            toast({ variant: 'destructive', title: 'Validation Error', description: 'Platform name must be at least 3 characters' });
             return;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!formData.supportEmail || !emailRegex.test(formData.supportEmail)) {
-            toast.error('Please enter a valid support email');
+            toast({ variant: 'destructive', title: 'Validation Error', description: 'Please enter a valid support email' });
             return;
         }
 
@@ -103,9 +104,9 @@ export default function SystemConfiguration() {
                 }),
             ]);
 
-            toast.success('Configuration saved successfully');
+            toast({ title: 'Success', description: 'Configuration saved successfully' });
         } catch (error) {
-            toast.error('Failed to save configuration');
+            toast({ variant: 'destructive', title: 'Error', description: 'Failed to save configuration' });
         }
     };
 

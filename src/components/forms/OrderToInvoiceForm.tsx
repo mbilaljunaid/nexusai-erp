@@ -8,6 +8,7 @@ import { ShoppingCart, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface Order {
   id: string;
@@ -140,13 +141,7 @@ export function OrderToInvoiceForm({ order, onClose }: { order: Order; onClose: 
             </div>
             <div>
               <Label htmlFor="due-date">Due Date</Label>
-              <Input
-                id="due-date"
-                type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-                data-testid="input-due-date"
-              />
+              <DatePicker value={dueDate} onChange={v => setDueDate(v)} />
             </div>
           </div>
 

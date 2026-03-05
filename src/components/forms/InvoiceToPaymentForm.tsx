@@ -8,6 +8,7 @@ import { CreditCard, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface Invoice {
   id: string;
@@ -132,13 +133,7 @@ export function InvoiceToPaymentForm({ invoice, onClose }: { invoice: Invoice; o
             </div>
             <div>
               <Label htmlFor="payment-date">Payment Date</Label>
-              <Input
-                id="payment-date"
-                type="date"
-                value={paymentDate}
-                onChange={(e) => setPaymentDate(e.target.value)}
-                data-testid="input-payment-date"
-              />
+              <DatePicker value={paymentDate} onChange={v => setPaymentDate(v)} />
             </div>
             <div>
               <Label htmlFor="payment-method">Payment Method</Label>

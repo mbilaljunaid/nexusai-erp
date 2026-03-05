@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Building2 } from "lucide-react";
@@ -23,7 +24,7 @@ export default function SupplierQualification() {
                 <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Audited</p><p className="text-2xl font-bold text-blue-600">{audited}</p></CardContent></Card>
                 <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Qualification %</p><p className="text-2xl font-bold">{suppliers.length > 0 ? ((qualified / suppliers.length) * 100).toFixed(0) : 0}%</p></CardContent></Card>
             </div>
-            <Card> <CardHeader><CardTitle className="text-base">Suppliers</CardTitle></CardHeader> <CardContent className="space-y-2"> {isLoading ? <p>Loading...</p> : suppliers.length === 0 ? <p className="text-muted-foreground text-center py-4">No suppliers</p> : suppliers.slice(0, 10).map((s: any) => (<div key={s.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`supplier-${s.id}`}> <div className="flex-1"><p className="font-semibold">{s.supplierId}</p><p className="text-xs text-muted-foreground">Type: {s.type}</p></div> <Badge variant={s.status === "qualified" ? "default" : "secondary"} className="text-xs">{s.status}</Badge> </div>))} </CardContent> </Card>
+            <Card> <CardHeader><CardTitle className="text-base">Suppliers</CardTitle></CardHeader> <CardContent className="space-y-2"> {isLoading ? <TableSkeleton rows={4} /> : suppliers.length === 0 ? <p className="text-muted-foreground text-center py-4">No suppliers</p> : suppliers.slice(0, 10).map((s: any) => (<div key={s.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`supplier-${s.id}`}> <div className="flex-1"><p className="font-semibold">{s.supplierId}</p><p className="text-xs text-muted-foreground">Type: {s.type}</p></div> <Badge variant={s.status === "qualified" ? "default" : "secondary"} className="text-xs">{s.status}</Badge> </div>))} </CardContent> </Card>
         </StandardPage>
     );
 }

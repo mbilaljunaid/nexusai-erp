@@ -12,6 +12,7 @@ import { api } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { RiskIndicator } from "@/components/compliance/RiskIndicator";
 import { ShieldCheck, Loader2 } from "lucide-react";
+import { DatePickerField } from '@/components/forms/DatePickerField';
 
 // Schema for Step 1: Identity
 const identitySchema = z.object({
@@ -158,7 +159,7 @@ export function HireWorkerWizard({ onClose }: { onClose?: () => void }) {
                                 )} />
 
                                 <FormField control={form.control} name="startDate" render={({ field }) => (
-                                    <FormItem><FormLabel className="font-semibold">Hire Date</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>
+                                    <FormItem><FormLabel className="font-semibold">Hire Date</FormLabel><FormControl><DatePickerField {...field} /></FormControl><FormMessage /></FormItem>
                                 )} />
 
                                 <div className="pt-4 border-t">

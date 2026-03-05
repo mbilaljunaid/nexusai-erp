@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -15,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { BookOpen, Plus, DollarSign, Calendar } from "lucide-react";
 import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
+import { DatePickerField } from '@/components/forms/DatePickerField';
 
 interface SSPBook {
     id: string;
@@ -236,7 +238,7 @@ export default function RevenueSSPManager() {
                     </CardHeader>
                     <CardContent>
                         {booksLoading ? (
-                            <p className="text-center py-8 text-muted-foreground">Loading...</p>
+                            <TableSkeleton rows={4} />
                         ) : books.length === 0 ? (
                             <p className="text-center py-8 text-muted-foreground">
                                 No SSP books. Create one to get started.
@@ -464,7 +466,7 @@ export default function RevenueSSPManager() {
                                             <FormItem>
                                                 <FormLabel>Effective From *</FormLabel>
                                                 <FormControl>
-                                                    <Input type="date" {...field} />
+                                                    <DatePickerField {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -477,7 +479,7 @@ export default function RevenueSSPManager() {
                                             <FormItem>
                                                 <FormLabel>Effective To</FormLabel>
                                                 <FormControl>
-                                                    <Input type="date" {...field} value={field.value || ""} />
+                                                    <DatePickerField {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>

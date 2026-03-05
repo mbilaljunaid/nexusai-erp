@@ -9,6 +9,7 @@ import { TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export function OpportunityForm() {
   const { toast } = useToast();
@@ -167,13 +168,7 @@ export function OpportunityForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="close">Close Date</Label>
-              <Input
-                id="close"
-                type="date"
-                value={formData.closeDate}
-                onChange={(e) => handleChange("closeDate", e.target.value)}
-                data-testid="input-close-date"
-              />
+              <DatePicker value={formData.closeDate} onChange={(v) => handleChange("closeDate", v)} />
             </div>
           </div>
 

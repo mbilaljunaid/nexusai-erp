@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -306,7 +307,7 @@ export default function EliminationRuleBuilder() {
                     </CardHeader>
                     <CardContent className="p-0">
                         {isLoading ? (
-                            <p className="text-center py-8 text-muted-foreground">Loading...</p>
+                            <TableSkeleton rows={4} />
                         ) : (
                             <div className="h-[600px] p-4">
                                 <InteractiveSpreadsheet

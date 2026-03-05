@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { PieChart, PlayCircle, Plus, Search, Loader2, CheckCircle2 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -113,9 +114,7 @@ export default function GLAllocations() {
             cellClassName: "text-center border-transparent",
             cell: (row) => (
                 <div className="flex justify-center w-full">
-                    <Badge className={row.active ? "bg-green-100 text-green-800 hover:bg-green-100" : "bg-slate-100 text-slate-800 hover:bg-slate-100"}>
-                        {row.active ? "Active" : "Inactive"}
-                    </Badge>
+                    <StatusBadge status={row.active ? "active" : "inactive"} />
                 </div>
             )
         },

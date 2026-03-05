@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { IconNavigation } from "@/components/IconNavigation";
 import { useState } from "react";
 import { Plug, Link2, Database, Code } from "lucide-react";
@@ -72,7 +73,7 @@ export default function Integrations() {
                     <p className="font-medium text-sm">{connector.name}</p>
                     <p className="text-xs text-muted-foreground">{connector.category} • {connector.lastSync}</p>
                   </div>
-                  <Badge className="bg-green-500/10 text-green-600">{connector.status}</Badge>
+                  <StatusBadge status={connector.status} />
                 </div>
               </div>
             ))}

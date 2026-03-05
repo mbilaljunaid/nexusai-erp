@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -99,7 +100,7 @@ export default function PointOfSale() {
       <Card>
         <CardHeader><CardTitle className="text-base">Recent Sales</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : sales.length === 0 ? <p className="text-muted-foreground text-center py-4">No sales</p> : sales.map((s: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : sales.length === 0 ? <p className="text-muted-foreground text-center py-4">No sales</p> : sales.map((s: any) => (
             <div key={s.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`sale-${s.id}`}>
               <div>
                 <p className="font-semibold">{s.saleId}</p>

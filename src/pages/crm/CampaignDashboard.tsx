@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Megaphone, Target, DollarSign, Calendar } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -106,7 +107,7 @@ export default function CampaignDashboard() {
                         </TableHeader>
                         <TableBody>
                             {isLoading ? (
-                                <TableRow><TableCell colSpan={6} className="text-center py-4">Loading...</TableCell></TableRow>
+                                <TableRow><TableCell colSpan={6} className="text-center py-4"><TableSkeleton rows={4} /></TableCell></TableRow>
                             ) : campaigns?.length === 0 ? (
                                 <TableRow><TableCell colSpan={6} className="text-center py-8">No campaigns found.</TableCell></TableRow>
                             ) : (

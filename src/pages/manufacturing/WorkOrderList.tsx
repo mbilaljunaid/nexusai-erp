@@ -6,6 +6,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Plus, Play, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter, SheetClose } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
@@ -242,7 +243,7 @@ export default function WorkOrderList() {
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Scheduled Date</Label>
-                                        <Input type="date" value={newOrder.scheduledDate} onChange={(e) => setNewOrder({ ...newOrder, scheduledDate: e.target.value })} />
+                                        <DatePicker value={newOrder.scheduledDate} onChange={(v) => setNewOrder({ ...newOrder, scheduledDate: v })} />
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Project</Label>

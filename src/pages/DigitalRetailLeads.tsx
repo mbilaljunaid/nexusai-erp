@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -89,7 +90,7 @@ export default function DigitalRetailLeads() {
       <Card>
         <CardHeader><CardTitle className="text-base">Leads</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : leads.length === 0 ? <p className="text-muted-foreground text-center py-4">No leads</p> : leads.map((l: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : leads.length === 0 ? <p className="text-muted-foreground text-center py-4">No leads</p> : leads.map((l: any) => (
             <div key={l.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`lead-${l.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{l.name}</p>

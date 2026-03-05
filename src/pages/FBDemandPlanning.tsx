@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -49,7 +50,7 @@ export default function FBDemandPlanning() {
         <Card>
           <CardHeader><CardTitle className="text-base">Forecasts</CardTitle></CardHeader>
           <CardContent className="space-y-2">
-            {isLoading ? <p>Loading...</p> : forecasts.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : forecasts.slice(0, 5).map((f: any) => (
+            {isLoading ? <TableSkeleton rows={4} /> : forecasts.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : forecasts.slice(0, 5).map((f: any) => (
               <div key={f.id} className="p-2 border rounded text-sm hover-elevate flex justify-between" data-testid={`forecast-${f.id}`}>
                 <span>{f.outletId}</span>
                 <span className="font-bold">{f.forecastQty}</span>
@@ -61,7 +62,7 @@ export default function FBDemandPlanning() {
         <Card>
           <CardHeader><CardTitle className="text-base">Suggested POs</CardTitle></CardHeader>
           <CardContent className="space-y-2">
-            {isLoading ? <p>Loading...</p> : forecasts.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : forecasts.slice(0, 5).map((f: any) => (
+            {isLoading ? <TableSkeleton rows={4} /> : forecasts.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : forecasts.slice(0, 5).map((f: any) => (
               <div key={f.id} className="p-2 border rounded text-sm hover-elevate flex justify-between items-center" data-testid={`po-${f.id}`}>
                 <span>{f.itemId || "Item"}</span>
                 <Badge variant="default" className="text-xs">{f.suggestedQty || 0}</Badge>

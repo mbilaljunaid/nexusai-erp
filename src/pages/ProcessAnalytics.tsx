@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -94,7 +95,7 @@ export default function ProcessAnalytics() {
       <Card>
         <CardHeader><CardTitle className="text-base">Process KPI Dashboard</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : kpis.length === 0 ? <p className="text-muted-foreground text-center py-4">No KPIs</p> : kpis.map((k: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : kpis.length === 0 ? <p className="text-muted-foreground text-center py-4">No KPIs</p> : kpis.map((k: any) => (
             <div key={k.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`kpi-${k.id}`}>
               <div className="flex-1">
                 <h3 className="font-semibold">{k.process}</h3>

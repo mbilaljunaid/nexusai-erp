@@ -5,6 +5,7 @@ import { Header, Footer } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -58,16 +59,7 @@ function AppCard({ app, onViewDetails, onInstall, isInstalling, isInstalled, com
     return app.price && parseFloat(app.price) > 0 ? `$${app.price}` : "Free";
   };
 
-  const getStatusBadge = () => {
-    switch (app.status) {
-      case "approved":
-        return <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-200">Published</Badge>;
-      case "submitted":
-        return <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-200">Pending</Badge>;
-      default:
-        return null;
-    }
-  };
+
 
   return (
     <Card className={`group hover-elevate transition-all ${isSelectedForCompare ? 'ring-2 ring-primary' : ''}`}>
@@ -96,7 +88,7 @@ function AppCard({ app, onViewDetails, onInstall, isInstalling, isInstalled, com
               </CardDescription>
             </div>
           </div>
-          {getStatusBadge()}
+          {app.status && <StatusBadge status={app.status} />}
         </div>
       </CardHeader>
       <CardContent className="pb-3">

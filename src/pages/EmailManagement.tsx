@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -95,7 +96,7 @@ export default function EmailManagement() {
           <Card>
             <CardHeader><CardTitle className="text-base">Email Campaigns</CardTitle></CardHeader>
             <CardContent className="space-y-3">
-              {isLoading ? <p>Loading...</p> : campaigns.length === 0 ? <p className="text-muted-foreground text-center py-4">No campaigns</p> : campaigns.map((campaign: any) => (
+              {isLoading ? <TableSkeleton rows={4} /> : campaigns.length === 0 ? <p className="text-muted-foreground text-center py-4">No campaigns</p> : campaigns.map((campaign: any) => (
                 <div key={campaign.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`campaign-${campaign.id}`}>
                   <div>
                     <h3 className="font-semibold">{campaign.name}</h3>

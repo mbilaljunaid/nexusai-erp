@@ -4,6 +4,7 @@ import { Clock, AlertTriangle, CheckCircle2, TrendingUp, RefreshCw } from 'lucid
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface OvertimeRule {
     id: string;
@@ -110,7 +111,7 @@ export default function OvertimeComplianceDashboard() {
                     <div className="panel-row">
                         <div className="pf">
                             <label className="pl">Week Starting</label>
-                            <Input className="pi" type="date" value={weekDate} onChange={e => setWeekDate(e.target.value)} aria-label="Week start date" />
+                            <DatePicker className="pi" value={weekDate} onChange={v => setWeekDate(v)} aria-label="Week start date" />
                         </div>
                         <button className="refresh-btn" onClick={() => refetch()} aria-label="Refresh report"><RefreshCw size={14} /></button>
                     </div>

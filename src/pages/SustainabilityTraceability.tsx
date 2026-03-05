@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -50,7 +51,7 @@ export default function SustainabilityTraceability() {
       <Card>
         <CardHeader><CardTitle className="text-base">Sustainability Metrics</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : metrics.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : metrics.slice(0, 10).map((m: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : metrics.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : metrics.slice(0, 10).map((m: any) => (
             <div key={m.id} className="p-2 border rounded text-sm hover-elevate" data-testid={`metric-${m.id}`}>
               <p className="font-semibold">{m.supplier || "Supplier"}</p>
               <p className="text-xs text-muted-foreground">CO2: {m.co2kg}kg • Waste: {m.wasteKg}kg • Diversion: {m.diversionRate}%</p>

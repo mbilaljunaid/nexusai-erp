@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Trash2, Save, Network } from "lucide-react";
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface DistributionLine {
     id?: string;
@@ -147,7 +148,7 @@ export function APInvoiceDistributions({ invoiceId, invoiceLineId, lineAmount, o
         },
         {
             id: "glDate", header: "GL Date", width: "160px", cell: (row) => (
-                <Input type="date" className="h-8 text-xs w-full" value={row.accountingDate || ""} onChange={e => handleDistributionChange(row.lineNumber - 1, "accountingDate", e.target.value)} />
+                <DatePicker className="h-8 text-xs w-full" value={row.accountingDate || ""} onChange={v => handleDistributionChange(row.lineNumber - 1, "accountingDate", v)} />
             )
         },
         {

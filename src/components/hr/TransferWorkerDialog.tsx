@@ -8,6 +8,7 @@ import { api } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { RiskIndicator } from "@/components/compliance/RiskIndicator";
 import { ShieldCheck, Loader2 } from "lucide-react";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface TransferWorkerDialogProps {
     personId: string;
@@ -78,13 +79,7 @@ export function TransferWorkerDialog({ personId, isOpen, onClose }: TransferWork
                         <Label htmlFor="eff-date" className="text-right font-medium">
                             Date
                         </Label>
-                        <Input
-                            id="eff-date"
-                            type="date"
-                            className="col-span-3"
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                        />
+                        <DatePicker className="col-span-3" value={date} onChange={v => setDate(v)} />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="new-job" className="text-right font-medium">

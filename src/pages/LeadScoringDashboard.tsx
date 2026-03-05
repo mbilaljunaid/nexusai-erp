@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -157,7 +158,7 @@ export default function LeadScoringDashboard() {
       <Card>
         <CardHeader><CardTitle className="text-base">Lead Registry</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : leads.length === 0 ? <p className="text-muted-foreground text-center py-4">No leads</p> : leads.map((l: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : leads.length === 0 ? <p className="text-muted-foreground text-center py-4">No leads</p> : leads.map((l: any) => (
             <div key={l.id} className="flex items-center justify-between p-3 border rounded hover-elevate" data-testid={`lead-${l.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{l.name}</p>

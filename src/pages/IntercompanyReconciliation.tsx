@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -127,7 +128,7 @@ export default function IntercompanyReconciliation() {
       <Card>
         <CardHeader><CardTitle className="text-base">Reconciliation Items</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : matches.length === 0 ? <p className="text-muted-foreground text-center py-4">No items</p> : matches.map((m: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : matches.length === 0 ? <p className="text-muted-foreground text-center py-4">No items</p> : matches.map((m: any) => (
             <div key={m.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`match-${m.id}`}>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">

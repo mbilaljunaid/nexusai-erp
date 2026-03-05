@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -89,7 +90,7 @@ export default function QuotesAndOrders() {
         <Card>
           <CardHeader><CardTitle className="text-base">Recent Quotes & Orders</CardTitle></CardHeader>
           <CardContent className="space-y-3">
-            {isLoading ? <p>Loading...</p> : items.length === 0 ? <p className="text-muted-foreground text-center py-4">No quotes/orders</p> : items.map((item: any) => (
+            {isLoading ? <TableSkeleton rows={4} /> : items.length === 0 ? <p className="text-muted-foreground text-center py-4">No quotes/orders</p> : items.map((item: any) => (
               <div key={item.id} className="p-3 border rounded-lg hover-elevate flex items-center justify-between" data-testid={`quote-order-${item.id}`}>
                 <div>
                   <h3 className="font-semibold">{item.number}</h3>

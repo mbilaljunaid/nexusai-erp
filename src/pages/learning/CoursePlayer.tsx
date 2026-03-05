@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -63,7 +64,7 @@ export default function CoursePlayer() {
     });
 
     if (!courseContent) {
-        return <div className="p-6">Loading...</div>;
+        return <PageSkeleton />;
     }
 
     const modules: Module[] = courseContent.modules || [];

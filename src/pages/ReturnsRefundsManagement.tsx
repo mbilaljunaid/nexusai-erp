@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -104,7 +105,7 @@ export default function ReturnsRefundsManagement() {
       <Card>
         <CardHeader><CardTitle className="text-base">Returns</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : returns.length === 0 ? <p className="text-muted-foreground text-center py-4">No returns</p> : returns.map((r: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : returns.length === 0 ? <p className="text-muted-foreground text-center py-4">No returns</p> : returns.map((r: any) => (
             <div key={r.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`return-${r.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{r.orderId}</p>

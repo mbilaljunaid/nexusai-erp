@@ -9,6 +9,7 @@ import { Clock, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface TimesheetEntry {
   id: number;
@@ -88,12 +89,7 @@ export function TimesheetForm() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="week">Week Starting *</Label>
-              <Input
-                id="week"
-                type="date"
-                value={week}
-                onChange={(e) => setWeek(e.target.value)}
-              />
+              <DatePicker value={week} onChange={v => setWeek(v)} />
             </div>
             <div className="space-y-2">
               <Label>Employee</Label>
@@ -137,12 +133,7 @@ export function TimesheetForm() {
                   {entries.map(entry => (
                     <tr key={entry.id} className="border-b">
                       <td className="py-2 px-2">
-                        <Input
-                          type="date"
-                          value={entry.date}
-                          onChange={(e) => updateEntry(entry.id, "date", e.target.value)}
-                          className="text-xs"
-                        />
+                        <DatePicker className="text-xs" value={entry.date} onChange={(v) => updateEntry(entry.id, "date", v)} />
                       </td>
                       <td className="py-2 px-2">
                         <Select value={entry.project} onValueChange={(v) => updateEntry(entry.id, "project", v)}>

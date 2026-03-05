@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -90,7 +91,7 @@ export default function ThirdPartyLogistics() {
       <Card>
         <CardHeader><CardTitle className="text-base">3PL Partners</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : partners.length === 0 ? <p className="text-muted-foreground text-center py-4">No partners</p> : partners.map((p: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : partners.length === 0 ? <p className="text-muted-foreground text-center py-4">No partners</p> : partners.map((p: any) => (
             <div key={p.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`partner-${p.id}`}>
               <div>
                 <p className="font-semibold text-sm">{p.partner}</p>

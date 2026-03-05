@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Users, UserCheck, UserX, Clock, Briefcase } from "lucide-react";
 import { format } from "date-fns";
 import { useState, useEffect } from "react";
+import { DatePicker } from "@/components/ui/DatePicker";
 
 interface DailyStatusBoardProps {
     tenantId: string;
@@ -65,11 +66,9 @@ export function DailyStatusBoard({ tenantId }: DailyStatusBoardProps) {
                     </p>
                 </div>
                 <div className="flex gap-3 items-center">
-                    <input
-                        type="date"
+                    <DatePicker
                         value={selectedDate}
-                        onChange={(e) => setSelectedDate(e.target.value)}
-                        className="border rounded px-3 py-2"
+                        onChange={(v) => setSelectedDate(v)}
                         aria-label="Select date for attendance view"
                     />
                     <div className="flex items-center gap-2">

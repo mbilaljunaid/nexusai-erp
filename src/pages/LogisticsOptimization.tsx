@@ -49,7 +49,7 @@ export default function LogisticsOptimization() {
         </CardHeader>
         <CardContent className="space-y-2">
           {isLoading ? (
-            <p>Loading...</p>
+            <TableSkeleton rows={4} />
           ) : predictions.length === 0 ? (
             <p className="text-muted-foreground text-center py-4">No data</p>
           ) : (

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -55,7 +56,7 @@ export default function WIPTrackingDashboard() {
       <Card>
         <CardHeader><CardTitle className="text-base">WIP Status by Work Center</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : wipData.length === 0 ? <p className="text-muted-foreground text-center py-4">No WIP</p> : wipData.map((w: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : wipData.length === 0 ? <p className="text-muted-foreground text-center py-4">No WIP</p> : wipData.map((w: any) => (
             <div key={w.id} className="p-3 border rounded hover-elevate" data-testid={`wip-${w.id}`}>
               <div className="flex justify-between items-start mb-2">
                 <p className="font-semibold text-sm">{w.workOrderId || "WO"}</p>

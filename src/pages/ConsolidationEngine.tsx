@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -97,7 +98,7 @@ export default function ConsolidationEngine() {
         <Card>
           <CardHeader><CardTitle className="text-base">Consolidation Runs</CardTitle></CardHeader>
           <CardContent className="space-y-3">
-            {isLoading ? <p>Loading...</p> : consolidations.length === 0 ? <p className="text-muted-foreground text-center py-4">No runs</p> : consolidations.map((con: any) => (
+            {isLoading ? <TableSkeleton rows={4} /> : consolidations.length === 0 ? <p className="text-muted-foreground text-center py-4">No runs</p> : consolidations.map((con: any) => (
               <div key={con.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`run-${con.id}`}>
                 <div>
                   <p className="font-semibold">{con.name}</p>

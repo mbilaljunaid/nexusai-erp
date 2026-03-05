@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface Transaction {
     id: string;
@@ -100,13 +101,7 @@ export default function CashTransactionSideSheet({ open, onClose, accountId, tra
                 <form onSubmit={handleSubmit} className="space-y-4 mt-4">
                     <div className="space-y-2">
                         <Label htmlFor="date">Transaction Date</Label>
-                        <Input
-                            id="date"
-                            type="date"
-                            value={formData.transactionDate}
-                            onChange={(e) => setFormData({ ...formData, transactionDate: e.target.value })}
-                            required
-                        />
+                        <DatePicker value={formData.transactionDate} onChange={(v) => setFormData({ ...formData, transactionDate: v })} />
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="amount">Amount</Label>

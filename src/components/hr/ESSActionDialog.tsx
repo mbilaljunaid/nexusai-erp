@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface ESSActionDialogProps {
     isOpen: boolean;
@@ -67,7 +68,7 @@ export const ESSActionDialog: React.FC<ESSActionDialogProps> = ({ isOpen, onClos
 
                         <div className="space-y-2">
                             <Label>Effective Date</Label>
-                            <Input type="date" required />
+                            <DatePicker onChange={() => {}} />
                         </div>
 
                         <div className="space-y-2">

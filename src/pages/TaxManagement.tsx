@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -485,7 +486,7 @@ function TaxExemptionsTab({ legalEntityId }: { legalEntityId: string | null }) {
       </Card>
 
       <div className="space-y-2">
-        {isLoading && <p>Loading...</p>}
+        {isLoading && <TableSkeleton rows={4} />}
         {!isLoading && exemptions.map((e: any) => (
           <div key={e.id} className="p-2 border rounded flex justify-between">
             <span>Tax Code ID: {e.taxCodeId} - {e.exemptionType} {e.exemptionValue > 0 ? `(${e.exemptionValue})` : ''}</span>

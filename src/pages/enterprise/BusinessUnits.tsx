@@ -3,7 +3,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Building, Loader2 } from "lucide-react";
+import { Building } from "lucide-react";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { apiRequest } from "@/lib/queryClient";
 import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 
@@ -53,11 +54,7 @@ export default function BusinessUnits() {
     ], []);
 
     if (isLoading) {
-        return (
-            <div className="flex justify-center items-center h-screen">
-                <Loader2 className="animate-spin text-primary w-8 h-8" />
-            </div>
-        );
+        return <PageSkeleton cards={3} rows={6} />;
     }
 
     return (

@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export default function GuidedJourneyWorkerTransfer() {
     const { toast } = useToast();
@@ -131,12 +132,7 @@ export default function GuidedJourneyWorkerTransfer() {
                                     <Label className="text-xs text-muted-foreground">Effective Date</Label>
                                     <div className="relative mt-1">
                                         <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                        <Input
-                                            type="date"
-                                            className="pl-9 bg-white dark:bg-zinc-950"
-                                            value={effectiveDate}
-                                            onChange={(e) => setEffectiveDate(e.target.value)}
-                                        />
+                                        <DatePicker className="pl-9 bg-white dark:bg-zinc-950" value={effectiveDate} onChange={v => setEffectiveDate(v)} />
                                     </div>
                                 </div>
                                 <div className="flex-1 md:w-48">

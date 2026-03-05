@@ -34,6 +34,7 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -57,15 +58,7 @@ export default function CasesDetail() {
         (c.description && c.description.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
-    const getStatusColor = (status: string | null) => {
-        switch (status) {
-            case 'New': return 'bg-blue-100 text-blue-800';
-            case 'Working': return 'bg-yellow-100 text-yellow-800';
-            case 'Escalated': return 'bg-red-100 text-red-800';
-            case 'Closed': return 'bg-green-100 text-green-800';
-            default: return 'bg-gray-100 text-gray-800';
-        }
-    };
+
 
     const getPriorityIcon = (priority: string | null) => {
         switch (priority) {
@@ -87,10 +80,10 @@ export default function CasesDetail() {
 
     return (
         <StandardPage
-      title="CasesDetail"
-      description=""
-      className="space-y-6"
-    >
+            title="CasesDetail"
+            description=""
+            className="space-y-6"
+        >
             {/* Header Actions */}
             <div className="flex justify-between items-center">
                 <div>
@@ -194,7 +187,7 @@ export default function CasesDetail() {
                                 {c.subject}
                             </div>
                             <div className="col-span-2">
-                                <Badge variant="outline" className={getStatusColor(c.status)}>{c.status}</Badge>
+                                <StatusBadge status={c.status ?? ''} />
                             </div>
                             <div className="col-span-2 flex items-center gap-2">
                                 {getPriorityIcon(c.priority)}
@@ -213,7 +206,7 @@ export default function CasesDetail() {
                         <Card key={c.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => openEditCase(c)}>
                             <CardHeader className="pb-2">
                                 <div className="flex justify-between items-start">
-                                    <Badge variant="outline" className={getStatusColor(c.status)}>{c.status}</Badge>
+                                    <StatusBadge status={c.status ?? ''} />
                                     <div className="flex gap-1">{getPriorityIcon(c.priority)}</div>
                                 </div>
                                 <CardTitle className="text-base line-clamp-1">{c.subject}</CardTitle>
@@ -232,5 +225,5 @@ export default function CasesDetail() {
                 </div>
             )}
         </StandardPage>
-  );
+    );
 }

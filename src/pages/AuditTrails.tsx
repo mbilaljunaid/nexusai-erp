@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -168,7 +169,7 @@ export default function AuditTrails() {
         </div>
 
         {isLoading ? (
-          <div className="p-8 text-center text-muted-foreground">Loading...</div>
+          <TableSkeleton rows={5} />
         ) : (
           <InteractiveSpreadsheet
             data={logs.filter(log => log.action.toLowerCase().includes(searchTerm.toLowerCase()) || log.actorId.toLowerCase().includes(searchTerm.toLowerCase()) || log.entityId.toLowerCase().includes(searchTerm.toLowerCase()))}

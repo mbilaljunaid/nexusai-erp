@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { DatePickerField } from '@/components/forms/DatePickerField';
 
 const formSchema = z.object({
     customerId: z.string().min(1, "Customer is required"),
@@ -159,7 +160,7 @@ export function CreateBillingEventSheet() {
                                     <FormItem>
                                         <FormLabel>Date</FormLabel>
                                         <FormControl>
-                                            <Input type="date" {...field} />
+                                            <DatePickerField {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

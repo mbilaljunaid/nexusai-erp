@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { Plus, DollarSign, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface BillRateSchedule {
     id: string;
@@ -184,7 +186,7 @@ export default function BillRateManager() {
             header: "Start Date *",
             width: "150px",
             cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
-                <Input type="date" className="h-9 w-full bg-transparent border-0" value={row.startDate ? new Date(row.startDate).toISOString().split('T')[0] : ""} onChange={e => updateRow("startDate", e.target.value)} />
+                <DatePicker className="h-9 w-full bg-transparent border-0" value={row.startDate ? new Date(row.startDate).toISOString().split('T')[0] : ""} onChange={v => updateRow("startDate", v)} />
             )
         },
         {
@@ -192,7 +194,7 @@ export default function BillRateManager() {
             header: "End Date",
             width: "150px",
             cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
-                <Input type="date" className="h-9 w-full bg-transparent border-0" value={row.endDate ? new Date(row.endDate).toISOString().split('T')[0] : ""} onChange={e => updateRow("endDate", e.target.value)} />
+                <DatePicker className="h-9 w-full bg-transparent border-0" value={row.endDate ? new Date(row.endDate).toISOString().split('T')[0] : ""} onChange={v => updateRow("endDate", v)} />
             )
         }
     ];
@@ -268,7 +270,7 @@ export default function BillRateManager() {
                         </CardHeader>
                         <CardContent className="h-[500px]">
                             {loadingSch ? (
-                                <div className="p-4 text-center">Loading...</div>
+                                <TableSkeleton rows={4} />
                             ) : (
                                 <InteractiveSpreadsheet
                                     columns={schColumns}

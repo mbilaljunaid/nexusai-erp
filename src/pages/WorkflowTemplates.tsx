@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -63,7 +64,7 @@ export default function WorkflowTemplates() {
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {isLoading ? <p>Loading...</p> : templates.length === 0 ? <p className="text-muted-foreground text-center py-4">No templates</p> : templates.map((t: any) => (
+        {isLoading ? <TableSkeleton rows={4} /> : templates.length === 0 ? <p className="text-muted-foreground text-center py-4">No templates</p> : templates.map((t: any) => (
           <Card key={t.id} data-testid={`template-${t.id}`}>
             <CardContent className="pt-6">
               <div className="flex items-start justify-between">

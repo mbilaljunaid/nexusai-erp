@@ -25,6 +25,7 @@ import {
     TrendingUp
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { StatusBadge } from '@/components/shared/StatusBadge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from "@/hooks/use-toast";
 import { format } from 'date-fns';
@@ -236,7 +237,7 @@ export default function TradeOperationDetails() {
                                     <div className="pt-2">
                                         <p className="text-[10px] text-muted-foreground uppercase mb-1">Approval Workflow</p>
                                         <div className="flex items-center gap-2">
-                                            <Badge variant={getApprovalVariant(op.approvalStatus)}>{op.approvalStatus || 'DRAFT'}</Badge>
+                                            <StatusBadge status={op.approvalStatus || 'DRAFT'} />
                                             <span className="text-xs text-muted-foreground font-mono">ID: {id?.slice(0, 8)}</span>
                                         </div>
                                     </div>
@@ -495,11 +496,4 @@ export default function TradeOperationDetails() {
     );
 }
 
-function getApprovalVariant(status: string) {
-    switch (status) {
-        case 'APPROVED': return 'success';
-        case 'PENDING_APPROVAL': return 'warning';
-        case 'REJECTED': return 'destructive';
-        default: return 'outline';
-    }
-}
+

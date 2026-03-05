@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 export default function ShopFloor() {
   return (
@@ -19,7 +20,7 @@ export default function ShopFloor() {
           <Card key={line.line} className="hover:shadow-lg transition">
             <CardContent className="pt-6">
               <h3 className="font-semibold">{line.line}</h3>
-              <Badge className={line.status === "Running" ? "bg-green-100 text-green-800 mt-2" : "bg-gray-100 text-gray-800 mt-2"}>{line.status}</Badge>
+              <StatusBadge status={line.status} className="mt-2" />
               <div className="mt-3 space-y-1 text-sm">
                 <p><strong>Work Orders:</strong> {line.wos}</p>
                 <p><strong>Efficiency:</strong> {line.efficiency}</p>

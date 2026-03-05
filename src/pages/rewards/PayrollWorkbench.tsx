@@ -23,6 +23,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DatePickerField } from '@/components/forms/DatePickerField';
 
 const runSchema = z.object({
     payGroupId: z.string().min(1, "Pay Group is required"),
@@ -221,10 +222,10 @@ export default function PayrollWorkbench() {
                                     />
                                     <FormField control={runForm.control} name="periodName" render={({ field }) => <FormItem><FormLabel>Period Name</FormLabel><FormControl><Input placeholder="2024-01 Monthly" {...field} /></FormControl><FormMessage /></FormItem>} />
                                     <div className="grid grid-cols-2 gap-4">
-                                        <FormField control={runForm.control} name="periodStartDate" render={({ field }) => <FormItem><FormLabel>Start Date</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>} />
-                                        <FormField control={runForm.control} name="periodEndDate" render={({ field }) => <FormItem><FormLabel>End Date</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>} />
+                                        <FormField control={runForm.control} name="periodStartDate" render={({ field }) => <FormItem><FormLabel>Start Date</FormLabel><FormControl><DatePickerField {...field} /></FormControl><FormMessage /></FormItem>} />
+                                        <FormField control={runForm.control} name="periodEndDate" render={({ field }) => <FormItem><FormLabel>End Date</FormLabel><FormControl><DatePickerField {...field} /></FormControl><FormMessage /></FormItem>} />
                                     </div>
-                                    <FormField control={runForm.control} name="paymentDate" render={({ field }) => <FormItem><FormLabel>Payment Date</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>} />
+                                    <FormField control={runForm.control} name="paymentDate" render={({ field }) => <FormItem><FormLabel>Payment Date</FormLabel><FormControl><DatePickerField {...field} /></FormControl><FormMessage /></FormItem>} />
                                     <Button type="submit" className="w-full">Initialize Run</Button>
                                 </form>
                             </Form>

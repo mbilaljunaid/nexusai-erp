@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -81,7 +82,7 @@ export default function AccrualTesting() {
                         <CardDescription>Person ID: ...{MOCK_PERSON_ID.slice(-6)}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        {isLoading ? <p>Loading...</p> :
+                        {isLoading ? <TableSkeleton rows={4} /> :
                             balances?.length > 0 ? (
                                 balances.map((b: any) => (
                                     <div key={b.id} className="flex justify-between items-center border p-3 rounded">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -66,7 +67,7 @@ export default function AccountDirectory() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {isLoading ? <p>Loading...</p> : accounts.length === 0 ? <p className="text-muted-foreground">No accounts</p> : (accounts.map((acc: any) => (
+        {isLoading ? <TableSkeleton rows={4} /> : accounts.length === 0 ? <p className="text-muted-foreground">No accounts</p> : (accounts.map((acc: any) => (
           <Card key={acc.id} className="hover:shadow-lg transition" data-testid={`account-${acc.id}`}>
             <CardContent className="pt-6">
               <div className="flex items-start justify-between gap-2">

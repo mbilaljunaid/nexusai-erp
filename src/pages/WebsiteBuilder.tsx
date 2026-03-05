@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Layout, Palette, Eye, Download, Plus, Zap, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
@@ -98,7 +99,7 @@ export default function WebsiteBuilder() {
         <Card>
           <CardHeader><CardTitle className="text-base">Website Pages</CardTitle></CardHeader>
           <CardContent className="space-y-3">
-            {isLoading ? <p>Loading...</p> : pages.length === 0 ? <p className="text-muted-foreground text-center py-4">No pages</p> : pages.map((page: any) => (
+            {isLoading ? <TableSkeleton rows={4} /> : pages.length === 0 ? <p className="text-muted-foreground text-center py-4">No pages</p> : pages.map((page: any) => (
               <div key={page.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`page-${page.id}`}>
                 <div>
                   <h3 className="font-semibold">{page.name}</h3>

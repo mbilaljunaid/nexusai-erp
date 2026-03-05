@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { DatePickerField } from '@/components/forms/DatePickerField';
 
 const adjustmentSchema = z.object({
   adjustmentType: z.string().min(1, "Adjustment type required"),
@@ -63,7 +64,7 @@ export default function AdjustmentEntryForm({ onSubmit }: { onSubmit?: (data: Ad
           <FormItem>
             <FormLabel>Date</FormLabel>
             <FormControl>
-              <Input type="date" {...field} data-testid="input-adjustment-date" />
+              <DatePickerField {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

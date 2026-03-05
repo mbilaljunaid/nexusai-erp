@@ -7,6 +7,7 @@ import { Plus, ShoppingCart, FileText } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { IconNavigation } from "@/components/IconNavigation";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 import { StandardPage } from "@/components/layout/StandardPage";
 
@@ -90,7 +91,7 @@ export default function PurchaseOrders() {
           <CardContent className="space-y-4">
             <Input placeholder="Vendor ID" />
             <Input placeholder="Total Amount" type="number" />
-            <Input placeholder="Delivery Date" type="date" />
+            <DatePicker onChange={() => {}} placeholder="Delivery Date" />
             <Button className="w-full">
               <Plus className="w-4 h-4 mr-2" /> Create PO
             </Button>

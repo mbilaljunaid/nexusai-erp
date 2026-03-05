@@ -15,6 +15,7 @@ import { Link } from "wouter";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { DatePicker } from '@/components/ui/DatePicker';
 export default function ContractDashboard() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
@@ -146,11 +147,11 @@ export default function ContractDashboard() {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label>Start Date</Label>
-                                <Input type="date" onChange={e => setNewItem({ ...newItem, startDate: e.target.value })} />
+                                <DatePicker onChange={v => setNewItem({ ...newItem, startDate: v })} />
                             </div>
                             <div className="space-y-2">
                                 <Label>End Date</Label>
-                                <Input type="date" onChange={e => setNewItem({ ...newItem, endDate: e.target.value })} />
+                                <DatePicker onChange={v => setNewItem({ ...newItem, endDate: v })} />
                             </div>
                         </div>
                     </div>

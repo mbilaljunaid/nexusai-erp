@@ -16,6 +16,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, Save } from "lucide-react";
 import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface JournalLine {
     id: number;
@@ -125,7 +126,7 @@ export default function ManualJournalEntry() {
                         </div>
                         <div className="space-y-2">
                             <Label>GL Date</Label>
-                            <Input type="date" value={glDate} onChange={e => setGlDate(e.target.value)} />
+                            <DatePicker value={glDate} onChange={v => setGlDate(v)} />
                         </div>
                         <div className="flex flex-col space-y-2 justify-end pb-1">
                             <EnterpriseContextSwitcher

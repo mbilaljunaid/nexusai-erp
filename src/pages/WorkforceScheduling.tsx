@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Users, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export default function WorkforceScheduling() {
   const { toast } = useToast();
@@ -77,7 +79,7 @@ export default function WorkforceScheduling() {
           <div className="grid grid-cols-5 gap-2">
             <Input placeholder="Employee ID" value={newSchedule.employeeId} onChange={(e) => setNewSchedule({ ...newSchedule, employeeId: e.target.value })} data-testid="input-empid" className="text-sm" />
             <Input placeholder="Store ID" value={newSchedule.storeId} onChange={(e) => setNewSchedule({ ...newSchedule, storeId: e.target.value })} data-testid="input-storeid" className="text-sm" />
-            <Input placeholder="Date" type="date" value={newSchedule.date} onChange={(e) => setNewSchedule({ ...newSchedule, date: e.target.value })} data-testid="input-date" className="text-sm" />
+            <DatePicker className="text-sm" value={newSchedule.date} onChange={(v) => setNewSchedule({ ...newSchedule, date: v })} placeholder="Date" />
             <Select value={newSchedule.shift} onValueChange={(v) => setNewSchedule({ ...newSchedule, shift: v })}>
               <SelectTrigger data-testid="select-shift" className="text-sm"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -96,7 +98,7 @@ export default function WorkforceScheduling() {
       <Card>
         <CardHeader><CardTitle className="text-base">Schedules</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : schedules.length === 0 ? <p className="text-muted-foreground text-center py-4">No schedules</p> : schedules.map((s: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : schedules.length === 0 ? <p className="text-muted-foreground text-center py-4">No schedules</p> : schedules.map((s: any) => (
             <div key={s.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`schedule-${s.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{s.employeeId} - {s.storeId}</p>

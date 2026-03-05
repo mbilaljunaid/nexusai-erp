@@ -17,6 +17,7 @@ import { toast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface SettlementExecutionModalProps {
     batchId: string;
@@ -191,12 +192,7 @@ export function SettlementExecutionModal({
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <Label htmlFor="date">Settlement Date</Label>
-                                            <Input
-                                                id="date"
-                                                type="date"
-                                                value={settlementDate}
-                                                onChange={(e) => setSettlementDate(e.target.value)}
-                                            />
+                                            <DatePicker value={settlementDate} onChange={v => setSettlementDate(v)} />
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="method">Settlement Method</Label>

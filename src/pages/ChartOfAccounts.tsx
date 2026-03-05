@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -80,7 +81,7 @@ export default function ChartOfAccounts() {
       </Card>
 
       <div className="space-y-6">
-        {isLoading ? <p>Loading...</p> : accounts.length === 0 ? <p className="text-muted-foreground text-center py-4">No accounts</p> : Object.entries(groupedAccounts).map(([type, typeAccounts]: any) => (
+        {isLoading ? <TableSkeleton rows={4} /> : accounts.length === 0 ? <p className="text-muted-foreground text-center py-4">No accounts</p> : Object.entries(groupedAccounts).map(([type, typeAccounts]: any) => (
           <div key={type}>
             <h2 className="text-lg font-semibold mb-3">{type}s ({typeAccounts.length})</h2>
             <div className="grid gap-3">

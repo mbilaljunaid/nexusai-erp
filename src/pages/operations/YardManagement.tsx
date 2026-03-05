@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Truck, Clock, CheckCircle2 } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 
 interface Dock {
@@ -108,7 +109,7 @@ export default function YardManagement() {
             {tab === 'appointments' && (
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
-                        <Input type="date" value={date} onChange={e => setDate(e.target.value)} style={{ padding: '6px 10px', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 12 }} aria-label="Date filter" />
+                        <DatePicker value={date} onChange={v => setDate(v)} aria-label="Date filter" />
                         <span style={{ fontSize: 12, color: '#6b7280' }}>{appts.length} appointments</span>
                     </div>
 

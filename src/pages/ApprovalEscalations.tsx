@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -95,7 +96,7 @@ export default function ApprovalEscalations() {
       <Card>
         <CardHeader><CardTitle className="text-base">Escalation Rules</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : escalations.length === 0 ? <p className="text-muted-foreground text-center py-4">No escalation rules</p> : escalations.map((e: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : escalations.length === 0 ? <p className="text-muted-foreground text-center py-4">No escalation rules</p> : escalations.map((e: any) => (
             <div key={e.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`escalation-${e.id}`}>
               <div className="flex-1">
                 <h3 className="font-semibold">{e.rule}</h3>

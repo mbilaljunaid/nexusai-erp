@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
@@ -644,18 +645,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "approved":
-        return <Badge className="bg-green-500/10 text-green-600 border-green-200">Published</Badge>;
-      case "rejected":
-        return <Badge variant="destructive">Rejected</Badge>;
-      case "submitted":
-        return <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-200">Pending Review</Badge>;
-      default:
-        return <Badge variant="secondary">Draft</Badge>;
-    }
-  };
+
 
   const totalRevenue = myApps.reduce((sum, app) => sum + parseFloat(app.totalRevenue || "0"), 0);
   const installCount = myApps.reduce((sum, app) => sum + (app.installCount || 0), 0);
@@ -682,9 +672,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
             <CardDescription>Developer Status</CardDescription>
           </CardHeader>
           <CardContent>
-            <Badge className={developer.status === "approved" ? "bg-green-500/10 text-green-600" : "bg-yellow-500/10 text-yellow-600"}>
-              {developer.status === "approved" ? "Verified" : "Pending Approval"}
-            </Badge>
+            <StatusBadge status={developer.status === "approved" ? "approved" : "pending"} />
           </CardContent>
         </Card>
         <Card>
@@ -780,7 +768,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>{getStatusBadge(app.status || "draft")}</TableCell>
+                      <TableCell><StatusBadge status={app.status || "draft"} /></TableCell>
                       <TableCell className="text-right">{app.installCount || 0}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-1">
@@ -930,18 +918,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                               {new Date(payout.periodStart).toLocaleDateString()} - {new Date(payout.periodEnd).toLocaleDateString()}
                             </TableCell>
                             <TableCell>
-                              <Badge
-                                variant={
-                                  payout.status === "paid" ? "default" :
-                                    payout.status === "processing" ? "secondary" :
-                                      payout.status === "failed" ? "destructive" : "outline"
-                                }
-                                className={payout.status === "paid" ? "bg-green-500/10 text-green-600 border-green-200" : ""}
-                              >
-                                {payout.status === "paid" ? "Paid" :
-                                  payout.status === "processing" ? "Processing" :
-                                    payout.status === "failed" ? "Failed" : "Pending"}
-                              </Badge>
+                              <StatusBadge status={payout.status} />
                             </TableCell>
                             <TableCell className="text-right font-medium">
                               ${parseFloat(payout.amount).toFixed(2)}

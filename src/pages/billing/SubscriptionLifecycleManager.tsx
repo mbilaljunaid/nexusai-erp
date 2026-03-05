@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -56,6 +57,7 @@ import {
 import { SubscriptionDetailSheet } from "./components/SubscriptionDetailSheet";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface SubscriptionFormData {
     contractNumber: string;
@@ -191,15 +193,7 @@ export default function SubscriptionLifecycleManager() {
         return customer?.name || id;
     };
 
-    const getStatusBadge = (status: string) => {
-        const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-            Active: "default",
-            Draft: "secondary",
-            Cancelled: "destructive",
-            Expired: "outline",
-        };
-        return <Badge variant={variants[status] || "outline"}>{status}</Badge>;
-    };
+
 
     return (
         <div className="space-y-6">
@@ -309,7 +303,7 @@ export default function SubscriptionLifecycleManager() {
                             },
                             {
                                 id: "status", header: "Status", width: "150px",
-                                cell: (item: any) => <div className="p-2">{getStatusBadge(item.status)}</div>,
+                                cell: (item: any) => <div className="p-2"><StatusBadge status={item.status} /></div>,
                             },
                             {
                                 id: "totalMrr", header: "MRR", width: "150px",
@@ -480,12 +474,7 @@ function CreateSubscriptionDialog({
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="startDate">Start Date</Label>
-                            <Input
-                                id="startDate"
-                                type="date"
-                                value={formData.startDate}
-                                onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                            />
+                            <DatePicker value={formData.startDate} onChange={(v) => setFormData({ ...formData, startDate: v })} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="frequency">Billing Frequency</Label>

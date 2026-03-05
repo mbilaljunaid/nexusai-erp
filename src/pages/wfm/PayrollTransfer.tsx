@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format, parseISO } from "date-fns";
@@ -77,7 +78,7 @@ export default function PayrollTransfer() {
         <StandardPage title="Payroll Integration">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground">Transfer approved time data to Payroll.</p>
                 </div>
             </div>
@@ -132,9 +133,7 @@ export default function PayrollTransfer() {
                             </TableHeader>
                             <TableBody>
                                 {isLoading ? (
-                                    <TableRow>
-                                        <TableCell colSpan={4} className="text-center py-4">Loading...</TableCell>
-                                    </TableRow>
+                                    <TableRow><TableCell colSpan={4}><TableSkeleton rows={4} /></TableCell></TableRow>
                                 ) : batches?.length === 0 ? (
                                     <TableRow>
                                         <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">No integrations run yet.</TableCell>

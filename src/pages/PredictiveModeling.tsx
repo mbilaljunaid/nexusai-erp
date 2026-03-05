@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -113,7 +114,7 @@ export default function PredictiveModeling() {
       <Card>
         <CardHeader><CardTitle className="text-base">Active Models</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : models.length === 0 ? <p className="text-muted-foreground text-center py-4">No models</p> : models.map((m: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : models.length === 0 ? <p className="text-muted-foreground text-center py-4">No models</p> : models.map((m: any) => (
             <div key={m.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`model-${m.id}`}>
               <div className="flex-1">
                 <h3 className="font-semibold">{m.name}</h3>

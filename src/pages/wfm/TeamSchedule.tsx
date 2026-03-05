@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format, startOfWeek, addDays, isSameDay, parseISO } from "date-fns";
@@ -146,7 +146,7 @@ export default function TeamSchedule() {
             <Card>
                 <CardContent className="p-0 overflow-hidden">
                     {isLoading ? (
-                        <div className="p-8 text-center text-muted-foreground">Loading Schedule...</div>
+                        <TableSkeleton rows={6} />
                     ) : uniquePersons.length === 0 ? (
                         <div className="p-8 text-center text-muted-foreground">No employees found locally. Run Seed/Verification.</div>
                     ) : (

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { DollarSign, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export default function POSCashReconciliation() {
   const { toast } = useToast();
@@ -76,7 +78,7 @@ export default function POSCashReconciliation() {
         <CardContent className="space-y-3">
           <div className="grid grid-cols-5 gap-2">
             <Input placeholder="Terminal ID" value={newRecon.terminalId} onChange={(e) => setNewRecon({ ...newRecon, terminalId: e.target.value })} data-testid="input-terminal" className="text-sm" />
-            <Input placeholder="Date" type="date" value={newRecon.dateOfDay} onChange={(e) => setNewRecon({ ...newRecon, dateOfDay: e.target.value })} data-testid="input-date" className="text-sm" />
+            <DatePicker className="text-sm" value={newRecon.dateOfDay} onChange={(v) => setNewRecon({ ...newRecon, dateOfDay: v })} placeholder="Date" />
             <Input placeholder="Expected" type="number" value={newRecon.expectedCash} onChange={(e) => setNewRecon({ ...newRecon, expectedCash: e.target.value })} data-testid="input-expected" className="text-sm" />
             <Input placeholder="Actual" type="number" value={newRecon.actualCash} onChange={(e) => setNewRecon({ ...newRecon, actualCash: e.target.value })} data-testid="input-actual" className="text-sm" />
             <Button disabled={createMutation.isPending || !newRecon.terminalId} size="sm" data-testid="button-record">
@@ -89,7 +91,7 @@ export default function POSCashReconciliation() {
       <Card>
         <CardHeader><CardTitle className="text-base">Reconciliations</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : reconciliations.length === 0 ? <p className="text-muted-foreground text-center py-4">No records</p> : reconciliations.map((r: any) => {
+          {isLoading ? <TableSkeleton rows={4} /> : reconciliations.length === 0 ? <p className="text-muted-foreground text-center py-4">No records</p> : reconciliations.map((r: any) => {
             const variance = (parseFloat(r.actualCash) || 0) - (parseFloat(r.expectedCash) || 0);
             return (
               <div key={r.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`recon-${r.id}`}>

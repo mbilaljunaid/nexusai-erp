@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
@@ -16,21 +17,12 @@ export default function InvoiceList() {
   const { data: invoices = [] } = useQuery<any[]>({ queryKey: ["/api/invoices"] });
   const formMetadata = getFormMetadata("invoice");
 
-  const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      "Paid": "bg-green-100 text-green-800",
-      "Pending": "bg-amber-100 text-amber-800",
-      "Overdue": "bg-red-100 text-red-800",
-      "Draft": "bg-gray-100 text-gray-800",
-      "sent": "bg-blue-100 text-blue-800",
-    };
-    return colors[status] || "bg-gray-100 text-gray-800";
-  };
+
 
   return (
     <div className="space-y-6">
       <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      
+
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Invoices</h1>
@@ -56,7 +48,7 @@ export default function InvoiceList() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div><p className="font-semibold">{inv.invoiceNumber} - {inv.customerId}</p><p className="text-sm text-muted-foreground">Amount: ${inv.amount}</p></div>
-                <div className="text-right"><p className="font-bold text-lg">${inv.amount}</p><Badge className={getStatusColor(inv.status)}>{inv.status}</Badge></div>
+                <div className="text-right"><p className="font-bold text-lg">${inv.amount}</p><StatusBadge status={inv.status} /></div>
               </div>
             </CardContent>
           </Card>

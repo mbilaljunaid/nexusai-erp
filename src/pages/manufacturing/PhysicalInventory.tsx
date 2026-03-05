@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ClipboardList, CheckCircle2, AlertCircle } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 
 interface Cycle { id: string; cycle_name: string; cycle_type: string; status: string; count_date: string; line_count: number; counted_lines: number; approved_by: string; created_at: string; }
@@ -87,7 +88,7 @@ export default function PhysicalInventory() {
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                             <label style={{ fontSize: 10, fontWeight: 700 }}>Count Date</label>
-                            <Input type="date" value={cycleForm.countDate} onChange={e => setCycleForm(p => ({ ...p, countDate: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 12 }} aria-label="Count date" />
+                            <DatePicker value={cycleForm.countDate} onChange={v => setCycleForm(p => ({ ...p, countDate: v }))} aria-label="Count date" />
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                             <label style={{ fontSize: 10, fontWeight: 700 }}>Location Filter</label>

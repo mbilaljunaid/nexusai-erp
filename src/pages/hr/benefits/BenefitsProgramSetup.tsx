@@ -21,6 +21,7 @@ import {
     Umbrella
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 type HierarchyNode = {
     id: string;
@@ -272,7 +273,7 @@ export default function BenefitsProgramSetup() {
                                             </div>
                                             <div className="space-y-2">
                                                 <Label>Effective Start Date</Label>
-                                                <Input type="date" defaultValue="2026-01-01" />
+                                                <DatePicker value="2026-01-01" onChange={() => {}} />
                                             </div>
                                         </div>
                                     </div>

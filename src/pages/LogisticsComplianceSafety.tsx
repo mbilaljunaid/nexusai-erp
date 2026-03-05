@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -104,7 +105,7 @@ export default function LogisticsComplianceSafety() {
       <Card>
         <CardHeader><CardTitle className="text-base">Incidents</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : incidents.length === 0 ? <p className="text-muted-foreground text-center py-4">No incidents</p> : incidents.map((i: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : incidents.length === 0 ? <p className="text-muted-foreground text-center py-4">No incidents</p> : incidents.map((i: any) => (
             <div key={i.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`incident-${i.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{i.incidentId}</p>

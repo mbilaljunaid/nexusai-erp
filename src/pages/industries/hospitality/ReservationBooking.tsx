@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { Calendar, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 
 export default function ReservationBooking() {
@@ -80,8 +82,8 @@ export default function ReservationBooking() {
           <div className="grid grid-cols-5 gap-2">
             <Input placeholder="Res ID" value={newRes.reservationId} onChange={(e) => setNewRes({ ...newRes, reservationId: e.target.value })} data-testid="input-resid" className="text-sm" />
             <Input placeholder="Guest Name" value={newRes.guestName} onChange={(e) => setNewRes({ ...newRes, guestName: e.target.value })} data-testid="input-name" className="text-sm" />
-            <Input placeholder="Check-in" type="date" value={newRes.checkIn} onChange={(e) => setNewRes({ ...newRes, checkIn: e.target.value })} data-testid="input-checkin" className="text-sm" />
-            <Input placeholder="Check-out" type="date" value={newRes.checkOut} onChange={(e) => setNewRes({ ...newRes, checkOut: e.target.value })} data-testid="input-checkout" className="text-sm" />
+            <DatePicker className="text-sm" value={newRes.checkIn} onChange={(v) => setNewRes({ ...newRes, checkIn: v })} placeholder="Check-in" />
+            <DatePicker className="text-sm" value={newRes.checkOut} onChange={(v) => setNewRes({ ...newRes, checkOut: v })} placeholder="Check-out" />
             <Button disabled={createMutation.isPending || !newRes.reservationId} size="sm" data-testid="button-book">
               <Plus className="w-3 h-3" />
             </Button>
@@ -92,7 +94,7 @@ export default function ReservationBooking() {
       <Card>
         <CardHeader><CardTitle className="text-base">Reservations</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : reservations.length === 0 ? <p className="text-muted-foreground text-center py-4">No reservations</p> : reservations.map((r: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : reservations.length === 0 ? <p className="text-muted-foreground text-center py-4">No reservations</p> : reservations.map((r: any) => (
             <div key={r.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`res-${r.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{r.reservationId} - {r.guestName}</p>

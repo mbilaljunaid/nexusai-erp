@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, XCircle, Clock, AlertCircle, User, DollarSign, Percent } from "lucide-react";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 interface ApprovalRequest {
     id: string;
@@ -94,14 +95,7 @@ export default function DealDesk() {
     const approvedRequests = approvalQueue.filter(r => r.status === "APPROVED");
     const rejectedRequests = approvalQueue.filter(r => r.status === "REJECTED");
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "APPROVED": return "text-green-700 bg-green-50 border-green-200";
-            case "REJECTED": return "text-red-700 bg-red-50 border-red-200";
-            case "PENDING": return "text-amber-700 bg-amber-50 border-amber-200";
-            default: return "text-gray-700 bg-gray-50 border-gray-200";
-        }
-    };
+
 
     const getSLAColor = (hours: number) => {
         if (hours <= 4) return "text-red-700";
@@ -362,8 +356,8 @@ export default function DealDesk() {
                                                 <div key={index} className="flex items-center justify-between">
                                                     <div className="flex items-center gap-3">
                                                         <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step.status === "APPROVED" ? "bg-green-100" :
-                                                                step.status === "REJECTED" ? "bg-red-100" :
-                                                                    "bg-amber-100"
+                                                            step.status === "REJECTED" ? "bg-red-100" :
+                                                                "bg-amber-100"
                                                             }`}>
                                                             {step.status === "APPROVED" ? <CheckCircle className="h-4 w-4 text-green-700" /> :
                                                                 step.status === "REJECTED" ? <XCircle className="h-4 w-4 text-red-700" /> :
@@ -374,9 +368,7 @@ export default function DealDesk() {
                                                             <div className="text-xs text-muted-foreground">{step.approver}</div>
                                                         </div>
                                                     </div>
-                                                    <Badge className={getStatusColor(step.status)}>
-                                                        {step.status}
-                                                    </Badge>
+                                                    <StatusBadge status={step.status} />
                                                 </div>
                                             ))}
                                         </div>

@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Clock, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -71,7 +73,7 @@ export default function ScheduledTasks() {
       </Card>
 
       <div className="grid gap-4">
-        {isLoading ? <p>Loading...</p> : tasks.length === 0 ? <p className="text-muted-foreground text-center py-4">No scheduled tasks</p> : tasks.map((task: any) => (
+        {isLoading ? <TableSkeleton rows={4} /> : tasks.length === 0 ? <p className="text-muted-foreground text-center py-4">No scheduled tasks</p> : tasks.map((task: any) => (
           <Card key={task.id} data-testid={`scheduled-task-${task.id}`} className="hover-elevate">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
@@ -80,7 +82,7 @@ export default function ScheduledTasks() {
                   <p className="text-sm text-muted-foreground">Scheduled for {task.schedule} ({task.frequency})</p>
                 </div>
                 <div className="flex gap-2 items-center">
-                  <Badge className={task.status === "active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>{task.status}</Badge>
+                  <StatusBadge status={task.status} />
                   <Button size="icon" variant="ghost" data-testid={`button-delete-${task.id}`}>
                     <Trash2 className="w-4 h-4" />
                   </Button>

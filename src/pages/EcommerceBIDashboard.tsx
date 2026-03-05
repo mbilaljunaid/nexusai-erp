@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardDashboard } from "@/components/ui/StandardDashboard";
 import { DashboardWidget } from "@/components/ui/DashboardWidget";
 import { TrendingUp, ShoppingCart, DollarSign, Percent } from "lucide-react";
@@ -63,7 +64,7 @@ export default function EcommerceBIDashboard() {
           type="chart"
         >
           <div className="space-y-2 mt-2">
-            {isLoading ? <p>Loading...</p> : metrics.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : metrics.slice(0, 5).map((m: any) => (
+            {isLoading ? <TableSkeleton rows={4} /> : metrics.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : metrics.slice(0, 5).map((m: any) => (
               <div key={m.id} className="p-3 border rounded-lg text-sm hover:bg-muted/50 transition-colors flex justify-between" data-testid={`metric-${m.id}`}>
                 <span className="font-medium">{m.category || "Category"}</span>
                 <span className="font-mono font-bold">${(m.revenue || 0).toFixed(0)}</span>
@@ -77,7 +78,7 @@ export default function EcommerceBIDashboard() {
           type="chart"
         >
           <div className="space-y-2 mt-2">
-            {isLoading ? <p>Loading...</p> : metrics.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : metrics.slice(0, 5).map((m: any) => (
+            {isLoading ? <TableSkeleton rows={4} /> : metrics.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : metrics.slice(0, 5).map((m: any) => (
               <div key={m.id} className="p-3 border rounded-lg text-sm hover:bg-muted/50 transition-colors flex justify-between items-center" data-testid={`product-${m.id}`}>
                 <span className="font-medium">{m.productName || "Product"}</span>
                 <Badge variant="secondary" className="font-mono text-xs">{m.units || 0} sold</Badge>

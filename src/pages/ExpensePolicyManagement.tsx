@@ -19,6 +19,7 @@ import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { MetricCard } from "@/components/MetricCard";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 const EXPENSE_CATEGORIES = [
     { value: "TRAVEL", label: "Travel" },
@@ -150,12 +151,7 @@ export default function ExpensePolicyManagement() {
             header: "Effective From",
             width: "150px",
             cell: (row: any, index: number, updateRow: (field: string, val: any) => void) => (
-                <Input
-                    type="date"
-                    className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent"
-                    value={row.effectiveFrom ? row.effectiveFrom.split('T')[0] : ''}
-                    onChange={(e) => updateRow("effectiveFrom", e.target.value || null)}
-                />
+                <DatePicker className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent" value={row.effectiveFrom ? row.effectiveFrom.split('T')[0] : ''} onChange={(v) => updateRow("effectiveFrom", v || null)} />
             )
         },
         {

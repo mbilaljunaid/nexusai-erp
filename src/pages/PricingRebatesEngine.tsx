@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -104,7 +105,7 @@ export default function PricingRebatesEngine() {
       <Card>
         <CardHeader><CardTitle className="text-base">Rebate Tiers</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : rebates.length === 0 ? <p className="text-muted-foreground text-center py-4">No tiers</p> : rebates.map((r: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : rebates.length === 0 ? <p className="text-muted-foreground text-center py-4">No tiers</p> : rebates.map((r: any) => (
             <div key={r.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`rebate-${r.id}`}>
               <div>
                 <p className="font-semibold">{r.customer}</p>

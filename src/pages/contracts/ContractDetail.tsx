@@ -4,6 +4,7 @@ import { useRoute } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     FileText,
@@ -95,16 +96,7 @@ export default function ContractDetail() {
         );
     }
 
-    const getStatusBadge = (status: string) => {
-        const variants: Record<string, any> = {
-            DRAFT: { variant: "secondary", className: "bg-gray-100 text-gray-800" },
-            ACTIVE: { variant: "default", className: "bg-green-100 text-green-800" },
-            PENDING: { variant: "secondary", className: "bg-yellow-100 text-yellow-800" },
-            EXPIRED: { variant: "outline", className: "border-red-300 text-red-800" }
-        };
-        const config = variants[status] || { variant: "outline" };
-        return <Badge {...config}>{status}</Badge>;
-    };
+
 
     return (
         <div className="p-6 space-y-6 max-w-7xl mx-auto">
@@ -120,7 +112,7 @@ export default function ContractDetail() {
                     </div>
                 </div>
                 <div className="flex gap-2">
-                    {getStatusBadge(contract.status)}
+                    {<StatusBadge status={contract.status} />}
                     {contract.esignStatus && (
                         <Badge variant="outline" className="gap-1">
                             {contract.esignStatus === 'SIGNED' && <CheckCircle className="h-3 w-3" />}
@@ -217,7 +209,7 @@ export default function ContractDetail() {
                                 <div className="space-y-2">
                                     <div className="flex items-center justify-between">
                                         <span className="text-muted-foreground">Contract Status</span>
-                                        {getStatusBadge(contract.status)}
+                                        <StatusBadge status={contract.status} />
                                     </div>
                                     {contract.esignStatus && (
                                         <div className="flex items-center justify-between">

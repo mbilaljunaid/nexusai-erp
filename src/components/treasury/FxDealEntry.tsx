@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 const fxDealFormSchema = z.object({
     dealNumber: z.string().optional(),
@@ -247,11 +248,7 @@ export function FxDealEntry() {
                                         <FormItem>
                                             <FormLabel>Trade Date</FormLabel>
                                             <FormControl>
-                                                <Input
-                                                    type="date"
-                                                    value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
-                                                    onChange={(e) => field.onChange(new Date(e.target.value))}
-                                                />
+                                                <DatePicker value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''} onChange={(v) => field.onChange(new Date(v))} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -264,11 +261,7 @@ export function FxDealEntry() {
                                         <FormItem>
                                             <FormLabel>Value Date</FormLabel>
                                             <FormControl>
-                                                <Input
-                                                    type="date"
-                                                    value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
-                                                    onChange={(e) => field.onChange(new Date(e.target.value))}
-                                                />
+                                                <DatePicker value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''} onChange={(v) => field.onChange(new Date(v))} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>

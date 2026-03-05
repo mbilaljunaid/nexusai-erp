@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface AgreementWizardProps {
     isOpen: boolean;
@@ -191,12 +192,7 @@ export function NettingAgreementWizard({ isOpen, onClose, onSuccess }: Agreement
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="effectiveDate">Effective Date</Label>
-                                        <Input
-                                            id="effectiveDate"
-                                            type="date"
-                                            value={effectiveDate}
-                                            onChange={(e) => setEffectiveDate(e.target.value)}
-                                        />
+                                        <DatePicker value={effectiveDate} onChange={v => setEffectiveDate(v)} />
                                     </div>
                                 </div>
                             )}

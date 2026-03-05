@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { Users, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 
 export default function HospitalityHRRostering() {
@@ -80,7 +82,7 @@ export default function HospitalityHRRostering() {
             <Input placeholder="Employee ID" value={newShift.employeeId} onChange={(e) => setNewShift({ ...newShift, employeeId: e.target.value })} data-testid="input-empid" className="text-sm" />
             <Input placeholder="Name" value={newShift.name} onChange={(e) => setNewShift({ ...newShift, name: e.target.value })} data-testid="input-name" className="text-sm" />
             <Input placeholder="Role" value={newShift.role} onChange={(e) => setNewShift({ ...newShift, role: e.target.value })} data-testid="input-role" className="text-sm" />
-            <Input placeholder="Date" type="date" value={newShift.date} onChange={(e) => setNewShift({ ...newShift, date: e.target.value })} data-testid="input-date" className="text-sm" />
+            <DatePicker className="text-sm" value={newShift.date} onChange={(v) => setNewShift({ ...newShift, date: v })} placeholder="Date" />
             <Button disabled={createMutation.isPending || !newShift.employeeId} size="sm" data-testid="button-schedule">
               <Plus className="w-3 h-3" />
             </Button>
@@ -91,7 +93,7 @@ export default function HospitalityHRRostering() {
       <Card>
         <CardHeader><CardTitle className="text-base">Shifts</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : shifts.length === 0 ? <p className="text-muted-foreground text-center py-4">No shifts</p> : shifts.map((s: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : shifts.length === 0 ? <p className="text-muted-foreground text-center py-4">No shifts</p> : shifts.map((s: any) => (
             <div key={s.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`shift-${s.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{s.employeeId} - {s.name}</p>

@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, Target, Loader2 } from "lucide-react";
 import { api } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export function CampaignEntryForm() {
   const [campaignName, setCampaignName] = useState("");
@@ -85,11 +86,11 @@ export function CampaignEntryForm() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label>Start Date *</Label>
-              <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} data-testid="input-campaign-start" />
+              <DatePicker value={startDate} onChange={v => setStartDate(v)} />
             </div>
             <div className="space-y-2">
               <Label>End Date *</Label>
-              <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} data-testid="input-campaign-end" />
+              <DatePicker value={endDate} onChange={v => setEndDate(v)} />
             </div>
             <div className="space-y-2">
               <Label>Budget *</Label>

@@ -6,6 +6,7 @@ import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import {
   BookOpen,
   Plus,
@@ -68,20 +69,7 @@ export default function JournalEntries() {
     setIsSideSheetOpen(true);
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "Posted":
-        return <Badge className="bg-green-50 text-green-700 border-green-200 hover:bg-green-50"><CheckCircle2 className="w-3 h-3 mr-1" /> Posted</Badge>;
-      case "Draft":
-        return <Badge variant="secondary" className="bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-100"><FileText className="w-3 h-3 mr-1" /> Draft</Badge>;
-      case "Error":
-        return <Badge variant="destructive" className="bg-red-50 text-red-700 border-red-200 hover:bg-red-50"><AlertCircle className="w-3 h-3 mr-1" /> Error</Badge>;
-      case "Processing":
-        return <Badge className="bg-blue-50 text-blue-700 border-blue-200 animate-pulse hover:bg-blue-50"><Loader2 className="w-3 h-3 mr-1 animate-spin" /> Posting...</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
-    }
-  };
+
 
   const columns: SpreadsheetColumn<GlJournal>[] = [
     {
@@ -126,7 +114,7 @@ export default function JournalEntries() {
       header: "Status",
       width: "15%",
       className: "text-center",
-      cell: (item: any) => getStatusBadge(item.status || "Draft")
+      cell: (item: any) => <StatusBadge status={item.status || "Draft"} />
     }
   ];
 

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -50,7 +51,7 @@ export default function FashionInventory() {
           <CardTitle className="text-base">Inventory by Size/Color</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : inventory.length === 0 ? <p className="text-muted-foreground text-center py-4">No inventory</p> : inventory.slice(0, 10).map((i: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : inventory.length === 0 ? <p className="text-muted-foreground text-center py-4">No inventory</p> : inventory.slice(0, 10).map((i: any) => (
             <div key={i.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`inv-${i.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{i.sku}</p>

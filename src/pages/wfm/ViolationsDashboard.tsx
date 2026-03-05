@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { AlertCircle, Clock } from "lucide-react";
@@ -24,7 +25,7 @@ export default function ViolationsDashboard() {
         <StandardPage title="Time Anomalies">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground">Monitor late-ins, early-outs, and policy violations.</p>
                 </div>
             </div>
@@ -60,9 +61,7 @@ export default function ViolationsDashboard() {
                         </TableHeader>
                         <TableBody>
                             {isLoading ? (
-                                <TableRow>
-                                    <TableCell colSpan={6} className="text-center py-8">Loading Violations...</TableCell>
-                                </TableRow>
+                                <TableRow><TableCell colSpan={6}><TableSkeleton rows={5} /></TableCell></TableRow>
                             ) : (
                                 violations?.map((v: any) => (
                                     <TableRow key={v.violation.id}>

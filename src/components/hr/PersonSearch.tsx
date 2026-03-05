@@ -14,6 +14,7 @@ import { TerminateWorkerDialog } from "./TerminateWorkerDialog";
 import { AuditLogView } from "./AuditLogView";
 import { DataQualityDashboard } from "./DataQualityDashboard";
 import { FileText, BarChart3 } from "lucide-react";
+import { DatePicker } from "@/components/ui/DatePicker";
 
 export function PersonSearch() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -24,12 +25,12 @@ export function PersonSearch() {
     const [selectedPersonId, setSelectedPersonId] = useState<string | null>(null);
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
-    const [effectiveDate, setEffectiveDate] = useState<Date>(new Date());
+    const [effectiveDate, setEffectiveDate] = useState<string>(new Date().toISOString().split('T')[0]);
     const debouncedSearch = useDebounce(searchTerm, 500);
 
     const { data: result, isLoading } = useQuery({
-        queryKey: ["hr-persons-search", debouncedSearch, page, limit, effectiveDate.toISOString().split('T')[0]],
-        queryFn: () => api.hr.persons.search(debouncedSearch, page, limit, effectiveDate.toISOString().split('T')[0]),
+        queryKey: ["hr-persons-search", debouncedSearch, page, limit, effectiveDate],
+        queryFn: () => api.hr.persons.search(debouncedSearch, page, limit, effectiveDate),
         placeholderData: (prev) => prev
     });
 
@@ -80,12 +81,11 @@ export function PersonSearch() {
                 <div className="flex items-center gap-2">
                     <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-md border text-sm">
                         <span className="pl-2 text-muted-foreground">As Of:</span>
-                        <input
-                            type="date"
+                        <DatePicker
+                            value={effectiveDate}
+                            onChange={(v) => setEffectiveDate(v)}
                             aria-label="As Of Date"
                             className="bg-transparent border-none p-1 focus:ring-0 text-sm"
-                            value={effectiveDate.toISOString().split('T')[0]}
-                            onChange={(e) => setEffectiveDate(new Date(e.target.value))}
                         />
                     </div>
                     <Button onClick={() => setIsHireOpen(true)}>

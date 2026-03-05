@@ -9,6 +9,7 @@ import { Megaphone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export function CampaignForm() {
     const { toast } = useToast();
@@ -123,12 +124,7 @@ export function CampaignForm() {
 
                         <div className="space-y-2">
                             <Label htmlFor="startDate">Start Date</Label>
-                            <Input
-                                id="startDate"
-                                type="date"
-                                value={formData.startDate}
-                                onChange={(e) => handleChange("startDate", e.target.value)}
-                            />
+                            <DatePicker value={formData.startDate} onChange={(v) => handleChange("startDate", v)} />
                         </div>
 
                         <div className="space-y-2">

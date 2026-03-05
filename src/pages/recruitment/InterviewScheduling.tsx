@@ -9,6 +9,7 @@ import { Calendar, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 
 
@@ -58,7 +59,7 @@ export default function InterviewScheduling() {
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="text-sm font-medium">Date</label>
-                            <Input type="date" className="w-full border rounded-md p-2" />
+                            <DatePicker className="w-full border rounded-md p-2" onChange={() => {}} />
                         </div>
                         <div>
                             <label className="text-sm font-medium">Time</label>

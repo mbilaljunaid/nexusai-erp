@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Sparkles, AlertTriangle, Plus, Check } from "lucide-react";
 import { api } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export function GLEntryForm() {
   const { toast } = useToast();
@@ -105,13 +106,7 @@ export function GLEntryForm() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="date">Journal Date *</Label>
-                  <Input
-                    id="date"
-                    type="date"
-                    value={journalDate}
-                    onChange={(e) => setJournalDate(e.target.value)}
-                    className="text-sm"
-                  />
+                  <DatePicker className="text-sm" value={journalDate} onChange={v => setJournalDate(v)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="period">Accounting Period</Label>

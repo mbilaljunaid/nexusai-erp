@@ -16,6 +16,7 @@ import {
     CheckCircle
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 const MILEAGE_RATES = {
     BUSINESS: { rate: 0.67, label: "Business (IRS 2026)" },
@@ -253,22 +254,14 @@ export default function ExpenseCalculators() {
                                     <Calendar className="h-3 w-3" />
                                     Start Date
                                 </label>
-                                <Input
-                                    type="date"
-                                    value={startDate}
-                                    onChange={(e) => setStartDate(e.target.value)}
-                                />
+                                <DatePicker value={startDate} onChange={v => setStartDate(v)} />
                             </div>
                             <div>
                                 <label className="text-sm font-medium mb-2 block flex items-center gap-1">
                                     <Calendar className="h-3 w-3" />
                                     End Date
                                 </label>
-                                <Input
-                                    type="date"
-                                    value={endDate}
-                                    onChange={(e) => setEndDate(e.target.value)}
-                                />
+                                <DatePicker value={endDate} onChange={v => setEndDate(v)} />
                             </div>
                         </div>
 

@@ -8,6 +8,7 @@ import { Users, DollarSign } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface Employee {
   id: string;
@@ -110,23 +111,11 @@ export function EmployeeToPayrollForm({ employee, onClose }: { employee: Employe
             </div>
             <div>
               <Label htmlFor="period-start">Pay Period Start</Label>
-              <Input
-                id="period-start"
-                type="date"
-                value={payPeriodStart}
-                onChange={(e) => setPayPeriodStart(e.target.value)}
-                data-testid="input-period-start"
-              />
+              <DatePicker value={payPeriodStart} onChange={v => setPayPeriodStart(v)} />
             </div>
             <div>
               <Label htmlFor="period-end">Pay Period End</Label>
-              <Input
-                id="period-end"
-                type="date"
-                value={payPeriodEnd}
-                onChange={(e) => setPayPeriodEnd(e.target.value)}
-                data-testid="input-period-end"
-              />
+              <DatePicker value={payPeriodEnd} onChange={v => setPayPeriodEnd(v)} />
             </div>
           </div>
 

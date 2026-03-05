@@ -4,6 +4,7 @@ import { Heart, Shield, Eye, Star, DollarSign, BarChart3, CheckCircle2, X } from
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface BenefitPlan {
     id: string;
@@ -270,7 +271,7 @@ export default function BenefitsEnrollment() {
                             {dependents.map((d, i) => (
                                 <div key={i} className="dep-row">
                                     <input className="dep-input" placeholder="Name" value={d.name} onChange={e => { const n = [...dependents]; n[i].name = e.target.value; setDependents(n); }} aria-label="Dependent name" />
-                                    <Input className="dep-input" type="date" value={d.dob} onChange={e => { const n = [...dependents]; n[i].dob = e.target.value; setDependents(n); }} aria-label="Dependent Date of Birth" />
+                                    <DatePicker className="dep-input" value={d.dob} onChange={v => { const n = [...dependents]; n[i].dob = v; setDependents(n); }} aria-label="Dependent Date of Birth" />
                                     <select className="dep-input" value={d.relationship} onChange={e => { const n = [...dependents]; n[i].relationship = e.target.value; setDependents(n); }} aria-label="Dependent Relationship">
                                         {['Spouse', 'Child', 'Parent', 'Domestic Partner'].map(r => <option key={r} value={r}>{r}</option>)}
                                     </select>

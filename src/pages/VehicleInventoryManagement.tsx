@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -90,7 +91,7 @@ export default function VehicleInventoryManagement() {
       <Card>
         <CardHeader><CardTitle className="text-base">Vehicles</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : vehicles.length === 0 ? <p className="text-muted-foreground text-center py-4">No vehicles</p> : vehicles.map((v: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : vehicles.length === 0 ? <p className="text-muted-foreground text-center py-4">No vehicles</p> : vehicles.map((v: any) => (
             <div key={v.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`vehicle-${v.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{v.vin}</p>

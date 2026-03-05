@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -89,7 +90,7 @@ export default function ClinicalDocumentation() {
       <Card>
         <CardHeader><CardTitle className="text-base">Notes</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : notes.length === 0 ? <p className="text-muted-foreground text-center py-4">No notes</p> : notes.map((n: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : notes.length === 0 ? <p className="text-muted-foreground text-center py-4">No notes</p> : notes.map((n: any) => (
             <div key={n.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`note-${n.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{n.noteId}</p>

@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { FileText, Download, Filter, Building2 } from "lucide-react";
 import { ExportButton } from "@/components/ExportButton";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 function useActiveBu() {
     return useMemo(() => ({
@@ -223,21 +224,11 @@ export default function APReports() {
                             <div className="flex gap-4 items-end">
                                 <div className="flex-1">
                                     <Label htmlFor="startDate">Start Date</Label>
-                                    <Input
-                                        id="startDate"
-                                        type="date"
-                                        value={auditFilters.startDate}
-                                        onChange={(e) => setAuditFilters({ ...auditFilters, startDate: e.target.value })}
-                                    />
+                                    <DatePicker value={auditFilters.startDate} onChange={(v) => setAuditFilters({ ...auditFilters, startDate: v })} />
                                 </div>
                                 <div className="flex-1">
                                     <Label htmlFor="endDate">End Date</Label>
-                                    <Input
-                                        id="endDate"
-                                        type="date"
-                                        value={auditFilters.endDate}
-                                        onChange={(e) => setAuditFilters({ ...auditFilters, endDate: e.target.value })}
-                                    />
+                                    <DatePicker value={auditFilters.endDate} onChange={(v) => setAuditFilters({ ...auditFilters, endDate: v })} />
                                 </div>
                                 <div className="flex-1">
                                     <Label htmlFor="action">Action</Label>

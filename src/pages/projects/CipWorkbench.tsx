@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Building2, Plus, Send, FileText, CheckCircle2, Clock, ArrowRight, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -139,22 +140,7 @@ export default function CipWorkbench() {
 
     const selectedAsset = assets.find(a => a.id === selectedAssetId);
 
-    const getStatusBadge = (status: ProjectAsset["status"]) => {
-        const variants: Record<typeof status, { variant: any; icon: any }> = {
-            "DRAFT": { variant: "secondary", icon: FileText },
-            "INF-PENDING": { variant: "default", icon: Clock },
-            "INTERFACED": { variant: "default", icon: CheckCircle2 }
-        };
 
-        const config = variants[status];
-        const Icon = config.icon;
-
-        return (
-            <Badge variant={config.variant} className={status === "INTERFACED" ? "bg-green-600" : ""}>
-                <Icon className="h-3 w-3 mr-1" /> {status}
-            </Badge>
-        );
-    };
 
     return (
         <StandardPage
@@ -283,10 +269,7 @@ export default function CipWorkbench() {
                         </CardHeader>
                         <CardContent>
                             {assetsLoading ? (
-                                <div className="text-center py-12">
-                                    <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-                                </div>
-                            ) : assets.length === 0 ? (
+                                <TableSkeleton rows={5} /> : assets.length === 0 ? (
                                 <div className="text-center py-12 text-muted-foreground">
                                     <Building2 className="h-12 w-12 mx-auto mb-4 opacity-50" />
                                     <p>No assets created yet. Click "New Asset" to start.</p>
@@ -314,7 +297,7 @@ export default function CipWorkbench() {
                                                 <TableCell><Badge variant="outline">{asset.assetType}</Badge></TableCell>
                                                 <TableCell>{asset.lineCount || 0} lines</TableCell>
                                                 <TableCell className="text-right font-mono">${(asset.totalCapitalizedAmount || 0).toFixed(2)}</TableCell>
-                                                <TableCell>{getStatusBadge(asset.status)}</TableCell>
+                                                <TableCell><StatusBadge status={asset.status} /></TableCell>
                                                 <TableCell>
                                                     <Button
                                                         variant="ghost"
@@ -352,7 +335,7 @@ export default function CipWorkbench() {
                                         <p className="text-xs text-muted-foreground">{selectedAsset.assetDescription}</p>
                                         <div className="flex justify-between text-xs pt-2 border-t">
                                             <span className="text-muted-foreground">Status:</span>
-                                            {getStatusBadge(selectedAsset.status)}
+                                            <StatusBadge status={selectedAsset.status} />
                                         </div>
                                         {selectedAsset.assetNumber && (
                                             <div className="flex justify-between text-xs">

@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { format } from "date-fns";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface FxRate {
     id: string;
@@ -258,12 +259,7 @@ export default function FxTranslationDashboard() {
                                             </div>
                                             <div className="space-y-2">
                                                 <Label htmlFor="date">Conversion Date</Label>
-                                                <Input
-                                                    id="date"
-                                                    type="date"
-                                                    value={newRate.conversionDate}
-                                                    onChange={(e) => setNewRate({ ...newRate, conversionDate: e.target.value })}
-                                                />
+                                                <DatePicker value={newRate.conversionDate} onChange={(v) => setNewRate({ ...newRate, conversionDate: v })} />
                                             </div>
                                         </div>
                                         <DialogFooter>

@@ -30,6 +30,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface Props {
     isOpen: boolean;
@@ -168,14 +169,7 @@ export function ApPprSideSheet({ isOpen, onClose, batchId }: Props) {
                                 <Label htmlFor="checkDate">Scheduled Pay Date</Label>
                                 <div className="relative">
                                     <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                    <Input
-                                        id="checkDate"
-                                        type="date"
-                                        className="pl-9"
-                                        value={checkDate}
-                                        onChange={(e) => setCheckDate(e.target.value)}
-                                        required
-                                    />
+                                    <DatePicker className="pl-9" value={checkDate} onChange={v => setCheckDate(v)} />
                                 </div>
                             </div>
                             <Button className="w-full" disabled={createMutation.isPending}>

@@ -30,6 +30,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { DatePickerField } from '@/components/forms/DatePickerField';
 
 interface SourceEvent {
     id: string;
@@ -447,7 +448,7 @@ export default function RevenueSourceEvents() {
                                 <FormField control={form.control} name="eventDate" render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Event Date *</FormLabel>
-                                        <FormControl><Input type="date" {...field} /></FormControl>
+                                        <FormControl><DatePickerField {...field} /></FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )} />

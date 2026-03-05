@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import { GitBranch, Plus, Copy, ArrowUpCircle, TrendingUp, TrendingDown } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -267,9 +268,7 @@ export default function ScenarioComparison() {
                                         <TableCell>{scenario.createdBy}</TableCell>
                                         <TableCell>{new Date(scenario.createdAt).toLocaleDateString()}</TableCell>
                                         <TableCell>
-                                            {scenario.status === "DRAFT" && <Badge variant="outline">Draft</Badge>}
-                                            {scenario.status === "ACTIVE" && <Badge>Active</Badge>}
-                                            {scenario.status === "PUBLISHED" && <Badge className="bg-green-500">Published</Badge>}
+                                            <StatusBadge status={scenario.status} />
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex gap-1">

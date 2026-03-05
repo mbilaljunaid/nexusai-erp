@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -68,7 +69,7 @@ export default function KPIDashboard() {
       </Card>
 
       <div className="grid grid-cols-2 gap-4">
-        {isLoading ? <p>Loading...</p> : kpis.length === 0 ? <p className="text-muted-foreground">No KPIs</p> : kpis.map((kpi: any) => (
+        {isLoading ? <TableSkeleton rows={4} /> : kpis.length === 0 ? <p className="text-muted-foreground">No KPIs</p> : kpis.map((kpi: any) => (
           <Card key={kpi.id} className="hover-elevate" data-testid={`kpi-${kpi.id}`}>
             <CardContent className="pt-6">
               <div className="flex justify-between items-start mb-4">

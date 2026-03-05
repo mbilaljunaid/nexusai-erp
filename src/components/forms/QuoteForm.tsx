@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import type { Opportunity } from "@/types/erp-types";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface QuoteFormProps {
     opportunityId?: string; // If creating from opp
@@ -129,12 +130,7 @@ export function QuoteForm({ opportunityId }: QuoteFormProps) {
 
                         <div className="space-y-2">
                             <Label htmlFor="expirationDate">Expiration Date</Label>
-                            <Input
-                                id="expirationDate"
-                                type="date"
-                                value={formData.expirationDate}
-                                onChange={(e) => handleChange("expirationDate", e.target.value)}
-                            />
+                            <DatePicker value={formData.expirationDate} onChange={(v) => handleChange("expirationDate", v)} />
                         </div>
                     </div>
 

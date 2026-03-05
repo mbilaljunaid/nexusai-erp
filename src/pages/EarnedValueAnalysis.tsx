@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +44,7 @@ export default function EarnedValueAnalysis() {
       <Card>
         <CardHeader><CardTitle className="text-base">EVM Analysis</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : evas.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : evas.map((e: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : evas.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : evas.map((e: any) => (
             <div key={e.id} className="p-3 border rounded-lg hover-elevate" data-testid={`eva-${e.id}`}>
               <div className="flex justify-between items-start mb-2">
                 <div>

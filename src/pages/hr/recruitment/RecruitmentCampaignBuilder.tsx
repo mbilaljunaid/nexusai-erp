@@ -24,6 +24,7 @@ import {
     Target
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export default function RecruitmentCampaignBuilder() {
     const { toast } = useToast();
@@ -152,7 +153,7 @@ export default function RecruitmentCampaignBuilder() {
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-1">
                                                 <Label className="text-xs">Last Engaged Before</Label>
-                                                <Input type="date" className="h-8 text-xs" />
+                                                <DatePicker className="h-8 text-xs" onChange={() => {}} />
                                             </div>
                                             <div className="space-y-1">
                                                 <Label className="text-xs">Required Profile Readiness</Label>

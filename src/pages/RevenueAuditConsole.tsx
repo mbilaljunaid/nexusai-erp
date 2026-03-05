@@ -19,6 +19,7 @@ import {
     CheckCircle2
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
@@ -210,9 +211,7 @@ export default function RevenueAuditConsole() {
                                                 { id: "amount", header: "Amount", width: "150px", cell: (row: any) => <span className="font-mono">${parseFloat(row.amount).toLocaleString()}</span> },
                                                 {
                                                     id: "status", header: "Status", width: "150px", cell: (row: any) => (
-                                                        <Badge className={row.status === "Posted" ? "bg-green-100 text-green-700 hover:bg-green-100 border-none" : "bg-blue-100 text-blue-700 hover:bg-blue-100 border-none"}>
-                                                            {row.status}
-                                                        </Badge>
+                                                        <StatusBadge status={row.status} />
                                                     )
                                                 },
                                                 { id: "glJournalId", header: "GL Journal", width: "150px", cell: (row: any) => row.glJournalId ? <span className="font-mono text-xs">{row.glJournalId}</span> : "-" }

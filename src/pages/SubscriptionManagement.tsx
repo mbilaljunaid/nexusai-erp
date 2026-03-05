@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import {
   Select,
   SelectContent,
@@ -133,20 +134,7 @@ export default function SubscriptionManagement() {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200";
-      case "paused":
-        return "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200";
-      case "cancelled":
-        return "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200";
-      case "expired":
-        return "bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200";
-      default:
-        return "";
-    }
-  };
+
 
   return (
     <div className="min-h-screen p-6 space-y-6">
@@ -230,9 +218,7 @@ export default function SubscriptionManagement() {
                       <Badge className={getPlanColor(sub.plan)}>
                         {sub.plan.toUpperCase()}
                       </Badge>
-                      <Badge className={getStatusColor(sub.status)}>
-                        {sub.status.toUpperCase()}
-                      </Badge>
+                      <StatusBadge status={sub.status} />
                     </div>
                     <p className="text-xs text-muted-foreground">ID: {sub.id}</p>
                   </div>

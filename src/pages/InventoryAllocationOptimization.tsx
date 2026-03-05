@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -49,7 +50,7 @@ export default function InventoryAllocationOptimization() {
       <Card>
         <CardHeader><CardTitle className="text-base">Allocations</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : allocations.length === 0 ? <p className="text-muted-foreground text-center py-4">No allocations</p> : allocations.map((a: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : allocations.length === 0 ? <p className="text-muted-foreground text-center py-4">No allocations</p> : allocations.map((a: any) => (
             <div key={a.id} className="p-3 border rounded hover-elevate" data-testid={`alloc-${a.id}`}>
               <div className="flex justify-between items-start mb-2">
                 <p className="font-semibold text-sm">{a.productId || "Product"}</p>

@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -83,14 +84,7 @@ export default function SupplierOrders() {
         },
     });
 
-    const getStatusBadge = (status: string) => {
-        switch (status) {
-            case "SENT": return <Badge variant="secondary">New</Badge>;
-            case "OPEN": return <Badge variant="outline" className="border-green-500 text-green-600">Acknowledged</Badge>;
-            case "COMPLETED": return <Badge className="bg-green-600">Completed</Badge>;
-            default: return <Badge variant="outline">{status}</Badge>;
-        }
-    };
+
 
     const createInvoiceMutation = useMutation({
         mutationFn: async (po: any) => {
@@ -390,7 +384,7 @@ export default function SupplierOrders() {
                                         </TableCell>
                                         <TableCell className="font-medium">{po.poNumber}</TableCell>
                                         <TableCell>{po.orderDate ? format(new Date(po.orderDate), 'MMM d, yyyy') : '-'}</TableCell>
-                                        <TableCell>{getStatusBadge(po.status)}</TableCell>
+                                        <TableCell><StatusBadge status={po.status} /></TableCell>
                                         <TableCell className="text-right">
                                             {new Intl.NumberFormat('en-US', { style: 'currency', currency: po.currency || 'USD' }).format(Number(po.totalAmount))}
                                         </TableCell>

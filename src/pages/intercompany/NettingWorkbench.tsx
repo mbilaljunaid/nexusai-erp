@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -184,7 +185,7 @@ export default function NettingWorkbench() {
                                 <TableBody>
                                     {isLoadingBatches ? (
                                         <TableRow>
-                                            <TableCell colSpan={9} className="text-center">Loading...</TableCell>
+                                            <TableCell colSpan={9} className="text-center"><TableSkeleton rows={4} /></TableCell>
                                         </TableRow>
                                     ) : batches?.length === 0 ? (
                                         <TableRow>

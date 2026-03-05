@@ -23,6 +23,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { DatePickerField } from '@/components/forms/DatePickerField';
 
 const lifeEventSchema = z.object({
     eventDate: z.string().min(1, "Event Date is required"),
@@ -131,7 +132,7 @@ export default function LifeEvents() {
                                                     <div className="relative">
                                                         <CalendarDays className="absolute left-3 top-3 h-4 w-4 text-zinc-400" />
                                                         <FormControl>
-                                                            <Input type="date" className="pl-10" {...field} />
+                                                            <DatePickerField {...field} className="pl-10" />
                                                         </FormControl>
                                                     </div>
                                                     <FormMessage />
@@ -147,7 +148,7 @@ export default function LifeEvents() {
                                                     <div className="relative">
                                                         <CalendarDays className="absolute left-3 top-3 h-4 w-4 text-zinc-400" />
                                                         <FormControl>
-                                                            <Input type="date" className="pl-10" {...field} />
+                                                            <DatePickerField {...field} className="pl-10" />
                                                         </FormControl>
                                                     </div>
                                                     <FormMessage />

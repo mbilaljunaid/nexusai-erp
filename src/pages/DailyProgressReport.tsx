@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { BarChart3, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export default function DailyProgressReport() {
   const { toast } = useToast();
@@ -76,7 +78,7 @@ export default function DailyProgressReport() {
         <CardHeader><CardTitle className="text-base">Submit DPR</CardTitle></CardHeader>
         <CardContent className="space-y-3">
           <div className="grid grid-cols-5 gap-2">
-            <Input type="date" value={newDPR.date} onChange={(e) => setNewDPR({ ...newDPR, date: e.target.value })} data-testid="input-date" className="text-sm" />
+            <DatePicker className="text-sm" value={newDPR.date} onChange={(v) => setNewDPR({ ...newDPR, date: v })} />
             <Input placeholder="Progress %" type="number" min="0" max="100" value={newDPR.progress} onChange={(e) => setNewDPR({ ...newDPR, progress: e.target.value })} data-testid="input-progress" className="text-sm" />
             <Input placeholder="Man-Hours" type="number" value={newDPR.manHours} onChange={(e) => setNewDPR({ ...newDPR, manHours: e.target.value })} data-testid="input-mh" className="text-sm" />
             <Input placeholder="Material Used" type="number" value={newDPR.materialUsed} onChange={(e) => setNewDPR({ ...newDPR, materialUsed: e.target.value })} data-testid="input-mat" className="text-sm" />
@@ -90,7 +92,7 @@ export default function DailyProgressReport() {
       <Card>
         <CardHeader><CardTitle className="text-base">DPRs</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : dprs.length === 0 ? <p className="text-muted-foreground text-center py-4">No DPRs</p> : dprs.map((d: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : dprs.length === 0 ? <p className="text-muted-foreground text-center py-4">No DPRs</p> : dprs.map((d: any) => (
             <div key={d.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`dpr-${d.id}`}>
               <div>
                 <p className="font-semibold">{d.date}</p>

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Cloud, RefreshCw, CheckCircle2, AlertCircle, Settings, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -114,25 +115,7 @@ export default function ErpIntegrationDashboard() {
         }
     });
 
-    const getStatusBadge = (status: ErpConnection["status"]) => {
-        if (status === "CONNECTED") {
-            return <Badge variant="default" className="bg-green-600"><CheckCircle2 className="h-3 w-3 mr-1" /> Connected</Badge>;
-        }
-        if (status === "ERROR") {
-            return <Badge variant="destructive"><AlertCircle className="h-3 w-3 mr-1" /> Error</Badge>;
-        }
-        return <Badge variant="secondary">Disconnected</Badge>;
-    };
 
-    const getJobStatusBadge = (status: ImportJob["status"]) => {
-        if (status === "SUCCESS") {
-            return <Badge variant="default" className="bg-green-600">Success</Badge>;
-        }
-        if (status === "FAILED") {
-            return <Badge variant="destructive">Failed</Badge>;
-        }
-        return <Badge variant="secondary">Running</Badge>;
-    };
 
     return (
         <StandardPage
@@ -287,7 +270,7 @@ export default function ErpIntegrationDashboard() {
                                         <TableCell className="font-mono text-xs text-muted-foreground truncate max-w-48">
                                             {conn.endpoint}
                                         </TableCell>
-                                        <TableCell>{getStatusBadge(conn.status)}</TableCell>
+                                        <TableCell><StatusBadge status={conn.status} /></TableCell>
                                         <TableCell className="text-xs text-muted-foreground">
                                             {conn.lastSync ? format(new Date(conn.lastSync), "MMM dd, HH:mm") : "Never"}
                                         </TableCell>
@@ -343,7 +326,7 @@ export default function ErpIntegrationDashboard() {
                                             </TableCell>
                                             <TableCell className="text-right font-mono">{job.recordsProcessed}</TableCell>
                                             <TableCell className="text-right font-mono text-red-600">{job.recordsFailed}</TableCell>
-                                            <TableCell>{getJobStatusBadge(job.status)}</TableCell>
+                                            <TableCell><StatusBadge status={job.status} /></TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>

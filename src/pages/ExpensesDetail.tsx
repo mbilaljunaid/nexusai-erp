@@ -36,6 +36,7 @@ import {
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export default function ExpensesDetail() {
   const [, params] = useRoute("/finance/expenses/:id");
@@ -554,7 +555,7 @@ export default function ExpensesDetail() {
           <div className="space-y-4 py-4">
             <div>
               <label className="text-sm font-medium mb-2 block">Date</label>
-              <Input type="date" id="lineDate" />
+              <DatePicker onChange={() => {}} />
             </div>
             <div>
               <label className="text-sm font-medium mb-2 block">Category</label>

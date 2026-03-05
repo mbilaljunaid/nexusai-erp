@@ -7,6 +7,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { DollarSign, Clock, AlertTriangle, Users } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 
 
@@ -36,9 +37,9 @@ export default function WfmAnalytics() {
                 </div>
                 <div className="flex gap-2">
                     {/* Basic Date Picker mockup */}
-                    <Input type="date" value={dateRange.start} onChange={e => setDateRange({ ...dateRange, start: e.target.value })} className="border p-2 rounded" />
+                    <DatePicker className="border p-2 rounded" value={dateRange.start} onChange={v => setDateRange({ ...dateRange, start: v })} />
                     <span className="self-center">-</span>
-                    <Input type="date" value={dateRange.end} onChange={e => setDateRange({ ...dateRange, end: e.target.value })} className="border p-2 rounded" />
+                    <DatePicker className="border p-2 rounded" value={dateRange.end} onChange={v => setDateRange({ ...dateRange, end: v })} />
                 </div>
             </div>
 

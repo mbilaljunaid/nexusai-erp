@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -93,7 +94,7 @@ export default function CycleCountingAudit() {
       <Card>
         <CardHeader><CardTitle className="text-base">Counts</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : counts.length === 0 ? <p className="text-muted-foreground text-center py-4">No counts</p> : counts.map((c: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : counts.length === 0 ? <p className="text-muted-foreground text-center py-4">No counts</p> : counts.map((c: any) => (
             <div key={c.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`count-${c.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{c.productId} - {c.binId}</p>

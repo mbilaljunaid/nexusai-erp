@@ -41,6 +41,7 @@ import { cn } from "@/lib/utils";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { AuditSidebar, AuditEvent } from "@/components/audit/AuditSidebar";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface JournalLine {
     id: string; // temp id for UI
@@ -467,11 +468,7 @@ export default function JournalEntry() {
                             </div>
                             <div className="space-y-2">
                                 <Label>Reversal Date <span className="text-xs text-muted-foreground">(Optional)</span></Label>
-                                <Input
-                                    type="date"
-                                    value={header.reversalDate}
-                                    onChange={(e) => setHeader({ ...header, reversalDate: e.target.value })}
-                                />
+                                <DatePicker value={header.reversalDate} onChange={(v) => setHeader({ ...header, reversalDate: v })} />
                             </div>
                         </>
                     )}

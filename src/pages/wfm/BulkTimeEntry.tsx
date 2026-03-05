@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 
 export interface TimeEntryRow {
@@ -53,7 +54,7 @@ export default function BulkTimeEntry() {
             header: "Date",
             width: "150px",
             cell: (row, index, updateRow) => (
-                <Input type="date" className="h-9 w-full" value={row.date} onChange={e => updateRow("date", e.target.value)} />
+                <DatePicker className="h-9 w-full" value={row.date} onChange={v => updateRow("date", v)} />
             )
         },
         {

@@ -5,12 +5,13 @@ import { Header, Footer } from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 
-import { 
+import {
   Search, Briefcase, Clock, DollarSign, ChevronLeft, ChevronRight,
   AlertCircle, Users, Calendar, ArrowUpDown, Filter
 } from "lucide-react";
@@ -101,15 +102,7 @@ export default function MarketplaceJobs() {
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "open": return <Badge className="bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20">Open</Badge>;
-      case "in_progress": return <Badge className="bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20">In Progress</Badge>;
-      case "completed": return <Badge variant="secondary">Completed</Badge>;
-      case "cancelled": return <Badge variant="destructive">Cancelled</Badge>;
-      default: return <Badge variant="outline">{status}</Badge>;
-    }
-  };
+
 
   return (
     <StandardPage title="NexusAIFirst Job Board">
@@ -121,11 +114,11 @@ export default function MarketplaceJobs() {
               <Badge className="mb-4" style={{ backgroundColor: `hsl(var(--primary) / 0.1)`, color: `hsl(var(--primary))` }}>
                 JOB BOARD
               </Badge>
-              
+
               <p className="text-xl text-muted-foreground mb-8" data-testid="text-jobs-description">
                 Find ERP consulting opportunities or post a job to hire experienced NexusAIFirst experts
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -154,7 +147,7 @@ export default function MarketplaceJobs() {
                   <Filter className="w-4 h-4" />
                   Filters
                 </h3>
-                
+
                 <div className="space-y-4">
                   <div>
                     <label className="text-xs text-muted-foreground mb-1.5 block">Category</label>
@@ -279,7 +272,7 @@ export default function MarketplaceJobs() {
                             <div className="flex-1">
                               <div className="flex items-center gap-2 flex-wrap mb-2">
                                 <h3 className="text-lg font-semibold">{job.title}</h3>
-                                {getStatusBadge(job.status)}
+                                <StatusBadge status={job.status} />
                                 {getUrgencyBadge(job.urgency)}
                               </div>
                               <p className="text-muted-foreground line-clamp-2 mb-3">

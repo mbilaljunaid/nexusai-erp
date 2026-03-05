@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Truck, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export default function CarrierProcurement() {
   const { toast } = useToast();
@@ -78,7 +80,7 @@ export default function CarrierProcurement() {
             <Input placeholder="Rate ID" value={newRate.rateId} onChange={(e) => setNewRate({ ...newRate, rateId: e.target.value })} data-testid="input-rid" className="text-sm" />
             <Input placeholder="Lane" value={newRate.lane} onChange={(e) => setNewRate({ ...newRate, lane: e.target.value })} data-testid="input-lane" className="text-sm" />
             <Input placeholder="Rate/kg" type="number" value={newRate.rate} onChange={(e) => setNewRate({ ...newRate, rate: e.target.value })} data-testid="input-rate" className="text-sm" />
-            <Input placeholder="Effective From" type="date" value={newRate.effectiveFrom} onChange={(e) => setNewRate({ ...newRate, effectiveFrom: e.target.value })} data-testid="input-from" className="text-sm" />
+            <DatePicker className="text-sm" value={newRate.effectiveFrom} onChange={(v) => setNewRate({ ...newRate, effectiveFrom: v })} placeholder="Effective From" />
             <Button onClick={() => createMutation.mutate(newRate)} disabled={createMutation.isPending || !newRate.rateId} size="sm" data-testid="button-create">
               <Plus className="w-3 h-3" />
             </Button>
@@ -89,7 +91,7 @@ export default function CarrierProcurement() {
       <Card>
         <CardHeader><CardTitle className="text-base">Rate Cards</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : rates.length === 0 ? <p className="text-muted-foreground text-center py-4">No rates</p> : rates.map((r: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : rates.length === 0 ? <p className="text-muted-foreground text-center py-4">No rates</p> : rates.map((r: any) => (
             <div key={r.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`rate-${r.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{r.rateId}</p>

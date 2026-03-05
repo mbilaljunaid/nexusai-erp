@@ -3,11 +3,12 @@ import { useRoute, Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  User, Briefcase, Package, Star, Award, 
+import {
+  User, Briefcase, Package, Star, Award,
   MessageSquare, Calendar, ArrowLeft, MapPin, Building2,
   Shield, TrendingUp, Clock, CheckCircle, ExternalLink
 } from "lucide-react";
@@ -92,20 +93,7 @@ export default function ContributorProfile() {
     return levels[level] || levels[0];
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "open": case "active": case "pending":
-        return <Badge className="bg-yellow-500/10 text-yellow-600 dark:text-yellow-400">{status}</Badge>;
-      case "in_progress": case "accepted":
-        return <Badge className="bg-blue-500/10 text-blue-600 dark:text-blue-400">{status.replace("_", " ")}</Badge>;
-      case "completed": case "closed":
-        return <Badge className="bg-green-500/10 text-green-600 dark:text-green-400">{status}</Badge>;
-      case "cancelled": case "rejected":
-        return <Badge variant="destructive">{status}</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
-    }
-  };
+
 
   if (isLoading) {
     return (
@@ -266,7 +254,7 @@ export default function ContributorProfile() {
                             <div className="text-lg font-bold text-primary">
                               ${parseFloat(service.price).toLocaleString()}
                             </div>
-                            {getStatusBadge(service.status)}
+                            <StatusBadge status={service.status} />
                           </div>
                         </div>
                       </CardContent>
@@ -313,7 +301,7 @@ export default function ContributorProfile() {
                             <div className="text-lg font-bold text-primary">
                               ${parseFloat(job.budget_min).toLocaleString()} - ${parseFloat(job.budget_max).toLocaleString()}
                             </div>
-                            {getStatusBadge(job.status)}
+                            <StatusBadge status={job.status} />
                           </div>
                         </div>
                       </CardContent>

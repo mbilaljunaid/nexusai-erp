@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -97,7 +98,7 @@ export default function MRPMPSPlanning() {
       <Card>
         <CardHeader><CardTitle className="text-base">MRP Suggestions</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : plans.length === 0 ? <p className="text-muted-foreground text-center py-4">No plans</p> : plans.map((p: any) => {
+          {isLoading ? <TableSkeleton rows={4} /> : plans.length === 0 ? <p className="text-muted-foreground text-center py-4">No plans</p> : plans.map((p: any) => {
             const qty = (parseFloat(p.demand) || 0) - (parseFloat(p.onHand) || 0);
             return (
               <div key={p.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`plan-${p.id}`}>

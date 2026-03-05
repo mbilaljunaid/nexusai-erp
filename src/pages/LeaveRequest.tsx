@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { SmartAddButton } from "@/components/SmartAddButton";
 import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
@@ -16,7 +17,7 @@ export default function LeaveRequest() {
   return (
     <div className="space-y-6">
       <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
-      
+
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Leave Requests</h1>
@@ -45,7 +46,7 @@ export default function LeaveRequest() {
           {filteredLeaves.length > 0 ? filteredLeaves.map((req: any, idx: number) => (
             <div key={idx} className="flex justify-between items-center p-2 border rounded">
               <div><p className="font-medium text-sm">{req.type}</p></div>
-              <Badge className={req.status === "Approved" ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"}>{req.status}</Badge>
+              <StatusBadge status={req.status} />
             </div>
           )) : <p className="text-muted-foreground text-center py-4">No leave requests found</p>}
         </CardContent>

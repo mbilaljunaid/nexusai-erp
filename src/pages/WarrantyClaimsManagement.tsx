@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -89,7 +90,7 @@ export default function WarrantyClaimsManagement() {
       <Card>
         <CardHeader><CardTitle className="text-base">Claims</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : claims.length === 0 ? <p className="text-muted-foreground text-center py-4">No claims</p> : claims.map((c: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : claims.length === 0 ? <p className="text-muted-foreground text-center py-4">No claims</p> : claims.map((c: any) => (
             <div key={c.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`claim-${c.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{c.claimId}</p>

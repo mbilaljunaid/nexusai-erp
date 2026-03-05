@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -100,7 +101,7 @@ export default function RoutingMaster() {
       <Card>
         <CardHeader><CardTitle className="text-base">Routings</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : routings.length === 0 ? <p className="text-muted-foreground text-center py-4">No routings</p> : routings.map((r: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : routings.length === 0 ? <p className="text-muted-foreground text-center py-4">No routings</p> : routings.map((r: any) => (
             <div key={r.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`routing-${r.id}`}>
               <div>
                 <p className="font-semibold text-sm">{r.product} - {r.operation}</p>

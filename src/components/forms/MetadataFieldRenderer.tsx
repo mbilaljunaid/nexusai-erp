@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ValidationEngine } from "@/lib/validationEngine";
 import { ConditionalLogicEngine } from "@/lib/conditionalLogicEngine";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface MetadataFieldRendererProps {
   field: FormFieldConfig;
@@ -84,13 +85,7 @@ export function MetadataFieldRenderer({
             )}
 
             {field.type === "date" && (
-              <Input
-                {...fieldProps}
-                id={field.name}
-                type="date"
-                disabled={readOnly || fieldState.disabled}
-                data-testid={`input-${field.name}`}
-              />
+              <DatePicker onChange={() => {}} disabled={readOnly || fieldState.disabled} />
             )}
 
             {field.type === "datetime" && (

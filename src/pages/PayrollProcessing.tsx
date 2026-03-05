@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -79,14 +81,14 @@ export default function PayrollProcessing() {
       <Card>
         <CardHeader><CardTitle className="text-base">Payroll Runs</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : payrolls.length === 0 ? <p className="text-muted-foreground text-center py-4">No payroll runs</p> : payrolls.map((run: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : payrolls.length === 0 ? <p className="text-muted-foreground text-center py-4">No payroll runs</p> : payrolls.map((run: any) => (
             <div key={run.id} className="flex justify-between items-center p-3 border rounded hover-elevate" data-testid={`payroll-${run.id}`}>
               <div>
                 <span className="font-medium text-sm">{run.month} {run.year}</span>
                 <p className="text-xs text-muted-foreground">${run.amount}</p>
               </div>
               <div className="flex gap-2 items-center">
-                <Badge className="bg-green-100 text-green-800">Processed</Badge>
+                <StatusBadge status="processed" />
                 <Button size="icon" variant="ghost" data-testid={`button-delete-${run.id}`}>
                   <Trash2 className="w-4 h-4" />
                 </Button>

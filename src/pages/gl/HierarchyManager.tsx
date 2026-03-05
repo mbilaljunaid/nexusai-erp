@@ -1,5 +1,6 @@
 
 import React, { useState, useMemo } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     Card, CardContent, CardHeader, CardTitle, CardDescription
@@ -229,7 +230,7 @@ export default function HierarchyManager() {
                                 </TableHeader>
                                 <TableBody>
                                     {isLoading ? (
-                                        <TableRow><TableCell colSpan={4}>Loading...</TableCell></TableRow>
+                                        <TableRow><TableCell colSpan={4}><TableSkeleton rows={4} /></TableCell></TableRow>
                                     ) : hierarchies.length === 0 ? (
                                         <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-8">No relationships defined yet.</TableCell></TableRow>
                                     ) : (

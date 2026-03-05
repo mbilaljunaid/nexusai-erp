@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import { Send, CheckCircle, XCircle, Clock, MessageSquare, History } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -230,8 +231,8 @@ export default function BudgetWorkflow() {
                             {workflowHistory.map((item) => (
                                 <div key={item.id} className="flex gap-4 border-b pb-4 last:border-b-0">
                                     <div className={`p-2 rounded-full h-10 w-10 flex items-center justify-center ${item.action === "APPROVE" ? "bg-green-100" :
-                                            item.action === "REJECT" ? "bg-red-100" :
-                                                item.action === "SUBMIT" ? "bg-blue-100" : "bg-gray-100"
+                                        item.action === "REJECT" ? "bg-red-100" :
+                                            item.action === "SUBMIT" ? "bg-blue-100" : "bg-gray-100"
                                         }`}>
                                         {item.action === "APPROVE" && <CheckCircle className="h-5 w-5 text-green-600" />}
                                         {item.action === "REJECT" && <XCircle className="h-5 w-5 text-red-600" />}
@@ -336,9 +337,7 @@ function SubmissionsTable({
                             <TableCell>{submission.submittedBy}</TableCell>
                             <TableCell>{new Date(submission.submittedAt).toLocaleDateString()}</TableCell>
                             <TableCell>
-                                {submission.status === "PENDING" && <Badge className="bg-amber-500"><Clock className="h-3 w-3 mr-1" />Pending</Badge>}
-                                {submission.status === "APPROVED" && <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" />Approved</Badge>}
-                                {submission.status === "REJECTED" && <Badge variant="destructive"><XCircle className="h-3 w-3 mr-1" />Rejected</Badge>}
+                                <StatusBadge status={submission.status} />
                             </TableCell>
                             <TableCell>
                                 <div className="flex gap-1">

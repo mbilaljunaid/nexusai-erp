@@ -20,6 +20,7 @@ import {
     AlignLeft
 } from "lucide-react";
 import { format, addDays, addMonths, addWeeks, addYears, startOfWeek, endOfMonth } from "date-fns";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 type PeriodType = "PAYROLL" | "ACCRUAL" | "TIME_CARD" | "PERFORMANCE";
 type Frequency = "DAILY" | "WEEKLY" | "BI_WEEKLY" | "SEMI_MONTHLY" | "MONTHLY" | "QUARTERLY" | "YEARLY" | "CUSTOM_DAYS";
@@ -216,12 +217,7 @@ export default function RepeatingTimePeriods() {
                                     <Label>First Period Start Date</Label>
                                     <div className="relative">
                                         <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                        <Input
-                                            type="date"
-                                            className="pl-9"
-                                            value={firstPeriodStart}
-                                            onChange={(e) => setFirstPeriodStart(e.target.value)}
-                                        />
+                                        <DatePicker className="pl-9" value={firstPeriodStart} onChange={v => setFirstPeriodStart(v)} />
                                     </div>
                                     <p className="text-[10px] text-muted-foreground mt-1">All subsequent periods will chain consecutively from this anchor date.</p>
                                 </div>

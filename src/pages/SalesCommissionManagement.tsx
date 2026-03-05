@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -105,7 +106,7 @@ export default function SalesCommissionManagement() {
       <Card>
         <CardHeader><CardTitle className="text-base">Commissions</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : commissions.length === 0 ? <p className="text-muted-foreground text-center py-4">No commissions</p> : commissions.map((c: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : commissions.length === 0 ? <p className="text-muted-foreground text-center py-4">No commissions</p> : commissions.map((c: any) => (
             <div key={c.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`comm-${c.id}`}>
               <div>
                 <p className="font-semibold">{c.salesRep}</p>

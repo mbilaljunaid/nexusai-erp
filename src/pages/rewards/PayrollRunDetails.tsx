@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery } from "@tanstack/react-query";
 import {
     Dialog,
@@ -121,7 +122,7 @@ export default function PayrollRunDetails({ runId, isOpen, onClose }: PayrollRun
                                 <TableBody>
                                     {isLoading ? (
                                         <TableRow>
-                                            <TableCell colSpan={4} className="text-center">Loading...</TableCell>
+                                            <TableCell colSpan={4} className="text-center"><TableSkeleton rows={4} /></TableCell>
                                         </TableRow>
                                     ) : employeeRows.length === 0 ? (
                                         <TableRow>

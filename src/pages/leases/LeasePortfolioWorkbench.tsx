@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow
@@ -141,7 +142,7 @@ export default function LeasePortfolioWorkbench() {
                         </TableHeader>
                         <TableBody>
                             {isLoading ? (
-                                <TableRow><TableCell colSpan={5} className="text-center h-24">Loading...</TableCell></TableRow>
+                                <TableRow><TableCell colSpan={5} className="text-center h-24"><TableSkeleton rows={4} /></TableCell></TableRow>
                             ) : leases?.map((lease: any) => (
                                 <TableRow key={lease.id}>
                                     <TableCell className="font-medium flex items-center gap-2">

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3, Building2, DollarSign, Users } from "lucide-react";
 import { StandardDashboard } from "@/components/ui/StandardDashboard";
@@ -61,7 +62,7 @@ export default function HospitalityBIDashboard() {
           type="chart"
         >
           <div className="space-y-2 mt-2">
-            {isLoading ? <p>Loading...</p> : metrics.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : metrics.slice(0, 5).map((m: any) => (
+            {isLoading ? <TableSkeleton rows={4} /> : metrics.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : metrics.slice(0, 5).map((m: any) => (
               <div key={m.id} className="p-3 border rounded-lg text-sm hover:bg-muted/50 transition-colors flex justify-between" data-testid={`prop-${m.id}`}>
                 <span>{m.property || "Property"}</span>
                 <span className="font-bold">{m.occupancy || 0}%</span>
@@ -75,7 +76,7 @@ export default function HospitalityBIDashboard() {
           type="chart"
         >
           <div className="space-y-2 mt-2">
-            {isLoading ? <p>Loading...</p> : metrics.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : metrics.slice(0, 5).map((m: any) => (
+            {isLoading ? <TableSkeleton rows={4} /> : metrics.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : metrics.slice(0, 5).map((m: any) => (
               <div key={m.id} className="p-3 border rounded-lg text-sm hover:bg-muted/50 transition-colors flex justify-between items-center" data-testid={`fb-${m.id}`}>
                 <span>{m.outlet || "Outlet"}</span>
                 <Badge variant="default" className="text-xs">${m.revenue || 0}</Badge>

@@ -19,11 +19,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { z } from "zod";
+import { DatePickerField } from '@/components/forms/DatePickerField';
 
 const transferSchema = z.object({
     toLocationId: z.string().min(1, "Target Location is required"),
     toCcid: z.string().optional(),
-    transactionDate: z.coerce.date(),
+    transactionDate: z.string().min(1, "Date is required"),
     description: z.string().optional(),
 });
 
@@ -39,7 +40,7 @@ export function TransferAssetDialog({ assetId, assetNumber }: { assetId: string,
         defaultValues: {
             toLocationId: "",
             toCcid: "",
-            transactionDate: new Date(),
+            transactionDate: new Date().toISOString().split('T')[0],
             description: "",
         },
     });
@@ -95,7 +96,7 @@ export function TransferAssetDialog({ assetId, assetNumber }: { assetId: string,
                                 <FormItem>
                                     <FormLabel>Transfer Date</FormLabel>
                                     <FormControl>
-                                        <Input type="date" {...field} value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : field.value} />
+                                        <DatePickerField {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

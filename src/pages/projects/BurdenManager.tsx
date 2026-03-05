@@ -91,7 +91,7 @@ export default function BurdenManager() {
                         </CardHeader>
                         <CardContent className="p-0">
                             {isLoading ? (
-                                <div className="p-8 text-center text-muted-foreground">Loading...</div>
+                                <TableSkeleton rows={5} />
                             ) : (
                                 <InteractiveSpreadsheet
                                     data={schedules || []}

@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Button } from "@/components/ui/button";
 
 export default function InstalledApps() {
@@ -18,7 +19,7 @@ export default function InstalledApps() {
             <CardContent className="pt-6">
               <h3 className="font-semibold">{app.name}</h3>
               <p className="text-sm text-muted-foreground">v{app.version}</p>
-              <Badge className="mt-2 bg-green-100 text-green-800">{app.status}</Badge>
+              <StatusBadge status={app.status} className="mt-2" />
             </CardContent>
           </Card>
         ))}

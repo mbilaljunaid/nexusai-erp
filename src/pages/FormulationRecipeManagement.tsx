@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -90,7 +91,7 @@ export default function FormulationRecipeManagement() {
       <Card>
         <CardHeader><CardTitle className="text-base">Formulations</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : formulas.length === 0 ? <p className="text-muted-foreground text-center py-4">No formulas</p> : formulas.map((f: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : formulas.length === 0 ? <p className="text-muted-foreground text-center py-4">No formulas</p> : formulas.map((f: any) => (
             <div key={f.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`formula-${f.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{f.formulaId} - {f.productName}</p>

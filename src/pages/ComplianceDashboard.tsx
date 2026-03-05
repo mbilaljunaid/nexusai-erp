@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useQuery } from "@tanstack/react-query";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { getFormMetadata } from "@/lib/formMetadata";
@@ -27,7 +28,7 @@ interface ComplianceViolation {
 
 export default function ComplianceDashboard() {
   const formMetadata = getFormMetadata("compliance");
-  
+
   const { data: rules = [] } = useQuery<ComplianceRule[]>({
     queryKey: ["/api/compliance/rules"],
     queryFn: () =>
@@ -154,7 +155,7 @@ export default function ComplianceDashboard() {
                       <div className="font-semibold text-red-700">{violation.description}</div>
                       <div className="text-sm text-muted-foreground mt-1">Rule: {violation.ruleId}</div>
                     </div>
-                    <Badge className="bg-red-600">Open</Badge>
+                    <StatusBadge status="open" />
                   </div>
                   <Button size="sm" variant="outline" className="mt-2" data-testid={`button-resolve-${violation.id}`}>
                     Create Corrective Action

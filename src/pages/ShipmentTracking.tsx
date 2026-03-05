@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -49,7 +50,7 @@ export default function ShipmentTracking() {
       <Card>
         <CardHeader><CardTitle className="text-base">Tracking Events</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : events.length === 0 ? <p className="text-muted-foreground text-center py-4">No events</p> : events.slice(0, 10).map((e: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : events.length === 0 ? <p className="text-muted-foreground text-center py-4">No events</p> : events.slice(0, 10).map((e: any) => (
             <div key={e.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`event-${e.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{e.shipmentId}</p>

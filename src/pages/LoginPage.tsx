@@ -100,7 +100,7 @@ export default function LoginPage() {
     }
   };
 
-  if (isLoading) return null; // Or a loading spinner
+  if (isLoading) return <PageSkeleton showCards={false} rows={4} />;
 
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-hidden relative">

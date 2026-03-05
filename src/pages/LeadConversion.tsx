@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -73,7 +74,7 @@ export default function LeadConversion() {
       <Card>
         <CardHeader><CardTitle>Leads</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : leads.length === 0 ? <p className="text-muted-foreground text-center py-4">No leads</p> : (
+          {isLoading ? <TableSkeleton rows={4} /> : leads.length === 0 ? <p className="text-muted-foreground text-center py-4">No leads</p> : (
             leads.map((lead: any) => (
               <div key={lead.id} className="flex items-center justify-between p-3 border rounded hover-elevate" data-testid={`lead-${lead.id}`}>
                 <div>

@@ -17,6 +17,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export default function LeaseModificationWizard({ leaseId }: { leaseId: string }) {
     const [step, setStep] = useState(1);
@@ -117,11 +118,7 @@ export default function LeaseModificationWizard({ leaseId }: { leaseId: string }
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label>Modification Effective Date</Label>
-                                        <Input
-                                            type="date"
-                                            value={formData.modificationDate}
-                                            onChange={(e) => setFormData({ ...formData, modificationDate: e.target.value })}
-                                        />
+                                        <DatePicker value={formData.modificationDate} onChange={(v) => setFormData({ ...formData, modificationDate: v })} />
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Extension (Months)</Label>

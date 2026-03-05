@@ -4,6 +4,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Input } from "@/components/ui/input";
 import {
     ClipboardList,
@@ -156,9 +157,7 @@ export default function WavePlanning() {
                                         <Layers className="w-4 h-4 text-blue-400" />
                                         <span className="font-mono text-xs">{wave.id}</span>
                                     </div>
-                                    <Badge className={wave.status === 'RELEASED' ? 'bg-blue-500/10 text-blue-400' : 'bg-green-500/10 text-green-400'}>
-                                        {wave.status}
-                                    </Badge>
+                                    <StatusBadge status={wave.status} />
                                 </div>
                             ))}
                         </CardContent>

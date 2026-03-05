@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -82,7 +83,7 @@ export default function LeaseApprovalsWorkbench() {
                         </CardHeader>
                         <CardContent>
                             {isLoading ? (
-                                <p className="p-4 text-center">Loading...</p>
+                                <TableSkeleton rows={4} />
                             ) : pendingLeases.length === 0 ? (
                                 <div className="text-center py-12">
                                     <CheckCircle2 className="mx-auto h-12 w-12 text-green-500 opacity-50 mb-3" />

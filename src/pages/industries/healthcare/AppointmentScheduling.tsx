@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import { Calendar, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 
 export default function AppointmentScheduling() {
@@ -87,7 +89,7 @@ export default function AppointmentScheduling() {
             <Input placeholder="Appt ID" value={newAppt.appointmentId} onChange={(e) => setNewAppt({ ...newAppt, appointmentId: e.target.value })} data-testid="input-apptid" className="text-sm" />
             <Input placeholder="Patient ID" value={newAppt.patientId} onChange={(e) => setNewAppt({ ...newAppt, patientId: e.target.value })} data-testid="input-patid" className="text-sm" />
             <Input placeholder="Provider ID" value={newAppt.providerId} onChange={(e) => setNewAppt({ ...newAppt, providerId: e.target.value })} data-testid="input-provid" className="text-sm" />
-            <Input placeholder="Date" type="date" value={newAppt.date} onChange={(e) => setNewAppt({ ...newAppt, date: e.target.value })} data-testid="input-date" className="text-sm" />
+            <DatePicker className="text-sm" value={newAppt.date} onChange={(v) => setNewAppt({ ...newAppt, date: v })} placeholder="Date" />
             <Button onClick={() => createMutation.mutate(newAppt)} disabled={createMutation.isPending || !newAppt.appointmentId} size="sm" data-testid="button-schedule">
               <Plus className="w-3 h-3" />
             </Button>
@@ -98,7 +100,7 @@ export default function AppointmentScheduling() {
       <Card>
         <CardHeader><CardTitle className="text-base">Appointments</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : appointments.length === 0 ? <p className="text-muted-foreground text-center py-4">No appointments</p> : appointments.map((a: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : appointments.length === 0 ? <p className="text-muted-foreground text-center py-4">No appointments</p> : appointments.map((a: any) => (
             <div key={a.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`appt-${a.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{a.appointmentId}</p>

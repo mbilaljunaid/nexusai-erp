@@ -18,7 +18,7 @@ import { useSupportRequests, useCloseSupportRequest } from '@/hooks/admin/useAdm
 import CreateSupportRequestDialog from '@/components/admin/dialogs/CreateSupportRequestDialog';
 import EditSupportRequestDialog from '@/components/admin/dialogs/EditSupportRequestDialog';
 import { exportToCSV } from '@/utils/exportUtils';
-import { toast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 
 interface Request {
     id: string;
@@ -35,6 +35,7 @@ interface Request {
 }
 
 export default function RequestsIssues() {
+    const { toast } = useToast();
     const [filter, setFilter] = useState<'all' | 'feature' | 'bug' | 'support'>('all');
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -226,7 +227,7 @@ export default function RequestsIssues() {
 
     const performBulkClose = () => {
         // Implementation would go here
-        toast.success(`Closed ${selectedIds.size} requests`);
+        toast({ title: 'Requests Closed', description: `Closed ${selectedIds.size} requests` });
         setSelectedIds(new Set());
         setShowBulkCloseConfirm(false);
     };
@@ -237,7 +238,7 @@ export default function RequestsIssues() {
 
     const performBulkPriority = () => {
         if (bulkPriorityParams) {
-            toast.success(`Updated ${selectedIds.size} requests`);
+            toast({ title: 'Priority Updated', description: `Updated ${selectedIds.size} requests` });
             setSelectedIds(new Set());
             setBulkPriorityParams(null);
         }
@@ -248,7 +249,7 @@ export default function RequestsIssues() {
     };
 
     const performBulkDelete = () => {
-        toast.success(`Deleted ${selectedIds.size} requests`);
+        toast({ title: 'Requests Deleted', description: `Deleted ${selectedIds.size} requests` });
         setSelectedIds(new Set());
         setShowBulkDeleteConfirm(false);
     };

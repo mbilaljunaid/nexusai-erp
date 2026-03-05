@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { useLocation } from "wouter";
 import { downloadFile } from "@/lib/utils";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 function useActiveBu() {
     return useMemo(() => ({
@@ -359,12 +360,7 @@ export default function APPaymentBatches() {
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="checkDate">Payment Date</Label>
-                            <Input
-                                id="checkDate"
-                                type="date"
-                                value={formData.checkDate}
-                                onChange={(e) => setFormData({ ...formData, checkDate: e.target.value })}
-                            />
+                            <DatePicker value={formData.checkDate} onChange={(v) => setFormData({ ...formData, checkDate: v })} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="bankAccountId">Bank Account</Label>

@@ -7,10 +7,12 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { format, parseISO, startOfToday } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { Save, Calendar, Check, AlertCircle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 // MOCK TENANT
 const MOCK_TENANT_ID = "test-tenant-wfm-001";
@@ -93,13 +95,7 @@ export default function TimekeeperConsole() {
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <Input
-                                        type="date"
-                                        className="bg-transparent text-sm focus:outline-none"
-                                        value={selectedDate}
-                                        onChange={(e) => setSelectedDate(e.target.value)}
-                                        aria-label="Select Date"
-                                    />
+                                    <DatePicker className="bg-transparent text-sm focus:outline-none" value={selectedDate} onChange={v => setSelectedDate(v)} aria-label="Select Date" />
                                 </TooltipTrigger>
                                 <TooltipContent>
                                     <p>Select Date</p>
@@ -136,9 +132,7 @@ export default function TimekeeperConsole() {
                             </TableHeader>
                             <TableBody>
                                 {isLoading ? (
-                                    <TableRow>
-                                        <TableCell colSpan={6} className="text-center py-8">Loading Roster...</TableCell>
-                                    </TableRow>
+                                    <TableRow><TableCell colSpan={6}><TableSkeleton rows={5} /></TableCell></TableRow>
                                 ) : (
                                     dailyStatus?.map((row: any) => {
                                         const isEdited = !!edits[row.person.id];

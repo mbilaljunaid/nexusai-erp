@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -80,7 +81,7 @@ export default function LeadScoringAnalytics() {
       <Card>
         <CardHeader><CardTitle className="text-base">Insights</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : insights.length === 0 ? <p className="text-muted-foreground text-center py-4">No insights</p> : insights.map((i: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : insights.length === 0 ? <p className="text-muted-foreground text-center py-4">No insights</p> : insights.map((i: any) => (
             <div key={i.id} className="flex items-center justify-between p-2 border rounded" data-testid={`insight-${i.id}`}>
               <div>
                 <p className="font-semibold text-sm">{i.metric}</p>

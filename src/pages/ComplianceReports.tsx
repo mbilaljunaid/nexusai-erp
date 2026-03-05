@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -70,7 +71,7 @@ export default function ComplianceReports() {
       </Card>
 
       <div className="grid gap-4">
-        {isLoading ? <p>Loading...</p> : reports.length === 0 ? <p className="text-muted-foreground text-center py-4">No reports</p> : reports.map((report: any) => (
+        {isLoading ? <TableSkeleton rows={4} /> : reports.length === 0 ? <p className="text-muted-foreground text-center py-4">No reports</p> : reports.map((report: any) => (
           <Card key={report.id} data-testid={`report-${report.id}`}>
             <CardContent className="pt-6">
               <div className="flex items-start justify-between">

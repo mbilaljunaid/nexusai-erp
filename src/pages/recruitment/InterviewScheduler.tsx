@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 
 export default function InterviewScheduler() {
@@ -74,7 +75,7 @@ export default function InterviewScheduler() {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label>Date</Label>
-                                    <Input type="date" onChange={(e) => setFormData({ ...formData, date: e.target.value })} />
+                                    <DatePicker onChange={(v) => setFormData({ ...formData, date: v })} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Start Time</Label>

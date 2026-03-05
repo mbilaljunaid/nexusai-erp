@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin } from "lucide-react";
@@ -22,7 +23,7 @@ export default function TravelItinerary() {
                 <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Pending</p><p className="text-2xl font-bold text-yellow-600">{itineraries.filter((i: any) => i.status === "pending").length}</p></CardContent></Card>
                 <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Confirmation %</p><p className="text-2xl font-bold">{itineraries.length > 0 ? ((confirmed / itineraries.length) * 100).toFixed(0) : 0}%</p></CardContent></Card>
             </div>
-            <Card><CardHeader><CardTitle className="text-base">Itineraries</CardTitle></CardHeader><CardContent className="space-y-2">{isLoading ? <p>Loading...</p> : itineraries.length === 0 ? <p className="text-muted-foreground text-center py-4">No itineraries</p> : itineraries.slice(0, 10).map((i: any) => (<div key={i.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`itin-${i.id}`}><div className="flex-1"><p className="font-semibold">{i.itineraryId}</p><p className="text-xs text-muted-foreground">{i.days} days</p></div><Badge variant={i.status === "confirmed" ? "default" : "secondary"} className="text-xs">{i.status}</Badge></div>))}</CardContent></Card>
+            <Card><CardHeader><CardTitle className="text-base">Itineraries</CardTitle></CardHeader><CardContent className="space-y-2">{isLoading ? <TableSkeleton rows={4} /> : itineraries.length === 0 ? <p className="text-muted-foreground text-center py-4">No itineraries</p> : itineraries.slice(0, 10).map((i: any) => (<div key={i.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`itin-${i.id}`}><div className="flex-1"><p className="font-semibold">{i.itineraryId}</p><p className="text-xs text-muted-foreground">{i.days} days</p></div><Badge variant={i.status === "confirmed" ? "default" : "secondary"} className="text-xs">{i.status}</Badge></div>))}</CardContent></Card>
         </StandardPage>
     );
 }

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -50,7 +51,7 @@ export default function OmniChannelFulfillment() {
       <Card>
         <CardHeader><CardTitle className="text-base">Recent Orders</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : orders.length === 0 ? <p className="text-muted-foreground text-center py-4">No orders</p> : orders.map((o: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : orders.length === 0 ? <p className="text-muted-foreground text-center py-4">No orders</p> : orders.map((o: any) => (
             <div key={o.id} className="p-3 border rounded hover-elevate" data-testid={`order-${o.id}`}>
               <div className="flex justify-between items-start mb-2">
                 <p className="font-semibold text-sm">{o.orderId || "Order"}</p>

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Building2, Users, Clock, TrendingUp } from "lucide-react";
@@ -72,7 +73,7 @@ export default function StoreOperationsDashboard() {
         <Card>
           <CardHeader><CardTitle className="text-base">Stores</CardTitle></CardHeader>
           <CardContent className="space-y-2">
-            {isLoading ? <p>Loading...</p> : stores.length === 0 ? <p className="text-muted-foreground text-center py-4">No stores</p> : stores.map((s: any) => (
+            {isLoading ? <TableSkeleton rows={4} /> : stores.length === 0 ? <p className="text-muted-foreground text-center py-4">No stores</p> : stores.map((s: any) => (
               <div key={s.id} className="p-2 border rounded text-sm hover-elevate" data-testid={`store-${s.id}`}>
                 <p className="font-semibold">{s.name || `Store ${s.id}`}</p>
                 <p className="text-xs text-muted-foreground">{s.location} • <Badge variant="default" className="text-xs">{s.status}</Badge></p>
@@ -84,7 +85,7 @@ export default function StoreOperationsDashboard() {
         <Card>
           <CardHeader><CardTitle className="text-base">Staff Schedule</CardTitle></CardHeader>
           <CardContent className="space-y-2">
-            {staffingLoading ? <p>Loading...</p> : staffing.length === 0 ? <p className="text-muted-foreground text-center py-4">No schedules</p> : staffing.map((s: any) => (
+            {staffingLoading ? <TableSkeleton rows={4} /> : staffing.length === 0 ? <p className="text-muted-foreground text-center py-4">No schedules</p> : staffing.map((s: any) => (
               <div key={s.id} className="p-2 border rounded text-sm hover-elevate" data-testid={`staff-${s.id}`}>
                 <p className="font-semibold">{s.employeeName || "Employee"}</p>
                 <p className="text-xs text-muted-foreground">{s.role} • <Badge variant={s.status === "on-shift" ? "default" : "secondary"} className="text-xs">{s.status}</Badge></p>

@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { IconNavigation } from "@/components/IconNavigation";
 import { useState } from "react";
 import { AlertCircle, CheckCircle, Zap, Code, Plug, Webhook } from "lucide-react";
@@ -31,18 +32,7 @@ export default function IntegrationHub() {
     { id: "WF-003", name: "Customer Lifecycle", status: "inactive", trigger: "Customer Status Changed", actions: 4 },
   ];
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "bg-green-100 text-green-800";
-      case "inactive":
-        return "bg-gray-100 text-gray-800";
-      case "error":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-blue-100 text-blue-800";
-    }
-  };
+
 
   return (
     <StandardPage
@@ -63,14 +53,7 @@ export default function IntegrationHub() {
                       <h3 className="font-semibold">{integration.name}</h3>
                       <p className="text-sm text-muted-foreground">{integration.type}</p>
                     </div>
-                    <Badge className={getStatusColor(integration.status)}>
-                      {integration.status === "active" ? (
-                        <CheckCircle className="h-3 w-3 mr-1" />
-                      ) : integration.status === "error" ? (
-                        <AlertCircle className="h-3 w-3 mr-1" />
-                      ) : null}
-                      {integration.status}
-                    </Badge>
+                    <StatusBadge status={integration.status} />
                   </div>
                   <p className="text-xs text-muted-foreground mb-4">Last sync: {integration.lastSync}</p>
                   <div className="flex gap-2">

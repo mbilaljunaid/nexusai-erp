@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -140,14 +141,7 @@ export default function CreditMemoWorkbench() {
         appliedThisMonth: creditMemos.filter((cm: any) => cm.status === "Approved").length,
     };
 
-    const getStatusBadge = (status: string) => {
-        const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-            Draft: "secondary",
-            Approved: "default",
-            Rejected: "destructive",
-        };
-        return <Badge variant={variants[status] || "outline"}>{status}</Badge>;
-    };
+
 
     return (
         <div className="space-y-6">
@@ -261,7 +255,7 @@ export default function CreditMemoWorkbench() {
                                     { id: "invoiceNumber", header: "CM Number", width: "150px", cell: (r: any) => <div className="p-2 font-medium">{r.invoiceNumber}</div> },
                                     { id: "sourceTransactionId", header: "Original Invoice", width: "150px", cell: (item: any) => <div className="p-2">{item.sourceTransactionId || "—"}</div> },
                                     { id: "amount", header: "Amount", width: "150px", cell: (item: any) => <div className="p-2 font-bold text-red-600">${Math.abs(parseFloat(item.amount || "0")).toLocaleString()}</div> },
-                                    { id: "status", header: "Status", width: "150px", cell: (item: any) => <div className="p-2">{getStatusBadge(item.status)}</div> },
+                                    { id: "status", header: "Status", width: "150px", cell: (item: any) => <div className="p-2"><StatusBadge status={item.status} /></div> },
                                     { id: "description", header: "Reason", width: "250px", cell: (item: any) => <div className="p-2">{item.description}</div> },
                                     { id: "createdAt", header: "Date", width: "150px", cell: (item: any) => <div className="p-2">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "—"}</div> },
                                     {

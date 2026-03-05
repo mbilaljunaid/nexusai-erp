@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -99,7 +100,7 @@ export default function HousekeepingManagement() {
       <Card>
         <CardHeader><CardTitle className="text-base">Tasks</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : tasks.length === 0 ? <p className="text-muted-foreground text-center py-4">No tasks</p> : tasks.map((t: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : tasks.length === 0 ? <p className="text-muted-foreground text-center py-4">No tasks</p> : tasks.map((t: any) => (
             <div key={t.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`task-${t.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{t.taskId}</p>

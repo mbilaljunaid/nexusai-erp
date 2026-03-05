@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Calendar, CloudRain, Sun, Cloud, Users, HardHat, Plus, X, Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface DailyLogFormProps {
     open: boolean;
@@ -106,13 +107,7 @@ export function DailyLogForm({ open, onOpenChange, projectId, onSubmit }: DailyL
                             <div className="grid grid-cols-3 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="logDate">Log Date *</Label>
-                                    <Input
-                                        id="logDate"
-                                        name="logDate"
-                                        type="date"
-                                        required
-                                        defaultValue={new Date().toISOString().split('T')[0]}
-                                    />
+                                    <DatePicker onChange={() => {}} />
                                 </div>
 
                                 <div className="space-y-2">

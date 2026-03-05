@@ -10,6 +10,7 @@ import { FileText, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface ExpenseLine {
   id: number;
@@ -143,7 +144,7 @@ export function ExpenseEntryForm() {
                 <tbody>
                   {lines.map(line => (
                     <tr key={line.id} className="border-b">
-                      <td className="py-2 px-2"><Input type="date" value={line.date} onChange={(e) => updateLine(line.id, "date", e.target.value)} className="text-xs" /></td>
+                      <td className="py-2 px-2"><DatePicker className="text-xs" value={line.date} onChange={(v) => updateLine(line.id, "date", v)} /></td>
                       <td className="py-2 px-2">
                         <Select value={line.category} onValueChange={(v) => updateLine(line.id, "category", v)}>
                           <SelectTrigger className="text-xs"><SelectValue placeholder="Category" /></SelectTrigger>

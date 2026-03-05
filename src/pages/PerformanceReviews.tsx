@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -74,7 +75,7 @@ export default function PerformanceReviews() {
       <Card>
         <CardHeader><CardTitle className="text-base">Performance Reviews</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : reviews.length === 0 ? <p className="text-muted-foreground text-center py-4">No reviews</p> : reviews.map((rev: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : reviews.length === 0 ? <p className="text-muted-foreground text-center py-4">No reviews</p> : reviews.map((rev: any) => (
             <div key={rev.id} className="flex items-center justify-between p-3 border rounded hover-elevate" data-testid={`review-${rev.id}`}>
               <div>
                 <p className="font-medium">{rev.employee}</p>

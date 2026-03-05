@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     Card, CardContent, CardHeader, CardTitle, CardDescription
@@ -155,7 +156,7 @@ export default function LedgerSetSetup() {
     );
 
     function items(sets: any[], loading: boolean) {
-        if (loading) return <div>Loading...</div>;
+        if (isLoading) return <PageSkeleton />;
         if (sets.length === 0) return <div className="text-muted-foreground col-span-3">No Ledger Sets defined.</div>;
         return sets.map(set => (
             <Card key={set.id} className="hover:border-primary/50 transition-colors">

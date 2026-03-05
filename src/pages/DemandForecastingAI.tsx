@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Brain, TrendingUp, Sparkles, BrainCircuit } from "lucide-react";
@@ -66,7 +67,7 @@ export default function DemandForecastingAI() {
       <Card>
         <CardHeader><CardTitle className="text-base">Forecast Results</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : forecasts.length === 0 ? <p className="text-muted-foreground text-center py-4">No forecasts</p> : forecasts.map((f: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : forecasts.length === 0 ? <p className="text-muted-foreground text-center py-4">No forecasts</p> : forecasts.map((f: any) => (
             <div key={f.id} className="p-3 border rounded hover-elevate" data-testid={`forecast-${f.id}`}>
               <div className="flex justify-between items-start">
                 <div>

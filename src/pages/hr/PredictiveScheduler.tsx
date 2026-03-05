@@ -5,6 +5,7 @@ import { useEnterpriseStore } from '@/lib/enterpriseStore';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface Shift {
     id: string;
@@ -100,7 +101,7 @@ export default function PredictiveScheduler() {
                     </div>
                     <div className="ps-wk">
                         <label className="ll">Week Of</label>
-                        <Input className="li" type="date" value={weekStart} onChange={e => setWeekStart(e.target.value)} aria-label="Week start date" />
+                        <DatePicker className="li" value={weekStart} onChange={v => setWeekStart(v)} aria-label="Week start date" />
                     </div>
                     <button className="pub-btn" disabled={publishMutation.isPending || shifts.length === 0}
                         onClick={() => publishMutation.mutate()} aria-label="Publish schedule">
@@ -155,7 +156,7 @@ export default function PredictiveScheduler() {
             {activeTab === 'forecast' && (
                 <div className="forecast-panel">
                     <div className="fc-ctrl">
-                        <div className="pf"><label className="pl">Date</label><Input className="pi" type="date" value={coverageDate} onChange={e => setCoverageDate(e.target.value)} aria-label="Date for coverage" /></div>
+                        <div className="pf"><label className="pl">Date</label><DatePicker className="pi" value={coverageDate} onChange={v => setCoverageDate(v)} aria-label="Date for coverage" /></div>
                         <button className="run-fc-btn" disabled={forecastMutation.isPending}
                             onClick={() => forecastMutation.mutate({ locationId: location, startDate: coverageDate, endDate: coverageDate })} aria-label="Run forecast">
                             {forecastMutation.isPending ? 'Forecasting…' : 'Run Forecast'}
@@ -207,7 +208,7 @@ export default function PredictiveScheduler() {
                 <div className="gen-panel">
                     <h3 className="gp-title">Generate Schedule from Demand Forecast</h3>
                     <div className="gp-grid">
-                        <div className="gf"><label className="gl">Week Start</label><Input className="gi" type="date" value={genParams.weekStartDate || weekStart} onChange={e => setGenParams(p => ({ ...p, weekStartDate: e.target.value }))} aria-label="Schedule week start" /></div>
+                        <div className="gf"><label className="gl">Week Start</label><DatePicker className="gi" value={genParams.weekStartDate || weekStart} onChange={v => setGenParams(p => ({ ...p, weekStartDate: v }))} aria-label="Schedule week start" /></div>
                         <div className="gf"><label className="gl">Employee IDs (comma-sep)</label><input className="gi" value={genParams.employeeIds} onChange={e => setGenParams(p => ({ ...p, employeeIds: e.target.value }))} aria-label="Employee IDs" /></div>
                         <div className="gf"><label className="gl">Max Hours / Employee</label><input className="gi" type="number" value={genParams.maxHoursPerEmployee} onChange={e => setGenParams(p => ({ ...p, maxHoursPerEmployee: parseInt(e.target.value) || 40 }))} aria-label="Max hours per employee" /></div>
                         <div className="gf"><label className="gl">Shift Hours</label><input className="gi" type="number" value={genParams.shiftHours} onChange={e => setGenParams(p => ({ ...p, shiftHours: parseInt(e.target.value) || 8 }))} aria-label="Hours per shift" /></div>

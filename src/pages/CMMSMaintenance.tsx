@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -122,7 +123,7 @@ export default function CMMSMaintenance() {
       <Card>
         <CardHeader><CardTitle className="text-base">Maintenance Work Orders</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : workOrders.length === 0 ? <p className="text-muted-foreground text-center py-4">No MWOs</p> : workOrders.map((w: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : workOrders.length === 0 ? <p className="text-muted-foreground text-center py-4">No MWOs</p> : workOrders.map((w: any) => (
             <div key={w.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between cursor-pointer" data-testid={`mwo-${w.id}`} onClick={() => setSelectedWorkOrderId(w.id)}>
 
               <div className="flex-1">

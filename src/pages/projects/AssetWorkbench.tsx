@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
@@ -121,7 +122,7 @@ export default function AssetWorkbench() {
 
             <Card className="border-0 shadow-none bg-transparent">
                 {isLoading ? (
-                    <div className="p-8 text-center text-muted-foreground">Loading...</div>
+                    <TableSkeleton rows={5} />
                 ) : (
                     <InteractiveSpreadsheet
                         data={results?.items || []}

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -48,7 +49,7 @@ export default function WorkflowAutomation() {
           <CardTitle className="text-base">Workflows</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : workflows.length === 0 ? <p className="text-muted-foreground text-center py-4">No workflows</p> : workflows.slice(0, 10).map((w: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : workflows.length === 0 ? <p className="text-muted-foreground text-center py-4">No workflows</p> : workflows.slice(0, 10).map((w: any) => (
             <div key={w.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`wf-${w.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{w.workflowId}</p>

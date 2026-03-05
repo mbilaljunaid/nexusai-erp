@@ -1,5 +1,6 @@
 
 import { useState, useMemo } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLedger } from "@/context/LedgerContext";
@@ -223,7 +224,7 @@ export default function FinancialReports() {
                                 </SelectTrigger>
                                 <SelectContent>
                                     {isLoadingReports ? (
-                                        <div className="p-2 text-sm text-muted-foreground">Loading...</div>
+                                        <TableSkeleton rows={3} />
                                     ) : reports?.map(r => (
                                         <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>
                                     ))}

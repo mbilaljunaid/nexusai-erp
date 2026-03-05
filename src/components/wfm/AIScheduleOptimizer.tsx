@@ -19,6 +19,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { format, addWeeks } from "date-fns";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface AIScheduleOptimizerProps {
     isOpen: boolean;
@@ -163,11 +164,7 @@ export function AIScheduleOptimizer({
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Start Date</Label>
-                                        <Input
-                                            type="date"
-                                            value={startDate}
-                                            onChange={(e) => setStartDate(e.target.value)}
-                                        />
+                                        <DatePicker value={startDate} onChange={v => setStartDate(v)} />
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-3 gap-4">

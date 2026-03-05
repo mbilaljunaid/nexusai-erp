@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -65,7 +66,7 @@ export default function InventoryOptimization() {
       <Card>
         <CardHeader><CardTitle className="text-base">Inventory Status by Warehouse</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : inventory.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : inventory.map((i: any) => {
+          {isLoading ? <TableSkeleton rows={4} /> : inventory.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : inventory.map((i: any) => {
             let status = "optimal";
             if (i.daysOfSupply > 90) status = "overstock";
             else if (i.daysOfSupply < 14) status = "understock";

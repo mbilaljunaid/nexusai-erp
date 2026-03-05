@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { Tag, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 
 export default function PricingPromoEngine() {
@@ -88,8 +90,8 @@ export default function PricingPromoEngine() {
               </SelectContent>
             </Select>
             <Input placeholder="Discount %" type="number" value={newPromo.discountPct} onChange={(e) => setNewPromo({ ...newPromo, discountPct: e.target.value })} data-testid="input-discount" className="text-sm" />
-            <Input type="date" value={newPromo.startDate} onChange={(e) => setNewPromo({ ...newPromo, startDate: e.target.value })} data-testid="input-start" className="text-sm" />
-            <Input type="date" value={newPromo.endDate} onChange={(e) => setNewPromo({ ...newPromo, endDate: e.target.value })} data-testid="input-end" className="text-sm" />
+            <DatePicker className="text-sm" value={newPromo.startDate} onChange={(v) => setNewPromo({ ...newPromo, startDate: v })} />
+            <DatePicker className="text-sm" value={newPromo.endDate} onChange={(v) => setNewPromo({ ...newPromo, endDate: v })} />
             <Button disabled={createMutation.isPending || !newPromo.name} size="sm" data-testid="button-add-promo">
               <Plus className="w-3 h-3" />
             </Button>
@@ -100,7 +102,7 @@ export default function PricingPromoEngine() {
       <Card>
         <CardHeader><CardTitle className="text-base">Promotions</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : promos.length === 0 ? <p className="text-muted-foreground text-center py-4">No promotions</p> : promos.map((p: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : promos.length === 0 ? <p className="text-muted-foreground text-center py-4">No promotions</p> : promos.map((p: any) => (
             <div key={p.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`promo-${p.id}`}>
               <div>
                 <p className="font-semibold">{p.name}</p>

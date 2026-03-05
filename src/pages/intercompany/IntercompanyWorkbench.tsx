@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import TransferPricingRules from "./TransferPricingRules";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
@@ -100,16 +101,7 @@ export default function IntercompanyWorkbench() {
         }
     });
 
-    const getStatusColor = (status: string) => {
-        switch (status?.toLowerCase()) {
-            case 'pending': return 'bg-yellow-100 text-yellow-800';
-            case 'approved': return 'bg-green-100 text-green-800';
-            case 'rejected': return 'bg-red-100 text-red-800';
-            case 'draft': return 'bg-gray-100 text-gray-800';
-            case 'submitted': return 'bg-blue-100 text-blue-800';
-            default: return 'bg-gray-100 text-gray-800';
-        }
-    };
+
 
     const outboundColumns: SpreadsheetColumn<any>[] = [
         { id: "id", header: "Batch ID", width: "100px", cell: (item: any) => <span className="font-mono text-xs">{item.id}</span> },
@@ -117,7 +109,7 @@ export default function IntercompanyWorkbench() {
         { id: "receiverOrgId", header: "Counterparty", width: "150px", cell: (item: any) => item.receiverOrgId },
         { id: "totalAmount", header: "Amount", width: "120px", cell: (item: any) => <span className="font-mono text-right block w-full">{formatCurrency(item.totalAmount)}</span> },
         { id: "currency", header: "Currency", width: "100px", cell: (item: any) => item.currency || "USD" },
-        { id: "status", header: "Status", width: "120px", cell: (item: any) => <Badge className={getStatusColor(item.status)}>{item.status}</Badge> }
+        { id: "status", header: "Status", width: "120px", cell: (item: any) => <StatusBadge status={item.status} /> }
     ];
 
     const inboundColumns: SpreadsheetColumn<any>[] = [
@@ -126,7 +118,7 @@ export default function IntercompanyWorkbench() {
         { id: "providerOrgId", header: "From Entity", width: "150px", cell: (item: any) => item.providerOrgId },
         { id: "transactionTypeId", header: "Type", width: "150px", cell: (item: any) => item.transactionTypeId },
         { id: "amount", header: "Amount", width: "120px", cell: (item: any) => <span className="font-mono text-right block w-full">{formatCurrency(item.amount)}</span> },
-        { id: "status", header: "Status", width: "120px", cell: (item: any) => <Badge className={getStatusColor(item.status)}>{item.status}</Badge> },
+        { id: "status", header: "Status", width: "120px", cell: (item: any) => <StatusBadge status={item.status} /> },
         {
             id: "actions", header: "Action", width: "150px", cell: (item: any) => (
                 item.status === 'PENDING' && (

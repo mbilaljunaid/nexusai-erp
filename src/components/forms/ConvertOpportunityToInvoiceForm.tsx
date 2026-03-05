@@ -9,6 +9,7 @@ import { ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface Opportunity {
   id: string;
@@ -133,13 +134,7 @@ export function ConvertOpportunityToInvoiceForm({ opportunity, onClose }: { oppo
             </div>
             <div>
               <Label htmlFor="due-date">Due Date</Label>
-              <Input
-                id="due-date"
-                type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-                data-testid="input-due-date"
-              />
+              <DatePicker value={dueDate} onChange={v => setDueDate(v)} />
             </div>
           </div>
           <div>

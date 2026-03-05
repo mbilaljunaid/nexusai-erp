@@ -4,6 +4,7 @@ import { api } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertCircle, CheckCircle, Lock, Calendar, AlertTriangle, Building2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -61,24 +62,7 @@ export default function APPeriodClose() {
         setClosingPeriod({ id: periodId, name: periodName });
     };
 
-    const getStatusBadge = (status: string) => {
-        switch (status) {
-            case "OPEN":
-            case "Open":
-                return <Badge className="bg-green-500">Open</Badge>;
-            case "CLOSED":
-            case "Closed":
-                return <Badge variant="secondary">Closed</Badge>;
-            case "FUTURE":
-            case "Future":
-                return <Badge variant="outline">Future</Badge>;
-            case "NEVER OPENED":
-            case "Never Opened":
-                return <Badge variant="outline" className="text-gray-400">Never Opened</Badge>;
-            default:
-                return <Badge variant="outline">{status}</Badge>;
-        }
-    };
+
 
     return (
         <StandardPage title="AP Period Close" description="Manage Accounts Payable accounting periods and validate subledger readiness.">
@@ -127,9 +111,9 @@ export default function APPeriodClose() {
                                                     <Calendar className="h-4 w-4 text-muted-foreground" />
                                                     {period.periodName}
                                                 </TableCell>
-                                                <TableCell>{getStatusBadge(period.apStatus)}</TableCell>
+                                                <TableCell><StatusBadge status={period.apStatus} /></TableCell>
                                                 <TableCell>
-                                                    {getStatusBadge(period.glStatus)}
+                                                    <StatusBadge status={period.glStatus} />
                                                 </TableCell>
                                                 <TableCell>
                                                     {new Date(period.startDate).toLocaleDateString()}

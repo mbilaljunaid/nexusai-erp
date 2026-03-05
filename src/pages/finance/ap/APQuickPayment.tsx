@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { ChevronRight, ChevronLeft, Save, Plus, ArrowRight, CheckCircle2, Loader2, Search } from "lucide-react";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export default function APQuickPayment() {
     const [, setLocation] = useLocation();
@@ -187,7 +188,7 @@ export default function APQuickPayment() {
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Payment Date</Label>
-                                        <Input type="date" value={formData.paymentDate} onChange={e => setFormData({ ...formData, paymentDate: e.target.value })} />
+                                        <DatePicker value={formData.paymentDate} onChange={v => setFormData({ ...formData, paymentDate: v })} />
                                     </div>
                                 </div>
 

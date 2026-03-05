@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/useAuth";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 function useActiveBu() {
   return useMemo(() => ({
@@ -464,19 +465,11 @@ export default function APInvoices() {
                   </div>
                   <div className="space-y-2">
                     <Label>From Date</Label>
-                    <Input
-                      type="date"
-                      value={filters.fromDate || ""}
-                      onChange={(e) => setFilters(f => ({ ...f, fromDate: e.target.value }))}
-                    />
+                    <DatePicker value={filters.fromDate || ""} onChange={(v) => setFilters(f => ({ ...f, fromDate: v }))} />
                   </div>
                   <div className="space-y-2">
                     <Label>To Date</Label>
-                    <Input
-                      type="date"
-                      value={filters.toDate || ""}
-                      onChange={(e) => setFilters(f => ({ ...f, toDate: e.target.value }))}
-                    />
+                    <DatePicker value={filters.toDate || ""} onChange={(v) => setFilters(f => ({ ...f, toDate: v }))} />
                   </div>
                 </div>
                 <div className="flex justify-end gap-2 mt-4">

@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 
 const MOCK_TENANT_ID = "test-tenant-wfm-001";
@@ -69,7 +71,7 @@ export default function HolidayCalendar() {
                         <CardTitle>Upcoming Holidays ({filterCountry})</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        {isLoading ? <p>Loading...</p> :
+                        {isLoading ? <TableSkeleton rows={4} /> :
                             holidays?.length > 0 ? (
                                 <div className="space-y-2">
                                     {holidays.map((h: any) => (
@@ -104,11 +106,7 @@ export default function HolidayCalendar() {
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-medium">Date</label>
-                            <Input
-                                type="date"
-                                value={newHoliday.date}
-                                onChange={e => setNewHoliday({ ...newHoliday, date: e.target.value })}
-                            />
+                            <DatePicker value={newHoliday.date} onChange={v => setNewHoliday({ ...newHoliday, date: v })} />
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-medium">Country</label>

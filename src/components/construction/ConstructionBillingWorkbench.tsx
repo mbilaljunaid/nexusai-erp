@@ -26,6 +26,7 @@ import type { CostCode } from "@/types/erp-types";
 import { PayAppLineEditor } from "./PayAppLineEditor";
 import { PayAppCertificationWizard } from "./PayAppCertificationWizard";
 import { PayAppSummary } from "./PayAppSummary";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface PayApp {
     id: string;
@@ -267,11 +268,11 @@ export default function ConstructionBillingWorkbench() {
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Period Start</Label>
-                                        <Input name="periodStart" type="date" required />
+                                        <DatePicker onChange={() => {}} />
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Period End</Label>
-                                        <Input name="periodEnd" type="date" required />
+                                        <DatePicker onChange={() => {}} />
                                     </div>
                                     <SheetFooter className="pt-4">
                                         <Button type="submit" className="w-full">Create</Button>

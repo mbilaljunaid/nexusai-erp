@@ -16,6 +16,7 @@ import { Loader2, Eye, Edit, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface TaxCode {
     id: string;
@@ -222,23 +223,11 @@ export function TaxCodeModal({ isOpen, onClose, taxCode, mode }: TaxCodeModalPro
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="effectiveFrom">Effective From</Label>
-                                <Input
-                                    id="effectiveFrom"
-                                    type="date"
-                                    value={formData.effectiveFrom}
-                                    onChange={(e) => setFormData({ ...formData, effectiveFrom: e.target.value })}
-                                    disabled={isViewMode}
-                                />
+                                <DatePicker value={formData.effectiveFrom} onChange={(v) => setFormData({ ...formData, effectiveFrom: v })} disabled={isViewMode} />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="effectiveTo">Effective To</Label>
-                                <Input
-                                    id="effectiveTo"
-                                    type="date"
-                                    value={formData.effectiveTo}
-                                    onChange={(e) => setFormData({ ...formData, effectiveTo: e.target.value })}
-                                    disabled={isViewMode}
-                                />
+                                <DatePicker value={formData.effectiveTo} onChange={(v) => setFormData({ ...formData, effectiveTo: v })} disabled={isViewMode} />
                             </div>
                         </div>
 

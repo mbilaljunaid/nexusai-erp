@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Trash2, Save, Map, Shield } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -149,7 +150,7 @@ export default function TerritoryManager() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* List of Territories */}
                 <div className="md:col-span-1 space-y-4">
-                    {isLoading && <div className="text-muted-foreground">Loading...</div>}
+                    {isLoading && <TableSkeleton rows={4} />}
                     {territories?.map((t) => (
                         <Card
                             key={t.id}

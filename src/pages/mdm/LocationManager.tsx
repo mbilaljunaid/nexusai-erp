@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { MapPin, Plus, Building2 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -89,7 +90,7 @@ export default function LocationManager() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    
+
                     <p className="text-muted-foreground">
                         Manage addresses and site uses
                     </p>
@@ -216,7 +217,7 @@ export default function LocationManager() {
                 <div className="space-y-4">
                     <h2 className="text-xl font-semibold">Locations</h2>
                     {isLoading ? (
-                        <p className="text-muted-foreground">Loading locations...</p>
+                        <TableSkeleton rows={4} />
                     ) : locations.length === 0 ? (
                         <Card>
                             <CardContent className="py-12 text-center text-muted-foreground">

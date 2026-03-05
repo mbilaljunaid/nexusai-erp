@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 export default function LicenseManagement() {
   return (
@@ -18,7 +19,7 @@ export default function LicenseManagement() {
             <p className="text-sm text-muted-foreground">Valid Until</p>
             <p className="font-semibold text-lg mt-1">Dec 31, 2025</p>
           </div>
-          <Badge className="bg-green-100 text-green-800">Active</Badge>
+          <StatusBadge status="active" />
         </CardContent>
       </Card>
     </StandardPage>

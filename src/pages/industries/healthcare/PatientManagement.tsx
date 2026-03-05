@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export default function PatientManagement() {
   const { toast } = useToast();
@@ -134,7 +136,7 @@ export default function PatientManagement() {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="dob" className="text-right">DOB</Label>
-                <Input id="dob" type="date" value={newPatient.dob} onChange={(e) => setNewPatient({ ...newPatient, dob: e.target.value })} className="col-span-3" />
+                <DatePicker className="col-span-3" value={newPatient.dob} onChange={(v) => setNewPatient({ ...newPatient, dob: v })} />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="gender" className="text-right">Gender</Label>
@@ -158,7 +160,7 @@ export default function PatientManagement() {
       }
     >
       {isLoading ? (
-        <div className="p-8 text-center text-muted-foreground">Loading...</div>
+        <TableSkeleton rows={5} />
       ) : (
         <div className="border rounded-md">
           <InteractiveSpreadsheet

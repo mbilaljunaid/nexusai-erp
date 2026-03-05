@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -91,7 +92,7 @@ export default function EventBanquetingManagement() {
       <Card>
         <CardHeader><CardTitle className="text-base">Events</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {isLoading ? <p>Loading...</p> : events.length === 0 ? <p className="text-muted-foreground text-center py-4">No events</p> : events.map((e: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : events.length === 0 ? <p className="text-muted-foreground text-center py-4">No events</p> : events.map((e: any) => (
             <div key={e.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`event-${e.id}`}>
               <div className="flex-1">
                 <p className="font-semibold">{e.eventId} - {e.eventName}</p>

@@ -9,6 +9,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Separator } from "@/components/ui/separator";
 import {
     FileText,
@@ -40,14 +41,7 @@ interface JournalSideSheetProps {
 export function JournalSideSheet({ isOpen, onClose, journal }: JournalSideSheetProps) {
     if (!journal) return null;
 
-    const getStatusVariant = (status: string) => {
-        switch (status) {
-            case "Posted": return "default"; // emerald in custom theme
-            case "Error": return "destructive";
-            case "Draft": return "secondary";
-            default: return "outline";
-        }
-    };
+
 
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
@@ -63,9 +57,7 @@ export function JournalSideSheet({ isOpen, onClose, journal }: JournalSideSheetP
                                 <div>
                                     <h2 className="text-xl font-bold text-slate-900 tracking-tight">{journal.journalName}</h2>
                                     <div className="flex items-center gap-2 mt-1">
-                                        <Badge variant={getStatusVariant(journal.status)} className="rounded-full px-2 py-0 text-[10px] uppercase font-bold tracking-wider">
-                                            {journal.status}
-                                        </Badge>
+                                        <StatusBadge status={journal.status} className="rounded-full px-2 py-0 text-[10px] uppercase font-bold tracking-wider" />
                                         <span className="text-xs text-slate-400 font-medium">#{journal.id.split('-')[0]}</span>
                                     </div>
                                 </div>

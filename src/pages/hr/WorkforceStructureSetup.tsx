@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
@@ -44,7 +45,7 @@ export default function WorkforceStructureSetup() {
         { id: "name", header: "Ladder Name", width: "250px", cell: (row) => <span className="font-semibold">{row.name}</span> },
         { id: "type", header: "Progression Type", width: "200px", cell: (row) => <div className="w-full"><Badge variant="outline" className={row.typeClass}>{row.type}</Badge></div> },
         { id: "grades", header: "Grades Included", width: "250px", cell: (row) => <span className="text-muted-foreground">{row.grades}</span> },
-        { id: "status", header: "Status", width: "120px", cell: (row) => <div className="w-full"><Badge className="bg-green-500/10 text-green-700 border-green-500/20 shadow-none">{row.status}</Badge></div> },
+        { id: "status", header: "Status", width: "120px", cell: (row) => <div className="w-full"><StatusBadge status={row.status} /></div> },
         {
             id: "actions", header: "Actions", width: "150px", cell: (row) => (
                 <div className="flex justify-end w-full">

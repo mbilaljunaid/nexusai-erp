@@ -21,10 +21,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { z } from "zod";
+import { DatePickerField } from '@/components/forms/DatePickerField';
 
 const retireSchema = z.object({
     bookId: z.string().min(1, "Book is required"),
-    retirementDate: z.coerce.date(),
+    retirementDate: z.string().min(1, "Date is required"),
     proceeds: z.coerce.number().min(0),
     removalCost: z.coerce.number().min(0),
 });
@@ -40,7 +41,7 @@ export function RetireAssetDialog({ asset }: { asset: FaAsset }) {
         resolver: zodResolver(retireSchema),
         defaultValues: {
             bookId: "CORP-BOOK-1", // Default for Phase 3 MVP
-            retirementDate: new Date(),
+            retirementDate: new Date().toISOString().split('T')[0],
             proceeds: 0,
             removalCost: 0,
         },
@@ -97,7 +98,7 @@ export function RetireAssetDialog({ asset }: { asset: FaAsset }) {
                                 <FormItem>
                                     <FormLabel>Retirement Date</FormLabel>
                                     <FormControl>
-                                        <Input type="date" {...field} value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : field.value} />
+                                        <DatePickerField {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

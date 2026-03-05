@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -129,7 +130,7 @@ export default function DuplicateDetectionWorkbench() {
                     </CardHeader>
                     <CardContent className="space-y-2">
                         {loadingSets ? (
-                            <p className="text-sm text-muted-foreground">Loading...</p>
+                            <TableSkeleton rows={4} />
                         ) : duplicateSets.length === 0 ? (
                             <p className="text-sm text-muted-foreground">No duplicates found</p>
                         ) : (

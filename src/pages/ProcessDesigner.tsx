@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -106,7 +107,7 @@ export default function ProcessDesigner() {
       <Card>
         <CardHeader><CardTitle className="text-base">Process Library</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : processes.length === 0 ? <p className="text-muted-foreground text-center py-4">No processes</p> : processes.map((p: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : processes.length === 0 ? <p className="text-muted-foreground text-center py-4">No processes</p> : processes.map((p: any) => (
             <div key={p.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`process-${p.id}`}>
               <div className="flex-1">
                 <h3 className="font-semibold">{p.name}</h3>

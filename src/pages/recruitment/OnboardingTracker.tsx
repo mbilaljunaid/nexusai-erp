@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ClipboardList, CheckCircle2, Clock, AlertTriangle, User } from "lucide-react";
@@ -94,18 +96,7 @@ export default function OnboardingTracker() {
         return Math.round((completedCount / tasks.length) * 100);
     };
 
-    const getStatusBadge = (status: string) => {
-        switch (status) {
-            case 'COMPLETE':
-                return <Badge variant="default" className="bg-green-600"><CheckCircle2 className="h-3 w-3 mr-1" />Complete</Badge>;
-            case 'IN_PROGRESS':
-                return <Badge variant="default" className="bg-blue-600"><Clock className="h-3 w-3 mr-1" />In Progress</Badge>;
-            case 'PENDING':
-                return <Badge variant="secondary"><AlertTriangle className="h-3 w-3 mr-1" />Pending</Badge>;
-            default:
-                return <Badge variant="outline">{status}</Badge>;
-        }
-    };
+
 
     const isOverdue = (dueDate: string, status: string) => {
         if (status === 'COMPLETE') return false;
@@ -155,7 +146,7 @@ export default function OnboardingTracker() {
             id: "status",
             header: "Status",
             width: "150px",
-            cell: (row) => <div className="px-2">{getStatusBadge(row.status)}</div>
+            cell: (row) => <div className="px-2"><StatusBadge status={row.status} /></div>
         },
         {
             id: "action",
@@ -265,7 +256,7 @@ export default function OnboardingTracker() {
             {/* Onboarding Hires */}
             <div className="space-y-4">
                 {isLoading ? (
-                    <p className="text-center py-8 text-muted-foreground">Loading...</p>
+                    <TableSkeleton rows={4} />
                 ) : filteredHires.length === 0 ? (
                     <Card>
                         <CardContent className="p-8 text-center text-muted-foreground">

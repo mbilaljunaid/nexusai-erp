@@ -12,6 +12,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { FileText, Clock, CheckCircle, XCircle, AlertCircle, DollarSign } from "lucide-react";
 import { ContextualSearch } from "@/components/ContextualSearch";
+import { DatePicker } from '@/components/ui/DatePicker';
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 interface DealRegistration {
     id: string;
@@ -88,15 +90,7 @@ export default function DealRegistration() {
     const rejectedDeals = deals.filter(d => d.status === "REJECTED");
     const totalValue = pendingDeals.reduce((sum, d) => sum + d.estimatedValue, 0);
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "PENDING": return "bg-amber-100 text-amber-800 border-amber-200";
-            case "APPROVED": return "bg-green-100 text-green-800 border-green-200";
-            case "REJECTED": return "bg-red-100 text-red-800 border-red-200";
-            case "EXPIRED": return "bg-gray-100 text-gray-800 border-gray-200";
-            default: return "bg-gray-100 text-gray-800 border-gray-200";
-        }
-    };
+
 
     const getStatusIcon = (status: string) => {
         switch (status) {
@@ -216,10 +210,7 @@ export default function DealRegistration() {
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-2">
                                                     <CardTitle className="text-lg">{deal.dealName}</CardTitle>
-                                                    <Badge className={getStatusColor(deal.status)}>
-                                                        {getStatusIcon(deal.status)}
-                                                        <span className="ml-1">{deal.status}</span>
-                                                    </Badge>
+                                                    <StatusBadge status={deal.status} />
                                                 </div>
                                                 <CardDescription className="mt-2">
                                                     Customer: <span className="font-medium">{deal.customerName}</span> •
@@ -299,10 +290,7 @@ export default function DealRegistration() {
                                             <div>
                                                 <div className="flex items-center gap-2">
                                                     <CardTitle className="text-lg">{deal.dealName}</CardTitle>
-                                                    <Badge className={getStatusColor(deal.status)}>
-                                                        {getStatusIcon(deal.status)}
-                                                        <span className="ml-1">{deal.status}</span>
-                                                    </Badge>
+                                                    <StatusBadge status={deal.status} />
                                                 </div>
                                                 <CardDescription className="mt-2">
                                                     {deal.customerName} • {deal.partnerName}
@@ -335,10 +323,7 @@ export default function DealRegistration() {
                                             <div>
                                                 <div className="flex items-center gap-2">
                                                     <CardTitle className="text-lg">{deal.dealName}</CardTitle>
-                                                    <Badge className={getStatusColor(deal.status)}>
-                                                        {getStatusIcon(deal.status)}
-                                                        <span className="ml-1">{deal.status}</span>
-                                                    </Badge>
+                                                    <StatusBadge status={deal.status} />
                                                 </div>
                                                 <CardDescription className="mt-2">
                                                     {deal.customerName} • {deal.partnerName}
@@ -387,9 +372,7 @@ export default function DealRegistration() {
                                                 <TableCell>{deal.customerName}</TableCell>
                                                 <TableCell>{deal.partnerName}</TableCell>
                                                 <TableCell>
-                                                    <Badge className={getStatusColor(deal.status)}>
-                                                        {deal.status}
-                                                    </Badge>
+                                                    <StatusBadge status={deal.status} />
                                                 </TableCell>
                                                 <TableCell className="text-right font-mono">
                                                     ${(deal.estimatedValue / 1000).toFixed(0)}K
@@ -425,10 +408,7 @@ export default function DealRegistration() {
                                     </CardDescription>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Badge className={getStatusColor(selectedDeal.status)} variant="outline">
-                                        {getStatusIcon(selectedDeal.status)}
-                                        <span className="ml-1">{selectedDeal.status}</span>
-                                    </Badge>
+                                    <StatusBadge status={selectedDeal.status} />
                                     <Button size="sm" variant="ghost" onClick={() => setSelectedDeal(null)}>
                                         Close
                                     </Button>
@@ -504,7 +484,7 @@ export default function DealRegistration() {
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium">Expected Close Date</label>
-                                    <Input type="date" defaultValue={selectedDeal.expectedCloseDate} />
+                                    <DatePicker onChange={() => { }} />
                                 </div>
                                 <div className="space-y-2 col-span-2">
                                     <label className="text-sm font-medium">Description</label>

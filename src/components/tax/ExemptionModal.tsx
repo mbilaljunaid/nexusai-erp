@@ -17,6 +17,7 @@ import { Loader2, Eye, Edit, ShieldOff, Upload, FileText } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface Exemption {
     id: string;
@@ -231,24 +232,11 @@ export function ExemptionModal({ isOpen, onClose, exemption, mode }: ExemptionMo
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="validFrom">Valid From *</Label>
-                                <Input
-                                    id="validFrom"
-                                    type="date"
-                                    value={formData.validFrom}
-                                    onChange={(e) => setFormData({ ...formData, validFrom: e.target.value })}
-                                    disabled={isViewMode}
-                                    required
-                                />
+                                <DatePicker value={formData.validFrom} onChange={(v) => setFormData({ ...formData, validFrom: v })} disabled={isViewMode} />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="validTo">Valid To (Optional)</Label>
-                                <Input
-                                    id="validTo"
-                                    type="date"
-                                    value={formData.validTo}
-                                    onChange={(e) => setFormData({ ...formData, validTo: e.target.value })}
-                                    disabled={isViewMode}
-                                />
+                                <DatePicker value={formData.validTo} onChange={(v) => setFormData({ ...formData, validTo: v })} disabled={isViewMode} />
                                 {expiryStatus && isViewMode && (
                                     <Badge
                                         variant={expiryStatus.color as any}

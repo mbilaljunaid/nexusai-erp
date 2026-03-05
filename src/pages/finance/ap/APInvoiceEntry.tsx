@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { DatePicker } from '@/components/ui/DatePicker';
 function useActiveBu() {
     return useMemo(() => ({
         id: localStorage.getItem("nexus_active_bu") || null,
@@ -532,15 +533,15 @@ export default function APInvoiceEntry() {
                         </div>
                         <div className="space-y-2">
                             <Label>Invoice Date *</Label>
-                            <Input type="date" value={header.invoiceDate} onChange={e => setHeader({ ...header, invoiceDate: e.target.value })} />
+                            <DatePicker value={header.invoiceDate} onChange={v => setHeader({ ...header, invoiceDate: v })} />
                         </div>
                         <div className="space-y-2">
                             <Label>Transaction Date</Label>
-                            <Input type="date" value={header.transactionDate} onChange={e => setHeader({ ...header, transactionDate: e.target.value })} />
+                            <DatePicker value={header.transactionDate} onChange={v => setHeader({ ...header, transactionDate: v })} />
                         </div>
                         <div className="space-y-2">
                             <Label>Terms Date</Label>
-                            <Input type="date" value={header.termsDate} onChange={e => setHeader({ ...header, termsDate: e.target.value })} />
+                            <DatePicker value={header.termsDate} onChange={v => setHeader({ ...header, termsDate: v })} />
                         </div>
                         <div className="space-y-2">
                             <Label>Invoice Type</Label>

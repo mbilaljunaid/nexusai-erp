@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp } from "lucide-react";
@@ -53,7 +54,7 @@ export default function RevenueManagement() {
         <Card>
           <CardHeader><CardTitle className="text-base">Rate Rules</CardTitle></CardHeader>
           <CardContent className="space-y-2">
-            {isLoading ? <p>Loading...</p> : metrics.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : metrics.slice(0, 5).map((m: any) => (
+            {isLoading ? <TableSkeleton rows={4} /> : metrics.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : metrics.slice(0, 5).map((m: any) => (
               <div key={m.id} className="p-2 border rounded text-sm hover-elevate flex justify-between" data-testid={`rate-${m.id}`}>
                 <span>{m.roomType || "Type"}</span>
                 <span className="font-bold">${m.adr || 0}</span>
@@ -65,7 +66,7 @@ export default function RevenueManagement() {
         <Card>
           <CardHeader><CardTitle className="text-base">Forecast</CardTitle></CardHeader>
           <CardContent className="space-y-2">
-            {isLoading ? <p>Loading...</p> : metrics.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : metrics.slice(0, 5).map((m: any) => (
+            {isLoading ? <TableSkeleton rows={4} /> : metrics.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : metrics.slice(0, 5).map((m: any) => (
               <div key={m.id} className="p-2 border rounded text-sm hover-elevate flex justify-between items-center" data-testid={`forecast-${m.id}`}>
                 <span>{m.period || "Period"}</span>
                 <Badge variant="default" className="text-xs">{m.occupancy || 0}%</Badge>

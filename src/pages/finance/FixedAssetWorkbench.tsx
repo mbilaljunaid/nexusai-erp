@@ -23,6 +23,7 @@ import { Progress } from "@/components/ui/progress";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { ContextualSearch } from "@/components/ContextualSearch";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface Asset {
     id: string;
@@ -352,7 +353,7 @@ export default function FixedAssetWorkbench() {
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs text-muted-foreground uppercase font-bold">GL Post Date</label>
-                                            <Input type="date" defaultValue="2026-02-10" />
+                                            <DatePicker value="2026-02-10" onChange={() => {}} />
                                         </div>
                                     </div>
                                     <Button

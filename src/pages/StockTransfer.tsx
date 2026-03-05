@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -100,7 +101,7 @@ export default function StockTransfer() {
       <Card>
         <CardHeader><CardTitle className="text-base">Transfers</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : transfers.length === 0 ? <p className="text-muted-foreground text-center py-4">No transfers</p> : transfers.map((t: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : transfers.length === 0 ? <p className="text-muted-foreground text-center py-4">No transfers</p> : transfers.map((t: any) => (
             <div key={t.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`transfer-${t.id}`}>
               <div>
                 <p className="font-semibold text-sm">{t.item}</p>

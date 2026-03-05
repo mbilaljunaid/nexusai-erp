@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Check, X, Eye, FileText } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -77,7 +78,7 @@ export default function ManagerApprovals() {
         <StandardPage title="Approvals">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground">Review and approve team timesheets.</p>
                 </div>
             </div>
@@ -100,9 +101,7 @@ export default function ManagerApprovals() {
                         </TableHeader>
                         <TableBody>
                             {isLoading ? (
-                                <TableRow>
-                                    <TableCell colSpan={5} className="text-center py-4">Loading...</TableCell>
-                                </TableRow>
+                                <TableRow><TableCell colSpan={5}><TableSkeleton rows={4} /></TableCell></TableRow>
                             ) : pendingSheets?.length === 0 ? (
                                 <TableRow>
                                     <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">No pending approvals.</TableCell>

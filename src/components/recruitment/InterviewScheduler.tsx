@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Calendar, Video, Phone, Users, MapPin } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 interface InterviewSchedulerProps {
     isOpen: boolean;
@@ -218,14 +219,7 @@ export function InterviewScheduler({
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="scheduledDate">Date *</Label>
-                                <Input
-                                    id="scheduledDate"
-                                    type="date"
-                                    value={formData.scheduledDate}
-                                    onChange={(e) => setFormData({ ...formData, scheduledDate: e.target.value })}
-                                    min={new Date().toISOString().split('T')[0]}
-                                    required
-                                />
+                                <DatePicker value={formData.scheduledDate} onChange={(v) => setFormData({ ...formData, scheduledDate: v })} />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="scheduledTime">Time *</Label>

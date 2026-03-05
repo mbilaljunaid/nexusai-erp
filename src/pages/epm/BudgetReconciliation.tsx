@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -241,15 +242,7 @@ export default function BudgetReconciliation() {
                                                 ) : "-"}
                                             </TableCell>
                                             <TableCell>
-                                                {item.status === "MATCHED" && (
-                                                    <Badge className="bg-green-500"><CheckCircle2 className="h-3 w-3 mr-1" />Matched</Badge>
-                                                )}
-                                                {item.status === "UNMATCHED" && (
-                                                    <Badge className="bg-amber-500"><AlertTriangle className="h-3 w-3 mr-1" />Unmatched</Badge>
-                                                )}
-                                                {item.status === "EXCEPTION" && (
-                                                    <Badge variant="destructive"><XCircle className="h-3 w-3 mr-1" />Exception</Badge>
-                                                )}
+                                                <StatusBadge status={item.status} />
                                             </TableCell>
                                             <TableCell className="text-sm text-muted-foreground">
                                                 {item.matchedBy || "-"}

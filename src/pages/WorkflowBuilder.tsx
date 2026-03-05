@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -71,7 +72,7 @@ export default function WorkflowBuilder() {
       </Card>
 
       <div className="grid gap-4">
-        {isLoading ? <p>Loading...</p> : workflows.length === 0 ? <p className="text-muted-foreground text-center py-4">No workflows</p> : workflows.map((w: any) => (
+        {isLoading ? <TableSkeleton rows={4} /> : workflows.length === 0 ? <p className="text-muted-foreground text-center py-4">No workflows</p> : workflows.map((w: any) => (
           <Card key={w.id} data-testid={`workflow-${w.id}`}>
             <CardContent className="pt-6">
               <div className="flex items-start justify-between">

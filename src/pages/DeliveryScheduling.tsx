@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 export default function DeliveryScheduling() {
   const { toast } = useToast();
@@ -70,7 +72,7 @@ export default function DeliveryScheduling() {
         <CardContent className="space-y-3">
           <div className="grid grid-cols-5 gap-3">
             <Input placeholder="Shipment" value={newDelivery.shipment} onChange={(e) => setNewDelivery({ ...newDelivery, shipment: e.target.value })} data-testid="input-shipment" />
-            <Input placeholder="Date" type="date" value={newDelivery.date} onChange={(e) => setNewDelivery({ ...newDelivery, date: e.target.value })} data-testid="input-date" />
+            <DatePicker value={newDelivery.date} onChange={(v) => setNewDelivery({ ...newDelivery, date: v })} placeholder="Date" />
             <Input placeholder="Time" type="time" value={newDelivery.time} onChange={(e) => setNewDelivery({ ...newDelivery, time: e.target.value })} data-testid="input-time" />
             <Input placeholder="Customer" value={newDelivery.customer} onChange={(e) => setNewDelivery({ ...newDelivery, customer: e.target.value })} data-testid="input-customer" />
             <Select value={newDelivery.status} onValueChange={(v) => setNewDelivery({ ...newDelivery, status: v })}>
@@ -91,7 +93,7 @@ export default function DeliveryScheduling() {
       <Card>
         <CardHeader><CardTitle className="text-base">Deliveries</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          {isLoading ? <p>Loading...</p> : deliveries.length === 0 ? <p className="text-muted-foreground text-center py-4">No deliveries</p> : deliveries.map((d: any) => (
+          {isLoading ? <TableSkeleton rows={4} /> : deliveries.length === 0 ? <p className="text-muted-foreground text-center py-4">No deliveries</p> : deliveries.map((d: any) => (
             <div key={d.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`delivery-${d.id}`}>
               <div>
                 <p className="font-semibold text-sm">{d.shipment} to {d.customer}</p>

@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { ChevronRight, ChevronLeft, Save, Plus, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { DatePicker } from '@/components/ui/DatePicker';
 
 const steps = [
     { id: 1, name: "Template & Criteria" },
@@ -213,7 +214,7 @@ export default function CreatePPR() {
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Payment Date</Label>
-                                        <Input type="date" value={formData.checkDate} onChange={e => setFormData({ ...formData, checkDate: e.target.value })} />
+                                        <DatePicker value={formData.checkDate} onChange={v => setFormData({ ...formData, checkDate: v })} />
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Disbursement Bank Account *</Label>
@@ -268,7 +269,7 @@ export default function CreatePPR() {
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Pay Through Date</Label>
-                                        <Input type="date" value={formData.payThroughDate} onChange={e => setFormData({ ...formData, payThroughDate: e.target.value })} />
+                                        <DatePicker value={formData.payThroughDate} onChange={v => setFormData({ ...formData, payThroughDate: v })} />
                                         <p className="text-xs text-muted-foreground">Selects invoices due on or before this date.</p>
                                     </div>
                                     <div className="space-y-2">
