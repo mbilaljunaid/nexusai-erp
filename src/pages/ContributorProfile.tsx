@@ -12,6 +12,7 @@ import {
   MessageSquare, Calendar, ArrowLeft, MapPin, Building2,
   Shield, TrendingUp, Clock, CheckCircle, ExternalLink
 } from "lucide-react";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 interface ContributorProfileData {
   user: {
@@ -216,9 +217,8 @@ export default function ContributorProfile() {
             <TabsContent value="services" className="mt-6">
               {services.length === 0 ? (
                 <Card>
-                  <CardContent className="py-8 text-center text-muted-foreground">
-                    <Package className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                    No services offered yet
+                  <CardContent className="pt-6">
+                    <EmptyState icon={Package} title="No services offered yet" />
                   </CardContent>
                 </Card>
               ) : (
@@ -272,9 +272,8 @@ export default function ContributorProfile() {
             <TabsContent value="jobs" className="mt-6">
               {jobs.length === 0 ? (
                 <Card>
-                  <CardContent className="py-8 text-center text-muted-foreground">
-                    <Briefcase className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                    No jobs posted yet
+                  <CardContent className="pt-6">
+                    <EmptyState icon={Briefcase} title="No jobs posted yet" />
                   </CardContent>
                 </Card>
               ) : (
@@ -319,9 +318,8 @@ export default function ContributorProfile() {
             <TabsContent value="posts" className="mt-6">
               {posts.length === 0 ? (
                 <Card>
-                  <CardContent className="py-8 text-center text-muted-foreground">
-                    <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                    No community posts yet
+                  <CardContent className="pt-6">
+                    <EmptyState icon={MessageSquare} title="No community posts yet" />
                   </CardContent>
                 </Card>
               ) : (

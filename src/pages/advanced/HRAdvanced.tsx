@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Heart, DollarSign, Users, BookOpen, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 // Local type definitions since these are not yet in shared schema
 interface BenefitsPlan {
@@ -60,7 +61,7 @@ export default function HRAdvanced() {
   return (
     <StandardPage title="Advanced HR Features">
       <div>
-        
+
         <p className="text-muted-foreground">Benefits, payroll, succession, learning, compensation</p>
       </div>
 
@@ -98,7 +99,7 @@ export default function HRAdvanced() {
                     </CardContent>
                   </Card>
                 ))}
-                {benefits.length === 0 && <p className="text-muted-foreground col-span-3 text-center py-8">No benefits plans</p>}
+                {benefits.length === 0 && <EmptyState compact title="No benefits plans" className="col-span-3" />}
               </div>
             </CardContent>
           </Card>
@@ -133,7 +134,7 @@ export default function HRAdvanced() {
                     </CardContent>
                   </Card>
                 ))}
-                {payroll.length === 0 && <p className="text-muted-foreground text-center py-8">No payroll configs</p>}
+                {payroll.length === 0 && <EmptyState compact title="No payroll configs" className="col-span-2" />}
               </div>
             </CardContent>
           </Card>
@@ -168,7 +169,7 @@ export default function HRAdvanced() {
                     </CardContent>
                   </Card>
                 ))}
-                {succession.length === 0 && <p className="text-muted-foreground text-center py-8">No succession plans</p>}
+                {succession.length === 0 && <EmptyState compact title="No succession plans" />}
               </div>
             </CardContent>
           </Card>
@@ -202,7 +203,7 @@ export default function HRAdvanced() {
                     </CardContent>
                   </Card>
                 ))}
-                {learning.length === 0 && <p className="text-muted-foreground col-span-3 text-center py-8">No learning paths</p>}
+                {learning.length === 0 && <EmptyState compact title="No learning paths" className="col-span-3" />}
               </div>
             </CardContent>
           </Card>
@@ -235,7 +236,7 @@ export default function HRAdvanced() {
                     </CardContent>
                   </Card>
                 ))}
-                {compensation.length === 0 && <p className="text-muted-foreground col-span-3 text-center py-8">No compensation plans</p>}
+                {compensation.length === 0 && <EmptyState compact title="No compensation plans" className="col-span-3" />}
               </div>
             </CardContent>
           </Card>

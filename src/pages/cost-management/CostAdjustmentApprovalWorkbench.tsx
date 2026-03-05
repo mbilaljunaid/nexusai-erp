@@ -22,6 +22,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -473,11 +474,7 @@ export default function CostAdjustmentApprovalWorkbench() {
                             <Clock className="h-4 w-4 animate-spin" /> Loading pending requests...
                         </div>
                     ) : pending.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-16 text-center gap-3">
-                            <CheckCircle className="h-12 w-12 text-emerald-400" />
-                            <p className="text-lg font-medium">No pending adjustments</p>
-                            <p className="text-sm text-muted-foreground">All cost adjustments have been processed.</p>
-                        </div>
+                        <EmptyState icon={CheckCircle} title="No pending adjustments" description="All cost adjustments have been processed." />
                     ) : (
                         <div className="space-y-3">
                             {pending.map((req) => (
@@ -502,11 +499,7 @@ export default function CostAdjustmentApprovalWorkbench() {
                             <Clock className="h-4 w-4 animate-spin" /> Loading history...
                         </div>
                     ) : history.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-16 text-center gap-3">
-                            <AlertTriangle className="h-12 w-12 text-muted-foreground" />
-                            <p className="text-lg font-medium">No history yet</p>
-                            <p className="text-sm text-muted-foreground">Cost adjustment history will appear here once requests are processed.</p>
-                        </div>
+                        <EmptyState icon={AlertTriangle} title="No history yet" description="Cost adjustment history will appear here once requests are processed." />
                     ) : (
                         <div className="space-y-3">
                             {history.map((req) => (

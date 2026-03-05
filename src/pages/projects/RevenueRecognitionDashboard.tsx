@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Progress } from "@/components/ui/progress";
+import { formatCurrency } from "@/lib/formatters";
 
 interface RevenueContract {
     id: string;
@@ -124,7 +125,7 @@ export default function RevenueRecognitionDashboard() {
                             <CardTitle className="text-xs font-bold text-green-800 uppercase">Recognized Revenue</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">${totalRecognized.toFixed(0)}</div>
+                            <div className="text-2xl font-bold text-green-900">{formatCurrency(totalRecognized)}</div>
                         </CardContent>
                     </Card>
                     <Card className="bg-orange-50 border-orange-100">
@@ -132,7 +133,7 @@ export default function RevenueRecognitionDashboard() {
                             <CardTitle className="text-xs font-bold text-orange-800 uppercase">Deferred Revenue</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-orange-900">${totalDeferred.toFixed(0)}</div>
+                            <div className="text-2xl font-bold text-orange-900">{formatCurrency(totalDeferred)}</div>
                         </CardContent>
                     </Card>
                     <Card className="bg-purple-50 border-purple-100">
@@ -141,7 +142,7 @@ export default function RevenueRecognitionDashboard() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold text-purple-900">
-                                ${(totalRecognized + totalDeferred).toFixed(0)}
+                                {formatCurrency(totalRecognized + totalDeferred)}
                             </div>
                         </CardContent>
                     </Card>
@@ -231,11 +232,11 @@ export default function RevenueRecognitionDashboard() {
                                                 <div className="grid grid-cols-2 gap-2 text-xs mt-3">
                                                     <div>
                                                         <span className="text-muted-foreground">Recognized:</span>
-                                                        <div className="font-bold text-green-600">${contract.recognizedRevenue.toFixed(0)}</div>
+                                                        <div className="font-bold text-green-600">{formatCurrency(contract.recognizedRevenue)}</div>
                                                     </div>
                                                     <div>
                                                         <span className="text-muted-foreground">Deferred:</span>
-                                                        <div className="font-bold text-orange-600">${contract.deferredRevenue.toFixed(0)}</div>
+                                                        <div className="font-bold text-orange-600">{formatCurrency(contract.deferredRevenue)}</div>
                                                     </div>
                                                 </div>
                                                 <Progress
@@ -276,11 +277,11 @@ export default function RevenueRecognitionDashboard() {
                                                     <div className="grid grid-cols-2 gap-2 text-xs">
                                                         <div>
                                                             <span className="text-muted-foreground">SSP:</span>
-                                                            <div className="font-mono">${obligation.standaloneSellingPrice.toFixed(0)}</div>
+                                                            <div className="font-mono">{formatCurrency(obligation.standaloneSellingPrice)}</div>
                                                         </div>
                                                         <div>
                                                             <span className="text-muted-foreground">Allocated:</span>
-                                                            <div className="font-mono">${obligation.allocatedAmount.toFixed(0)}</div>
+                                                            <div className="font-mono">{formatCurrency(obligation.allocatedAmount)}</div>
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center justify-between">

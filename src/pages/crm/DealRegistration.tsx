@@ -14,6 +14,7 @@ import { FileText, Clock, CheckCircle, XCircle, AlertCircle, DollarSign } from "
 import { ContextualSearch } from "@/components/ContextualSearch";
 import { DatePicker } from '@/components/ui/DatePicker';
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { formatNumber } from "@/lib/formatters";
 
 interface DealRegistration {
     id: string;
@@ -147,7 +148,7 @@ export default function DealRegistration() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">${(totalValue / 1000).toFixed(0)}K</div>
+                            <div className="text-2xl font-bold text-blue-900">${formatNumber(totalValue / 1000, 0)}K</div>
                             <div className="text-xs text-blue-700">Pending deals</div>
                         </CardContent>
                     </Card>
@@ -224,7 +225,7 @@ export default function DealRegistration() {
                                             <div className="grid grid-cols-3 gap-4 text-sm">
                                                 <div>
                                                     <div className="text-muted-foreground">Est. Value</div>
-                                                    <div className="font-semibold text-lg">${(deal.estimatedValue / 1000).toFixed(0)}K</div>
+                                                    <div className="font-semibold text-lg">${formatNumber(deal.estimatedValue / 1000, 0)}K</div>
                                                 </div>
                                                 <div>
                                                     <div className="text-muted-foreground">Expected Close</div>
@@ -301,7 +302,7 @@ export default function DealRegistration() {
                                     <CardContent>
                                         <div className="flex items-center justify-between text-sm">
                                             <div>
-                                                <div className="font-semibold text-lg">${(deal.estimatedValue / 1000).toFixed(0)}K</div>
+                                                <div className="font-semibold text-lg">${formatNumber(deal.estimatedValue / 1000, 0)}K</div>
                                                 <div className="text-muted-foreground">Close: {deal.expectedCloseDate}</div>
                                             </div>
                                             <div className="text-right text-xs text-muted-foreground">
@@ -335,7 +336,7 @@ export default function DealRegistration() {
                                         <div className="space-y-2 text-sm">
                                             <div className="flex items-center justify-between">
                                                 <span className="text-muted-foreground">Estimated Value:</span>
-                                                <span className="font-medium">${(deal.estimatedValue / 1000).toFixed(0)}K</span>
+                                                <span className="font-medium">${formatNumber(deal.estimatedValue / 1000, 0)}K</span>
                                             </div>
                                             {deal.rejectionReason && (
                                                 <div className="mt-3 p-3 bg-red-50 border border-red-100 rounded">
@@ -375,7 +376,7 @@ export default function DealRegistration() {
                                                     <StatusBadge status={deal.status} />
                                                 </TableCell>
                                                 <TableCell className="text-right font-mono">
-                                                    ${(deal.estimatedValue / 1000).toFixed(0)}K
+                                                    ${formatNumber(deal.estimatedValue / 1000, 0)}K
                                                 </TableCell>
                                                 <TableCell>{deal.expectedCloseDate}</TableCell>
                                                 <TableCell>
@@ -427,7 +428,7 @@ export default function DealRegistration() {
                                 </div>
                                 <div>
                                     <div className="text-sm text-muted-foreground">Estimated Value</div>
-                                    <div className="font-semibold text-lg">${(selectedDeal.estimatedValue / 1000).toFixed(0)}K</div>
+                                    <div className="font-semibold text-lg">${formatNumber(selectedDeal.estimatedValue / 1000, 0)}K</div>
                                 </div>
                                 <div>
                                     <div className="text-sm text-muted-foreground">Expected Close</div>

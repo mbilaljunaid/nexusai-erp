@@ -5,6 +5,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { format, parse } from "date-fns";
 import { Download, FileText } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatCurrency } from "@/lib/formatters";
 import { StandardPage } from "@/components/layout/StandardPage";
 
 
@@ -28,7 +29,7 @@ export default function PortalStatements() {
 
     return (
         <div className="space-y-6">
-            
+
 
             <Card>
                 <CardHeader>
@@ -59,16 +60,16 @@ export default function PortalStatements() {
                                             <div className="flex items-center gap-6">
                                                 <div className="text-right">
                                                     <p className="text-xs text-muted-foreground">Invoiced</p>
-                                                    <p className="font-semibold">${Number(stmt.totalInvoiced).toLocaleString()}</p>
+                                                    <p className="font-semibold">{formatCurrency(Number(stmt.totalInvoiced))}</p>
                                                 </div>
                                                 <div className="text-right">
                                                     <p className="text-xs text-muted-foreground">Paid</p>
-                                                    <p className="font-semibold text-emerald-600">${Number(stmt.totalPaid).toLocaleString()}</p>
+                                                    <p className="font-semibold text-emerald-600">{formatCurrency(Number(stmt.totalPaid))}</p>
                                                 </div>
                                                 <div className="text-right">
                                                     <p className="text-xs text-muted-foreground">Balance</p>
                                                     <p className={`font-semibold ${stmt.balance > 0 ? "text-red-600" : "text-slate-900"}`}>
-                                                        ${Number(stmt.balance).toLocaleString()}
+                                                        {formatCurrency(Number(stmt.balance))}
                                                     </p>
                                                 </div>
 
@@ -86,19 +87,19 @@ export default function PortalStatements() {
                                             <div className="grid grid-cols-4 gap-3 mt-3 pt-3 border-t">
                                                 <div className="text-center">
                                                     <p className="text-xs text-muted-foreground">Current</p>
-                                                    <p className="font-medium text-sm">${Number(stmt.current || 0).toLocaleString()}</p>
+                                                    <p className="font-medium text-sm">{formatCurrency(Number(stmt.current || 0))}</p>
                                                 </div>
                                                 <div className="text-center">
                                                     <p className="text-xs text-muted-foreground">1-30 days</p>
-                                                    <p className="font-medium text-sm text-amber-600">${Number(stmt.days30 || 0).toLocaleString()}</p>
+                                                    <p className="font-medium text-sm text-amber-600">{formatCurrency(Number(stmt.days30 || 0))}</p>
                                                 </div>
                                                 <div className="text-center">
                                                     <p className="text-xs text-muted-foreground">31-60 days</p>
-                                                    <p className="font-medium text-sm text-orange-600">${Number(stmt.days60 || 0).toLocaleString()}</p>
+                                                    <p className="font-medium text-sm text-orange-600">{formatCurrency(Number(stmt.days60 || 0))}</p>
                                                 </div>
                                                 <div className="text-center">
                                                     <p className="text-xs text-muted-foreground">90+ days</p>
-                                                    <p className="font-medium text-sm text-red-600">${Number(stmt.days90Plus || 0).toLocaleString()}</p>
+                                                    <p className="font-medium text-sm text-red-600">{formatCurrency(Number(stmt.days90Plus || 0))}</p>
                                                 </div>
                                             </div>
                                         )}

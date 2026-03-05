@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { BarChart3, TrendingUp, TrendingDown, AlertTriangle, CheckCircle2, Minus } from 'lucide-react';
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
-
+import { formatCurrency, formatNumber } from "@/lib/formatters";
 
 interface Quote { id: string; quote_number: string; customer_id: string; status: string; net_total: number; list_total: number; discount_pct: number; margin_pct: number | null; valid_until: string; currency: string; created_by: string; lines?: QuoteLine[]; }
 interface QuoteLine { id: string; line_number: number; product_id: string; description: string; quantity: number; unit_price: number; discount_pct: number; net_price: number; }
@@ -46,7 +46,7 @@ export default function CPQDashboard() {
         { id: "customer", header: "Customer", width: "150px", cell: (ren: any) => <span>{ren.customer_id}</span> },
         { id: "renewal_date", header: "Renewal Date", width: "120px", cell: (ren: any) => <span>{ren.renewal_date}</span> },
         { id: "days", header: "Days", width: "80px", cell: (ren: any) => <span className={`font-bold ${Number(ren.days_until_renewal) <= 7 ? 'text-red-600' : Number(ren.days_until_renewal) <= 14 ? 'text-amber-600' : 'text-emerald-600'}`}>{ren.days_until_renewal}d</span> },
-        { id: "mrr", header: "MRR", width: "100px", cell: (ren: any) => <span className="font-mono">${Number(ren.mrr ?? 0).toLocaleString()}</span> },
+        { id: "mrr", header: "MRR", width: "100px", cell: (ren: any) => <span className="font-mono">{formatCurrency(Number(ren.mrr ?? 0))}</span> },
         { id: "auto_renew", header: "Auto-Renew", width: "100px", cell: (ren: any) => <span className={`text-[9px] px-1.5 py-0.5 rounded-sm ${ren.auto_renew ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400'}`}>{ren.auto_renew ? 'AUTO' : 'MANUAL'}</span> },
         {
             id: "status", header: "Status", width: "120px", cell: (ren: any) => {
@@ -60,13 +60,13 @@ export default function CPQDashboard() {
     const evmColumns: SpreadsheetColumn<any>[] = [
         { id: "wbs", header: "WBS", width: "120px", cell: (ca: any) => <span className="font-mono text-[10px] font-semibold">{ca.wbs_code}</span> },
         { id: "desc", header: "Description", width: "200px", cell: (ca: any) => <span className="text-gray-500">{ca.description ?? '—'}</span> },
-        { id: "pv", header: "PV", width: "100px", cell: (ca: any) => <span className="font-mono">${Number(ca.pv ?? 0).toLocaleString()}</span> },
-        { id: "ev", header: "EV", width: "100px", cell: (ca: any) => <span className="font-mono">${Number(ca.ev ?? 0).toLocaleString()}</span> },
-        { id: "ac", header: "AC", width: "100px", cell: (ca: any) => <span className="font-mono">${Number(ca.ac ?? 0).toLocaleString()}</span> },
-        { id: "sv", header: "SV", width: "100px", cell: (ca: any) => <span className={`font-mono font-bold ${Number(ca.sv ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{Number(ca.sv ?? 0) >= 0 ? '+' : ''}{Number(ca.sv ?? 0).toLocaleString()}</span> },
-        { id: "cv", header: "CV", width: "100px", cell: (ca: any) => <span className={`font-mono font-bold ${Number(ca.cv ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{Number(ca.cv ?? 0) >= 0 ? '+' : ''}{Number(ca.cv ?? 0).toLocaleString()}</span> },
-        { id: "cpi", header: "CPI", width: "80px", cell: (ca: any) => <span className={`font-bold ${kpiC(Number(ca.cpi ?? 1))}`}>{Number(ca.cpi ?? 0).toFixed(2)}</span> },
-        { id: "spi", header: "SPI", width: "80px", cell: (ca: any) => <span className={`font-bold ${kpiC(Number(ca.spi ?? 1))}`}>{Number(ca.spi ?? 0).toFixed(2)}</span> }
+        { id: "pv", header: "PV", width: "100px", cell: (ca: any) => <span className="font-mono">{formatCurrency(Number(ca.pv ?? 0))}</span> },
+        { id: "ev", header: "EV", width: "100px", cell: (ca: any) => <span className="font-mono">{formatCurrency(Number(ca.ev ?? 0))}</span> },
+        { id: "ac", header: "AC", width: "100px", cell: (ca: any) => <span className="font-mono">{formatCurrency(Number(ca.ac ?? 0))}</span> },
+        { id: "sv", header: "SV", width: "100px", cell: (ca: any) => <span className={`font-mono font-bold ${Number(ca.sv ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{Number(ca.sv ?? 0) >= 0 ? '+' : ''}{formatCurrency(Number(ca.sv ?? 0)).replace('$', '')}</span> },
+        { id: "cv", header: "CV", width: "100px", cell: (ca: any) => <span className={`font-mono font-bold ${Number(ca.cv ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{Number(ca.cv ?? 0) >= 0 ? '+' : ''}{formatCurrency(Number(ca.cv ?? 0)).replace('$', '')}</span> },
+        { id: "cpi", header: "CPI", width: "80px", cell: (ca: any) => <span className={`font-bold ${kpiC(Number(ca.cpi ?? 1))}`}>{formatNumber(ca.cpi ?? 0, 2)}</span> },
+        { id: "spi", header: "SPI", width: "80px", cell: (ca: any) => <span className={`font-bold ${kpiC(Number(ca.spi ?? 1))}`}>{formatNumber(ca.spi ?? 0, 2)}</span> }
     ];
 
     return (
@@ -86,7 +86,7 @@ export default function CPQDashboard() {
             {view === 'cpq' && (
                 <>
                     <div className="flex gap-2.5 mb-3.5">
-                        {[{ lbl: 'Pipeline', val: `$${(pipeline / 1000).toFixed(0)}K`, clr: 'text-blue-700' }, { lbl: 'Won', val: won, clr: 'text-emerald-600' }, { lbl: 'Lost', val: lost, clr: 'text-red-600' }, { lbl: 'Open', val: pending, clr: 'text-amber-600' }].map(k => (
+                        {[{ lbl: 'Pipeline', val: `$${formatNumber(pipeline / 1000, 0)}K`, clr: 'text-blue-700' }, { lbl: 'Won', val: won, clr: 'text-emerald-600' }, { lbl: 'Lost', val: lost, clr: 'text-red-600' }, { lbl: 'Open', val: pending, clr: 'text-amber-600' }].map(k => (
                             <div key={k.lbl} className="bg-white border border-gray-200 rounded-xl px-4 py-2.5 min-w-[100px]">
                                 <div className={`text-xl font-extrabold ${k.clr}`}>{k.val}</div>
                                 <div className="text-[10px] text-gray-400">{k.lbl}</div>
@@ -110,8 +110,8 @@ export default function CPQDashboard() {
                                             <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${statusClass.replace(/border-l-\S+/, '')}`}>{q.status}</span>
                                         </div>
                                         <div className="flex gap-3 text-[10px] text-gray-500 mb-1">
-                                            <span>List: <strong className="text-gray-700">${Number(q.list_total).toLocaleString()}</strong></span>
-                                            <span>Net: <strong className="text-emerald-600">${Number(q.net_total).toLocaleString()}</strong></span>
+                                            <span>List: <strong className="text-gray-700">{formatCurrency(Number(q.list_total))}</strong></span>
+                                            <span>Net: <strong className="text-emerald-600">{formatCurrency(Number(q.net_total))}</strong></span>
                                             <span>Disc: <strong>{Number(q.discount_pct)}%</strong></span>
                                             {q.valid_until && <span>Valid until: <strong>{q.valid_until}</strong></span>}
                                         </div>
@@ -134,8 +134,8 @@ export default function CPQDashboard() {
                                         <div className="font-semibold">#{l.line_number} {l.product_id}</div>
                                         <div className="text-gray-500">{l.description}</div>
                                         <div className="flex justify-between mt-0.5">
-                                            <span>{l.quantity} × ${Number(l.unit_price).toFixed(2)}</span>
-                                            <span className="font-bold text-emerald-600">${Number(l.net_price).toFixed(2)}</span>
+                                            <span>{l.quantity} × {formatCurrency(Number(l.unit_price))}</span>
+                                            <span className="font-bold text-emerald-600">{formatCurrency(Number(l.net_price))}</span>
                                         </div>
                                     </div>
                                 ))}
@@ -175,7 +175,7 @@ export default function CPQDashboard() {
                         <Input value={evmBaseline} onChange={e => setEvmBaseline(e.target.value)} placeholder="Paste Baseline ID..." className="text-xs w-[300px] h-8" aria-label="Baseline ID" />
                         {evmMetrics && (
                             <div className="flex gap-2">
-                                {[{ lbl: 'SPI', val: Number(evmMetrics.totals.ev / (evmMetrics.totals.pv || 1)).toFixed(2), gd: 1 }, { lbl: 'CPI', val: Number(evmMetrics.totals.ev / (evmMetrics.totals.ac || 1)).toFixed(2), gd: 1 }, { lbl: 'EAC', val: `$${Number(evmMetrics.eac / 1000).toFixed(0)}K`, clr: 'text-blue-700' }].map(k => (
+                                {[{ lbl: 'SPI', val: formatNumber(evmMetrics.totals.ev / (evmMetrics.totals.pv || 1), 2), gd: 1 }, { lbl: 'CPI', val: formatNumber(evmMetrics.totals.ev / (evmMetrics.totals.ac || 1), 2), gd: 1 }, { lbl: 'EAC', val: `$${formatNumber(evmMetrics.eac / 1000, 0)}K`, clr: 'text-blue-700' }].map(k => (
                                     <div key={k.lbl} className="bg-white border border-gray-200 rounded-lg px-3 py-1.5">
                                         <div className={`text-sm font-extrabold ${(k as any).clr ?? kpiC(Number(k.val))}`}>{k.val}</div>
                                         <div className="text-[9px] text-gray-400">{k.lbl}</div>

@@ -25,6 +25,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, CheckCircle, BrainCircuit } from "lucide-react";
 import PayslipView from "./PayslipView";
+import { formatCurrency, formatPercent } from "@/lib/formatters";
 
 interface PayrollRunDetailsProps {
     runId: string | null;
@@ -132,8 +133,8 @@ export default function PayrollRunDetails({ runId, isOpen, onClose }: PayrollRun
                                         employeeRows.map((row: any) => (
                                             <TableRow key={row.assignmentId}>
                                                 <TableCell>{row.assignmentId}</TableCell>
-                                                <TableCell className="text-right">${row.gross.toFixed(2)}</TableCell>
-                                                <TableCell className="text-right font-bold">${row.net.toFixed(2)}</TableCell>
+                                                <TableCell className="text-right">{formatCurrency(row.gross)}</TableCell>
+                                                <TableCell className="text-right font-bold">{formatCurrency(row.net)}</TableCell>
                                                 <TableCell className="text-right space-x-2">
                                                     <Button size="sm" variant="outline" onClick={() => setSelectedAssignmentId(row.assignmentId)}>
                                                         <Eye className="w-4 h-4 mr-1" /> View
@@ -171,17 +172,17 @@ export default function PayrollRunDetails({ runId, isOpen, onClose }: PayrollRun
                                                     </div>
                                                     {a.variancePercent && (
                                                         <Badge variant="outline" className="border-amber-200 text-amber-700">
-                                                            {a.variancePercent > 0 ? '+' : ''}{a.variancePercent.toFixed(1)}% Variance
+                                                            {formatPercent(a.variancePercent, 1)} Variance
                                                         </Badge>
                                                     )}
                                                 </div>
                                                 {a.previousNet && a.currentNet && (
                                                     <div className="mt-2 text-sm bg-amber-50 dark:bg-amber-900/10 p-2 rounded flex items-center gap-2">
                                                         <span className="text-muted-foreground">Previous: </span>
-                                                        <span className="font-medium">${Number(a.previousNet).toFixed(2)}</span>
+                                                        <span className="font-medium">{formatCurrency(a.previousNet)}</span>
                                                         <span className="text-muted-foreground text-xs">→</span>
                                                         <span className="text-muted-foreground">Current: </span>
-                                                        <span className="font-bold text-amber-700">${Number(a.currentNet).toFixed(2)}</span>
+                                                        <span className="font-bold text-amber-700">{formatCurrency(a.currentNet)}</span>
                                                     </div>
                                                 )}
                                             </div>

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { FileText, Download, Filter, Building2 } from "lucide-react";
 import { ExportButton } from "@/components/ExportButton";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatCurrency } from "@/lib/formatters";
 
 function useActiveBu() {
     return useMemo(() => ({
@@ -53,29 +54,29 @@ export default function APReports() {
         {
             header: "Current",
             id: "current", width: "150px",
-            cell: (row) => `$${parseFloat(row.current || 0).toLocaleString()}`
+            cell: (row) => formatCurrency(row.current || 0)
         },
         {
             header: "1-30 Days",
             id: "days30", width: "150px",
-            cell: (row) => `$${parseFloat(row.days30 || 0).toLocaleString()}`
+            cell: (row) => formatCurrency(row.days30 || 0)
         },
         {
             header: "31-60 Days",
             id: "days60", width: "150px",
-            cell: (row) => `$${parseFloat(row.days60 || 0).toLocaleString()}`
+            cell: (row) => formatCurrency(row.days60 || 0)
         },
         {
             header: "61-90 Days",
             id: "days90", width: "150px",
-            cell: (row) => `$${parseFloat(row.days90 || 0).toLocaleString()}`
+            cell: (row) => formatCurrency(row.days90 || 0)
         },
         {
             header: "90+ Days",
             id: "over90", width: "150px",
             cell: (row) => (
                 <span className="font-semibold text-red-600">
-                    ${parseFloat(row.over90 || 0).toLocaleString()}
+                    {formatCurrency(row.over90 || 0)}
                 </span>
             )
         },
@@ -84,7 +85,7 @@ export default function APReports() {
             id: "total", width: "150px",
             cell: (row) => (
                 <span className="font-bold">
-                    ${parseFloat(row.total || 0).toLocaleString()}
+                    {formatCurrency(row.total || 0)}
                 </span>
             )
         }
@@ -176,7 +177,7 @@ export default function APReports() {
                             </CardHeader>
                             <CardContent>
                                 <div className="text-2xl font-bold">
-                                    ${(agingData?.reduce((sum: number, row: any) => sum + parseFloat(row.current || 0), 0) || 0).toLocaleString()}
+                                    {formatCurrency(agingData?.reduce((sum: number, row: any) => sum + parseFloat(row.current || 0), 0) || 0)}
                                 </div>
                             </CardContent>
                         </Card>
@@ -186,7 +187,7 @@ export default function APReports() {
                             </CardHeader>
                             <CardContent>
                                 <div className="text-2xl font-bold">
-                                    ${(agingData?.reduce((sum: number, row: any) => sum + parseFloat(row.days30 || 0), 0) || 0).toLocaleString()}
+                                    {formatCurrency(agingData?.reduce((sum: number, row: any) => sum + parseFloat(row.days30 || 0), 0) || 0)}
                                 </div>
                             </CardContent>
                         </Card>
@@ -196,7 +197,7 @@ export default function APReports() {
                             </CardHeader>
                             <CardContent>
                                 <div className="text-2xl font-bold text-orange-600">
-                                    ${(agingData?.reduce((sum: number, row: any) => sum + parseFloat(row.days60 || 0) + parseFloat(row.days90 || 0), 0) || 0).toLocaleString()}
+                                    {formatCurrency(agingData?.reduce((sum: number, row: any) => sum + parseFloat(row.days60 || 0) + parseFloat(row.days90 || 0), 0) || 0)}
                                 </div>
                             </CardContent>
                         </Card>
@@ -206,7 +207,7 @@ export default function APReports() {
                             </CardHeader>
                             <CardContent>
                                 <div className="text-2xl font-bold text-red-600">
-                                    ${(agingData?.reduce((sum: number, row: any) => sum + parseFloat(row.over90 || 0), 0) || 0).toLocaleString()}
+                                    {formatCurrency(agingData?.reduce((sum: number, row: any) => sum + parseFloat(row.over90 || 0), 0) || 0)}
                                 </div>
                             </CardContent>
                         </Card>

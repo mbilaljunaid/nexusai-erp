@@ -14,6 +14,7 @@ import { AlertCircle, Clock, CheckCircle, XCircle, TrendingUp, User, MessageSqua
 import { Progress } from "@/components/ui/progress";
 import { ContextualSearch } from "@/components/ContextualSearch";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { EmptyState } from "@/components/shared/EmptyState";
 import { getStatusVariant } from "@/lib/statusUtils";
 
 interface ServiceCase {
@@ -280,8 +281,8 @@ export default function CaseManagement() {
                             ))}
                             {newCases.length === 0 && (
                                 <Card className="border-dashed">
-                                    <CardContent className="py-8 text-center text-muted-foreground">
-                                        No new cases
+                                    <CardContent className="pt-6">
+                                        <EmptyState compact title="No new cases" />
                                     </CardContent>
                                 </Card>
                             )}
@@ -329,8 +330,8 @@ export default function CaseManagement() {
                             ))}
                             {inProgressCases.length === 0 && (
                                 <Card className="border-dashed">
-                                    <CardContent className="py-8 text-center text-muted-foreground">
-                                        No cases in progress
+                                    <CardContent className="pt-6">
+                                        <EmptyState compact title="No cases in progress" />
                                     </CardContent>
                                 </Card>
                             )}
@@ -368,8 +369,8 @@ export default function CaseManagement() {
                             ))}
                             {criticalCases.length === 0 && (
                                 <Card className="border-dashed">
-                                    <CardContent className="py-8 text-center text-muted-foreground">
-                                        No critical cases
+                                    <CardContent className="pt-6">
+                                        <EmptyState compact title="No critical cases" />
                                     </CardContent>
                                 </Card>
                             )}
@@ -395,8 +396,8 @@ export default function CaseManagement() {
                             ))}
                             {resolvedCases.length === 0 && (
                                 <Card className="border-dashed">
-                                    <CardContent className="py-8 text-center text-muted-foreground">
-                                        No resolved cases
+                                    <CardContent className="pt-6">
+                                        <EmptyState compact title="No resolved cases" />
                                     </CardContent>
                                 </Card>
                             )}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatCurrency } from "@/lib/formatters";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, TrendingUp, AlertCircle, CreditCard, Clock } from "lucide-react";
@@ -60,7 +61,7 @@ export default function AgingReport() {
           <div key={bucket.label}>
             <div className="flex justify-between mb-2">
               <span className="text-sm font-medium">{bucket.label}</span>
-              <span className="text-sm">${parseFloat(bucket.data.amount).toLocaleString()}</span>
+              <span className="text-sm">{formatCurrency(parseFloat(bucket.data.amount))}</span>
             </div>
             <div className="w-full bg-secondary h-6 rounded flex overflow-hidden">
               <svg width={`${bucket.data.percentage || 0}%`} height="100%" className="transition-all">
@@ -73,7 +74,7 @@ export default function AgingReport() {
         <div className="pt-4 border-t">
           <div className="flex justify-between">
             <span className="font-semibold">Total</span>
-            <span className="font-semibold text-lg">${parseFloat(data.totalAmount).toLocaleString()}</span>
+            <span className="font-semibold text-lg">{formatCurrency(parseFloat(data.totalAmount))}</span>
           </div>
         </div>
       </div>
@@ -99,7 +100,7 @@ export default function AgingReport() {
                   <div>
                     <p className="text-xs text-muted-foreground">Overdue 90+ Days</p>
                     <p className="text-2xl font-semibold font-mono">
-                      ${apLatest ? parseFloat(apLatest.over90.amount).toLocaleString() : "0"}
+                      {formatCurrency(apLatest ? parseFloat(apLatest.over90.amount) : 0)}
                     </p>
                   </div>
                 </div>
@@ -112,7 +113,7 @@ export default function AgingReport() {
                   <div>
                     <p className="text-xs text-muted-foreground">Total AP</p>
                     <p className="text-2xl font-semibold font-mono">
-                      ${apLatest ? parseFloat(apLatest.totalAmount).toLocaleString() : "0"}
+                      {formatCurrency(apLatest ? parseFloat(apLatest.totalAmount) : 0)}
                     </p>
                   </div>
                 </div>
@@ -125,7 +126,7 @@ export default function AgingReport() {
                   <div>
                     <p className="text-xs text-muted-foreground">Current (Not Due)</p>
                     <p className="text-2xl font-semibold font-mono">
-                      ${apLatest ? parseFloat(apLatest.current.amount).toLocaleString() : "0"}
+                      {formatCurrency(apLatest ? parseFloat(apLatest.current.amount) : 0)}
                     </p>
                   </div>
                 </div>
@@ -153,7 +154,7 @@ export default function AgingReport() {
                   <div>
                     <p className="text-xs text-muted-foreground">Overdue 90+ Days</p>
                     <p className="text-2xl font-semibold font-mono">
-                      ${arLatest ? parseFloat(arLatest.over90.amount).toLocaleString() : "0"}
+                      {formatCurrency(arLatest ? parseFloat(arLatest.over90.amount) : 0)}
                     </p>
                   </div>
                 </div>
@@ -166,7 +167,7 @@ export default function AgingReport() {
                   <div>
                     <p className="text-xs text-muted-foreground">Total AR</p>
                     <p className="text-2xl font-semibold font-mono">
-                      ${arLatest ? parseFloat(arLatest.totalAmount).toLocaleString() : "0"}
+                      {formatCurrency(arLatest ? parseFloat(arLatest.totalAmount) : 0)}
                     </p>
                   </div>
                 </div>
@@ -179,7 +180,7 @@ export default function AgingReport() {
                   <div>
                     <p className="text-xs text-muted-foreground">Current (Not Due)</p>
                     <p className="text-2xl font-semibold font-mono">
-                      ${arLatest ? parseFloat(arLatest.current.amount).toLocaleString() : "0"}
+                      {formatCurrency(arLatest ? parseFloat(arLatest.current.amount) : 0)}
                     </p>
                   </div>
                 </div>

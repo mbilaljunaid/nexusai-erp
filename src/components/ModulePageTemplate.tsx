@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { ArrowRight, CheckCircle, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -100,6 +100,7 @@ export function ModulePageTemplate({
     React.useEffect(() => {
         document.title = `${name} | NexusAI ERP`;
     }, [name]);
+    const [, setLocation] = useLocation();
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -114,11 +115,11 @@ export function ModulePageTemplate({
                     backgroundImage={heroImage}
                     primaryCTA={{
                         label: "Start Free Trial",
-                        onClick: () => window.location.href = '/signup'
+                        onClick: () => setLocation('/signup')
                     }}
                     secondaryCTA={{
                         label: "Schedule Demo",
-                        onClick: () => window.location.href = '/contact'
+                        onClick: () => setLocation('/contact')
                     }}
                 >
                     <div className="flex gap-2 flex-wrap">
@@ -346,7 +347,7 @@ export function ModulePageTemplate({
                     subtitle="See how it can transform your operations"
                     primaryCTA={{
                         label: "Start Free Trial",
-                        onClick: () => window.location.href = '/signup'
+                        onClick: () => setLocation('/signup')
                     }}
                     secondaryCTA={{
                         label: "Download Product Sheet",

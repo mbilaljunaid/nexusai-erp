@@ -16,6 +16,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
+import { formatCurrency } from "@/lib/formatters";
 
 interface PayslipViewProps {
     isOpen: boolean;
@@ -54,12 +55,12 @@ export default function PayslipView({ isOpen, onClose, runId, assignmentId, data
                                     {earnings.map((item) => (
                                         <TableRow key={item.id}>
                                             <TableCell>{item.elementName}</TableCell>
-                                            <TableCell className="text-right">${Number(item.amount).toFixed(2)}</TableCell>
+                                            <TableCell className="text-right">{formatCurrency(item.amount)}</TableCell>
                                         </TableRow>
                                     ))}
                                     <TableRow className="bg-muted/50 font-medium">
                                         <TableCell>Total Earnings</TableCell>
-                                        <TableCell className="text-right">${totalEarnings.toFixed(2)}</TableCell>
+                                        <TableCell className="text-right">{formatCurrency(totalEarnings)}</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>
@@ -75,12 +76,12 @@ export default function PayslipView({ isOpen, onClose, runId, assignmentId, data
                                     {deductions.map((item) => (
                                         <TableRow key={item.id}>
                                             <TableCell>{item.elementName}</TableCell>
-                                            <TableCell className="text-right text-red-600">${Math.abs(Number(item.amount)).toFixed(2)}</TableCell>
+                                            <TableCell className="text-right text-red-600">{formatCurrency(Math.abs(Number(item.amount)))}</TableCell>
                                         </TableRow>
                                     ))}
                                     <TableRow className="bg-muted/50 font-medium">
                                         <TableCell>Total Deductions</TableCell>
-                                        <TableCell className="text-right text-red-600">${Math.abs(totalDeductions).toFixed(2)}</TableCell>
+                                        <TableCell className="text-right text-red-600">{formatCurrency(Math.abs(totalDeductions))}</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>
@@ -92,7 +93,7 @@ export default function PayslipView({ isOpen, onClose, runId, assignmentId, data
                     {/* Net Pay */}
                     <div className="flex justify-between items-center p-4 bg-primary/10 rounded-md border border-primary/20">
                         <span className="text-lg font-bold">Net Pay</span>
-                        <span className="text-2xl font-bold text-primary">${netPay.toFixed(2)}</span>
+                        <span className="text-2xl font-bold text-primary">{formatCurrency(netPay)}</span>
                     </div>
                 </div>
 

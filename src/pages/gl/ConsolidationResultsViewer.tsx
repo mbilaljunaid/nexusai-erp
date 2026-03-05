@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { FileSpreadsheet, ChevronRight, DollarSign } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { formatCurrency, formatNumber } from "@/lib/formatters";
 import { ExportButton } from "@/components/ExportButton";
 
 interface ConsolidatedBalance {
@@ -109,7 +110,7 @@ export default function ConsolidationResultsViewer() {
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase">Consolidated Total</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">${totalConsolidated.toFixed(0)}</div>
+                            <div className="text-2xl font-bold text-blue-900">{formatCurrency(totalConsolidated)}</div>
                         </CardContent>
                     </Card>
                     <Card className="bg-orange-50 border-orange-100">
@@ -117,7 +118,7 @@ export default function ConsolidationResultsViewer() {
                             <CardTitle className="text-xs font-bold text-orange-800 uppercase">Eliminations</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-orange-900">${totalEliminations.toFixed(0)}</div>
+                            <div className="text-2xl font-bold text-orange-900">{formatCurrency(totalEliminations)}</div>
                         </CardContent>
                     </Card>
                     <Card className={`${totalFxImpact >= 0 ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`}>
@@ -128,7 +129,7 @@ export default function ConsolidationResultsViewer() {
                         </CardHeader>
                         <CardContent>
                             <div className={`text-2xl font-bold ${totalFxImpact >= 0 ? 'text-green-900' : 'text-red-900'}`}>
-                                {totalFxImpact >= 0 ? '+' : ''}${totalFxImpact.toFixed(0)}
+                                {totalFxImpact >= 0 ? '+' : ''}{formatCurrency(Math.abs(totalFxImpact))}
                             </div>
                         </CardContent>
                     </Card>
@@ -173,15 +174,15 @@ export default function ConsolidationResultsViewer() {
                                                 <div className="flex gap-8 text-sm">
                                                     <div className="text-right">
                                                         <div className="text-xs text-muted-foreground mb-1">Pre-Elim</div>
-                                                        <div className="font-mono">${balance.preElimination.toFixed(0)}</div>
+                                                        <div className="font-mono">{formatCurrency(balance.preElimination)}</div>
                                                     </div>
                                                     <div className="text-right">
                                                         <div className="text-xs text-muted-foreground mb-1">Eliminations</div>
-                                                        <div className="font-mono text-orange-600">${balance.eliminations.toFixed(0)}</div>
+                                                        <div className="font-mono text-orange-600">{formatCurrency(balance.eliminations)}</div>
                                                     </div>
                                                     <div className="text-right">
                                                         <div className="text-xs text-muted-foreground mb-1">Consolidated</div>
-                                                        <div className="font-mono font-bold">${balance.consolidated.toFixed(0)}</div>
+                                                        <div className="font-mono font-bold">{formatCurrency(balance.consolidated)}</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -204,9 +205,9 @@ export default function ConsolidationResultsViewer() {
                                                                 <TableRow key={entity.entityName}>
                                                                     <TableCell className="font-medium">{entity.entityName}</TableCell>
                                                                     <TableCell><Badge variant="outline">{entity.currency}</Badge></TableCell>
-                                                                    <TableCell className="text-right font-mono">{entity.originalAmount.toFixed(0)}</TableCell>
-                                                                    <TableCell className="text-right font-mono">{entity.rate.toFixed(4)}</TableCell>
-                                                                    <TableCell className="text-right font-mono font-bold">${entity.translatedAmount.toFixed(0)}</TableCell>
+                                                                    <TableCell className="text-right font-mono">{formatNumber(entity.originalAmount, 0)}</TableCell>
+                                                                    <TableCell className="text-right font-mono">{formatNumber(entity.rate, 4)}</TableCell>
+                                                                    <TableCell className="text-right font-mono font-bold">{formatCurrency(entity.translatedAmount)}</TableCell>
                                                                 </TableRow>
                                                             ))}
                                                         </TableBody>
@@ -246,7 +247,7 @@ export default function ConsolidationResultsViewer() {
                                                 <TableCell>{adj.entity}</TableCell>
                                                 <TableCell><Badge variant="outline">{adj.originalCurrency}</Badge></TableCell>
                                                 <TableCell className={`text-right font-mono font-bold ${adj.fxGainLoss >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                                    {adj.fxGainLoss >= 0 ? '+' : ''}${adj.fxGainLoss.toFixed(0)}
+                                                    {adj.fxGainLoss >= 0 ? '+' : ''}{formatCurrency(Math.abs(adj.fxGainLoss))}
                                                 </TableCell>
                                             </TableRow>
                                         ))}

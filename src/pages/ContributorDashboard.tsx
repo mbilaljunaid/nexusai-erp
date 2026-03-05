@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
+import { formatCurrency } from "@/lib/formatters";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +15,7 @@ import {
   TrendingUp, Clock, DollarSign, CheckCircle, Package,
   MessageSquare, Calendar, ArrowRight, ExternalLink, Shield
 } from "lucide-react";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 interface UserProfile {
   id: string;
@@ -183,7 +185,7 @@ export default function ContributorDashboard() {
         <Card>
           <CardContent className="pt-6 text-center">
             <DollarSign className="w-8 h-8 mx-auto mb-2 text-green-600" />
-            <div className="text-2xl font-bold">${totalEarnings.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{formatCurrency(totalEarnings)}</div>
             <p className="text-xs text-muted-foreground">Total Earnings</p>
           </CardContent>
         </Card>
@@ -251,7 +253,7 @@ export default function ContributorDashboard() {
                     {[1, 2, 3].map(i => <Skeleton key={i} className="h-14 w-full" />)}
                   </div>
                 ) : !myOrders?.length ? (
-                  <p className="text-center text-muted-foreground py-8">No orders yet</p>
+                  <EmptyState compact title="No orders yet" />
                 ) : (
                   <div className="space-y-3">
                     {myOrders.slice(0, 5).map(order => (
@@ -261,7 +263,7 @@ export default function ContributorDashboard() {
                           <p className="text-xs text-muted-foreground">{order.buyer_name} • {formatDate(order.created_at)}</p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold">${Number(order.amount).toLocaleString()}</span>
+                          <span className="font-semibold">{formatCurrency(Number(order.amount))}</span>
                           <StatusBadge status={order.status} />
                         </div>
                       </div>
@@ -287,7 +289,7 @@ export default function ContributorDashboard() {
                     {[1, 2, 3].map(i => <Skeleton key={i} className="h-14 w-full" />)}
                   </div>
                 ) : !myProposals?.length ? (
-                  <p className="text-center text-muted-foreground py-8">No proposals yet</p>
+                  <EmptyState compact title="No proposals yet" />
                 ) : (
                   <div className="space-y-3">
                     {myProposals.slice(0, 5).map(proposal => (
@@ -297,7 +299,7 @@ export default function ContributorDashboard() {
                           <p className="text-xs text-muted-foreground">{formatDate(proposal.created_at)}</p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold">${Number(proposal.proposed_price).toLocaleString()}</span>
+                          <span className="font-semibold">{formatCurrency(Number(proposal.proposed_price))}</span>
                           <StatusBadge status={proposal.status} />
                         </div>
                       </div>
@@ -324,13 +326,16 @@ export default function ContributorDashboard() {
                   {[1, 2, 3].map(i => <Skeleton key={i} className="h-32 w-full" />)}
                 </div>
               ) : !myServices?.length ? (
-                <div className="text-center py-8">
-                  <Package className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                  <p className="text-muted-foreground mb-4">You haven't created any services yet</p>
-                  <Link to="/marketplace/services/create">
-                    <Button>Create Your First Service</Button>
-                  </Link>
-                </div>
+                <EmptyState
+                  icon={Package}
+                  title="No services yet"
+                  description="Create your first service to start earning."
+                  action={
+                    <Link to="/marketplace/services/create">
+                      <Button>Create Your First Service</Button>
+                    </Link>
+                  }
+                />
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {myServices.slice(0, 6).map(service => (
@@ -338,7 +343,7 @@ export default function ContributorDashboard() {
                       <CardContent className="pt-4">
                         <h4 className="font-semibold truncate mb-2">{service.title}</h4>
                         <div className="flex items-center justify-between text-sm mb-2">
-                          <span className="font-bold text-primary">${Number(service.price).toLocaleString()}</span>
+                          <span className="font-bold text-primary">{formatCurrency(Number(service.price))}</span>
                           <StatusBadge status={service.status} />
                         </div>
                         <div className="flex items-center gap-3 text-xs text-muted-foreground">
@@ -375,10 +380,7 @@ export default function ContributorDashboard() {
                   {[1, 2, 3].map(i => <Skeleton key={i} className="h-20 w-full" />)}
                 </div>
               ) : !myServices?.length ? (
-                <div className="text-center py-12">
-                  <Package className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                  <p className="text-muted-foreground">No services created yet</p>
-                </div>
+                <EmptyState icon={Package} title="No services created yet" />
               ) : (
                 <div className="space-y-4">
                   {myServices.map(service => (
@@ -389,7 +391,7 @@ export default function ContributorDashboard() {
                           <StatusBadge status={service.status} />
                         </div>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span className="font-semibold text-primary">${Number(service.price).toLocaleString()}</span>
+                          <span className="font-semibold text-primary">{formatCurrency(Number(service.price))}</span>
                           <span className="flex items-center gap-1">
                             <Star className="w-3 h-3 text-yellow-500" />
                             {service.rating?.toFixed(1) || "N/A"} ({service.review_count || 0})
@@ -422,10 +424,7 @@ export default function ContributorDashboard() {
                   {[1, 2, 3].map(i => <Skeleton key={i} className="h-20 w-full" />)}
                 </div>
               ) : !myOrders?.length ? (
-                <div className="text-center py-12">
-                  <ShoppingCart className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                  <p className="text-muted-foreground">No orders received yet</p>
-                </div>
+                <EmptyState icon={ShoppingCart} title="No orders received yet" />
               ) : (
                 <div className="space-y-4">
                   {myOrders.map(order => (
@@ -437,7 +436,7 @@ export default function ContributorDashboard() {
                         </p>
                       </div>
                       <div className="flex items-center gap-4">
-                        <span className="font-bold text-lg">${Number(order.amount).toLocaleString()}</span>
+                        <span className="font-bold text-lg">{formatCurrency(Number(order.amount))}</span>
                         <StatusBadge status={order.status} />
                       </div>
                     </div>
@@ -465,13 +464,15 @@ export default function ContributorDashboard() {
                   {[1, 2, 3].map(i => <Skeleton key={i} className="h-20 w-full" />)}
                 </div>
               ) : !myJobs?.length ? (
-                <div className="text-center py-12">
-                  <Briefcase className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                  <p className="text-muted-foreground mb-4">You haven't posted any jobs yet</p>
-                  <Link to="/marketplace/my-jobs">
-                    <Button>Post Your First Job</Button>
-                  </Link>
-                </div>
+                <EmptyState
+                  icon={Briefcase}
+                  title="No jobs posted yet"
+                  action={
+                    <Link to="/marketplace/my-jobs">
+                      <Button>Post Your First Job</Button>
+                    </Link>
+                  }
+                />
               ) : (
                 <div className="space-y-4">
                   {myJobs.map(job => (
@@ -487,7 +488,7 @@ export default function ContributorDashboard() {
                           </p>
                         </div>
                         <div className="text-right">
-                          <span className="font-semibold">${Number(job.budget_min).toLocaleString()} - ${Number(job.budget_max).toLocaleString()}</span>
+                          <span className="font-semibold">{formatCurrency(Number(job.budget_min))} - {formatCurrency(Number(job.budget_max))}</span>
                         </div>
                       </div>
                     </Link>
@@ -515,13 +516,15 @@ export default function ContributorDashboard() {
                   {[1, 2, 3].map(i => <Skeleton key={i} className="h-20 w-full" />)}
                 </div>
               ) : !myProposals?.length ? (
-                <div className="text-center py-12">
-                  <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                  <p className="text-muted-foreground mb-4">You haven't submitted any proposals yet</p>
-                  <Link to="/marketplace/jobs">
-                    <Button>Browse Jobs</Button>
-                  </Link>
-                </div>
+                <EmptyState
+                  icon={FileText}
+                  title="No proposals submitted yet"
+                  action={
+                    <Link to="/marketplace/jobs">
+                      <Button>Browse Jobs</Button>
+                    </Link>
+                  }
+                />
               ) : (
                 <div className="space-y-4">
                   {myProposals.map(proposal => (
@@ -537,7 +540,7 @@ export default function ContributorDashboard() {
                           </p>
                         </div>
                         <div className="text-right">
-                          <span className="font-semibold text-primary">${Number(proposal.proposed_price).toLocaleString()}</span>
+                          <span className="font-semibold text-primary">{formatCurrency(Number(proposal.proposed_price))}</span>
                           <p className="text-xs text-muted-foreground">Your bid</p>
                         </div>
                       </div>

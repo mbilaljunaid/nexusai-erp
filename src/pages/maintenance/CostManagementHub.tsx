@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { formatCurrency } from "@/lib/formatters";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -204,7 +205,7 @@ export function CostManagementHub() {
                             <div className="text-sm font-medium text-muted-foreground">Total Budget</div>
                             <DollarSign className="h-4 w-4 text-blue-600" />
                         </div>
-                        <div className="text-3xl font-bold">${totalBudget.toLocaleString()}</div>
+                        <div className="text-3xl font-bold">{formatCurrency(totalBudget)}</div>
                     </CardContent>
                 </Card>
 
@@ -214,7 +215,7 @@ export function CostManagementHub() {
                             <div className="text-sm font-medium text-muted-foreground">Total Actual</div>
                             <DollarSign className="h-4 w-4 text-green-600" />
                         </div>
-                        <div className="text-3xl font-bold">${totalActual.toLocaleString()}</div>
+                        <div className="text-3xl font-bold">{formatCurrency(totalActual)}</div>
                     </CardContent>
                 </Card>
 
@@ -229,7 +230,7 @@ export function CostManagementHub() {
                             )}
                         </div>
                         <div className={cn("text-3xl font-bold", totalVariance < 0 ? "text-red-600" : "text-green-600")}>
-                            ${Math.abs(totalVariance).toLocaleString()}
+                            {formatCurrency(Math.abs(totalVariance))}
                         </div>
                         <div className="text-xs text-muted-foreground mt-1">
                             {totalVariancePercent > 0 ? "+" : ""}{totalVariancePercent.toFixed(1)}%
@@ -304,7 +305,7 @@ export function CostManagementHub() {
                                             <div className="text-right">
                                                 <div className="text-xs text-muted-foreground">Total Variance</div>
                                                 <div className={cn("text-2xl font-bold", isOverBudget ? "text-red-600" : "text-green-600")}>
-                                                    {cost.variance < 0 ? "-" : "+"}${Math.abs(cost.variance)}
+                                                    {cost.variance < 0 ? "-" : "+"}{formatCurrency(Math.abs(cost.variance))}
                                                 </div>
                                                 <div className="text-xs text-muted-foreground">
                                                     {cost.variancePercent > 0 ? "+" : ""}{cost.variancePercent.toFixed(1)}%
@@ -403,7 +404,7 @@ export function CostManagementHub() {
                                                     {item.status}
                                                 </Badge>
                                             </div>
-                                            <div className="text-2xl font-bold">${item.amount.toLocaleString()}</div>
+                                            <div className="text-2xl font-bold">{formatCurrency(item.amount)}</div>
                                         </div>
                                         <div className="grid md:grid-cols-3 gap-3 text-sm">
                                             <div>
@@ -457,16 +458,16 @@ export function CostManagementHub() {
                                     <div className="space-y-2 text-sm">
                                         <div className="flex justify-between">
                                             <span className="text-muted-foreground">Budget:</span>
-                                            <span>${variance.budget.toLocaleString()}</span>
+                                            <span>{formatCurrency(variance.budget)}</span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span className="text-muted-foreground">Actual:</span>
-                                            <span className="font-bold">${variance.actual.toLocaleString()}</span>
+                                            <span className="font-bold">{formatCurrency(variance.actual)}</span>
                                         </div>
                                         <div className="flex justify-between border-t pt-2">
                                             <span className="font-medium">Variance:</span>
                                             <span className={cn("font-bold", variance.variance < 0 ? "text-red-600" : "text-green-600")}>
-                                                ${Math.abs(variance.variance).toLocaleString()}
+                                                {formatCurrency(Math.abs(variance.variance))}
                                             </span>
                                         </div>
                                         <div className="text-xs text-muted-foreground text-right">

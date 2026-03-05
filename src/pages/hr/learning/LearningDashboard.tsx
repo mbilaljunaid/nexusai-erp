@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpen, GraduationCap, PlayCircle, Plus, Download, Sparkles } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,6 +35,7 @@ const courseSchema = z.object({
 
 export default function LearningManagement() {
   const { open, sendMessage } = useNexusAI();
+  const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("catalog");
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -195,10 +196,10 @@ export default function LearningManagement() {
     >
       <div className="space-y-6">
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => window.location.href = '/hr/learning/admin'}>
+          <Button variant="outline" onClick={() => setLocation('/hr/learning/admin')}>
             Manage Content (Admin)
           </Button>
-          <Button variant="outline" onClick={() => window.location.href = '/hr/learning/team'}>
+          <Button variant="outline" onClick={() => setLocation('/hr/learning/team')}>
             Manager Dashboard
           </Button>
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
@@ -441,7 +442,7 @@ export default function LearningManagement() {
                           Pending Approval
                         </Button>
                       ) : (
-                        <Button variant="outline" onClick={() => window.location.href = `/hr/learning/play/${enrollment.enrollmentId}`}>Resume</Button>
+                        <Button variant="outline" onClick={() => setLocation(`/hr/learning/play/${enrollment.enrollmentId}`)}>Resume</Button>
                       )}
                     </div>
                   </CardContent>

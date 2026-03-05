@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link, useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -31,6 +32,7 @@ export default function OnboardingWizard() {
     const [currentStep, setCurrentStep] = useState(1);
     const [onboardingData, setOnboardingData] = useState<OnboardingData>({});
     const [isLoading, setIsLoading] = useState(false);
+    const [, setLocation] = useLocation();
 
     const progress = (currentStep / STEPS.length) * 100;
 
@@ -91,7 +93,7 @@ export default function OnboardingWizard() {
                         data={onboardingData}
                         onComplete={() => {
                             // Redirect to dashboard or home
-                            window.location.href = "/dashboard";
+                            setLocation("/dashboard");
                         }}
                     />
                 );
@@ -126,18 +128,18 @@ export default function OnboardingWizard() {
                         <div
                             key={step.id}
                             className={`flex items-center gap-2 p-3 rounded-lg border ${step.id === currentStep
-                                    ? "bg-primary/10 border-primary"
-                                    : step.id < currentStep
-                                        ? "bg-green-50 border-green-200"
-                                        : "bg-white border-gray-200"
+                                ? "bg-primary/10 border-primary"
+                                : step.id < currentStep
+                                    ? "bg-green-50 border-green-200"
+                                    : "bg-white border-gray-200"
                                 }`}
                         >
                             <div
                                 className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${step.id === currentStep
-                                        ? "bg-primary text-primary-foreground"
-                                        : step.id < currentStep
-                                            ? "bg-green-500 text-white"
-                                            : "bg-gray-200 text-gray-500"
+                                    ? "bg-primary text-primary-foreground"
+                                    : step.id < currentStep
+                                        ? "bg-green-500 text-white"
+                                        : "bg-gray-200 text-gray-500"
                                     }`}
                             >
                                 {step.id < currentStep ? (
@@ -165,7 +167,7 @@ export default function OnboardingWizard() {
 
                 {/* Footer Help Text */}
                 <div className="text-center text-sm text-muted-foreground">
-                    Need help? <a href="/support" className="text-primary hover:underline">Contact Support</a>
+                    Need help? <Link to="/support" className="text-primary hover:underline">Contact Support</Link>
                 </div>
             </div>
         </div>

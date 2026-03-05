@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ interface EventClass {
 }
 
 export default function SlaRules() {
+    const [, setLocation] = useLocation();
     const [eventClasses, setEventClasses] = useState<EventClass[]>([]);
     const [selectedClassId, setSelectedClassId] = useState<string>("");
 
@@ -37,7 +39,7 @@ export default function SlaRules() {
             <div className="flex flex-col gap-8">
                 {/* Header Configuration Links */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <Card className="hover:border-primary/50 transition-colors cursor-pointer group" onClick={() => window.location.href = "/finance/sla/mapping-sets"}>
+                    <Card className="hover:border-primary/50 transition-colors cursor-pointer group" onClick={() => setLocation("/finance/sla/mapping-sets")}>
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
                             <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                                 <Database className="h-4 w-4" /> Mapping Sets
@@ -50,7 +52,7 @@ export default function SlaRules() {
                         </CardContent>
                     </Card>
 
-                    <Card className="hover:border-primary/50 transition-colors cursor-pointer group" onClick={() => window.location.href = "/gl/config/sla/adr"}>
+                    <Card className="hover:border-primary/50 transition-colors cursor-pointer group" onClick={() => setLocation("/gl/config/sla/adr")}>
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
                             <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                                 <GitBranch className="h-4 w-4" /> Derivation Rules

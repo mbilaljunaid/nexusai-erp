@@ -1,4 +1,4 @@
-import { useParams, Redirect, Link } from "wouter";
+import { useParams, Redirect, Link, useLocation } from "wouter";
 import { modules } from "@/data/modules";
 import { PremiumHero, GlassmorphismCard, FeatureGrid, CTASection } from "@/components/lovable"; // StatsCounter removed if not in data yet
 import { Header, Footer } from "@/components/Navigation";
@@ -9,6 +9,7 @@ import { ChevronRight } from "lucide-react";
 
 export default function ModuleLandingPage() {
     const { slug } = useParams<{ slug: string }>();
+    const [, setLocation] = useLocation();
     const moduleData = modules[slug || ""];
 
     if (!moduleData) {
@@ -94,7 +95,7 @@ export default function ModuleLandingPage() {
                     subtitle="Join thousands of organizations using NexusAI."
                     primaryCTA={{
                         label: "Get Started",
-                        onClick: () => { window.location.href = "/signup"; }
+                        onClick: () => { setLocation("/signup"); }
                     }}
                 />
             </main>

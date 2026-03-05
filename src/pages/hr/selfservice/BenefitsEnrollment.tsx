@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
@@ -20,6 +21,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 export default function BenefitsEnrollment() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const [, setLocation] = useLocation();
     const [step, setStep] = useState(0); // 0: Program Select, 1: Plan Selection, 2: Review
     const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
     const [selections, setSelections] = useState<Record<string, string>>({}); // planId -> planOptionId
@@ -90,7 +92,7 @@ export default function BenefitsEnrollment() {
                 </div>
                 <h1 className="text-3xl font-bold">Enrollment Submitted!</h1>
                 <p className="text-zinc-500 max-w-md">Your benefits have been updated. You can view your active elections in your profile.</p>
-                <Button onClick={() => window.location.href = "/hr/self-service/profile"} variant="outline" className="mt-4">
+                <Button onClick={() => setLocation("/hr/self-service/profile")} variant="outline" className="mt-4">
                     Back to Profile
                 </Button>
             </div>

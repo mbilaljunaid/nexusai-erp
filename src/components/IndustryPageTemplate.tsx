@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -79,6 +79,7 @@ export function IndustryPageTemplate({
     React.useEffect(() => {
         document.title = `${name} ERP Solutions | NexusAI`;
     }, [name]);
+    const [, setLocation] = useLocation();
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -93,7 +94,7 @@ export function IndustryPageTemplate({
                     backgroundImage={heroImage}
                     primaryCTA={{
                         label: "Request Demo",
-                        onClick: () => window.location.href = '/contact'
+                        onClick: () => setLocation('/contact')
                     }}
                     secondaryCTA={{
                         label: "View Modules",
@@ -292,7 +293,7 @@ export function IndustryPageTemplate({
                     subtitle="See how NexusAI can streamline your operations and drive growth"
                     primaryCTA={{
                         label: "Schedule Demo",
-                        onClick: () => window.location.href = '/contact'
+                        onClick: () => setLocation('/contact')
                     }}
                     secondaryCTA={{
                         label: "Download Industry Brief",

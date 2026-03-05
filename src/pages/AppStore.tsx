@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -345,10 +346,10 @@ export default function AppStore() {
             Browse our marketplace to find and install apps for your organization.
           </p>
           <Button asChild data-testid="button-browse-marketplace">
-            <a href="/modules/marketplace">
+            <Link to="/modules/marketplace">
               <ExternalLink className="w-4 h-4 mr-2" />
               Browse Marketplace
-            </a>
+            </Link>
           </Button>
         </Card>
       ) : (

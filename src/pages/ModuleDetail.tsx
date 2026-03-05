@@ -1,4 +1,4 @@
-import { useParams } from "wouter";
+import { useParams, useLocation } from "wouter";
 import { Header, Footer } from "@/components/Navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function ModuleDetail() {
   const { slug } = useParams<{ slug: string }>();
+  const [, setLocation] = useLocation();
   const module = moduleData[slug || ""];
 
   useEffect(() => {
@@ -25,11 +26,11 @@ export default function ModuleDetail() {
         <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center max-w-md">
-            
+
             <p className="text-muted-foreground mb-6">
               The module you're looking for doesn't exist.
             </p>
-            <Button onClick={() => window.location.href = "/"}>Back to Home</Button>
+            <Button onClick={() => setLocation("/")}>Back to Home</Button>
           </div>
         </main>
         <Footer />

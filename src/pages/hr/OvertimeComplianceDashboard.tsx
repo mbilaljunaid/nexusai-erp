@@ -6,6 +6,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { Input } from "@/components/ui/input";
 import { DatePicker } from '@/components/ui/DatePicker';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { formatCurrency, formatNumber } from "@/lib/formatters";
 
 interface OvertimeRule {
     id: string;
@@ -37,8 +38,6 @@ interface TimecardForm {
     clockOut: string;
     hourlyRate: number;
 }
-
-const fmt = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n ?? 0);
 
 const JURI_STYLES: Record<string, { bg: string; text: string }> = {
     US_FEDERAL: { bg: 'bg-blue-100', text: 'text-blue-700' },
@@ -75,10 +74,10 @@ export default function OvertimeComplianceDashboard() {
 
     const otColumns: SpreadsheetColumn<any>[] = [
         { id: "employee_id", header: "Employee", width: "150px", cell: (row) => <div className={`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{row.employee_id.slice(0, 8)}…</div> },
-        { id: "regular_hours", header: "Regular", width: "120px", cell: (row) => <div className={`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{Number(row.regular_hours).toFixed(1)}h</div> },
-        { id: "ot_hours", header: "OT (1.5×)", width: "120px", cell: (row) => <div className={`mono ot-cell w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{Number(row.ot_hours) > 0 ? <><AlertTriangle size={11} /> {Number(row.ot_hours).toFixed(1)}h</> : '—'}</div> },
-        { id: "double_hours", header: "Double (2×)", width: "120px", cell: (row) => <div className={`mono dbl-cell w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{Number(row.double_hours) > 0 ? `${Number(row.double_hours).toFixed(1)}h` : '—'}</div> },
-        { id: "gross_pay", header: "Gross Pay", width: "150px", cell: (row) => <div className={`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{fmt(row.gross_pay)}</div> },
+        { id: "regular_hours", header: "Regular", width: "120px", cell: (row) => <div className={`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{formatNumber(row.regular_hours, 1)}h</div> },
+        { id: "ot_hours", header: "OT (1.5×)", width: "120px", cell: (row) => <div className={`mono ot-cell w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{Number(row.ot_hours) > 0 ? <><AlertTriangle size={11} /> {formatNumber(row.ot_hours, 1)}h</> : '—'}</div> },
+        { id: "double_hours", header: "Double (2×)", width: "120px", cell: (row) => <div className={`mono dbl-cell w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{Number(row.double_hours) > 0 ? `${formatNumber(row.double_hours, 1)}h` : '—'}</div> },
+        { id: "gross_pay", header: "Gross Pay", width: "150px", cell: (row) => <div className={`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{formatCurrency(row.gross_pay)}</div> },
         {
             id: "jurisdiction", header: "Jurisdiction", width: "150px", cell: (row) => {
                 const style = JURI_STYLES[row.jurisdiction] ?? { bg: 'bg-gray-100', text: 'text-gray-500' };
@@ -95,9 +94,9 @@ export default function OvertimeComplianceDashboard() {
 
             <div className="ocd-kpis">
                 <div className="kpi blue"><div className="kv">{report.length}</div><div className="kl">Employees</div></div>
-                <div className="kpi orange"><div className="kv">{totalOTHours.toFixed(1)}h</div><div className="kl">OT Hours (1.5×)</div></div>
-                <div className="kpi red"><div className="kv">{totalDoubleHours.toFixed(1)}h</div><div className="kl">Double Time (2×)</div></div>
-                <div className="kpi green"><div className="kv">{fmt(totalPayroll)}</div><div className="kl">Gross Payroll</div></div>
+                <div className="kpi orange"><div className="kv">{formatNumber(totalOTHours, 1)}h</div><div className="kl">OT Hours (1.5×)</div></div>
+                <div className="kpi red"><div className="kv">{formatNumber(totalDoubleHours, 1)}h</div><div className="kl">Double Time (2×)</div></div>
+                <div className="kpi green"><div className="kv">{formatCurrency(totalPayroll)}</div><div className="kl">Gross Payroll</div></div>
             </div>
 
             <div className="tab-bar">
@@ -157,10 +156,10 @@ export default function OvertimeComplianceDashboard() {
                     </button>
                     {tcMutation.isSuccess && (
                         <div className="tc-result">
-                            <div className="tcr-row"><span>Regular</span><strong>{Number(tcMutation.data.regular_hours).toFixed(2)}h — {fmt(tcMutation.data.regular_pay)}</strong></div>
-                            <div className="tcr-row"><span>OT (1.5×)</span><strong className="orange">{Number(tcMutation.data.ot_hours).toFixed(2)}h — {fmt(tcMutation.data.ot_pay)}</strong></div>
-                            <div className="tcr-row"><span>Double (2×)</span><strong className="red">{Number(tcMutation.data.double_hours).toFixed(2)}h — {fmt(tcMutation.data.double_pay)}</strong></div>
-                            <div className="tcr-row total"><span>Total Pay</span><strong>{fmt(tcMutation.data.total_pay)}</strong></div>
+                            <div className="tcr-row"><span>Regular</span><strong>{formatNumber(tcMutation.data.regular_hours, 2)}h — {formatCurrency(tcMutation.data.regular_pay)}</strong></div>
+                            <div className="tcr-row"><span>OT (1.5×)</span><strong className="orange">{formatNumber(tcMutation.data.ot_hours, 2)}h — {formatCurrency(tcMutation.data.ot_pay)}</strong></div>
+                            <div className="tcr-row"><span>Double (2×)</span><strong className="red">{formatNumber(tcMutation.data.double_hours, 2)}h — {formatCurrency(tcMutation.data.double_pay)}</strong></div>
+                            <div className="tcr-row total"><span>Total Pay</span><strong>{formatCurrency(tcMutation.data.total_pay)}</strong></div>
                         </div>
                     )}
                 </div>

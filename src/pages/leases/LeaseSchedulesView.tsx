@@ -23,6 +23,7 @@ import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { StandardPage } from '@/components/layout/StandardPage';
 import { ExportButton } from "@/components/ExportButton";
+import { formatCurrency } from "@/lib/formatters";
 
 interface LeaseSchedule {
     period: number;
@@ -86,33 +87,26 @@ export default function LeaseSchedulesView({ leaseId }: { leaseId: string }) {
         }
     });
 
-    const formatCurrency = (amount: number | string, currency: string = "USD") => {
-        const value = typeof amount === "string" ? parseFloat(amount) : amount;
-        return new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: currency
-        }).format(value);
-    };
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short"
-        });
-    };
-
-    const exportData = schedules.map((row) => ({
+    const exportData = schedules.map(row => ({
         "Period": row.period,
         "Date": format(new Date(row.date), 'yyyy-MM-dd'),
-        "Opening Liability": parseFloat(row.openingLiability).toFixed(2),
-        "Payment": parseFloat(row.paymentAmount).toFixed(2),
-        "Interest": parseFloat(row.interestExpense).toFixed(2),
-        "Principal": (parseFloat(row.paymentAmount) - parseFloat(row.interestExpense)).toFixed(2),
-        "Closing Liability": parseFloat(row.closingLiability).toFixed(2),
-        "Opening ROU": parseFloat(row.rouOpeningBalance).toFixed(2),
-        "Amortization": parseFloat(row.amortizationExpense).toFixed(2),
-        "Closing ROU": parseFloat(row.rouClosingBalance).toFixed(2)
+        "Opening Liability": parseFloat(row.openingLiability),
+        "Payment": parseFloat(row.paymentAmount),
+        "Interest": parseFloat(row.interestExpense),
+        "Principal": (parseFloat(row.paymentAmount) - parseFloat(row.interestExpense)),
+        "Closing Liability": parseFloat(row.closingLiability),
+        "Opening ROU": parseFloat(row.rouOpeningBalance),
+        "Amortization": parseFloat(row.amortizationExpense),
+        "Closing ROU": parseFloat(row.rouClosingBalance)
     }));
+
+    const formatDate = (dateString: string) => {
+        try {
+            return format(new Date(dateString), 'MMM dd, yyyy');
+        } catch (e) {
+            return dateString;
+        }
+    };
 
     if (isLoading) {
         return <div className="p-8 text-center text-muted-foreground">Loading schedules...</div>;

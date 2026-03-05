@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Mail, Send, Users, BarChart3, Eye, Calendar, Target, Zap } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 interface EmailCampaign {
     id: string;
@@ -220,8 +221,8 @@ export default function EmailCampaignBuilder() {
                                     <TableBody>
                                         {campaigns.length === 0 ? (
                                             <TableRow>
-                                                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
-                                                    No campaigns yet. Create your first campaign to get started.
+                                                <TableCell colSpan={7}>
+                                                    <EmptyState compact title="No campaigns yet" description="Create your first campaign to get started." />
                                                 </TableCell>
                                             </TableRow>
                                         ) : (
@@ -338,9 +339,7 @@ export default function EmailCampaignBuilder() {
                                         </Card>
                                     ))}
                                     {draftCampaigns.length === 0 && (
-                                        <div className="text-center text-muted-foreground py-8">
-                                            No draft campaigns
-                                        </div>
+                                        <EmptyState compact title="No draft campaigns" />
                                     )}
                                 </div>
                             </CardContent>
@@ -367,9 +366,7 @@ export default function EmailCampaignBuilder() {
                                         </Card>
                                     ))}
                                     {scheduledCampaigns.length === 0 && (
-                                        <div className="text-center text-muted-foreground py-8">
-                                            No scheduled campaigns
-                                        </div>
+                                        <EmptyState compact title="No scheduled campaigns" />
                                     )}
                                 </div>
                             </CardContent>
@@ -429,9 +426,7 @@ export default function EmailCampaignBuilder() {
                                         </Card>
                                     ))}
                                     {sentCampaigns.length === 0 && (
-                                        <div className="text-center text-muted-foreground py-8">
-                                            No sent campaigns
-                                        </div>
+                                        <EmptyState compact title="No sent campaigns" />
                                     )}
                                 </div>
                             </CardContent>

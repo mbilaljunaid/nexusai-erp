@@ -11,6 +11,7 @@ import { Loader2, Calculator, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { formatCurrency, formatPercent } from "@/lib/formatters";
 
 interface TaxDetail {
     code: string;
@@ -60,7 +61,7 @@ export function TaxCalculator() {
             setCalculationResult(data);
             toast({
                 title: "Calculation Complete",
-                description: `Total tax: $${data.taxAmount.toFixed(2)}`,
+                description: `Total tax: ${formatCurrency(data.taxAmount)}`,
             });
         },
         onError: (error: any) => {
@@ -221,10 +222,10 @@ export function TaxCalculator() {
                                                     <TableRow key={idx}>
                                                         <TableCell className="font-medium">{detail.code}</TableCell>
                                                         <TableCell className="text-right">
-                                                            {(detail.rate * 100).toFixed(2)}%
+                                                            {formatPercent(detail.rate)}
                                                         </TableCell>
                                                         <TableCell className="text-right">
-                                                            ${detail.amount.toFixed(2)}
+                                                            {formatCurrency(detail.amount)}
                                                         </TableCell>
                                                         <TableCell>
                                                             {detail.exempt ? (
@@ -242,15 +243,15 @@ export function TaxCalculator() {
                                         <div className="bg-muted/50 rounded-lg p-4 space-y-2">
                                             <div className="flex justify-between text-sm">
                                                 <span>Subtotal:</span>
-                                                <span className="font-mono">${subtotal.toFixed(2)}</span>
+                                                <span className="font-mono">{formatCurrency(subtotal)}</span>
                                             </div>
                                             <div className="flex justify-between text-sm">
                                                 <span>Total Tax:</span>
-                                                <span className="font-mono">${taxTotal.toFixed(2)}</span>
+                                                <span className="font-mono">{formatCurrency(taxTotal)}</span>
                                             </div>
                                             <div className="flex justify-between text-lg font-bold pt-2 border-t">
                                                 <span>Grand Total:</span>
-                                                <span className="font-mono">${grandTotal.toFixed(2)}</span>
+                                                <span className="font-mono">{formatCurrency(grandTotal)}</span>
                                             </div>
                                         </div>
                                     </>

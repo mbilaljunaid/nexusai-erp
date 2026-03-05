@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
+import { EmptyState } from "@/components/shared/EmptyState";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -217,7 +218,7 @@ function TaxCodesTab({ legalEntityId }: { legalEntityId: string | null }) {
             {isLoading ? (
               <div className="p-8 text-center text-muted-foreground border rounded-lg h-full flex items-center justify-center">Loading tax codes...</div>
             ) : filteredCodes.length === 0 ? (
-              <div className="p-8 text-center text-muted-foreground border rounded-lg h-full flex items-center justify-center">No tax codes found</div>
+              <div className="h-full flex items-center justify-center"><EmptyState compact title="No tax codes found" /></div>
             ) : (
               <InteractiveSpreadsheet
                 columns={codeColumns}
@@ -375,7 +376,7 @@ function TaxJurisdictionsTab({ legalEntityId }: { legalEntityId: string | null }
             {isLoading ? (
               <div className="p-8 text-center text-muted-foreground border rounded-lg h-full flex items-center justify-center">Loading jurisdictions...</div>
             ) : filteredJurisdictions.length === 0 ? (
-              <div className="p-8 text-center text-muted-foreground border rounded-lg h-full flex items-center justify-center">No jurisdictions found</div>
+              <div className="h-full flex items-center justify-center"><EmptyState compact title="No jurisdictions found" /></div>
             ) : (
               <InteractiveSpreadsheet
                 columns={jurisdictionColumns}

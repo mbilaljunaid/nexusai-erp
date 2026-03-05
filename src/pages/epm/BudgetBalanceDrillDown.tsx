@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ChevronRight, ChevronDown, FileSpreadsheet, TrendingUp, TrendingDown, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { formatCurrency } from "@/lib/formatters";
 
 interface BudgetBalance {
     ccid: string;
@@ -205,17 +206,17 @@ export default function BudgetBalanceDrillDown() {
                                                     )}
                                                 </TableCell>
                                                 <TableCell className="font-medium">{balance.accountName}</TableCell>
-                                                <TableCell className="text-right font-mono">${balance.budgeted.toLocaleString()}</TableCell>
-                                                <TableCell className="text-right font-mono">${balance.actual.toLocaleString()}</TableCell>
+                                                <TableCell className="text-right font-mono">{formatCurrency(balance.budgeted)}</TableCell>
+                                                <TableCell className="text-right font-mono">{formatCurrency(balance.actual)}</TableCell>
                                                 <TableCell className="text-right font-mono">
                                                     <span className={getStatusColor(balance.variancePct)}>
                                                         {balance.consumed.toFixed(0)}%
                                                     </span>
                                                 </TableCell>
-                                                <TableCell className="text-right font-mono">${balance.remaining.toLocaleString()}</TableCell>
+                                                <TableCell className="text-right font-mono">{formatCurrency(balance.remaining)}</TableCell>
                                                 <TableCell className={`text-right font-mono flex items-center justify-end gap-1 ${balance.variance < 0 ? 'text-red-600' : 'text-green-600'}`}>
                                                     {balance.variance < 0 ? <TrendingDown className="h-3 w-3" /> : <TrendingUp className="h-3 w-3" />}
-                                                    ${Math.abs(balance.variance).toLocaleString()}
+                                                    {formatCurrency(Math.abs(balance.variance))}
                                                     <span className="text-xs">({balance.variancePct.toFixed(1)}%)</span>
                                                 </TableCell>
                                                 <TableCell>
@@ -226,11 +227,11 @@ export default function BudgetBalanceDrillDown() {
                                                 <TableRow key={child.ccid} className="bg-muted/30">
                                                     <TableCell></TableCell>
                                                     <TableCell className="pl-8 text-sm">{child.accountName}</TableCell>
-                                                    <TableCell className="text-right font-mono text-sm">${child.budgeted.toLocaleString()}</TableCell>
-                                                    <TableCell className="text-right font-mono text-sm">${child.actual.toLocaleString()}</TableCell>
+                                                    <TableCell className="text-right font-mono text-sm">{formatCurrency(child.budgeted)}</TableCell>
+                                                    <TableCell className="text-right font-mono text-sm">{formatCurrency(child.actual)}</TableCell>
                                                     <TableCell className="text-right font-mono text-sm">{child.consumed.toFixed(0)}%</TableCell>
-                                                    <TableCell className="text-right font-mono text-sm">${child.remaining.toLocaleString()}</TableCell>
-                                                    <TableCell className="text-right font-mono text-sm">${Math.abs(child.variance).toLocaleString()}</TableCell>
+                                                    <TableCell className="text-right font-mono text-sm">{formatCurrency(child.remaining)}</TableCell>
+                                                    <TableCell className="text-right font-mono text-sm">{formatCurrency(Math.abs(child.variance))}</TableCell>
                                                     <TableCell></TableCell>
                                                 </TableRow>
                                             ))}
@@ -272,7 +273,7 @@ export default function BudgetBalanceDrillDown() {
                                                 <TableCell>{new Date(txn.date).toLocaleDateString()}</TableCell>
                                                 <TableCell><code className="text-xs">{txn.journalNumber}</code></TableCell>
                                                 <TableCell>{txn.description}</TableCell>
-                                                <TableCell className="text-right font-mono">${txn.amount.toLocaleString()}</TableCell>
+                                                <TableCell className="text-right font-mono">{formatCurrency(txn.amount)}</TableCell>
                                             </TableRow>
                                         ))
                                     )}

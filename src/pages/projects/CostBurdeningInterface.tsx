@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
+import { formatCurrency } from "@/lib/formatters";
 
 interface BurdenSchedule {
     id: string;
@@ -210,7 +211,7 @@ export default function CostBurdeningInterface() {
                             <CardTitle className="text-xs font-bold text-green-800 uppercase">Raw Cost</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">${totalRawCost.toFixed(2)}</div>
+                            <div className="text-2xl font-bold text-green-900">{formatCurrency(totalRawCost)}</div>
                         </CardContent>
                     </Card>
                     <Card className="bg-orange-50 border-orange-100">
@@ -218,7 +219,7 @@ export default function CostBurdeningInterface() {
                             <CardTitle className="text-xs font-bold text-orange-800 uppercase">Burden Impact</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-orange-900">+${totalBurdenAmount.toFixed(2)}</div>
+                            <div className="text-2xl font-bold text-orange-900">{totalBurdenAmount >= 0 ? "+" : ""}{formatCurrency(totalBurdenAmount)}</div>
                         </CardContent>
                     </Card>
                 </div>
@@ -337,14 +338,14 @@ export default function CostBurdeningInterface() {
                                                             <TableCell className="font-mono text-xs">{exp.taskName}</TableCell>
                                                             <TableCell className="text-xs">{exp.expenditureTypeName}</TableCell>
                                                             <TableCell className="text-xs">{new Date(exp.expenditureItemDate).toLocaleDateString()}</TableCell>
-                                                            <TableCell className="text-right font-medium">${exp.rawCost.toFixed(2)}</TableCell>
+                                                            <TableCell className="text-right font-medium">{formatCurrency(exp.rawCost)}</TableCell>
                                                             <TableCell className="text-right">
                                                                 <div className="flex flex-col items-end">
-                                                                    <span className="text-orange-600 font-medium">+${burdenAmount.toFixed(2)}</span>
+                                                                    <span className="text-orange-600 font-medium">{burdenAmount >= 0 ? "+" : ""}{formatCurrency(burdenAmount)}</span>
                                                                     <span className="text-[10px] text-muted-foreground">({burdenPercent.toFixed(0)}%)</span>
                                                                 </div>
                                                             </TableCell>
-                                                            <TableCell className="text-right font-bold">${(exp.burdenedCost || exp.rawCost).toFixed(2)}</TableCell>
+                                                            <TableCell className="text-right font-bold">{formatCurrency(exp.burdenedCost || exp.rawCost)}</TableCell>
                                                         </TableRow>
                                                     );
                                                 })}
@@ -359,15 +360,15 @@ export default function CostBurdeningInterface() {
                                                     <div className="space-y-2 text-sm">
                                                         <div className="flex justify-between">
                                                             <span className="text-muted-foreground">Total Raw Cost:</span>
-                                                            <span className="font-medium">${totalRawCost.toFixed(2)}</span>
+                                                            <span className="font-medium">{formatCurrency(totalRawCost)}</span>
                                                         </div>
                                                         <div className="flex justify-between text-orange-600">
                                                             <span>Burden Amount:</span>
-                                                            <span className="font-medium">+${totalBurdenAmount.toFixed(2)}</span>
+                                                            <span className="font-medium">{totalBurdenAmount >= 0 ? "+" : ""}{formatCurrency(totalBurdenAmount)}</span>
                                                         </div>
                                                         <div className="flex justify-between text-lg font-bold pt-2 border-t">
                                                             <span>Total Burdened:</span>
-                                                            <span>${totalBurdenedCost.toFixed(2)}</span>
+                                                            <span>{formatCurrency(totalBurdenedCost)}</span>
                                                         </div>
                                                     </div>
                                                 </CardContent>

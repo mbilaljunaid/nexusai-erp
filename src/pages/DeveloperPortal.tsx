@@ -24,6 +24,7 @@ import {
   CheckCircle, XCircle, AlertCircle, Code, FileText, ExternalLink
 } from "lucide-react";
 import type { MarketplaceDeveloper, MarketplaceApp, MarketplaceCategory, MarketplacePayout } from "@/types/erp-types";
+import { formatCurrency } from "@/lib/formatters";
 
 interface EarningsSummary {
   totalEarnings: string;
@@ -777,7 +778,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                         </div>
                       </TableCell>
                       <TableCell className="text-right">
-                        ${parseFloat(app.totalRevenue || "0").toFixed(2)}
+                        {formatCurrency(app.totalRevenue || "0")}
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-1">
@@ -819,7 +820,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-primary" data-testid="text-pending-balance">
-                    {loadingEarnings ? <Skeleton className="h-8 w-20 inline-block" /> : `$${parseFloat(earnings?.pendingBalance || "0").toFixed(2)}`}
+                    {loadingEarnings ? <Skeleton className="h-8 w-20 inline-block" /> : formatCurrency(earnings?.pendingBalance || "0")}
                   </div>
                   <p className="text-xs text-muted-foreground">Available for next payout</p>
                 </CardContent>
@@ -830,7 +831,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold" data-testid="text-total-earnings">
-                    {loadingEarnings ? <Skeleton className="h-8 w-20 inline-block" /> : `$${parseFloat(earnings?.totalEarnings || "0").toFixed(2)}`}
+                    {loadingEarnings ? <Skeleton className="h-8 w-20 inline-block" /> : formatCurrency(earnings?.totalEarnings || "0")}
                   </div>
                   <p className="text-xs text-muted-foreground">All time earnings</p>
                 </CardContent>
@@ -841,7 +842,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-green-600" data-testid="text-total-paid">
-                    {loadingEarnings ? <Skeleton className="h-8 w-20 inline-block" /> : `$${parseFloat(earnings?.totalPaidOut || "0").toFixed(2)}`}
+                    {loadingEarnings ? <Skeleton className="h-8 w-20 inline-block" /> : formatCurrency(earnings?.totalPaidOut || "0")}
                   </div>
                   <p className="text-xs text-muted-foreground">
                     {earnings?.lastPayoutDate ? `Last: ${new Date(earnings.lastPayoutDate).toLocaleDateString()}` : "No payouts yet"}
@@ -869,8 +870,8 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                         {earnings.appEarnings.map((app) => (
                           <TableRow key={app.appId}>
                             <TableCell className="font-medium">{app.appName}</TableCell>
-                            <TableCell className="text-right">${parseFloat(app.totalRevenue).toFixed(2)}</TableCell>
-                            <TableCell className="text-right text-green-600">${parseFloat(app.developerShare).toFixed(2)}</TableCell>
+                            <TableCell className="text-right">{formatCurrency(app.totalRevenue)}</TableCell>
+                            <TableCell className="text-right text-green-600">{formatCurrency(app.developerShare)}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -921,7 +922,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                               <StatusBadge status={payout.status} />
                             </TableCell>
                             <TableCell className="text-right font-medium">
-                              ${parseFloat(payout.amount).toFixed(2)}
+                              {formatCurrency(payout.amount)}
                             </TableCell>
                             <TableCell className="text-right text-muted-foreground">
                               {payout.paidAt ? new Date(payout.paidAt).toLocaleDateString() : "-"}
@@ -979,8 +980,8 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
               <div className="pt-4 border-t">
                 <h4 className="font-medium mb-2">Payout Information</h4>
                 <p className="text-sm text-muted-foreground">
-                  Total Revenue: ${parseFloat(developer.totalRevenue || "0").toFixed(2)}<br />
-                  Total Payouts: ${parseFloat(developer.totalPayouts || "0").toFixed(2)}
+                  Total Revenue: {formatCurrency(developer.totalRevenue || "0")}<br />
+                  Total Payouts: {formatCurrency(developer.totalPayouts || "0")}
                 </p>
               </div>
             </CardContent>

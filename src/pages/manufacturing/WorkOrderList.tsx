@@ -3,6 +3,7 @@ import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from "@/lib/formatters";
 import { Button } from "@/components/ui/button";
 import { Plus, Play, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -161,7 +162,7 @@ export default function WorkOrderList() {
             id: "quantity",
             header: "Quantity",
             width: "100px",
-            cell: (row: any) => <div className="font-mono p-2">{row.quantity?.toLocaleString()}</div>
+            cell: (row: any) => <div className="font-mono p-2">{formatNumber(row.quantity)}</div>
         },
         {
             id: "status",

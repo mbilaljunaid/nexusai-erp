@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { formatCurrency } from "@/lib/formatters";
 
 interface DeferredItem {
     contractId: string;
@@ -109,7 +110,7 @@ export default function DeferredRevenueMatrix() {
                         ) : (
                             <>
                                 <div className="text-2xl font-bold">
-                                    ${(summary?.totalDeferred || 0).toLocaleString()}
+                                    {formatCurrency(summary?.totalDeferred || 0)}
                                 </div>
                                 <p className="text-xs text-muted-foreground">
                                     Outstanding balance
@@ -130,7 +131,7 @@ export default function DeferredRevenueMatrix() {
                         ) : (
                             <>
                                 <div className="text-2xl font-bold text-green-600">
-                                    ${(summary?.currentPeriodRelease || 0).toLocaleString()}
+                                    {formatCurrency(summary?.currentPeriodRelease || 0)}
                                 </div>
                                 <p className="text-xs text-muted-foreground">
                                     To be recognized
@@ -151,7 +152,7 @@ export default function DeferredRevenueMatrix() {
                         ) : (
                             <>
                                 <div className="text-2xl font-bold text-blue-600">
-                                    ${(summary?.next12MonthsRelease || 0).toLocaleString()}
+                                    {formatCurrency(summary?.next12MonthsRelease || 0)}
                                 </div>
                                 <p className="text-xs text-muted-foreground">
                                     Forecasted release
@@ -172,7 +173,7 @@ export default function DeferredRevenueMatrix() {
                         ) : (
                             <>
                                 <div className="text-2xl font-bold text-orange-600">
-                                    ${(summary?.contractLiability || 0).toLocaleString()}
+                                    {formatCurrency(summary?.contractLiability || 0)}
                                 </div>
                                 <p className="text-xs text-muted-foreground">
                                     Prepaid/unearned
@@ -193,7 +194,7 @@ export default function DeferredRevenueMatrix() {
                         ) : (
                             <>
                                 <div className="text-2xl font-bold text-purple-600">
-                                    ${(summary?.contractAsset || 0).toLocaleString()}
+                                    {formatCurrency(summary?.contractAsset || 0)}
                                 </div>
                                 <p className="text-xs text-muted-foreground">
                                     Unbilled revenue
@@ -281,13 +282,13 @@ export default function DeferredRevenueMatrix() {
                                                         {item.pobName}
                                                     </TableCell>
                                                     <TableCell className="text-right font-mono font-semibold">
-                                                        ${parseFloat(item.deferredBalance).toLocaleString()}
+                                                        {formatCurrency(parseFloat(item.deferredBalance))}
                                                     </TableCell>
                                                     <TableCell className="text-right font-mono text-green-600">
-                                                        ${parseFloat(item.currentRelease).toLocaleString()}
+                                                        {formatCurrency(parseFloat(item.currentRelease))}
                                                     </TableCell>
                                                     <TableCell className="text-right font-mono text-blue-600">
-                                                        ${parseFloat(item.nextPeriodRelease).toLocaleString()}
+                                                        {formatCurrency(parseFloat(item.nextPeriodRelease))}
                                                     </TableCell>
                                                     <TableCell className="text-center">
                                                         <Badge variant="outline" className="font-mono">

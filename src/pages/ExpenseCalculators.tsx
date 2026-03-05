@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatCurrency } from "@/lib/formatters";
 
 const MILEAGE_RATES = {
     BUSINESS: { rate: 0.67, label: "Business (IRS 2026)" },
@@ -206,12 +207,12 @@ export default function ExpenseCalculators() {
                                 </div>
                                 <div className="flex items-baseline justify-between">
                                     <p className="text-3xl font-bold text-green-900 font-mono">
-                                        ${mileageResult.toFixed(2)}
+                                        {formatCurrency(mileageResult)}
                                     </p>
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        onClick={() => copyToClipboard(mileageResult.toFixed(2), "Amount")}
+                                        onClick={() => copyToClipboard(formatCurrency(mileageResult), "Amount")}
                                     >
                                         <Copy className="h-3 w-3" />
                                     </Button>
@@ -322,12 +323,12 @@ export default function ExpenseCalculators() {
                                 </div>
                                 <div className="flex items-baseline justify-between">
                                     <p className="text-3xl font-bold text-blue-900 font-mono">
-                                        ${perDiemResult.total.toFixed(2)}
+                                        {formatCurrency(perDiemResult.total)}
                                     </p>
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        onClick={() => copyToClipboard(perDiemResult.total.toFixed(2), "Amount")}
+                                        onClick={() => copyToClipboard(formatCurrency(perDiemResult.total), "Amount")}
                                     >
                                         <Copy className="h-3 w-3" />
                                     </Button>
@@ -336,24 +337,24 @@ export default function ExpenseCalculators() {
                                     {perDiemResult.breakdown.breakfast > 0 && (
                                         <div className="bg-white p-2 rounded">
                                             <p className="text-muted-foreground">Breakfast</p>
-                                            <p className="font-bold">${perDiemResult.breakdown.breakfast.toFixed(2)}</p>
+                                            <p className="font-bold">{formatCurrency(perDiemResult.breakdown.breakfast)}</p>
                                         </div>
                                     )}
                                     {perDiemResult.breakdown.lunch > 0 && (
                                         <div className="bg-white p-2 rounded">
                                             <p className="text-muted-foreground">Lunch</p>
-                                            <p className="font-bold">${perDiemResult.breakdown.lunch.toFixed(2)}</p>
+                                            <p className="font-bold">{formatCurrency(perDiemResult.breakdown.lunch)}</p>
                                         </div>
                                     )}
                                     {perDiemResult.breakdown.dinner > 0 && (
                                         <div className="bg-white p-2 rounded">
                                             <p className="text-muted-foreground">Dinner</p>
-                                            <p className="font-bold">${perDiemResult.breakdown.dinner.toFixed(2)}</p>
+                                            <p className="font-bold">{formatCurrency(perDiemResult.breakdown.dinner)}</p>
                                         </div>
                                     )}
                                     <div className="bg-white p-2 rounded">
                                         <p className="text-muted-foreground">Lodging</p>
-                                        <p className="font-bold">${perDiemResult.breakdown.lodging.toFixed(2)}</p>
+                                        <p className="font-bold">{formatCurrency(perDiemResult.breakdown.lodging)}</p>
                                     </div>
                                 </div>
                                 <p className="text-[10px] text-blue-700">

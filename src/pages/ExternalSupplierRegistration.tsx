@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useLocation } from "wouter";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,6 +25,7 @@ const registrationSchema = z.object({
 });
 
 export default function ExternalSupplierRegistration() {
+    const [, setLocation] = useLocation();
     const [step, setStep] = useState(1);
     const [submitted, setSubmitted] = useState(false);
     const { toast } = useToast();
@@ -77,7 +79,7 @@ export default function ExternalSupplierRegistration() {
                     <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
                         <CheckCircle2 className="w-8 h-8 text-green-600" />
                     </div>
-                    <Button variant="outline" onClick={() => window.location.href = "/"} className="w-full">
+                    <Button variant="outline" onClick={() => setLocation("/")} className="w-full">
                         Return to Homepage
                     </Button>
                 </Card>

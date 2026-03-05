@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { exportToExcel, exportToCSV } from "@/lib/exportUtils";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 
 interface ShipmentTracking {
@@ -234,7 +235,7 @@ export default function ShipmentTrackingDashboard() {
                             {loadingShipments ? (
                                 <p className="text-center py-8 text-muted-foreground">Loading shipments...</p>
                             ) : activeShipments.length === 0 ? (
-                                <p className="text-center py-8 text-muted-foreground">No active shipments</p>
+                                <EmptyState compact title="No active shipments" />
                             ) : (
                                 <Table>
                                     <TableHeader>
@@ -321,7 +322,7 @@ export default function ShipmentTrackingDashboard() {
                             {loadingShipments ? (
                                 <p className="text-center py-8 text-muted-foreground">Loading shipments...</p>
                             ) : activeShipments.length === 0 ? (
-                                <p className="text-center py-8 text-muted-foreground">No active shipments</p>
+                                <EmptyState compact title="No active shipments" />
                             ) : (
                                 <Table>
                                     <TableHeader>
@@ -384,11 +385,8 @@ export default function ShipmentTrackingDashboard() {
                     <div className="grid gap-4 md:grid-cols-2">
                         {alerts.length === 0 ? (
                             <Card className="col-span-2">
-                                <CardContent className="py-12">
-                                    <div className="text-center text-muted-foreground">
-                                        <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-green-500" />
-                                        <p>No active alerts</p>
-                                    </div>
+                                <CardContent className="pt-6">
+                                    <EmptyState icon={CheckCircle2} title="No active alerts" description="All clear — no tracking issues detected." />
                                 </CardContent>
                             </Card>
                         ) : (

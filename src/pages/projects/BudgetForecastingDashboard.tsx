@@ -11,6 +11,7 @@ import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { formatCurrency, formatNumber, formatPercent } from "@/lib/formatters";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface ForecastData {
@@ -89,7 +90,7 @@ export default function BudgetForecastingDashboard() {
         onSuccess: (result) => {
             toast({
                 title: "Scenario Complete",
-                description: `Predicted budget: $${result.totalPredicted.toFixed(0)}`
+                description: `Predicted budget: ${formatCurrency(result.totalPredicted)}`
             });
         }
     });
@@ -147,7 +148,7 @@ export default function BudgetForecastingDashboard() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-purple-900">{(avgConfidence * 100).toFixed(0)}%</div>
+                            <div className="text-2xl font-bold text-purple-900">{formatPercent(avgConfidence, 0)}</div>
                             <p className="text-xs text-purple-700 mt-1">Prediction accuracy</p>
                         </CardContent>
                     </Card>
@@ -156,7 +157,7 @@ export default function BudgetForecastingDashboard() {
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase">Predicted Total</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">${totalPredicted.toFixed(0)}</div>
+                            <div className="text-2xl font-bold text-blue-900">{formatCurrency(totalPredicted)}</div>
                         </CardContent>
                     </Card>
                     <Card className="bg-green-50 border-green-100">
@@ -164,7 +165,7 @@ export default function BudgetForecastingDashboard() {
                             <CardTitle className="text-xs font-bold text-green-800 uppercase">Actual to Date</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">${totalActual.toFixed(0)}</div>
+                            <div className="text-2xl font-bold text-green-900">{formatCurrency(totalActual)}</div>
                         </CardContent>
                     </Card>
                     <Card className={`${variance >= 0 ? 'bg-orange-50 border-orange-100' : 'bg-green-50 border-green-100'}`}>
@@ -175,7 +176,7 @@ export default function BudgetForecastingDashboard() {
                         </CardHeader>
                         <CardContent>
                             <div className={`text-2xl font-bold ${variance >= 0 ? 'text-orange-900' : 'text-green-900'}`}>
-                                {variance >= 0 ? '+' : ''}${variance.toFixed(0)}
+                                {variance >= 0 ? '+' : ''}{formatCurrency(Math.abs(variance))}
                             </div>
                         </CardContent>
                     </Card>
@@ -289,7 +290,7 @@ export default function BudgetForecastingDashboard() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-4">
                                         <div className="space-y-2">
-                                            <Label>Labor Cost Multiplier: {selectedScenario.laborCostMultiplier.toFixed(2)}x</Label>
+                                            <Label>Labor Cost Multiplier: {formatNumber(selectedScenario.laborCostMultiplier, 2)}x</Label>
                                             <Slider
                                                 value={[selectedScenario.laborCostMultiplier]}
                                                 onValueChange={([v]) => setSelectedScenario({ ...selectedScenario, laborCostMultiplier: v })}
@@ -301,7 +302,7 @@ export default function BudgetForecastingDashboard() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <Label>Material Cost Multiplier: {selectedScenario.materialCostMultiplier.toFixed(2)}x</Label>
+                                            <Label>Material Cost Multiplier: {formatNumber(selectedScenario.materialCostMultiplier, 2)}x</Label>
                                             <Slider
                                                 value={[selectedScenario.materialCostMultiplier]}
                                                 onValueChange={([v]) => setSelectedScenario({ ...selectedScenario, materialCostMultiplier: v })}
@@ -315,7 +316,7 @@ export default function BudgetForecastingDashboard() {
 
                                     <div className="space-y-4">
                                         <div className="space-y-2">
-                                            <Label>Overhead Multiplier: {selectedScenario.overheadMultiplier.toFixed(2)}x</Label>
+                                            <Label>Overhead Multiplier: {formatNumber(selectedScenario.overheadMultiplier, 2)}x</Label>
                                             <Slider
                                                 value={[selectedScenario.overheadMultiplier]}
                                                 onValueChange={([v]) => setSelectedScenario({ ...selectedScenario, overheadMultiplier: v })}
@@ -371,8 +372,8 @@ export default function BudgetForecastingDashboard() {
                                     <div className="space-y-3">
                                         {insights.map((insight, idx) => (
                                             <Card key={idx} className={`${insight.type === 'warning' ? 'bg-orange-50 border-orange-200' :
-                                                    insight.type === 'opportunity' ? 'bg-green-50 border-green-200' :
-                                                        'bg-blue-50 border-blue-200'
+                                                insight.type === 'opportunity' ? 'bg-green-50 border-green-200' :
+                                                    'bg-blue-50 border-blue-200'
                                                 }`}>
                                                 <CardContent className="pt-4">
                                                     <div className="flex items-start gap-3">
@@ -381,7 +382,7 @@ export default function BudgetForecastingDashboard() {
                                                             <h4 className="font-bold text-sm mb-1">{insight.title}</h4>
                                                             <p className="text-xs text-muted-foreground mb-2">{insight.description}</p>
                                                             <Badge variant="outline">
-                                                                Impact: ${insight.impact.toFixed(0)}
+                                                                Impact: {formatCurrency(insight.impact)}
                                                             </Badge>
                                                         </div>
                                                     </div>

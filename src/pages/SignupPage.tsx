@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowRight, Mail, Lock, User, Eye, EyeOff, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,7 @@ const signupSchema = z.object({
 });
 
 export default function SignupPage() {
+  const [, setLocation] = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -66,7 +67,7 @@ export default function SignupPage() {
       if (res.ok) {
         setSuccess(true);
         setTimeout(() => {
-          window.location.href = "/login";
+          setLocation("/login");
         }, 2000);
       } else {
         const data = await res.json();

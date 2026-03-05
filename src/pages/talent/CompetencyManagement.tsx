@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Slider } from "@/components/ui/slider";
 import { Award, Plus, Search, Trash2, Star, User, BookOpen } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 interface Competency {
     id: string;
@@ -227,7 +228,7 @@ export default function CompetencyManagement() {
                     {loadingCompetencies ? (
                         <div className="text-center py-8 text-muted-foreground">Loading competencies...</div>
                     ) : filteredCompetencies.length === 0 ? (
-                        <div className="text-center py-8 text-muted-foreground">No competencies found</div>
+                        <EmptyState compact title="No competencies found" />
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {filteredCompetencies.map(comp => (
@@ -287,9 +288,7 @@ export default function CompetencyManagement() {
 
                     {selectedPerson ? (
                         personSkills.length === 0 ? (
-                            <div className="text-center py-8 text-muted-foreground border rounded-lg">
-                                No skills assigned yet. Click "Add Skill" to get started.
-                            </div>
+                            <EmptyState compact title="No skills assigned yet" description='Click "Add Skill" to get started.' />
                         ) : (
                             <div className="space-y-3">
                                 {personSkills.map(skill => (
@@ -334,10 +333,7 @@ export default function CompetencyManagement() {
                             </div>
                         )
                     ) : (
-                        <div className="text-center py-8 text-muted-foreground border rounded-lg">
-                            <User className="h-12 w-12 mx-auto mb-2 text-muted-foreground/30" />
-                            Select an employee to view and manage their skill profile
-                        </div>
+                        <EmptyState icon={User} title="Select an employee" description="Choose an employee to view and manage their skill profile." />
                     )}
                 </CardContent>
             </Card>

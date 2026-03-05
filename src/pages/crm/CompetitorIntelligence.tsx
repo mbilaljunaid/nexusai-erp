@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { TrendingUp, TrendingDown, Target, AlertCircle, CheckCircle, DollarSign, Award } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
+import { formatNumber } from "@/lib/formatters";
 
 interface Competitor {
     id: string;
@@ -143,8 +144,8 @@ export default function CompetitorIntelligence() {
                         <CardContent>
                             <div className="text-2xl font-bold text-blue-900">
                                 {winLossData.length > 0
-                                    ? ((winLossData.reduce((sum, c) => sum + c.wins, 0) /
-                                        (winLossData.reduce((sum, c) => sum + c.wins + c.losses, 0))) * 100).toFixed(0)
+                                    ? formatNumber(((winLossData.reduce((sum, c) => sum + c.wins, 0) /
+                                        (winLossData.reduce((sum, c) => sum + c.wins + c.losses, 0))) * 100), 0)
                                     : 0}%
                             </div>
                         </CardContent>
@@ -223,7 +224,7 @@ export default function CompetitorIntelligence() {
                                         <div className="pt-2 border-t flex justify-between text-xs">
                                             <div>
                                                 <div className="text-muted-foreground">Avg Deal</div>
-                                                <div className="font-bold">${(competitor.avgDealSize / 1000).toFixed(0)}K</div>
+                                                <div className="font-bold">${formatNumber(competitor.avgDealSize / 1000, 0)}K</div>
                                             </div>
                                             <div>
                                                 <div className="text-muted-foreground">Market Share</div>
@@ -275,11 +276,11 @@ export default function CompetitorIntelligence() {
                                                         data.winRate >= 50 ? "text-amber-700" :
                                                             "text-red-700"
                                                         }`}>
-                                                        {data.winRate.toFixed(0)}%
+                                                        {formatNumber(data.winRate, 0)}%
                                                     </span>
                                                 </TableCell>
                                                 <TableCell className="text-right font-mono">
-                                                    ${(data.totalValue / 1000).toFixed(0)}K
+                                                    ${formatNumber(data.totalValue / 1000, 0)}K
                                                 </TableCell>
                                             </TableRow>
                                         ))}
@@ -370,8 +371,8 @@ export default function CompetitorIntelligence() {
                                         <div className="flex items-center justify-between">
                                             <span className="text-sm text-muted-foreground">Price Range:</span>
                                             <span className="font-mono font-medium">
-                                                ${(battleCard.pricingIntel.priceRange.min / 1000).toFixed(0)}K -
-                                                ${(battleCard.pricingIntel.priceRange.max / 1000).toFixed(0)}K
+                                                ${formatNumber(battleCard.pricingIntel.priceRange.min / 1000, 0)}K -
+                                                ${formatNumber(battleCard.pricingIntel.priceRange.max / 1000, 0)}K
                                             </span>
                                         </div>
                                     </CardContent>

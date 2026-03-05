@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, TrendingDown, DollarSign, Calendar } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { formatCurrency, formatPercent } from "@/lib/formatters";
 
 export default function CashPositionDashboard() {
     const [forecastDays, setForecastDays] = useState("30");
@@ -48,7 +49,7 @@ export default function CashPositionDashboard() {
                             <DollarSign className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">${totalCash.toFixed(2)}</div>
+                            <div className="text-2xl font-bold">{formatCurrency(totalCash)}</div>
                             <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
                                 {changePercent >= 0 ? (
                                     <TrendingUp className="h-3 w-3 text-green-500" />
@@ -56,7 +57,7 @@ export default function CashPositionDashboard() {
                                     <TrendingDown className="h-3 w-3 text-red-500" />
                                 )}
                                 <span className={changePercent >= 0 ? "text-green-500" : "text-red-500"}>
-                                    {Math.abs(changePercent).toFixed(2)}%
+                                    {formatPercent(Math.abs(changePercent) / 100)}
                                 </span>
                                 <span>vs last period</span>
                             </div>
@@ -70,7 +71,7 @@ export default function CashPositionDashboard() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold text-green-600">
-                                ${forecast?.expectedReceipts?.toFixed(2) || "0.00"}
+                                {formatCurrency(forecast?.expectedReceipts || 0)}
                             </div>
                             <p className="text-xs text-muted-foreground mt-1">
                                 From AR and other sources
@@ -85,7 +86,7 @@ export default function CashPositionDashboard() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold text-red-600">
-                                ${forecast?.expectedPayments?.toFixed(2) || "0.00"}
+                                {formatCurrency(forecast?.expectedPayments || 0)}
                             </div>
                             <p className="text-xs text-muted-foreground mt-1">
                                 AP and other obligations
@@ -109,7 +110,7 @@ export default function CashPositionDashboard() {
                                         <span className="font-medium">{curr.currencyName || curr.currency}</span>
                                     </div>
                                     <div className="text-right">
-                                        <div className="font-semibold">${curr.amount?.toFixed(2)}</div>
+                                        <div className="font-semibold">{formatCurrency(curr.amount || 0)}</div>
                                         <div className="text-xs text-muted-foreground">
                                             {curr.accountCount} account(s)
                                         </div>
@@ -165,10 +166,10 @@ export default function CashPositionDashboard() {
                                     dataKey="date"
                                     tickFormatter={(date) => new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                                 />
-                                <YAxis />
+                                <YAxis tickFormatter={(value: number) => formatCurrency(value)} />
                                 <Tooltip
                                     labelFormatter={(date) => new Date(date).toLocaleDateString()}
-                                    formatter={(value: number) => `$${value.toFixed(2)}`}
+                                    formatter={(value: number) => formatCurrency(value)}
                                 />
                                 <Legend />
                                 <Line

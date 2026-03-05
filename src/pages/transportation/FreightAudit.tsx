@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { FileText, DollarSign, AlertCircle, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { formatCurrency } from "@/lib/formatters";
 import { StandardPage } from "@/components/layout/StandardPage";
 
 
@@ -42,7 +43,7 @@ export default function FreightAudit() {
     return (
         <StandardPage title="Freight Audit & Payment">
             <div>
-                
+
                 <p className="text-muted-foreground">Automated freight invoice validation and discrepancy detection</p>
             </div>
 
@@ -57,7 +58,7 @@ export default function FreightAudit() {
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Total Amount</div>
                         <div className="text-3xl font-bold mt-1">
-                            ${invoices?.reduce((sum: number, inv: any) => sum + inv.amount, 0).toLocaleString()}
+                            {formatCurrency(invoices?.reduce((sum: number, inv: any) => sum + inv.amount, 0) || 0)}
                         </div>
                     </CardContent>
                 </Card>
@@ -73,7 +74,7 @@ export default function FreightAudit() {
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Potential Savings</div>
                         <div className="text-3xl font-bold mt-1 text-green-600">
-                            ${invoices?.reduce((sum: number, inv: any) => sum + (inv.potentialSavings || 0), 0).toLocaleString()}
+                            {formatCurrency(invoices?.reduce((sum: number, inv: any) => sum + (inv.potentialSavings || 0), 0) || 0)}
                         </div>
                     </CardContent>
                 </Card>
@@ -89,8 +90,8 @@ export default function FreightAudit() {
                             <div
                                 key={invoice.id}
                                 className={`p-3 rounded-lg cursor-pointer border ${selectedInvoice?.id === invoice.id
-                                        ? "border-primary bg-primary/5"
-                                        : "border-border hover:bg-accent"
+                                    ? "border-primary bg-primary/5"
+                                    : "border-border hover:bg-accent"
                                     }`}
                                 onClick={() => setSelectedInvoice(invoice)}
                             >
@@ -100,7 +101,7 @@ export default function FreightAudit() {
                                         <div className="text-sm text-muted-foreground">{invoice.carrier}</div>
                                     </div>
                                     <div className="text-right">
-                                        <div className="font-bold">${invoice.amount.toLocaleString()}</div>
+                                        <div className="font-bold">{formatCurrency(invoice.amount)}</div>
                                         {invoice.hasDiscrepancy && (
                                             <Badge variant="destructive" className="mt-1">
                                                 Discrepancy
@@ -148,19 +149,19 @@ export default function FreightAudit() {
                                     <div className="border rounded-lg p-4 space-y-2">
                                         <div className="flex justify-between">
                                             <span>Base Freight Charge</span>
-                                            <span className="font-medium">${selectedInvoice.baseCharge?.toLocaleString()}</span>
+                                            <span className="font-medium">{formatCurrency(selectedInvoice.baseCharge || 0)}</span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span>Fuel Surcharge</span>
-                                            <span className="font-medium">${selectedInvoice.fuelSurcharge?.toLocaleString()}</span>
+                                            <span className="font-medium">{formatCurrency(selectedInvoice.fuelSurcharge || 0)}</span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span>Accessorial Charges</span>
-                                            <span className="font-medium">${selectedInvoice.accessorialCharges?.toLocaleString()}</span>
+                                            <span className="font-medium">{formatCurrency(selectedInvoice.accessorialCharges || 0)}</span>
                                         </div>
                                         <div className="border-t pt-2 flex justify-between font-bold">
                                             <span>Total</span>
-                                            <span>${selectedInvoice.amount.toLocaleString()}</span>
+                                            <span>{formatCurrency(selectedInvoice.amount)}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -177,7 +178,7 @@ export default function FreightAudit() {
                                                     <div className="font-medium">{disc.type}</div>
                                                     <div className="text-sm text-muted-foreground">{disc.description}</div>
                                                     <div className="text-sm mt-1">
-                                                        Amount at risk: <span className="font-bold text-orange-600">${disc.amount}</span>
+                                                        Amount at risk: <span className="font-bold text-orange-600">{formatCurrency(disc.amount)}</span>
                                                     </div>
                                                 </div>
                                             ))}

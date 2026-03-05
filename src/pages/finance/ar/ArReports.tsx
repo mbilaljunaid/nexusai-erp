@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { formatCurrency } from "@/lib/formatters";
 
 export default function ArReports() {
     const { data: aging, refetch: refetchAging } = useQuery<any>({
@@ -61,7 +62,7 @@ export default function ArReports() {
             return res.json();
         },
         onSuccess: (data) => {
-            setRevalResult(`Unrealized Gain: $${data.gainLoss.toLocaleString()}`);
+            setRevalResult(`Unrealized Gain: ${formatCurrency(data.gainLoss)}`);
             toast({ title: "Revaluation Complete", description: data.message });
         }
     });
@@ -107,14 +108,14 @@ export default function ArReports() {
                                 </TableHeader>
                                 <TableBody>
                                     <TableRow>
-                                        <TableCell>${aging?.current?.toLocaleString() ?? 0}</TableCell>
-                                        <TableCell>${aging?.days1_30?.toLocaleString() ?? 0}</TableCell>
-                                        <TableCell>${aging?.days31_60?.toLocaleString() ?? 0}</TableCell>
-                                        <TableCell>${aging?.days61_90?.toLocaleString() ?? 0}</TableCell>
-                                        <TableCell>${aging?.days91_180?.toLocaleString() ?? 0}</TableCell>
-                                        <TableCell>${aging?.days180_360?.toLocaleString() ?? 0}</TableCell>
-                                        <TableCell>${aging?.over360?.toLocaleString() ?? 0}</TableCell>
-                                        <TableCell className="text-right font-bold">${aging?.total?.toLocaleString() ?? 0}</TableCell>
+                                        <TableCell>{formatCurrency(aging?.current ?? 0)}</TableCell>
+                                        <TableCell>{formatCurrency(aging?.days1_30 ?? 0)}</TableCell>
+                                        <TableCell>{formatCurrency(aging?.days31_60 ?? 0)}</TableCell>
+                                        <TableCell>{formatCurrency(aging?.days61_90 ?? 0)}</TableCell>
+                                        <TableCell>{formatCurrency(aging?.days91_180 ?? 0)}</TableCell>
+                                        <TableCell>{formatCurrency(aging?.days180_360 ?? 0)}</TableCell>
+                                        <TableCell>{formatCurrency(aging?.over360 ?? 0)}</TableCell>
+                                        <TableCell className="text-right font-bold">{formatCurrency(aging?.total ?? 0)}</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>
@@ -131,16 +132,16 @@ export default function ArReports() {
                             <div className="grid gap-4 md:grid-cols-3">
                                 <div className="p-4 border rounded bg-slate-50">
                                     <div className="text-sm text-muted-foreground">Subledger Balance</div>
-                                    <div className="text-2xl font-bold">${recon?.subledgerBalance?.toLocaleString()}</div>
+                                    <div className="text-2xl font-bold">{formatCurrency(recon?.subledgerBalance ?? 0)}</div>
                                 </div>
                                 <div className="p-4 border rounded bg-slate-50">
                                     <div className="text-sm text-muted-foreground">GL Control Account</div>
-                                    <div className="text-2xl font-bold">${recon?.glBalance?.toLocaleString()}</div>
+                                    <div className="text-2xl font-bold">{formatCurrency(recon?.glBalance ?? 0)}</div>
                                 </div>
                                 <div className={`p-4 border rounded ${recon?.difference === 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}>
                                     <div className="text-sm text-muted-foreground">Difference</div>
                                     <div className={`text-2xl font-bold ${recon?.difference === 0 ? 'text-emerald-700' : 'text-red-700'}`}>
-                                        ${recon?.difference?.toLocaleString()}
+                                        {formatCurrency(recon?.difference ?? 0)}
                                     </div>
                                 </div>
                             </div>
@@ -190,9 +191,9 @@ export default function ArReports() {
                                                 <TableCell>{row.date}</TableCell>
                                                 <TableCell>{row.description}</TableCell>
                                                 <TableCell className={`text-right ${row.amount < 0 ? 'text-emerald-600' : ''}`}>
-                                                    {row.amount < 0 ? `-$${Math.abs(row.amount).toLocaleString()}` : `$${row.amount.toLocaleString()}`}
+                                                    {formatCurrency(row.amount)}
                                                 </TableCell>
-                                                <TableCell className="text-right font-semibold">${row.balance.toLocaleString()}</TableCell>
+                                                <TableCell className="text-right font-semibold">{formatCurrency(row.balance)}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>

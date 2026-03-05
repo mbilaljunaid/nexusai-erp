@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, FileDown, DollarSign, Search, History } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { formatCurrency } from "@/lib/formatters";
 import { DatePicker } from '@/components/ui/DatePicker';
 
 interface Product {
@@ -281,7 +282,7 @@ export default function QuoteBuilder() {
                                                     <TableCell className="font-medium">{product.name}</TableCell>
                                                     <TableCell><code className="text-xs">{product.sku}</code></TableCell>
                                                     <TableCell><Badge variant="outline">{product.category}</Badge></TableCell>
-                                                    <TableCell className="text-right font-mono">${product.listPrice.toLocaleString()}</TableCell>
+                                                    <TableCell className="text-right font-mono">{formatCurrency(product.listPrice)}</TableCell>
                                                     <TableCell>
                                                         <Button size="sm" onClick={() => addProduct(product)}>
                                                             <Plus className="h-3 w-3 mr-1" />
@@ -337,7 +338,7 @@ export default function QuoteBuilder() {
                                                     min="1"
                                                 />
                                             </TableCell>
-                                            <TableCell className="text-right font-mono">${item.unitPrice.toLocaleString()}</TableCell>
+                                            <TableCell className="text-right font-mono">{formatCurrency(item.unitPrice)}</TableCell>
                                             <TableCell className="text-right">
                                                 <Input
                                                     type="number"
@@ -348,7 +349,7 @@ export default function QuoteBuilder() {
                                                     max="100"
                                                 />
                                             </TableCell>
-                                            <TableCell className="text-right font-mono font-bold">${item.total.toLocaleString()}</TableCell>
+                                            <TableCell className="text-right font-mono font-bold">{formatCurrency(item.total)}</TableCell>
                                             <TableCell>
                                                 <Button size="sm" variant="ghost" onClick={() => removeLineItem(item.id)}>
                                                     <Trash2 className="h-4 w-4 text-red-600" />
@@ -365,15 +366,15 @@ export default function QuoteBuilder() {
                                 <div className="w-80 space-y-2">
                                     <div className="flex justify-between text-sm">
                                         <span>Subtotal:</span>
-                                        <span className="font-mono">${subtotal.toLocaleString()}</span>
+                                        <span className="font-mono">{formatCurrency(subtotal)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span>Tax (10%):</span>
-                                        <span className="font-mono">${tax.toLocaleString()}</span>
+                                        <span className="font-mono">{formatCurrency(tax)}</span>
                                     </div>
                                     <div className="flex justify-between text-lg font-bold border-t pt-2">
                                         <span>Total:</span>
-                                        <span className="font-mono text-green-700">${total.toLocaleString()}</span>
+                                        <span className="font-mono text-green-700">{formatCurrency(total)}</span>
                                     </div>
                                 </div>
                             </div>

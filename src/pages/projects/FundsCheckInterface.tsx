@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
+import { formatCurrency, formatPercent } from "@/lib/formatters";
 
 interface FundsCheckResult {
     available: boolean;
@@ -69,7 +70,7 @@ export default function FundsCheckInterface() {
             if (!result.available) {
                 toast({
                     title: "Insufficient Funds",
-                    description: `Budget overrun of $${result.overrunAmount?.toFixed(2)}`,
+                    description: `Budget overrun of ${formatCurrency(result.overrunAmount || 0)}`,
                     variant: "destructive"
                 });
             } else {
@@ -221,32 +222,32 @@ export default function FundsCheckInterface() {
                                 <div className="space-y-2">
                                     <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">Budget (BAC):</span>
-                                        <span className="font-mono">${checkResult.budgetAmount.toFixed(2)}</span>
+                                        <span className="font-mono">{formatCurrency(checkResult.budgetAmount)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">Actual Cost:</span>
-                                        <span className="font-mono">${checkResult.actualCost.toFixed(2)}</span>
+                                        <span className="font-mono">{formatCurrency(checkResult.actualCost)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">Committed:</span>
-                                        <span className="font-mono">${checkResult.committedCost.toFixed(2)}</span>
+                                        <span className="font-mono">{formatCurrency(checkResult.committedCost)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm font-bold pt-2 border-t">
                                         <span className="text-muted-foreground">Remaining:</span>
                                         <span className={`font-mono ${checkResult.remainingFunds >= 0 ? "text-green-600" : "text-red-600"}`}>
-                                            ${checkResult.remainingFunds.toFixed(2)}
+                                            {formatCurrency(checkResult.remainingFunds)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">Requested:</span>
-                                        <span className="font-mono">${checkResult.requestedAmount.toFixed(2)}</span>
+                                        <span className="font-mono">{formatCurrency(checkResult.requestedAmount)}</span>
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
                                     <div className="flex justify-between text-xs text-muted-foreground">
                                         <span>Budget Utilization</span>
-                                        <span>{utilizationPercent.toFixed(0)}%</span>
+                                        <span>{formatPercent(utilizationPercent / 100)}</span>
                                     </div>
                                     <Progress
                                         value={utilizationPercent}
@@ -261,7 +262,7 @@ export default function FundsCheckInterface() {
                                             <span className="text-sm font-bold text-red-900">Budget Overrun</span>
                                         </div>
                                         <p className="text-sm text-red-700">
-                                            This transaction would exceed the budget by ${checkResult.overrunAmount.toFixed(2)}
+                                            This transaction would exceed the budget by {formatCurrency(checkResult.overrunAmount)}
                                         </p>
                                     </div>
                                 )}

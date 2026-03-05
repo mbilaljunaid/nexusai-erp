@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -36,6 +37,7 @@ interface FieldMapping {
 export default function CostImportWorkbench() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const [, setLocation] = useLocation();
 
     const [csvFile, setCsvFile] = useState<File | null>(null);
     const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
@@ -450,7 +452,7 @@ export default function CostImportWorkbench() {
                                 <Button variant="outline" onClick={resetImport}>
                                     Import Another File
                                 </Button>
-                                <Button onClick={() => window.location.href = "/projects/expenditures"}>
+                                <Button onClick={() => setLocation("/projects/expenditures")}>
                                     View Expenditures
                                 </Button>
                             </div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -184,10 +185,10 @@ export default function Inventory() {
                   <p className="text-blue-100 text-sm">Access advanced warehouse management features including wave planning and LPN tracking.</p>
                   <div className="flex gap-2">
                     <Button variant="secondary" className="bg-white text-blue-600 hover:bg-blue-50" asChild>
-                      <a href="/scm/wms/operations">Enter Operations Workbench</a>
+                      <Link to="/scm/wms/operations">Enter Operations Workbench</Link>
                     </Button>
                     <Button variant="outline" className="border-blue-400 text-white hover:bg-blue-500" asChild>
-                      <a href="/scm/wms/dashboard">View WMS Dashboard</a>
+                      <Link to="/scm/wms/dashboard">View WMS Dashboard</Link>
                     </Button>
                   </div>
                 </CardContent>
@@ -202,7 +203,7 @@ export default function Inventory() {
             <h3 className="text-xl font-bold text-white">Advanced Fulfillment Active</h3>
             <p className="text-slate-500 text-center max-w-md">The legacy inventory fulfillment view has been upgraded to the WMS Operations Workbench.</p>
             <Button className="bg-blue-600 hover:bg-blue-500" asChild>
-              <a href="/scm/wms/operations">Open WMS Workbench</a>
+              <Link to="/scm/wms/operations">Open WMS Workbench</Link>
             </Button>
           </div>
         )}

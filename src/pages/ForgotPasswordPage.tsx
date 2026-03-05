@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowRight, Mail, Lock, Eye, EyeOff, CheckCircle, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -35,6 +35,7 @@ const resetSchema = z.object({
 });
 
 export default function ForgotPasswordPage() {
+  const [, setLocation] = useLocation();
   const [step, setStep] = useState<"email" | "reset" | "success">("email");
   const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -94,7 +95,7 @@ export default function ForgotPasswordPage() {
       if (res.ok) {
         setStep("success");
         setTimeout(() => {
-          window.location.href = "/login";
+          setLocation("/login");
         }, 3000);
       } else {
         const data = await res.json();

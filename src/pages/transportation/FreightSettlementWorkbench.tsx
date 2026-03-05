@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { formatCurrency } from "@/lib/formatters";
 
 
 interface FreightCharge {
@@ -297,7 +299,7 @@ export default function FreightSettlementWorkbench() {
                         <TrendingDown className="h-4 w-4 text-blue-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${Math.abs(metrics?.totalVariance || 0).toFixed(2)}</div>
+                        <div className="text-2xl font-bold">{formatCurrency(Math.abs(metrics?.totalVariance || 0))}</div>
                         <p className="text-xs text-muted-foreground">Planned vs Actual</p>
                     </CardContent>
                 </Card>
@@ -322,7 +324,7 @@ export default function FreightSettlementWorkbench() {
                             {isLoading ? (
                                 <p className="text-center py-8 text-muted-foreground">Loading charges...</p>
                             ) : pendingReconciliation.length === 0 ? (
-                                <p className="text-center py-8 text-muted-foreground">No pending reconciliations</p>
+                                <EmptyState compact title="No pending reconciliations" />
                             ) : (
                                 <Table>
                                     <TableHeader>
@@ -342,7 +344,7 @@ export default function FreightSettlementWorkbench() {
                                                 <TableCell>{charge.carrierName || "N/A"}</TableCell>
                                                 <TableCell className="text-sm">{charge.chargeType.replace(/_/g, " ")}</TableCell>
                                                 <TableCell className="text-right font-mono">
-                                                    {charge.currency} {parseFloat(charge.plannedAmount).toFixed(2)}
+                                                    {formatCurrency(charge.plannedAmount, charge.currency)}
                                                 </TableCell>
                                                 <TableCell>
                                                     <Badge variant="outline">{charge.status}</Badge>
@@ -378,7 +380,7 @@ export default function FreightSettlementWorkbench() {
                         </CardHeader>
                         <CardContent>
                             {charges.filter(c => c.status === "DISPUTED").length === 0 ? (
-                                <p className="text-center py-4 text-muted-foreground">No disputed charges</p>
+                                <EmptyState compact title="No disputed charges" />
                             ) : (
                                 <div className="space-y-3">
                                     {charges.filter(c => c.status === "DISPUTED").map((charge) => (
@@ -394,14 +396,14 @@ export default function FreightSettlementWorkbench() {
                                                     </p>
                                                     <div className="text-sm mt-2">
                                                         <span className="text-muted-foreground">Planned:</span>{" "}
-                                                        <span className="font-mono">${parseFloat(charge.plannedAmount).toFixed(2)}</span>
+                                                        <span className="font-mono">{formatCurrency(charge.plannedAmount)}</span>
                                                         {" "}<span className="text-muted-foreground">Actual:</span>{" "}
                                                         <span className="font-mono font-semibold text-rose-600">
-                                                            ${parseFloat(charge.actualAmount || "0").toFixed(2)}
+                                                            {formatCurrency(charge.actualAmount || "0")}
                                                         </span>
                                                         {" "}<span className="text-muted-foreground">Variance:</span>{" "}
                                                         <span className="font-mono font-semibold text-rose-600">
-                                                            +${parseFloat(charge.varianceAmount || "0").toFixed(2)}
+                                                            +{formatCurrency(charge.varianceAmount || "0")}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -424,7 +426,7 @@ export default function FreightSettlementWorkbench() {
                         </CardHeader>
                         <CardContent>
                             {readyForAP.length === 0 ? (
-                                <p className="text-center py-8 text-muted-foreground">No charges ready for AP interface</p>
+                                <EmptyState compact title="No charges ready for AP interface" />
                             ) : (
                                 <>
                                     <div className="mb-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
@@ -459,13 +461,13 @@ export default function FreightSettlementWorkbench() {
                                                     <TableCell className="font-medium">{charge.shipmentId}</TableCell>
                                                     <TableCell>{charge.carrierName || "N/A"}</TableCell>
                                                     <TableCell className="text-right font-mono">
-                                                        ${parseFloat(charge.actualAmount || charge.plannedAmount).toFixed(2)}
+                                                        {formatCurrency(charge.actualAmount || charge.plannedAmount)}
                                                     </TableCell>
                                                     <TableCell className="text-right font-mono">
                                                         {charge.varianceAmount ? (
                                                             <span className={parseFloat(charge.varianceAmount) > 0 ? "text-rose-600" : "text-emerald-600"}>
                                                                 {parseFloat(charge.varianceAmount) > 0 ? "+" : ""}
-                                                                ${parseFloat(charge.varianceAmount).toFixed(2)}
+                                                                {formatCurrency(Math.abs(parseFloat(charge.varianceAmount)))}
                                                             </span>
                                                         ) : "-"}
                                                     </TableCell>
@@ -528,7 +530,7 @@ export default function FreightSettlementWorkbench() {
                                                 <span className="font-medium">{carrier}</span>
                                                 <div className="text-right">
                                                     <div className="font-mono font-semibold">
-                                                        {variance >= 0 ? "+" : ""}${variance.toFixed(2)}
+                                                        {variance >= 0 ? "+" : "-"}{formatCurrency(Math.abs(variance))}
                                                     </div>
                                                     <div className="text-xs text-muted-foreground">
                                                         {carrierCharges.length} {carrierCharges.length === 1 ? "charge" : "charges"}
@@ -580,7 +582,7 @@ export default function FreightSettlementWorkbench() {
                             <div>
                                 <p className="text-xs text-muted-foreground mb-1">Planned Amount</p>
                                 <p className="text-lg font-semibold font-mono">
-                                    ${parseFloat(selectedCharge?.plannedAmount || "0").toFixed(2)}
+                                    {formatCurrency(selectedCharge?.plannedAmount || "0")}
                                 </p>
                             </div>
                             <div>
@@ -610,7 +612,7 @@ export default function FreightSettlementWorkbench() {
                                         : "text-emerald-600"
                                         }`}>
                                         {parseFloat(invoiceAmount) - parseFloat(selectedCharge.plannedAmount) > 0 ? "+" : ""}
-                                        ${(parseFloat(invoiceAmount) - parseFloat(selectedCharge.plannedAmount)).toFixed(2)}
+                                        {formatCurrency(Math.abs(parseFloat(invoiceAmount) - parseFloat(selectedCharge.plannedAmount)))}
                                     </span>
                                 </div>
                                 <p className="text-xs text-blue-700 mt-2">

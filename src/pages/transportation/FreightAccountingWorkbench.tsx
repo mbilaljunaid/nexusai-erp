@@ -16,6 +16,7 @@ import {
     DollarSign, FileText, Plus, CheckCircle2, AlertCircle,
     TrendingUp, Upload, Download, Filter
 } from "lucide-react";
+import { formatCurrency } from "@/lib/formatters";
 
 interface FreightCharge {
     id: string;
@@ -176,7 +177,7 @@ export default function FreightAccountingWorkbench() {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground mt-1">Manage freight costs, accruals, and GL integration</p>
                 </div>
                 <div className="flex gap-2">
@@ -276,7 +277,7 @@ export default function FreightAccountingWorkbench() {
                         <DollarSign className="h-4 w-4 text-amber-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${liability?.total.toLocaleString() || 0}</div>
+                        <div className="text-2xl font-bold">{formatCurrency(liability?.total || 0)}</div>
                         <p className="text-xs text-muted-foreground">Outstanding accruals</p>
                     </CardContent>
                 </Card>
@@ -374,16 +375,16 @@ export default function FreightAccountingWorkbench() {
                                                     <span className="text-sm">{charge.chargeType.replace(/_/g, " ")}</span>
                                                 </TableCell>
                                                 <TableCell className="text-right font-mono">
-                                                    {charge.currency} {parseFloat(charge.plannedAmount).toFixed(2)}
+                                                    {charge.currency} {formatCurrency(parseFloat(charge.plannedAmount)).replace('$', '')}
                                                 </TableCell>
                                                 <TableCell className="text-right font-mono">
-                                                    {charge.actualAmount ? `${charge.currency} ${parseFloat(charge.actualAmount).toFixed(2)}` : "-"}
+                                                    {charge.actualAmount ? `${charge.currency} ${formatCurrency(parseFloat(charge.actualAmount)).replace('$', '')}` : "-"}
                                                 </TableCell>
                                                 <TableCell className="text-right font-mono">
                                                     {charge.varianceAmount ? (
                                                         <span className={parseFloat(charge.varianceAmount) > 0 ? "text-rose-600" : "text-emerald-600"}>
                                                             {parseFloat(charge.varianceAmount) > 0 ? "+" : ""}
-                                                            {parseFloat(charge.varianceAmount).toFixed(2)}
+                                                            {formatCurrency(parseFloat(charge.varianceAmount)).replace('$', '')}
                                                         </span>
                                                     ) : "-"}
                                                 </TableCell>
@@ -455,8 +456,8 @@ export default function FreightAccountingWorkbench() {
                                             <TableRow key={journal.id}>
                                                 <TableCell className="font-medium font-mono text-sm">{journal.id}</TableCell>
                                                 <TableCell className="max-w-md truncate">{journal.description}</TableCell>
-                                                <TableCell className="text-right font-mono">${parseFloat(journal.totalDebit).toFixed(2)}</TableCell>
-                                                <TableCell className="text-right font-mono">${parseFloat(journal.totalCredit).toFixed(2)}</TableCell>
+                                                <TableCell className="text-right font-mono">{formatCurrency(parseFloat(journal.totalDebit))}</TableCell>
+                                                <TableCell className="text-right font-mono">{formatCurrency(parseFloat(journal.totalCredit))}</TableCell>
                                                 <TableCell>
                                                     <Badge variant={journal.status === "Posted" ? "default" : "secondary"}>
                                                         {journal.status}

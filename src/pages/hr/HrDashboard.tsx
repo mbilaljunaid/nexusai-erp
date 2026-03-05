@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation } from 'wouter';
 import { StandardDashboard, DashboardWidget } from '@/components/layout/StandardDashboard';
 import { Card, CardContent } from '@/components/ui/card';
 import { Users, Briefcase, Clock, TrendingUp, AlertTriangle, Trello } from 'lucide-react';
@@ -10,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { EnterpriseContextSwitcher, buildScopeHeaders } from '@/components/enterprise/EnterpriseContextSwitcher';
 
 export default function HrDashboard() {
+    const [, setLocation] = useLocation();
     const [leId, setLeId] = useState<string | undefined>();
     const scopeHeaders = buildScopeHeaders({ 'legal-entity': leId });
 
@@ -82,7 +84,7 @@ export default function HrDashboard() {
                     value={leId}
                     onChange={setLeId}
                 />
-                <Button variant="outline" onClick={() => window.location.href = '/hr/recruitment/pipeline'}>
+                <Button variant="outline" onClick={() => setLocation('/hr/recruitment/pipeline')}>
                     <Trello className="h-4 w-4 mr-2" />
                     Recruitment Pipeline
                 </Button>

@@ -1,4 +1,4 @@
-import { useParams, Redirect, Link } from "wouter";
+import { useParams, Redirect, Link, useLocation } from "wouter";
 import { industries } from "@/data/industries";
 import { PremiumHero, GlassmorphismCard, FeatureGrid, CTASection, StatsCounter } from "@/components/lovable";
 import { Header, Footer } from "@/components/Navigation";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 
 export default function IndustryLandingPage() {
     const { slug } = useParams<{ slug: string }>();
+    const [, setLocation] = useLocation();
     const industry = industries[slug || ""];
 
     if (!industry) {
@@ -103,7 +104,7 @@ export default function IndustryLandingPage() {
                     subtitle="Join thousands of organizations using NexusAI today."
                     primaryCTA={{
                         label: "Get Started Now",
-                        onClick: () => { window.location.href = "/signup"; }
+                        onClick: () => { setLocation("/signup"); }
                     }}
                 />
             </main>
