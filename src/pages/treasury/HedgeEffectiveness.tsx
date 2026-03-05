@@ -259,7 +259,7 @@ export default function HedgeEffectiveness() {
                             </div>
                             <div className="tf">
                                 <label className="tl">Test Date</label>
-                                <input className="ti" type="date" value={testForm.testDate} onChange={e => setTestForm(p => ({ ...p, testDate: e.target.value }))} aria-label="Test date" />
+                                <Input className="ti" type="date" value={testForm.testDate} onChange={e => setTestForm(p => ({ ...p, testDate: e.target.value }))} aria-label="Test date" />
                             </div>
                             <div className="tf">
                                 <label className="tl">Hedging Instrument G/L</label>

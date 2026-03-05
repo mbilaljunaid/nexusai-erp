@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
@@ -10,6 +10,18 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Edit2, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+
+
+const clientSchema = z.object({
+    clientId: z.string().min(1, "Client Name / ID is required"),
+    region: z.string().min(1, "Region is required"),
+    status: z.enum(["active", "inactive"])
+});
 
 interface Client {
     id: string;
@@ -23,6 +35,33 @@ export default function ClientManagement() {
     const queryClient = useQueryClient();
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [editingClient, setEditingClient] = useState<Partial<Client> | null>(null);
+
+    const form = useForm<z.infer<typeof clientSchema>>({
+        resolver: zodResolver(clientSchema),
+        defaultValues: {
+            clientId: "",
+            region: "",
+            status: "active"
+        }
+    });
+
+    // Reset form when editing changes
+    React.useEffect(() => {
+        if (editingClient) {
+            form.reset({
+                clientId: editingClient.clientId || "",
+                region: editingClient.region || "",
+                status: editingClient.status || "active"
+            });
+        } else {
+            form.reset({ clientId: "", region: "", status: "active" });
+        }
+    }, [editingClient, form]);
+
+    const onSubmit = (values: z.infer<typeof clientSchema>) => {
+        mutation.mutate(values);
+    };
+
 
     const { data: clients = [], isLoading } = useQuery<Client[]>({
         queryKey: ["/api/logistics-clients"],
@@ -70,17 +109,6 @@ export default function ClientManagement() {
         }
     ];
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        const formData = new FormData(e.target as HTMLFormElement);
-        const data = {
-            clientId: formData.get("clientId") as string,
-            region: formData.get("region") as string,
-            status: formData.get("status") as any || "active"
-        };
-        mutation.mutate(data);
-    };
-
     return (
         <StandardPage
             title="Client Management"
@@ -97,29 +125,40 @@ export default function ClientManagement() {
                         <SheetHeader>
                             <SheetTitle>{editingClient ? 'Edit' : 'Add'} Client</SheetTitle>
                         </SheetHeader>
-                        <form onSubmit={handleSubmit} className="space-y-4 mt-6">
-                            <div className="space-y-2">
-                                <Label htmlFor="clientId">Client Name / ID</Label>
-                                <Input id="clientId" name="clientId" defaultValue={editingClient?.clientId} required />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="region">Region</Label>
-                                <Input id="region" name="region" defaultValue={editingClient?.region} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="status">Status</Label>
-                                <Select name="status" defaultValue={editingClient?.status || "active"}>
-                                    <SelectTrigger><SelectValue /></SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="active">Active</SelectItem>
-                                        <SelectItem value="inactive">Inactive</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <Button type="submit" className="w-full" disabled={mutation.isPending}>
-                                {mutation.isPending ? "Saving..." : "Save Client"}
-                            </Button>
-                        </form>
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-6">
+                                <FormField control={form.control} name="clientId" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Client Name / ID</FormLabel>
+                                        <FormControl><Input {...field} required /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                                <FormField control={form.control} name="region" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Region</FormLabel>
+                                        <FormControl><Input {...field} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                                <FormField control={form.control} name="status" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Status</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                                            <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="active">Active</SelectItem>
+                                                <SelectItem value="inactive">Inactive</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                                <Button type="submit" className="w-full" disabled={mutation.isPending}>
+                                    {mutation.isPending ? "Saving..." : "Save Client"}
+                                </Button>
+                            </form>
+                        </Form>
                     </SheetContent>
                 </Sheet>
             }

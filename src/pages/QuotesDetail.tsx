@@ -11,8 +11,10 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTr
 import { QuoteForm } from "@/components/forms/QuoteForm";
 import type { Quote } from "@/types/erp-types";
 import { Plus, CheckCircle2, Clock, Calendar, DollarSign, FileText, ArrowRight } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function QuotesDetail() {
+    const { toast } = useToast();
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
 
@@ -256,14 +258,14 @@ export default function QuotesDetail() {
                                                     if (res.ok) {
                                                         // Update local state or refetch
                                                         // Simple alert for now or toast
-                                                        alert(data.message);
+                                                        toast({ description: data.message });
                                                         setSelectedQuote(null); // Close to refresh
                                                         // In real app, invalidate query
                                                     } else {
-                                                        alert("Error: " + data.error);
+                                                        toast({ title: "Error", description: data.error, variant: "destructive" });
                                                     }
                                                 } catch (e) {
-                                                    alert("Failed to submit quote");
+                                                    toast({ title: "Error", description: "Failed to submit quote", variant: "destructive" });
                                                 }
                                             }}
                                         >

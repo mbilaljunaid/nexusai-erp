@@ -6,6 +6,7 @@ import { ArrowRight, CheckCircle, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Header, Footer } from "@/components/Navigation";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { useToast } from "@/hooks/use-toast";
 
 
 interface IndustryDemoPageProps {
@@ -13,6 +14,7 @@ interface IndustryDemoPageProps {
 }
 
 export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
+  const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -24,7 +26,7 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
 
   const handleRequestDemo = async () => {
     if (!email) {
-      alert("Please enter your email");
+      toast({ variant: 'destructive', description: "Please enter your email" });
       return;
     }
 
@@ -57,7 +59,7 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
       }
     } catch (e) {
       console.error(e);
-      alert("Failed to request demo");
+      toast({ variant: 'destructive', description: "Failed to request demo" });
     } finally {
       setLoading(false);
     }
@@ -74,7 +76,7 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
             <Badge className="mb-4 bg-blue-600/20 text-blue-300 border-blue-500/50">
               {industry.toUpperCase()} DEMO
             </Badge>
-            
+
             <p className="text-xl text-slate-300 mb-8">
               Explore a fully configured demo environment with pre-populated {industry.toLowerCase()} data
             </p>

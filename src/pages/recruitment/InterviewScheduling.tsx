@@ -8,6 +8,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { Calendar, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Input } from "@/components/ui/input";
+
 
 
 export default function InterviewScheduling() {
@@ -56,7 +58,7 @@ export default function InterviewScheduling() {
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="text-sm font-medium">Date</label>
-                            <input type="date" className="w-full border rounded-md p-2" />
+                            <Input type="date" className="w-full border rounded-md p-2" />
                         </div>
                         <div>
                             <label className="text-sm font-medium">Time</label>

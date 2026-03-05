@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { CheckCircle, Clock, AlertTriangle, XCircle, FileText, ChevronUp, ChevronDown } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface Certification {
     id: string;
@@ -84,7 +85,22 @@ export default function AccountCertPortal() {
         { id: "sub_balance", header: "Sub Balance", width: "120px", cell: (row) => row.balance_per_sub.toLocaleString('en-US', { minimumFractionDigits: 2 }) },
         { id: "preparer", header: "Preparer", width: "150px", cell: (row) => <div className="email-cell">{row.preparer_email}</div> },
         { id: "reviewer", header: "Reviewer", width: "150px", cell: (row) => <div className="email-cell">{row.reviewer_email}</div> },
-        { id: "actions", header: "Actions", width: "120px", cell: (row) => <div className="actions-cell">{row.status === 'In-Review' && <button className="btn-certify" onClick={() => certifyMutation.mutate(row.id)} disabled={certifyMutation.isPending} aria-label={`Certify account ${row.account_id}`}>Certify</button>}{row.escalation_reason && <span className="escalation-tooltip" title={row.escalation_reason}><AlertTriangle size={14} color="#dc2626" /></span>}</div> }
+        {
+            id: "actions", header: "Actions", width: "120px", cell: (row) => <div className="actions-cell">{row.status === 'In-Review' && <button className="btn-certify" onClick={() => certifyMutation.mutate(row.id)} disabled={certifyMutation.isPending} aria-label={`Certify account ${row.account_id}`}>Certify</button>}{row.escalation_reason && (
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <span className="escalation-tooltip">
+                                <AlertTriangle size={14} color="#dc2626" />
+                            </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>{row.escalation_reason}</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            )}</div>
+        }
     ];
 
     return (

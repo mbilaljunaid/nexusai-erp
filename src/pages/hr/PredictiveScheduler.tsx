@@ -3,6 +3,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Calendar, Zap, Send, BarChart2, Users } from 'lucide-react';
 import { useEnterpriseStore } from '@/lib/enterpriseStore';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
 interface Shift {
     id: string;
     employee_id: string;
@@ -97,7 +100,7 @@ export default function PredictiveScheduler() {
                     </div>
                     <div className="ps-wk">
                         <label className="ll">Week Of</label>
-                        <input className="li" type="date" value={weekStart} onChange={e => setWeekStart(e.target.value)} aria-label="Week start date" />
+                        <Input className="li" type="date" value={weekStart} onChange={e => setWeekStart(e.target.value)} aria-label="Week start date" />
                     </div>
                     <button className="pub-btn" disabled={publishMutation.isPending || shifts.length === 0}
                         onClick={() => publishMutation.mutate()} aria-label="Publish schedule">
@@ -110,7 +113,7 @@ export default function PredictiveScheduler() {
             <div className="tab-bar">
                 {(['schedule', 'forecast', 'generate'] as const).map(t => (
                     <button key={t} className={`tab-btn ${activeTab === t ? 'active' : ''}`}
-                        onClick={() => setActiveTab(t)} aria-pressed={activeTab === t ? 'true' : 'false'}>
+                        onClick={() => setActiveTab(t)} aria-pressed={activeTab === t}>
                         {t === 'schedule' && <Calendar size={12} />}
                         {t === 'forecast' && <BarChart2 size={12} />}
                         {t === 'generate' && <Zap size={12} />}
@@ -152,7 +155,7 @@ export default function PredictiveScheduler() {
             {activeTab === 'forecast' && (
                 <div className="forecast-panel">
                     <div className="fc-ctrl">
-                        <div className="pf"><label className="pl">Date</label><input className="pi" type="date" value={coverageDate} onChange={e => setCoverageDate(e.target.value)} aria-label="Date for coverage" /></div>
+                        <div className="pf"><label className="pl">Date</label><Input className="pi" type="date" value={coverageDate} onChange={e => setCoverageDate(e.target.value)} aria-label="Date for coverage" /></div>
                         <button className="run-fc-btn" disabled={forecastMutation.isPending}
                             onClick={() => forecastMutation.mutate({ locationId: location, startDate: coverageDate, endDate: coverageDate })} aria-label="Run forecast">
                             {forecastMutation.isPending ? 'Forecasting…' : 'Run Forecast'}
@@ -176,7 +179,16 @@ export default function PredictiveScheduler() {
                                             <div key={h} className="bar-col">
                                                 <div className="bar-wrap">
                                                     {/* eslint-disable-next-line */}
-                                                    <div className="bar" style={{ height: `${(req / maxDemand) * 80}px`, background: isGap ? '#fca5a5' : '#93c5fd' }} title={`${h}:00 — ${req} needed`} />
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <div className="bar" style={{ height: `${(req / maxDemand) * 80}px`, background: isGap ? '#fca5a5' : '#93c5fd' }} />
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>{`${h}:00 — ${req} needed`}</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
                                                 </div>
                                                 <div className="bar-h">{h % 4 === 0 ? `${h}h` : ''}</div>
                                             </div>
@@ -195,7 +207,7 @@ export default function PredictiveScheduler() {
                 <div className="gen-panel">
                     <h3 className="gp-title">Generate Schedule from Demand Forecast</h3>
                     <div className="gp-grid">
-                        <div className="gf"><label className="gl">Week Start</label><input className="gi" type="date" value={genParams.weekStartDate || weekStart} onChange={e => setGenParams(p => ({ ...p, weekStartDate: e.target.value }))} aria-label="Schedule week start" /></div>
+                        <div className="gf"><label className="gl">Week Start</label><Input className="gi" type="date" value={genParams.weekStartDate || weekStart} onChange={e => setGenParams(p => ({ ...p, weekStartDate: e.target.value }))} aria-label="Schedule week start" /></div>
                         <div className="gf"><label className="gl">Employee IDs (comma-sep)</label><input className="gi" value={genParams.employeeIds} onChange={e => setGenParams(p => ({ ...p, employeeIds: e.target.value }))} aria-label="Employee IDs" /></div>
                         <div className="gf"><label className="gl">Max Hours / Employee</label><input className="gi" type="number" value={genParams.maxHoursPerEmployee} onChange={e => setGenParams(p => ({ ...p, maxHoursPerEmployee: parseInt(e.target.value) || 40 }))} aria-label="Max hours per employee" /></div>
                         <div className="gf"><label className="gl">Shift Hours</label><input className="gi" type="number" value={genParams.shiftHours} onChange={e => setGenParams(p => ({ ...p, shiftHours: parseInt(e.target.value) || 8 }))} aria-label="Hours per shift" /></div>

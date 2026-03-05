@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Lock, Shield, Plus, Trash2 } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { useToast } from "@/hooks/use-toast";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 interface IPEntry {
   ip: string;
@@ -10,12 +12,14 @@ interface IPEntry {
 }
 
 export default function SecurityAdminPanel() {
+  const { toast } = useToast();
   const [whitelist, setWhitelist] = useState<IPEntry[]>([]);
   const [blacklist, setBlacklist] = useState<IPEntry[]>([]);
   const [newIP, setNewIP] = useState('');
   const [reason, setReason] = useState('');
   const [activeTab, setActiveTab] = useState<'whitelist' | 'blacklist'>('whitelist');
   const [loading, setLoading] = useState(false);
+  const [showBlacklistConfirm, setShowBlacklistConfirm] = useState(false);
 
   // Fetch IP lists on mount
   useEffect(() => {
@@ -56,7 +60,7 @@ export default function SecurityAdminPanel() {
 
   const addToWhitelist = async () => {
     if (!validateIP(newIP)) {
-      alert('Invalid IP address format');
+      toast({ variant: 'destructive', description: 'Invalid IP address format' });
       return;
     }
 
@@ -81,11 +85,11 @@ export default function SecurityAdminPanel() {
         setNewIP('');
         setReason('');
       } else {
-        alert('Failed to add IP to whitelist');
+        toast({ variant: 'destructive', description: 'Failed to add IP to whitelist' });
       }
     } catch (error) {
       console.error('Error adding to whitelist:', error);
-      alert('Failed to add IP to whitelist');
+      toast({ variant: 'destructive', description: 'Failed to add IP to whitelist' });
     } finally {
       setLoading(false);
     }
@@ -93,13 +97,15 @@ export default function SecurityAdminPanel() {
 
   const addToBlacklist = async () => {
     if (!validateIP(newIP)) {
-      alert('Invalid IP address format');
+      toast({ variant: 'destructive', description: 'Invalid IP address format' });
       return;
     }
 
-    if (!confirm(`Are you sure you want to blacklist ${newIP}? This will block all access from this IP.`)) {
-      return;
-    }
+    setShowBlacklistConfirm(true);
+  };
+
+  const performAddToBlacklist = async () => {
+    setShowBlacklistConfirm(false);
 
     setLoading(true);
     try {
@@ -122,11 +128,11 @@ export default function SecurityAdminPanel() {
         setNewIP('');
         setReason('');
       } else {
-        alert('Failed to add IP to blacklist');
+        toast({ variant: 'destructive', description: 'Failed to add IP to blacklist' });
       }
     } catch (error) {
       console.error('Error adding to blacklist:', error);
-      alert('Failed to add IP to blacklist');
+      toast({ variant: 'destructive', description: 'Failed to add IP to blacklist' });
     } finally {
       setLoading(false);
     }
@@ -147,11 +153,11 @@ export default function SecurityAdminPanel() {
           setBlacklist(blacklist.filter(entry => entry.ip !== ip));
         }
       } else {
-        alert(`Failed to remove IP from ${listType}`);
+        toast({ variant: 'destructive', description: `Failed to remove IP from ${listType}` });
       }
     } catch (error) {
       console.error(`Error removing from ${listType}:`, error);
-      alert(`Failed to remove IP from ${listType}`);
+      toast({ variant: 'destructive', description: `Failed to remove IP from ${listType}` });
     }
   };
 
@@ -285,6 +291,23 @@ export default function SecurityAdminPanel() {
           )}
         </div>
       </div>
+
+      <AlertDialog open={showBlacklistConfirm} onOpenChange={setShowBlacklistConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Blacklist IP Address</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to blacklist {newIP}? This will block all access from this IP.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={performAddToBlacklist} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Blacklist
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </StandardPage>
   );
 }

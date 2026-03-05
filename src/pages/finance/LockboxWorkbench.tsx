@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { UploadCloud, CheckCircle2, AlertCircle, Search, Link2, X } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Input } from "@/components/ui/input";
+
 
 interface LockboxBatch {
     id: string;
@@ -180,7 +182,7 @@ export default function LockboxWorkbench() {
                         <textarea className="csv-paste" value={csvContent} onChange={e => setCsvContent(e.target.value)} placeholder="check001,INV-5042,ACME Corp,12345,15000,2026-01-15" rows={4} aria-label="CSV lockbox content" />
                         <div className="date-row">
                             <label className="dl">Batch Date</label>
-                            <input className="di" type="date" value={batchDate} onChange={e => setBatchDate(e.target.value)} aria-label="Batch date" />
+                            <Input className="di" type="date" value={batchDate} onChange={e => setBatchDate(e.target.value)} aria-label="Batch date" />
                         </div>
                         <button className="import-btn" disabled={!csvContent || importMutation.isPending}
                             onClick={() => {

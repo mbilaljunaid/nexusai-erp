@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Award, Download, Calendar, FileCheck } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
-
+import { downloadFile } from "@/lib/utils";
 
 interface Certificate {
     id: string;
@@ -24,11 +24,7 @@ export default function CertificateManager() {
         mutationFn: async (certificateId: string) => {
             const res = await fetch(`/api/learning/certificates/${certificateId}/pdf`);
             const blob = await res.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `certificate-${certificateId}.pdf`;
-            a.click();
+            downloadFile(blob, `certificate-${certificateId}.pdf`);
         },
     });
 
@@ -40,7 +36,7 @@ export default function CertificateManager() {
         <StandardPage title="My Certificates">
             {/* Header */}
             <div>
-                
+
                 <p className="text-muted-foreground">
                     View and download your compliance certificates
                 </p>

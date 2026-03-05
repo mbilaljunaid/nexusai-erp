@@ -13,6 +13,7 @@ import { Plus, Play, CheckCircle, Download, Loader2, FileText, Building2 } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { useLocation } from "wouter";
+import { downloadFile } from "@/lib/utils";
 
 function useActiveBu() {
     return useMemo(() => ({
@@ -93,11 +94,7 @@ export default function APPaymentBatches() {
         try {
             const response = await fetch(`/api/ap/payment-batches/${batchId}/iso20022`);
             const blob = await response.blob();
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `ISO20022_BCH_${batchId}.xml`;
-            a.click();
+            downloadFile(blob, `ISO20022_BCH_${batchId}.xml`);
             toast({ title: "ISO20022 file downloaded" });
         } catch (error) {
             toast({ title: "Download failed", variant: "destructive" });
@@ -307,7 +304,7 @@ export default function APPaymentBatches() {
                             columns={columns}
                             isLoading={isLoading}
                             onRowClick={(item) => setLocation(`/finance/ap/payments/${item.id}`)}
-                         onChange={() => {}} containerHeight="600px" />
+                            onChange={() => { }} containerHeight="600px" />
                     </CardContent>
                 </Card>
             </div>

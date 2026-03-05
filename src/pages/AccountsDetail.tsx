@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useForm } from "react-hook-form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 const insertAccountSchema = z.object({ name: z.string().min(1), industry: z.string().optional(), website: z.string().optional(), phone: z.string().optional(), type: z.string().optional(), description: z.string().optional() });
@@ -78,39 +79,59 @@ function AccountEntryForm({ onSuccess }: { onSuccess?: () => void }) {
 
     return (
         <div className="space-y-6 pt-4">
+            <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid grid-cols-1 gap-4">
                     {/* Core Info */}
-                    <div className="space-y-2">
-                        <Label htmlFor="name">Account Name *</Label>
-                        <Input id="name" {...form.register("name")} placeholder="Acme Corp" />
-                    </div>
+                    <FormField control={form.control} name="name" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Account Name *</FormLabel>
+                            <FormControl><Input placeholder="Acme Corp" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                    
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="phone">Phone</Label>
-                            <Input id="phone" {...form.register("phone")} placeholder="+1 555..." />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="website">Website</Label>
-                            <Input id="website" {...form.register("website")} placeholder="https://..." />
-                        </div>
+                        <FormField control={form.control} name="phone" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Phone</FormLabel>
+                                <FormControl><Input placeholder="+1 555..." {...field} value={field.value || ""} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField control={form.control} name="website" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Website</FormLabel>
+                                <FormControl><Input placeholder="https://..." {...field} value={field.value || ""} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="type">Type</Label>
-                            <Input id="type" {...form.register("type")} placeholder="Customer, Partner..." />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="industry">Industry</Label>
-                            <Input id="industry" {...form.register("industry")} placeholder="Tech, Retail..." />
-                        </div>
+                        <FormField control={form.control} name="type" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Type</FormLabel>
+                                <FormControl><Input placeholder="Customer, Partner..." {...field} value={field.value || ""} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField control={form.control} name="industry" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Industry</FormLabel>
+                                <FormControl><Input placeholder="Tech, Retail..." {...field} value={field.value || ""} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
                     </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="description">Description</Label>
-                        <Textarea id="description" {...form.register("description")} placeholder="Account details..." />
-                    </div>
+                    <FormField control={form.control} name="description" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Description</FormLabel>
+                            <FormControl><Textarea placeholder="Account details..." {...field} value={field.value || ""} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
                 </div>
 
                 <Button type="submit" disabled={createMutation.isPending} className="w-full">
@@ -118,6 +139,7 @@ function AccountEntryForm({ onSuccess }: { onSuccess?: () => void }) {
                     Create Account
                 </Button>
             </form>
+        </Form>
         </div>
     );
 }

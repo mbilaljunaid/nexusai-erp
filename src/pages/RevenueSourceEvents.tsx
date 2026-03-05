@@ -5,6 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -25,6 +29,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface SourceEvent {
     id: string;
@@ -41,11 +46,35 @@ interface SourceEvent {
     createdAt: string;
 }
 
+
+const eventSchema = z.object({
+    sourceSystem: z.string().min(1, "Source System is required"),
+    sourceId: z.string().min(1, "Source ID is required"),
+    eventType: z.string().min(1, "Event Type is required"),
+    eventDate: z.string().min(1, "Event Date is required"),
+    amount: z.coerce.number().min(0, "Amount must be positive"),
+    currency: z.string().min(1, "Currency is required"),
+    itemId: z.string().optional()
+});
+
 export default function RevenueSourceEvents() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
     const [filterStatus, setFilterStatus] = useState<string>("all");
+
+    const form = useForm<z.infer<typeof eventSchema>>({
+        resolver: zodResolver(eventSchema),
+        defaultValues: {
+            sourceSystem: "API",
+            sourceId: "",
+            eventType: "Booking",
+            eventDate: format(new Date(), "yyyy-MM-dd"),
+            amount: 0,
+            currency: "USD",
+            itemId: ""
+        }
+    });
 
     // Fetch source events
     const { data: events = [], isLoading } = useQuery<SourceEvent[]>({
@@ -109,18 +138,13 @@ export default function RevenueSourceEvents() {
         }
     });
 
-    const handleCreateEvent = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
+    const onSubmit = (data: z.infer<typeof eventSchema>) => {
         createEventMutation.mutate({
-            sourceSystem: formData.get("sourceSystem"),
-            sourceId: formData.get("sourceId"),
-            eventType: formData.get("eventType"),
-            itemId: formData.get("itemId") || null,
-            amount: formData.get("amount"),
-            currency: formData.get("currency"),
-            eventDate: formData.get("eventDate")
+            ...data,
+            itemId: data.itemId || null,
+            amount: data.amount.toString()
         });
+
     };
 
     const filteredEvents = events.filter(event =>
@@ -219,6 +243,7 @@ export default function RevenueSourceEvents() {
                                 className="border rounded-md px-3 py-1.5 text-sm"
                                 value={filterStatus}
                                 onChange={(e) => setFilterStatus(e.target.value)}
+                                aria-label="Filter events by status"
                             >
                                 <option value="all">All Statuses</option>
                                 <option value="Pending">Pending</option>
@@ -312,9 +337,18 @@ export default function RevenueSourceEvents() {
                                                     </TableCell>
                                                     <TableCell>
                                                         {event.processingStatus === "Error" && (
-                                                            <Button variant="ghost" size="sm" title={event.errorMessage || "View error"}>
-                                                                <AlertCircle className="h-4 w-4 text-red-500" />
-                                                            </Button>
+                                                            <TooltipProvider>
+                                                                <Tooltip>
+                                                                    <TooltipTrigger asChild>
+                                                                        <Button variant="ghost" size="sm">
+                                                                            <AlertCircle className="h-4 w-4 text-red-500" />
+                                                                        </Button>
+                                                                    </TooltipTrigger>
+                                                                    <TooltipContent>
+                                                                        <p>{event.errorMessage || "View error"}</p>
+                                                                    </TooltipContent>
+                                                                </Tooltip>
+                                                            </TooltipProvider>
                                                         )}
                                                     </TableCell>
                                                 </TableRow>
@@ -361,110 +395,107 @@ export default function RevenueSourceEvents() {
                             Manually create a revenue source event for processing
                         </DialogDescription>
                     </DialogHeader>
-                    <form onSubmit={handleCreateEvent}>
-                        <div className="grid grid-cols-2 gap-4 py-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="sourceSystem">Source System *</Label>
-                                <Select name="sourceSystem" defaultValue="API" required>
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="API">API / Manual</SelectItem>
-                                        <SelectItem value="OrderManagement">Order Management</SelectItem>
-                                        <SelectItem value="Billing">Billing System</SelectItem>
-                                        <SelectItem value="Usage">Usage Tracking</SelectItem>
-                                        <SelectItem value="Subscription">Subscription Platform</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)}>
+                            <div className="grid grid-cols-2 gap-4 py-4">
+                                <FormField control={form.control} name="sourceSystem" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Source System *</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger><SelectValue /></SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="API">API / Manual</SelectItem>
+                                                <SelectItem value="OrderManagement">Order Management</SelectItem>
+                                                <SelectItem value="Billing">Billing System</SelectItem>
+                                                <SelectItem value="Usage">Usage Tracking</SelectItem>
+                                                <SelectItem value="Subscription">Subscription Platform</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
 
-                            <div className="space-y-2">
-                                <Label htmlFor="sourceId">Source ID *</Label>
-                                <Input
-                                    id="sourceId"
-                                    name="sourceId"
-                                    placeholder="e.g., SO-12345"
-                                    required
-                                />
-                            </div>
+                                <FormField control={form.control} name="sourceId" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Source ID *</FormLabel>
+                                        <FormControl><Input placeholder="e.g., SO-12345" {...field} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
 
-                            <div className="space-y-2">
-                                <Label htmlFor="eventType">Event Type *</Label>
-                                <Select name="eventType" defaultValue="Booking" required>
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="Booking">Booking</SelectItem>
-                                        <SelectItem value="Shipment">Shipment</SelectItem>
-                                        <SelectItem value="Consumption">Consumption</SelectItem>
-                                        <SelectItem value="Invoice">Invoice</SelectItem>
-                                        <SelectItem value="Usage">Usage</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                                <FormField control={form.control} name="eventType" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Event Type *</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger><SelectValue /></SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="Booking">Booking</SelectItem>
+                                                <SelectItem value="Shipment">Shipment</SelectItem>
+                                                <SelectItem value="Consumption">Consumption</SelectItem>
+                                                <SelectItem value="Invoice">Invoice</SelectItem>
+                                                <SelectItem value="Usage">Usage</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
 
-                            <div className="space-y-2">
-                                <Label htmlFor="eventDate">Event Date *</Label>
-                                <Input
-                                    id="eventDate"
-                                    name="eventDate"
-                                    type="date"
-                                    defaultValue={format(new Date(), "yyyy-MM-dd")}
-                                    required
-                                />
-                            </div>
+                                <FormField control={form.control} name="eventDate" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Event Date *</FormLabel>
+                                        <FormControl><Input type="date" {...field} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
 
-                            <div className="space-y-2">
-                                <Label htmlFor="amount">Amount *</Label>
-                                <Input
-                                    id="amount"
-                                    name="amount"
-                                    type="number"
-                                    step="0.01"
-                                    placeholder="0.00"
-                                    required
-                                />
-                            </div>
+                                <FormField control={form.control} name="amount" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Amount *</FormLabel>
+                                        <FormControl><Input type="number" step="0.01" placeholder="0.00" {...field} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
 
-                            <div className="space-y-2">
-                                <Label htmlFor="currency">Currency *</Label>
-                                <Select name="currency" defaultValue="USD" required>
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="USD">USD</SelectItem>
-                                        <SelectItem value="EUR">EUR</SelectItem>
-                                        <SelectItem value="GBP">GBP</SelectItem>
-                                        <SelectItem value="JPY">JPY</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                                <FormField control={form.control} name="currency" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Currency *</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger><SelectValue /></SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="USD">USD</SelectItem>
+                                                <SelectItem value="EUR">EUR</SelectItem>
+                                                <SelectItem value="GBP">GBP</SelectItem>
+                                                <SelectItem value="JPY">JPY</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
 
-                            <div className="space-y-2 col-span-2">
-                                <Label htmlFor="itemId">Item ID (Optional)</Label>
-                                <Input
-                                    id="itemId"
-                                    name="itemId"
-                                    placeholder="e.g., PROD-001"
-                                />
+                                <FormField control={form.control} name="itemId" render={({ field }) => (
+                                    <FormItem className="col-span-2">
+                                        <FormLabel>Item ID (Optional)</FormLabel>
+                                        <FormControl><Input placeholder="e.g., PROD-001" {...field} value={field.value || ""} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
                             </div>
-                        </div>
-                        <DialogFooter>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setIsCreateDialogOpen(false)}
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" disabled={createEventMutation.isPending}>
-                                {createEventMutation.isPending ? "Creating..." : "Create Event"}
-                            </Button>
-                        </DialogFooter>
-                    </form>
+                            <DialogFooter>
+                                <Button type="button" variant="outline" onClick={() => { setIsCreateDialogOpen(false); form.reset(); }}>
+                                    Cancel
+                                </Button>
+                                <Button type="submit" disabled={createEventMutation.isPending}>
+                                    {createEventMutation.isPending ? "Creating..." : "Create Event"}
+                                </Button>
+                            </DialogFooter>
+                        </form>
+                    </Form>
                 </DialogContent>
             </Dialog>
         </StandardPage>

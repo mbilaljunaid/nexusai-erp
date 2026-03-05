@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { ContextualSearch } from "@/components/ContextualSearch";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 
 export default function CarrierManager() {
@@ -159,8 +160,18 @@ export default function CarrierManager() {
                     </CardHeader>
                     <CardContent>
                         <div className="h-48 flex items-end justify-between px-4 pb-2 border-b border-l">
+                            {/* eslint-disable-next-line */}
                             {[45, 60, 55, 75, 80, 70, 90].map((h, i) => (
-                                <div key={i} className={`w-8 bg-emerald-500/20 hover:bg-emerald-500 transition-all rounded-t-sm cursor-help h-[${h}%]`} title={`Month ${i + 1}: $${h * 10}`}></div>
+                                <TooltipProvider key={i}>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <div className={`w-8 bg-emerald-500/20 hover:bg-emerald-500 transition-all rounded-t-sm cursor-help h-[${h}%]`}></div>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>{`Month ${i + 1}: $${h * 10}`}</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
                             ))}
                         </div>
                         <div className="flex justify-between mt-2 text-[10px] text-muted-foreground uppercase tracking-widest px-2">

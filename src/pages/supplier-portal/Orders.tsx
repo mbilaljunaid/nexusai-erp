@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Loader2, CheckCircle, Package, Search, Download, Filter, ArrowUpDown, ArrowUp, ArrowDown, Calendar as CalendarIcon, X } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { POAcknowledgeModal } from "@/components/supplier-portal/POAcknowledgeModal";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { apiRequest } from "@/lib/queryClient";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -36,6 +37,8 @@ export default function SupplierOrders() {
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
     const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({ from: undefined, to: undefined });
     const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set());
+    const [invoicePo, setInvoicePo] = useState<any>(null);
+    const [showBulkAckConfirm, setShowBulkAckConfirm] = useState(false);
 
     // Fetch Orders
     const { data: orders, isLoading } = useQuery<any>({
@@ -118,9 +121,7 @@ export default function SupplierOrders() {
     });
 
     const handleCreateInvoice = (po: any) => {
-        if (confirm(`Create invoice for PO ${po.poNumber}?`)) {
-            createInvoiceMutation.mutate(po);
-        }
+        setInvoicePo(po);
     };
 
     // Filter and sort orders
@@ -198,11 +199,7 @@ export default function SupplierOrders() {
             return;
         }
 
-        if (confirm(`Acknowledge ${selectedOrders.size} selected orders?`)) {
-            // Here you would call the bulk acknowledge API
-            toast({ title: "Bulk Acknowledge", description: `${selectedOrders.size} orders acknowledged` });
-            setSelectedOrders(new Set());
-        }
+        setShowBulkAckConfirm(true);
     };
 
     if (isLoading) {
@@ -440,6 +437,49 @@ export default function SupplierOrders() {
                 isLoading={acknowledgeMutation.isPending}
                 poNumber={selectedPo?.poNumber}
             />
+
+            <AlertDialog open={!!invoicePo} onOpenChange={(open) => !open && setInvoicePo(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Create Invoice</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Create invoice for PO {invoicePo?.poNumber}?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => {
+                            if (invoicePo) {
+                                createInvoiceMutation.mutate(invoicePo);
+                                setInvoicePo(null);
+                            }
+                        }}>
+                            Create
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            <AlertDialog open={showBulkAckConfirm} onOpenChange={setShowBulkAckConfirm}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Bulk Acknowledge</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Acknowledge {selectedOrders.size} selected orders?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => {
+                            toast({ title: "Bulk Acknowledge", description: `${selectedOrders.size} orders acknowledged` });
+                            setSelectedOrders(new Set());
+                            setShowBulkAckConfirm(false);
+                        }}>
+                            Confirm
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </StandardPage>
     );
 }

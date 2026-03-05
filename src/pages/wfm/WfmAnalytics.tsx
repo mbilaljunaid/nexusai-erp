@@ -6,6 +6,8 @@ import { startOfMonth, endOfMonth, format } from "date-fns";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from "recharts";
 import { DollarSign, Clock, AlertTriangle, Users } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Input } from "@/components/ui/input";
+
 
 
 const MOCK_TENANT_ID = "test-tenant-wfm-001";
@@ -34,9 +36,9 @@ export default function WfmAnalytics() {
                 </div>
                 <div className="flex gap-2">
                     {/* Basic Date Picker mockup */}
-                    <input type="date" value={dateRange.start} onChange={e => setDateRange({ ...dateRange, start: e.target.value })} className="border p-2 rounded" />
+                    <Input type="date" value={dateRange.start} onChange={e => setDateRange({ ...dateRange, start: e.target.value })} className="border p-2 rounded" />
                     <span className="self-center">-</span>
-                    <input type="date" value={dateRange.end} onChange={e => setDateRange({ ...dateRange, end: e.target.value })} className="border p-2 rounded" />
+                    <Input type="date" value={dateRange.end} onChange={e => setDateRange({ ...dateRange, end: e.target.value })} className="border p-2 rounded" />
                 </div>
             </div>
 

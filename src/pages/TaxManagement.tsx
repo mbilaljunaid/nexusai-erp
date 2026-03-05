@@ -20,6 +20,7 @@ import { TaxCodeModal } from "@/components/tax/TaxCodeModal";
 import { TaxCalculationPreview } from "@/components/tax/TaxCalculationPreview";
 import { JurisdictionModal } from "@/components/tax/JurisdictionModal";
 import { ExemptionModal } from "@/components/tax/ExemptionModal";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 export default function TaxManagement() {
   const { toast } = useToast();
@@ -91,6 +92,7 @@ function TaxCodesTab({ legalEntityId }: { legalEntityId: string | null }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('ALL');
   const [filterStatus, setFilterStatus] = useState('ALL');
+  const [deleteTaxCodeId, setDeleteTaxCodeId] = useState<string | null>(null);
 
   const { data: codes = [], isLoading } = useQuery<any>({
     queryKey: ['/api/tax/codes', legalEntityId ?? 'all'],
@@ -158,7 +160,7 @@ function TaxCodesTab({ legalEntityId }: { legalEntityId: string | null }) {
         <div className="flex justify-end gap-2 w-full">
           <Button variant="ghost" size="sm" onClick={() => setModalState({ isOpen: true, mode: 'view', taxCode: row })}><Eye className="h-4 w-4" /></Button>
           <Button variant="ghost" size="sm" onClick={() => setModalState({ isOpen: true, mode: 'edit', taxCode: row })}><Edit className="h-4 w-4" /></Button>
-          <Button variant="ghost" size="sm" disabled={!row.isActive} onClick={() => { if (confirm('Mark this tax code as inactive?')) { deleteMutation.mutate(row.id); } }}><Trash2 className="h-4 w-4" /></Button>
+          <Button variant="ghost" size="sm" disabled={!row.isActive} onClick={() => setDeleteTaxCodeId(row.id)}><Trash2 className="h-4 w-4" /></Button>
         </div>
       )
     }
@@ -234,6 +236,27 @@ function TaxCodesTab({ legalEntityId }: { legalEntityId: string | null }) {
         taxCode={modalState.taxCode}
         mode={modalState.mode}
       />
+
+      <AlertDialog open={!!deleteTaxCodeId} onOpenChange={(open) => !open && setDeleteTaxCodeId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Make Tax Code Inactive</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to mark this tax code as inactive?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (deleteTaxCodeId) deleteMutation.mutate(deleteTaxCodeId);
+              }}
+            >
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
@@ -248,6 +271,7 @@ function TaxJurisdictionsTab({ legalEntityId }: { legalEntityId: string | null }
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('ALL');
+  const [deleteJurisdictionId, setDeleteJurisdictionId] = useState<string | null>(null);
 
   const { data: jurisdictions = [], isLoading } = useQuery<any>({
     queryKey: ['/api/tax/jurisdictions', legalEntityId ?? 'all'],
@@ -303,7 +327,7 @@ function TaxJurisdictionsTab({ legalEntityId }: { legalEntityId: string | null }
         <div className="flex justify-end gap-2 w-full">
           <Button variant="ghost" size="sm" onClick={() => setModalState({ isOpen: true, mode: 'view', jurisdiction: row })}><Eye className="h-4 w-4" /></Button>
           <Button variant="ghost" size="sm" onClick={() => setModalState({ isOpen: true, mode: 'edit', jurisdiction: row })}><Edit className="h-4 w-4" /></Button>
-          <Button variant="ghost" size="sm" onClick={() => { if (confirm('Delete this jurisdiction? This cannot be undone.')) { deleteMutation.mutate(row.id); } }}><Trash2 className="h-4 w-4" /></Button>
+          <Button variant="ghost" size="sm" onClick={() => setDeleteJurisdictionId(row.id)}><Trash2 className="h-4 w-4" /></Button>
         </div>
       )
     }
@@ -370,6 +394,28 @@ function TaxJurisdictionsTab({ legalEntityId }: { legalEntityId: string | null }
         jurisdiction={modalState.jurisdiction}
         mode={modalState.mode}
       />
+
+      <AlertDialog open={!!deleteJurisdictionId} onOpenChange={(open) => !open && setDeleteJurisdictionId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Jurisdiction</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this jurisdiction? This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (deleteJurisdictionId) deleteMutation.mutate(deleteJurisdictionId);
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

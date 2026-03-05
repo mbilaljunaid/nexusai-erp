@@ -21,6 +21,10 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
@@ -44,6 +48,17 @@ interface WorkCenter {
     name: string;
 }
 
+
+const opSchema = z.object({
+    code: z.string().min(1, "Op Code is required"),
+    name: z.string().min(1, "Operation Name is required"),
+    description: z.string().optional(),
+    defaultSetupTime: z.string().optional(),
+    defaultRunTime: z.string().optional(),
+    defaultWorkCenterId: z.string().optional(),
+    status: z.string().default("active")
+});
+
 export default function StandardOpLibrary() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
@@ -51,16 +66,18 @@ export default function StandardOpLibrary() {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
 
-    // Form State
-    const [formData, setFormData] = useState({
-        code: "",
-        name: "",
-        description: "",
-        defaultSetupTime: "0",
-        defaultRunTime: "0",
-        defaultWorkCenterId: "",
-        status: "active"
+
+    const form = useForm<z.infer<typeof opSchema>>({
+        resolver: zodResolver(opSchema),
+        defaultValues: {
+            code: "", name: "", description: "",
+            defaultSetupTime: "0", defaultRunTime: "0",
+            defaultWorkCenterId: "", status: "active"
+        }
     });
+
+    // We no longer need formData state
+
 
     const { data: operations = [], isLoading } = useQuery<StandardOp[]>({
         queryKey: ["/api/manufacturing/standard-operations"],
@@ -83,11 +100,7 @@ export default function StandardOpLibrary() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/manufacturing/standard-operations"] });
             setIsSheetOpen(false);
-            setFormData({
-                code: "", name: "", description: "",
-                defaultSetupTime: "0", defaultRunTime: "0",
-                defaultWorkCenterId: "", status: "active"
-            });
+            form.reset();
             toast({ title: "Success", description: "Standard Operation created." });
         },
         onError: (error: Error) => {
@@ -139,12 +152,11 @@ export default function StandardOpLibrary() {
         }
     ];
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const onSubmit = (data: z.infer<typeof opSchema>) => {
         createMutation.mutate({
-            ...formData,
-            defaultSetupTime: parseFloat(formData.defaultSetupTime),
-            defaultRunTime: parseFloat(formData.defaultRunTime)
+            ...data,
+            defaultSetupTime: parseFloat(data.defaultSetupTime || "0"),
+            defaultRunTime: parseFloat(data.defaultRunTime || "0")
         });
     };
 
@@ -171,92 +183,120 @@ export default function StandardOpLibrary() {
                                 Add a new operation to the corporate library.
                             </SheetDescription>
                         </SheetHeader>
-                        <form onSubmit={handleSubmit} className="space-y-6 mt-6">
-                            <div className="space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="code">Op Code</Label>
-                                        <Input
-                                            id="code"
-                                            placeholder="e.g. ASM-001"
-                                            value={formData.code}
-                                            onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                                            required
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-6">
+                                <div className="space-y-4">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <FormField
+                                            control={form.control}
+                                            name="code"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Op Code</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="e.g. ASM-001" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="status"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Status</FormLabel>
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            <SelectItem value="active">Active</SelectItem>
+                                                            <SelectItem value="draft">Draft</SelectItem>
+                                                            <SelectItem value="obsolete">Obsolete</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
                                         />
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="status">Status</Label>
-                                        <Select
-                                            value={formData.status}
-                                            onValueChange={(val) => setFormData({ ...formData, status: val })}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="active">Active</SelectItem>
-                                                <SelectItem value="draft">Draft</SelectItem>
-                                                <SelectItem value="obsolete">Obsolete</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="name">Operation Name</Label>
-                                    <Input
-                                        id="name"
-                                        placeholder="e.g. Final Assembly"
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        required
+                                    <FormField
+                                        control={form.control}
+                                        name="name"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Operation Name</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="e.g. Final Assembly" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
                                     />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="wc">Default Work Center</Label>
-                                    <Select
-                                        value={formData.defaultWorkCenterId}
-                                        onValueChange={(val) => setFormData({ ...formData, defaultWorkCenterId: val })}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select Work Center" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {workCenters.map((wc) => (
-                                                <SelectItem key={wc.id} value={wc.id}>{wc.name}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="setup">Setup Time (mins)</Label>
-                                        <Input
-                                            id="setup"
-                                            type="number"
-                                            value={formData.defaultSetupTime}
-                                            onChange={(e) => setFormData({ ...formData, defaultSetupTime: e.target.value })}
+                                    <FormField
+                                        control={form.control}
+                                        name="defaultWorkCenterId"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Default Work Center</FormLabel>
+                                                <Select onValueChange={field.onChange} value={field.value || undefined}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select Work Center" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {workCenters.map((wc) => (
+                                                            <SelectItem key={wc.id} value={wc.id}>{wc.name}</SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <FormField
+                                            control={form.control}
+                                            name="defaultSetupTime"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Setup Time (mins)</FormLabel>
+                                                    <FormControl>
+                                                        <Input type="number" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="defaultRunTime"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Run Time (mins)</FormLabel>
+                                                    <FormControl>
+                                                        <Input type="number" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
                                         />
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="run">Run Time (mins)</Label>
-                                        <Input
-                                            id="run"
-                                            type="number"
-                                            value={formData.defaultRunTime}
-                                            onChange={(e) => setFormData({ ...formData, defaultRunTime: e.target.value })}
-                                        />
-                                    </div>
                                 </div>
-                            </div>
-                            <div className="flex justify-end gap-3 pt-4">
-                                <Button variant="outline" type="button" onClick={() => setIsSheetOpen(false)}>
-                                    Cancel
-                                </Button>
-                                <Button type="submit" disabled={createMutation.isPending}>
-                                    {createMutation.isPending ? "Creating..." : "Create Operation"}
-                                </Button>
-                            </div>
-                        </form>
+                                <div className="flex justify-end gap-3 pt-4">
+                                    <Button variant="outline" type="button" onClick={() => { setIsSheetOpen(false); form.reset(); }}>
+                                        Cancel
+                                    </Button>
+                                    <Button type="submit" disabled={createMutation.isPending}>
+                                        {createMutation.isPending ? "Creating..." : "Create Operation"}
+                                    </Button>
+                                </div>
+                            </form>
+                        </Form>
                     </SheetContent>
                 </Sheet>
             }

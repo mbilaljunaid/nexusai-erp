@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Save, FileText, TableProperties, Columns, Layers } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -187,9 +188,18 @@ export default function FSGBuilder() {
                                         value={newReport.rowSetId}
                                         onValueChange={(val) => setNewReport({ ...newReport, rowSetId: val })}
                                     >
-                                        <SelectTrigger title="Select Row Set">
-                                            <SelectValue placeholder="Select Row Set..." />
-                                        </SelectTrigger>
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select Row Set..." />
+                                                    </SelectTrigger>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Select Row Set</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
                                         <SelectContent>
                                             {rowSets?.map(rs => <SelectItem key={rs.id} value={rs.id}>{rs.name}</SelectItem>)}
                                         </SelectContent>
@@ -201,9 +211,18 @@ export default function FSGBuilder() {
                                         value={newReport.columnSetId}
                                         onValueChange={(val) => setNewReport({ ...newReport, columnSetId: val })}
                                     >
-                                        <SelectTrigger title="Select Column Set">
-                                            <SelectValue placeholder="Select Column Set..." />
-                                        </SelectTrigger>
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select Column Set..." />
+                                                    </SelectTrigger>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Select Column Set</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
                                         <SelectContent>
                                             {colSets?.map(cs => <SelectItem key={cs.id} value={cs.id}>{cs.name}</SelectItem>)}
                                         </SelectContent>
@@ -292,9 +311,18 @@ export default function FSGBuilder() {
                                                     value={newRow.rowType}
                                                     onValueChange={(val) => setNewRow({ ...newRow, rowType: val })}
                                                 >
-                                                    <SelectTrigger title="Select Row Type" className="h-8">
-                                                        <SelectValue placeholder="Type" />
-                                                    </SelectTrigger>
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <SelectTrigger className="h-8">
+                                                                    <SelectValue placeholder="Type" />
+                                                                </SelectTrigger>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>Select Row Type</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
                                                     <SelectContent>
                                                         <SelectItem value="DETAIL">Line Item</SelectItem>
                                                         <SelectItem value="CALCULATION">Total/Calc</SelectItem>
@@ -385,9 +413,18 @@ export default function FSGBuilder() {
                                                     value={newCol.type}
                                                     onValueChange={(val) => setNewCol({ ...newCol, type: val })}
                                                 >
-                                                    <SelectTrigger title="Select Column Type" className="h-8">
-                                                        <SelectValue placeholder="Type" />
-                                                    </SelectTrigger>
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <SelectTrigger className="h-8">
+                                                                    <SelectValue placeholder="Type" />
+                                                                </SelectTrigger>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>Select Column Type</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
                                                     <SelectContent>
                                                         <SelectItem value="AMOUNT">Period Amount</SelectItem>
                                                         <SelectItem value="CALCULATION">Calculation</SelectItem>
@@ -401,9 +438,18 @@ export default function FSGBuilder() {
                                                         value={newCol.amountType}
                                                         onValueChange={(val) => setNewCol({ ...newCol, amountType: val })}
                                                     >
-                                                        <SelectTrigger title="Select Amount Type" className="h-8">
-                                                            <SelectValue placeholder="PTD" />
-                                                        </SelectTrigger>
+                                                        <TooltipProvider>
+                                                            <Tooltip>
+                                                                <TooltipTrigger asChild>
+                                                                    <SelectTrigger className="h-8">
+                                                                        <SelectValue placeholder="PTD" />
+                                                                    </SelectTrigger>
+                                                                </TooltipTrigger>
+                                                                <TooltipContent>
+                                                                    <p>Select Amount Type</p>
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        </TooltipProvider>
                                                         <SelectContent>
                                                             <SelectItem value="PTD">PTD</SelectItem>
                                                             <SelectItem value="QTD">QTD</SelectItem>

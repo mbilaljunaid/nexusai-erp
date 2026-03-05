@@ -18,6 +18,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { useToast } from "@/hooks/use-toast";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function WavePlanning() {
     const { toast } = useToast();
@@ -49,21 +50,29 @@ export default function WavePlanning() {
     const waveColumns: SpreadsheetColumn<any>[] = [
         {
             id: "select",
-            header: <input type="checkbox" className="rounded bg-slate-900 border-slate-700" title="Select all orders" aria-label="Select all orders" />,
+            header: <TooltipProvider><Tooltip><TooltipTrigger asChild><input type="checkbox" className="rounded bg-slate-900 border-slate-700" aria-label="Select all orders" /></TooltipTrigger><TooltipContent><p>Select all orders</p></TooltipContent></Tooltip></TooltipProvider>,
             width: "60px",
             cell: (row) => (
                 <div className="flex justify-center w-full">
-                    <input
-                        type="checkbox"
-                        title={`Select order ${row.orderNumber}`}
-                        aria-label={`Select order ${row.orderNumber}`}
-                        checked={selectedOrders.includes(row.id)}
-                        onChange={(e) => {
-                            if (e.target.checked) setSelectedOrders([...selectedOrders, row.id]);
-                            else setSelectedOrders(selectedOrders.filter(id => id !== row.id));
-                        }}
-                        className="rounded bg-slate-900 border-slate-700 mt-1"
-                    />
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <input
+                                    type="checkbox"
+                                    aria-label={`Select order ${row.orderNumber}`}
+                                    checked={selectedOrders.includes(row.id)}
+                                    onChange={(e) => {
+                                        if (e.target.checked) setSelectedOrders([...selectedOrders, row.id]);
+                                        else setSelectedOrders(selectedOrders.filter(id => id !== row.id));
+                                    }}
+                                    className="rounded bg-slate-900 border-slate-700 mt-1"
+                                />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>{`Select order ${row.orderNumber}`}</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                 </div>
             )
         },

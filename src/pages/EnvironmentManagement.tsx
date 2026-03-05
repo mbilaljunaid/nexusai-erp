@@ -13,6 +13,7 @@ import { Plus, Trash2, Copy, Check, AlertCircle } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { ColumnDef } from "@tanstack/react-table";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 interface EnvironmentVariable {
   id: string;
@@ -31,6 +32,7 @@ export default function EnvironmentManagement() {
   const [isSecret, setIsSecret] = useState(false);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
+  const [deletingVarId, setDeletingVarId] = useState<string | null>(null);
 
   useEffect(() => {
     document.title = "Environment Management | NexusAIFirst";
@@ -82,14 +84,19 @@ export default function EnvironmentManagement() {
   };
 
   const handleDeleteVariable = async (id: string) => {
-    if (!confirm("Delete this environment variable?")) return;
+    setDeletingVarId(id);
+  };
+
+  const performDeleteVariable = async () => {
+    if (!deletingVarId) return;
 
     try {
-      await fetch(`/api/environment-vars/${id}`, { method: "DELETE" });
-      setEnvVars(envVars.filter((v) => v.id !== id));
+      await fetch(`/api/environment-vars/${deletingVarId}`, { method: "DELETE" });
+      setEnvVars(envVars.filter((v) => v.id !== deletingVarId));
     } catch (e) {
       console.error("Failed to delete variable", e);
     }
+    setDeletingVarId(null);
   };
 
   const handleCopy = (value: string, id: string) => {
@@ -233,7 +240,7 @@ export default function EnvironmentManagement() {
           data={filtered}
           columns={columns}
           filterPlaceholder={`Search ${selectedEnv} variables...`}
-         onChange={() => {}} containerHeight="600px" />
+          onChange={() => { }} containerHeight="600px" />
 
         {/* Security Warning */}
         <Card className="p-4 bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-900">
@@ -248,6 +255,23 @@ export default function EnvironmentManagement() {
           </div>
         </Card>
       </div>
+
+      <AlertDialog open={!!deletingVarId} onOpenChange={(open) => !open && setDeletingVarId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Environment Variable</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this environment variable?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={performDeleteVariable} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </StandardPage>
   );
 }

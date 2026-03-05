@@ -20,7 +20,26 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
 import { serviceRequestService, type ServiceRequest as ServiceRequestType } from "@/services/maintenance.service";
+
+const requestSchema = z.object({
+    title: z.string().min(1, "Title is required"),
+    description: z.string().min(1, "Description is required"),
+    location: z.string().optional(),
+    assetName: z.string().optional(),
+    priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).default("MEDIUM"),
+});
 
 // Map API service request type to component interface
 interface ServiceRequest {
@@ -75,13 +94,15 @@ export function ServiceRequestPortal() {
     const [searchTerm, setSearchTerm] = useState("");
 
     // Form state
-    const [formData, setFormData] = useState<ServiceRequestForm>({
-        title: "",
-        description: "",
-        location: "",
-        assetId: "",
-        assetName: "",
-        priority: "MEDIUM"
+    const form = useForm<z.infer<typeof requestSchema>>({
+        resolver: zodResolver(requestSchema),
+        defaultValues: {
+            title: "",
+            description: "",
+            location: "",
+            assetName: "",
+            priority: "MEDIUM"
+        }
     });
 
     useEffect(() => {
@@ -104,31 +125,22 @@ export function ServiceRequestPortal() {
         }
     };
 
-    const handleSubmitRequest = async (e: React.FormEvent) => {
-        e.preventDefault();
-
+    const onSubmit = async (values: z.infer<typeof requestSchema>) => {
         try {
             // ✅ LIVE API CALL - Create service request via service layer
             const apiResponse = await serviceRequestService.createServiceRequest({
-                title: formData.title,
-                description: formData.description,
-                location: formData.location,
-                assetName: formData.assetName,
-                priority: formData.priority,
+                title: values.title,
+                description: values.description,
+                location: values.location,
+                assetName: values.assetName,
+                priority: values.priority,
             });
 
             const newRequest = mapServiceRequest(apiResponse);
 
             setRequests([newRequest, ...requests]);
             setShowForm(false);
-            setFormData({
-                title: "",
-                description: "",
-                location: "",
-                assetId: "",
-                assetName: "",
-                priority: "MEDIUM"
-            });
+            form.reset();
         } catch (error) {
             console.error("Failed to submit service request:", error);
             // TODO: Show error toast to user
@@ -217,75 +229,103 @@ export function ServiceRequestPortal() {
                                 <CardTitle className="text-base">New Service Request</CardTitle>
                             </CardHeader>
                             <CardContent className="pt-6">
-                                <form onSubmit={handleSubmitRequest} className="space-y-4">
-                                    <div>
-                                        <label className="text-sm font-medium mb-2 block">Request Title *</label>
-                                        <Input
-                                            placeholder="Brief description of the issue..."
-                                            value={formData.title}
-                                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                            required
+                                <Form {...form}>
+                                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                        <FormField
+                                            control={form.control}
+                                            name="title"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Request Title *</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="Brief description of the issue..." {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
                                         />
-                                    </div>
 
-                                    <div>
-                                        <label className="text-sm font-medium mb-2 block">Detailed Description *</label>
-                                        <Textarea
-                                            placeholder="Provide detailed information about the issue, what you observed, when it started, etc."
-                                            value={formData.description}
-                                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                            rows={4}
-                                            required
+                                        <FormField
+                                            control={form.control}
+                                            name="description"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Detailed Description *</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea
+                                                            placeholder="Provide detailed information about the issue, what you observed, when it started, etc."
+                                                            rows={4}
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
                                         />
-                                    </div>
 
-                                    <div className="grid md:grid-cols-2 gap-4">
-                                        <div>
-                                            <label className="text-sm font-medium mb-2 block">Location</label>
-                                            <Input
-                                                placeholder="Building, floor, room..."
-                                                value={formData.location}
-                                                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                                        <div className="grid md:grid-cols-2 gap-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="location"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Location</FormLabel>
+                                                        <FormControl>
+                                                            <Input placeholder="Building, floor, room..." {...field} value={field.value || ""} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="assetName"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Asset/Equipment</FormLabel>
+                                                        <FormControl>
+                                                            <Input placeholder="Equipment name or ID (if applicable)" {...field} value={field.value || ""} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
                                             />
                                         </div>
-                                        <div>
-                                            <label className="text-sm font-medium mb-2 block">Asset/Equipment</label>
-                                            <Input
-                                                placeholder="Equipment name or ID (if applicable)"
-                                                value={formData.assetName}
-                                                onChange={(e) => setFormData({ ...formData, assetName: e.target.value })}
-                                            />
+
+                                        <FormField
+                                            control={form.control}
+                                            name="priority"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Priority *</FormLabel>
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Select priority..." />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            <SelectItem value="LOW">Low - Routine maintenance</SelectItem>
+                                                            <SelectItem value="MEDIUM">Medium - Needs attention soon</SelectItem>
+                                                            <SelectItem value="HIGH">High - Impacting operations</SelectItem>
+                                                            <SelectItem value="URGENT">Urgent - Safety or critical breakdown</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <div className="flex gap-2">
+                                            <Button type="button" variant="outline" className="flex-1" onClick={() => setShowForm(false)}>
+                                                Cancel
+                                            </Button>
+                                            <Button type="submit" className="flex-1">
+                                                Submit Request
+                                            </Button>
                                         </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="text-sm font-medium mb-2 block">Priority *</label>
-                                        <Select
-                                            value={formData.priority}
-                                            onValueChange={(value: any) => setFormData({ ...formData, priority: value })}
-                                            required
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="LOW">Low - Routine maintenance</SelectItem>
-                                                <SelectItem value="MEDIUM">Medium - Needs attention soon</SelectItem>
-                                                <SelectItem value="HIGH">High - Impacting operations</SelectItem>
-                                                <SelectItem value="URGENT">Urgent - Safety or critical breakdown</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-
-                                    <div className="flex gap-2">
-                                        <Button type="button" variant="outline" className="flex-1" onClick={() => setShowForm(false)}>
-                                            Cancel
-                                        </Button>
-                                        <Button type="submit" className="flex-1">
-                                            Submit Request
-                                        </Button>
-                                    </div>
-                                </form>
+                                    </form>
+                                </Form>
                             </CardContent>
                         </Card>
                     ) : null}

@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Play, CheckCircle, Download, FileText, Loader2, Trash2 } from "lucide-react";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { useToast } from "@/hooks/use-toast";
+import { downloadFile } from "@/lib/utils";
 
 export default function APPaymentDetail() {
     const [, params] = useRoute("/finance/ap/payments/:id");
@@ -55,11 +56,7 @@ export default function APPaymentDetail() {
         try {
             const response = await fetch(`/api/ap/payment-batches/${batchId}/iso20022`);
             const blob = await response.blob();
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `ISO20022_BCH_${batchId}.xml`;
-            a.click();
+            downloadFile(blob, `ISO20022_BCH_${batchId}.xml`);
             toast({ title: "ISO20022 file downloaded" });
         } catch (error) {
             toast({ title: "Download failed", variant: "destructive" });

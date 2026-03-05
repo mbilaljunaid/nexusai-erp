@@ -11,6 +11,7 @@ import { StandardPage } from '@/components/layout/StandardPage';
 import { Pagination } from '@/components/admin/Pagination';
 import { ViewModeToggle } from '@/components/admin/ViewModeToggle';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from '@/components/ui/InteractiveSpreadsheet';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Checkbox } from '@/components/ui/checkbox';
 import { BulkActionBar } from '@/components/admin/BulkActionBar';
 import { useSupportRequests, useCloseSupportRequest } from '@/hooks/admin/useAdminData';
@@ -40,6 +41,11 @@ export default function RequestsIssues() {
     const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
     const { data: allRequests = [], isLoading, error } = useSupportRequests();
     const closeMutation = useCloseSupportRequest();
+
+    const [showBulkCloseConfirm, setShowBulkCloseConfirm] = useState(false);
+    const [bulkPriorityParams, setBulkPriorityParams] = useState<string | null>(null);
+    const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
+    const [closeRequestId, setCloseRequestId] = useState<string | null>(null);
 
     // Search and Filter State
     const [searchQuery, setSearchQuery] = useState('');
@@ -215,25 +221,36 @@ export default function RequestsIssues() {
 
     // Bulk action handlers
     const handleBulkClose = () => {
-        if (confirm(`Close ${selectedIds.size} requests?`)) {
-            // Implementation would go here
-            toast.success(`Closed ${selectedIds.size} requests`);
-            setSelectedIds(new Set());
-        }
+        setShowBulkCloseConfirm(true);
+    };
+
+    const performBulkClose = () => {
+        // Implementation would go here
+        toast.success(`Closed ${selectedIds.size} requests`);
+        setSelectedIds(new Set());
+        setShowBulkCloseConfirm(false);
     };
 
     const handleBulkPriority = (priority: string) => {
-        if (confirm(`Change priority for ${selectedIds.size} requests to ${priority}?`)) {
+        setBulkPriorityParams(priority);
+    };
+
+    const performBulkPriority = () => {
+        if (bulkPriorityParams) {
             toast.success(`Updated ${selectedIds.size} requests`);
             setSelectedIds(new Set());
+            setBulkPriorityParams(null);
         }
     };
 
     const handleBulkDelete = () => {
-        if (confirm(`Delete ${selectedIds.size} requests? This cannot be undone.`)) {
-            toast.success(`Deleted ${selectedIds.size} requests`);
-            setSelectedIds(new Set());
-        }
+        setShowBulkDeleteConfirm(true);
+    };
+
+    const performBulkDelete = () => {
+        toast.success(`Deleted ${selectedIds.size} requests`);
+        setSelectedIds(new Set());
+        setShowBulkDeleteConfirm(false);
     };
 
     // Table columns
@@ -315,8 +332,13 @@ export default function RequestsIssues() {
     }, [allRequests]);
 
     const handleClose = async (id: string) => {
-        if (confirm('Are you sure you want to close this request?')) {
-            await closeMutation.mutateAsync(id);
+        setCloseRequestId(id);
+    };
+
+    const performClose = async () => {
+        if (closeRequestId) {
+            await closeMutation.mutateAsync(closeRequestId);
+            setCloseRequestId(null);
         }
     };
 
@@ -599,7 +621,7 @@ export default function RequestsIssues() {
                                                                 {request.status !== 'closed' && (
                                                                     <Button
                                                                         size="sm"
-                                                                        onClick={() => closeMutation.mutate(request.id)}
+                                                                        onClick={() => handleClose(request.id)}
                                                                         disabled={closeMutation.isPending}
                                                                     >
                                                                         {closeMutation.isPending ? (
@@ -676,6 +698,68 @@ export default function RequestsIssues() {
                     )}
 
                 </div>
+
+                <AlertDialog open={showBulkCloseConfirm} onOpenChange={setShowBulkCloseConfirm}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Close Requests</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Are you sure you want to close {selectedIds.size} requests?
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={performBulkClose}>Close Requests</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+
+                <AlertDialog open={!!bulkPriorityParams} onOpenChange={(open) => !open && setBulkPriorityParams(null)}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Change Priority</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Change priority for {selectedIds.size} requests to {bulkPriorityParams}?
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={performBulkPriority}>Change Priority</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+
+                <AlertDialog open={showBulkDeleteConfirm} onOpenChange={setShowBulkDeleteConfirm}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Requests</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Are you sure you want to delete {selectedIds.size} requests? This cannot be undone.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={performBulkDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                                Delete
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+
+                <AlertDialog open={!!closeRequestId} onOpenChange={(open) => !open && setCloseRequestId(null)}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Close Request</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Are you sure you want to close this request?
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={performClose}>Close Request</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </StandardPage>
         </AdminLayout >
     );

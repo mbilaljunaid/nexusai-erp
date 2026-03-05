@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Database, Play, CheckCircle, Download, AlertTriangle, Clock } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { useToast } from "@/hooks/use-toast";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 interface RestorePoint {
     id: string;
@@ -13,9 +15,11 @@ interface RestorePoint {
 }
 
 export default function BackupRestoreManager() {
+    const { toast } = useToast();
     const [restorePoints, setRestorePoints] = useState<RestorePoint[]>([]);
     const [loading, setLoading] = useState(true);
     const [creating, setCreating] = useState(false);
+    const [showBackupConfirm, setShowBackupConfirm] = useState(false);
 
     const fetchRestorePoints = async () => {
         setLoading(true);
@@ -36,9 +40,11 @@ export default function BackupRestoreManager() {
     }, []);
 
     const createBackup = async () => {
-        if (!confirm('Create a new backup? This may take several minutes.')) {
-            return;
-        }
+        setShowBackupConfirm(true);
+    };
+
+    const performCreateBackup = async () => {
+        setShowBackupConfirm(false);
 
         setCreating(true);
         try {
@@ -55,13 +61,13 @@ export default function BackupRestoreManager() {
             if (response.ok) {
                 const newBackup = await response.json();
                 setRestorePoints([newBackup, ...restorePoints]);
-                alert('Backup created successfully!');
+                toast({ title: 'Success', description: 'Backup created successfully!' });
             } else {
-                alert('Failed to create backup');
+                toast({ variant: 'destructive', description: 'Failed to create backup' });
             }
         } catch (error) {
             console.error('Error creating backup:', error);
-            alert('Failed to create backup');
+            toast({ variant: 'destructive', description: 'Failed to create backup' });
         } finally {
             setCreating(false);
         }
@@ -82,13 +88,17 @@ export default function BackupRestoreManager() {
                             : point
                     )
                 );
-                alert(result.valid ? 'Backup verified successfully!' : 'Backup verification failed!');
+                toast({
+                    title: result.valid ? 'Success' : 'Error',
+                    description: result.valid ? 'Backup verified successfully!' : 'Backup verification failed!',
+                    variant: result.valid ? 'default' : 'destructive'
+                });
             } else {
-                alert('Failed to verify backup');
+                toast({ variant: 'destructive', description: 'Failed to verify backup' });
             }
         } catch (error) {
             console.error('Error verifying backup:', error);
-            alert('Failed to verify backup');
+            toast({ variant: 'destructive', description: 'Failed to verify backup' });
         }
     };
 
@@ -260,6 +270,23 @@ export default function BackupRestoreManager() {
                     Configure Schedule
                 </button>
             </div>
+
+            <AlertDialog open={showBackupConfirm} onOpenChange={setShowBackupConfirm}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Create Backup</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Create a new backup? This may take several minutes.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={performCreateBackup}>
+                            Create
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

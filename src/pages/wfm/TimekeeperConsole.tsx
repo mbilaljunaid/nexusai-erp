@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { format, parseISO, startOfToday } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { Save, Calendar, Check, AlertCircle } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 // MOCK TENANT
 const MOCK_TENANT_ID = "test-tenant-wfm-001";
@@ -89,14 +90,22 @@ export default function TimekeeperConsole() {
                 <div className="flex gap-4 items-center">
                     <div className="flex items-center gap-2 border rounded p-2 bg-background">
                         <Calendar className="h-4 w-4 text-muted-foreground" />
-                        <input
-                            type="date"
-                            className="bg-transparent text-sm focus:outline-none"
-                            value={selectedDate}
-                            onChange={(e) => setSelectedDate(e.target.value)}
-                            title="Select Date"
-                            aria-label="Select Date"
-                        />
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Input
+                                        type="date"
+                                        className="bg-transparent text-sm focus:outline-none"
+                                        value={selectedDate}
+                                        onChange={(e) => setSelectedDate(e.target.value)}
+                                        aria-label="Select Date"
+                                    />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Select Date</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                     </div>
                     <Button onClick={() => saveMutation.mutate()} disabled={Object.keys(edits).length === 0 || saveMutation.isPending}>
                         <Save className="mr-2 h-4 w-4" />
@@ -150,28 +159,55 @@ export default function TimekeeperConsole() {
                                                     )}
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Input
-                                                        type="time"
-                                                        value={currentStart}
-                                                        onChange={e => handleEdit(row.person.id, 'startTime', e.target.value)}
-                                                        title="Shift Start Time"
-                                                        aria-label="Shift Start Time"
-                                                    />
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Input
+                                                                    type="time"
+                                                                    value={currentStart}
+                                                                    onChange={e => handleEdit(row.person.id, 'startTime', e.target.value)}
+                                                                    aria-label="Shift Start Time"
+                                                                />
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>Shift Start Time</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Input
-                                                        type="time"
-                                                        value={currentEnd}
-                                                        onChange={e => handleEdit(row.person.id, 'endTime', e.target.value)}
-                                                        title="Shift End Time"
-                                                        aria-label="Shift End Time"
-                                                    />
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Input
+                                                                    type="time"
+                                                                    value={currentEnd}
+                                                                    onChange={e => handleEdit(row.person.id, 'endTime', e.target.value)}
+                                                                    aria-label="Shift End Time"
+                                                                />
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>Shift End Time</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
                                                 </TableCell>
                                                 <TableCell className="text-right">
                                                     {row.hours > 0 ? row.hours : "-"}
                                                 </TableCell>
                                                 <TableCell>
-                                                    {isEdited && <div className="w-2 h-2 rounded-full bg-blue-500 mx-auto" title="Unsaved changes" />}
+                                                    {isEdited && (
+                                                        <TooltipProvider>
+                                                            <Tooltip>
+                                                                <TooltipTrigger asChild>
+                                                                    <div className="w-2 h-2 rounded-full bg-blue-500 mx-auto" />
+                                                                </TooltipTrigger>
+                                                                <TooltipContent>
+                                                                    <p>Unsaved changes</p>
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        </TooltipProvider>
+                                                    )}
                                                 </TableCell>
                                             </TableRow>
                                         );

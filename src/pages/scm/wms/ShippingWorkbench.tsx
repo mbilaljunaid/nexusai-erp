@@ -16,6 +16,7 @@ import {
     Filter
 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function ShippingWorkbench() {
     return (
@@ -57,7 +58,16 @@ export default function ShippingWorkbench() {
                                             <p className="text-xs text-slate-500 mt-1">{shipment.weight}</p>
                                         </div>
                                         <div className="flex gap-2">
-                                            <Button variant="ghost" size="icon" title="Print Labels"><Printer className="w-4 h-4" /></Button>
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Button variant="ghost" size="icon"><Printer className="w-4 h-4" /></Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>
+                                                        <p>Print Labels</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
                                             <Button className="bg-blue-600 hover:bg-blue-500 size-sm h-9 px-4">
                                                 Ship <Ship className="w-4 h-4 ml-2" />
                                             </Button>

@@ -36,8 +36,10 @@ import {
    DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { useToast } from "@/hooks/use-toast";
 
 export default function MSSDashboard() {
+   const { toast } = useToast();
    const [isActionOpen, setIsActionOpen] = React.useState(false);
    const [actionType, setActionType] = React.useState<"TRANSFER" | "PROMOTE" | "TERMINATE" | "SALARY_CHANGE" | null>(null);
    const [selectedEmployeeName, setSelectedEmployeeName] = React.useState("Direct Report");
@@ -301,7 +303,7 @@ export default function MSSDashboard() {
                            onClick={async () => {
                               const res = await fetch('/api/hr-self-service/admin/workflow/escalate', { method: 'POST' });
                               const data = await res.json();
-                              alert(`Escalated ${data.escalatedCount} pending approvals to the next level.`);
+                              toast({ description: `Escalated ${data.escalatedCount} pending approvals to the next level.` });
                            }}
                         >
                            <ShieldCheck className="h-4 w-4 mr-2" /> Escalate Stalled Approvals

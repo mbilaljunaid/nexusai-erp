@@ -14,6 +14,7 @@ import { APInvoiceDistributions } from "./APInvoiceDistributions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 function useActiveBu() {
     return useMemo(() => ({
         id: localStorage.getItem("nexus_active_bu") || null,
@@ -303,7 +304,16 @@ export default function APInvoiceEntry() {
             header: "Amount",
             width: "w-32",
             cell: (line, index, updateRow) => (
-                <Input className="h-9 bg-slate-50 font-medium text-slate-700" type="number" step="0.01" value={line.amount} readOnly title="Auto-calculated from Qty * Price. Override manually if needed." onChange={e => updateRow("amount", e.target.value)} placeholder="0.00" />
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Input className="h-9 bg-slate-50 font-medium text-slate-700" type="number" step="0.01" value={line.amount} readOnly onChange={e => updateRow("amount", e.target.value)} placeholder="0.00" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Auto-calculated from Qty * Price. Override manually if needed.</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             )
         },
         {
@@ -364,12 +374,21 @@ export default function APInvoiceEntry() {
             headerClassName: "text-center",
             cell: (line, index) => (
                 <div className="flex justify-center items-center gap-1">
-                    <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-500 hover:text-slate-900" title="View Distributions" onClick={(e) => {
-                        e.preventDefault();
-                        setSelectedLineForDistributions(selectedLineForDistributions === index ? null : index);
-                    }}>
-                        <Network className="h-4 w-4" />
-                    </Button>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-500 hover:text-slate-900" onClick={(e) => {
+                                    e.preventDefault();
+                                    setSelectedLineForDistributions(selectedLineForDistributions === index ? null : index);
+                                }}>
+                                    <Network className="h-4 w-4" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>View Distributions</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                     <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-400 hover:text-red-700 hover:bg-red-50" onClick={() => removeLine(index)} disabled={lines.length === 1}>
                         <Trash2 className="h-4 w-4" />
                     </Button>

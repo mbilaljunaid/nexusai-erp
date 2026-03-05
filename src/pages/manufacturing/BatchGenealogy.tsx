@@ -7,6 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Search, GitBranch, ArrowRight, Package, FlaskConical, AlertCircle } from "lucide-react";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
 interface GenealogyNode {
     id: string;
@@ -19,8 +23,17 @@ interface GenealogyNode {
     parentLotId?: string;
 }
 
+
+const searchSchema = z.object({
+    searchTerm: z.string().optional()
+});
+
 export default function BatchGenealogy() {
-    const [searchTerm, setSearchTerm] = useState("");
+
+    const form = useForm<z.infer<typeof searchSchema>>({
+        resolver: zodResolver(searchSchema),
+        defaultValues: { searchTerm: "" }
+    });
     const [activeLot, setActiveLot] = useState<string | null>(null);
 
     const { data: genealogyData = [], isLoading } = useQuery<GenealogyNode[]>({
@@ -75,10 +88,9 @@ export default function BatchGenealogy() {
         }
     ];
 
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (searchTerm.trim()) {
-            setActiveLot(searchTerm.trim());
+    const onSubmit = (data: z.infer<typeof searchSchema>) => {
+        if (data.searchTerm?.trim()) {
+            setActiveLot(data.searchTerm.trim());
         }
     };
 
@@ -102,17 +114,28 @@ export default function BatchGenealogy() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={handleSearch} className="flex gap-2">
-                            <Input
-                                placeholder="Scan or enter Lot Number (e.g. LOT-2023-001)..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="max-w-md bg-background"
-                            />
-                            <Button type="submit" disabled={isLoading}>
-                                {isLoading ? "Searching..." : "Trace Genealogy"}
-                            </Button>
-                        </form>
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-2 w-full max-w-md">
+                                <FormField
+                                    control={form.control}
+                                    name="searchTerm"
+                                    render={({ field }) => (
+                                        <FormItem className="flex-1">
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="Scan or enter Lot Number (e.g. LOT-2023-001)..."
+                                                    {...field}
+                                                    className="bg-background"
+                                                />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button type="submit" disabled={isLoading}>
+                                    {isLoading ? "Searching..." : "Trace Genealogy"}
+                                </Button>
+                            </form>
+                        </Form>
                     </CardContent>
                 </Card>
 

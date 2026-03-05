@@ -23,6 +23,16 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
     Plus,
     RefreshCw,
     Edit,
@@ -68,6 +78,7 @@ export default function SubscriptionLifecycleManager() {
     const [selectedSub, setSelectedSub] = useState<any>(null);
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
     const [statusFilter, setStatusFilter] = useState<string>("all");
+    const [cancelSubId, setCancelSubId] = useState<string | null>(null);
 
     // Fetch subscriptions
     const { data: subscriptionsResult, isLoading } = useQuery<any>({
@@ -343,12 +354,7 @@ export default function SubscriptionLifecycleManager() {
                                                     size="sm"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        if (confirm("Cancel this subscription?")) {
-                                                            cancelMutation.mutate({
-                                                                id: item.id,
-                                                                reason: "Customer request",
-                                                            });
-                                                        }
+                                                        setCancelSubId(item.id);
                                                     }}
                                                 >
                                                     <Ban className="h-4 w-4" />
@@ -371,6 +377,33 @@ export default function SubscriptionLifecycleManager() {
                 open={!!selectedSub}
                 onOpenChange={(open) => !open && setSelectedSub(null)}
             />
+
+            <AlertDialog open={!!cancelSubId} onOpenChange={(open) => !open && setCancelSubId(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Cancel Subscription</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to cancel this subscription? This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Keep Subscription</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => {
+                                if (cancelSubId) {
+                                    cancelMutation.mutate({
+                                        id: cancelSubId,
+                                        reason: "Customer request",
+                                    });
+                                }
+                            }}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            Cancel Subscription
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

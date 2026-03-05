@@ -10,6 +10,15 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { useTenants, useCreateTenant, useDeleteTenant, useUpdateTenantStatus } from '@/hooks/admin/useAdminData';
 
@@ -17,6 +26,7 @@ export default function TenantManagement() {
     const [searchTerm, setSearchTerm] = useState('');
     const [createOpen, setCreateOpen] = useState(false);
     const [newTenant, setNewTenant] = useState({ name: '', slug: '', status: 'active' });
+    const [deletingTenant, setDeletingTenant] = useState<{ id: string, name: string } | null>(null);
 
     const { data: tenants = [], isLoading, isError } = useTenants();
     const createTenant = useCreateTenant();
@@ -35,8 +45,13 @@ export default function TenantManagement() {
     };
 
     const handleDelete = (id: string, name: string) => {
-        if (window.confirm(`Delete tenant "${name}"? This cannot be undone.`)) {
-            deleteTenant.mutate(id);
+        setDeletingTenant({ id, name });
+    };
+
+    const performDelete = () => {
+        if (deletingTenant) {
+            deleteTenant.mutate(deletingTenant.id);
+            setDeletingTenant(null);
         }
     };
 
@@ -102,21 +117,21 @@ export default function TenantManagement() {
                                 </Button>
                             </div>
                         ) : (
-                            <div className="overflow-x-auto">
-                                <table className="w-full">
-                                    <thead>
-                                        <tr className="border-b">
-                                            <th className="text-left py-3 px-4 font-medium">Tenant</th>
-                                            <th className="text-left py-3 px-4 font-medium">Plan</th>
-                                            <th className="text-left py-3 px-4 font-medium">Status</th>
-                                            <th className="text-left py-3 px-4 font-medium">Created</th>
-                                            <th className="text-right py-3 px-4 font-medium">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                            <div className="border rounded-md">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Tenant</TableHead>
+                                            <TableHead>Plan</TableHead>
+                                            <TableHead>Status</TableHead>
+                                            <TableHead>Created</TableHead>
+                                            <TableHead className="text-right">Actions</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
                                         {filteredTenants.map((tenant: any) => (
-                                            <tr key={tenant.id} className="border-b hover:bg-gray-50">
-                                                <td className="py-3 px-4">
+                                            <TableRow key={tenant.id}>
+                                                <TableCell>
                                                     <div className="flex items-center gap-3">
                                                         <Building2 className="w-5 h-5 text-muted-foreground" />
                                                         <div>
@@ -124,13 +139,13 @@ export default function TenantManagement() {
                                                             <div className="text-sm text-muted-foreground">{tenant.slug}</div>
                                                         </div>
                                                     </div>
-                                                </td>
-                                                <td className="py-3 px-4">
+                                                </TableCell>
+                                                <TableCell>
                                                     <Badge variant={tenant.plan === 'enterprise' ? 'default' : 'secondary'}>
                                                         {tenant.plan ?? 'Starter'}
                                                     </Badge>
-                                                </td>
-                                                <td className="py-3 px-4">
+                                                </TableCell>
+                                                <TableCell>
                                                     <div className="flex items-center gap-2">
                                                         {tenant.status === 'active' ? (
                                                             <>
@@ -146,11 +161,11 @@ export default function TenantManagement() {
                                                             </>
                                                         )}
                                                     </div>
-                                                </td>
-                                                <td className="py-3 px-4 text-sm text-muted-foreground">
+                                                </TableCell>
+                                                <TableCell className="text-sm text-muted-foreground">
                                                     {tenant.createdAt ? new Date(tenant.createdAt).toLocaleDateString() : '—'}
-                                                </td>
-                                                <td className="py-3 px-4">
+                                                </TableCell>
+                                                <TableCell>
                                                     <div className="flex items-center justify-end gap-2">
                                                         <Button
                                                             variant="ghost"
@@ -174,11 +189,11 @@ export default function TenantManagement() {
                                                             <Trash2 className="w-4 h-4" />
                                                         </Button>
                                                     </div>
-                                                </td>
-                                            </tr>
+                                                </TableCell>
+                                            </TableRow>
                                         ))}
-                                    </tbody>
-                                </table>
+                                    </TableBody>
+                                </Table>
                             </div>
                         )}
                     </CardContent>
@@ -236,6 +251,23 @@ export default function TenantManagement() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            <AlertDialog open={!!deletingTenant} onOpenChange={(open) => !open && setDeletingTenant(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Tenant</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to delete tenant "{deletingTenant?.name}"? This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={performDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </AdminLayout>
     );
 }

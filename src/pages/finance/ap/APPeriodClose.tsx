@@ -17,11 +17,13 @@ import {
 } from "@/components/ui/table";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 export default function APPeriodClose() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [activeTab, setActiveTab] = useState("control");
+    const [closingPeriod, setClosingPeriod] = useState<{ id: string, name: string } | null>(null);
     const { legalEntityId } = useEnterpriseStore();
 
     const { data: periods, isLoading } = useQuery<any>({
@@ -56,9 +58,7 @@ export default function APPeriodClose() {
     });
 
     const handleClose = (periodId: string, periodName: string) => {
-        if (confirm(`Are you sure you want to close AP period ${periodName}? This action cannot be easily undone.`)) {
-            closeMutation.mutate(periodId);
-        }
+        setClosingPeriod({ id: periodId, name: periodName });
     };
 
     const getStatusBadge = (status: string) => {
@@ -223,6 +223,28 @@ export default function APPeriodClose() {
                     </Card>
                 </TabsContent>
             </Tabs>
+
+            <AlertDialog open={!!closingPeriod} onOpenChange={(open) => !open && setClosingPeriod(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Close Period</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to close AP period {closingPeriod?.name}? This action cannot be easily undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => {
+                            if (closingPeriod) {
+                                closeMutation.mutate(closingPeriod.id);
+                                setClosingPeriod(null);
+                            }
+                        }}>
+                            Close Period
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </StandardPage>
     );
 }

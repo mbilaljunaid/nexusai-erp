@@ -18,6 +18,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { ContextualSearch } from "@/components/ContextualSearch";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 
 export default function LcmWorkbench() {
@@ -147,9 +148,18 @@ export default function LcmWorkbench() {
                                                         {op.totalEstimatedCost ? `$${Number(op.totalEstimatedCost).toLocaleString()}` : '-'}
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Button variant="ghost" size="icon" title="View Details">
-                                                            <ExternalLink className="h-4 w-4" />
-                                                        </Button>
+                                                        <TooltipProvider>
+                                                            <Tooltip>
+                                                                <TooltipTrigger asChild>
+                                                                    <Button variant="ghost" size="icon">
+                                                                        <ExternalLink className="h-4 w-4" />
+                                                                    </Button>
+                                                                </TooltipTrigger>
+                                                                <TooltipContent>
+                                                                    <p>View Details</p>
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        </TooltipProvider>
                                                     </TableCell>
                                                 </TableRow>
                                             ))

@@ -8,6 +8,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Code, Play, Save } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function TaxRuleEngine() {
     const { toast } = useToast();
@@ -48,16 +49,34 @@ export default function TaxRuleEngine() {
                         <CardContent className="space-y-4">
                             <div>
                                 <label htmlFor="ruleName" className="text-sm font-medium">Rule Name</label>
-                                <input id="ruleName" title="Rule Name" className="w-full border rounded-md p-2" placeholder="e.g., High Value Tax" />
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <input id="ruleName" className="w-full border rounded-md p-2" placeholder="e.g., High Value Tax" />
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Rule Name</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
                             </div>
                             <div>
                                 <label className="text-sm font-medium mb-2 block">Conditions (If)</label>
                                 {conditions.map((condition, i) => (
                                     <div key={i} className="grid grid-cols-3 gap-2 mb-2">
                                         <Select value={condition.field}>
-                                            <SelectTrigger aria-label="Select field" title="Select field">
-                                                <SelectValue placeholder="Field" />
-                                            </SelectTrigger>
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <SelectTrigger aria-label="Select field">
+                                                            <SelectValue placeholder="Field" />
+                                                        </SelectTrigger>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>
+                                                        <p>Select field</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
                                             <SelectContent>
                                                 <SelectItem value="amount">Amount</SelectItem>
                                                 <SelectItem value="jurisdiction">Jurisdiction</SelectItem>
@@ -65,31 +84,57 @@ export default function TaxRuleEngine() {
                                             </SelectContent>
                                         </Select>
                                         <Select value={condition.operator}>
-                                            <SelectTrigger aria-label="Select operator" title="Select operator">
-                                                <SelectValue placeholder="Operator" />
-                                            </SelectTrigger>
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <SelectTrigger aria-label="Select operator">
+                                                            <SelectValue placeholder="Operator" />
+                                                        </SelectTrigger>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>
+                                                        <p>Select operator</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
                                             <SelectContent>
                                                 <SelectItem value=">">Greater Than</SelectItem>
                                                 <SelectItem value="<">Less Than</SelectItem>
                                                 <SelectItem value="=">Equals</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <input
-                                            type="text"
-                                            title="Condition Value"
-                                            className="border rounded-md p-2"
-                                            value={condition.value}
-                                            placeholder="Value"
-                                        />
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <input
+                                                        type="text"
+                                                        className="border rounded-md p-2"
+                                                        value={condition.value}
+                                                        placeholder="Value"
+                                                    />
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Condition Value</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
                                     </div>
                                 ))}
                             </div>
                             <div>
                                 <label className="text-sm font-medium">Then (Action)</label>
                                 <Select defaultValue="APPLY_RATE">
-                                    <SelectTrigger aria-label="Select action" title="Select action">
-                                        <SelectValue placeholder="Action" />
-                                    </SelectTrigger>
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <SelectTrigger aria-label="Select action">
+                                                    <SelectValue placeholder="Action" />
+                                                </SelectTrigger>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Select action</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
                                     <SelectContent>
                                         <SelectItem value="APPLY_RATE">Apply Tax Rate</SelectItem>
                                         <SelectItem value="EXEMPT">Exempt from Tax</SelectItem>
@@ -99,7 +144,16 @@ export default function TaxRuleEngine() {
                             </div>
                             <div>
                                 <label htmlFor="rulePriority" className="text-sm font-medium">Priority</label>
-                                <input id="rulePriority" title="Priority" type="number" className="w-full border rounded-md p-2" defaultValue="10" placeholder="Priority" />
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <input id="rulePriority" type="number" className="w-full border rounded-md p-2" defaultValue="10" placeholder="Priority" />
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Priority</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
                             </div>
                             <Button className="w-full">
                                 <Save className="h-4 w-4 mr-2" />

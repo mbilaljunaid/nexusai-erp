@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Calendar, Clock, Percent, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Input } from "@/components/ui/input";
+
 
 interface PaymentTerm {
     id: string;
@@ -151,7 +153,7 @@ export default function PaymentTermsMaster() {
                             </div>
                             <div className="sf">
                                 <label className="sl">Invoice Date</label>
-                                <input className="si" type="date" value={schedTest.invoiceDate} onChange={e => setSchedTest(p => ({ ...p, invoiceDate: e.target.value }))} aria-label="Invoice date" />
+                                <Input className="si" type="date" value={schedTest.invoiceDate} onChange={e => setSchedTest(p => ({ ...p, invoiceDate: e.target.value }))} aria-label="Invoice date" />
                             </div>
                             <div className="sf">
                                 <label className="sl">Amount</label>

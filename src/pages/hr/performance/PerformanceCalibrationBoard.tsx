@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useToast } from "@/hooks/use-toast";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
     LineChart,
     Save,
@@ -203,7 +204,16 @@ export default function PerformanceCalibrationBoard() {
                                                                                         </AvatarFallback>
                                                                                     </Avatar>
                                                                                     {emp.isFlightRisk && (
-                                                                                        <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 border-2 border-white dark:border-zinc-950 animate-pulse" title="High Flight Risk" />
+                                                                                        <TooltipProvider>
+                                                                                            <Tooltip>
+                                                                                                <TooltipTrigger asChild>
+                                                                                                    <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 border-2 border-white dark:border-zinc-950 animate-pulse" />
+                                                                                                </TooltipTrigger>
+                                                                                                <TooltipContent>
+                                                                                                    <p>High Flight Risk</p>
+                                                                                                </TooltipContent>
+                                                                                            </Tooltip>
+                                                                                        </TooltipProvider>
                                                                                     )}
                                                                                 </div>
                                                                                 <div className="flex-1 min-w-0">

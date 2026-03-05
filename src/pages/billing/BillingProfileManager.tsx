@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const CURRENCY_OPTIONS = [
     { value: "USD", label: "USD - US Dollar" },
@@ -170,7 +171,16 @@ export default function BillingProfileManager() {
             width: "100px",
             cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
                 <div className="flex justify-center pt-2">
-                    <input type="checkbox" aria-label="Tax Exempt" title="Tax Exempt" className="h-4 w-4 rounded border-gray-300" checked={row.taxExempt || false} onChange={e => updateRow("taxExempt", e.target.checked)} />
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <input type="checkbox" aria-label="Tax Exempt" className="h-4 w-4 rounded border-gray-300" checked={row.taxExempt || false} onChange={e => updateRow("taxExempt", e.target.checked)} />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Tax Exempt</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                 </div>
             )
         },
@@ -188,7 +198,16 @@ export default function BillingProfileManager() {
             width: "100px",
             cell: (row: any, i: number, updateRow: (f: string, v: any) => void) => (
                 <div className="flex justify-center pt-2">
-                    <input type="checkbox" aria-label="Auto-Email Invoices" title="Auto-Email Invoices" className="h-4 w-4 rounded border-gray-300" checked={row.emailInvoices ?? true} onChange={e => updateRow("emailInvoices", e.target.checked)} />
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <input type="checkbox" aria-label="Auto-Email Invoices" className="h-4 w-4 rounded border-gray-300" checked={row.emailInvoices ?? true} onChange={e => updateRow("emailInvoices", e.target.checked)} />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Auto-Email Invoices</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                 </div>
             )
         }

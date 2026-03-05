@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Clock, AlertTriangle, CheckCircle2, TrendingUp, RefreshCw } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Input } from "@/components/ui/input";
+
 interface OvertimeRule {
     id: string;
     rule_code: string;
@@ -108,7 +110,7 @@ export default function OvertimeComplianceDashboard() {
                     <div className="panel-row">
                         <div className="pf">
                             <label className="pl">Week Starting</label>
-                            <input className="pi" type="date" value={weekDate} onChange={e => setWeekDate(e.target.value)} aria-label="Week start date" />
+                            <Input className="pi" type="date" value={weekDate} onChange={e => setWeekDate(e.target.value)} aria-label="Week start date" />
                         </div>
                         <button className="refresh-btn" onClick={() => refetch()} aria-label="Refresh report"><RefreshCw size={14} /></button>
                     </div>

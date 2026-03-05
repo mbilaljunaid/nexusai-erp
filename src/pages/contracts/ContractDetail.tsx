@@ -23,7 +23,7 @@ import { ContractAIAnalysisPanel } from "@/components/contracts/ContractAIAnalys
 import { ESignatureModal } from "@/components/contracts/ESignatureModal";
 import { apiRequest } from "@/lib/queryClient";
 import { StandardPage } from "@/components/layout/StandardPage";
-
+import { downloadFile } from "@/lib/utils";
 
 export default function ContractDetail() {
     const [, params] = useRoute("/contracts/:id");
@@ -70,12 +70,7 @@ export default function ContractDetail() {
             if (!res.ok) throw new Error("PDF not found");
 
             const blob = await res.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `contract-${contract?.contractNumber || contractId}.pdf`;
-            a.click();
-            window.URL.revokeObjectURL(url);
+            downloadFile(blob, `contract-${contract?.contractNumber || contractId}.pdf`);
 
             toast({ title: "Download Started", description: "Contract PDF downloaded" });
         } catch (err: any) {

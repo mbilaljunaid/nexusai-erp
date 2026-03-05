@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Package, Printer, Archive, Send } from 'lucide-react';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 
 interface Manifest { id: string; manifest_number: string; carrier_scac: string; ship_date: string; total_packages: number; total_weight_kg: number; status: string; }
 interface ManifestPackage { id: string; tracking_number: string; customer_name: string; ship_to_city: string; ship_to_state: string; ship_to_zip: string; weight_kg: number; service_code: string; label_printed: boolean; label_zpl: string; }
@@ -147,29 +155,37 @@ export default function CarrierManifest() {
                             )}
 
                             {/* Packages table */}
-                            <table className="w-full border-collapse text-[11px]">
-                                <thead><tr className="bg-gray-50">
-                                    {['Tracking #', 'Customer', 'Destination', 'Weight', 'Service', 'Label', ''].map(h => <th key={h} className="py-2 px-2.5 text-left font-semibold text-gray-700 border-b-2 border-gray-200">{h}</th>)}
-                                </tr></thead>
-                                <tbody>
+                            <Table className="text-[11px]">
+                                <TableHeader>
+                                    <TableRow className="bg-gray-50 hover:bg-gray-50">
+                                        {['Tracking #', 'Customer', 'Destination', 'Weight', 'Service', 'Label', ''].map(h => (
+                                            <TableHead key={h} className="py-2 px-2.5 h-auto text-gray-700 font-semibold">{h}</TableHead>
+                                        ))}
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
                                     {packages.map(p => (
-                                        <tr key={p.id} className="border-b border-gray-100">
-                                            <td className="py-2 px-2.5 font-mono font-bold">{p.tracking_number}</td>
-                                            <td className="py-2 px-2.5">{p.customer_name || '—'}</td>
-                                            <td className="py-2 px-2.5">{p.ship_to_city}, {p.ship_to_state} {p.ship_to_zip}</td>
-                                            <td className="py-2 px-2.5 font-mono">{Number(p.weight_kg).toFixed(2)} kg</td>
-                                            <td className="py-2 px-2.5">{p.service_code}</td>
-                                            <td className="py-2 px-2.5"><span className={`font-semibold text-[10px] ${p.label_printed ? 'text-emerald-600' : 'text-gray-400'}`}>{p.label_printed ? '✓ Printed' : 'Pending'}</span></td>
-                                            <td className="py-2 px-2.5">
+                                        <TableRow key={p.id} className="border-gray-100 hover:bg-gray-50/50">
+                                            <TableCell className="py-2 px-2.5 font-mono font-bold">{p.tracking_number}</TableCell>
+                                            <TableCell className="py-2 px-2.5">{p.customer_name || '—'}</TableCell>
+                                            <TableCell className="py-2 px-2.5">{p.ship_to_city}, {p.ship_to_state} {p.ship_to_zip}</TableCell>
+                                            <TableCell className="py-2 px-2.5 font-mono">{Number(p.weight_kg).toFixed(2)} kg</TableCell>
+                                            <TableCell className="py-2 px-2.5">{p.service_code}</TableCell>
+                                            <TableCell className="py-2 px-2.5"><span className={`font-semibold text-[10px] ${p.label_printed ? 'text-emerald-600' : 'text-gray-400'}`}>{p.label_printed ? '✓ Printed' : 'Pending'}</span></TableCell>
+                                            <TableCell className="py-2 px-2.5">
                                                 <button onClick={() => printMut.mutate(p.id)} className="flex items-center gap-1 px-2 py-1 bg-gray-900 text-white border-none rounded-md text-[10px] cursor-pointer">
                                                     <Printer size={10} /> Print ZPL
                                                 </button>
-                                            </td>
-                                        </tr>
+                                            </TableCell>
+                                        </TableRow>
                                     ))}
-                                    {packages.length === 0 && <tr><td colSpan={7} className="text-center text-gray-400 p-4">No packages</td></tr>}
-                                </tbody>
-                            </table>
+                                    {packages.length === 0 && (
+                                        <TableRow>
+                                            <TableCell colSpan={7} className="text-center text-gray-400 py-4">No packages</TableCell>
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
 
                             {/* ZPL Preview */}
                             {zplPreview && (

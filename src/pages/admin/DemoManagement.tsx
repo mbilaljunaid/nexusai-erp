@@ -10,6 +10,7 @@ import { Pagination } from '@/components/admin/Pagination';
 import { StandardPage } from '@/components/layout/StandardPage';
 import { ViewModeToggle } from '@/components/admin/ViewModeToggle';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from '@/components/ui/InteractiveSpreadsheet';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useDemoEnvironments, useDeleteDemoEnvironment, useUpdateDemoStatus } from '@/hooks/admin/useAdminData';
 import { exportToCSV } from '@/utils/exportUtils';
 import { toast } from 'sonner';
@@ -39,6 +40,7 @@ export default function DemoManagement() {
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [selectedDemo, setSelectedDemo] = useState<Demo | null>(null);
+    const [deletingDemoId, setDeletingDemoId] = useState<string | null>(null);
 
     // Search and Filter State
     const [searchQuery, setSearchQuery] = useState('');
@@ -236,7 +238,7 @@ export default function DemoManagement() {
                     <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleDelete(demo.id)}
+                        onClick={() => setDeletingDemoId(demo.id)}
                     >
                         <Trash2 className="w-4 h-4 text-destructive" />
                     </Button>
@@ -253,9 +255,10 @@ export default function DemoManagement() {
         toast.success('URL copied to clipboard');
     };
 
-    const handleDelete = async (id: string) => {
-        if (confirm('Are you sure you want to delete this demo environment?')) {
-            await deleteMutation.mutateAsync(id);
+    const performDelete = async () => {
+        if (deletingDemoId) {
+            await deleteMutation.mutateAsync(deletingDemoId);
+            setDeletingDemoId(null);
         }
     };
 
@@ -515,7 +518,7 @@ export default function DemoManagement() {
                                                     size="sm"
                                                     variant="outline"
                                                     className="text-red-600 hover:text-red-700"
-                                                    onClick={() => handleDelete(demo.id)}
+                                                    onClick={() => setDeletingDemoId(demo.id)}
                                                     disabled={deleteMutation.isPending}
                                                 >
                                                     {deleteMutation.isPending ? (
@@ -585,6 +588,23 @@ export default function DemoManagement() {
                         </CardContent>
                     </Card>
                 </div>
+
+                <AlertDialog open={!!deletingDemoId} onOpenChange={(open) => !open && setDeletingDemoId(null)}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Demo Environment</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Are you sure you want to delete this demo environment? This action cannot be undone.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={performDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                                Delete
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </StandardPage>
         </AdminLayout >
     );

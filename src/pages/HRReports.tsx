@@ -9,6 +9,7 @@ import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Loader2, Download, FileText } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { downloadFile } from "@/lib/utils";
 
 interface ReportType {
     id: string;
@@ -55,13 +56,8 @@ export default function HRReports() {
         const rows = reportData.map((row: any) => Object.values(row).map(v => JSON.stringify(v)).join(","));
         const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].join("\n");
 
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `${selectedType}_${new Date().toISOString()}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        downloadFile(blob, `${selectedType}_${new Date().toISOString()}.csv`);
     };
 
     // Dynamic Columns based on data

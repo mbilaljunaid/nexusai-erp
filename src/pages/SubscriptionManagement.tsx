@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus, Edit, Trash2, CheckCircle2, AlertCircle, Clock } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 interface Subscription {
   id: string;
@@ -69,6 +70,7 @@ export default function SubscriptionManagement() {
   ]);
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterPlan, setFilterPlan] = useState<string>("all");
+  const [deletingSubId, setDeletingSubId] = useState<string | null>(null);
 
   useEffect(() => {
     document.title = "Subscription Management | NexusAIFirst";
@@ -89,8 +91,13 @@ export default function SubscriptionManagement() {
   };
 
   const handleDeleteSubscription = (id: string) => {
-    if (confirm("Delete this subscription?")) {
-      setSubscriptions(subscriptions.filter((sub) => sub.id !== id));
+    setDeletingSubId(id);
+  };
+
+  const performDeleteSubscription = () => {
+    if (deletingSubId) {
+      setSubscriptions(subscriptions.filter((sub) => sub.id !== deletingSubId));
+      setDeletingSubId(null);
     }
   };
 
@@ -295,6 +302,23 @@ export default function SubscriptionManagement() {
           ))
         )}
       </div>
+
+      <AlertDialog open={!!deletingSubId} onOpenChange={(open) => !open && setDeletingSubId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Subscription</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this subscription? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={performDeleteSubscription} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

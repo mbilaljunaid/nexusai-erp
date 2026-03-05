@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import {
     Sheet,
@@ -97,39 +98,58 @@ function ContactEntryForm({ onSuccess }: { onSuccess?: () => void }) {
 
     return (
         <div className="space-y-6 pt-4">
+            <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid grid-cols-1 gap-4">
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="firstName">First Name</Label>
-                            <Input id="firstName" {...form.register("firstName")} placeholder="John" />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="lastName">Last Name *</Label>
-                            <Input id="lastName" {...form.register("lastName")} placeholder="Doe" />
-                        </div>
+                        <FormField control={form.control} name="firstName" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>First Name</FormLabel>
+                                <FormControl><Input placeholder="John" {...field} value={field.value || ""} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField control={form.control} name="lastName" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Last Name *</FormLabel>
+                                <FormControl><Input placeholder="Doe" {...field} value={field.value || ""} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
                     </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" {...form.register("email")} placeholder="john@example.com" />
-                    </div>
+                    <FormField control={form.control} name="email" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl><Input placeholder="john@example.com" {...field} value={field.value || ""} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
 
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="phone">Phone</Label>
-                            <Input id="phone" {...form.register("phone")} placeholder="+1 555..." />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="title">Title</Label>
-                            <Input id="title" {...form.register("title")} placeholder="Manager" />
-                        </div>
+                        <FormField control={form.control} name="phone" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Phone</FormLabel>
+                                <FormControl><Input placeholder="+1 555..." {...field} value={field.value || ""} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField control={form.control} name="title" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Title</FormLabel>
+                                <FormControl><Input placeholder="Manager" {...field} value={field.value || ""} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
                     </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="description">Notes</Label>
-                        <Textarea id="description" {...form.register("description")} placeholder="Additional notes..." />
-                    </div>
+                    <FormField control={form.control} name="description" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Notes</FormLabel>
+                            <FormControl><Textarea placeholder="Additional notes..." {...field} value={field.value || ""} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
                 </div>
 
                 <Button type="submit" disabled={createMutation.isPending} className="w-full">
@@ -137,6 +157,7 @@ function ContactEntryForm({ onSuccess }: { onSuccess?: () => void }) {
                     Create Contact
                 </Button>
             </form>
+            </Form>
         </div>
     );
 }

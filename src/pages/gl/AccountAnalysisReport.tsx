@@ -9,7 +9,7 @@ import { Loader2, Download, TableProperties, Filter } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useLedger } from "@/context/LedgerContext";
-
+import { downloadFile } from "@/lib/utils";
 
 type Transaction = {
     glDate: string;
@@ -77,12 +77,8 @@ export default function AccountAnalysisReport() {
             + headers.join(",") + "\n"
             + rows.map(e => e.join(",")).join("\n");
 
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `account_analysis_${periodName}.csv`);
-        document.body.appendChild(link);
-        link.click();
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        downloadFile(blob, `account_analysis_${periodName}.csv`);
     };
 
     return (

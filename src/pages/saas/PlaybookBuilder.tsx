@@ -10,9 +10,11 @@ import { Plus, Trash2, Save, Play } from 'lucide-react';
 import { supabase } from '@/lib/db';
 import { CSPlaybook, PlaybookAction } from '@/services/customerSuccessService';
 import { StandardPage } from "@/components/layout/StandardPage";
-
+import { useToast } from "@/hooks/use-toast";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 export default function PlaybookBuilder() {
+    const { toast } = useToast();
     const [playbooks, setPlaybooks] = useState<CSPlaybook[]>([]);
     const [selectedPlaybook, setSelectedPlaybook] = useState<CSPlaybook | null>(null);
     const [isCreating, setIsCreating] = useState(false);
@@ -58,24 +60,33 @@ export default function PlaybookBuilder() {
         if (!error) {
             await loadPlaybooks();
             setIsCreating(false);
-            alert('Playbook saved successfully!');
+            toast({ title: 'Success', description: 'Playbook saved successfully!' });
         } else {
-            alert('Error saving playbook: ' + error.message);
+            toast({ title: 'Error', description: 'Error saving playbook: ' + error.message, variant: 'destructive' });
         }
     };
 
+    const [deletingPlaybookId, setDeletingPlaybookId] = useState<string | null>(null);
+
     const deletePlaybook = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this playbook?')) return;
+        setDeletingPlaybookId(id);
+    };
+
+    const performDelete = async () => {
+        if (!deletingPlaybookId) return;
 
         const { error } = await supabase
             .from('cs_playbooks')
             .delete()
-            .eq('id', id);
+            .eq('id', deletingPlaybookId);
 
         if (!error) {
             await loadPlaybooks();
-            setSelectedPlaybook(null);
+            if (selectedPlaybook?.id === deletingPlaybookId) {
+                setSelectedPlaybook(null);
+            }
         }
+        setDeletingPlaybookId(null);
     };
 
     const addAction = () => {
@@ -122,7 +133,7 @@ export default function PlaybookBuilder() {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-gray-500 mt-1">
                         Create automated workflows for customer success
                     </p>
@@ -387,6 +398,23 @@ export default function PlaybookBuilder() {
                     </CardContent>
                 </Card>
             </div>
+
+            <AlertDialog open={!!deletingPlaybookId} onOpenChange={(open) => !open && setDeletingPlaybookId(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Playbook</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to delete this playbook? This cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={performDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </StandardPage>
     );
 }
