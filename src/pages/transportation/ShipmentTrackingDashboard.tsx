@@ -149,12 +149,10 @@ export default function ShipmentTrackingDashboard() {
             label: "Confidence",
             render: (val: number) => (
                 <div className="flex items-center gap-2">
-                    <div className="w-16 h-2 bg-slate-200 rounded-full overflow-hidden">
-                        <div
-                            className={`h-full ${val >= 80 ? "bg-green-500" : val >= 60 ? "bg-amber-500" : "bg-red-500"}`}
-                            // eslint-disable-next-line react-native/no-inline-styles
-                            style={{ width: `${Number(val)}%` }}
-                        />
+                    <div className="w-16 h-2 bg-slate-200 rounded-full overflow-hidden flex">
+                        <svg width={`${Number(val)}%`} height="100%">
+                            <rect width="100%" height="100%" className={val >= 80 ? "fill-green-500" : val >= 60 ? "fill-amber-500" : "fill-red-500"} />
+                        </svg>
                     </div>
                     <span className="text-xs text-muted-foreground">{val}%</span>
                 </div>

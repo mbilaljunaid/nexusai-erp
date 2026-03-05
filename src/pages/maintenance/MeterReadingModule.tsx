@@ -290,11 +290,10 @@ export function MeterReadingModule() {
                                                             {percentToThreshold.toFixed(0)}%
                                                         </span>
                                                     </div>
-                                                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                                                        <div
-                                                            className={cn("h-full transition-all", statusConfig.bg)}
-                                                            style={{ width: `${Math.min(percentToThreshold, 100)}%` }}
-                                                        />
+                                                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden flex">
+                                                        <svg width={`${Math.min(percentToThreshold, 100)}%`} height="100%" className="transition-all">
+                                                            <rect width="100%" height="100%" className={cn(statusConfig.bg.replace("bg-", "fill-"))} />
+                                                        </svg>
                                                     </div>
                                                     <div className="flex justify-between text-xs text-muted-foreground">
                                                         <span>0</span>
@@ -375,6 +374,7 @@ export function MeterReadingModule() {
                                                 <input
                                                     type="checkbox"
                                                     id="location"
+                                                    title="Capture GPS location"
                                                     checked={field.value}
                                                     onChange={field.onChange}
                                                     className="h-4 w-4"

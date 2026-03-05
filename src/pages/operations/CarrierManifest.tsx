@@ -5,11 +5,11 @@ import { Package, Printer, Archive, Send } from 'lucide-react';
 interface Manifest { id: string; manifest_number: string; carrier_scac: string; ship_date: string; total_packages: number; total_weight_kg: number; status: string; }
 interface ManifestPackage { id: string; tracking_number: string; customer_name: string; ship_to_city: string; ship_to_state: string; ship_to_zip: string; weight_kg: number; service_code: string; label_printed: boolean; label_zpl: string; }
 
-const STATUS_CFG: Record<string, { bg: string; color: string }> = {
-    Open: { bg: '#eff6ff', color: '#1d4ed8' },
-    Closed: { bg: '#fef3c7', color: '#d97706' },
-    Tendered: { bg: '#d1fae5', color: '#059669' },
-    InTransit: { bg: '#e0f2fe', color: '#0284c7' },
+const STATUS_CFG: Record<string, string> = {
+    Open: 'bg-blue-50 text-blue-700',
+    Closed: 'bg-amber-100 text-amber-600',
+    Tendered: 'bg-emerald-100 text-emerald-600',
+    InTransit: 'bg-sky-100 text-sky-600',
 };
 
 export default function CarrierManifest() {
@@ -55,8 +55,13 @@ export default function CarrierManifest() {
 
             {/* KPIs */}
             <div className="flex gap-2.5 mb-3.5">
-                {[['Open', summary?.open_manifests ?? 0, '#1d4ed8'], ['Closed', summary?.closed_manifests ?? 0, '#d97706'], ['Tendered', summary?.tendered_manifests ?? 0, '#059669'], ['Pkgs Today', summary?.total_packages_today ?? 0, '#6b7280']].map(([l, v, c]) => (
-                    <div key={l} className="bg-white border border-gray-200 rounded-xl py-2.5 px-4 flex-1" style={{ borderLeft: `4px solid ${c}` }}>
+                {[
+                    ['Open', summary?.open_manifests ?? 0, 'border-l-blue-700'],
+                    ['Closed', summary?.closed_manifests ?? 0, 'border-l-amber-600'],
+                    ['Tendered', summary?.tendered_manifests ?? 0, 'border-l-emerald-600'],
+                    ['Pkgs Today', summary?.total_packages_today ?? 0, 'border-l-gray-500']
+                ].map(([l, v, c]) => (
+                    <div key={l} className={`bg-white border border-gray-200 rounded-xl py-2.5 px-4 flex-1 border-l-4 ${c}`}>
                         <div className="text-[22px] font-extrabold font-mono">{v}</div>
                         <div className="text-[11px] text-gray-400 mt-0.5">{l}</div>
                     </div>
@@ -86,12 +91,12 @@ export default function CarrierManifest() {
                 {/* Manifest list */}
                 <div className="flex flex-col gap-1.5">
                     {manifests.map(m => {
-                        const cfg = STATUS_CFG[m.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
+                        const cfgClass = STATUS_CFG[m.status] ?? 'bg-gray-100 text-gray-500';
                         return (
                             <div key={m.id} onClick={() => setSelected(m)} className={`border rounded-xl p-2.5 cursor-pointer ${selected?.id === m.id ? 'border-blue-700 bg-blue-50' : 'border-gray-200 bg-white'}`}>
                                 <div className="flex justify-between mb-1">
                                     <span className="text-[11px] font-bold font-mono">{m.manifest_number}</span>
-                                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold" style={{ backgroundColor: cfg.bg, color: cfg.color }}>{m.status}</span>
+                                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${cfgClass}`}>{m.status}</span>
                                 </div>
                                 <div className="text-[10px] text-gray-700 mb-0.5">{m.carrier_scac} · {m.ship_date}</div>
                                 <div className="text-[10px] text-gray-500 flex items-center gap-1"><Package size={10} /> {m.total_packages} pkgs · {Number(m.total_weight_kg || 0).toFixed(1)} kg</div>

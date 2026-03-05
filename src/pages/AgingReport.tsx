@@ -63,10 +63,9 @@ export default function AgingReport() {
               <span className="text-sm">${parseFloat(bucket.data.amount).toLocaleString()}</span>
             </div>
             <div className="w-full bg-secondary h-6 rounded flex overflow-hidden">
-              <div
-                className={`${bucket.color} transition-all h-full`}
-                style={{ width: `${bucket.data.percentage || 0}%` }}
-              />
+              <svg width={`${bucket.data.percentage || 0}%`} height="100%" className="transition-all">
+                <rect width="100%" height="100%" className={bucket.color.replace("bg-", "fill-")} />
+              </svg>
             </div>
             <p className="text-xs text-muted-foreground mt-1">{bucket.data.count} invoices ({bucket.data.percentage.toFixed(0)}%)</p>
           </div>

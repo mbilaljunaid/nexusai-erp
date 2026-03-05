@@ -213,113 +213,112 @@ export default function MyTimeCard() {
                                         <span className="capitalize">{bal.leaveType.toLowerCase()}</span>
                                         <span className="font-semibold">{bal.balanceHours}h</span>
                                     </div>
-                                    {/* eslint-disable-next-line react-native/no-inline-styles */}
-                                    <div
-                                        className="bg-primary h-full rounded-full transition-all duration-500"
-                                        style={{ width: `${Math.min(100, (Number(bal.balanceHours) / 160) * 100)}%` }}
-                                    />
-                                </div>
+                                    <div className="w-full bg-muted rounded-full h-2 relative overflow-hidden flex">
+                                        <svg width={`${Math.min(100, (Number(bal.balanceHours) / 160) * 100)}%`} height="100%" className="transition-all duration-500">
+                                            <rect width="100%" height="100%" className="fill-primary" />
+                                        </svg>
+                                    </div>
                                 </div>
                             ))}
-                    </CardContent>
-                </Card>
-            </div>
+                        </CardContent>
+                    </Card>
+                </div>
 
-            {/* Main Content: Time Grid */}
-            <div className="lg:col-span-3 space-y-6">
-                <Card className="border-primary/20 shadow-md">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                        <div className="space-y-1">
-                            <CardTitle>Weekly Entries</CardTitle>
-                            <CardDescription>
-                                Period: {currentPeriod?.name || "Loading..."}
-                            </CardDescription>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Select value={selectedPeriodId} onValueChange={setSelectedPeriodId}>
-                                <SelectTrigger className="w-[180px]">
-                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                    <SelectValue placeholder="Select Period" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {periods?.map((p) => (
-                                        <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            {timesheet?.status === 'DRAFT' && (
-                                <Button className="gap-2">
-                                    <Send className="h-4 w-4" /> Submit
-                                </Button>
-                            )}
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="border-t pt-2">
-                            <InteractiveSpreadsheet
-                                data={timesheet?.entries || []}
-                                columns={columns}
-                                isLoading={sheetLoading}
-                                onChange={() => { }} containerHeight="600px" />
-                        </div>
-
-                        {timesheet?.status === 'DRAFT' && (
-                            <div className="mt-4 p-4 bg-muted/50 rounded-lg flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-primary/10 rounded-full">
-                                        <Plus className="h-4 w-4 text-primary" />
-                                    </div>
-                                    <span className="text-sm font-medium">Add time entry for today?</span>
-                                </div>
-                                <Button size="sm" variant="outline" onClick={() => logTimeMutation.mutate({
-                                    date: new Date().toISOString().split('T')[0],
-                                    durationMinutes: 480, // 8 hours default
-                                    timeType: 'REGULAR',
-                                    projectCode: 'INT-DEV',
-                                    costCenter: 'CC-400-ENG'
-                                })}>
-                                    Quick Log (8h)
-                                </Button>
+                {/* Main Content: Time Grid */}
+                <div className="lg:col-span-3 space-y-6">
+                    <Card className="border-primary/20 shadow-md">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+                            <div className="space-y-1">
+                                <CardTitle>Weekly Entries</CardTitle>
+                                <CardDescription>
+                                    Period: {currentPeriod?.name || "Loading..."}
+                                </CardDescription>
                             </div>
-                        )}
-                    </CardContent>
-                </Card>
+                            <div className="flex items-center gap-2">
+                                <Select value={selectedPeriodId} onValueChange={setSelectedPeriodId}>
+                                    <SelectTrigger className="w-[180px]">
+                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                        <SelectValue placeholder="Select Period" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {periods?.map((p) => (
+                                            <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {timesheet?.status === 'DRAFT' && (
+                                    <Button className="gap-2">
+                                        <Send className="h-4 w-4" /> Submit
+                                    </Button>
+                                )}
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="border-t pt-2">
+                                <InteractiveSpreadsheet
+                                    data={timesheet?.entries || []}
+                                    columns={columns}
+                                    isLoading={sheetLoading}
+                                    onChange={() => { }} containerHeight="600px" />
+                            </div>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="text-lg flex items-center gap-2">
-                            <History className="h-5 w-5 text-muted-foreground" />
-                            Quick Absence History
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-3">
-                            {history?.slice(0, 3).map((item, idx) => (
-                                <div key={idx} className="flex items-center justify-between p-2 rounded hover:bg-muted/50 transition-colors">
+                            {timesheet?.status === 'DRAFT' && (
+                                <div className="mt-4 p-4 bg-muted/50 rounded-lg flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                        <div className={cn(
-                                            "w-1 h-8 rounded",
-                                            item.hrm_time_entries.timeType === 'SICK' ? "bg-red-500" : "bg-sky-500"
-                                        )} />
-                                        <div>
-                                            <p className="text-sm font-medium">{item.hrm_time_entries.timeType}</p>
-                                            <p className="text-xs text-muted-foreground">{item.hrm_time_entries.date}</p>
+                                        <div className="p-2 bg-primary/10 rounded-full">
+                                            <Plus className="h-4 w-4 text-primary" />
                                         </div>
+                                        <span className="text-sm font-medium">Add time entry for today?</span>
                                     </div>
-                                    <Badge variant="outline">{(item.hrm_time_entries.durationMinutes / 60).toFixed(1)}h</Badge>
-                                </div>
-                            ))}
-                            {(!history || history.length === 0) && (
-                                <div className="text-center py-6 text-muted-foreground">
-                                    <Info className="h-8 w-8 mx-auto opacity-20 mb-2" />
-                                    <p className="text-sm">No recent absence records found.</p>
+                                    <Button size="sm" variant="outline" onClick={() => logTimeMutation.mutate({
+                                        date: new Date().toISOString().split('T')[0],
+                                        durationMinutes: 480, // 8 hours default
+                                        timeType: 'REGULAR',
+                                        projectCode: 'INT-DEV',
+                                        costCenter: 'CC-400-ENG'
+                                    })}>
+                                        Quick Log (8h)
+                                    </Button>
                                 </div>
                             )}
-                        </div>
-                    </CardContent>
-                </Card>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-lg flex items-center gap-2">
+                                <History className="h-5 w-5 text-muted-foreground" />
+                                Quick Absence History
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-3">
+                                {history?.slice(0, 3).map((item, idx) => (
+                                    <div key={idx} className="flex items-center justify-between p-2 rounded hover:bg-muted/50 transition-colors">
+                                        <div className="flex items-center gap-3">
+                                            <div className={cn(
+                                                "w-1 h-8 rounded",
+                                                item.hrm_time_entries.timeType === 'SICK' ? "bg-red-500" : "bg-sky-500"
+                                            )} />
+                                            <div>
+                                                <p className="text-sm font-medium">{item.hrm_time_entries.timeType}</p>
+                                                <p className="text-xs text-muted-foreground">{item.hrm_time_entries.date}</p>
+                                            </div>
+                                        </div>
+                                        <Badge variant="outline">{(item.hrm_time_entries.durationMinutes / 60).toFixed(1)}h</Badge>
+                                    </div>
+                                ))}
+                                {(!history || history.length === 0) && (
+                                    <div className="text-center py-6 text-muted-foreground">
+                                        <Info className="h-8 w-8 mx-auto opacity-20 mb-2" />
+                                        <p className="text-sm">No recent absence records found.</p>
+                                    </div>
+                                )}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
-        </div>
         </StandardPage >
     );
 }

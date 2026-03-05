@@ -47,16 +47,16 @@ export default function TaxRuleEngine() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div>
-                                <label className="text-sm font-medium">Rule Name</label>
-                                <input className="w-full border rounded-md p-2" placeholder="e.g., High Value Tax" />
+                                <label htmlFor="ruleName" className="text-sm font-medium">Rule Name</label>
+                                <input id="ruleName" title="Rule Name" className="w-full border rounded-md p-2" placeholder="e.g., High Value Tax" />
                             </div>
                             <div>
                                 <label className="text-sm font-medium mb-2 block">Conditions (If)</label>
                                 {conditions.map((condition, i) => (
                                     <div key={i} className="grid grid-cols-3 gap-2 mb-2">
                                         <Select value={condition.field}>
-                                            <SelectTrigger>
-                                                <SelectValue />
+                                            <SelectTrigger aria-label="Select field" title="Select field">
+                                                <SelectValue placeholder="Field" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="amount">Amount</SelectItem>
@@ -65,8 +65,8 @@ export default function TaxRuleEngine() {
                                             </SelectContent>
                                         </Select>
                                         <Select value={condition.operator}>
-                                            <SelectTrigger>
-                                                <SelectValue />
+                                            <SelectTrigger aria-label="Select operator" title="Select operator">
+                                                <SelectValue placeholder="Operator" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value=">">Greater Than</SelectItem>
@@ -76,6 +76,7 @@ export default function TaxRuleEngine() {
                                         </Select>
                                         <input
                                             type="text"
+                                            title="Condition Value"
                                             className="border rounded-md p-2"
                                             value={condition.value}
                                             placeholder="Value"
@@ -86,8 +87,8 @@ export default function TaxRuleEngine() {
                             <div>
                                 <label className="text-sm font-medium">Then (Action)</label>
                                 <Select defaultValue="APPLY_RATE">
-                                    <SelectTrigger>
-                                        <SelectValue />
+                                    <SelectTrigger aria-label="Select action" title="Select action">
+                                        <SelectValue placeholder="Action" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="APPLY_RATE">Apply Tax Rate</SelectItem>
@@ -97,8 +98,8 @@ export default function TaxRuleEngine() {
                                 </Select>
                             </div>
                             <div>
-                                <label className="text-sm font-medium">Priority</label>
-                                <input type="number" className="w-full border rounded-md p-2" defaultValue="10" />
+                                <label htmlFor="rulePriority" className="text-sm font-medium">Priority</label>
+                                <input id="rulePriority" title="Priority" type="number" className="w-full border rounded-md p-2" defaultValue="10" placeholder="Priority" />
                             </div>
                             <Button className="w-full">
                                 <Save className="h-4 w-4 mr-2" />

@@ -344,7 +344,7 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
               <p className="text-sm">No partners found</p>
             </div>
           ) : (
-            <div style={{ height: '400px' }}>
+            <div className="h-[400px]">
               <InteractiveSpreadsheet
                 columns={partnerColumns}
                 data={filteredApprovedPartners}
@@ -650,7 +650,7 @@ export default function PlatformAdmin() {
             </Button>
           </div>
 
-          <div style={{ height: '400px' }}>
+          <div className="h-[400px]">
             <InteractiveSpreadsheet
               columns={tenantColumns}
               data={tenants}
@@ -694,7 +694,7 @@ export default function PlatformAdmin() {
                 <CardDescription>Users with full admin access to their tenant</CardDescription>
               </CardHeader>
               <CardContent>
-                <div style={{ height: '350px' }}>
+                <div className="h-[350px]">
                   <InteractiveSpreadsheet
                     columns={adminUserColumns}
                     data={tenants.slice(0, 10).map((t: any, i) => ({
@@ -969,7 +969,7 @@ export default function PlatformAdmin() {
               <CardDescription>Active implementation and support contracts</CardDescription>
             </CardHeader>
             <CardContent>
-              <div style={{ height: '300px' }}>
+              <div className="h-[300px]">
                 <InteractiveSpreadsheet
                   columns={contractColumns}
                   data={[
