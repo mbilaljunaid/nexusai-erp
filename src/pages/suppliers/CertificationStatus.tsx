@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ShieldCheck, ShieldAlert, ShieldOff, AlertCircle } from 'lucide-react';
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from "@/components/ui/input";
 
 
 interface Cert { id: string; supplier_id: string; cert_type: string; cert_number: string; issuing_body: string; issue_date: string; expiry_date: string; status: string; verified_by: string; days_remaining?: number; }
@@ -90,14 +92,15 @@ export default function CertificationStatus() {
                     <div className="grid grid-cols-3 gap-2">
                         <div className="flex flex-col gap-[3px]">
                             <label className="text-[10px] font-semibold">Cert Type</label>
-                            <select value={form.certType} onChange={e => setForm(p => ({ ...p, certType: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label="Certificate type">
-                                {CERT_TYPES.map(t => <option key={t}>{t}</option>)}
-                            </select>
+                            <Select value={form.certType} onValueChange={v => setForm(p => ({ ...p, certType: v }))}>
+                                <SelectTrigger className="px-2 py-1.5 text-[11px]" aria-label="Certificate type"><SelectValue /></SelectTrigger>
+                                <SelectContent>{CERT_TYPES.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+                            </Select>
                         </div>
                         {[['supplierId', 'Supplier ID', 'text'], ['certNumber', 'Cert Number', 'text'], ['issuingBody', 'Issuing Body', 'text'], ['issueDate', 'Issue Date', 'date'], ['expiryDate', 'Expiry Date', 'date']].map(([k, l, t]) => (
                             <div key={k} className="flex flex-col gap-[3px]">
                                 <label className="text-[10px] font-semibold">{l}</label>
-                                <input type={t} value={(form as any)[k] ?? ''} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label={l} />
+                                <Input type={t} value={(form as any)[k] ?? ''} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label={l} />
                             </div>
                         ))}
                     </div>
@@ -111,7 +114,7 @@ export default function CertificationStatus() {
             {tab === 'certs' && (
                 <>
                     <div className="flex gap-2 mb-2.5">
-                        <input placeholder="Filter by supplier ID" value={supplierId} onChange={e => setSupplierId(e.target.value)} className="px-2.5 py-1.5 border border-gray-300 rounded-lg text-[12px] min-w-[200px]" aria-label="Supplier filter" />
+                        <Input placeholder="Filter by supplier ID" value={supplierId} onChange={e => setSupplierId(e.target.value)} className="px-2.5 py-1.5 border border-gray-300 rounded-lg text-[12px] min-w-[200px]" aria-label="Supplier filter" />
                         {['', 'Active', 'Expired', 'Pending', 'Revoked'].map(s => (
                             <button key={s} onClick={() => setStatusFilter(s)} className={`px-3 py-1.5 border border-gray-200 rounded-md text-[11px] font-semibold cursor-pointer ${statusFilter === s ? "bg-gray-900 text-white" : "bg-white text-gray-500"}`}>
                                 {s || 'All'}

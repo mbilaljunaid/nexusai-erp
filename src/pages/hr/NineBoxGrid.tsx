@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 interface NineBoxEntry { employee_id: string; performance: number; potential: number; box_label: string; assessed_by: string; notes: string; }
 
 const BOX_CONFIG: Record<string, { bg: string; border: string; label: string }> = {
@@ -78,9 +79,12 @@ export default function NineBoxGrid() {
                         ))}
                         {[['Performance', 'performance'], ['Potential', 'potential']].map(([lbl, key]) => (
                             <div key={key}><label className="text-[10px] font-bold block">{lbl}</label>
-                                <select value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="w-full px-2 py-1 border border-purple-200 rounded-md text-[11px]" aria-label={lbl}>
-                                    <option value="1">1 — Low</option><option value="2">2 — Medium</option><option value="3">3 — High</option>
-                                </select>
+                                <Select value={(form as any)[key]} onValueChange={v => setForm(p => ({ ...p, [key]: v }))}>
+                                    <SelectTrigger className="w-full text-[11px]" aria-label={lbl}><SelectValue /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="1">1 — Low</SelectItem><SelectItem value="2">2 — Medium</SelectItem><SelectItem value="3">3 — High</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
                         ))}
                         <div><label className="text-[10px] font-bold block">Notes</label>

@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { Textarea } from "@/components/ui/textarea";
 import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -131,8 +132,7 @@ export default function SoDMatrix() {
 
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Description</label>
-                                <textarea
-                                    className="w-full p-2 border rounded-md bg-transparent"
+                                <Textarea
                                     value={description}
                                     onChange={e => setDescription(e.target.value)}
                                     placeholder="Why is this combination dangerous?"

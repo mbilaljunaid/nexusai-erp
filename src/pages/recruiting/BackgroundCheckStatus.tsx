@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle2, ShieldAlert, ClipboardList } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface BGCOrder {
     id: string; applicant_id: string; candidate_name: string; package_type: string;
@@ -114,9 +115,10 @@ export default function BackgroundCheckStatus() {
                     <div className="grid grid-cols-3 gap-2">
                         <div className="flex flex-col gap-0.5">
                             <label className="text-[10px] font-semibold">Package</label>
-                            <select value={form.packageType} onChange={e => setForm(p => ({ ...p, packageType: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label="Package">
-                                {['BASIC', 'STANDARD', 'COMPREHENSIVE', 'EXECUTIVE', 'INTERNATIONAL'].map(t => <option key={t}>{t}</option>)}
-                            </select>
+                            <Select value={form.packageType} onValueChange={v => setForm(p => ({ ...p, packageType: v }))}>
+                                <SelectTrigger className="px-2 py-1.5 text-[11px]" aria-label="Package"><SelectValue /></SelectTrigger>
+                                <SelectContent>{['BASIC', 'STANDARD', 'COMPREHENSIVE', 'EXECUTIVE', 'INTERNATIONAL'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+                            </Select>
                         </div>
                         {[['applicantId', 'Applicant ID', 'text'], ['candidateName', 'Candidate Name', 'text'], ['candidateEmail', 'Email', 'email']].map(([k, l, t]) => (
                             <div key={k} className="flex flex-col gap-0.5">
@@ -179,12 +181,14 @@ export default function BackgroundCheckStatus() {
                             <div className="bg-green-50 border border-green-200 rounded-lg p-2.5 mb-2.5">
                                 <div className="text-[10px] font-bold mb-1.5">Record Component Result</div>
                                 <div className="flex flex-col gap-1.5">
-                                    <select value={componentForm.componentType} onChange={e => setComponentForm(p => ({ ...p, componentType: e.target.value }))} className="px-1.5 py-1 border border-gray-300 rounded-md text-[10px]" aria-label="Component type">
-                                        {selectedOrder.components.filter(c => !c.result).map(c => <option key={c.component_type} value={c.component_type}>{c.component_type}</option>)}
-                                    </select>
-                                    <select value={componentForm.result} onChange={e => setComponentForm(p => ({ ...p, result: e.target.value }))} className="px-1.5 py-1 border border-gray-300 rounded-md text-[10px]" aria-label="Result">
-                                        {['Clear', 'Hit', 'Unable_To_Verify'].map(r => <option key={r}>{r}</option>)}
-                                    </select>
+                                    <Select value={componentForm.componentType} onValueChange={v => setComponentForm(p => ({ ...p, componentType: v }))}>
+                                        <SelectTrigger className="px-1.5 py-1 text-[10px]" aria-label="Component type"><SelectValue /></SelectTrigger>
+                                        <SelectContent>{selectedOrder.components.filter(c => !c.result).map(c => <SelectItem key={c.component_type} value={c.component_type}>{c.component_type}</SelectItem>)}</SelectContent>
+                                    </Select>
+                                    <Select value={componentForm.result} onValueChange={v => setComponentForm(p => ({ ...p, result: v }))}>
+                                        <SelectTrigger className="px-1.5 py-1 text-[10px]" aria-label="Result"><SelectValue /></SelectTrigger>
+                                        <SelectContent>{['Clear', 'Hit', 'Unable_To_Verify'].map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
+                                    </Select>
                                     <input placeholder="Details (optional)" value={componentForm.details} onChange={e => setComponentForm(p => ({ ...p, details: e.target.value }))} className="px-1.5 py-1 border border-gray-300 rounded-md text-[10px]" aria-label="Details" />
                                     <button onClick={() => componentMut.mutate({ id: selectedOrder.id, ...componentForm })} className="p-1 bg-emerald-600 text-white border-none rounded-md text-[10px] cursor-pointer">Record</button>
                                 </div>
@@ -205,9 +209,10 @@ export default function BackgroundCheckStatus() {
                         {(selectedOrder.status === 'Complete' || selectedOrder.status === 'Adverse_Action') && !selectedOrder.final_decision && (
                             <div className="bg-blue-50 border border-blue-200 rounded-lg p-2.5">
                                 <div className="text-[10px] font-bold mb-1.5">Final Decision</div>
-                                <select value={decisionForm.decision} onChange={e => setDecisionForm(p => ({ ...p, decision: e.target.value as any }))} className="px-1.5 py-1 border border-gray-300 rounded-md text-[10px] w-full mb-1" aria-label="Decision">
-                                    {['Proceed', 'Withdraw', 'Conditional'].map(d => <option key={d}>{d}</option>)}
-                                </select>
+                                <Select value={decisionForm.decision} onValueChange={v => setDecisionForm(p => ({ ...p, decision: v as any }))}>
+                                    <SelectTrigger className="px-1.5 py-1 text-[10px] w-full mb-1" aria-label="Decision"><SelectValue /></SelectTrigger>
+                                    <SelectContent>{['Proceed', 'Withdraw', 'Conditional'].map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
+                                </Select>
                                 <input placeholder="Notes" value={decisionForm.notes} onChange={e => setDecisionForm(p => ({ ...p, notes: e.target.value }))} className="px-1.5 py-1 border border-gray-300 rounded-md text-[10px] w-full mb-1" aria-label="Notes" />
                                 <button onClick={() => decisionMut.mutate({ id: selectedOrder.id, ...decisionForm })} className="w-full p-1.5 bg-blue-700 text-white border-none rounded-md text-[10px] cursor-pointer">Finalize</button>
                             </div>

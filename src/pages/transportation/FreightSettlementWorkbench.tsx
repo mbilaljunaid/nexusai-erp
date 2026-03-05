@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -251,7 +252,7 @@ export default function FreightSettlementWorkbench() {
         <StandardPage title="Freight Settlement Workbench">
             {/* Header */}
             <div>
-                
+
                 <p className="text-muted-foreground mt-1">Reconcile carrier invoices and interface to Accounts Payable</p>
             </div>
 
@@ -642,20 +643,18 @@ export default function FreightSettlementWorkbench() {
                     <div className="space-y-4 py-4">
                         <div className="space-y-2">
                             <Label htmlFor="disputeReason">Dispute Reason *</Label>
-                            <select
-                                id="disputeReason"
-                                aria-label="Select dispute reason"
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                                value={disputeReason}
-                                onChange={(e) => setDisputeReason(e.target.value)}
-                            >
-                                <option value="">Select a reason...</option>
-                                <option value="INCORRECT_AMOUNT">Incorrect Amount</option>
-                                <option value="UNAUTHORIZED_CHARGE">Unauthorized Charge</option>
-                                <option value="SERVICE_NOT_RENDERED">Service Not Rendered</option>
-                                <option value="DUPLICATE_CHARGE">Duplicate Charge</option>
-                                <option value="OTHER">Other</option>
-                            </select>
+                            <Select value={disputeReason} onValueChange={setDisputeReason}>
+                                <SelectTrigger id="disputeReason">
+                                    <SelectValue placeholder="Select a reason..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="INCORRECT_AMOUNT">Incorrect Amount</SelectItem>
+                                    <SelectItem value="UNAUTHORIZED_CHARGE">Unauthorized Charge</SelectItem>
+                                    <SelectItem value="SERVICE_NOT_RENDERED">Service Not Rendered</SelectItem>
+                                    <SelectItem value="DUPLICATE_CHARGE">Duplicate Charge</SelectItem>
+                                    <SelectItem value="OTHER">Other</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
                     <DialogFooter>

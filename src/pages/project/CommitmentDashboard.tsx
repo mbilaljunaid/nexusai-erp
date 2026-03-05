@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Input } from "@/components/ui/input";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertOctagon, Bell, TrendingDown, CheckCheck } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
@@ -89,7 +90,7 @@ export default function CommitmentDashboard() {
 
             {/* Project picker */}
             <div className="flex gap-2 mb-3">
-                <input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="py-1.5 px-3 border border-gray-300 rounded-lg text-xs min-w-[220px]" aria-label="Project ID" />
+                <Input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="text-xs min-w-[220px] h-8" aria-label="Project ID" />
                 <button disabled={!projectId} onClick={() => setActiveProject(projectId)} className="py-1.5 px-4 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50">Load</button>
             </div>
 

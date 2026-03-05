@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Input } from "@/components/ui/input";
 import { Lock, Shield, Plus, Trash2 } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useToast } from "@/hooks/use-toast";
@@ -189,24 +190,22 @@ export default function SecurityAdminPanel() {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               IP Address *
             </label>
-            <input
+            <Input
               type="text"
               value={newIP}
               onChange={(e) => setNewIP(e.target.value)}
               placeholder="192.168.1.1"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
             />
           </div>
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Reason (Optional)
             </label>
-            <input
+            <Input
               type="text"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="Why this IP is being added..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
             />
           </div>
         </div>

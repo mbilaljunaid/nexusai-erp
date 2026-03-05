@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Link, useRoute } from "wouter";
@@ -10,12 +11,19 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ArrowLeft, CheckCircle, FileText, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { PromptDialog } from "@/components/shared/PromptDialog";
 
 export default function ContractDetailView() {
     const [match, params] = useRoute("/contracts/:id");
     const id = (params as any)?.id;
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const [addLineDialogOpen, setAddLineDialogOpen] = useState(false);
+    const [addDocDialogOpen, setAddDocDialogOpen] = useState(false);
+    const [lineForm, setLineForm] = useState({ desc: "", qty: "1", price: "1000" });
 
     const { data: contract, isLoading } = useQuery<any>({
         queryKey: ["contract", id],
@@ -151,30 +159,7 @@ export default function ContractDetailView() {
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle>Contract Lines</CardTitle>
-                            <Button size="sm" onClick={() => {
-                                const desc = prompt("Item Description:");
-                                if (!desc) return;
-                                const qty = Number(prompt("Quantity:", "1"));
-                                const price = Number(prompt("Unit Price:", "1000"));
-                                const amount = qty * price;
-
-                                fetch(`/api/contracts/${id}/lines`, {
-                                    method: "POST",
-                                    headers: { "Content-Type": "application/json" },
-                                    body: JSON.stringify({
-                                        contractId: id,
-                                        lineNumber: (contract.lines?.length || 0) + 1,
-                                        itemDescription: desc,
-                                        quantity: qty,
-                                        unitPrice: price,
-                                        lineAmount: amount,
-                                        obligationType: "DELIVERABLE"
-                                    })
-                                }).then(() => {
-                                    toast({ title: "Line Added", description: "Contract line created." });
-                                    queryClient.invalidateQueries({ queryKey: ["contract", id] });
-                                });
-                            }}>+ Add Line Item</Button>
+                            <Button size="sm" onClick={() => setAddLineDialogOpen(true)}>+ Add Line Item</Button>
                         </CardHeader>
                         <CardContent>
                             {(contract.lines && contract.lines.length > 0) ? (
@@ -241,25 +226,7 @@ export default function ContractDetailView() {
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle>Documents</CardTitle>
-                            <Button variant="outline" size="sm" onClick={() => {
-                                const name = prompt("Document Name:");
-                                if (!name) return;
-                                const url = "s3://nexusai-erp/" + name.replace(/\s+/g, '-').toLowerCase() + ".pdf";
-
-                                fetch(`/api/contracts/${id}/documents`, {
-                                    method: "POST",
-                                    headers: { "Content-Type": "application/json" },
-                                    body: JSON.stringify({
-                                        contractId: id,
-                                        documentName: name,
-                                        documentType: "CONTRACT",
-                                        url: url
-                                    })
-                                }).then(() => {
-                                    toast({ title: "Document Uploaded", description: "Metadata saved." });
-                                    queryClient.invalidateQueries({ queryKey: ["contract", id] });
-                                });
-                            }}>Upload Document</Button>
+                            <Button variant="outline" size="sm" onClick={() => setAddDocDialogOpen(true)}>Upload Document</Button>
                         </CardHeader>
                         <CardContent className="py-4">
                             {(contract.documents && contract.documents.length > 0) ? (
@@ -289,6 +256,70 @@ export default function ContractDetailView() {
                     </Card>
                 </TabsContent>
             </Tabs>
+
+            {/* Add Line Item Dialog */}
+            <Dialog open={addLineDialogOpen} onOpenChange={setAddLineDialogOpen}>
+                <DialogContent className="sm:max-w-[400px]">
+                    <DialogHeader><DialogTitle>Add Contract Line Item</DialogTitle></DialogHeader>
+                    <div className="space-y-3 py-2">
+                        <div className="space-y-1">
+                            <Label>Item Description</Label>
+                            <Input placeholder="e.g. Professional Services" value={lineForm.desc} onChange={e => setLineForm(f => ({ ...f, desc: e.target.value }))} autoFocus />
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-1">
+                                <Label>Quantity</Label>
+                                <Input type="number" value={lineForm.qty} onChange={e => setLineForm(f => ({ ...f, qty: e.target.value }))} />
+                            </div>
+                            <div className="space-y-1">
+                                <Label>Unit Price</Label>
+                                <Input type="number" value={lineForm.price} onChange={e => setLineForm(f => ({ ...f, price: e.target.value }))} />
+                            </div>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setAddLineDialogOpen(false)}>Cancel</Button>
+                        <Button disabled={!lineForm.desc.trim()} onClick={() => {
+                            const desc = lineForm.desc.trim();
+                            const qty = Number(lineForm.qty) || 1;
+                            const price = Number(lineForm.price) || 0;
+                            const amount = qty * price;
+                            setAddLineDialogOpen(false);
+                            fetch(`/api/contracts/${id}/lines`, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ contractId: id, lineNumber: (contract.lines?.length || 0) + 1, itemDescription: desc, quantity: qty, unitPrice: price, lineAmount: amount, obligationType: "DELIVERABLE" })
+                            }).then(() => {
+                                toast({ title: "Line Added", description: "Contract line created." });
+                                queryClient.invalidateQueries({ queryKey: ["contract", id] });
+                            });
+                        }}>Add Line</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Upload Document Dialog */}
+            <PromptDialog
+                open={addDocDialogOpen}
+                title="Upload Document"
+                description="Enter a name for the document. A simulated S3 URL will be generated."
+                label="Document Name"
+                placeholder="e.g. Master Service Agreement"
+                confirmLabel="Upload"
+                onConfirm={(name) => {
+                    setAddDocDialogOpen(false);
+                    const url = "s3://nexusai-erp/" + name.replace(/\s+/g, '-').toLowerCase() + ".pdf";
+                    fetch(`/api/contracts/${id}/documents`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ contractId: id, documentName: name, documentType: "CONTRACT", url })
+                    }).then(() => {
+                        toast({ title: "Document Uploaded", description: "Metadata saved." });
+                        queryClient.invalidateQueries({ queryKey: ["contract", id] });
+                    });
+                }}
+                onCancel={() => setAddDocDialogOpen(false)}
+            />
         </StandardPage>
     );
 }

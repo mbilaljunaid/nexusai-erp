@@ -3,6 +3,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ReportBuilder } from "@/components/ReportBuilder";
 import { SmartViewBuilder } from "@/components/SmartViewBuilder";
@@ -32,6 +33,8 @@ export default function Reports() {
   const [selectedModule, setSelectedModule] = useState("crm");
   const [mainTab, setMainTab] = useState("reports");
   const [importData, setImportData] = useState<any[]>([]);
+  const [exportFormat, setExportFormat] = useState("PDF");
+  const [retentionPolicy, setRetentionPolicy] = useState("Keep all data");
   const { toast } = useToast();
 
   const handleExcelImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -279,22 +282,32 @@ export default function Reports() {
             <CardContent className="space-y-6">
               <div className="space-y-3">
                 <h3 className="font-semibold text-sm">Default Export Format</h3>
-                <select className="w-full p-2 border rounded-md bg-background" aria-label="Default Export Format">
-                  <option>PDF</option>
-                  <option>CSV</option>
-                  <option>DOCX</option>
-                  <option>Excel</option>
-                </select>
+                <Select value={exportFormat} onValueChange={setExportFormat}>
+                  <SelectTrigger aria-label="Default Export Format">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="PDF">PDF</SelectItem>
+                    <SelectItem value="CSV">CSV</SelectItem>
+                    <SelectItem value="DOCX">DOCX</SelectItem>
+                    <SelectItem value="Excel">Excel</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-3">
                 <h3 className="font-semibold text-sm">Data Retention Policy</h3>
-                <select className="w-full p-2 border rounded-md bg-background" aria-label="Data Retention Policy">
-                  <option>Keep all data</option>
-                  <option>1 year</option>
-                  <option>6 months</option>
-                  <option>3 months</option>
-                </select>
+                <Select value={retentionPolicy} onValueChange={setRetentionPolicy}>
+                  <SelectTrigger aria-label="Data Retention Policy">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Keep all data">Keep all data</SelectItem>
+                    <SelectItem value="1 year">1 year</SelectItem>
+                    <SelectItem value="6 months">6 months</SelectItem>
+                    <SelectItem value="3 months">3 months</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-3">

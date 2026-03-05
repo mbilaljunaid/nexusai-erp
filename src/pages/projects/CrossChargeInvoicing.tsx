@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PromptDialog } from "@/components/shared/PromptDialog";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -45,6 +46,7 @@ export default function CrossChargeInvoicing() {
     const [targetProject, setTargetProject] = useState("");
     const [description, setDescription] = useState("");
     const [lineItems, setLineItems] = useState<CrossChargeLineItem[]>([]);
+    const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
 
     // Fetch invoices
     const { data: invoices, isLoading } = useQuery<any>({
@@ -396,10 +398,7 @@ export default function CrossChargeInvoicing() {
                                     </Button>
                                     <Button
                                         variant="destructive"
-                                        onClick={() => {
-                                            const reason = prompt("Rejection reason:");
-                                            if (reason) rejectMutation.mutate({ invoiceId: selectedInvoice, reason });
-                                        }}
+                                        onClick={() => setRejectDialogOpen(true)}
                                         disabled={rejectMutation.isPending}
                                     >
                                         <X className="h-4 w-4 mr-2" />
@@ -411,6 +410,20 @@ export default function CrossChargeInvoicing() {
                     </CardContent>
                 </Card>
             </div>
+
+            <PromptDialog
+                open={rejectDialogOpen}
+                title="Reject Cross-Charge Invoice"
+                description="Please provide a reason for rejecting this invoice."
+                label="Rejection Reason"
+                placeholder="Enter reason..."
+                confirmLabel="Reject"
+                onConfirm={(reason) => {
+                    setRejectDialogOpen(false);
+                    if (selectedInvoice) rejectMutation.mutate({ invoiceId: selectedInvoice, reason });
+                }}
+                onCancel={() => setRejectDialogOpen(false)}
+            />
         </StandardPage>
     );
 }

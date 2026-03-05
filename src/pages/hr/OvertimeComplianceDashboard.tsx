@@ -5,6 +5,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface OvertimeRule {
     id: string;
@@ -138,10 +139,13 @@ export default function OvertimeComplianceDashboard() {
                         <div className="ff"><label className="fl">Employee ID</label><input className="fi" placeholder="UUID or emp code" value={tc.employeeId} onChange={e => setTc(p => ({ ...p, employeeId: e.target.value }))} aria-label="Employee ID" /></div>
                         <div className="ff">
                             <label className="fl">Rule</label>
-                            <select className="fi" value={tc.ruleCode} onChange={e => setTc(p => ({ ...p, ruleCode: e.target.value }))} aria-label="Overtime rule">
-                                {rules.map(r => <option key={r.rule_code} value={r.rule_code}>{r.rule_code} ({r.jurisdiction})</option>)}
-                                {rules.length === 0 && <option>US_FLSA</option>}
-                            </select>
+                            <Select value={tc.ruleCode} onValueChange={v => setTc(p => ({ ...p, ruleCode: v }))}>
+                                <SelectTrigger className="fi" aria-label="Overtime rule"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                    {rules.map(r => <SelectItem key={r.rule_code} value={r.rule_code}>{r.rule_code} ({r.jurisdiction})</SelectItem>)}
+                                    {rules.length === 0 && <SelectItem value="US_FLSA">US_FLSA</SelectItem>}
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div className="ff"><label className="fl">Clock In</label><input className="fi" type="datetime-local" value={tc.clockIn} onChange={e => setTc(p => ({ ...p, clockIn: e.target.value }))} aria-label="Clock in time" /></div>
                         <div className="ff"><label className="fl">Clock Out</label><input className="fi" type="datetime-local" value={tc.clockOut} onChange={e => setTc(p => ({ ...p, clockOut: e.target.value }))} aria-label="Clock out time" /></div>

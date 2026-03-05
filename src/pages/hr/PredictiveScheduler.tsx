@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
+import { Input } from "@/components/ui/input";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Calendar, Zap, Send, BarChart2, Users } from 'lucide-react';
 import { useEnterpriseStore } from '@/lib/enterpriseStore';
 import { StandardPage } from "@/components/layout/StandardPage";
-import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { DatePicker } from '@/components/ui/DatePicker';
 
@@ -97,7 +97,7 @@ export default function PredictiveScheduler() {
                 <div className="ps-ctrl">
                     <div className="ps-loc">
                         <label className="ll">Location</label>
-                        <input className="li" value={location} onChange={e => setLocation(e.target.value)} aria-label="Location ID" />
+                        <Input className="li" value={location} onChange={e => setLocation(e.target.value)} aria-label="Location ID" />
                     </div>
                     <div className="ps-wk">
                         <label className="ll">Week Of</label>
@@ -209,9 +209,9 @@ export default function PredictiveScheduler() {
                     <h3 className="gp-title">Generate Schedule from Demand Forecast</h3>
                     <div className="gp-grid">
                         <div className="gf"><label className="gl">Week Start</label><DatePicker className="gi" value={genParams.weekStartDate || weekStart} onChange={v => setGenParams(p => ({ ...p, weekStartDate: v }))} aria-label="Schedule week start" /></div>
-                        <div className="gf"><label className="gl">Employee IDs (comma-sep)</label><input className="gi" value={genParams.employeeIds} onChange={e => setGenParams(p => ({ ...p, employeeIds: e.target.value }))} aria-label="Employee IDs" /></div>
-                        <div className="gf"><label className="gl">Max Hours / Employee</label><input className="gi" type="number" value={genParams.maxHoursPerEmployee} onChange={e => setGenParams(p => ({ ...p, maxHoursPerEmployee: parseInt(e.target.value) || 40 }))} aria-label="Max hours per employee" /></div>
-                        <div className="gf"><label className="gl">Shift Hours</label><input className="gi" type="number" value={genParams.shiftHours} onChange={e => setGenParams(p => ({ ...p, shiftHours: parseInt(e.target.value) || 8 }))} aria-label="Hours per shift" /></div>
+                        <div className="gf"><label className="gl">Employee IDs (comma-sep)</label><Input className="gi" value={genParams.employeeIds} onChange={e => setGenParams(p => ({ ...p, employeeIds: e.target.value }))} aria-label="Employee IDs" /></div>
+                        <div className="gf"><label className="gl">Max Hours / Employee</label><Input className="gi" type="number" value={genParams.maxHoursPerEmployee} onChange={e => setGenParams(p => ({ ...p, maxHoursPerEmployee: parseInt(e.target.value) || 40 }))} aria-label="Max hours per employee" /></div>
+                        <div className="gf"><label className="gl">Shift Hours</label><Input className="gi" type="number" value={genParams.shiftHours} onChange={e => setGenParams(p => ({ ...p, shiftHours: parseInt(e.target.value) || 8 }))} aria-label="Hours per shift" /></div>
                     </div>
                     <button className="gen-btn" disabled={generateMutation.isPending}
                         onClick={() => generateMutation.mutate({

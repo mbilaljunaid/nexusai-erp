@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { GitMerge, ChevronRight, AlertTriangle } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from "@/components/ui/input";
 
 
 interface Lot { id: string; lot_number: string; item_number: string; item_description: string; lot_type: string; quantity: number; unit_of_measure: string; status: string; expiry_date: string; supplier_lot: string; work_order_id: string; parent_lots: any[]; trace_events: any[]; created_at: string; }
@@ -74,14 +76,17 @@ export default function LotGenealogy() {
                         {[['lotNumber', 'Lot Number', 'text'], ['itemNumber', 'Item Number', 'text'], ['quantity', 'Quantity', 'number'], ['unitOfMeasure', 'UOM', 'text'], ['expiryDate', 'Expiry Date', 'date'], ['supplierLot', 'Supplier Lot', 'text'], ['workOrderId', 'Work Order ID', 'text']].map(([k, l, t]) => (
                             <div key={k} className="flex flex-col gap-0.5">
                                 <label className="text-[9px] font-bold text-gray-700">{l}</label>
-                                <input type={t} value={(form as any)[k]} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} className="py-1 px-2 border border-gray-300 rounded-md text-[11px]" aria-label={l} />
+                                <Input type={t} value={(form as any)[k]} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} className="py-1 px-2 border border-gray-300 rounded-md text-[11px]" aria-label={l} />
                             </div>
                         ))}
                         <div className="flex flex-col gap-0.5">
                             <label className="text-[9px] font-bold">Lot Type</label>
-                            <select value={form.lotType} onChange={e => setForm(p => ({ ...p, lotType: e.target.value }))} className="py-1 px-2 border border-gray-300 rounded-md text-[11px]" aria-label="Lot type">
-                                {['PRODUCTION', 'PURCHASED', 'REWORK', 'CONSIGNMENT'].map(t => <option key={t}>{t}</option>)}
-                            </select>
+                            <Select value={form.lotType} onValueChange={v => setForm(p => ({ ...p, lotType: v }))}>
+                                <SelectTrigger className="py-1 px-2 text-[11px]" aria-label="Lot type"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                    {['PRODUCTION', 'PURCHASED', 'REWORK', 'CONSIGNMENT'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
                     <div className="flex gap-1.5 justify-end">
@@ -95,7 +100,7 @@ export default function LotGenealogy() {
                 {['', 'Active', 'Quarantine', 'Consumed', 'Scrapped', 'Expired'].map(s => (
                     <button key={s} onClick={() => setStatusFilter(s)} className={`py-1 px-2 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`}>{s || 'All'}</button>
                 ))}
-                <input value={itemFilter} onChange={e => setItemFilter(e.target.value)} placeholder="Filter by item…" className="py-1 px-2 border border-gray-300 rounded-md text-[11px] w-[140px]" aria-label="Filter by item" />
+                <Input value={itemFilter} onChange={e => setItemFilter(e.target.value)} placeholder="Filter by item…" className="py-1 px-2 border border-gray-300 rounded-md text-[11px] w-[140px]" aria-label="Filter by item" />
             </div>
 
             <div className="flex gap-3.5">

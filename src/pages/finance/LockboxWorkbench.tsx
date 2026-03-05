@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { UploadCloud, CheckCircle2, AlertCircle, Search, Link2, X } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
@@ -180,7 +181,7 @@ export default function LockboxWorkbench() {
                             <div className="dz-text">Upload CSV or paste below</div>
                             <div className="dz-sub">check#, remit_ref, payer, account, amount, date</div>
                         </div>
-                        <textarea className="csv-paste" value={csvContent} onChange={e => setCsvContent(e.target.value)} placeholder="check001,INV-5042,ACME Corp,12345,15000,2026-01-15" rows={4} aria-label="CSV lockbox content" />
+                        <Textarea className="csv-paste" placeholder="check001,INV-5042,ACME Corp,12345,15000,2026-01-15" value={csvContent} onChange={e => setCsvContent(e.target.value)} rows={4} aria-label="CSV lockbox content" />
                         <div className="date-row">
                             <label className="dl">Batch Date</label>
                             <DatePicker className="di" value={batchDate} onChange={v => setBatchDate(v)} aria-label="Batch date" />
@@ -246,7 +247,7 @@ export default function LockboxWorkbench() {
                                         <button key={s} className={`filter-pill ${matchFilter === s ? 'active' : ''}`} onClick={() => setMatchFilter(s)}>{s || 'All'}</button>
                                     ))}
                                 </div>
-                                <input
+                                <Input
                                     type="text"
                                     placeholder="Search checks or payers..."
                                     value={searchQuery}
@@ -289,7 +290,7 @@ export default function LockboxWorkbench() {
                             </div>
 
                             <h3 className="section-title mt-24">Search Target Invoice</h3>
-                            <input
+                            <Input
                                 type="text"
                                 placeholder="Search by Invoice Number or Customer..."
                                 className="filter-search-input manual-search-input"

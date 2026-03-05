@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Input } from "@/components/ui/input";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { BarChart3, TrendingUp, TrendingDown, AlertTriangle, CheckCircle2, Minus } from 'lucide-react';
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
@@ -171,7 +172,7 @@ export default function CPQDashboard() {
             {view === 'evm' && (
                 <div>
                     <div className="flex gap-2 mb-3 items-center">
-                        <input value={evmBaseline} onChange={e => setEvmBaseline(e.target.value)} placeholder="Paste Baseline ID..." className="px-2.5 py-1.5 border border-gray-300 rounded-md text-xs w-[300px]" aria-label="Baseline ID" />
+                        <Input value={evmBaseline} onChange={e => setEvmBaseline(e.target.value)} placeholder="Paste Baseline ID..." className="text-xs w-[300px] h-8" aria-label="Baseline ID" />
                         {evmMetrics && (
                             <div className="flex gap-2">
                                 {[{ lbl: 'SPI', val: Number(evmMetrics.totals.ev / (evmMetrics.totals.pv || 1)).toFixed(2), gd: 1 }, { lbl: 'CPI', val: Number(evmMetrics.totals.ev / (evmMetrics.totals.ac || 1)).toFixed(2), gd: 1 }, { lbl: 'EAC', val: `$${Number(evmMetrics.eac / 1000).toFixed(0)}K`, clr: 'text-blue-700' }].map(k => (

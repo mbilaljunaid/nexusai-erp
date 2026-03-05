@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { CheckCircle, Clock, AlertTriangle, XCircle, FileText, ChevronUp, ChevronDown } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
@@ -108,16 +109,16 @@ export default function AccountCertPortal() {
             title="Account Reconciliation Certification"
             description="SOX sign-off portal — preparer → reviewer → certified"
             actions={
-                <select
-                    value={period}
-                    onChange={e => setPeriod(e.target.value)}
-                    className="period-select"
-                    aria-label="Select period"
-                >
-                    {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(m => (
-                        <option key={m} value={`${m}-2026`}>{m}-2026</option>
-                    ))}
-                </select>
+                <Select value={period} onValueChange={setPeriod}>
+                    <SelectTrigger className="period-select" aria-label="Select period">
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(m => (
+                            <SelectItem key={m} value={`${m}-2026`}>{m}-2026</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
             }
         >
             <div className="account-cert-portal">

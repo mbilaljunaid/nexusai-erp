@@ -7,9 +7,12 @@ import { Plus, Download, LayoutDashboard, FileText, Table2, TrendingUp, Percent,
 import { IconNavigation } from "@/components/IconNavigation";
 import { useQuery } from "@tanstack/react-query";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function Analytics() {
   const [activeNav, setActiveNav] = useState("dashboard");
+  const [reportType, setReportType] = useState("Financial Summary");
+  const [reportFormat, setReportFormat] = useState("PDF");
   const navItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, color: "text-blue-500" },
     { id: "reports", label: "Reports", icon: FileText, color: "text-green-500" },
@@ -225,20 +228,30 @@ export default function Analytics() {
             <CardContent className="space-y-3">
               <div>
                 <label className="text-sm font-medium">Report Type</label>
-                <select className="w-full p-2 border rounded mt-1" data-testid="select-report-type" aria-label="Report Type">
-                  <option>Financial Summary</option>
-                  <option>Sales Analysis</option>
-                  <option>Customer Metrics</option>
-                  <option>Performance Report</option>
-                </select>
+                <Select value={reportType} onValueChange={setReportType}>
+                  <SelectTrigger className="mt-1" data-testid="select-report-type">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Financial Summary">Financial Summary</SelectItem>
+                    <SelectItem value="Sales Analysis">Sales Analysis</SelectItem>
+                    <SelectItem value="Customer Metrics">Customer Metrics</SelectItem>
+                    <SelectItem value="Performance Report">Performance Report</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <label className="text-sm font-medium">Format</label>
-                <select className="w-full p-2 border rounded mt-1" data-testid="select-report-format" aria-label="Report Format">
-                  <option>PDF</option>
-                  <option>Excel</option>
-                  <option>HTML</option>
-                </select>
+                <Select value={reportFormat} onValueChange={setReportFormat}>
+                  <SelectTrigger className="mt-1" data-testid="select-report-format">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="PDF">PDF</SelectItem>
+                    <SelectItem value="Excel">Excel</SelectItem>
+                    <SelectItem value="HTML">HTML</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <Button className="w-full">Generate Report</Button>
             </CardContent>

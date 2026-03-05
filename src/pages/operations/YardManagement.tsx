@@ -4,6 +4,7 @@ import { Truck, Clock, CheckCircle2 } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 
 interface Dock {
@@ -64,7 +65,7 @@ export default function YardManagement() {
         <StandardPage title="Yard Management">
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
                 <div>
-                    
+
                     <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Dock scheduling · Carrier appointments</p>
                 </div>
                 {tab === 'appointments' && <button onClick={() => setShowNew(true)} style={{ padding: '8px 16px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 600, cursor: 'pointer' }}>+ Schedule</button>}
@@ -121,20 +122,23 @@ export default function YardManagement() {
                                     <div key={key as string} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                                         <label style={{ fontSize: 10, fontWeight: 600, color: '#374151' }}>{lbl}</label>
                                         {(type as string).startsWith('select:') ? (
-                                            <select style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} value={(form as any)[key as string]} onChange={e => setForm(p => ({ ...p, [key as string]: e.target.value }))} aria-label={lbl as string}>
-                                                {(type as string).slice(7).split('|').map(o => <option key={o}>{o}</option>)}
-                                            </select>
+                                            <Select value={(form as any)[key as string]} onValueChange={v => setForm(p => ({ ...p, [key as string]: v }))}>
+                                                <SelectTrigger style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label={lbl as string}><SelectValue /></SelectTrigger>
+                                                <SelectContent>{(type as string).slice(7).split('|').map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
+                                            </Select>
                                         ) : (
-                                            <input type={type as string} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} value={(form as any)[key as string] ?? ''} onChange={e => setForm(p => ({ ...p, [key as string]: e.target.value }))} aria-label={lbl as string} />
+                                            <Input type={type as string} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} value={(form as any)[key as string] ?? ''} onChange={e => setForm(p => ({ ...p, [key as string]: e.target.value }))} aria-label={lbl as string} />
                                         )}
                                     </div>
                                 ))}
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                                     <label style={{ fontSize: 10, fontWeight: 600, color: '#374151' }}>Dock</label>
-                                    <select style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} value={form.dockId} onChange={e => setForm(p => ({ ...p, dockId: e.target.value }))} aria-label="Select dock">
-                                        <option value="">Select dock…</option>
-                                        {docks.map(d => <option key={d.id} value={d.id}>Dock {d.dock_number}</option>)}
-                                    </select>
+                                    <Select value={form.dockId} onValueChange={v => setForm(p => ({ ...p, dockId: v }))}>
+                                        <SelectTrigger style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label="Select dock"><SelectValue placeholder="Select dock…" /></SelectTrigger>
+                                        <SelectContent>
+                                            {docks.map(d => <SelectItem key={d.id} value={d.id}>Dock {d.dock_number}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 6, marginTop: 10 }}>

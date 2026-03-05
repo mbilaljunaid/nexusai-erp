@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileText, Download, Search, Filter, X } from 'lucide-react';
 import LogEntry from '../../components/admin/LogEntry';
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -135,13 +137,13 @@ export default function SystemLogsViewer() {
                         </label>
                         <div className="relative">
                             <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
-                            <input
+                            <Input
                                 type="text"
                                 value={filters.search}
                                 onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                                 onKeyDown={(e) => e.key === 'Enter' && fetchLogs()}
                                 placeholder="Search messages..."
-                                className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-sm"
+                                className="pl-9"
                             />
                         </div>
                     </div>
@@ -151,18 +153,18 @@ export default function SystemLogsViewer() {
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Log Level
                         </label>
-                        <select
-                            aria-label="Filter by log level"
-                            value={filters.level}
-                            onChange={(e) => setFilters({ ...filters, level: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-                        >
-                            <option value="">All Levels</option>
-                            <option value="error">Error</option>
-                            <option value="warn">Warning</option>
-                            <option value="info">Info</option>
-                            <option value="debug">Debug</option>
-                        </select>
+                        <Select value={filters.level} onValueChange={(val) => setFilters({ ...filters, level: val })}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="All Levels" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="">All Levels</SelectItem>
+                                <SelectItem value="error">Error</SelectItem>
+                                <SelectItem value="warn">Warning</SelectItem>
+                                <SelectItem value="info">Info</SelectItem>
+                                <SelectItem value="debug">Debug</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
 
                     {/* User Filter */}
@@ -170,12 +172,11 @@ export default function SystemLogsViewer() {
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             User
                         </label>
-                        <input
+                        <Input
                             type="text"
                             value={filters.user}
                             onChange={(e) => setFilters({ ...filters, user: e.target.value })}
                             placeholder="User ID"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
                         />
                     </div>
 
@@ -184,12 +185,11 @@ export default function SystemLogsViewer() {
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Endpoint
                         </label>
-                        <input
+                        <Input
                             type="text"
                             value={filters.endpoint}
                             onChange={(e) => setFilters({ ...filters, endpoint: e.target.value })}
                             placeholder="/api/..."
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
                         />
                     </div>
                 </div>

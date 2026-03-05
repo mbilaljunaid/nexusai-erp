@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Users, Plus } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function RoleAssignment() {
+  const [selectedRole, setSelectedRole] = useState("");
   const [assignments] = useState([
     { id: "a1", user: "Alice Admin", role: "System Admin", status: "active", startDate: "2025-01-15", endDate: null },
     { id: "a2", user: "Bob Manager", role: "Manager", status: "active", startDate: "2025-06-01", endDate: "2025-12-31" },
@@ -25,12 +27,16 @@ export default function RoleAssignment() {
       <Card className="p-4 bg-muted/50">
         <div className="grid grid-cols-3 gap-3">
           <Input placeholder="Select User" data-testid="input-assign-user" />
-          <select className="border rounded px-3 py-2" data-testid="select-assign-role">
-            <option>Select Role</option>
-            <option>Admin</option>
-            <option>Manager</option>
-            <option>Operator</option>
-          </select>
+          <Select value={selectedRole} onValueChange={setSelectedRole}>
+            <SelectTrigger data-testid="select-assign-role">
+              <SelectValue placeholder="Select Role" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Admin">Admin</SelectItem>
+              <SelectItem value="Manager">Manager</SelectItem>
+              <SelectItem value="Operator">Operator</SelectItem>
+            </SelectContent>
+          </Select>
           <Button data-testid="button-assign-role">
             <Plus className="h-4 w-4 mr-2" />
             Assign

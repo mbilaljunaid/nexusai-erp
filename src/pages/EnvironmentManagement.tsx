@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -192,23 +193,21 @@ export default function EnvironmentManagement() {
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">Variable Name</label>
-              <input
+              <Input
                 type="text"
                 value={newKey}
                 onChange={(e) => setNewKey(e.target.value)}
                 placeholder="DATABASE_URL"
-                className="w-full px-3 py-2 border rounded-md bg-background"
                 data-testid="input-env-key"
               />
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">Value</label>
-              <input
+              <Input
                 type={isSecret ? "password" : "text"}
                 value={newValue}
                 onChange={(e) => setNewValue(e.target.value)}
                 placeholder="Enter value..."
-                className="w-full px-3 py-2 border rounded-md bg-background"
                 data-testid="input-env-value"
               />
             </div>

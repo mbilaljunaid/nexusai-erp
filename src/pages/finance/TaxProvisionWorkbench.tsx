@@ -1,8 +1,10 @@
 import React, { useState, useCallback } from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Calculator, TrendingUp, TrendingDown, FileCheck, RefreshCw } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Input } from "@/components/ui/input";
 
 interface TaxProvision {
     id: string;
@@ -95,7 +97,7 @@ export default function TaxProvisionWorkbench() {
     const inputField = (label: string, key: keyof typeof form, placeholder = '0.00') => (
         <div className="tax-field">
             <label className="tax-label" htmlFor={`tax-${key}`}>{label}</label>
-            <input
+            <Input
                 id={`tax-${key}`}
                 type="number"
                 step="any"
@@ -113,14 +115,14 @@ export default function TaxProvisionWorkbench() {
             description="ASC 740 / IAS 12 current & deferred tax computation"
             actions={
                 <div className="tax-controls">
-                    <select
-                        value={year}
-                        onChange={e => setYear(+e.target.value)}
-                        className="tax-select"
-                        aria-label="Fiscal year"
-                    >
-                        {[2024, 2025, 2026, 2027].map(y => <option key={y} value={y}>{y}</option>)}
-                    </select>
+                    <Select value={String(year)} onValueChange={val => setYear(Number(val))}>
+                        <SelectTrigger className="tax-select" aria-label="Fiscal year">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {[2024, 2025, 2026, 2027].map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
+                        </SelectContent>
+                    </Select>
                     <div className="standard-toggle">
                         {(['ASC740', 'IAS12'] as const).map(s => (
                             <button

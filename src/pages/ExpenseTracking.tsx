@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { PromptDialog } from "@/components/shared/PromptDialog";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,8 @@ export default function ExpenseTracking() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [viewMode, setViewMode] = useState<"myExpenses" | "approvalQueue">("myExpenses");
+  const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+  const [pendingRejectId, setPendingRejectId] = useState<string | null>(null);
 
   // Fetch current user's expenses
   const { data: myExpenses = [], isLoading: myExpensesLoading } = useQuery<any[]>({
@@ -363,12 +366,7 @@ export default function ExpenseTracking() {
                       <Button
                         variant="destructive"
                         size="sm"
-                        onClick={() => {
-                          const reason = prompt("Enter rejection reason:");
-                          if (reason) {
-                            rejectMutation.mutate({ reportId: r.id, reason });
-                          }
-                        }}
+                        onClick={() => { setPendingRejectId(r.id); setRejectDialogOpen(true); }}
                         disabled={rejectMutation.isPending}
                       >
                         <XCircle className="h-3 w-3" />
@@ -389,6 +387,21 @@ export default function ExpenseTracking() {
           </>
         )
       }
+
+      <PromptDialog
+        open={rejectDialogOpen}
+        title="Reject Expense Report"
+        description="Please provide a reason for rejecting this expense report."
+        label="Rejection Reason"
+        placeholder="Enter reason..."
+        confirmLabel="Reject"
+        onConfirm={(reason) => {
+          setRejectDialogOpen(false);
+          if (pendingRejectId) rejectMutation.mutate({ reportId: pendingRejectId, reason });
+          setPendingRejectId(null);
+        }}
+        onCancel={() => { setRejectDialogOpen(false); setPendingRejectId(null); }}
+      />
     </StandardPage >
   );
 }

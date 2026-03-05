@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, DollarSign, Activity } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface FundingLimit { id: string; project_id: string; funding_source: string; limit_amount: number; utilized_amount: number; available: number; utilization_pct: number; status: string; alert_threshold_pct: number; restrict_charges: boolean; }
 interface Commitment { id: string; project_id: string; commitment_type: string; reference_number: string; vendor_id: string; description: string; committed_amount: number; invoiced_amount: number; remaining_amount: number; status: string; commitment_date: string; }
@@ -89,9 +90,10 @@ export default function FundingLimits() {
                                     <div className="grid grid-cols-3 gap-2">
                                         <div className="flex flex-col gap-0.5">
                                             <label className="text-[10px] font-semibold">Source</label>
-                                            <select value={flForm.fundingSource} onChange={e => setFlForm(p => ({ ...p, fundingSource: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px]" aria-label="Funding source">
-                                                {['GRANT', 'CONTRACT', 'INTERNAL', 'LOAN', 'EQUITY'].map(s => <option key={s}>{s}</option>)}
-                                            </select>
+                                            <Select value={flForm.fundingSource} onValueChange={v => setFlForm(p => ({ ...p, fundingSource: v }))}>
+                                                <SelectTrigger className="py-1.5 px-2 text-[11px]" aria-label="Funding source"><SelectValue /></SelectTrigger>
+                                                <SelectContent>{['GRANT', 'CONTRACT', 'INTERNAL', 'LOAN', 'EQUITY'].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                                            </Select>
                                         </div>
                                         {(
                                             [
@@ -168,9 +170,10 @@ export default function FundingLimits() {
                                     <div className="grid grid-cols-3 gap-2">
                                         <div className="flex flex-col gap-0.5">
                                             <label className="text-[10px] font-semibold">Type</label>
-                                            <select value={commitForm.commitmentType} onChange={e => setCommitForm(p => ({ ...p, commitmentType: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px]" aria-label="Commitment type">
-                                                {['PO', 'CONTRACT', 'SUBCONTRACT', 'PRELIM_ESTIMATE'].map(t => <option key={t}>{t}</option>)}
-                                            </select>
+                                            <Select value={commitForm.commitmentType} onValueChange={v => setCommitForm(p => ({ ...p, commitmentType: v }))}>
+                                                <SelectTrigger className="py-1.5 px-2 text-[11px]" aria-label="Commitment type"><SelectValue /></SelectTrigger>
+                                                <SelectContent>{['PO', 'CONTRACT', 'SUBCONTRACT', 'PRELIM_ESTIMATE'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+                                            </Select>
                                         </div>
                                         {(
                                             [

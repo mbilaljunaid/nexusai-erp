@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
@@ -130,12 +131,12 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
                     <div className="space-y-4">
                       <div>
                         <label className="block text-sm font-medium mb-2">Email Address</label>
-                        <input
+                        <Input
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="your@company.com"
-                          className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                          className="w-full bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 focus:border-blue-500"
                           data-testid="input-email"
                         />
                       </div>

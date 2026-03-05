@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -237,15 +238,16 @@ export default function ExpenseCalculators() {
                     <CardContent className="space-y-4">
                         <div>
                             <label className="text-sm font-medium mb-2 block">Travel Location</label>
-                            <select
-                                className="w-full px-3 py-2 border rounded-md"
-                                value={location}
-                                onChange={(e) => setLocation(e.target.value as keyof typeof PER_DIEM_RATES)}
-                            >
-                                {Object.keys(PER_DIEM_RATES).map((loc) => (
-                                    <option key={loc} value={loc}>{loc}</option>
-                                ))}
-                            </select>
+                            <Select value={location} onValueChange={(val) => setLocation(val as keyof typeof PER_DIEM_RATES)}>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {Object.keys(PER_DIEM_RATES).map((loc) => (
+                                        <SelectItem key={loc} value={loc}>{loc}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         <div className="grid grid-cols-2 gap-3">

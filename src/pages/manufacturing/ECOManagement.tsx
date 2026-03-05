@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { GitBranch, AlertTriangle, CheckCircle2, Clock } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from "@/components/ui/input";
 
 
 interface ECO {
@@ -108,23 +111,24 @@ export default function ECOManagement() {
                         ).map(([k, l, opts]) => (
                             <div key={k} className="flex flex-col gap-0.5">
                                 <label className="text-[10px] font-bold">{l}</label>
-                                <select value={(form as any)[k]} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} className="py-1 px-2 border border-gray-300 rounded-md text-[11px]" aria-label={l}>
-                                    {opts.map(o => <option key={o}>{o}</option>)}
-                                </select>
+                                <Select value={(form as any)[k]} onValueChange={v => setForm(p => ({ ...p, [k]: v }))}>
+                                    <SelectTrigger className="py-1 px-2 text-[11px]" aria-label={l}><SelectValue /></SelectTrigger>
+                                    <SelectContent>{opts.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
+                                </Select>
                             </div>
                         ))}
                         <div className="flex flex-col gap-0.5 col-span-2">
                             <label className="text-[10px] font-bold">Requested By</label>
-                            <input value={form.requestedBy} onChange={e => setForm(p => ({ ...p, requestedBy: e.target.value }))} className="py-1 px-2 border border-gray-300 rounded-md text-[11px]" aria-label="Requested by" />
+                            <Input value={form.requestedBy} onChange={e => setForm(p => ({ ...p, requestedBy: e.target.value }))} className="py-1 px-2 border border-gray-300 rounded-md text-[11px]" aria-label="Requested by" />
                         </div>
                     </div>
                     <div className="flex flex-col gap-1 mb-2">
                         <label className="text-[10px] font-bold">Title</label>
-                        <input value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-xs" aria-label="Title" />
+                        <Input value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-xs" aria-label="Title" />
                     </div>
                     <div className="flex flex-col gap-1 mb-2.5">
                         <label className="text-[10px] font-bold">Description</label>
-                        <textarea rows={2} value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px] resize-y" aria-label="Description" />
+                        <Textarea rows={2} value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} className="text-xs resize-y" aria-label="Description" />
                     </div>
                     <div className="flex gap-1.5 justify-end">
                         <button onClick={() => setShowNew(false)} className="py-1 px-3 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>

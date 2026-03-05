@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { PromptDialog } from "@/components/shared/PromptDialog";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,8 @@ export default function CreditMemoWorkbench() {
     const queryClient = useQueryClient();
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
     const [statusFilter, setStatusFilter] = useState<string>("all");
+    const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+    const [pendingRejectId, setPendingRejectId] = useState<string | null>(null);
 
     // Fetch credit memos
     const { data: creditMemosResult, isLoading } = useQuery<any>({
@@ -144,195 +147,212 @@ export default function CreditMemoWorkbench() {
 
 
     return (
-        <div className="space-y-6">
-            <Breadcrumb>
-                <BreadcrumbList>
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="/finance/billing">Billing</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                        <BreadcrumbPage>Credit Memos</BreadcrumbPage>
-                    </BreadcrumbItem>
-                </BreadcrumbList>
-            </Breadcrumb>
+        <>
+            <div className="space-y-6">
+                <Breadcrumb>
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/finance/billing">Billing</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage>Credit Memos</BreadcrumbPage>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
 
-            <PageHeader
-                title="Credit Memo Workbench"
-                description="Create, review, approve, and apply credit memos with maker-checker controls"
-            />
+                <PageHeader
+                    title="Credit Memo Workbench"
+                    description="Create, review, approve, and apply credit memos with maker-checker controls"
+                />
 
-            {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Credit Memos</CardTitle>
-                        <FileText className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{metrics.totalCreditMemos}</div>
-                        <p className="text-xs text-muted-foreground">All time</p>
-                    </CardContent>
-                </Card>
+                {/* KPI Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Total Credit Memos</CardTitle>
+                            <FileText className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{metrics.totalCreditMemos}</div>
+                            <p className="text-xs text-muted-foreground">All time</p>
+                        </CardContent>
+                    </Card>
 
-                <Card className="bg-amber-500/5 border-amber-500/20">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-amber-600">Pending Approval</CardTitle>
-                        <CheckCircle className="h-4 w-4 text-amber-600" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-amber-600">{metrics.pendingApproval}</div>
-                        <p className="text-xs text-muted-foreground">Awaiting review</p>
-                    </CardContent>
-                </Card>
+                    <Card className="bg-amber-500/5 border-amber-500/20">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium text-amber-600">Pending Approval</CardTitle>
+                            <CheckCircle className="h-4 w-4 text-amber-600" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold text-amber-600">{metrics.pendingApproval}</div>
+                            <p className="text-xs text-muted-foreground">Awaiting review</p>
+                        </CardContent>
+                    </Card>
 
-                <Card className="bg-red-500/5 border-red-500/20">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-red-600">Total Credit Amount</CardTitle>
-                        <DollarSign className="h-4 w-4 text-red-600" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-red-600">
-                            ${metrics.totalCreditAmount.toLocaleString()}
-                        </div>
-                        <p className="text-xs text-muted-foreground">Lifetime credits</p>
-                    </CardContent>
-                </Card>
+                    <Card className="bg-red-500/5 border-red-500/20">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium text-red-600">Total Credit Amount</CardTitle>
+                            <DollarSign className="h-4 w-4 text-red-600" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold text-red-600">
+                                ${metrics.totalCreditAmount.toLocaleString()}
+                            </div>
+                            <p className="text-xs text-muted-foreground">Lifetime credits</p>
+                        </CardContent>
+                    </Card>
 
-                <Card className="bg-green-500/5 border-green-500/20">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-green-600">Applied This Month</CardTitle>
-                        <Undo className="h-4 w-4 text-green-600" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-green-600">{metrics.appliedThisMonth}</div>
-                        <p className="text-xs text-muted-foreground">Successfully applied</p>
-                    </CardContent>
-                </Card>
+                    <Card className="bg-green-500/5 border-green-500/20">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium text-green-600">Applied This Month</CardTitle>
+                            <Undo className="h-4 w-4 text-green-600" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold text-green-600">{metrics.appliedThisMonth}</div>
+                            <p className="text-xs text-muted-foreground">Successfully applied</p>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Main Tabs */}
+                <Tabs defaultValue="all" className="space-y-4">
+                    <TabsList>
+                        <TabsTrigger value="all">All Credit Memos</TabsTrigger>
+                        <TabsTrigger value="pending">Pending Approval</TabsTrigger>
+                        <TabsTrigger value="create">Create New</TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="all" className="space-y-4">
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between">
+                                <div>
+                                    <CardTitle>Credit Memos</CardTitle>
+                                    <CardDescription>Review and manage all credit memos</CardDescription>
+                                </div>
+                                <div className="flex gap-2">
+                                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                                        <SelectTrigger className="w-[180px]">
+                                            <SelectValue placeholder="Filter by status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">All Statuses</SelectItem>
+                                            <SelectItem value="Draft">Draft</SelectItem>
+                                            <SelectItem value="Approved">Approved</SelectItem>
+                                            <SelectItem value="Rejected">Rejected</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <Button onClick={() => setCreateDialogOpen(true)}>
+                                        <Plus className="mr-2 h-4 w-4" />
+                                        New Credit Memo
+                                    </Button>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <InteractiveSpreadsheet
+                                    data={creditMemos}
+                                    columns={[
+                                        { id: "invoiceNumber", header: "CM Number", width: "150px", cell: (r: any) => <div className="p-2 font-medium">{r.invoiceNumber}</div> },
+                                        { id: "sourceTransactionId", header: "Original Invoice", width: "150px", cell: (item: any) => <div className="p-2">{item.sourceTransactionId || "—"}</div> },
+                                        { id: "amount", header: "Amount", width: "150px", cell: (item: any) => <div className="p-2 font-bold text-red-600">${Math.abs(parseFloat(item.amount || "0")).toLocaleString()}</div> },
+                                        { id: "status", header: "Status", width: "150px", cell: (item: any) => <div className="p-2"><StatusBadge status={item.status} /></div> },
+                                        { id: "description", header: "Reason", width: "250px", cell: (item: any) => <div className="p-2">{item.description}</div> },
+                                        { id: "createdAt", header: "Date", width: "150px", cell: (item: any) => <div className="p-2">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "—"}</div> },
+                                        {
+                                            id: "actions", header: "Actions", width: "150px", cell: (item: any) => (
+                                                <div className="flex gap-2 p-2">
+                                                    {item.status === "Draft" && (
+                                                        <>
+                                                            <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); approveMutation.mutate(item.id); }}>
+                                                                <CheckCircle className="h-4 w-4 text-green-500" />
+                                                            </Button>
+                                                            <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setPendingRejectId(item.id); setRejectDialogOpen(true); }}>
+                                                                <XCircle className="h-4 w-4 text-red-500" />
+                                                            </Button>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            )
+                                        }
+                                    ]}
+                                    onChange={() => { }}
+                                    virtualized={true} containerHeight="400px"
+                                />
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+
+                    <TabsContent value="pending" className="space-y-4">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Approval Queue</CardTitle>
+                                <CardDescription>Credit memos requiring manager approval</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <InteractiveSpreadsheet
+                                    data={creditMemos.filter((cm: any) => cm.status === "Draft")}
+                                    columns={[
+                                        { id: "invoiceNumber", header: "CM Number", width: "150px", cell: (r: any) => <div className="p-2 font-medium">{r.invoiceNumber}</div> },
+                                        { id: "sourceTransactionId", header: "Original Invoice", width: "150px", cell: (item: any) => <div className="p-2">{item.sourceTransactionId || "—"}</div> },
+                                        { id: "amount", header: "Amount", width: "150px", cell: (item: any) => <div className="p-2 font-bold text-red-600">${Math.abs(parseFloat(item.amount || "0")).toLocaleString()}</div> },
+                                        { id: "description", header: "Reason", width: "250px", cell: (item: any) => <div className="p-2">{item.description}</div> },
+                                        { id: "createdAt", header: "Date", width: "150px", cell: (item: any) => <div className="p-2">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "—"}</div> },
+                                        {
+                                            id: "actions", header: "Actions", width: "200px", cell: (item: any) => (
+                                                <div className="flex gap-2 p-2">
+                                                    <Button variant="default" size="sm" onClick={(e) => { e.stopPropagation(); approveMutation.mutate(item.id); }}>
+                                                        <CheckCircle className="h-4 w-4 mr-1" /> Approve
+                                                    </Button>
+                                                    <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setPendingRejectId(item.id); setRejectDialogOpen(true); }}>
+                                                        <XCircle className="h-4 w-4 mr-1" /> Reject
+                                                    </Button>
+                                                </div>
+                                            )
+                                        }
+                                    ]}
+                                    onChange={() => { }}
+                                    virtualized={true} containerHeight="400px"
+                                />
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+
+                    <TabsContent value="create" className="space-y-4">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Create Credit Memo</CardTitle>
+                                <CardDescription>Issue a credit against an existing invoice</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <CreateCreditMemoForm
+                                    invoices={invoices}
+                                    onSubmit={(data) => createMutation.mutate(data)}
+                                />
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+                </Tabs>
             </div>
 
-            {/* Main Tabs */}
-            <Tabs defaultValue="all" className="space-y-4">
-                <TabsList>
-                    <TabsTrigger value="all">All Credit Memos</TabsTrigger>
-                    <TabsTrigger value="pending">Pending Approval</TabsTrigger>
-                    <TabsTrigger value="create">Create New</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="all" className="space-y-4">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                            <div>
-                                <CardTitle>Credit Memos</CardTitle>
-                                <CardDescription>Review and manage all credit memos</CardDescription>
-                            </div>
-                            <div className="flex gap-2">
-                                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                                    <SelectTrigger className="w-[180px]">
-                                        <SelectValue placeholder="Filter by status" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Statuses</SelectItem>
-                                        <SelectItem value="Draft">Draft</SelectItem>
-                                        <SelectItem value="Approved">Approved</SelectItem>
-                                        <SelectItem value="Rejected">Rejected</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <Button onClick={() => setCreateDialogOpen(true)}>
-                                    <Plus className="mr-2 h-4 w-4" />
-                                    New Credit Memo
-                                </Button>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <InteractiveSpreadsheet
-                                data={creditMemos}
-                                columns={[
-                                    { id: "invoiceNumber", header: "CM Number", width: "150px", cell: (r: any) => <div className="p-2 font-medium">{r.invoiceNumber}</div> },
-                                    { id: "sourceTransactionId", header: "Original Invoice", width: "150px", cell: (item: any) => <div className="p-2">{item.sourceTransactionId || "—"}</div> },
-                                    { id: "amount", header: "Amount", width: "150px", cell: (item: any) => <div className="p-2 font-bold text-red-600">${Math.abs(parseFloat(item.amount || "0")).toLocaleString()}</div> },
-                                    { id: "status", header: "Status", width: "150px", cell: (item: any) => <div className="p-2"><StatusBadge status={item.status} /></div> },
-                                    { id: "description", header: "Reason", width: "250px", cell: (item: any) => <div className="p-2">{item.description}</div> },
-                                    { id: "createdAt", header: "Date", width: "150px", cell: (item: any) => <div className="p-2">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "—"}</div> },
-                                    {
-                                        id: "actions", header: "Actions", width: "150px", cell: (item: any) => (
-                                            <div className="flex gap-2 p-2">
-                                                {item.status === "Draft" && (
-                                                    <>
-                                                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); approveMutation.mutate(item.id); }}>
-                                                            <CheckCircle className="h-4 w-4 text-green-500" />
-                                                        </Button>
-                                                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); const reason = prompt("Rejection reason:"); if (reason) { rejectMutation.mutate({ id: item.id, reason }); } }}>
-                                                            <XCircle className="h-4 w-4 text-red-500" />
-                                                        </Button>
-                                                    </>
-                                                )}
-                                            </div>
-                                        )
-                                    }
-                                ]}
-                                onChange={() => { }}
-                                virtualized={true} containerHeight="400px"
-                            />
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-
-                <TabsContent value="pending" className="space-y-4">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Approval Queue</CardTitle>
-                            <CardDescription>Credit memos requiring manager approval</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <InteractiveSpreadsheet
-                                data={creditMemos.filter((cm: any) => cm.status === "Draft")}
-                                columns={[
-                                    { id: "invoiceNumber", header: "CM Number", width: "150px", cell: (r: any) => <div className="p-2 font-medium">{r.invoiceNumber}</div> },
-                                    { id: "sourceTransactionId", header: "Original Invoice", width: "150px", cell: (item: any) => <div className="p-2">{item.sourceTransactionId || "—"}</div> },
-                                    { id: "amount", header: "Amount", width: "150px", cell: (item: any) => <div className="p-2 font-bold text-red-600">${Math.abs(parseFloat(item.amount || "0")).toLocaleString()}</div> },
-                                    { id: "description", header: "Reason", width: "250px", cell: (item: any) => <div className="p-2">{item.description}</div> },
-                                    { id: "createdAt", header: "Date", width: "150px", cell: (item: any) => <div className="p-2">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "—"}</div> },
-                                    {
-                                        id: "actions", header: "Actions", width: "200px", cell: (item: any) => (
-                                            <div className="flex gap-2 p-2">
-                                                <Button variant="default" size="sm" onClick={(e) => { e.stopPropagation(); approveMutation.mutate(item.id); }}>
-                                                    <CheckCircle className="h-4 w-4 mr-1" /> Approve
-                                                </Button>
-                                                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); const reason = prompt("Rejection reason:"); if (reason) { rejectMutation.mutate({ id: item.id, reason }); } }}>
-                                                    <XCircle className="h-4 w-4 mr-1" /> Reject
-                                                </Button>
-                                            </div>
-                                        )
-                                    }
-                                ]}
-                                onChange={() => { }}
-                                virtualized={true} containerHeight="400px"
-                            />
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-
-                <TabsContent value="create" className="space-y-4">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Create Credit Memo</CardTitle>
-                            <CardDescription>Issue a credit against an existing invoice</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <CreateCreditMemoForm
-                                invoices={invoices}
-                                onSubmit={(data) => createMutation.mutate(data)}
-                            />
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-            </Tabs>
-        </div>
+            <PromptDialog
+                open={rejectDialogOpen}
+                title="Reject Credit Memo"
+                description="Please provide a reason for rejecting this credit memo."
+                label="Rejection Reason"
+                placeholder="Enter reason..."
+                confirmLabel="Reject"
+                onConfirm={(reason) => {
+                    setRejectDialogOpen(false);
+                    if (pendingRejectId) rejectMutation.mutate({ id: pendingRejectId, reason });
+                    setPendingRejectId(null);
+                }}
+                onCancel={() => { setRejectDialogOpen(false); setPendingRejectId(null); }}
+            />
+        </>
     );
 }
 

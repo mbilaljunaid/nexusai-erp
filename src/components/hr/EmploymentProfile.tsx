@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { useToast } from "@/hooks/use-toast";
 
 interface EmploymentProfileProps {
     personId: string;
@@ -357,6 +358,7 @@ function ComplianceList({ personId }: { personId: string }) {
         queryKey: ["hr-checklists", personId],
         queryFn: () => api.hr.checklists.listAllocations(personId),
     });
+    const { toast } = useToast();
 
     const assignChecklist = async () => {
         // hardcode assigning the first template for demo
@@ -365,7 +367,11 @@ function ComplianceList({ personId }: { personId: string }) {
             await api.hr.checklists.assign({ personId, checklistId: templates[0].id, tenantId: "t1" }); // Added tenantId
             refetch();
         } else {
-            alert("No Checklist Templates found. Create one in DB first.");
+            toast({
+                variant: "destructive",
+                title: "No Templates Found",
+                description: "No Checklist Templates found. Create one in DB first.",
+            });
         }
     }
 

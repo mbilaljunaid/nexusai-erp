@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, MessageSquare, CheckCircle2 } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 
 interface Dispute { id: string; dispute_number: string; from_entity: string; to_entity: string; disputed_amount: number; currency: string; status: string; reason: string; opened_by: string; opened_at: string; events: DEvent[]; resolution: string; }
 interface DEvent { at: string; by: string; action: string; note: string; }
@@ -85,31 +87,38 @@ export default function ICDisputeWorkbench() {
                     <div className="ic-new-grid">
                         <div className="ic-new-fld">
                             <label>From Entity</label>
-                            <select value={form.fromEntity} onChange={e => setForm(p => ({ ...p, fromEntity: e.target.value }))} aria-label="From Entity">
-                                <option value="">Select Entity...</option>
-                                {icOrgs.map(org => <option key={org.id} value={org.id}>{org.org_name || org.id}</option>)}
-                            </select>
+                            <Select value={form.fromEntity} onValueChange={v => setForm(p => ({ ...p, fromEntity: v }))}>
+                                <SelectTrigger aria-label="From Entity"><SelectValue placeholder="Select Entity..." /></SelectTrigger>
+                                <SelectContent>
+                                    {icOrgs.map(org => <SelectItem key={org.id} value={org.id}>{org.org_name || org.id}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div className="ic-new-fld">
                             <label>To Entity</label>
-                            <select value={form.toEntity} onChange={e => setForm(p => ({ ...p, toEntity: e.target.value }))} aria-label="To Entity">
-                                <option value="">Select Entity...</option>
-                                {icOrgs.map(org => <option key={org.id} value={org.id}>{org.org_name || org.id}</option>)}
-                            </select>
+                            <Select value={form.toEntity} onValueChange={v => setForm(p => ({ ...p, toEntity: v }))}>
+                                <SelectTrigger aria-label="To Entity"><SelectValue placeholder="Select Entity..." /></SelectTrigger>
+                                <SelectContent>
+                                    {icOrgs.map(org => <SelectItem key={org.id} value={org.id}>{org.org_name || org.id}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
                         </div>
                         {[['Currency', 'currency', 'text'], ['Disputed Amount', 'disputedAmount', 'number']].map(([lbl, key, type]) => (
                             <div key={key} className="ic-new-fld">
                                 <label>{lbl}</label>
-                                <input type={type} value={(form as any)[key as string]} onChange={e => setForm(p => ({ ...p, [key as string]: e.target.value }))} aria-label={lbl as string} />
+                                <Input type={type} value={(form as any)[key as string]} onChange={e => setForm(p => ({ ...p, [key as string]: e.target.value }))} aria-label={lbl as string} />
                             </div>
                         ))}
                         <div className="ic-new-fld">
                             <label>Reason</label>
-                            <select value={form.reason} onChange={e => setForm(p => ({ ...p, reason: e.target.value }))} aria-label="Reason">{REASONS.map(r => <option key={r}>{r}</option>)}</select>
+                            <Select value={form.reason} onValueChange={v => setForm(p => ({ ...p, reason: v }))}>
+                                <SelectTrigger aria-label="Reason"><SelectValue /></SelectTrigger>
+                                <SelectContent>{REASONS.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
+                            </Select>
                         </div>
                         <div className="ic-new-fld ic-span-2">
                             <label>Notes</label>
-                            <input value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} aria-label="Notes" />
+                            <Input value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} aria-label="Notes" />
                         </div>
                     </div>
                     <div className="ic-new-acts">
@@ -126,7 +135,7 @@ export default function ICDisputeWorkbench() {
                         <button key={s} onClick={() => setStatusFilter(s)} className={`ic-btn-filter ${statusFilter === s ? 'active' : ''}`}>{s || 'All'}</button>
                     ))}
                 </div>
-                <input
+                <Input
                     type="text"
                     placeholder="Search disputes..."
                     value={searchQuery}
@@ -173,13 +182,13 @@ export default function ICDisputeWorkbench() {
                         {selected.status !== 'Resolved' && selected.status !== 'Closed' && (
                             <div className="ic-acts-sec">
                                 <div className="ic-acts-title">Add Event</div>
-                                <input value={eventNote} onChange={e => setEventNote(e.target.value)} placeholder="Event note…" className="ic-evt-in" aria-label="Event note" />
+                                <Input value={eventNote} onChange={e => setEventNote(e.target.value)} placeholder="Event note…" className="ic-evt-in" aria-label="Event note" />
                                 <div className="ic-evt-btn-row">
                                     <button disabled={!eventNote} onClick={() => eventMut.mutate({ id: selected.id, action: 'NOTE', note: eventNote })} className="ic-evt-btn">Add Note</button>
                                 </div>
                                 <div className="ic-res-sec">
                                     <div className="ic-acts-title">Resolve</div>
-                                    <input value={resolveText} onChange={e => setResolveText(e.target.value)} placeholder="Resolution notes…" className="ic-evt-in" aria-label="Resolution" />
+                                    <Input value={resolveText} onChange={e => setResolveText(e.target.value)} placeholder="Resolution notes…" className="ic-evt-in" aria-label="Resolution" />
                                     <button disabled={!resolveText} onClick={() => resolveMut.mutate({ id: selected.id, resolution: resolveText })} className="ic-res-btn">
                                         <CheckCircle2 size={10} /> Resolve Dispute
                                     </button>

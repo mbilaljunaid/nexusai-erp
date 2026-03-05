@@ -172,10 +172,10 @@ export default function MobileWarehouse() {
                             <Card className="bg-blue-600/10 border-blue-600/50">
                                 <CardContent className="p-4 text-center">
                                     <p className="text-xs text-blue-400 uppercase font-bold mb-1">Actual</p>
-                                    <input
+                                    <Input
                                         type="number"
                                         aria-label="Actual quantity to pick"
-                                        className="text-3xl font-bold text-white bg-transparent w-full text-center outline-none focus:ring-0"
+                                        className="text-3xl font-bold text-white bg-transparent border-0 w-full text-center outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
                                         defaultValue={activeTask.quantityPlanned}
                                         id="qty-input"
                                     />

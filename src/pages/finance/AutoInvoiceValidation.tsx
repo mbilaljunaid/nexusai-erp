@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { CheckCircle2, AlertTriangle, Play, Download, RefreshCw, FileText } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface AutoInvRun {
     id: string;
@@ -88,12 +90,12 @@ export default function AutoInvoiceValidation() {
                         <div className="rf-title">New Validation Run</div>
                         <div className="rf">
                             <label className="rl">Source Type</label>
-                            <select className="ri" value={sourceType} onChange={e => setSourceType(e.target.value as any)} aria-label="Source type">
-                                <option>Order</option>
-                                <option>Contract</option>
-                                <option>ShipmentLine</option>
-                                <option>UsageEvent</option>
-                            </select>
+                            <Select value={sourceType} onValueChange={v => setSourceType(v as any)}>
+                                <SelectTrigger className="ri" aria-label="Source type"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                    {['Order', 'Contract', 'ShipmentLine', 'UsageEvent'].map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div className="rf">
                             <label className="rl">Source Ref</label>
@@ -101,7 +103,7 @@ export default function AutoInvoiceValidation() {
                         </div>
                         <div className="rf">
                             <label className="rl">Lines (JSON array)</label>
-                            <textarea className="rb" value={linesJson} onChange={e => setLinesJson(e.target.value)} rows={10} aria-label="Lines JSON" />
+                            <Textarea className="rb font-mono text-xs" value={linesJson} onChange={e => setLinesJson(e.target.value)} rows={10} aria-label="Lines JSON" />
                             {jsonError && <div className="json-err">{jsonError}</div>}
                         </div>
                         <button className="validate-btn" disabled={!!jsonError || !parsedLines.length || validateMutation.isPending}

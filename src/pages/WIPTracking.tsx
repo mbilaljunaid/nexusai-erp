@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -87,8 +88,8 @@ export default function WIPTracking() {
         <CardHeader><CardTitle className="text-base">Add WIP Item</CardTitle></CardHeader>
         <CardContent className="space-y-3">
           <div className="grid grid-cols-4 gap-3">
-            <input placeholder="Work Order" value={newWIP.workOrder} onChange={(e) => setNewWIP({ ...newWIP, workOrder: e.target.value })} className="px-3 py-2 border rounded" data-testid="input-wo" />
-            <input placeholder="Operation" value={newWIP.operation} onChange={(e) => setNewWIP({ ...newWIP, operation: e.target.value })} className="px-3 py-2 border rounded" data-testid="input-op" />
+            <Input placeholder="Work Order" value={newWIP.workOrder} onChange={(e) => setNewWIP({ ...newWIP, workOrder: e.target.value })} data-testid="input-wo" />
+            <Input placeholder="Operation" value={newWIP.operation} onChange={(e) => setNewWIP({ ...newWIP, operation: e.target.value })} data-testid="input-op" />
             <Select value={newWIP.status} onValueChange={(v) => setNewWIP({ ...newWIP, status: v })}>
               <SelectTrigger data-testid="select-status"><SelectValue /></SelectTrigger>
               <SelectContent>

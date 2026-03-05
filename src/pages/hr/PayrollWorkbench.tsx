@@ -4,6 +4,7 @@ import { PlayCircle, CheckCircle2, XCircle, FileText, Download, Globe, DollarSig
 import { EnterpriseContextSwitcher, buildScopeHeaders } from '@/components/enterprise/EnterpriseContextSwitcher';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 interface PayrollRun {
     id: string;
     payroll_name: string;
@@ -120,18 +121,15 @@ export default function PayrollWorkbench() {
                             <button className="act-btn purple" onClick={() => glMutation.mutate(row.id)} aria-label="Post to GL">
                                 GL Post
                             </button>
-                            <select
-                                className="fmt-select"
-                                onChange={e => e.target.value && payFileMutation.mutate({ id: row.id, format: e.target.value })}
-                                defaultValue=""
-                                aria-label="Generate payment file"
-                            >
-                                <option value="" disabled>Pay File…</option>
-                                <option value="ACH_NACHA">ACH/NACHA</option>
-                                <option value="BACS">BACS</option>
-                                <option value="SEPA_PAIN001">SEPA</option>
-                                <option value="FPS">FPS</option>
-                            </select>
+                            <Select onValueChange={v => v && payFileMutation.mutate({ id: row.id, format: v })}>
+                                <SelectTrigger className="fmt-select" aria-label="Generate payment file"><SelectValue placeholder="Pay File…" /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="ACH_NACHA">ACH/NACHA</SelectItem>
+                                    <SelectItem value="BACS">BACS</SelectItem>
+                                    <SelectItem value="SEPA_PAIN001">SEPA</SelectItem>
+                                    <SelectItem value="FPS">FPS</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </>
                     )}
                     <a href={`/api/hr/payroll/runs/${row.id}/payslips`} target="_blank" rel="noreferrer" className="act-link">
@@ -204,9 +202,12 @@ export default function PayrollWorkbench() {
                         ))}
                         <div className="mf">
                             <label className="ml" htmlFor="pr-country">Country</label>
-                            <select id="pr-country" className="mi" value={createForm.countryCode} onChange={e => setCreateForm(p => ({ ...p, countryCode: e.target.value }))}>
-                                {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
-                            </select>
+                            <Select value={createForm.countryCode} onValueChange={v => setCreateForm(p => ({ ...p, countryCode: v }))}>
+                                <SelectTrigger id="pr-country" className="mi" aria-label="Country"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                    {COUNTRIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div className="modal-actions">
                             <button className="mcancel" onClick={() => setShowCreateForm(false)}>Cancel</button>

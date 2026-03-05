@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Leaf, TrendingUp, AlertTriangle, CheckCircle2, BarChart3 } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from "@/components/ui/input";
 
 interface ESGGoal { id: string; goal_code: string; goal_name: string; category: string; subcategory: string; unit: string; baseline_value: number; target_value: number; target_year: number; status: string; owner: string; }
 interface Actual { actual_value: number; period: string; data_source: string; }
@@ -106,12 +108,15 @@ export default function ESGPlanning() {
                                 {[['Code', 'goalCode', 'text'], ['Name', 'goalName', 'text'], ['Unit', 'unit', 'text'], ['Owner', 'owner', 'text'], ['Baseline', 'baselineValue', 'number'], ['Target', 'targetValue', 'number'], ['Target Year', 'targetYear', 'number'], ['Subcategory', 'subcategory', 'text']].map(([lbl, key, type]) => (
                                     <div key={key} className="flex flex-col gap-0.5">
                                         <label className="text-[10px] font-bold">{lbl}</label>
-                                        <input type={type} value={(goalForm as any)[key]} onChange={e => setGoalForm(p => ({ ...p, [key]: e.target.value }))} className="px-2 py-1.5 border border-green-200 rounded-md text-[11px]" aria-label={lbl} />
+                                        <Input type={type} value={(goalForm as any)[key]} onChange={e => setGoalForm(p => ({ ...p, [key]: e.target.value }))} className="px-2 py-1.5 border border-green-200 rounded-md text-[11px]" aria-label={lbl} />
                                     </div>
                                 ))}
                                 <div className="flex flex-col gap-0.5">
                                     <label className="text-[10px] font-bold">Category</label>
-                                    <select value={goalForm.category} onChange={e => setGoalForm(p => ({ ...p, category: e.target.value }))} className="px-2 py-1.5 border border-green-200 rounded-md text-[11px]" aria-label="Category">{['ENVIRONMENTAL', 'SOCIAL', 'GOVERNANCE'].map(c => <option key={c}>{c}</option>)}</select>
+                                    <Select value={goalForm.category} onValueChange={v => setGoalForm(p => ({ ...p, category: v }))}>
+                                        <SelectTrigger aria-label="Category" className="text-[11px]"><SelectValue /></SelectTrigger>
+                                        <SelectContent>{['ENVIRONMENTAL', 'SOCIAL', 'GOVERNANCE'].map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                                    </Select>
                                 </div>
                             </div>
                             <div className="flex gap-1.5 justify-end">
@@ -177,7 +182,7 @@ export default function ESGPlanning() {
                                     {[['Period', 'period', 'text'], ['Value', 'actualValue', 'number'], ['Source', 'dataSource', 'text']].map(([lbl, key, type]) => (
                                         <div key={key} className="mb-1.5">
                                             <label className="text-[9px] font-bold block mb-0.5">{lbl}</label>
-                                            <input type={type} value={(actualForm as any)[key]} onChange={e => setActualForm(p => ({ ...p, [key]: e.target.value }))} className="w-full px-2 py-1 border border-green-200 rounded-[5px] text-[11px] box-border" aria-label={lbl} />
+                                            <Input type={type} value={(actualForm as any)[key]} onChange={e => setActualForm(p => ({ ...p, [key]: e.target.value }))} className="w-full px-2 py-1 border border-green-200 rounded-[5px] text-[11px] box-border" aria-label={lbl} />
                                         </div>
                                     ))}
                                     <button disabled={!actualForm.actualValue} onClick={() => recordActualMut.mutate({ goalId: selectedGoal.id, period: actualForm.period, actualValue: parseFloat(actualForm.actualValue), dataSource: actualForm.dataSource || null })} className="w-full py-1.5 bg-emerald-600 text-white border-none rounded-md text-[10px] cursor-pointer font-bold disabled:opacity-50 hover:bg-emerald-700">Record</button>
@@ -191,7 +196,7 @@ export default function ESGPlanning() {
             {tab === 'budget' && (
                 <div>
                     <div className="flex items-center gap-2 mb-3">
-                        <input value={budgetPeriod} onChange={e => setBudgetPeriod(e.target.value)} placeholder="YYYY-MM" className="px-2.5 py-1.5 border border-gray-300 rounded-md text-xs" aria-label="Budget period" />
+                        <Input value={budgetPeriod} onChange={e => setBudgetPeriod(e.target.value)} placeholder="YYYY-MM" className="px-2.5 py-1.5 border border-gray-300 rounded-md text-xs" aria-label="Budget period" />
                         <span className="text-[11px] text-gray-400">Approved budget variance by cost center / GL account</span>
                     </div>
                     <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">

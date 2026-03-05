@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Input } from "@/components/ui/input";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { TrendingDown, AlertTriangle, User } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -118,7 +119,7 @@ export default function AttritionPrediction() {
                         {[['employeeId', 'Employee ID', 'text'], ['tenureMonths', 'Tenure (months)', 'number'], ['engagementScore', 'Engagement (1-5)', 'number'], ['lastPromotionDays', 'Days Since Promo', 'number'], ['managerTenureMonths', 'Manager Tenure (mo)', 'number'], ['compaRatio', 'Compa-Ratio (0-1.5)', 'number'], ['recentAbsenceDays', 'Absence Days (30d)', 'number'], ['overdueGoals', 'Overdue Goals', 'number']].map(([k, l, t]) => (
                             <div key={k as string} className="flex flex-col gap-0.5">
                                 <label className="text-[10px] font-semibold">{l as string}</label>
-                                <input type={t as string} value={(form as any)[k as string]} onChange={e => setForm(p => ({ ...p, [k as string]: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px]" aria-label={l as string} />
+                                <Input type={t as string} value={(form as any)[k as string]} onChange={e => setForm(p => ({ ...p, [k as string]: e.target.value }))} className="h-7 text-xs" aria-label={l as string} />
                             </div>
                         ))}
                     </div>

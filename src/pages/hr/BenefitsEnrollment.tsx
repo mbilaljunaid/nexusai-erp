@@ -5,6 +5,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface BenefitPlan {
     id: string;
@@ -205,7 +206,7 @@ export default function BenefitsEnrollment() {
             {activeTab === 'enrollments' && (
                 <div className="be-card">
                     <div className="emp-lookup">
-                        <input
+                        <Input
                             className="emp-input"
                             placeholder="Enter Employee ID to view enrollments"
                             value={employeeId}
@@ -261,7 +262,7 @@ export default function BenefitsEnrollment() {
                         </div>
                         <div className="mf">
                             <label className="ml" htmlFor="enroll-emp-id">Employee ID</label>
-                            <input id="enroll-emp-id" className="mi" value={employeeId} onChange={e => setEmployeeId(e.target.value)} />
+                            <Input id="enroll-emp-id" className="mi" value={employeeId} onChange={e => setEmployeeId(e.target.value)} />
                         </div>
                         <div className="deps-section">
                             <div className="deps-header">
@@ -270,11 +271,14 @@ export default function BenefitsEnrollment() {
                             </div>
                             {dependents.map((d, i) => (
                                 <div key={i} className="dep-row">
-                                    <input className="dep-input" placeholder="Name" value={d.name} onChange={e => { const n = [...dependents]; n[i].name = e.target.value; setDependents(n); }} aria-label="Dependent name" />
+                                    <Input className="dep-input" placeholder="Name" value={d.name} onChange={e => { const n = [...dependents]; n[i].name = e.target.value; setDependents(n); }} aria-label="Dependent name" />
                                     <DatePicker className="dep-input" value={d.dob} onChange={v => { const n = [...dependents]; n[i].dob = v; setDependents(n); }} aria-label="Dependent Date of Birth" />
-                                    <select className="dep-input" value={d.relationship} onChange={e => { const n = [...dependents]; n[i].relationship = e.target.value; setDependents(n); }} aria-label="Dependent Relationship">
-                                        {['Spouse', 'Child', 'Parent', 'Domestic Partner'].map(r => <option key={r} value={r}>{r}</option>)}
-                                    </select>
+                                    <Select value={d.relationship} onValueChange={v => { const n = [...dependents]; n[i].relationship = v; setDependents(n); }}>
+                                        <SelectTrigger className="dep-input" aria-label="Dependent Relationship"><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            {['Spouse', 'Child', 'Parent', 'Domestic Partner'].map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
                                     <button className="dep-remove" onClick={() => setDependents(d => d.filter((_, j) => j !== i))} aria-label="Remove dependent"><X size={14} /></button>
                                 </div>
                             ))}

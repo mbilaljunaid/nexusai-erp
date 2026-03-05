@@ -2,6 +2,7 @@
 // Example: Create file client/src/pages/IndustryTemplate.tsx and duplicate for each industry
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card } from "@/components/ui/card";
 import { useState } from "react";
@@ -15,12 +16,12 @@ interface IndustryPageProps {
   processFlows: { name: string; steps: string[] }[];
 }
 
-export default function IndustryPage({ 
-  industry, 
-  description, 
-  modules, 
-  benefits, 
-  processFlows 
+export default function IndustryPage({
+  industry,
+  description,
+  modules,
+  benefits,
+  processFlows
 }: IndustryPageProps) {
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState("");
@@ -124,25 +125,25 @@ export default function IndustryPage({
         <Card className="bg-gradient-to-r from-blue-600 to-blue-700 border-0 p-8">
           <h2 className="text-2xl font-bold text-white mb-4">Ready to Transform Your {industry} Operations?</h2>
           <p className="text-blue-100 mb-6">Get instant access to a fully seeded demo environment tailored for {industry}.</p>
-          
+
           <div className="space-y-4">
-            <input
+            <Input
               type="email"
               placeholder="your@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 rounded bg-white/10 border border-white/20 text-white placeholder-blue-200"
+              className="w-full bg-white/10 border-white/20 text-white placeholder:text-blue-200"
               data-testid="input-demo-email"
             />
-            <input
+            <Input
               type="text"
               placeholder="Your Company"
               value={company}
               onChange={(e) => setCompany(e.target.value)}
-              className="w-full px-4 py-2 rounded bg-white/10 border border-white/20 text-white placeholder-blue-200"
+              className="w-full bg-white/10 border-white/20 text-white placeholder:text-blue-200"
               data-testid="input-demo-company"
             />
-            <Button 
+            <Button
               onClick={handleDemoRequest}
               className="w-full bg-white text-blue-600 hover:bg-blue-50 font-bold"
               data-testid="button-demo-request"

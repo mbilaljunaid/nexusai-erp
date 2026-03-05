@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, TrendingDown, Activity, Sparkles, LineChart, ArrowUpRight, BarChart2, GitBranch } from "lucide-react";
@@ -121,8 +122,7 @@ export default function RevenueForecasting() {
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Contract Filter <span className="text-slate-400">(optional)</span>
             </label>
-            <input
-              className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            <Input
               placeholder="Contract ID or leave blank for all"
               value={contractId}
               onChange={(e) => setContractId(e.target.value)}

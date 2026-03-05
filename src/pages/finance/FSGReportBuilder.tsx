@@ -1,8 +1,10 @@
 import React, { useState, useCallback } from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Play, Trash2, ChevronRight, Table2, BarChart3 } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Input } from "@/components/ui/input";
 
 interface FSGRow {
     rowNum: number;
@@ -129,9 +131,9 @@ export default function FSGReportBuilder() {
 
     const editorColumns: SpreadsheetColumn<FSGRow>[] = [
         { id: "rowNum", header: "#", width: "50px", cell: (row) => <div className="text-center font-bold text-zinc-500">{row.rowNum}</div> },
-        { id: "label", header: "Label", width: "200px", cell: (row) => <input className="w-full px-2 py-1 border rounded" aria-label="Label" value={row.label} onChange={e => updateRow(row.rowNum, 'label', e.target.value)} /> },
-        { id: "accountRange", header: "Account Range", width: "150px", cell: (row) => <input className="w-full px-2 py-1 border rounded font-mono" aria-label="Account Range" value={row.accountRange ?? ''} placeholder="e.g. 5000-5999" onChange={e => updateRow(row.rowNum, 'accountRange', e.target.value)} /> },
-        { id: "formula", header: "Formula (e.g. R1+R2)", width: "150px", cell: (row) => <input className="w-full px-2 py-1 border rounded font-mono" aria-label="Formula" value={row.formula ?? ''} placeholder="e.g. R1 - R2" onChange={e => updateRow(row.rowNum, 'formula', e.target.value)} /> },
+        { id: "label", header: "Label", width: "200px", cell: (row) => <Input className="h-7 px-2 py-1" aria-label="Label" value={row.label} onChange={e => updateRow(row.rowNum, 'label', e.target.value)} /> },
+        { id: "accountRange", header: "Account Range", width: "150px", cell: (row) => <Input className="h-7 px-2 py-1 font-mono" aria-label="Account Range" value={row.accountRange ?? ''} placeholder="e.g. 5000-5999" onChange={e => updateRow(row.rowNum, 'accountRange', e.target.value)} /> },
+        { id: "formula", header: "Formula (e.g. R1+R2)", width: "150px", cell: (row) => <Input className="h-7 px-2 py-1 font-mono" aria-label="Formula" value={row.formula ?? ''} placeholder="e.g. R1 - R2" onChange={e => updateRow(row.rowNum, 'formula', e.target.value)} /> },
         { id: "isBold", header: "Bold", width: "60px", cell: (row) => <div className="text-center w-full"><input type="checkbox" aria-label="Bold" checked={!!row.isBold} onChange={e => updateRow(row.rowNum, 'isBold', e.target.checked)} /></div> },
         { id: "isTotal", header: "Total", width: "60px", cell: (row) => <div className="text-center w-full"><input type="checkbox" aria-label="Total" checked={!!row.isTotal} onChange={e => updateRow(row.rowNum, 'isTotal', e.target.checked)} /></div> },
         { id: "delete", header: "Del", width: "60px", cell: (row) => <button className="p-1 text-red-600 hover:bg-red-100 rounded w-full flex justify-center" aria-label="Delete" onClick={() => removeRow(row.rowNum)}><Trash2 size={14} /></button> }
@@ -163,23 +165,22 @@ export default function FSGReportBuilder() {
                     <div className="run-panel">
                         <h2 className="panel-title">Run a Report</h2>
                         <div className="run-row">
-                            <select
-                                value={selectedReport ?? ''}
-                                onChange={e => setSelectedReport(e.target.value)}
-                                className="fsg-select"
-                                aria-label="Select report"
-                            >
-                                <option value="">Select report…</option>
-                                {reports.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
-                            </select>
-                            <input
+                            <Select value={selectedReport ?? ''} onValueChange={setSelectedReport}>
+                                <SelectTrigger className="fsg-select" aria-label="Select report">
+                                    <SelectValue placeholder="Select report…" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {reports.map(r => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
+                            <Input
                                 className="fsg-input"
                                 placeholder="Period (e.g. Jan-2026)"
                                 value={runParams.periodName}
                                 onChange={e => setRunParams(p => ({ ...p, periodName: e.target.value }))}
                                 aria-label="Period name"
                             />
-                            <input
+                            <Input
                                 className="fsg-input"
                                 placeholder="Ledger ID"
                                 value={runParams.ledgerId}
@@ -230,20 +231,20 @@ export default function FSGReportBuilder() {
             ) : (
                 <div className="fsg-design">
                     <div className="design-toolbar">
-                        <input
+                        <Input
                             className="report-name-input"
                             value={reportName}
                             onChange={e => setReportName(e.target.value)}
                             aria-label="Report name"
                         />
-                        <select
-                            value={reportType}
-                            onChange={e => setReportType(e.target.value as any)}
-                            className="fsg-select"
-                            aria-label="Report type"
-                        >
-                            {REPORT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                        </select>
+                        <Select value={reportType} onValueChange={val => setReportType(val as any)}>
+                            <SelectTrigger className="fsg-select" aria-label="Report type">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {REPORT_TYPES.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
                         <button
                             className="save-btn"
                             onClick={() => saveMutation.mutate({ name: reportName, reportType, rows, columns })}

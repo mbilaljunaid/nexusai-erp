@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,7 +53,7 @@ export default function TaxRuleEngine() {
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <input id="ruleName" className="w-full border rounded-md p-2" placeholder="e.g., High Value Tax" />
+                                            <Input id="ruleName" placeholder="e.g., High Value Tax" />
                                         </TooltipTrigger>
                                         <TooltipContent>
                                             <p>Rule Name</p>
@@ -105,9 +106,8 @@ export default function TaxRuleEngine() {
                                         <TooltipProvider>
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
-                                                    <input
+                                                    <Input
                                                         type="text"
-                                                        className="border rounded-md p-2"
                                                         value={condition.value}
                                                         placeholder="Value"
                                                     />
@@ -147,7 +147,7 @@ export default function TaxRuleEngine() {
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <input id="rulePriority" type="number" className="w-full border rounded-md p-2" defaultValue="10" placeholder="Priority" />
+                                            <Input id="rulePriority" type="number" defaultValue="10" placeholder="Priority" />
                                         </TooltipTrigger>
                                         <TooltipContent>
                                             <p>Priority</p>

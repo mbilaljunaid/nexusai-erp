@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DollarSign, Globe, FileCheck, Download, PlusCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 
 interface WHTRule {
@@ -148,16 +150,21 @@ export default function WHTRemittance() {
         <StandardPage title="WHT Remittance Workbench">
             <div className="wht-header">
                 <div>
-                    
+
                     <p className="wht-subtitle">Withholding tax calculation, statutory XML generation & batch remittance filing</p>
                 </div>
                 <div className="wht-controls">
-                    <select className="wht-select" value={period} onChange={e => setPeriod(e.target.value)} aria-label="Select period">
-                        {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(m =>
-                            <option key={m} value={`${m}-2026`}>{m}-2026</option>
-                        )}
-                    </select>
-                    <input
+                    <Select value={period} onValueChange={setPeriod}>
+                        <SelectTrigger className="wht-select" aria-label="Select period">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(m =>
+                                <SelectItem key={m} value={`${m}-2026`}>{m}-2026</SelectItem>
+                            )}
+                        </SelectContent>
+                    </Select>
+                    <Input
                         className="wht-select"
                         placeholder="Country (e.g. IN)"
                         value={country}
@@ -222,14 +229,19 @@ export default function WHTRemittance() {
                             {(['countryCode', 'rate', 'treatyRate', 'thresholdAmount', 'effectiveFrom'] as const).map(f => (
                                 <div key={f} className="rule-field">
                                     <label className="rule-label" htmlFor={`wht-${f}`}>{f.replace(/([A-Z])/g, ' $1').trim()}</label>
-                                    <input id={`wht-${f}`} className="rule-input" value={ruleForm[f]} onChange={e => setRuleForm(p => ({ ...p, [f]: e.target.value }))} />
+                                    <Input id={`wht-${f}`} className="rule-input" value={ruleForm[f]} onChange={e => setRuleForm(p => ({ ...p, [f]: e.target.value }))} />
                                 </div>
                             ))}
                             <div className="rule-field">
                                 <label className="rule-label" htmlFor="wht-incomeType">Income Type</label>
-                                <select id="wht-incomeType" className="rule-input" value={ruleForm.incomeType} onChange={e => setRuleForm(p => ({ ...p, incomeType: e.target.value }))}>
-                                    {INCOME_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                                </select>
+                                <Select value={ruleForm.incomeType} onValueChange={v => setRuleForm(p => ({ ...p, incomeType: v }))}>
+                                    <SelectTrigger id="wht-incomeType" className="rule-input">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {INCOME_TYPES.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <button
                                 className="save-rule-btn"

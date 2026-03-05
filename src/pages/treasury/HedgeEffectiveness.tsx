@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Input } from "@/components/ui/input";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Shield, AlertTriangle, CheckCircle2, TrendingUp, TrendingDown, Search, Plus, Save, Loader2, Trash2 } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from '@/components/ui/InteractiveSpreadsheet';
-import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { apiRequest } from '@/lib/queryClient';
@@ -256,7 +256,7 @@ export default function HedgeEffectiveness() {
                             <p className="test-hint">Click a hedge row to select it</p>
                             <div className="tf">
                                 <label className="tl">Hedge Rel ID</label>
-                                <input className="ti" value={testForm.hedgeRelId} onChange={e => setTestForm(p => ({ ...p, hedgeRelId: e.target.value }))} placeholder="Select from table or enter ID" aria-label="Hedge Relationship ID" />
+                                <Input className="ti" value={testForm.hedgeRelId} onChange={e => setTestForm(p => ({ ...p, hedgeRelId: e.target.value }))} placeholder="Select from table or enter ID" aria-label="Hedge Relationship ID" />
                             </div>
                             <div className="tf">
                                 <label className="tl">Test Date</label>
@@ -264,11 +264,11 @@ export default function HedgeEffectiveness() {
                             </div>
                             <div className="tf">
                                 <label className="tl">Hedging Instrument G/L</label>
-                                <input className="ti" type="number" value={testForm.hedgingGainLoss} onChange={e => setTestForm(p => ({ ...p, hedgingGainLoss: e.target.value }))} placeholder="e.g. 125000" aria-label="Hedging instrument gain or loss" />
+                                <Input className="ti" type="number" value={testForm.hedgingGainLoss} onChange={e => setTestForm(p => ({ ...p, hedgingGainLoss: e.target.value }))} placeholder="e.g. 125000" aria-label="Hedging instrument gain or loss" />
                             </div>
                             <div className="tf">
                                 <label className="tl">Hedged Item G/L</label>
-                                <input className="ti" type="number" value={testForm.hedgedItemGainLoss} onChange={e => setTestForm(p => ({ ...p, hedgedItemGainLoss: e.target.value }))} placeholder="e.g. -120000" aria-label="Hedged item gain or loss" />
+                                <Input className="ti" type="number" value={testForm.hedgedItemGainLoss} onChange={e => setTestForm(p => ({ ...p, hedgedItemGainLoss: e.target.value }))} placeholder="e.g. -120000" aria-label="Hedged item gain or loss" />
                             </div>
                             <button
                                 className="run-test-btn"

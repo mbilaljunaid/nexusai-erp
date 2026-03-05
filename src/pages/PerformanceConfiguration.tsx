@@ -6,6 +6,7 @@ import { toast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { PromptDialog } from "@/components/shared/PromptDialog";
 
 interface PerfTemplate {
     id: string;
@@ -15,6 +16,7 @@ interface PerfTemplate {
 }
 
 export default function PerformanceConfiguration() {
+    const [createDialogOpen, setCreateDialogOpen] = useState(false);
     const { data: templates = [], refetch } = useQuery<PerfTemplate[]>({
         queryKey: ["/api/performance/templates"],
         // In real app, we'd need to mock or implement this endpoint
@@ -27,10 +29,7 @@ export default function PerformanceConfiguration() {
         }
     });
 
-    const createTemplate = () => {
-        const name = prompt("Template Name:");
-        if (!name) return;
-
+    const createTemplate = (name: string) => {
         // Mock Create
         toast({ title: "Template Created (Mock)", description: `Created template: ${name}` });
         // fetch("/api/performance/templates", { method: "POST", ... })
@@ -41,7 +40,7 @@ export default function PerformanceConfiguration() {
             title="Performance Configuration"
             description="Manage appraisal templates and periods."
             actions={
-                <Button onClick={createTemplate}><Plus className="w-4 h-4 mr-2" /> New Template</Button>
+                <Button onClick={() => setCreateDialogOpen(true)}><Plus className="w-4 h-4 mr-2" /> New Template</Button>
             }
         >
 
@@ -60,6 +59,16 @@ export default function PerformanceConfiguration() {
                     </Card>
                 ))}
             </div>
+
+            <PromptDialog
+                open={createDialogOpen}
+                title="New Performance Template"
+                label="Template Name"
+                placeholder="e.g. Annual Review 2026"
+                confirmLabel="Create"
+                onConfirm={(name) => { setCreateDialogOpen(false); createTemplate(name); }}
+                onCancel={() => setCreateDialogOpen(false)}
+            />
         </StandardPage>
     );
 }

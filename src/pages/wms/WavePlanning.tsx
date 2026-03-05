@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -72,11 +73,11 @@ export default function WavePlanning() {
                         <div className="grid grid-cols-3 gap-4">
                             <div>
                                 <label className="text-sm font-medium">Max Orders per Wave</label>
-                                <input type="number" className="w-full border rounded-md p-2" defaultValue="50" />
+                                <Input type="number" defaultValue="50" />
                             </div>
                             <div>
                                 <label className="text-sm font-medium">Max Lines per Wave</label>
-                                <input type="number" className="w-full border rounded-md p-2" defaultValue="200" />
+                                <Input type="number" defaultValue="200" />
                             </div>
                             <div>
                                 <label className="text-sm font-medium">Priority</label>

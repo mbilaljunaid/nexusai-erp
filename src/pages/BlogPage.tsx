@@ -1,15 +1,16 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { 
-  ArrowRight, 
-  Calendar, 
-  User, 
-  Bot, 
-  ShoppingCart, 
-  DollarSign, 
-  Lock, 
-  BarChart3, 
+import { Input } from "@/components/ui/input";
+import {
+  ArrowRight,
+  Calendar,
+  User,
+  Bot,
+  ShoppingCart,
+  DollarSign,
+  Lock,
+  BarChart3,
   Users,
   Zap,
   Factory,
@@ -144,8 +145,8 @@ export default function BlogPage() {
 
   const categories = ["all", "AI", "Industry", "Finance", "Technical", "Analytics", "HR"];
 
-  const filtered = selectedCategory === "all" 
-    ? posts 
+  const filtered = selectedCategory === "all"
+    ? posts
     : posts.filter(p => p.category === selectedCategory);
 
   return (
@@ -153,79 +154,79 @@ export default function BlogPage() {
       <Header />
       <main className="flex-1">
 
-      {/* Hero */}
-      <section className="public-hero px-4 py-16 text-center max-w-4xl mx-auto">
-        
-        <p className="public-hero-subtitle text-xl">Insights, best practices, and industry news for enterprise ERP</p>
-      </section>
+        {/* Hero */}
+        <section className="public-hero px-4 py-16 text-center max-w-4xl mx-auto">
 
-      {/* Category Filter */}
-      <section className="public-section px-4 py-8 flex justify-center gap-3 flex-wrap">
-        {categories.map((cat) => (
-          <Button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            variant={selectedCategory === cat ? "default" : "outline"}
-            className={selectedCategory === cat ? "bg-blue-600" : "text-white border-slate-600"}
-            data-testid={`button-filter-${cat}`}
-          >
-            {cat.charAt(0).toUpperCase() + cat.slice(1)}
-          </Button>
-        ))}
-      </section>
+          <p className="public-hero-subtitle text-xl">Insights, best practices, and industry news for enterprise ERP</p>
+        </section>
 
-      {/* Blog Posts */}
-      <section className="public-section px-4 py-12 max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((post) => {
-            const IconComponent = post.icon;
-            return (
-              <Link key={post.id} to={`/blog/${post.id}`}>
-                <Card className="public-card overflow-hidden hover-elevate cursor-pointer h-full" data-testid={`card-blog-post-${post.id}`}>
-                  <div className="p-6 text-center bg-muted/50 flex items-center justify-center">
-                    <IconComponent className="w-12 h-12 text-blue-500" />
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center justify-between gap-2 mb-3">
-                      <Badge className="bg-blue-600/20 text-blue-300 border-blue-500/50">{post.category}</Badge>
-                      <span className="text-xs text-muted-foreground flex items-center gap-1">
-                        <Calendar className="w-3 h-3" /> {post.date}
-                      </span>
+        {/* Category Filter */}
+        <section className="public-section px-4 py-8 flex justify-center gap-3 flex-wrap">
+          {categories.map((cat) => (
+            <Button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              variant={selectedCategory === cat ? "default" : "outline"}
+              className={selectedCategory === cat ? "bg-blue-600" : "text-white border-slate-600"}
+              data-testid={`button-filter-${cat}`}
+            >
+              {cat.charAt(0).toUpperCase() + cat.slice(1)}
+            </Button>
+          ))}
+        </section>
+
+        {/* Blog Posts */}
+        <section className="public-section px-4 py-12 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filtered.map((post) => {
+              const IconComponent = post.icon;
+              return (
+                <Link key={post.id} to={`/blog/${post.id}`}>
+                  <Card className="public-card overflow-hidden hover-elevate cursor-pointer h-full" data-testid={`card-blog-post-${post.id}`}>
+                    <div className="p-6 text-center bg-muted/50 flex items-center justify-center">
+                      <IconComponent className="w-12 h-12 text-blue-500" />
                     </div>
-                    <h3 className="text-lg font-bold mb-2 line-clamp-2">{post.title}</h3>
-                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{post.excerpt}</p>
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs text-muted-foreground flex items-center gap-1">
-                        <User className="w-3 h-3" /> {post.author}
-                      </span>
-                      <Button variant="ghost" size="sm" data-testid={`button-read-more-${post.id}`}>
-                        Read <ArrowRight className="w-3 h-3 ml-1" />
-                      </Button>
+                    <div className="p-6">
+                      <div className="flex items-center justify-between gap-2 mb-3">
+                        <Badge className="bg-blue-600/20 text-blue-300 border-blue-500/50">{post.category}</Badge>
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Calendar className="w-3 h-3" /> {post.date}
+                        </span>
+                      </div>
+                      <h3 className="text-lg font-bold mb-2 line-clamp-2">{post.title}</h3>
+                      <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{post.excerpt}</p>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">
+                          <User className="w-3 h-3" /> {post.author}
+                        </span>
+                        <Button variant="ghost" size="sm" data-testid={`button-read-more-${post.id}`}>
+                          Read <ArrowRight className="w-3 h-3 ml-1" />
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                </Card>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Newsletter */}
-      <section className="public-section-alt px-4 py-16">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
-          <p className="text-muted-foreground mb-6">Get weekly insights on ERP, AI automation, and industry best practices.</p>
-          <div className="flex gap-2">
-            <input
-              type="email"
-              placeholder="your@email.com"
-              className="flex-1 px-4 py-2 rounded bg-[hsl(var(--input))] border border-[hsl(var(--input-border))] text-[hsl(var(--foreground))] placeholder-[hsl(var(--muted-foreground))]"
-              data-testid="input-newsletter-email"
-            />
-            <Button className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.9)] text-white" data-testid="button-subscribe">Subscribe</Button>
+                  </Card>
+                </Link>
+              );
+            })}
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* Newsletter */}
+        <section className="public-section-alt px-4 py-16">
+          <div className="max-w-2xl mx-auto text-center">
+            <h2 className="text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
+            <p className="text-muted-foreground mb-6">Get weekly insights on ERP, AI automation, and industry best practices.</p>
+            <div className="flex gap-2">
+              <Input
+                type="email"
+                placeholder="your@email.com"
+                className="flex-1"
+                data-testid="input-newsletter-email"
+              />
+              <Button className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.9)] text-white" data-testid="button-subscribe">Subscribe</Button>
+            </div>
+          </div>
+        </section>
       </main>
       <Footer />
     </StandardPage>

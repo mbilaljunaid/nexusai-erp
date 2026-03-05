@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,6 @@ import { apiRequest } from "@/lib/queryClient";
 import { Calendar, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { Input } from "@/components/ui/input";
 import { DatePicker } from '@/components/ui/DatePicker';
 
 
@@ -35,7 +35,7 @@ export default function InterviewScheduling() {
     return (
         <StandardPage title="Interview Scheduling">
             <div>
-                
+
                 <p className="text-muted-foreground">Calendar integration and panel coordination</p>
             </div>
 
@@ -59,11 +59,11 @@ export default function InterviewScheduling() {
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="text-sm font-medium">Date</label>
-                            <DatePicker className="w-full border rounded-md p-2" onChange={() => {}} />
+                            <DatePicker className="w-full border rounded-md p-2" onChange={() => { }} />
                         </div>
                         <div>
                             <label className="text-sm font-medium">Time</label>
-                            <input type="time" className="w-full border rounded-md p-2" />
+                            <Input type="time" className="w-full" />
                         </div>
                     </div>
                     <div>

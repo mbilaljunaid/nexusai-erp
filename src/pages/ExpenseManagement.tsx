@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -362,17 +364,15 @@ export default function ExpenseManagement() {
           <div className="py-6 space-y-4">
             <div>
               <label className="text-sm font-medium mb-2 block">Report Title</label>
-              <input
+              <Input
                 type="text"
-                className="w-full px-3 py-2 border rounded-md"
                 placeholder="e.g., Business Trip to NYC"
                 id="reportTitle"
               />
             </div>
             <div>
               <label className="text-sm font-medium mb-2 block">Description (Optional)</label>
-              <textarea
-                className="w-full px-3 py-2 border rounded-md"
+              <Textarea
                 placeholder="Additional details..."
                 rows={3}
                 id="reportDescription"

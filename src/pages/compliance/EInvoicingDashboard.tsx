@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { FileText, CheckCircle2, XCircle, Clock, Globe, Send, RefreshCw, BarChart3 } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
@@ -186,15 +188,15 @@ export default function EInvoicingDashboard() {
                             </button>
                         ))}
                     </div>
-                    <select
-                        value={standardFilter}
-                        onChange={e => setStandardFilter(e.target.value)}
-                        className="std-select"
-                        aria-label="Filter by standard"
-                    >
-                        <option value="">All Standards</option>
-                        {STANDARDS.map(s => <option key={s} value={s}>{s}</option>)}
-                    </select>
+                    <Select value={standardFilter} onValueChange={setStandardFilter}>
+                        <SelectTrigger className="std-select">
+                            <SelectValue placeholder="All Standards" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="">All Standards</SelectItem>
+                            {STANDARDS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                        </SelectContent>
+                    </Select>
                 </div>
 
                 <div className="h-[500px] w-full">
@@ -223,7 +225,7 @@ export default function EInvoicingDashboard() {
                                 <label className="modal-label" htmlFor={`einv-${field}`}>
                                     {field.replace(/([A-Z])/g, ' $1').trim()}
                                 </label>
-                                <input
+                                <Input
                                     id={`einv-${field}`}
                                     className="modal-input"
                                     value={submitForm[field]}

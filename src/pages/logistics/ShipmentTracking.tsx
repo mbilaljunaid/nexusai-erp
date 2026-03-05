@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { MapPin, AlertTriangle, Package, Zap, TrendingUp } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface Shipment {
     id: string;
@@ -143,14 +144,17 @@ export default function ShipmentTracking() {
                             <div className="ef-title">Log EDI 214 Event</div>
                             <div className="ef-row">
                                 <input className="ei" placeholder="PRO# or Tracking#" value={eventForm.proNumber} onChange={e => setEventForm(p => ({ ...p, proNumber: e.target.value }))} aria-label="PRO number" />
-                                <select className="ei" value={eventForm.eventCode} onChange={e => setEventForm(p => ({ ...p, eventCode: e.target.value }))} aria-label="Event code">
-                                    <option value="A9">A9 = Tendered</option>
-                                    <option value="X3">X3 = Picked Up</option>
-                                    <option value="X6">X6 = In Transit</option>
-                                    <option value="X1">X1 = Out for Delivery</option>
-                                    <option value="D1">D1 = Delivered</option>
-                                    <option value="AF">AF = Exception</option>
-                                </select>
+                                <Select value={eventForm.eventCode} onValueChange={v => setEventForm(p => ({ ...p, eventCode: v }))}>
+                                    <SelectTrigger className="ei" aria-label="Event code"><SelectValue /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="A9">A9 = Tendered</SelectItem>
+                                        <SelectItem value="X3">X3 = Picked Up</SelectItem>
+                                        <SelectItem value="X6">X6 = In Transit</SelectItem>
+                                        <SelectItem value="X1">X1 = Out for Delivery</SelectItem>
+                                        <SelectItem value="D1">D1 = Delivered</SelectItem>
+                                        <SelectItem value="AF">AF = Exception</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div className="ef-row">
                                 <input className="ei" placeholder="City" value={eventForm.eventCity} onChange={e => setEventForm(p => ({ ...p, eventCity: e.target.value }))} aria-label="Event city" />

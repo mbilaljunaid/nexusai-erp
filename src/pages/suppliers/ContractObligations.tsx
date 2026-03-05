@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle2, Clock, ArrowUp } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from "@/components/ui/input";
 
 
 interface Obligation {
@@ -101,20 +103,22 @@ export default function ContractObligations() {
                         {[['contractId', 'Contract ID', 'text'], ['supplierId', 'Supplier ID', 'text'], ['title', 'Title', 'text'], ['dueDate', 'Due Date', 'date'], ['penaltyAmount', 'Penalty Amount', 'number']].map(([k, l, t]) => (
                             <div key={k} className="flex flex-col gap-0.5">
                                 <label className="text-[10px] font-semibold">{l}</label>
-                                <input type={t} value={(newOb as any)[k] ?? ''} onChange={e => setNewOb(p => ({ ...p, [k]: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label={l} />
+                                <Input type={t} value={(newOb as any)[k] ?? ''} onChange={e => setNewOb(p => ({ ...p, [k]: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label={l} />
                             </div>
                         ))}
                         <div className="flex flex-col gap-0.5">
                             <label className="text-[10px] font-semibold">Type</label>
-                            <select value={newOb.obligationType} onChange={e => setNewOb(p => ({ ...p, obligationType: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label="Obligation type">
-                                {['DELIVERY', 'REPORTING', 'COMPLIANCE', 'INSURANCE', 'PAYMENT', 'SLA', 'AUDIT'].map(o => <option key={o}>{o}</option>)}
-                            </select>
+                            <Select value={newOb.obligationType} onValueChange={v => setNewOb(p => ({ ...p, obligationType: v }))}>
+                                <SelectTrigger className="px-2 py-1.5 text-[11px]" aria-label="Obligation type"><SelectValue /></SelectTrigger>
+                                <SelectContent>{['DELIVERY', 'REPORTING', 'COMPLIANCE', 'INSURANCE', 'PAYMENT', 'SLA', 'AUDIT'].map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
+                            </Select>
                         </div>
                         <div className="flex flex-col gap-0.5">
                             <label className="text-[10px] font-semibold">Recurrence</label>
-                            <select value={newOb.recurrence} onChange={e => setNewOb(p => ({ ...p, recurrence: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label="Recurrence">
-                                {['NONE', 'MONTHLY', 'QUARTERLY', 'ANNUAL'].map(o => <option key={o}>{o}</option>)}
-                            </select>
+                            <Select value={newOb.recurrence} onValueChange={v => setNewOb(p => ({ ...p, recurrence: v }))}>
+                                <SelectTrigger className="px-2 py-1.5 text-[11px]" aria-label="Recurrence"><SelectValue /></SelectTrigger>
+                                <SelectContent>{['NONE', 'MONTHLY', 'QUARTERLY', 'ANNUAL'].map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
+                            </Select>
                         </div>
                     </div>
                     <div className="flex justify-end gap-1.5 mt-2.5">
@@ -160,7 +164,7 @@ export default function ContractObligations() {
                                     {ob.description && <p className="text-xs text-gray-700 mb-2">{ob.description}</p>}
                                     {ob.status === 'Pending' && (
                                         <div className="flex gap-1.5 items-center mb-1.5">
-                                            <input placeholder="Evidence URL" value={evidenceUrl} onChange={e => setEvidenceUrl(e.target.value)} className="flex-1 px-2 py-1 border border-gray-300 rounded-md text-[11px]" aria-label="Evidence URL" />
+                                            <Input placeholder="Evidence URL" value={evidenceUrl} onChange={e => setEvidenceUrl(e.target.value)} className="flex-1 px-2 py-1 border border-gray-300 rounded-md text-[11px]" aria-label="Evidence URL" />
                                             <button disabled={!evidenceUrl} onClick={e => { e.stopPropagation(); evidenceMut.mutate({ id: ob.id, url: evidenceUrl }); }} className="px-2.5 py-1 bg-blue-700 text-white border-none rounded-md text-[11px] cursor-pointer disabled:opacity-50">Submit Evidence</button>
                                         </div>
                                     )}

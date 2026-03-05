@@ -5,6 +5,7 @@ import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 
 interface PaymentTerm {
@@ -128,12 +129,12 @@ export default function PaymentTermsMaster() {
                                 ))}
                                 <div className="ff">
                                     <label className="fl">Type</label>
-                                    <select className="fi" value={newTerm.termType} onChange={e => setNewTerm(p => ({ ...p, termType: e.target.value }))} aria-label="Term type">
-                                        <option>Net</option>
-                                        <option>EOM</option>
-                                        <option>InstallmentSplit</option>
-                                        <option>ImmediateDue</option>
-                                    </select>
+                                    <Select value={newTerm.termType} onValueChange={v => setNewTerm(p => ({ ...p, termType: v }))}>
+                                        <SelectTrigger className="fi" aria-label="Term type"><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            {['Net', 'EOM', 'InstallmentSplit', 'ImmediateDue'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                             </div>
                             <div className="nf-actions">

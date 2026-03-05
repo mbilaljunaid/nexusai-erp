@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -134,27 +136,25 @@ export default function DemoManagement() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-semibold mb-2">Select Industry</label>
-                    <select
-                      value={selectedIndustry}
-                      onChange={(e) => setSelectedIndustry(e.target.value)}
-                      className="w-full px-4 py-2 rounded bg-[hsl(var(--input))] border border-[hsl(var(--input-border))] text-[hsl(var(--foreground))]"
-                      data-testid="select-industry"
-                    >
-                      <option value="">-- Choose Industry --</option>
-                      {industries.map((ind) => (
-                        <option key={ind} value={ind}>{ind}</option>
-                      ))}
-                    </select>
+                    <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
+                      <SelectTrigger data-testid="select-industry">
+                        <SelectValue placeholder="-- Choose Industry --" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {industries.map((ind) => (
+                          <SelectItem key={ind} value={ind}>{ind}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <div>
                     <label className="block text-sm font-semibold mb-2">User Email</label>
-                    <input
+                    <Input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="user@company.com"
-                      className="w-full px-4 py-2 rounded bg-[hsl(var(--input))] border border-[hsl(var(--input-border))] text-[hsl(var(--foreground))] placeholder-[hsl(var(--muted-foreground))]"
                       data-testid="input-demo-email"
                     />
                   </div>

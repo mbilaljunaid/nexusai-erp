@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -215,16 +216,17 @@ export default function DeferredRevenueMatrix() {
                         </div>
                         <div className="flex gap-2 items-center">
                             <Filter className="h-4 w-4 text-muted-foreground" />
-                            <select
-                                className="border rounded-md px-3 py-1.5 text-sm"
-                                value={filterStatus}
-                                onChange={(e) => setFilterStatus(e.target.value)}
-                            >
-                                <option value="all">All Statuses</option>
-                                <option value="Active">Active</option>
-                                <option value="Satisfied">Satisfied</option>
-                                <option value="Cancelled">Cancelled</option>
-                            </select>
+                            <Select value={filterStatus} onValueChange={setFilterStatus}>
+                                <SelectTrigger className="w-40">
+                                    <SelectValue placeholder="All Statuses" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Statuses</SelectItem>
+                                    <SelectItem value="Active">Active</SelectItem>
+                                    <SelectItem value="Satisfied">Satisfied</SelectItem>
+                                    <SelectItem value="Cancelled">Cancelled</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
                 </CardHeader>

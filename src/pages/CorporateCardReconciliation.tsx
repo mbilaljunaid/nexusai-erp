@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -159,8 +161,8 @@ export default function CorporateCardReconciliation() {
                         <label className="text-sm font-medium mb-2 block">
                             CSV Data (Format: Date,Merchant,Amount,CardNumber,Category,Description)
                         </label>
-                        <textarea
-                            className="w-full h-32 px-3 py-2 border rounded-md font-mono text-sm"
+                        <Textarea
+                            className="h-32 font-mono text-sm"
                             placeholder="2026-02-10,Starbucks,15.50,****1234,MEALS,Coffee meeting
 2026-02-11,Uber,25.00,****1234,TRANSPORTATION,Airport ride
 2026-02-12,Hilton,250.00,****1234,LODGING,Conference hotel"
@@ -183,18 +185,17 @@ export default function CorporateCardReconciliation() {
                 <CardHeader>
                     <div className="flex items-center justify-between">
                         <CardTitle>Card Transactions</CardTitle>
-                        <select
-                            aria-label="Filter transactions by status"
-                            title="Filter status"
-                            className="px-3 py-1 border rounded-md text-sm"
-                            value={selectedStatus}
-                            onChange={(e) => setSelectedStatus(e.target.value)}
-                        >
-                            <option value="all">All Status</option>
-                            <option value="PENDING">Pending</option>
-                            <option value="MATCHED">Matched</option>
-                            <option value="RECONCILED">Reconciled</option>
-                        </select>
+                        <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                            <SelectTrigger className="w-36">
+                                <SelectValue placeholder="All Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Status</SelectItem>
+                                <SelectItem value="PENDING">Pending</SelectItem>
+                                <SelectItem value="MATCHED">Matched</SelectItem>
+                                <SelectItem value="RECONCILED">Reconciled</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
                 </CardHeader>
                 <CardContent>

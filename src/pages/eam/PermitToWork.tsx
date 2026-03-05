@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { HardHat, AlertTriangle, Clock, CheckCircle2 } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 
 interface Permit { id: string; permit_number: string; permit_type: string; asset_id: string; location: string; description: string; status: string; requested_by: string; approved_by: string; contractor: string; start_datetime: string; end_datetime: string; events: PEvent[]; }
@@ -81,17 +83,24 @@ export default function PermitToWork() {
                     <div className="grid grid-cols-4 gap-2 mb-2">
                         <div className="flex flex-col gap-0.5">
                             <label className="text-[10px] font-bold">Type</label>
-                            <select value={form.permitType} onChange={e => setForm(p => ({ ...p, permitType: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-xs" aria-label="Type">{['COLD_WORK', 'HOT_WORK', 'CONFINED_SPACE', 'ELECTRICAL', 'HEIGHT', 'EXCAVATION', 'RADIATION'].map(t => <option key={t}>{t}</option>)}</select>
+                            <Select value={form.permitType} onValueChange={v => setForm(p => ({ ...p, permitType: v }))}>
+                                <SelectTrigger className="px-2 py-1.5 text-xs h-auto" aria-label="Type">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {['COLD_WORK', 'HOT_WORK', 'CONFINED_SPACE', 'ELECTRICAL', 'HEIGHT', 'EXCAVATION', 'RADIATION'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
                         </div>
                         {[['Asset ID', 'assetId', 'text'], ['Location', 'location', 'text'], ['Requested By', 'requestedBy', 'text'], ['Contractor', 'contractor', 'text'], ['Start', 'startDatetime', 'datetime-local'], ['End', 'endDatetime', 'datetime-local']].map(([lbl, key, type]) => (
                             <div key={key} className="flex flex-col gap-0.5">
                                 <label className="text-[10px] font-bold">{lbl}</label>
-                                <input type={type} value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label={lbl} />
+                                <Input type={type} value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="px-2 py-1.5 text-[11px] h-auto" aria-label={lbl} />
                             </div>
                         ))}
                         <div className="flex flex-col gap-0.5 col-span-2">
                             <label className="text-[10px] font-bold">Description</label>
-                            <input value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label="Description" />
+                            <Input value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} className="px-2 py-1.5 text-[11px] h-auto" aria-label="Description" />
                         </div>
                     </div>
                     <div className="flex gap-1.5 justify-end">

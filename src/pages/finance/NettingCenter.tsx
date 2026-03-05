@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Network, TrendingDown, TrendingUp, CheckCircle2, BarChart3 } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface NettingSession { id: string; session_name: string; period: string; currency: string; status: string; entities_in_scope: string[]; net_positions: NetPos[]; settlement_date: string; created_at: string; }
 interface NetPos { id?: string; entity: string; payable: number; receivable: number; net: number; }
@@ -86,7 +88,7 @@ export default function NettingCenter() {
                                 </div>
                                 <div className="flex flex-col gap-[2px] mb-[10px]">
                                     <label className="text-[10px] font-bold">Entities (one per line)</label>
-                                    <textarea rows={3} value={form.entitiesText} onChange={e => setForm(p => ({ ...p, entitiesText: e.target.value }))} className="px-2 py-[6px] border border-gray-300 rounded-md text-[12px] font-mono" aria-label="Entities" />
+                                    <Textarea rows={3} value={form.entitiesText} onChange={e => setForm(p => ({ ...p, entitiesText: e.target.value }))} className="font-mono text-xs" aria-label="Entities" />
                                 </div>
                                 <div className="flex gap-[6px] justify-end">
                                     <button onClick={() => setShowNew(false)} className="px-3 py-[5px] bg-gray-200 border-none rounded-md text-[11px] cursor-pointer hover:bg-gray-300">Cancel</button>
@@ -146,9 +148,9 @@ export default function NettingCenter() {
                                             <div key={key} className="mb-[5px]">
                                                 <label className="text-[9px] font-bold block">{lbl}</label>
                                                 {type === 'select' && key === 'transactionCategory'
-                                                    ? <select value={(policyForm as any)[key]} onChange={e => setPolicyForm(p => ({ ...p, [key]: e.target.value }))} className="w-full px-[6px] py-[4px] border border-gray-300 rounded-[5px] text-[11px]" aria-label={lbl}>{['GOODS', 'SERVICES', 'IP_ROYALTIES', 'LOANS', 'COST_SHARING'].map(v => <option key={v}>{v}</option>)}</select>
+                                                    ? <Select value={(policyForm as any)[key]} onValueChange={v => setPolicyForm(p => ({ ...p, [key]: v }))}><SelectTrigger aria-label={lbl} className="text-[11px]"><SelectValue /></SelectTrigger><SelectContent>{['GOODS', 'SERVICES', 'IP_ROYALTIES', 'LOANS', 'COST_SHARING'].map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent></Select>
                                                     : type === 'select' && key === 'method'
-                                                        ? <select value={(policyForm as any)[key]} onChange={e => setPolicyForm(p => ({ ...p, [key]: e.target.value }))} className="w-full px-[6px] py-[4px] border border-gray-300 rounded-[5px] text-[11px]" aria-label={lbl}>{['CUP', 'RESALE_PRICE', 'COST_PLUS', 'TNMM', 'PSM', 'CUSTOM'].map(v => <option key={v}>{v}</option>)}</select>
+                                                        ? <Select value={(policyForm as any)[key]} onValueChange={v => setPolicyForm(p => ({ ...p, [key]: v }))}><SelectTrigger aria-label={lbl} className="text-[11px]"><SelectValue /></SelectTrigger><SelectContent>{['CUP', 'RESALE_PRICE', 'COST_PLUS', 'TNMM', 'PSM', 'CUSTOM'].map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent></Select>
                                                         : <input type={type} value={(policyForm as any)[key]} onChange={e => setPolicyForm(p => ({ ...p, [key]: e.target.value }))} className="w-full px-[6px] py-[4px] border border-gray-300 rounded-[5px] text-[11px] box-border" aria-label={lbl} />}
                                             </div>
                                         ))}

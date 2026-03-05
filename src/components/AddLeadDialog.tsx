@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Plus, Sparkles, Loader2 } from "lucide-react";
 import type { Lead } from "./LeadCard";
+import { useToast } from "@/hooks/use-toast";
 
 interface AddLeadDialogProps {
   onAddLead?: (lead: Omit<Lead, "id" | "score">) => void;
@@ -28,6 +29,7 @@ interface AddLeadDialogProps {
 export function AddLeadDialog({ onAddLead }: AddLeadDialogProps) {
   const [open, setOpen] = useState(false);
   const [isScoring, setIsScoring] = useState(false);
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -38,10 +40,14 @@ export function AddLeadDialog({ onAddLead }: AddLeadDialogProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate required fields
     if (!formData.name || !formData.email || !formData.company) {
-      alert("Please fill in all required fields");
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "Please fill in all required fields.",
+      });
       return;
     }
 
@@ -67,7 +73,11 @@ export function AddLeadDialog({ onAddLead }: AddLeadDialogProps) {
       setFormData({ name: "", email: "", company: "", status: "new", value: "" });
     } catch (err) {
       console.error("Error adding lead:", err);
-      alert("Failed to add lead");
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to add lead. Please try again.",
+      });
     } finally {
       setIsScoring(false);
     }
@@ -127,8 +137,8 @@ export function AddLeadDialog({ onAddLead }: AddLeadDialogProps) {
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="status">Status</Label>
-                <Select 
-                  value={formData.status} 
+                <Select
+                  value={formData.status}
                   onValueChange={(v) => setFormData({ ...formData, status: v as Lead["status"] })}
                 >
                   <SelectTrigger data-testid="select-lead-status">

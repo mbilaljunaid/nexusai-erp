@@ -240,18 +240,18 @@ export default function RevenueSourceEvents() {
                         </div>
                         <div className="flex gap-2 items-center">
                             <Filter className="h-4 w-4 text-muted-foreground" />
-                            <select
-                                className="border rounded-md px-3 py-1.5 text-sm"
-                                value={filterStatus}
-                                onChange={(e) => setFilterStatus(e.target.value)}
-                                aria-label="Filter events by status"
-                            >
-                                <option value="all">All Statuses</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Processed">Processed</option>
-                                <option value="Error">Error</option>
-                                <option value="Ignored">Ignored</option>
-                            </select>
+                            <Select value={filterStatus} onValueChange={setFilterStatus}>
+                                <SelectTrigger className="w-40">
+                                    <SelectValue placeholder="All Statuses" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Statuses</SelectItem>
+                                    <SelectItem value="Pending">Pending</SelectItem>
+                                    <SelectItem value="Processed">Processed</SelectItem>
+                                    <SelectItem value="Error">Error</SelectItem>
+                                    <SelectItem value="Ignored">Ignored</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
                 </CardHeader>

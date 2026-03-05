@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Truck, Send, CheckCircle2, XCircle, Plus, FileCode } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 
 interface LoadTender {
@@ -73,7 +74,7 @@ export default function LoadTenderWorkbench() {
         <StandardPage title="Load Tender Workbench">
             <div className="ltw-header">
                 <div>
-                    
+
                     <p className="ltw-sub">EDI 204 Load Tender / EDI 990 Response management</p>
                 </div>
                 <button className="add-btn" onClick={() => setShowNew(true)} aria-label="New tender"><Plus size={13} /> New Tender</button>
@@ -110,9 +111,12 @@ export default function LoadTenderWorkbench() {
                                 ))}
                                 <div className="nff">
                                     <label className="nfl">Equipment</label>
-                                    <select className="nfi" value={newForm.equipmentType} onChange={e => setNewForm(p => ({ ...p, equipmentType: e.target.value }))} aria-label="Equipment type">
-                                        <option>TL</option><option>LTL</option><option>INTERMODAL</option><option>AIR</option>
-                                    </select>
+                                    <Select value={newForm.equipmentType} onValueChange={v => setNewForm(p => ({ ...p, equipmentType: v }))}>
+                                        <SelectTrigger className="nfi" aria-label="Equipment type"><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            {['TL', 'LTL', 'INTERMODAL', 'AIR'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                             </div>
                             <div className="nf-actions">

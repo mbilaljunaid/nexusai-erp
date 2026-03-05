@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -203,8 +204,8 @@ The NexusAI Talent Team`);
                             {/* Editor Area */}
                             <div className="flex-1 bg-zinc-50 dark:bg-zinc-900/50 p-6">
                                 <div className="bg-white dark:bg-zinc-950 shadow-sm border h-full rounded-md p-0 overflow-hidden min-h-[600px]">
-                                    <textarea
-                                        className="w-full h-full p-8 resize-none focus:outline-none focus:ring-0 border-none font-serif text-base text-zinc-800 dark:text-zinc-200 leading-relaxed"
+                                    <Textarea
+                                        className="w-full h-full p-8 resize-none border-none font-serif text-base text-zinc-800 dark:text-zinc-200 leading-relaxed focus-visible:ring-0"
                                         value={documentBody}
                                         onChange={e => setDocumentBody(e.target.value)}
                                         placeholder="Begin typing your offer letter template here..."

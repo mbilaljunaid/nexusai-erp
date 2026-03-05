@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Shield, AlertTriangle, CheckCircle2, Search, RefreshCw, Eye } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 
 interface ScreeningResult {
@@ -194,12 +195,12 @@ export default function DebtCovenantMonitor() {
                             <h3 className="sf-title">Screen Entity</h3>
                             <div className="sf">
                                 <label className="sl">Entity Type</label>
-                                <select className="si" value={screenForm.entityType} onChange={e => setScreenForm(p => ({ ...p, entityType: e.target.value }))} aria-label="Entity type">
-                                    <option>Supplier</option>
-                                    <option>Customer</option>
-                                    <option>Employee</option>
-                                    <option>BeneficialOwner</option>
-                                </select>
+                                <Select value={screenForm.entityType} onValueChange={v => setScreenForm(p => ({ ...p, entityType: v }))}>
+                                    <SelectTrigger className="si" aria-label="Entity type"><SelectValue /></SelectTrigger>
+                                    <SelectContent>
+                                        {['Supplier', 'Customer', 'Employee', 'BeneficialOwner'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div className="sf">
                                 <label className="sl">Entity ID</label>

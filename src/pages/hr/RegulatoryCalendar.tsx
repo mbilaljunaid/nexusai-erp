@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Calendar, AlertCircle, CheckCircle2, RefreshCw } from 'lucide-react';
 import { useEnterpriseStore } from '@/lib/enterpriseStore';
 import './RegulatoryCalendar.css';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface RegEvent {
     id: string; title: string; regulation: string; jurisdiction: string;
@@ -189,9 +191,10 @@ export default function RegulatoryCalendar() {
                         {[['regulation', 'Regulation', REGULATIONS], ['eventType', 'Event Type', EVENT_TYPES], ['recurrence', 'Recurrence', ['NONE', 'MONTHLY', 'QUARTERLY', 'ANNUAL']]].map(([k, l, opts]) => (
                             <div key={k as string} className="form-group">
                                 <label className="form-label">{l as string}</label>
-                                <select value={(form as any)[k as string]} onChange={e => setForm(p => ({ ...p, [k as string]: e.target.value }))} className="form-input" aria-label={l as string}>
-                                    {(opts as string[]).map(o => <option key={o}>{o}</option>)}
-                                </select>
+                                <Select value={(form as any)[k as string]} onValueChange={v => setForm(p => ({ ...p, [k as string]: v }))}>
+                                    <SelectTrigger className="form-input" aria-label={l as string}><SelectValue /></SelectTrigger>
+                                    <SelectContent>{(opts as string[]).map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
+                                </Select>
                             </div>
                         ))}
                         {[['jurisdiction', 'Jurisdiction', 'text'], ['dueDate', 'Due Date', 'date'], ['reminderDays', 'Remind (days before)', 'number']].map(([k, l, t]) => (
@@ -202,7 +205,7 @@ export default function RegulatoryCalendar() {
                         ))}
                         <div className="form-group-full">
                             <label className="form-label">Description</label>
-                            <textarea rows={2} value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} className="form-textarea" aria-label="Description" />
+                            <Textarea rows={2} value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} className="form-textarea" aria-label="Description" />
                         </div>
                     </div>
                     <div className="form-actions">

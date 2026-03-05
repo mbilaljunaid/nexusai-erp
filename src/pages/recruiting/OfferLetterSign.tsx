@@ -1,7 +1,9 @@
 import React, { useState, useRef } from 'react';
+import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { FileText, CheckCircle2, XCircle, PenLine, Eye } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 
 interface EsigDoc {
@@ -54,7 +56,7 @@ export default function OfferLetterSign() {
     return (
         <StandardPage title="E-Signature &amp; Offer Letters">
             <div style={{ marginBottom: 16 }}>
-                
+
                 <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Digital signature collection · Audit trail · Expiry enforcement</p>
             </div>
 
@@ -131,9 +133,10 @@ export default function OfferLetterSign() {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                             <label style={{ fontSize: 10, fontWeight: 700 }}>Document Type</label>
-                            <select value={form.documentType} onChange={e => setForm(p => ({ ...p, documentType: e.target.value }))} style={{ padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12 }} aria-label="Document type">
-                                {['OFFER_LETTER', 'NDA', 'EMPLOYMENT_AGREEMENT', 'POLICY_ACK', 'BACKGROUND_CONSENT'].map(t => <option key={t}>{t}</option>)}
-                            </select>
+                            <Select value={form.documentType} onValueChange={v => setForm(p => ({ ...p, documentType: v }))}>
+                                <SelectTrigger style={{ padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12 }} aria-label="Document type"><SelectValue /></SelectTrigger>
+                                <SelectContent>{['OFFER_LETTER', 'NDA', 'EMPLOYMENT_AGREEMENT', 'POLICY_ACK', 'BACKGROUND_CONSENT'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+                            </Select>
                         </div>
                         {[['applicantId', 'Applicant ID', 'text'], ['candidateName', 'Candidate Name', 'text'], ['candidateEmail', 'Candidate Email', 'email'], ['expiresInDays', 'Expires In (days)', 'number']].map(([k, l, t]) => (
                             <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -143,7 +146,7 @@ export default function OfferLetterSign() {
                         ))}
                         <div style={{ gridColumn: '1/-1', display: 'flex', flexDirection: 'column', gap: 3 }}>
                             <label style={{ fontSize: 10, fontWeight: 700 }}>Document Content (HTML)</label>
-                            <textarea rows={4} value={form.htmlContent} onChange={e => setForm(p => ({ ...p, htmlContent: e.target.value }))} placeholder="<p>Dear Candidate, we are delighted to offer you...</p>" style={{ padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 11, resize: 'vertical' }} aria-label="Document content" />
+                            <Textarea rows={4} value={form.htmlContent} onChange={e => setForm(p => ({ ...p, htmlContent: e.target.value }))} placeholder="<p>Dear Candidate, we are delighted to offer you...</p>" className="font-mono text-xs resize-y" aria-label="Document content" />
                         </div>
                     </div>
                     <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 14 }}>

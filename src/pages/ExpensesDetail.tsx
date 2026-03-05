@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -50,6 +51,8 @@ export default function ExpensesDetail() {
   const [isUploadReceiptOpen, setIsUploadReceiptOpen] = useState(false);
   const [selectedReceipt, setSelectedReceipt] = useState<any>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [lineCategory, setLineCategory] = useState("TRAVEL");
+  const [receiptLineId, setReceiptLineId] = useState("");
 
   // Fetch expense report
   const { data: report, isLoading: reportLoading } = useQuery<any>({
@@ -280,7 +283,7 @@ export default function ExpensesDetail() {
   const handleReceiptUpload = () => {
     const fileName = (document.getElementById('receiptFileName') as HTMLInputElement)?.value;
     const fileUrl = (document.getElementById('receiptFileUrl') as HTMLInputElement)?.value;
-    const lineId = (document.getElementById('receiptLineId') as HTMLSelectElement)?.value;
+    const lineId = receiptLineId;
 
     uploadReceiptMutation.mutate({
       fileName,
@@ -555,19 +558,24 @@ export default function ExpensesDetail() {
           <div className="space-y-4 py-4">
             <div>
               <label className="text-sm font-medium mb-2 block">Date</label>
-              <DatePicker onChange={() => {}} />
+              <DatePicker onChange={() => { }} />
             </div>
             <div>
               <label className="text-sm font-medium mb-2 block">Category</label>
-              <select className="w-full px-3 py-2 border rounded-md" id="lineCategory" aria-label="Expense Category">
-                <option value="TRAVEL">Travel</option>
-                <option value="MEALS">Meals & Entertainment</option>
-                <option value="ACCOMMODATION">Accommodation</option>
-                <option value="TRANSPORTATION">Transportation</option>
-                <option value="OFFICE">Office Supplies</option>
-                <option value="EQUIPMENT">Equipment</option>
-                <option value="OTHER">Other</option>
-              </select>
+              <Select value={lineCategory} onValueChange={setLineCategory}>
+                <SelectTrigger id="lineCategory" aria-label="Expense Category">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="TRAVEL">Travel</SelectItem>
+                  <SelectItem value="MEALS">Meals & Entertainment</SelectItem>
+                  <SelectItem value="ACCOMMODATION">Accommodation</SelectItem>
+                  <SelectItem value="TRANSPORTATION">Transportation</SelectItem>
+                  <SelectItem value="OFFICE">Office Supplies</SelectItem>
+                  <SelectItem value="EQUIPMENT">Equipment</SelectItem>
+                  <SelectItem value="OTHER">Other</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <label className="text-sm font-medium mb-2 block">Merchant</label>
@@ -586,7 +594,7 @@ export default function ExpensesDetail() {
             <Button
               onClick={() => {
                 const date = (document.getElementById('lineDate') as HTMLInputElement)?.value;
-                const category = (document.getElementById('lineCategory') as HTMLSelectElement)?.value;
+                const category = lineCategory;
                 const merchant = (document.getElementById('lineMerchant') as HTMLInputElement)?.value;
                 const amount = (document.getElementById('lineAmount') as HTMLInputElement)?.value;
                 const description = (document.getElementById('lineDescription') as HTMLTextAreaElement)?.value;
@@ -678,14 +686,19 @@ export default function ExpensesDetail() {
             </div>
             <div>
               <label className="text-sm font-medium mb-2 block">Link to Expense Line (Optional)</label>
-              <select className="w-full px-3 py-2 border rounded-md" id="receiptLineId" aria-label="Link to Expense Line">
-                <option value="">No line selected</option>
-                {lines.map((line: any) => (
-                  <option key={line.id} value={line.id}>
-                    {line.merchant} - ${line.amount} ({line.category})
-                  </option>
-                ))}
-              </select>
+              <Select value={receiptLineId} onValueChange={setReceiptLineId}>
+                <SelectTrigger id="receiptLineId" aria-label="Link to Expense Line">
+                  <SelectValue placeholder="No line selected" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">No line selected</SelectItem>
+                  {lines.map((line: any) => (
+                    <SelectItem key={line.id} value={line.id}>
+                      {line.merchant} - ${line.amount} ({line.category})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="bg-blue-50 border border-blue-200 p-3 rounded text-sm">
               <p className="font-medium mb-1">After Upload:</p>

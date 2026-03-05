@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 interface FileUploadZoneProps {
     onFileSelect: (file: File) => void;
     onFileRemove?: () => void;
+    onValidationError?: (msg: string) => void;
     acceptedFormats?: string[];
     maxSizeMB?: number;
     className?: string;
@@ -18,6 +19,7 @@ interface FileUploadZoneProps {
 export function FileUploadZone({
     onFileSelect,
     onFileRemove,
+    onValidationError,
     acceptedFormats = [".csv", ".xlsx", ".xls", ".ofx", ".bai2", ".pdf"],
     maxSizeMB = 10,
     className,
@@ -27,6 +29,7 @@ export function FileUploadZone({
     errorMessage
 }: FileUploadZoneProps) {
     const [isDragging, setIsDragging] = useState(false);
+    const [validationError, setValidationError] = useState<string | null>(null);
 
     const handleDragOver = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -65,9 +68,11 @@ export function FileUploadZone({
             const file = files[0];
             const error = validateFile(file);
             if (error) {
-                alert(error);
+                setValidationError(error);
+                onValidationError?.(error);
                 return;
             }
+            setValidationError(null);
             onFileSelect(file);
         }
     }, [disabled, onFileSelect, maxSizeMB, acceptedFormats]);
@@ -78,9 +83,11 @@ export function FileUploadZone({
             const file = files[0];
             const error = validateFile(file);
             if (error) {
-                alert(error);
+                setValidationError(error);
+                onValidationError?.(error);
                 return;
             }
+            setValidationError(null);
             onFileSelect(file);
         }
     }, [onFileSelect, maxSizeMB, acceptedFormats]);
@@ -137,6 +144,12 @@ export function FileUploadZone({
                     <p className="text-xs text-muted-foreground mt-3">
                         Accepted formats: {acceptedFormats.join(", ")} • Max size: {maxSizeMB}MB
                     </p>
+                    {validationError && (
+                        <p className="text-xs text-destructive mt-2 flex items-center gap-1">
+                            <AlertCircle className="h-3.5 w-3.5" />
+                            {validationError}
+                        </p>
+                    )}
                 </div>
             ) : (
                 <div className={cn(

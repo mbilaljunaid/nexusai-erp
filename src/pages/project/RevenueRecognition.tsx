@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { TrendingUp, CheckCircle2, BarChart2 } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from "@/components/ui/input";
 
 interface RevEvent { id: string; period_start: string; period_end: string; pct_complete: number; costs_incurred: number; costs_to_complete: number; revenue_recognized: number; cumulative_revenue: number; gl_posted: boolean; gl_reference: string; method: string; contract_value: number; }
 interface RevSummary { method: string; contract_value: number; total_recognized: number; cumulative: number; remaining: number; pct_recognized: number; period_count: number; gl_posted_count: number; }
@@ -61,7 +63,7 @@ export default function RevenueRecognition() {
 
             {/* Project picker */}
             <div className="flex gap-2 mb-3.5">
-                <input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="py-1.5 px-3 border border-gray-300 rounded-lg text-xs min-w-[220px]" aria-label="Project ID" />
+                <Input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="py-1.5 px-3 border border-gray-300 rounded-lg text-xs min-w-[220px]" aria-label="Project ID" />
                 <button disabled={!projectId} onClick={() => setActiveProject(projectId)} className="py-1.5 px-4 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50">Load Project</button>
                 {activeProject && <button onClick={() => setShowSetup(true)} className="py-1.5 px-3.5 bg-gray-100 border border-gray-200 rounded-lg text-xs cursor-pointer">⚙ Setup Method</button>}
                 {activeProject && summary && <button onClick={() => setShowRecognize(true)} className="py-1.5 px-3.5 bg-emerald-600 text-white border-none rounded-lg text-xs font-semibold cursor-pointer">+ Recognize Revenue</button>}
@@ -105,9 +107,10 @@ export default function RevenueRecognition() {
                             <div className="grid grid-cols-3 gap-2">
                                 <div className="flex flex-col gap-0.5">
                                     <label className="text-[10px] font-semibold">Method</label>
-                                    <select value={setup.method} onChange={e => setSetup(p => ({ ...p, method: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px]" aria-label="Revenue method">
-                                        {METHODS.map(m => <option key={m}>{m}</option>)}
-                                    </select>
+                                    <Select value={setup.method} onValueChange={v => setSetup(p => ({ ...p, method: v }))}>
+                                        <SelectTrigger className="py-1.5 px-2 text-[11px]" aria-label="Revenue method"><SelectValue /></SelectTrigger>
+                                        <SelectContent>{METHODS.map(m => <SelectItem key={m} value={m}>{m}</SelectItem>)}</SelectContent>
+                                    </Select>
                                 </div>
                                 {(
                                     [
@@ -118,7 +121,7 @@ export default function RevenueRecognition() {
                                 ).map(([k, l, t]) => (
                                     <div key={k as string} className="flex flex-col gap-0.5">
                                         <label className="text-[10px] font-semibold">{l as string}</label>
-                                        <input type={t as string} value={(setup as any)[k as string]} onChange={e => setSetup(p => ({ ...p, [k as string]: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px]" aria-label={l as string} />
+                                        <Input type={t as string} value={(setup as any)[k as string]} onChange={e => setSetup(p => ({ ...p, [k as string]: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px]" aria-label={l as string} />
                                     </div>
                                 ))}
                             </div>
@@ -146,7 +149,7 @@ export default function RevenueRecognition() {
                                 ).map(([k, l, t]) => (
                                     <div key={k as string} className="flex flex-col gap-0.5">
                                         <label className="text-[10px] font-semibold">{l as string}</label>
-                                        <input type={t as string} value={(recognize as any)[k as string] ?? ''} onChange={e => setRecognize(p => ({ ...p, [k as string]: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px]" aria-label={l as string} />
+                                        <Input type={t as string} value={(recognize as any)[k as string] ?? ''} onChange={e => setRecognize(p => ({ ...p, [k as string]: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px]" aria-label={l as string} />
                                     </div>
                                 ))}
                             </div>

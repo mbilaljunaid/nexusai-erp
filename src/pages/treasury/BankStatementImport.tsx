@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Upload, FileText, CheckCircle2, AlertCircle, Link2, BarChart3 } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
@@ -115,7 +116,7 @@ export default function BankStatementImport() {
                         <div className="dz-primary">Click to upload or paste below</div>
                         <div className="dz-sub">{format} format</div>
                     </div>
-                    <textarea className="paste-area" placeholder="Or paste statement content here…" value={pasteContent} onChange={e => setPasteContent(e.target.value)} rows={8} aria-label="Statement content" />
+                    <Textarea className="paste-area" placeholder="Or paste statement content here…" value={pasteContent} onChange={e => setPasteContent(e.target.value)} rows={8} aria-label="Statement content" />
                     <button
                         className="import-btn"
                         disabled={!pasteContent || importMutation.isPending}

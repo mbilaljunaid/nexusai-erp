@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -244,18 +245,17 @@ function CreateAdjustmentDialog({
                     <div className="grid grid-cols-2 gap-3">
                         <div>
                             <Label className="text-xs">Adjustment Type *</Label>
-                            <select
-                                value={form.adjustmentType}
-                                onChange={(e) => update("adjustmentType", e.target.value as any)}
-                                aria-label="Adjustment Type"
-                                title="Adjustment Type"
-                                className="mt-1 w-full h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
-                            >
-                                <option value="PriceVariance">Price Variance</option>
-                                <option value="UsageVariance">Usage Variance</option>
-                                <option value="OHVariance">Overhead Variance</option>
-                                <option value="Reclassification">Reclassification</option>
-                            </select>
+                            <Select value={form.adjustmentType} onValueChange={(val) => update("adjustmentType", val as any)}>
+                                <SelectTrigger className="mt-1">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="PriceVariance">Price Variance</SelectItem>
+                                    <SelectItem value="UsageVariance">Usage Variance</SelectItem>
+                                    <SelectItem value="OHVariance">Overhead Variance</SelectItem>
+                                    <SelectItem value="Reclassification">Reclassification</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div>
                             <Label className="text-xs">Currency *</Label>
@@ -400,7 +400,7 @@ export default function CostAdjustmentApprovalWorkbench() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    
+
                     <p className="text-sm text-muted-foreground mt-1">
                         Maker-checker workflow for cost adjustments — Oracle Fusion Cost Management parity (L11)
                     </p>
