@@ -4,6 +4,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -271,8 +272,8 @@ export default function CompetitorIntelligence() {
                                                 </TableCell>
                                                 <TableCell className="text-right">
                                                     <span className={`font-bold ${data.winRate >= 70 ? "text-green-700" :
-                                                            data.winRate >= 50 ? "text-amber-700" :
-                                                                "text-red-700"
+                                                        data.winRate >= 50 ? "text-amber-700" :
+                                                            "text-red-700"
                                                         }`}>
                                                         {data.winRate.toFixed(0)}%
                                                     </span>
@@ -364,9 +365,7 @@ export default function CompetitorIntelligence() {
                                     <CardContent className="space-y-3">
                                         <div className="flex items-center justify-between">
                                             <span className="text-sm text-muted-foreground">Average Discount:</span>
-                                            <Badge className="bg-purple-100 text-purple-800">
-                                                {battleCard.pricingIntel.avgDiscount}%
-                                            </Badge>
+                                            <StatusBadge status="info" label={`${battleCard.pricingIntel.avgDiscount}%`} />
                                         </div>
                                         <div className="flex items-center justify-between">
                                             <span className="text-sm text-muted-foreground">Price Range:</span>

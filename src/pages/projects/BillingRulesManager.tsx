@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";

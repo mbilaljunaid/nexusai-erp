@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -258,9 +259,7 @@ export default function LegalEntitySetup() {
                                         </Badge>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant={entity.isActive ? "default" : "secondary"} className={entity.isActive ? "bg-emerald-50 text-emerald-700 border-emerald-200" : ""}>
-                                            {entity.isActive ? 'Active' : 'Inactive'}
-                                        </Badge>
+                                        <StatusBadge status={entity.isActive ? 'Active' : 'Inactive'} />
                                     </TableCell>
                                     <TableCell className="text-right text-muted-foreground text-sm">
                                         {new Date(entity.createdAt).toLocaleDateString()}

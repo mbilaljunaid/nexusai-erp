@@ -18,6 +18,7 @@ import { useNexusAI } from "@/contexts/NexusAIContext";
 import { useLocation } from "wouter";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 export default function ARInvoices() {
   const { toast } = useToast();
@@ -196,9 +197,7 @@ export default function ARInvoices() {
       header: "Accounting",
       width: "150px",
       cell: (inv: any) => (
-        <Badge variant="outline" className={inv.glStatus === 'Posted' ? "bg-green-50 text-green-700" : "bg-yellow-50 text-yellow-700"}>
-          {inv.glStatus || 'Pending'}
-        </Badge>
+        <StatusBadge status={inv.glStatus || 'Pending'} />
       )
     },
     {

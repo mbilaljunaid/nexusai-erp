@@ -204,7 +204,7 @@ export default function MarketplaceJobDetail() {
             </div>
 
             <div className="lg:text-right">
-              <div className="text-2xl font-bold mb-2" style={{ color: 'hsl(var(--primary))' }} data-testid="text-job-budget">
+              <div className="text-2xl font-bold mb-2 text-primary" data-testid="text-job-budget">
                 {formatBudget(job.budget_min, job.budget_max, job.currency)}
               </div>
               <p className="text-muted-foreground text-sm">Budget Range</p>
@@ -298,7 +298,7 @@ export default function MarketplaceJobDetail() {
 
                         <div className="flex items-center justify-between pt-3 border-t">
                           <div className="flex items-center gap-4 text-sm">
-                            <span className="flex items-center gap-1.5 font-semibold" style={{ color: 'hsl(var(--primary))' }}>
+                            <span className="flex items-center gap-1.5 font-semibold text-primary">
                               <DollarSign className="w-4 h-4" />
                               ${Number(proposalItem.bid_amount).toLocaleString()}
                             </span>
@@ -326,7 +326,7 @@ export default function MarketplaceJobDetail() {
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg" style={{ backgroundColor: 'hsl(var(--primary) / 0.1)' }}>
-                    <DollarSign className="w-5 h-5" style={{ color: 'hsl(var(--primary))' }} />
+                    <DollarSign className="w-5 h-5 text-primary" />
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Budget</p>

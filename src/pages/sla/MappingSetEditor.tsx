@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -73,7 +74,7 @@ export function MappingSetEditor({ setId, onBack }: { setId: string, onBack: () 
         setLocalValues(newValues);
     };
 
-    if (isLoading) return <div className="flex justify-center p-20"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
+    if (isLoading) return <PageSkeleton />;
 
     return (
         <div className="space-y-6">

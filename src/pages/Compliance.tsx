@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IconNavigation } from "@/components/IconNavigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Shield, CheckCircle, AlertTriangle, TrendingUp } from "lucide-react";
 
 export default function Compliance() {
@@ -74,9 +75,7 @@ export default function Compliance() {
               ].map((standard) => (
                 <div key={standard.name} className="flex items-center justify-between p-3 rounded-md border">
                   <span className="font-medium text-sm">{standard.name}</span>
-                  <Badge variant="secondary" className={standard.status === "compliant" ? "bg-green-500/10 text-green-600" : "bg-yellow-500/10 text-yellow-600"}>
-                    {standard.status === "compliant" ? "Compliant" : "In Progress"}
-                  </Badge>
+                  <StatusBadge status={standard.status} label={standard.status === "compliant" ? "Compliant" : "In Progress"} />
                 </div>
               ))}
             </CardContent>
@@ -103,9 +102,7 @@ export default function Compliance() {
                     <p className="font-medium text-sm">{standard.name}</p>
                     <p className="text-xs text-muted-foreground">{standard.framework}</p>
                   </div>
-                  <Badge className={standard.status === "compliant" ? "bg-green-500/10 text-green-600" : "bg-yellow-500/10 text-yellow-600"}>
-                    {standard.status === "compliant" ? "Compliant" : "In Progress"}
-                  </Badge>
+                  <StatusBadge status={standard.status} label={standard.status === "compliant" ? "Compliant" : "In Progress"} />
                 </div>
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>Coverage: {standard.coverage}</span>
@@ -135,9 +132,7 @@ export default function Compliance() {
                     <p className="font-medium text-sm">{audit.name}</p>
                     <p className="text-xs text-muted-foreground">{audit.type} • {audit.date}</p>
                   </div>
-                  <Badge className={audit.status === "completed" ? "bg-green-500/10 text-green-600" : audit.status === "in_progress" ? "bg-blue-500/10 text-blue-600" : "bg-gray-500/10 text-gray-600"}>
-                    {audit.status}
-                  </Badge>
+                  <StatusBadge status={audit.status} />
                 </div>
                 <p className="text-xs text-muted-foreground">{audit.findings} findings</p>
               </div>
@@ -164,9 +159,7 @@ export default function Compliance() {
                     <p className="font-medium text-sm">{risk.name}</p>
                     <p className="text-xs text-muted-foreground">Impact: {risk.impact} • Probability: {risk.probability}</p>
                   </div>
-                  <Badge className={risk.severity === "high" ? "bg-red-500/10 text-red-600" : risk.severity === "medium" ? "bg-yellow-500/10 text-yellow-600" : "bg-blue-500/10 text-blue-600"}>
-                    {risk.severity}
-                  </Badge>
+                  <StatusBadge status={risk.severity} />
                 </div>
                 <p className="text-xs text-muted-foreground">{risk.controls} controls in place</p>
               </div>

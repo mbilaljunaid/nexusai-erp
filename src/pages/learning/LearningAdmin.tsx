@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Plus, BookOpen, FileText, Users } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 import {
     Select,
@@ -92,7 +93,7 @@ export default function LearningAdmin() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    
+
                     <p className="text-muted-foreground">
                         Create and manage courses
                     </p>
@@ -261,7 +262,7 @@ export default function LearningAdmin() {
                                                     {course.description}
                                                 </CardDescription>
                                             </div>
-                                            <Badge className="bg-green-600">Published</Badge>
+                                            <StatusBadge status="Published" />
                                         </div>
                                     </CardHeader>
                                     <CardContent className="space-y-3">

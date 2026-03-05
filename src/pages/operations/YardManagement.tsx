@@ -187,7 +187,7 @@ export default function YardManagement() {
                 <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: 16, overflowX: 'auto' }}>
                     <div style={{ display: 'flex', gap: 0, minWidth: 700 }}>
                         <div style={{ display: 'flex', flexDirection: 'column', minWidth: 50 }}>
-                            <div style={{ height: 32 }} />
+                            <div className="h-[32px]" />
                             {Array.from({ length: 14 }, (_, i) => i + 6).map(h => (
                                 <div key={h} style={{ height: 40, fontSize: 10, color: '#9ca3af', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 6, borderBottom: '1px solid #f3f4f6' }}>{h}:00</div>
                             ))}

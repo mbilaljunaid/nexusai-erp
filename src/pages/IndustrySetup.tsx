@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import {
   Select,
   SelectContent,
@@ -251,7 +252,7 @@ export default function IndustrySetup() {
   };
 
   const selectedIndustryData = industries.find((i) => i.id === selectedIndustry);
-  const previewModules = selectedIndustryData?.defaultModules || 
+  const previewModules = selectedIndustryData?.defaultModules ||
     INDUSTRY_MODULE_MAPPING[selectedIndustryData?.slug || ""] || [];
 
   const isLoading = tenantsLoading || industriesLoading || deploymentsLoading;
@@ -367,9 +368,7 @@ export default function IndustrySetup() {
                         Deployed {new Date(deployment.deployedAt).toLocaleDateString()}
                       </p>
                     </div>
-                    <Badge variant="default" className="bg-green-600">
-                      {deployment.status}
-                    </Badge>
+                    <StatusBadge status={deployment.status === 'active' || deployment.status === 'deployed' ? 'active' : 'info'} label={deployment.status || 'Unknown'} />
                   </div>
                   {deployment.enabledModules && deployment.enabledModules.length > 0 && (
                     <div>

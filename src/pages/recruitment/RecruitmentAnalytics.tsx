@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import {
@@ -135,7 +136,6 @@ export default function RecruitmentAnalytics() {
                 <div className="px-2 text-center flex justify-center">
                     <Badge
                         variant={row.avgFeedbackTime <= 1 ? 'default' : 'secondary'}
-                        className={row.avgFeedbackTime <= 1 ? 'bg-green-600' : ''}
                     >
                         {row.avgFeedbackTime.toFixed(1)}
                     </Badge>
@@ -149,7 +149,7 @@ export default function RecruitmentAnalytics() {
             cell: (row) => (
                 <div className="px-2 text-center flex justify-center">
                     {row.avgRating >= 4.5 && row.avgFeedbackTime <= 1 ? (
-                        <Badge variant="default" className="bg-green-600">Excellent</Badge>
+                        <StatusBadge status="active" label="Excellent" />
                     ) : row.avgRating >= 4.0 ? (
                         <Badge variant="default">Good</Badge>
                     ) : (

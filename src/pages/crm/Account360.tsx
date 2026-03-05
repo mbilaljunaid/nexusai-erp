@@ -1,5 +1,6 @@
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import type { Account, Contact, Opportunity, Order } from "@/types/erp-types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -42,7 +43,7 @@ export default function Account360() {
     // Mock Orders for now until endpoint is ready
     const orders: Order[] = [];
 
-    if (isLoadingAccount) return <div className="flex justify-center p-10"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
+    if (isLoadingAccount) return <PageSkeleton />;
     if (!account) return <div className="p-10">Account not found</div>;
 
     return (

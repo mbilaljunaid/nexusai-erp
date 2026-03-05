@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Video, Phone, MapPin, User, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { InterviewFeedbackModal } from "@/components/recruitment/InterviewFeedbackModal";
@@ -146,10 +147,7 @@ export default function MyInterviews() {
                             {isPast && (
                                 <>
                                     {interview.feedbackSubmitted ? (
-                                        <Badge variant="default" className="bg-green-600">
-                                            <CheckCircle className="h-3 w-3 mr-1" />
-                                            Feedback Submitted
-                                        </Badge>
+                                        <StatusBadge status="active" label="Feedback Submitted" />
                                     ) : (
                                         <>
                                             <Badge variant="destructive">
@@ -185,7 +183,7 @@ export default function MyInterviews() {
     return (
         <StandardPage title="My Interviews">
             <div>
-                
+
                 <p className="text-muted-foreground mt-2">
                     Your scheduled and past interviews
                 </p>

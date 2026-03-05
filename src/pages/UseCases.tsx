@@ -56,9 +56,9 @@ export default function UseCases() {
               const UseCaseIcon = useCase.icon;
               return (
                 <Card key={i} className="public-card p-6" data-testid={`card-usecase-${i}`}>
-                  <UseCaseIcon className="w-8 h-8 mb-4" style={{ color: `hsl(var(--primary))` }} />
+                  <UseCaseIcon className="w-8 h-8 mb-4 text-primary" />
                   <h3 className="text-xl font-bold mb-2">{useCase.title}</h3>
-                  <p style={{ color: `hsl(var(--muted-foreground))` }}>{useCase.desc}</p>
+                  <p className="text-muted-foreground">{useCase.desc}</p>
                 </Card>
               );
             })}

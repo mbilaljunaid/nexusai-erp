@@ -205,7 +205,7 @@ export default function MyProposalsDashboard() {
                       </div>
                       <div className="flex flex-col items-end gap-3">
                         <div className="text-right">
-                          <p className="text-lg font-bold" style={{ color: 'hsl(var(--primary))' }}>
+                          <p className="text-lg font-bold text-primary">
                             ${Number(proposal.proposed_price).toLocaleString()}
                           </p>
                           <p className="text-xs text-muted-foreground">Your Bid</p>

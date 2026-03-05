@@ -34,6 +34,7 @@ import {
     SheetClose
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Separator } from "@/components/ui/separator";
 import { Plus, Trash2, Save, Send, MoreHorizontal, ArrowRight, AlertCircle, CheckCircle2 } from "lucide-react";
 import { CodeCombinationPicker } from "@/components/gl/CodeCombinationPicker";
@@ -308,21 +309,8 @@ export default function JournalEntry() {
             actions={
                 <>
                     <div className="flex items-center gap-2 mr-4">
-                        <Badge variant="outline" className={cn(
-                            "uppercase text-xs",
-                            journalStatus === 'Posted' ? "border-green-500 text-green-600 bg-green-50" :
-                                journalStatus === 'Processing' ? "border-blue-500 text-blue-600 bg-blue-50" : "border-slate-300"
-                        )}>
-                            {journalStatus}
-                        </Badge>
-                        <Badge variant="outline" className={cn(
-                            "uppercase text-xs",
-                            approvalStatus === 'Approved' ? "border-green-500 text-green-600 bg-green-50" :
-                                approvalStatus === 'Pending' ? "border-yellow-500 text-yellow-600 bg-yellow-50" :
-                                    approvalStatus === 'Rejected' ? "border-red-500 text-red-600 bg-red-50" : "border-slate-300"
-                        )}>
-                            Approval: {approvalStatus}
-                        </Badge>
+                        <StatusBadge status={journalStatus} className="uppercase text-xs" />
+                        <StatusBadge status={approvalStatus} label={`Approval: ${approvalStatus}`} className="uppercase text-xs" />
                     </div>
                     <Button variant="ghost" onClick={() => setIsAuditOpen(true)}>
                         History
@@ -384,7 +372,7 @@ export default function JournalEntry() {
                     </CardHeader>
                     <CardContent>
                         <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">Open</Badge>
+                            <StatusBadge status="Open" />
                             <span className="text-xs text-muted-foreground">Jan-2026</span>
                         </div>
                     </CardContent>

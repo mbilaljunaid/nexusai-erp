@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -191,7 +192,7 @@ function CurriculumEditor({ curriculumId, title }: { curriculumId: string, title
                 </Dialog>
             </CardHeader>
             <CardContent className="space-y-4">
-                {isLoading ? <Loader2 className="animate-spin" /> : details?.courses?.length === 0 ? (
+                {isLoading ? <TableSkeleton rows={4} /> : details?.courses?.length === 0 ? (
                     <p className="text-sm text-muted-foreground italic">No courses in this path yet.</p>
                 ) : (
                     details?.courses?.map((member: any) => (

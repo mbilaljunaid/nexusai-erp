@@ -17,6 +17,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Progress } from "@/components/ui/progress";
 import { useLedger } from "@/context/LedgerContext";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
@@ -101,7 +102,7 @@ export default function BudgetManager() {
             actions={
                 <div className="flex gap-3">
                     <LedgerContextBadge />
-                    <Badge variant="outline" className="bg-emerald-500/10 border-emerald-500/20 text-emerald-400 py-1.5 px-3">
+                    <Badge variant="outline" className="py-1.5 px-3">
                         Period: {selectedPeriod}
                     </Badge>
                 </div>
@@ -329,7 +330,7 @@ export default function BudgetManager() {
                                         <TableCell className="font-semibold text-white">FY2026 Corporate Base</TableCell>
                                         <TableCell className="text-gray-400">Primary Ledger</TableCell>
                                         <TableCell className="text-gray-400">Jan-26 to Dec-26</TableCell>
-                                        <TableCell><Badge className="bg-emerald-500/20 text-emerald-400 border-0">Open / Active</Badge></TableCell>
+                                        <TableCell><StatusBadge status="Active" label="Open / Active" /></TableCell>
                                         <TableCell className="text-right pr-6">
                                             <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300">Manage</Button>
                                         </TableCell>
@@ -338,7 +339,7 @@ export default function BudgetManager() {
                                         <TableCell className="font-semibold text-white">Q1 2026 Revised</TableCell>
                                         <TableCell className="text-gray-400">Primary Ledger</TableCell>
                                         <TableCell className="text-gray-400">Jan-26 to Mar-26</TableCell>
-                                        <TableCell><Badge className="bg-amber-500/20 text-amber-400 border-0">Draft</Badge></TableCell>
+                                        <TableCell><StatusBadge status="Draft" /></TableCell>
                                         <TableCell className="text-right pr-6">
                                             <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300">Edit</Button>
                                         </TableCell>

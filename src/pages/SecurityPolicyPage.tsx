@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useEffect } from "react";
 import { Header, Footer } from "@/components/Navigation";
 import {
@@ -43,9 +44,10 @@ export default function SecurityPolicyPage() {
       id: "status",
       header: "Support Status",
       width: "200px",
-      cell: (row) => row.status === "Supported"
-        ? <Badge className="bg-green-500 text-white">Supported</Badge>
-        : <Badge variant="secondary">Limited Support</Badge>
+      cell: (row) =>
+        row.status === "Supported"
+          ? <StatusBadge status="active" label="Supported" />
+          : <Badge variant="secondary">Limited Support</Badge>
     }
   ];
 
@@ -62,7 +64,7 @@ export default function SecurityPolicyPage() {
         {/* Hero */}
         <section className="px-4 py-16 text-center max-w-4xl mx-auto">
           <Badge className="mb-4 bg-red-600 text-white">SECURITY</Badge>
-          
+
           <p className="text-xl text-muted-foreground mb-8">
             We take security seriously. This page describes our security practices and
             how to responsibly report vulnerabilities.

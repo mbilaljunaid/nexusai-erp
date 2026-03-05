@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { assetHealthService } from "@/services/maintenance.service";
@@ -325,9 +326,7 @@ export function AssetHealthDashboard() {
                                                 <Badge variant="outline" className={config.color}>
                                                     {alert.severity}
                                                 </Badge>
-                                                <Badge variant="outline" className="bg-purple-50 text-purple-800">
-                                                    {alert.probability}% probability
-                                                </Badge>
+                                                <StatusBadge status="info" label={`${alert.probability}% probability`} />
                                             </div>
                                             <div className="text-sm mb-2">{alert.description}</div>
                                             {alert.daysToFailure && (

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
     Sheet,
@@ -154,9 +155,7 @@ export default function SecurityProfiles() {
             id: "isActive",
             header: "Status",
             cell: (r: any) => (
-                <Badge variant={r.isActive ? "default" : "secondary"} className={r.isActive ? "bg-green-100 text-green-700 hover:bg-green-100" : ""}>
-                    {r.isActive ? "Active" : "Inactive"}
-                </Badge>
+                <StatusBadge status={r.isActive ? 'Active' : 'Inactive'} />
             )
         }
     ];

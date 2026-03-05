@@ -111,7 +111,7 @@ export default function MarketplaceJobs() {
         <div className="bg-muted/50 py-12 border-b">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl">
-              <Badge className="mb-4" style={{ backgroundColor: `hsl(var(--primary) / 0.1)`, color: `hsl(var(--primary))` }}>
+              <Badge className="mb-4 bg-primary/10 text-primary">
                 JOB BOARD
               </Badge>
 
@@ -307,7 +307,7 @@ export default function MarketplaceJobs() {
                             </div>
                             <div className="flex flex-col items-end gap-2">
                               <div className="text-right">
-                                <p className="text-lg font-bold" style={{ color: `hsl(var(--primary))` }}>
+                                <p className="text-lg font-bold text-primary">
                                   {formatBudget(job.budget_min, job.budget_max, job.currency)}
                                 </p>
                                 <p className="text-xs text-muted-foreground">Budget</p>

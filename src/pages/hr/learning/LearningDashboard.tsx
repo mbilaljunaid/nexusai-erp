@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { useNexusAI } from "@/contexts/NexusAIContext";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 import {
@@ -385,7 +386,7 @@ export default function LearningManagement() {
                     <CardHeader>
                       <div className="flex justify-between">
                         <Badge variant="outline">{course.provider || "Internal"}</Badge>
-                        {(enrollments?.find((e: any) => e.courseTitle === course.title)) && <Badge className="bg-emerald-100 text-emerald-800">Enrolled</Badge>}
+                        {(enrollments?.find((e: any) => e.courseTitle === course.title)) && <StatusBadge status="Enrolled" />}
                       </div>
                       <CardTitle className="mt-2">{course.title}</CardTitle>
                       <div className="flex justify-between items-center mt-1">

@@ -281,7 +281,7 @@ export default function MyJobsDashboard() {
                       <p className="text-sm line-clamp-2 mb-3">{proposal.cover_letter}</p>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4 text-sm">
-                          <span className="font-semibold" style={{ color: 'hsl(var(--primary))' }}>
+                          <span className="font-semibold text-primary">
                             ${Number(proposal.proposed_price).toLocaleString()}
                           </span>
                           <span className="text-muted-foreground flex items-center gap-1">

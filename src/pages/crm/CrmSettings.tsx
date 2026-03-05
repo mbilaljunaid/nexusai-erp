@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -97,7 +98,7 @@ export default function CrmSettings() {
         setSettings({ ...settings, scoringRules: newRules });
     };
 
-    if (isLoading) return <div className="flex justify-center p-10"><Loader2 className="animate-spin" /></div>;
+    if (isLoading) return <PageSkeleton />;
 
     return (
         <StandardPage

@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -208,9 +209,7 @@ export default function LedgerSetup() {
                                             <TableCell>{ledger.coaName || 'Corporate COA'}</TableCell>
                                             <TableCell>{ledger.calendarName || 'Standard'}</TableCell>
                                             <TableCell>
-                                                <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200">
-                                                    Active
-                                                </Badge>
+                                                <StatusBadge status="Active" />
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <Button variant="ghost" size="sm"><Settings className="h-4 w-4" /></Button>

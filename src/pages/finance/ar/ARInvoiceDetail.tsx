@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { useRoute } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -87,7 +89,7 @@ export default function ARInvoiceDetail() {
         }
     });
 
-    if (isLoading) return <div className="p-8 flex items-center justify-center"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
+    if (isLoading) return <PageSkeleton />;
     if (!invoiceData) return <div className="p-8 text-center text-muted-foreground">Invoice not found.</div>;
 
     const invoice = invoiceData.invoice || invoiceData;
@@ -201,9 +203,7 @@ export default function ARInvoiceDetail() {
                 <Card>
                     <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">GL Status</CardTitle></CardHeader>
                     <CardContent>
-                        <Badge variant="outline" className={invoice.glStatus === 'Posted' || invoice.glStatus === 'Accounted' ? "bg-green-50 text-green-700 text-sm" : "bg-yellow-50 text-yellow-700 text-sm"}>
-                            {invoice.glStatus || 'Unaccounted'}
-                        </Badge>
+                        <StatusBadge status={invoice.glStatus || 'Unaccounted'} />
                     </CardContent>
                 </Card>
             </div>

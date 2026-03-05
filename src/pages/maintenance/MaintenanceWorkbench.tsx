@@ -8,6 +8,7 @@ import DispatchConsole from "@/components/maintenance/DispatchConsole";
 import PlanningBoard from "@/components/maintenance/PlanningBoard";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import CostAnalysisView from "@/components/maintenance/CostAnalysisView";
 import { StandardPage } from "@/components/layout/StandardPage";
 
@@ -42,7 +43,7 @@ export default function MaintenanceWorkbench({ initialTab = "overview" }: { init
             <div className="border-b bg-background p-4 flex flex-col gap-4">
                 <div className="flex justify-between items-center">
                     <div>
-                        
+
                         <p className="text-muted-foreground">Monitor asset health, dispatch work, and schedule maintenance.</p>
                     </div>
                     <div className="flex gap-4 items-center">
@@ -122,7 +123,7 @@ export default function MaintenanceWorkbench({ initialTab = "overview" }: { init
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
                                             <span className="text-sm">HVAC System A</span>
-                                            <Badge className="bg-green-500">Healthy</Badge>
+                                            <StatusBadge status="active" label="Healthy" />
                                         </div>
                                         <div className="flex items-center justify-between">
                                             <span className="text-sm">Conveyor Belt 04</span>
@@ -130,7 +131,7 @@ export default function MaintenanceWorkbench({ initialTab = "overview" }: { init
                                         </div>
                                         <div className="flex items-center justify-between">
                                             <span className="text-sm">Hydraulic Press</span>
-                                            <Badge className="bg-yellow-500">Warning</Badge>
+                                            <StatusBadge status="warning" label="Warning" />
                                         </div>
                                     </div>
                                 </CardContent>

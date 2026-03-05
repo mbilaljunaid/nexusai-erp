@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -469,9 +470,7 @@ export function ServiceRequestPortal() {
                                                         {statusConfig.label}
                                                     </Badge>
                                                     {request.workOrderId && (
-                                                        <Badge variant="outline" className="bg-green-50 text-green-800">
-                                                            WO: {request.workOrderId}
-                                                        </Badge>
+                                                        <StatusBadge status="active" label={`WO: ${request.workOrderId}`} />
                                                     )}
                                                 </div>
                                                 <div className="font-medium">{request.title}</div>
@@ -503,7 +502,7 @@ export function ServiceRequestPortal() {
                                                         <StatusIcon className="h-3 w-3 mr-1" />
                                                         {statusConfig.label}
                                                     </Badge>
-                                                    <Badge className="bg-green-600">WO: {request.workOrderId}</Badge>
+                                                    <StatusBadge status="active" label={`WO: ${request.workOrderId}`} />
                                                 </div>
                                                 <div className="font-bold text-lg mb-1">{request.title}</div>
                                                 <div className="text-sm text-muted-foreground">

@@ -21,6 +21,7 @@ import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { ContextualSearch } from "@/components/ContextualSearch";
 import { DatePicker } from '@/components/ui/DatePicker';
@@ -353,7 +354,7 @@ export default function FixedAssetWorkbench() {
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs text-muted-foreground uppercase font-bold">GL Post Date</label>
-                                            <DatePicker value="2026-02-10" onChange={() => {}} />
+                                            <DatePicker value="2026-02-10" onChange={() => { }} />
                                         </div>
                                     </div>
                                     <Button
@@ -389,12 +390,12 @@ export default function FixedAssetWorkbench() {
                                         <TableBody>
                                             <TableRow>
                                                 <TableCell className="font-medium">JAN-2026</TableCell>
-                                                <TableCell><Badge variant="secondary" className="text-green-600 bg-green-100 hover:bg-green-100">Completed</Badge></TableCell>
+                                                <TableCell><StatusBadge status="Completed" /></TableCell>
                                                 <TableCell className="text-right text-indigo-600 hover:underline cursor-pointer">GL-4492</TableCell>
                                             </TableRow>
                                             <TableRow>
                                                 <TableCell className="font-medium">DEC-2025</TableCell>
-                                                <TableCell><Badge variant="secondary" className="text-green-600 bg-green-100 hover:bg-green-100">Completed</Badge></TableCell>
+                                                <TableCell><StatusBadge status="Completed" /></TableCell>
                                                 <TableCell className="text-right text-indigo-600 hover:underline cursor-pointer">GL-3910</TableCell>
                                             </TableRow>
                                         </TableBody>

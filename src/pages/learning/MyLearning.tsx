@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpen, Award, Clock, CheckCircle, PlayCircle } from "lucide-react";
@@ -37,7 +38,7 @@ export default function MyLearning() {
         <StandardPage title="My Learning">
             {/* Header */}
             <div>
-                
+
                 <p className="text-muted-foreground">
                     Track your learning progress and achievements
                 </p>
@@ -204,7 +205,7 @@ export default function MyLearning() {
                                                 Completed {enrollment.completedAt && new Date(enrollment.completedAt).toLocaleDateString()}
                                             </CardDescription>
                                         </div>
-                                        <Badge className="bg-green-600">{enrollment.category}</Badge>
+                                        <StatusBadge status="info" label={enrollment.category} />
                                     </div>
                                 </CardHeader>
                                 <CardContent className="flex gap-2">

@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Separator } from "@/components/ui/separator";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useToast } from "@/hooks/use-toast";
@@ -139,7 +140,7 @@ export default function QuestionnaireBuilder() {
                                 onChange={e => setFormName(e.target.value)}
                                 className="text-xl font-bold border-none shadow-none h-auto p-0 focus-visible:ring-0 bg-transparent w-[500px]"
                             />
-                            <p className="text-sm text-muted-foreground mt-1">Status: <Badge variant="secondary" className="font-normal border-zinc-200 text-green-700 bg-green-50 dark:bg-green-950 dark:text-green-400">Active</Badge></p>
+                            <p className="text-sm text-muted-foreground mt-1">Status: <StatusBadge status="active" label="Active" /></p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">

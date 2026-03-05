@@ -156,7 +156,7 @@ export default function LedgerSetSetup() {
     );
 
     function items(sets: any[], loading: boolean) {
-        if (isLoading) return <PageSkeleton />;
+        if (loading) return <PageSkeleton />;
         if (sets.length === 0) return <div className="text-muted-foreground col-span-3">No Ledger Sets defined.</div>;
         return sets.map(set => (
             <Card key={set.id} className="hover:border-primary/50 transition-colors">

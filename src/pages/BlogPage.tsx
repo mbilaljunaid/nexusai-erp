@@ -214,7 +214,7 @@ export default function BlogPage() {
       <section className="public-section-alt px-4 py-16">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
-          <p style={{ color: `hsl(var(--muted-foreground))` }} className="mb-6">Get weekly insights on ERP, AI automation, and industry best practices.</p>
+          <p className="text-muted-foreground mb-6">Get weekly insights on ERP, AI automation, and industry best practices.</p>
           <div className="flex gap-2">
             <input
               type="email"

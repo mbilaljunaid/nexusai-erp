@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
@@ -38,7 +37,7 @@ export default function WavePlanning() {
             return await apiRequest("POST", "/api/scm/wms/waves", {
                 warehouseId: "WH-001",
                 orderIds: selectedOrders,
-                description: `Bulk Wave - ${new Date().toLocaleDateString()}`
+                description: `Bulk Wave - ${new Date().toLocaleDateString()} `
             });
         },
         onSuccess: () => {
@@ -60,7 +59,7 @@ export default function WavePlanning() {
                             <TooltipTrigger asChild>
                                 <input
                                     type="checkbox"
-                                    aria-label={`Select order ${row.orderNumber}`}
+                                    aria-label={`Select order ${row.orderNumber} `}
                                     checked={selectedOrders.includes(row.id)}
                                     onChange={(e) => {
                                         if (e.target.checked) setSelectedOrders([...selectedOrders, row.id]);
@@ -70,7 +69,7 @@ export default function WavePlanning() {
                                 />
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p>{`Select order ${row.orderNumber}`}</p>
+                                <p>{`Select order ${row.orderNumber} `}</p>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
@@ -81,7 +80,7 @@ export default function WavePlanning() {
         { id: "customer", header: "Customer", width: "150px", cell: () => <div className="text-white">Consolidated Express</div> },
         { id: "requestedDate", header: "Requested Date", width: "150px", cell: () => <div className="text-slate-400">{new Date().toLocaleDateString()}</div> },
         { id: "items", header: "Items", width: "100px", cell: () => <div className="text-white">5 items</div> },
-        { id: "priority", header: "Priority", width: "120px", cell: () => <Badge variant="outline" className="border-orange-500/20 text-orange-400 bg-orange-500/5">High</Badge> }
+        { id: "priority", header: "Priority", width: "120px", cell: () => <StatusBadge status="high" /> }
     ];
 
     return (

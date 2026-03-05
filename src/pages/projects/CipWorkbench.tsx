@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -269,7 +270,8 @@ export default function CipWorkbench() {
                         </CardHeader>
                         <CardContent>
                             {assetsLoading ? (
-                                <TableSkeleton rows={5} /> : assets.length === 0 ? (
+                                <TableSkeleton rows={5} />
+                            ) : assets.length === 0 ? (
                                 <div className="text-center py-12 text-muted-foreground">
                                     <Building2 className="h-12 w-12 mx-auto mb-4 opacity-50" />
                                     <p>No assets created yet. Click "New Asset" to start.</p>

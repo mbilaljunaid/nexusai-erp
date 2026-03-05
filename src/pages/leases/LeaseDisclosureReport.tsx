@@ -2,6 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useQuery } from "@tanstack/react-query";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { Loader2, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StandardPage } from '@/components/layout/StandardPage';
@@ -18,7 +19,7 @@ export default function LeaseDisclosureReport() {
         }
     });
 
-    if (isLoading) return <div className="flex h-96 items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>;
+    if (isLoading) return <PageSkeleton />;
 
     // Mock calculations if API doesn't return aggregated stats
     const totalLiability = 2450000;

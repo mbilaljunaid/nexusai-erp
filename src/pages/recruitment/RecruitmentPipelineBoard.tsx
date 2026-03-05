@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import {
     Users2,
     Search,
@@ -91,9 +92,7 @@ export default function RecruitmentPipelineBoard() {
                                                     </p>
                                                 </div>
                                                 <div className="flex flex-col items-end gap-1">
-                                                    <Badge className="text-[10px] bg-green-100 text-green-700 border-green-200">
-                                                        {app.score}% Match
-                                                    </Badge>
+                                                    <StatusBadge status="active" label={`${app.score}% Match`} />
                                                 </div>
                                             </div>
 

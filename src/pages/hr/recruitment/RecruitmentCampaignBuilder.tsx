@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import {
     Megaphone,
@@ -77,7 +78,7 @@ export default function RecruitmentCampaignBuilder() {
                                 className="text-xl font-bold h-8 border-transparent hover:border-zinc-200 focus-visible:ring-1 bg-transparent px-2 w-[300px] md:w-[400px]"
                             />
                             <div className="flex items-center gap-2 mt-1 px-2">
-                                <Badge variant="outline" className="text-[10px] bg-amber-50 text-amber-700 border-amber-200">DRAFT</Badge>
+                                <StatusBadge status="Draft" className="text-[10px]" />
                                 <span className="text-xs text-muted-foreground">Last saved 4 mins ago</span>
                             </div>
                         </div>
@@ -153,7 +154,7 @@ export default function RecruitmentCampaignBuilder() {
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-1">
                                                 <Label className="text-xs">Last Engaged Before</Label>
-                                                <DatePicker className="h-8 text-xs" onChange={() => {}} />
+                                                <DatePicker className="h-8 text-xs" onChange={() => { }} />
                                             </div>
                                             <div className="space-y-1">
                                                 <Label className="text-xs">Required Profile Readiness</Label>

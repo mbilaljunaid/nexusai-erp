@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery } from "@tanstack/react-query";
 import { StandardDashboard, DashboardWidget } from "@/components/layout/StandardDashboard";
 import { Button } from "@/components/ui/button";
@@ -108,7 +109,7 @@ export default function SlaReconciliation() {
                 </>
             )}
 
-            {isLoading && <DashboardWidget colSpan={4}><div className="flex justify-center p-10"><Loader2 className="animate-spin" /></div></DashboardWidget>}
+            {isLoading && <TableSkeleton rows={4} />}
         </StandardDashboard>
     );
 }

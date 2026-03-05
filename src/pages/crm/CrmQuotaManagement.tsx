@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import {
     Select,
     SelectContent,
@@ -203,7 +204,7 @@ export default function CrmQuotaManagement() {
                                                         {Math.round(perf.attainment)}% Complete
                                                     </span>
                                                     {perf.attainment >= 100 && (
-                                                        <Badge className="bg-emerald-50 text-emerald-700 border-none px-1 h-4 font-bold text-[8px] uppercase">Over Target</Badge>
+                                                        <StatusBadge status="active" label="Over Target" />
                                                     )}
                                                 </div>
                                                 <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner border border-slate-50">

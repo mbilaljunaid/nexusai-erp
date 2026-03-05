@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import {
     MapPin,
@@ -323,7 +324,7 @@ export default function GuidedJourneyWorkerTransfer() {
                                         <div className="space-y-3">
                                             <div className="flex justify-between">
                                                 <span className="text-sm text-muted-foreground">Department</span>
-                                                <span className="text-sm font-medium">{newDepartment || 'Unchanged'} <Badge variant="secondary" className="ml-2 text-[10px] bg-amber-100 text-amber-800 pb-0">Changed</Badge></span>
+                                                <span className="text-sm font-medium">{newDepartment || 'Unchanged'} <StatusBadge status="warning" label="Changed" className="ml-2 text-[10px] pb-0" /></span>
                                             </div>
                                             <div className="flex justify-between">
                                                 <span className="text-sm text-muted-foreground">Manager</span>

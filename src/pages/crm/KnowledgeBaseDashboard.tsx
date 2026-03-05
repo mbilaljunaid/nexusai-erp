@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
+import { getStatusVariant } from "@/lib/statusUtils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -66,7 +68,7 @@ export default function KnowledgeBaseDashboard() {
                         <CardHeader className="pb-2">
                             <div className="flex justify-between items-start">
                                 <Badge variant="outline">{article.category}</Badge>
-                                <Badge className="bg-green-100 text-green-800 hover:bg-green-100">{article.status}</Badge>
+                                <StatusBadge status={getStatusVariant(article.status)} label={article.status} />
                             </div>
                             <CardTitle className="mt-2 text-lg group-hover:text-primary">{article.title}</CardTitle>
                         </CardHeader>

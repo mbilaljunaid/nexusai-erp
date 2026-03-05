@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { TrendingUp, Sparkles, User, Mail, Building, ArrowRight, Target, Zap } from "lucide-react";
@@ -277,7 +278,7 @@ export default function LeadScoringDashboard() {
                                             <TableCell className="text-sm text-muted-foreground">{lead.title}</TableCell>
                                             <TableCell>
                                                 <div className="flex items-center gap-2">
-                                                    <Badge className="bg-green-600">{lead.score}</Badge>
+                                                    <StatusBadge status="active" label={String(lead.score)} />
                                                     <Progress value={lead.score} className="w-20" />
                                                 </div>
                                             </TableCell>

@@ -221,7 +221,7 @@ export default function BackupRestoreManager() {
                     <h3 className="text-sm font-semibold text-gray-900">Restore Points</h3>
                 </div>
 
-                <div style={{ height: '400px' }}>
+                <div className="h-[400px]">
                     {loading ? (
                         <div className="flex items-center justify-center p-12">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>

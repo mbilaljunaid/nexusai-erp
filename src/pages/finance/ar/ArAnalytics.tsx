@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { StandardPage } from '@/components/layout/StandardPage';
 
 export default function ArAnalytics() {
@@ -135,9 +136,7 @@ export default function ArAnalytics() {
                                                 <p className="text-xs text-muted-foreground">{p.reasoning}</p>
                                             </div>
                                             <div className="text-right">
-                                                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                                                    {new Date(p.predictedDate).toLocaleDateString()}
-                                                </Badge>
+                                                <StatusBadge status="info" label={new Date(p.predictedDate).toLocaleDateString()} />
                                                 <p className="text-xs text-slate-500 mt-1">{(p.confidence * 100).toFixed(0)}% Conf.</p>
                                             </div>
                                         </div>

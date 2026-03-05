@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { useTheme, ACCENT_COLORS } from "@/components/ThemeProvider";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 export default function Settings() {
   const { theme, setTheme, accentColor, setAccentColor } = useTheme();
@@ -286,7 +287,7 @@ export default function Settings() {
                     <p className="font-medium">GPT-4o</p>
                     <p className="text-xs text-muted-foreground">Powered by OpenAI via Replit AI Integrations</p>
                   </div>
-                  <Badge variant="secondary" className="bg-green-500/10 text-green-600">Active</Badge>
+                  <StatusBadge status="Active" />
                 </div>
               </div>
               <p className="text-xs text-muted-foreground">
@@ -346,8 +347,8 @@ export default function Settings() {
                     key={color.name}
                     onClick={() => setAccentColor(color)}
                     className={`group relative flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all hover-elevate ${accentColor.name === color.name
-                        ? 'border-foreground/50 bg-muted/50'
-                        : 'border-transparent'
+                      ? 'border-foreground/50 bg-muted/50'
+                      : 'border-transparent'
                       }`}
                     data-testid={`button-accent-${color.name.toLowerCase()}`}
                   >

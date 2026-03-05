@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Plus, Search, Edit, List, Check, X, ShieldCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -104,11 +105,9 @@ function ValueManager({ valueSetId, valueSetName }: { valueSetId: string, valueS
                                     <TableCell>{v.description}</TableCell>
                                     <TableCell>
                                         {v.enabledFlag ? (
-                                            <Badge variant="outline" className="text-green-600 bg-green-50 border-green-200">
-                                                Active
-                                            </Badge>
+                                            <StatusBadge status="Active" />
                                         ) : (
-                                            <Badge variant="secondary">Inactive</Badge>
+                                            <StatusBadge status="Inactive" />
                                         )}
                                     </TableCell>
                                 </TableRow>

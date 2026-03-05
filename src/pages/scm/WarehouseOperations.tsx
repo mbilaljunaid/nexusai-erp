@@ -1,6 +1,6 @@
-
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -92,7 +92,7 @@ export default function WarehouseOperations() {
         },
         { id: "orderNumber", header: "Order Number", width: "150px", cell: (row) => <span className="font-mono text-blue-400">{row.orderNumber}</span> },
         { id: "totalAmount", header: "Total Amount", width: "150px", cell: (row) => <span className="font-medium">${Number(row.totalAmount).toLocaleString()}</span> },
-        { id: "priority", header: "Priority", width: "150px", cell: (row) => <Badge variant="outline" className="border-orange-500/20 text-orange-400 bg-orange-500/5">High</Badge> },
+        { id: "priority", header: "Priority", width: "150px", cell: (row) => <StatusBadge status="high" /> },
         { id: "status", header: "Status", width: "150px", cell: (row) => <Badge className="bg-slate-800 text-slate-300 border-slate-700">{row.status}</Badge> }
     ];
 
@@ -197,7 +197,7 @@ export default function WarehouseOperations() {
                                                     <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Task ID: {task.taskNumber}</p>
                                                     <h3 className="text-lg font-bold text-white mt-1">Item: {task.itemId}</h3>
                                                 </div>
-                                                <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20">{task.status}</Badge>
+                                                <StatusBadge status={task.status} />
                                             </div>
                                             <div className="py-4 border-y border-slate-800 flex justify-between items-center">
                                                 <div className="space-y-1">

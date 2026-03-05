@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     ChevronLeft,
@@ -160,10 +161,7 @@ export default function CoursePlayer() {
                                         <div className="flex items-center gap-2">
                                             <Badge>{currentModule.type}</Badge>
                                             {currentModule.completed && (
-                                                <Badge variant="default" className="bg-green-600">
-                                                    <CheckCircle className="w-3 h-3 mr-1" />
-                                                    Completed
-                                                </Badge>
+                                                <StatusBadge status="active" label="Completed" />
                                             )}
                                         </div>
                                     </div>

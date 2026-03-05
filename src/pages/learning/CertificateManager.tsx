@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Award, Download, Calendar, FileCheck } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { downloadFile } from "@/lib/utils";
 
 interface Certificate {
@@ -96,7 +97,7 @@ export default function CertificateManager() {
                                                 Certificate #{cert.certificateNumber}
                                             </CardDescription>
                                         </div>
-                                        <Badge className="bg-green-600">Active</Badge>
+                                        <StatusBadge status="Active" />
                                     </div>
                                 </CardHeader>
                                 <CardContent className="space-y-4">

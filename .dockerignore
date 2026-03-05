@@ -51,3 +51,15 @@ logs
 attached_assets
 Test Plan
 *.txt
+node_modules
+dist
+.DS_Store
+server/public
+vite.config.ts.*
+*.tar.gz
+.env
+.env.*.nestjs-bridge-bundle.mjs
+.env.example
+.env.infrastructure
+.geminirules
+.replit

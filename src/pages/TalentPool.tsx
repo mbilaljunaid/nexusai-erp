@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +34,7 @@ export default function TalentPool() {
             <div key={idx} className="p-3 border rounded">
               <p className="font-semibold">{emp.emp}</p>
               <p className="text-sm text-muted-foreground">{emp.current} → {emp.potential}</p>
-              <Badge className="mt-2 bg-blue-100 text-blue-800">Ready in {emp.readiness}</Badge>
+              <StatusBadge status="info" label={`Ready in ${emp.readiness}`} className="mt-2" />
             </div>
           ))}
         </CardContent>

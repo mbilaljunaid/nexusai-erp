@@ -283,7 +283,7 @@ export default function OnboardingTracker() {
                                             <div className="flex items-center gap-2">
                                                 <span className="text-2xl font-bold">{progress}%</span>
                                                 {progress === 100 ? (
-                                                    <Badge variant="default" className="bg-green-600">Complete</Badge>
+                                                    <StatusBadge status="active" label="Complete" />
                                                 ) : (
                                                     <Badge variant="secondary">In Progress</Badge>
                                                 )}

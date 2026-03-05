@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import AssetBOMEditor from "@/components/maintenance/AssetBOMEditor";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Activity, Thermometer, Gauge, Zap, AlertTriangle, FileText, Sparkles } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useNexusAI } from "@/contexts/NexusAIContext";
@@ -47,9 +48,10 @@ export default function Asset360View() {
                     <h1 className="text-3xl font-bold tracking-tight">{asset?.assetNumber || "Loading..."}</h1>
                     <p className="text-muted-foreground">{asset?.description}</p>
                 </div>
-                <Badge className={(asset?.healthScore ?? 0) > 80 ? "bg-green-500" : "bg-yellow-500"}>
-                    Health: {asset?.healthScore}%
-                </Badge>
+                <StatusBadge
+                    status={(asset?.healthScore ?? 0) > 80 ? "active" : "warning"}
+                    label={`Health: ${asset?.healthScore}%`}
+                />
             </div>
 
             <Tabs defaultValue="overview" className="space-y-6">

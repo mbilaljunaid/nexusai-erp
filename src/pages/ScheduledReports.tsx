@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 export default function ScheduledReports() {
   return (
@@ -23,7 +23,7 @@ export default function ScheduledReports() {
                   <p className="text-sm text-muted-foreground">{report.frequency} at {report.time}</p>
                   <p className="text-xs text-muted-foreground mt-1">To: {report.recipients}</p>
                 </div>
-                <Badge className="bg-green-100 text-green-800">{report.status}</Badge>
+                <StatusBadge status="active" label={report.status} />
               </div>
             </CardContent>
           </Card>

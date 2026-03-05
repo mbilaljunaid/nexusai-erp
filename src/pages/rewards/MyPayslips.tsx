@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { FileText, Download, DollarSign, TrendingUp, TrendingDown } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -66,7 +67,7 @@ export default function MyPayslips() {
                                 Paid on {format(new Date(payslip.paymentDate || payslip.periodEndDate), 'MMM dd, yyyy')}
                             </p>
                             <div className="mt-4 flex gap-2">
-                                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">Paid</Badge>
+                                <StatusBadge status="active" label="Paid" />
                             </div>
                         </CardContent>
                     </Card>
@@ -90,7 +91,7 @@ export default function MyPayslips() {
                             {/* Net Pay Hero */}
                             <div className="bg-primary/5 p-6 rounded-lg text-center border border-primary/10">
                                 <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Net Pay</p>
-                                
+
                             </div>
 
                             {/* Earnings Section */}

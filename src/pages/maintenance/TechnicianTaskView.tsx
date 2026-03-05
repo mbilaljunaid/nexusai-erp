@@ -14,6 +14,7 @@ import InspectionFormRunner from "@/components/maintenance/InspectionFormRunner"
 // Badge import removed (duplicate)
 import { Wifi, WifiOff } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 
 export default function TechnicianTaskView() {
@@ -178,12 +179,12 @@ export default function TechnicianTaskView() {
         <div className="max-w-md mx-auto h-full flex flex-col bg-muted/10 min-h-screen">
             <div className="p-4 bg-primary text-primary-foreground pt-12 pb-6 flex justify-between items-start">
                 <div>
-                    
+
                     <p className="text-primary-foreground/80 text-sm">You have {myTasks?.length || 0} active tasks today.</p>
                 </div>
                 <div className="flex flex-col items-end gap-2">
                     {isOnline ? (
-                        <Badge variant="outline" className="bg-green-500/20 text-white border-green-400"><Wifi className="h-3 w-3 mr-1" /> Online</Badge>
+                        <Badge variant="success" className="flex items-center gap-1"><Wifi className="h-3 w-3" /> Online</Badge>
                     ) : (
                         <Badge variant="destructive"><WifiOff className="h-3 w-3 mr-1" /> Offline</Badge>
                     )}

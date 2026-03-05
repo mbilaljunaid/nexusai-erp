@@ -1,6 +1,8 @@
 
 import React from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -54,7 +56,7 @@ export default function ShippingWorkbench() {
                                     </div>
                                     <div className="flex items-center gap-4">
                                         <div className="text-right">
-                                            <Badge variant="outline" className="text-[10px] border-blue-500/20 text-blue-400 bg-blue-500/5">{shipment.status}</Badge>
+                                            <StatusBadge status={shipment.status} />
                                             <p className="text-xs text-slate-500 mt-1">{shipment.weight}</p>
                                         </div>
                                         <div className="flex gap-2">
@@ -87,7 +89,7 @@ export default function ShippingWorkbench() {
                         <CardContent className="space-y-4">
                             <div className="flex items-center justify-between p-3 bg-slate-950 border border-slate-800 rounded">
                                 <span className="text-sm text-white">Carrier API Status</span>
-                                <Badge className="bg-green-500/10 text-green-400 border-none">CONNECTED</Badge>
+                                <StatusBadge status="Connected" />
                             </div>
                             <div className="space-y-2">
                                 <p className="text-xs text-slate-500 uppercase font-bold">Upcoming Pickups</p>

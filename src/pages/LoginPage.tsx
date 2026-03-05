@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowRight, Mail, Lock, Eye, EyeOff, CheckCircle } from "lucide-react";

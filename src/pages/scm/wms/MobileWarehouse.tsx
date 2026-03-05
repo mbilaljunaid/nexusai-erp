@@ -1,6 +1,6 @@
-
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -38,7 +38,7 @@ export default function MobileWarehouse() {
 
     const confirmPickMutation = useMutation({
         mutationFn: async ({ taskId, qty }: { taskId: string, qty: number }) => {
-            return await apiRequest("POST", `/api/scm/wms/tasks/${taskId}/complete`, {
+            return await apiRequest("POST", `/ api / scm / wms / tasks / ${taskId}/complete`, {
                 actualQuantity: qty,
                 userId: "mobile_user_01"
             });
@@ -95,7 +95,7 @@ export default function MobileWarehouse() {
                     <Button variant="ghost" onClick={() => setView("menu")} className="text-white">
                         <ChevronLeft className="w-6 h-6 mr-1" /> Menu
                     </Button>
-                    <Badge className="bg-blue-600">Picking Queue</Badge>
+                    <StatusBadge status="info" label="Picking Queue" />
                 </div>
 
                 <div className="space-y-3 flex-1 overflow-y-auto">
@@ -137,7 +137,7 @@ export default function MobileWarehouse() {
                     <Button variant="ghost" onClick={() => setActiveTask(null)} className="text-white">
                         <ChevronLeft className="w-6 h-6 mr-1" /> Back
                     </Button>
-                    <Badge className="bg-orange-600">Executing {activeTask.taskType}</Badge>
+                    <StatusBadge status="warning" label={`Executing ${activeTask.taskType}`} />
                 </div>
 
                 <div className="space-y-6 flex-1">
@@ -221,7 +221,7 @@ function Header({ title }: { title: string }) {
                 <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
                     <Package className="w-5 h-5 text-white" />
                 </div>
-                
+
             </div>
             <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />

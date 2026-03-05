@@ -31,17 +31,17 @@ export default function AboutPage() {
           <Card className="public-card p-6">
             <Scale className="w-8 h-8 mb-4 text-blue-500" />
             <h3 className="text-2xl font-bold mb-3">Our Mission</h3>
-            <p style={{ color: `hsl(var(--muted-foreground))` }}>Democratize enterprise software by making powerful ERP tools accessible to everyone through open source licensing.</p>
+            <p className="text-muted-foreground">Democratize enterprise software by making powerful ERP tools accessible to everyone through open source licensing.</p>
           </Card>
           <Card className="public-card p-6">
             <Code2 className="w-8 h-8 mb-4 text-green-500" />
             <h3 className="text-2xl font-bold mb-3">Our Vision</h3>
-            <p style={{ color: `hsl(var(--muted-foreground))` }}>To become the world's most trusted open source ERP platform, enabling companies of all sizes to operate efficiently across 40+ industries.</p>
+            <p className="text-muted-foreground">To become the world's most trusted open source ERP platform, enabling companies of all sizes to operate efficiently across 40+ industries.</p>
           </Card>
           <Card className="public-card p-6">
             <Heart className="w-8 h-8 mb-4 text-red-500" />
             <h3 className="text-2xl font-bold mb-3">Our Values</h3>
-            <p style={{ color: `hsl(var(--muted-foreground))` }}>Transparency, community collaboration, innovation, and the belief that enterprise software should be free and open.</p>
+            <p className="text-muted-foreground">Transparency, community collaboration, innovation, and the belief that enterprise software should be free and open.</p>
           </Card>
         </div>
       </section>
@@ -102,7 +102,7 @@ export default function AboutPage() {
           ].map((item, i) => (
             <div key={i} className="public-accent-border border-l-4 pl-6">
               <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-              <p style={{ color: `hsl(var(--muted-foreground))` }}>{item.desc}</p>
+              <p className="text-muted-foreground">{item.desc}</p>
             </div>
           ))}
         </div>

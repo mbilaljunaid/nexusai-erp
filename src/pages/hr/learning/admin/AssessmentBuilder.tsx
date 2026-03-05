@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -189,7 +190,7 @@ function QuestionEditor({ assessment }: { assessment: any }) {
             </div>
 
             <div className="space-y-4">
-                {isLoading ? <Loader2 className="animate-spin" /> : details?.questions?.map((q: any, i: number) => (
+                {isLoading ? <TableSkeleton rows={4} /> : details?.questions?.map((q: any, i: number) => (
                     <Card key={q.id}>
                         <CardContent className="p-4 pt-4">
                             <div className="flex justify-between">

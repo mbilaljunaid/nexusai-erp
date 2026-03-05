@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useRoute } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -89,7 +90,7 @@ export default function APSupplierDetail() {
         }
     });
 
-    if (isLoading) return <div className="p-8 flex items-center justify-center"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
+    if (isLoading) return <PageSkeleton />;
     if (!supplier) return <div className="p-8 text-center text-muted-foreground">Supplier not found.</div>;
 
     const siteColumns: SpreadsheetColumn<any>[] = [

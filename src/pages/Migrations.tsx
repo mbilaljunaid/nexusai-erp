@@ -1,6 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
+import { getStatusVariant } from "@/lib/statusUtils";
 
 export default function Migrations() {
   return (
@@ -17,7 +19,7 @@ export default function Migrations() {
             <CardContent className="pt-6">
               <h3 className="font-semibold">{m.source} → {m.target}</h3>
               <p className="text-sm text-muted-foreground">{m.pct} complete</p>
-              <Badge className={m.status === "Completed" ? "mt-2 bg-green-100 text-green-800" : "mt-2 bg-blue-100 text-blue-800"}>{m.status}</Badge>
+              <StatusBadge status={getStatusVariant(m.status)} label={m.status} />
             </CardContent>
           </Card>
         ))}

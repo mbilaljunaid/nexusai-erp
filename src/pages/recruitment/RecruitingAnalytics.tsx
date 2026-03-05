@@ -1,5 +1,6 @@
 
 import { useQuery } from "@tanstack/react-query";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -17,7 +18,7 @@ export default function RecruitingAnalytics() {
         queryFn: () => fetch("/api/recruitment/analytics").then(r => r.json())
     });
 
-    if (isLoading) return <div className="flex justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>;
+    if (isLoading) return <PageSkeleton />;
 
     // Transform Data for Charts
     const funnelData = Object.entries(analytics?.funnel || {

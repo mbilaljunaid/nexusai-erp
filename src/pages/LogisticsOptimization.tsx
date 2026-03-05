@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

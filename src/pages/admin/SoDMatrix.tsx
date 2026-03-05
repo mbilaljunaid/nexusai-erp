@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -77,7 +78,7 @@ export default function SoDMatrix() {
         }
     });
 
-    if (isLoading) return <div className="p-8"><Loader2 className="animate-spin" /></div>;
+    if (isLoading) return <PageSkeleton />;
 
     return (
         <div className="space-y-6">

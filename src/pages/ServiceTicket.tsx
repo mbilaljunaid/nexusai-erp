@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Plus, Search } from "lucide-react";
 import { ContextualSearch } from "@/components/ContextualSearch";
 
@@ -43,8 +44,8 @@ export default function ServiceTicket() {
                   <p className="text-sm text-muted-foreground">{ticket.customer}</p>
                 </div>
                 <div className="text-right">
-                  <Badge className={ticket.priority === "High" ? "bg-red-100 text-red-800" : ticket.priority === "Medium" ? "bg-amber-100 text-amber-800" : "bg-blue-100 text-blue-800"}>{ticket.priority}</Badge>
-                  <Badge className="ml-2 bg-green-100 text-green-800">{ticket.status}</Badge>
+                  <StatusBadge status={ticket.priority} />
+                  <StatusBadge status={ticket.status} className="ml-2" />
                 </div>
               </div>
             </CardContent>

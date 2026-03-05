@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ArrowLeft, CheckCircle, FileText, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -47,10 +48,10 @@ export default function ContractDetailView() {
 
     return (
         <StandardPage
-      title="ContractDetailView"
-      description=""
-      className="p-6 space-y-6 bg-slate-50 min-h-screen"
-    >
+            title="ContractDetailView"
+            description=""
+            className="p-6 space-y-6 bg-slate-50 min-h-screen"
+        >
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
@@ -61,10 +62,10 @@ export default function ContractDetailView() {
                         <div className="flex items-center gap-2">
                             <h1 className="text-2xl font-bold">{contract.title}</h1>
                             <Badge variant="outline">{contract.contractNumber}</Badge>
-                            <Badge className={
-                                contract.status === 'ACTIVE' ? 'bg-green-500' :
-                                    contract.status === 'DRAFT' ? 'bg-blue-500' : 'bg-gray-500'
-                            }>{contract.status}</Badge>
+                            <StatusBadge
+                                status={contract.status === 'ACTIVE' ? 'active' : contract.status === 'DRAFT' ? 'info' : 'warning'}
+                                label={contract.status}
+                            />
                         </div>
                         <p className="text-muted-foreground">{contract.description}</p>
                     </div>
@@ -223,9 +224,9 @@ export default function ContractDetailView() {
                                                 <p className="text-xs text-muted-foreground">{p.role} • {p.email}</p>
                                             </div>
                                         </div>
-                                        <Badge variant={p.hasSigned ? "outline" : "secondary"} className={p.hasSigned ? "text-green-600 border-green-200 bg-green-50" : ""}>
-                                            {p.hasSigned ? "Signed" : "Pending Signature"}
-                                        </Badge>
+                                        {p.hasSigned
+                                            ? <StatusBadge status="active" label="Signed" />
+                                            : <Badge variant="secondary">Pending Signature</Badge>}
                                     </div>
                                 ))}
                                 {(!contract.parties || contract.parties.length === 0) && (
@@ -289,5 +290,5 @@ export default function ContractDetailView() {
                 </TabsContent>
             </Tabs>
         </StandardPage>
-  );
+    );
 }

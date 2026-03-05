@@ -1,6 +1,7 @@
 
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -61,7 +62,7 @@ export default function WmsMasterData() {
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <Badge variant="outline" className="border-green-500/20 text-green-400 bg-green-500/5">{zone.status}</Badge>
+                                            <StatusBadge status={zone.status} />
                                             <Button variant="ghost" size="icon"><Edit2 className="w-4 h-4" /></Button>
                                             <Button variant="ghost" size="icon" className="text-red-400"><Trash2 className="w-4 h-4" /></Button>
                                         </div>

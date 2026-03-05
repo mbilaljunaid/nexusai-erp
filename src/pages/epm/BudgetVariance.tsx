@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { apiRequest } from "@/lib/queryClient";
 import { TrendingUp, TrendingDown, AlertTriangle, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -20,7 +21,7 @@ export default function BudgetVariance() {
 
     const getVarianceBadge = (variance: number) => {
         if (variance > 10) return <Badge variant="destructive">Unfavorable</Badge>;
-        if (variance < -10) return <Badge className="bg-green-100 text-green-700">Favorable</Badge>;
+        if (variance < -10) return <StatusBadge status="active" label="Favorable" />;
         return <Badge variant="secondary">Within Target</Badge>;
     };
 

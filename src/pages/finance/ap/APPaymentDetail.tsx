@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useRoute } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
@@ -63,7 +64,7 @@ export default function APPaymentDetail() {
         }
     };
 
-    if (isLoading) return <div className="p-8 flex items-center justify-center"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
+    if (isLoading) return <PageSkeleton />;
     if (!batch) return <div className="p-8 text-center text-muted-foreground">Payment Batch not found.</div>;
 
     const status = batch.status?.toUpperCase() || "NEW";

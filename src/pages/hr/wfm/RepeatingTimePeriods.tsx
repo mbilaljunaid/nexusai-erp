@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import {
     CalendarDays,
@@ -237,9 +238,7 @@ export default function RepeatingTimePeriods() {
                                         <CardDescription className="mt-1">Generated forecast based on current anchor date and frequency.</CardDescription>
                                     </div>
                                     {generatedPeriods.length > 0 && (
-                                        <Badge variant="outline" className="bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800">
-                                            {generatedPeriods.length} Periods Generated
-                                        </Badge>
+                                        <StatusBadge status="info" label={`${generatedPeriods.length} Periods Generated`} />
                                     )}
                                 </div>
                             </CardHeader>
@@ -269,9 +268,7 @@ export default function RepeatingTimePeriods() {
                                                     <TableCell>{format(new Date(period.startDate), 'MMM dd, yyyy')}</TableCell>
                                                     <TableCell>{format(new Date(period.endDate), 'MMM dd, yyyy')}</TableCell>
                                                     <TableCell className="text-right">
-                                                        <Badge variant={period.status === "OPEN" ? "default" : "secondary"} className={period.status === "OPEN" ? "bg-emerald-500" : ""}>
-                                                            {period.status}
-                                                        </Badge>
+                                                        <StatusBadge status={period.status} />
                                                     </TableCell>
                                                 </TableRow>
                                             ))}
@@ -284,6 +281,6 @@ export default function RepeatingTimePeriods() {
                 </div>
 
             </div>
-        </StandardPage>
+        </StandardPage >
     );
 }

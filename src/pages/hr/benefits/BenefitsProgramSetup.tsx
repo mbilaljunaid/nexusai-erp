@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -146,10 +148,10 @@ export default function BenefitsProgramSetup() {
 
     const getBadgeForType = (type: string) => {
         switch (type) {
-            case "PROGRAM": return <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100 uppercase tracking-wider text-[10px]">Program</Badge>;
-            case "PLAN_TYPE": return <Badge className="bg-indigo-100 text-indigo-800 hover:bg-indigo-100 uppercase tracking-wider text-[10px]">Plan Type</Badge>;
-            case "PLAN": return <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100 uppercase tracking-wider text-[10px]">Plan</Badge>;
-            case "OPTION": return <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100 uppercase tracking-wider text-[10px]">Option</Badge>;
+            case "PROGRAM": return <StatusBadge status="default" label="Program" className="uppercase tracking-wider text-[10px]" />;
+            case "PLAN_TYPE": return <StatusBadge status="info" label="Plan Type" className="uppercase tracking-wider text-[10px]" />;
+            case "PLAN": return <StatusBadge status="active" label="Plan" className="uppercase tracking-wider text-[10px]" />;
+            case "OPTION": return <StatusBadge status="warning" label="Option" className="uppercase tracking-wider text-[10px]" />;
             default: return null;
         }
     };
@@ -273,7 +275,7 @@ export default function BenefitsProgramSetup() {
                                             </div>
                                             <div className="space-y-2">
                                                 <Label>Effective Start Date</Label>
-                                                <DatePicker value="2026-01-01" onChange={() => {}} />
+                                                <DatePicker value="2026-01-01" onChange={() => { }} />
                                             </div>
                                         </div>
                                     </div>

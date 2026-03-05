@@ -10,6 +10,7 @@ import EliminationRules from "./EliminationRules";
 import { Button } from "@/components/ui/button";
 import { Calendar, BarChart3, Settings, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function FinancialCloseCenter() {
@@ -62,7 +63,7 @@ export default function FinancialCloseCenter() {
                         </CardHeader>
                         <CardContent>
                             <div className="flex items-center gap-2">
-                                <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">Medium Risk</Badge>
+                                <StatusBadge status="medium" label="Medium Risk" />
                             </div>
                             <div className="text-xs text-muted-foreground mt-1">
                                 3 Unreconciled Items

@@ -10,6 +10,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useState, useMemo } from "react";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { CreateASNModal } from "@/components/supplier-portal/CreateASNModal";
 import { toast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -114,7 +115,7 @@ export default function SupplierASNs() {
         return sortDirection === 'asc' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />;
     };
 
-    if (isLoading) return <div className="flex justify-center p-8"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>;
+    if (isLoading) return <PageSkeleton />;
 
     return (
         <StandardPage title="Shipments (ASN)">

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -140,7 +142,7 @@ export default function RetroactivePayEngine() {
                                     <p className="text-xs text-muted-foreground">Late Promotion Entry (Effective 01-Feb-2026)</p>
                                 </div>
                                 <div className="text-right">
-                                    <Badge className="bg-red-500/10 text-red-700 border-red-500/20 shadow-none hover:bg-red-500/10">Underpaid</Badge>
+                                    <StatusBadge status="Underpaid" />
                                     <p className="text-lg font-black text-red-600 mt-1">+$1,250.00</p>
                                 </div>
                             </div>
@@ -162,7 +164,7 @@ export default function RetroactivePayEngine() {
                                     <p className="text-xs text-muted-foreground">Retroactive FSA Contribution Change</p>
                                 </div>
                                 <div className="text-right">
-                                    <Badge className="bg-amber-500/10 text-amber-700 border-amber-500/20 shadow-none hover:bg-amber-500/10">Overpaid</Badge>
+                                    <StatusBadge status="warning" label="Overpaid" />
                                     <p className="text-lg font-black text-amber-600 mt-1">-$120.00</p>
                                 </div>
                             </div>

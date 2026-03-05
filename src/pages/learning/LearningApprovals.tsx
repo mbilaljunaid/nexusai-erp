@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, XCircle, Clock } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 
 interface EnrollmentRequest {
@@ -61,7 +62,7 @@ export default function LearningApprovals() {
         <StandardPage title="Learning Approvals">
             {/* Header */}
             <div>
-                
+
                 <p className="text-muted-foreground">
                     Review enrollment requests from your team
                 </p>
@@ -190,7 +191,7 @@ export default function LearningApprovals() {
                                             <CardTitle className="text-lg">{request.employeeName}</CardTitle>
                                             <CardDescription>{request.courseTitle}</CardDescription>
                                         </div>
-                                        <Badge className="bg-green-600">Approved</Badge>
+                                        <StatusBadge status="Approved" />
                                     </div>
                                 </CardHeader>
                                 {request.reviewComments && (

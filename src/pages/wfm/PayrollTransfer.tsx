@@ -11,6 +11,7 @@ import { format, parseISO } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, CheckCircle, UploadCloud } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 
 // MOCK USER
@@ -147,10 +148,10 @@ export default function PayrollTransfer() {
                                             <TableCell>{batch.period.name}</TableCell>
                                             <TableCell>{batch.batch.totalRecords}</TableCell>
                                             <TableCell>
-                                                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                                                    <CheckCircle className="w-3 h-3 mr-1" />
-                                                    {batch.batch.status}
-                                                </Badge>
+                                                <div className="flex items-center gap-1">
+                                                    <CheckCircle className="w-3 h-3 text-green-600" />
+                                                    <StatusBadge status={batch.batch.status} />
+                                                </div>
                                             </TableCell>
                                         </TableRow>
                                     ))

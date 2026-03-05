@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -57,7 +58,7 @@ export default function TranslationRules() {
         }
     });
 
-    if (isLoading) return <div className="flex justify-center p-10"><Loader2 className="animate-spin" /></div>;
+    if (isLoading) return <PageSkeleton />;
 
     return (
         <StandardPage

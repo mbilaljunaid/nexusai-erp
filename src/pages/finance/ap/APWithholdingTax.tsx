@@ -32,6 +32,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 export default function APWithholdingTax() {
     const { toast } = useToast();
@@ -161,11 +162,7 @@ export default function APWithholdingTax() {
                                     >
                                         <TableCell className="font-medium">{g.groupName}</TableCell>
                                         <TableCell>
-                                            {g.enabledFlag ? (
-                                                <Badge variant="secondary" className="bg-green-100 text-green-800">Enabled</Badge>
-                                            ) : (
-                                                <Badge variant="secondary">Disabled</Badge>
-                                            )}
+                                            <StatusBadge status={g.enabledFlag ? 'Enabled' : 'Disabled'} />
                                         </TableCell>
                                     </TableRow>
                                 ))}

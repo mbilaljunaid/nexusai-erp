@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -124,7 +126,7 @@ export default function PerformanceCalibrationBoard() {
                         <div>
                             <div className="flex items-center gap-3">
                                 <h2 className="text-xl font-bold">Q4 2025 Engineering Calibration</h2>
-                                <Badge variant="secondary" className="bg-amber-100 text-amber-800 hover:bg-amber-100">In Progress</Badge>
+                                <StatusBadge status="In Progress" />
                             </div>
                             <p className="text-sm text-muted-foreground mt-1">Facilitator: Maya Chen • Org: Engineering Global</p>
                         </div>

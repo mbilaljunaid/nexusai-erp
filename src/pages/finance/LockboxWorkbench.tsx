@@ -254,7 +254,7 @@ export default function LockboxWorkbench() {
                                     className="filter-search-input"
                                 />
                             </div>
-                            <div style={{ height: 400 }}>
+                            <div className="h-[400px]">
                                 <InteractiveSpreadsheet
                                     columns={itemColumns}
                                     data={filteredItems}

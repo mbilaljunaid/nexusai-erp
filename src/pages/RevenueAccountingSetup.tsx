@@ -32,6 +32,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import {
     Dialog,
     DialogContent,
@@ -328,14 +329,12 @@ export default function RevenueAccountingSetup() {
                                     {
                                         id: "satisfactionMethod", header: "Satisfaction", width: "150px", cell: (info: any) => (
                                             <div className="px-2 h-full flex items-center justify-center w-full">
-                                                <Badge className={info.satisfactionMethod === "Ratable" ? "bg-amber-100 text-amber-700 border-none" : "bg-emerald-100 text-emerald-700 border-none"}>
-                                                    {info.satisfactionMethod}
-                                                </Badge>
+                                                <StatusBadge status={info.satisfactionMethod} />
                                             </div>
                                         )
                                     },
                                     { id: "defaultDurationMonths", header: "Duration", width: "150px", cell: (info: any) => <div className="px-2 h-full flex items-center">{info.defaultDurationMonths ? `${info.defaultDurationMonths} Months` : "Point in Time"}</div> },
-                                    { id: "status", header: "Status", width: "150px", cell: (info: any) => <div className="px-2 h-full flex items-center justify-center w-full"><Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">{info.status}</Badge></div> },
+                                    { id: "status", header: "Status", width: "150px", cell: (info: any) => <div className="px-2 h-full flex items-center justify-center w-full"><StatusBadge status={info.status} /></div> },
                                     {
                                         id: "actions", header: "Actions", width: "100px", cell: () => (
                                             <div className="px-2 h-full flex items-center justify-end w-full">
@@ -376,7 +375,7 @@ export default function RevenueAccountingSetup() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Badge variant="secondary">Priority: {rule.priority}</Badge>
-                                        <Badge className="bg-green-100 text-green-700 border-none">Active</Badge>
+                                        <StatusBadge status="Active" />
                                     </div>
                                 </CardHeader>
                                 <CardContent>

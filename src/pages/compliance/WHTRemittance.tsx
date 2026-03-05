@@ -198,7 +198,7 @@ export default function WHTRemittance() {
                             Create Remittance Batch
                         </button>
                     </div>
-                    <div style={{ height: '400px', width: '100%' }}>
+                    <div className="h-[400px] w-full">
                         <InteractiveSpreadsheet
                             columns={transactionColumns}
                             data={transactions}
@@ -245,7 +245,7 @@ export default function WHTRemittance() {
                             </button>
                         </div>
                     )}
-                    <div style={{ height: '400px', width: '100%' }}>
+                    <div className="h-[400px] w-full">
                         <InteractiveSpreadsheet
                             columns={ruleColumns}
                             data={rules}
@@ -259,7 +259,7 @@ export default function WHTRemittance() {
             {activeTab === 'batches' && (
                 <div className="wht-card">
                     <h2 className="card-title">Remittance Batches</h2>
-                    <div style={{ height: '400px', width: '100%' }}>
+                    <div className="h-[400px] w-full">
                         <InteractiveSpreadsheet
                             columns={batchColumns}
                             data={batches}

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, Search, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -152,9 +153,7 @@ export default function LeasePortfolioWorkbench() {
                                     <TableCell>{lease.description}</TableCell>
                                     <TableCell>{new Date(lease.commencementDate).toLocaleDateString()}</TableCell>
                                     <TableCell>
-                                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                                            {lease.status}
-                                        </Badge>
+                                        <StatusBadge status="active" label={lease.status} />
                                     </TableCell>
                                     <TableCell>
                                         <Dialog>

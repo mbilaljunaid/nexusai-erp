@@ -118,7 +118,7 @@ export default function DemoManagement() {
       <div className="flex-1">
         <div className="max-w-6xl mx-auto px-4 py-20">
 
-          <p style={{ color: `hsl(var(--muted-foreground))` }} className="mb-8">Create and manage demo environments for all industries</p>
+          <p className="text-muted-foreground mb-8">Create and manage demo environments for all industries</p>
 
           <Tabs defaultValue="create" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
@@ -181,7 +181,7 @@ export default function DemoManagement() {
                   </div>
                 </div>
 
-                <div className="mt-8 p-4 rounded-lg text-sm" style={{ backgroundColor: `hsl(var(--muted) / 0.5)`, color: `hsl(var(--muted-foreground))` }}>
+                <div className="mt-8 p-4 rounded-lg text-sm bg-muted/50 text-muted-foreground">
                   <p className="font-semibold mb-2">What happens:</p>
                   <ul className="space-y-1 list-disc list-inside">
                     <li>Demo environment created with full sample data</li>
@@ -207,8 +207,8 @@ export default function DemoManagement() {
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <h3 className="font-bold text-lg">{demo.industry}</h3>
-                            <p className="text-sm" style={{ color: `hsl(var(--muted-foreground))` }} >ID: {demo.id}</p>
-                            <p className="text-sm" style={{ color: `hsl(var(--muted-foreground))` }} >Created: {new Date(demo.createdAt).toLocaleDateString()}</p>
+                            <p className="text-sm text-muted-foreground" >ID: {demo.id}</p>
+                            <p className="text-sm text-muted-foreground" >Created: {new Date(demo.createdAt).toLocaleDateString()}</p>
                             <div className="mt-3 flex gap-2">
                               <span className={`px-3 py-1 rounded text-xs font-semibold ${demo.status === "active" ? "bg-green-600/20 text-green-300" : "bg-slate-600/20 text-slate-300"
                                 }`}>

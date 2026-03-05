@@ -71,8 +71,8 @@ export default function IndustriesPage() {
     { id: "telecom", label: "Telecom & Tech", icon: Radio },
   ];
 
-  const filtered = selectedCategory === "all" 
-    ? industries 
+  const filtered = selectedCategory === "all"
+    ? industries
     : industries.filter(ind => ind.category === selectedCategory);
 
   return (
@@ -82,10 +82,10 @@ export default function IndustriesPage() {
         {/* Hero */}
         <section className="px-4 py-16 border-b bg-muted/30">
           <div className="max-w-6xl mx-auto">
-            <Badge className="mb-4" style={{ backgroundColor: `hsl(var(--primary) / 0.1)`, color: `hsl(var(--primary))` }}>
+            <Badge className="mb-4 bg-primary/10 text-primary">
               INDUSTRIES
             </Badge>
-            
+
             <p className="text-xl text-muted-foreground max-w-3xl">
               Tailored ERP, CRM, and automation solutions designed for your industry's unique challenges
             </p>
@@ -140,19 +140,19 @@ export default function IndustriesPage() {
                 <h2 className="text-3xl font-bold mb-6">Industry-Specific Solutions</h2>
                 <ul className="space-y-3">
                   <li className="flex gap-3">
-                    <span style={{ color: `hsl(var(--primary))` }}>✓</span>
+                    <span className="text-primary">✓</span>
                     <span>Pre-configured workflows for your industry</span>
                   </li>
                   <li className="flex gap-3">
-                    <span style={{ color: `hsl(var(--primary))` }}>✓</span>
+                    <span className="text-primary">✓</span>
                     <span>Compliance and regulatory requirements built-in</span>
                   </li>
                   <li className="flex gap-3">
-                    <span style={{ color: `hsl(var(--primary))` }}>✓</span>
+                    <span className="text-primary">✓</span>
                     <span>Industry best practices and templates</span>
                   </li>
                   <li className="flex gap-3">
-                    <span style={{ color: `hsl(var(--primary))` }}>✓</span>
+                    <span className="text-primary">✓</span>
                     <span>Vertical-specific modules and features</span>
                   </li>
                 </ul>

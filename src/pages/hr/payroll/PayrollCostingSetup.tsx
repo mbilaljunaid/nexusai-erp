@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -171,9 +172,12 @@ export default function PayrollCostingSetup() {
                                                             <div className="flex items-center gap-2 mb-1">
                                                                 <h3 className="font-bold text-lg">{element.name}</h3>
                                                                 {isConfigured ? (
-                                                                    <Badge variant="outline" className="bg-green-500/10 text-green-700 border-green-500/30 gap-1"><CheckCircle2 className="h-3 w-3" /> Mapped</Badge>
+                                                                    <div className="flex items-center gap-1">
+                                                                        <CheckCircle2 className="h-3 w-3 text-green-600" />
+                                                                        <StatusBadge status="Mapped" />
+                                                                    </div>
                                                                 ) : (
-                                                                    <Badge variant="outline" className="bg-amber-500/10 text-amber-700 border-amber-500/30">Unmapped</Badge>
+                                                                    <StatusBadge status="warning" label="Unmapped" />
                                                                 )}
                                                             </div>
                                                             <div className="flex items-center gap-2 text-sm text-muted-foreground">

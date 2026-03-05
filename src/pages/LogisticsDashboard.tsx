@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardDashboard } from "@/components/ui/StandardDashboard";
 import { DashboardWidget } from "@/components/ui/DashboardWidget";
 import { Activity, Truck, AlertOctagon, TrendingUp } from "lucide-react";

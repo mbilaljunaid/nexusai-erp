@@ -53,7 +53,7 @@ export function ForecastSubmissionForm() {
   });
 
   const prevForecast = { q1: 120000, q2: 130000, q3: 138000, q4: 152000 };
-  
+
   const calcVariance = (current: number, prev: number) => {
     return ((current - prev) / prev * 100).toFixed(1);
   };
@@ -111,7 +111,7 @@ export function ForecastSubmissionForm() {
               { value: "base", label: "Base Case", desc: "Normal growth trajectory with expected execution" },
               { value: "conservative", label: "Conservative", desc: "Market challenges, implementation delays" }
             ].map((option) => (
-              <label key={option.value} className="flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:bg-muted transition-colors" style={{borderColor: scenarioType === option.value ? 'hsl(var(--primary))' : 'hsl(var(--border))'}}>
+              <label key={option.value} className={`flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:bg-muted transition-colors ${scenarioType === option.value ? 'border-primary' : 'border-border'}`}>
                 <input
                   type="radio"
                   name="scenario"
@@ -160,11 +160,10 @@ export function ForecastSubmissionForm() {
                       onChange={(e) => setForecastData({ ...forecastData, [key]: e.target.value })}
                       className="font-mono text-sm"
                     />
-                    <div className={`px-3 py-2 rounded text-sm font-semibold min-w-fit ${
-                      showVarianceWarning 
-                        ? 'bg-orange-100 dark:bg-orange-950 text-orange-900 dark:text-orange-100' 
+                    <div className={`px-3 py-2 rounded text-sm font-semibold min-w-fit ${showVarianceWarning
+                        ? 'bg-orange-100 dark:bg-orange-950 text-orange-900 dark:text-orange-100'
                         : 'bg-green-100 dark:bg-green-950 text-green-900 dark:text-green-100'
-                    }`}>
+                      }`}>
                       {variance > 0 ? '+' : ''}{variance}%
                     </div>
                   </div>
@@ -211,7 +210,7 @@ export function ForecastSubmissionForm() {
               { value: "medium", label: "Medium", desc: "Reasonable confidence with some uncertainty" },
               { value: "low", label: "Low", desc: "Significant uncertainties or market volatility" }
             ].map((option) => (
-              <label key={option.value} className="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-muted" style={{borderColor: confidenceLevel === option.value ? 'hsl(var(--primary))' : 'hsl(var(--border))'}}>
+              <label key={option.value} className={`flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-muted ${confidenceLevel === option.value ? 'border-primary' : 'border-border'}`}>
                 <input
                   type="radio"
                   name="confidence"

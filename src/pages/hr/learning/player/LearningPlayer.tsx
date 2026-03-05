@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useParams, useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -38,7 +39,7 @@ export default function LearningPlayer() {
         }
     });
 
-    if (isLoading) return <div className="h-screen w-screen flex items-center justify-center"><Loader2 className="h-10 w-10 animate-spin text-indigo-600" /></div>;
+    if (isLoading) return <PageSkeleton />;
     if (error) return <div className="p-10 text-center text-red-500">Error loading content: {(error as Error).message}</div>;
 
     const handleComplete = () => {

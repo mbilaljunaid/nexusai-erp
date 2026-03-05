@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useRoute } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
@@ -36,7 +37,7 @@ export default function ARReceiptDetail() {
         }
     });
 
-    if (isLoading) return <div className="p-8 flex items-center justify-center"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
+    if (isLoading) return <PageSkeleton />;
     if (!receipt) return <div className="p-8 text-center text-muted-foreground">Receipt not found.</div>;
 
     const isApplied = receipt.status === 'Applied';

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -294,9 +295,7 @@ export function CostManagementHub() {
                                                         {statusConfig.label}
                                                     </Badge>
                                                     {cost.projectId && (
-                                                        <Badge variant="outline" className="bg-purple-50 text-purple-800">
-                                                            Project: {cost.projectId}
-                                                        </Badge>
+                                                        <StatusBadge status="info" label={`Project: ${cost.projectId}`} />
                                                     )}
                                                 </div>
                                                 <div className="font-bold text-lg mb-1">{cost.assetName}</div>

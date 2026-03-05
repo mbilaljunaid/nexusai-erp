@@ -26,7 +26,7 @@ export default function ModuleDetail() {
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center max-w-md">
             
-            <p style={{ color: `hsl(var(--muted-foreground))` }} className="mb-6">
+            <p className="text-muted-foreground mb-6">
               The module you're looking for doesn't exist.
             </p>
             <Button onClick={() => window.location.href = "/"}>Back to Home</Button>
@@ -66,7 +66,7 @@ export default function ModuleDetail() {
         <section className="public-section-alt px-4 py-20">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-4xl font-bold mb-4 text-center">Core Features</h2>
-            <p style={{ color: `hsl(var(--muted-foreground))` }} className="text-center mb-12 max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
               Comprehensive capabilities designed to streamline your operations
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -75,7 +75,7 @@ export default function ModuleDetail() {
                 return (
                   <Card key={i} className="public-card p-6" data-testid={`card-feature-${i}`}>
                     <div className="flex items-start gap-4">
-                      <IconComponent className="w-6 h-6 mt-1 flex-shrink-0" style={{ color: `hsl(var(--primary))` }} />
+                      <IconComponent className="w-6 h-6 mt-1 flex-shrink-0 text-primary" />
                       <div>
                         <h3 className="font-bold mb-2">{feature}</h3>
                       </div>
@@ -91,17 +91,17 @@ export default function ModuleDetail() {
         <section className="public-section px-4 py-20">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-3 mb-4">
-              <Sparkles className="w-8 h-8" style={{ color: `hsl(var(--primary))` }} />
+              <Sparkles className="w-8 h-8 text-primary" />
               <h2 className="text-4xl font-bold">AI-Powered Intelligence</h2>
             </div>
-            <p style={{ color: `hsl(var(--muted-foreground))` }} className="mb-12 max-w-2xl">
+            <p className="text-muted-foreground mb-12 max-w-2xl">
               Harness the power of artificial intelligence to automate complex processes, gain predictive insights, and make data-driven decisions faster
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {module.aiFeatures.map((feature, i) => (
                 <Card key={i} className="public-card p-6 border-l-4 public-accent-border" data-testid={`card-ai-feature-${i}`}>
                   <div className="flex items-start gap-4">
-                    <Sparkles className="w-5 h-5 mt-1 flex-shrink-0" style={{ color: `hsl(var(--primary))` }} />
+                    <Sparkles className="w-5 h-5 mt-1 flex-shrink-0 text-primary" />
                     <div>
                       <h3 className="font-bold">{feature}</h3>
                     </div>
@@ -120,7 +120,7 @@ export default function ModuleDetail() {
               {module.businessBenefits?.map((benefit, i) => (
                 <div key={i} className="public-card p-6 rounded-lg" data-testid={`card-benefit-${i}`}>
                   <div className="flex items-start gap-4">
-                    <CheckCircle className="w-6 h-6 mt-1 flex-shrink-0" style={{ color: `hsl(var(--primary))` }} />
+                    <CheckCircle className="w-6 h-6 mt-1 flex-shrink-0 text-primary" />
                     <p className="font-semibold">{benefit}</p>
                   </div>
                 </div>
@@ -149,7 +149,7 @@ export default function ModuleDetail() {
         <section className="public-section-alt px-4 py-20">
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="text-4xl font-bold mb-6">Ready to Transform Your {module.name}?</h2>
-            <p style={{ color: `hsl(var(--muted-foreground))` }} className="text-lg mb-8">
+            <p className="text-muted-foreground text-lg mb-8">
               Join leading enterprises using NexusAIFirst to streamline operations and drive growth
             </p>
             <div className="flex gap-4 justify-center">

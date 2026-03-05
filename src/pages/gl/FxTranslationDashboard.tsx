@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Upload, DollarSign, TrendingDown, AlertTriangle, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -295,9 +296,9 @@ export default function FxTranslationDashboard() {
                                         <TableCell className="font-medium">{cov.currencyPair}</TableCell>
                                         <TableCell>
                                             {cov.hasRate ? (
-                                                <Badge variant="default" className="bg-green-600">Active</Badge>
+                                                <StatusBadge status="Active" />
                                             ) : (
-                                                <Badge variant="destructive">Missing</Badge>
+                                                <StatusBadge status="Missing" />
                                             )}
                                         </TableCell>
                                         <TableCell>{cov.lastRate ? cov.lastRate.toFixed(4) : "—"}</TableCell>

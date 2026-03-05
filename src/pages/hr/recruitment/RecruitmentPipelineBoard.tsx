@@ -31,6 +31,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 const STAGES = ["NEW", "SCREENING", "INTERVIEW", "OFFER", "HIRED", "REJECTED"];
 
@@ -216,10 +217,10 @@ export default function RecruitmentPipelineBoard() {
                                                                 </Button>
                                                             )}
                                                             {stage === "HIRED" && (
-                                                                <Badge className="bg-green-50 text-green-700 border-green-200 h-7 px-2 flex items-center gap-1">
-                                                                    <CheckCircle2 className="h-3 w-3" />
-                                                                    Hired
-                                                                </Badge>
+                                                                <div className="flex items-center gap-1 h-7 px-2">
+                                                                    <CheckCircle2 className="h-3 w-3 text-green-600" />
+                                                                    <StatusBadge status="Hired" />
+                                                                </div>
                                                             )}
                                                         </div>
                                                     </CardContent>

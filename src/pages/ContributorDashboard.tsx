@@ -189,7 +189,7 @@ export default function ContributorDashboard() {
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
-            <Package className="w-8 h-8 mx-auto mb-2" style={{ color: 'hsl(var(--primary))' }} />
+            <Package className="w-8 h-8 mx-auto mb-2 text-primary" />
             <div className="text-2xl font-bold">{activeServices}</div>
             <p className="text-xs text-muted-foreground">Active Services</p>
           </CardContent>
@@ -338,7 +338,7 @@ export default function ContributorDashboard() {
                       <CardContent className="pt-4">
                         <h4 className="font-semibold truncate mb-2">{service.title}</h4>
                         <div className="flex items-center justify-between text-sm mb-2">
-                          <span className="font-bold" style={{ color: 'hsl(var(--primary))' }}>${Number(service.price).toLocaleString()}</span>
+                          <span className="font-bold text-primary">${Number(service.price).toLocaleString()}</span>
                           <StatusBadge status={service.status} />
                         </div>
                         <div className="flex items-center gap-3 text-xs text-muted-foreground">
@@ -389,7 +389,7 @@ export default function ContributorDashboard() {
                           <StatusBadge status={service.status} />
                         </div>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span className="font-semibold" style={{ color: 'hsl(var(--primary))' }}>${Number(service.price).toLocaleString()}</span>
+                          <span className="font-semibold text-primary">${Number(service.price).toLocaleString()}</span>
                           <span className="flex items-center gap-1">
                             <Star className="w-3 h-3 text-yellow-500" />
                             {service.rating?.toFixed(1) || "N/A"} ({service.review_count || 0})
@@ -537,7 +537,7 @@ export default function ContributorDashboard() {
                           </p>
                         </div>
                         <div className="text-right">
-                          <span className="font-semibold" style={{ color: 'hsl(var(--primary))' }}>${Number(proposal.proposed_price).toLocaleString()}</span>
+                          <span className="font-semibold text-primary">${Number(proposal.proposed_price).toLocaleString()}</span>
                           <p className="text-xs text-muted-foreground">Your bid</p>
                         </div>
                       </div>

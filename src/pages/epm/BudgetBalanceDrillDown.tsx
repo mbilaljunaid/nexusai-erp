@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronRight, ChevronDown, FileSpreadsheet, TrendingUp, TrendingDown, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 interface BudgetBalance {
     ccid: string;
@@ -77,7 +78,7 @@ export default function BudgetBalanceDrillDown() {
 
     const getStatusBadge = (variancePct: number) => {
         if (variancePct <= -10) return <Badge variant="destructive">Critical</Badge>;
-        if (variancePct <= -5) return <Badge className="bg-amber-500">Warning</Badge>;
+        if (variancePct <= -5) return <StatusBadge status="warning" label="Warning" />;
         return <Badge variant="outline">On Track</Badge>;
     };
 

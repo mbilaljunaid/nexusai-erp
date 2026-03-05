@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { format } from "date-fns";
 import { Link } from "wouter";
 import {
@@ -184,9 +185,9 @@ export default function ComplianceGovernance() {
       width: "150px",
       cell: (r: any) => (
         <div className="p-2">
-          <Badge variant={r.status === "active" ? "default" : "secondary"} className={r.status === "active" ? "bg-green-500/10 text-green-600 border-none" : ""}>
-            {r.status.toUpperCase()}
-          </Badge>
+          {r.status === 'active'
+            ? <StatusBadge status="active" label="ACTIVE" />
+            : <Badge variant="secondary">{r.status.toUpperCase()}</Badge>}
         </div>
       )
     },

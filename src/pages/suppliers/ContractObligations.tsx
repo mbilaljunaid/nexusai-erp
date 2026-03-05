@@ -65,113 +65,112 @@ export default function ContractObligations() {
 
     return (
         <StandardPage title="Contract Obligations">
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+            <div className="flex justify-between mb-4">
                 <div>
-                    
-                    <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Supplier compliance tracking · Evidence submission · Escalation management</p>
+                    <p className="text-sm text-muted-foreground mt-1">Supplier compliance tracking · Evidence submission · Escalation management</p>
                 </div>
-                <button onClick={() => setShowNew(true)} style={{ padding: '8px 16px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 600, cursor: 'pointer' }}>+ Add Obligation</button>
+                <button onClick={() => setShowNew(true)} className="px-4 py-2 bg-blue-700 text-white border-none rounded-lg font-semibold cursor-pointer text-sm">+ Add Obligation</button>
             </div>
 
             {/* KPIs */}
-            <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
+            <div className="flex gap-2.5 mb-3.5">
                 {[['Total', summary?.total ?? 0, '#6b7280'], ['Pending', summary?.pending ?? 0, '#1d4ed8'], ['Overdue', summary?.overdue ?? 0, '#dc2626'], ['Met', summary?.met ?? 0, '#059669'], ['At Risk', `${summary?.currency_code ?? 'USD'} ${Number(summary?.total_at_risk ?? 0).toLocaleString()}`, '#d97706']].map(([l, v, c]) => (
-                    <div key={l as string} style={{ background: '#fff', border: '1px solid #e5e7eb', borderLeft: `4px solid ${c}`, borderRadius: 10, padding: '10px 18px', flex: 1 }}>
-                        <div style={{ fontSize: 20, fontWeight: 800, fontFamily: 'monospace' }}>{v}</div>
-                        <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 2 }}>{l}</div>
+                    <div key={l as string} className="bg-white border border-gray-200 rounded-xl px-[18px] py-2.5 flex-1" style={{ borderLeft: `4px solid ${c}` }}>
+                        <div className="text-xl font-extrabold font-mono">{v}</div>
+                        <div className="text-[11px] text-gray-400 mt-0.5">{l}</div>
                     </div>
                 ))}
             </div>
 
             {/* Upcoming alert banner */}
             {upcoming.length > 0 && (
-                <div style={{ background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 10, padding: '10px 14px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div className="bg-amber-50 border border-amber-300 rounded-xl px-3.5 py-2.5 mb-3.5 flex items-center gap-2">
                     <AlertTriangle size={14} color="#d97706" />
-                    <span style={{ fontSize: 12, color: '#92400e', fontWeight: 600 }}>{upcoming.length} obligation{upcoming.length !== 1 ? 's' : ''} due within 30 days</span>
-                    <div style={{ display: 'flex', gap: 6, marginLeft: 8 }}>
-                        {upcoming.slice(0, 3).map(u => <span key={u.id} style={{ fontSize: 11, background: '#fef3c7', padding: '2px 8px', borderRadius: 4, color: '#b45309' }}>{u.title} — {fmt(u.due_date)}</span>)}
+                    <span className="text-xs text-amber-800 font-semibold">{upcoming.length} obligation{upcoming.length !== 1 ? 's' : ''} due within 30 days</span>
+                    <div className="flex gap-1.5 ml-2">
+                        {upcoming.slice(0, 3).map(u => <span key={u.id} className="text-[11px] bg-amber-100 px-2 py-0.5 rounded text-amber-700">{u.title} — {fmt(u.due_date)}</span>)}
                     </div>
                 </div>
             )}
 
             {/* Add form */}
             {showNew && (
-                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: 14, marginBottom: 12 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10 }}>Add Contract Obligation</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+                <div className="bg-white border border-gray-200 rounded-xl p-3.5 mb-3">
+                    <div className="text-[13px] font-bold mb-2.5">Add Contract Obligation</div>
+                    <div className="grid grid-cols-3 gap-2">
                         {[['contractId', 'Contract ID', 'text'], ['supplierId', 'Supplier ID', 'text'], ['title', 'Title', 'text'], ['dueDate', 'Due Date', 'date'], ['penaltyAmount', 'Penalty Amount', 'number']].map(([k, l, t]) => (
-                            <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                <label style={{ fontSize: 10, fontWeight: 600 }}>{l}</label>
-                                <input type={t} value={(newOb as any)[k] ?? ''} onChange={e => setNewOb(p => ({ ...p, [k]: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label={l} />
+                            <div key={k} className="flex flex-col gap-0.5">
+                                <label className="text-[10px] font-semibold">{l}</label>
+                                <input type={t} value={(newOb as any)[k] ?? ''} onChange={e => setNewOb(p => ({ ...p, [k]: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label={l} />
                             </div>
                         ))}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                            <label style={{ fontSize: 10, fontWeight: 600 }}>Type</label>
-                            <select value={newOb.obligationType} onChange={e => setNewOb(p => ({ ...p, obligationType: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label="Obligation type">
+                        <div className="flex flex-col gap-0.5">
+                            <label className="text-[10px] font-semibold">Type</label>
+                            <select value={newOb.obligationType} onChange={e => setNewOb(p => ({ ...p, obligationType: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label="Obligation type">
                                 {['DELIVERY', 'REPORTING', 'COMPLIANCE', 'INSURANCE', 'PAYMENT', 'SLA', 'AUDIT'].map(o => <option key={o}>{o}</option>)}
                             </select>
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                            <label style={{ fontSize: 10, fontWeight: 600 }}>Recurrence</label>
-                            <select value={newOb.recurrence} onChange={e => setNewOb(p => ({ ...p, recurrence: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label="Recurrence">
+                        <div className="flex flex-col gap-0.5">
+                            <label className="text-[10px] font-semibold">Recurrence</label>
+                            <select value={newOb.recurrence} onChange={e => setNewOb(p => ({ ...p, recurrence: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label="Recurrence">
                                 {['NONE', 'MONTHLY', 'QUARTERLY', 'ANNUAL'].map(o => <option key={o}>{o}</option>)}
                             </select>
                         </div>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 6, marginTop: 10 }}>
-                        <button onClick={() => setShowNew(false)} style={{ padding: '6px 12px', background: '#f3f4f6', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer' }}>Cancel</button>
-                        <button disabled={createMut.isPending || !newOb.contractId || !newOb.title} onClick={() => createMut.mutate(newOb)} style={{ padding: '6px 12px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>Create</button>
+                    <div className="flex justify-end gap-1.5 mt-2.5">
+                        <button onClick={() => setShowNew(false)} className="px-3 py-1.5 bg-gray-100 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
+                        <button disabled={createMut.isPending || !newOb.contractId || !newOb.title} onClick={() => createMut.mutate(newOb)} className="px-3 py-1.5 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer disabled:opacity-50">Create</button>
                     </div>
                 </div>
             )}
 
             {/* Filters */}
-            <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
+            <div className="flex gap-1.5 mb-2.5">
                 {['', 'Pending', 'InReview', 'Overdue', 'Met', 'Waived'].map(s => (
-                    <button key={s} onClick={() => setFilter(s)} style={{ padding: '5px 12px', border: '1px solid #e5e7eb', borderRadius: 7, background: filter === s ? '#111827' : '#fff', color: filter === s ? '#fff' : '#6b7280', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                    <button key={s} onClick={() => setFilter(s)} className={`px-3 py-1 border border-gray-200 rounded-lg text-[11px] font-semibold cursor-pointer ${filter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`}>
                         {s || 'All'}
                     </button>
                 ))}
             </div>
 
             {/* Obligation list */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div className="flex flex-col gap-1.5">
                 {obligations.map(ob => {
                     const cfg = OB_STATUS[ob.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
                     const sel = selected?.id === ob.id;
                     return (
-                        <div key={ob.id} onClick={() => setSelected(sel ? null : ob)} style={{ background: '#fff', border: `1px solid ${sel ? '#1d4ed8' : '#e5e7eb'}`, borderLeft: `4px solid ${cfg.color}`, borderRadius: 10, padding: '10px 14px', cursor: 'pointer' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 3 }}>
+                        <div key={ob.id} onClick={() => setSelected(sel ? null : ob)} className="bg-white rounded-xl px-3.5 py-2.5 cursor-pointer" style={{ border: `1px solid ${sel ? '#1d4ed8' : '#e5e7eb'}`, borderLeft: `4px solid ${cfg.color}` }}>
+                            <div className="flex justify-between items-start mb-0.5">
                                 <div>
-                                    <span style={{ fontSize: 13, fontWeight: 700, color: '#111827' }}>{ob.title}</span>
-                                    <span style={{ marginLeft: 8, fontSize: 10, padding: '2px 6px', borderRadius: 4, background: '#f3f4f6', color: '#6b7280', fontWeight: 600 }}>{ob.obligation_type}</span>
+                                    <span className="text-[13px] font-bold text-gray-900">{ob.title}</span>
+                                    <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-500 font-semibold">{ob.obligation_type}</span>
                                 </div>
-                                <span style={{ fontSize: 10, padding: '2px 6px', borderRadius: 4, background: cfg.bg, color: cfg.color, fontWeight: 700 }}>{ob.status}</span>
+                                <span className="text-[10px] px-1.5 py-0.5 rounded font-bold" style={{ background: cfg.bg, color: cfg.color }}>{ob.status}</span>
                             </div>
-                            <div style={{ display: 'flex', gap: 16, fontSize: 11, color: '#6b7280' }}>
-                                <span><Clock size={10} style={{ display: 'inline' }} /> Due: {fmt(ob.due_date)}</span>
+                            <div className="flex gap-4 text-[11px] text-gray-500">
+                                <span><Clock size={10} className="inline" /> Due: {fmt(ob.due_date)}</span>
                                 <span>Supplier: {ob.supplier_id}</span>
                                 <span>Contract: {ob.contract_id}</span>
-                                {ob.escalation_level > 0 && <span style={{ color: '#dc2626', fontWeight: 700 }}>{ESC_LABELS[ob.escalation_level]}</span>}
-                                {ob.penalty_amount && <span style={{ color: '#d97706', fontWeight: 600 }}>{ob.currency_code} {Number(ob.penalty_amount).toLocaleString()}</span>}
+                                {ob.escalation_level > 0 && <span className="text-red-600 font-bold">{ESC_LABELS[ob.escalation_level]}</span>}
+                                {ob.penalty_amount && <span className="text-amber-600 font-semibold">{ob.currency_code} {Number(ob.penalty_amount).toLocaleString()}</span>}
                             </div>
 
                             {sel && (
-                                <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px dashed #e5e7eb' }}>
-                                    {ob.description && <p style={{ fontSize: 12, color: '#374151', margin: '0 0 8px' }}>{ob.description}</p>}
+                                <div className="mt-2.5 pt-2.5 border-t border-dashed border-gray-200">
+                                    {ob.description && <p className="text-xs text-gray-700 mb-2">{ob.description}</p>}
                                     {ob.status === 'Pending' && (
-                                        <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginBottom: 6 }}>
-                                            <input placeholder="Evidence URL" value={evidenceUrl} onChange={e => setEvidenceUrl(e.target.value)} style={{ flex: 1, padding: '5px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label="Evidence URL" />
-                                            <button disabled={!evidenceUrl} onClick={e => { e.stopPropagation(); evidenceMut.mutate({ id: ob.id, url: evidenceUrl }); }} style={{ padding: '5px 10px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer' }}>Submit Evidence</button>
+                                        <div className="flex gap-1.5 items-center mb-1.5">
+                                            <input placeholder="Evidence URL" value={evidenceUrl} onChange={e => setEvidenceUrl(e.target.value)} className="flex-1 px-2 py-1 border border-gray-300 rounded-md text-[11px]" aria-label="Evidence URL" />
+                                            <button disabled={!evidenceUrl} onClick={e => { e.stopPropagation(); evidenceMut.mutate({ id: ob.id, url: evidenceUrl }); }} className="px-2.5 py-1 bg-blue-700 text-white border-none rounded-md text-[11px] cursor-pointer disabled:opacity-50">Submit Evidence</button>
                                         </div>
                                     )}
-                                    <div style={{ display: 'flex', gap: 6 }}>
+                                    <div className="flex gap-1.5">
                                         {ob.status === 'InReview' && <>
-                                            <button onClick={e => { e.stopPropagation(); reviewMut.mutate({ id: ob.id, decision: 'Met' }); }} style={{ padding: '5px 10px', background: '#059669', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3 }}><CheckCircle2 size={11} /> Mark Met</button>
-                                            <button onClick={e => { e.stopPropagation(); reviewMut.mutate({ id: ob.id, decision: 'Waived' }); }} style={{ padding: '5px 10px', background: '#6b7280', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer' }}>Waive</button>
+                                            <button onClick={e => { e.stopPropagation(); reviewMut.mutate({ id: ob.id, decision: 'Met' }); }} className="px-2.5 py-1 bg-green-600 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer flex items-center gap-1"><CheckCircle2 size={11} /> Mark Met</button>
+                                            <button onClick={e => { e.stopPropagation(); reviewMut.mutate({ id: ob.id, decision: 'Waived' }); }} className="px-2.5 py-1 bg-gray-500 text-white border-none rounded-md text-[11px] cursor-pointer">Waive</button>
                                         </>}
                                         {ob.status === 'Overdue' && (
-                                            <button onClick={e => { e.stopPropagation(); escMut.mutate(ob.id); }} style={{ padding: '5px 10px', background: '#dc2626', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3 }}><ArrowUp size={11} /> Escalate</button>
+                                            <button onClick={e => { e.stopPropagation(); escMut.mutate(ob.id); }} className="px-2.5 py-1 bg-red-600 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer flex items-center gap-1"><ArrowUp size={11} /> Escalate</button>
                                         )}
                                     </div>
                                 </div>
@@ -179,7 +178,7 @@ export default function ContractObligations() {
                         </div>
                     );
                 })}
-                {obligations.length === 0 && <div style={{ textAlign: 'center', color: '#9ca3af', padding: 30 }}>No obligations found</div>}
+                {obligations.length === 0 && <div className="text-center text-gray-400 py-7">No obligations found</div>}
             </div>
         </StandardPage>
     );

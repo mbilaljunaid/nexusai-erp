@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useRoute, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -51,7 +53,7 @@ export default function APInvoiceDetail() {
         }
     });
 
-    if (isLoading) return <div className="p-8 flex items-center justify-center"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
+    if (isLoading) return <PageSkeleton />;
     if (!invoiceData) return <div className="p-8 text-center text-muted-foreground">Invoice not found or failed to load.</div>;
 
     // ERP invoices API usually returns `{ ...header, lines: [...] }` or just the invoice. We'll handle both.
@@ -121,9 +123,7 @@ export default function APInvoiceDetail() {
                 <Card>
                     <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">GL Status</CardTitle></CardHeader>
                     <CardContent>
-                        <Badge variant="outline" className={invoice.glStatus === 'Accounted' ? "bg-green-50 text-green-700 text-sm" : "bg-yellow-50 text-yellow-700 text-sm"}>
-                            {invoice.glStatus || 'Unaccounted'}
-                        </Badge>
+                        <StatusBadge status={invoice.glStatus || 'Unaccounted'} />
                     </CardContent>
                 </Card>
             </div>
@@ -191,7 +191,7 @@ export default function APInvoiceDetail() {
                                         <div className="text-xs text-muted-foreground">Placed: {new Date(h.holdDate).toLocaleDateString()}</div>
                                     </div>
                                     {h.released ? (
-                                        <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">Released</Badge>
+                                        <StatusBadge status="Released" />
                                     ) : (
                                         <Badge variant="destructive">Active</Badge>
                                     )}

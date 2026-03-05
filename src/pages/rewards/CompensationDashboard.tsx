@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -235,7 +236,7 @@ export default function CompensationDashboard() {
                                         <TableCell><Badge variant="outline">{base.frequency}</Badge></TableCell>
                                         <TableCell>{base.currency}</TableCell>
                                         <TableCell>{base.annualizationFactor}</TableCell>
-                                        <TableCell><Badge className="bg-green-100 text-green-800">{base.status}</Badge></TableCell>
+                                        <TableCell><StatusBadge status={base.status === 'ACTIVE' ? 'active' : 'info'} label={base.status} /></TableCell>
                                     </TableRow>
                                 ))}
                                 {salaryBases?.length === 0 && (

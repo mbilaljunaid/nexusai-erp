@@ -42,27 +42,26 @@ export default function PermitToWork() {
 
     return (
         <StandardPage title="Permit-to-Work">
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, alignItems: 'flex-start' }}>
+            <div className="flex justify-between mb-4 items-start">
                 <div>
-                    
-                    <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Hazardous work permits · Safety lifecycle · CBM alerts</p>
+                    <p className="text-sm text-muted-foreground mt-1">Hazardous work permits · Safety lifecycle · CBM alerts</p>
                 </div>
-                <button onClick={() => setShowNew(true)} style={{ padding: '7px 14px', background: '#dc2626', color: '#fff', border: 'none', borderRadius: 8, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>+ New Permit</button>
+                <button onClick={() => setShowNew(true)} className="px-3.5 py-1.5 bg-red-600 text-white border-none rounded-lg text-[11px] font-bold cursor-pointer">+ New Permit</button>
             </div>
 
             {/* KPI row */}
-            <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
+            <div className="flex gap-2.5 mb-3.5">
                 {[{ lbl: 'Active', val: active, clr: '#059669' }, { lbl: 'Pending Approval', val: pending, clr: '#d97706' }, { lbl: 'Expiring 24h', val: expiring.length, clr: '#f59e0b' }, { lbl: 'CBM Alerts', val: cbmAlerts.length, clr: '#dc2626' }].map(k => (
-                    <div key={k.lbl} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 10, padding: '10px 16px', minWidth: 100 }}>
-                        <div style={{ fontSize: 20, fontWeight: 800, color: k.clr }}>{k.val}</div>
-                        <div style={{ fontSize: 10, color: '#9ca3af' }}>{k.lbl}</div>
+                    <div key={k.lbl} className="bg-white border border-gray-200 rounded-xl px-4 py-2.5 min-w-[100px]">
+                        <div className="text-xl font-extrabold" style={{ color: k.clr }}>{k.val}</div>
+                        <div className="text-[10px] text-gray-400">{k.lbl}</div>
                     </div>
                 ))}
             </div>
 
             {/* Expiring alert banner */}
             {expiring.length > 0 && (
-                <div style={{ background: '#fef3c7', border: '1px solid #fcd34d', borderRadius: 8, padding: '8px 12px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8, fontSize: 11 }}>
+                <div className="bg-amber-50 border border-amber-300 rounded-lg px-3 py-2 mb-2.5 flex items-center gap-2 text-[11px]">
                     <Clock size={12} color="#d97706" />
                     <strong>{expiring.length} permit(s) expiring within 24 hours:</strong> {expiring.map(p => p.permit_number).join(', ')}
                 </div>
@@ -70,77 +69,77 @@ export default function PermitToWork() {
 
             {/* CBM alerts */}
             {cbmAlerts.length > 0 && (
-                <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 8, padding: '8px 12px', marginBottom: 10, display: 'flex', gap: 12, flexWrap: 'wrap', fontSize: 10 }}>
-                    <AlertTriangle size={12} color="#dc2626" style={{ flexShrink: 0 }} />
-                    {cbmAlerts.map((a, i) => <span key={i} style={{ background: '#fee2e2', color: '#dc2626', padding: '2px 6px', borderRadius: 4 }}>{a.asset_id} · {a.parameter_name}: {Number(a.reading_value).toFixed(2)}</span>)}
+                <div className="bg-red-50 border border-red-300 rounded-lg px-3 py-2 mb-2.5 flex gap-3 flex-wrap text-[10px]">
+                    <AlertTriangle size={12} color="#dc2626" className="shrink-0" />
+                    {cbmAlerts.map((a, i) => <span key={i} className="bg-red-100 text-red-600 px-1.5 py-0.5 rounded">{a.asset_id} · {a.parameter_name}: {Number(a.reading_value).toFixed(2)}</span>)}
                 </div>
             )}
 
             {showNew && (
-                <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 10, padding: 14, marginBottom: 12 }}>
-                    <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 8 }}>Create Permit</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 8 }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <label style={{ fontSize: 10, fontWeight: 700 }}>Type</label>
-                            <select value={form.permitType} onChange={e => setForm(p => ({ ...p, permitType: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 12 }} aria-label="Type">{['COLD_WORK', 'HOT_WORK', 'CONFINED_SPACE', 'ELECTRICAL', 'HEIGHT', 'EXCAVATION', 'RADIATION'].map(t => <option key={t}>{t}</option>)}</select>
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-3.5 mb-3">
+                    <div className="font-bold text-xs mb-2">Create Permit</div>
+                    <div className="grid grid-cols-4 gap-2 mb-2">
+                        <div className="flex flex-col gap-0.5">
+                            <label className="text-[10px] font-bold">Type</label>
+                            <select value={form.permitType} onChange={e => setForm(p => ({ ...p, permitType: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-xs" aria-label="Type">{['COLD_WORK', 'HOT_WORK', 'CONFINED_SPACE', 'ELECTRICAL', 'HEIGHT', 'EXCAVATION', 'RADIATION'].map(t => <option key={t}>{t}</option>)}</select>
                         </div>
                         {[['Asset ID', 'assetId', 'text'], ['Location', 'location', 'text'], ['Requested By', 'requestedBy', 'text'], ['Contractor', 'contractor', 'text'], ['Start', 'startDatetime', 'datetime-local'], ['End', 'endDatetime', 'datetime-local']].map(([lbl, key, type]) => (
-                            <div key={key} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                <label style={{ fontSize: 10, fontWeight: 700 }}>{lbl}</label>
-                                <input type={type} value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label={lbl} />
+                            <div key={key} className="flex flex-col gap-0.5">
+                                <label className="text-[10px] font-bold">{lbl}</label>
+                                <input type={type} value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label={lbl} />
                             </div>
                         ))}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2, gridColumn: 'span 2' }}>
-                            <label style={{ fontSize: 10, fontWeight: 700 }}>Description</label>
-                            <input value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label="Description" />
+                        <div className="flex flex-col gap-0.5 col-span-2">
+                            <label className="text-[10px] font-bold">Description</label>
+                            <input value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label="Description" />
                         </div>
                     </div>
-                    <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                        <button onClick={() => setShowNew(false)} style={{ padding: '5px 12px', background: '#e5e7eb', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer' }}>Cancel</button>
-                        <button disabled={!form.requestedBy} onClick={() => createMut.mutate(form)} style={{ padding: '5px 12px', background: '#dc2626', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>Create</button>
+                    <div className="flex gap-1.5 justify-end">
+                        <button onClick={() => setShowNew(false)} className="px-3 py-1 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
+                        <button disabled={!form.requestedBy} onClick={() => createMut.mutate(form)} className="px-3 py-1 bg-red-600 text-white border-none rounded-md text-[11px] font-bold cursor-pointer disabled:opacity-50">Create</button>
                     </div>
                 </div>
             )}
 
-            <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
+            <div className="flex gap-1.5 mb-2.5">
                 {['', 'Pending_Approval', 'Approved', 'Active', 'Suspended', 'Closed', 'Cancelled'].map(s => (
-                    <button key={s} onClick={() => setStatusFilter(s)} style={{ padding: '5px 10px', border: '1px solid #e5e7eb', borderRadius: 6, background: statusFilter === s ? '#111827' : '#fff', color: statusFilter === s ? '#fff' : '#6b7280', fontSize: 10, fontWeight: 600, cursor: 'pointer' }}>{s || 'All'}</button>
+                    <button key={s} onClick={() => setStatusFilter(s)} className={`px-2.5 py-1 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`}>{s || 'All'}</button>
                 ))}
             </div>
 
-            <div style={{ display: 'flex', gap: 14 }}>
-                <div style={{ flex: 1 }}>
+            <div className="flex gap-3.5">
+                <div className="flex-1">
                     {permits.map(p => {
                         const clr = STATUS_CLR[p.status] ?? '#6b7280';
                         const tclr = TYPE_CLR[p.permit_type] ?? '#6b7280';
                         const hrs = hoursLeft(p);
                         return (
-                            <div key={p.id} onClick={() => setSelected(selected?.id === p.id ? null : p)} style={{ background: '#fff', border: `1px solid ${selected?.id === p.id ? '#dc2626' : '#e5e7eb'}`, borderLeft: `4px solid ${tclr}`, borderRadius: 10, padding: '10px 14px', marginBottom: 6, cursor: 'pointer' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-                                    <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                            <div key={p.id} onClick={() => setSelected(selected?.id === p.id ? null : p)} className="bg-white rounded-xl px-3.5 py-2.5 mb-1.5 cursor-pointer" style={{ border: `1px solid ${selected?.id === p.id ? '#dc2626' : '#e5e7eb'}`, borderLeft: `4px solid ${tclr}` }}>
+                                <div className="flex justify-between mb-0.5">
+                                    <div className="flex gap-1.5 items-center">
                                         <HardHat size={12} color={tclr} />
-                                        <span style={{ fontWeight: 700, fontSize: 13 }}>{p.permit_number}</span>
-                                        <span style={{ fontSize: 9, padding: '1px 5px', borderRadius: 3, background: tclr + '18', color: tclr, fontWeight: 700 }}>{p.permit_type.replace(/_/g, ' ')}</span>
+                                        <span className="font-bold text-[13px]">{p.permit_number}</span>
+                                        <span className="text-[9px] px-1 py-px rounded font-bold" style={{ background: tclr + '18', color: tclr }}>{p.permit_type.replace(/_/g, ' ')}</span>
                                     </div>
-                                    <span style={{ fontSize: 9, padding: '2px 6px', borderRadius: 4, fontWeight: 700, background: clr + '18', color: clr }}>{p.status}</span>
+                                    <span className="text-[9px] px-1.5 py-0.5 rounded font-bold" style={{ background: clr + '18', color: clr }}>{p.status}</span>
                                 </div>
-                                <div style={{ fontSize: 10, color: '#6b7280', marginBottom: 3 }}>{p.description ?? '—'} · Asset: {p.asset_id ?? '—'} · {p.location ?? '—'}</div>
-                                <div style={{ fontSize: 9, color: '#9ca3af' }}>By: {p.requested_by} {p.contractor ? `· Contractor: ${p.contractor}` : ''} {hrs !== null && p.status === 'Active' ? `· ${hrs}h remaining` : ''}</div>
+                                <div className="text-[10px] text-gray-500 mb-0.5">{p.description ?? '—'} · Asset: {p.asset_id ?? '—'} · {p.location ?? '—'}</div>
+                                <div className="text-[9px] text-gray-400">By: {p.requested_by} {p.contractor ? `· Contractor: ${p.contractor}` : ''} {hrs !== null && p.status === 'Active' ? `· ${hrs}h remaining` : ''}</div>
                                 {(ACTIONS[p.status] ?? []).length > 0 && (
-                                    <div style={{ display: 'flex', gap: 4, marginTop: 5 }}>
-                                        {(ACTIONS[p.status] ?? []).map(a => <button key={a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: p.id, action: a }); }} style={{ padding: '2px 7px', background: a === 'APPROVE' || a === 'RESUME' || a === 'ISSUE' ? '#eff6ff' : '#fef2f2', border: 'none', borderRadius: 4, fontSize: 9, cursor: 'pointer', color: a === 'CANCEL' ? '#dc2626' : '#1d4ed8', fontWeight: 700 }}>{a}</button>)}
+                                    <div className="flex gap-1 mt-1.5">
+                                        {(ACTIONS[p.status] ?? []).map(a => <button key={a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: p.id, action: a }); }} className={`px-1.5 py-px border-none rounded text-[9px] cursor-pointer font-bold ${a === 'APPROVE' || a === 'RESUME' || a === 'ISSUE' ? 'bg-blue-50 text-blue-700' : 'bg-red-50 text-red-600'}`}>{a}</button>)}
                                     </div>
                                 )}
                             </div>
                         );
                     })}
-                    {permits.length === 0 && <div style={{ textAlign: 'center', color: '#9ca3af', padding: 32, background: '#fff', borderRadius: 10 }}>No permits</div>}
+                    {permits.length === 0 && <div className="text-center text-gray-400 p-8 bg-white rounded-xl">No permits</div>}
                 </div>
 
                 {selected && (
-                    <div style={{ width: 260, flexShrink: 0, background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: 14 }}>
-                        <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 8 }}>{selected.permit_number}</div>
-                        <div style={{ fontSize: 10, lineHeight: 1.8, color: '#374151' }}>
+                    <div className="w-[260px] shrink-0 bg-white border border-gray-200 rounded-xl p-3.5">
+                        <div className="font-bold text-[13px] mb-2">{selected.permit_number}</div>
+                        <div className="text-[10px] leading-[1.8] text-gray-700">
                             <strong>Type:</strong> {selected.permit_type}<br />
                             <strong>Asset:</strong> {selected.asset_id ?? '—'}<br />
                             <strong>Location:</strong> {selected.location ?? '—'}<br />
@@ -148,13 +147,13 @@ export default function PermitToWork() {
                             <strong>Start:</strong> {selected.start_datetime ? new Date(selected.start_datetime).toLocaleString() : '—'}<br />
                             <strong>End:</strong> {selected.end_datetime ? new Date(selected.end_datetime).toLocaleString() : '—'}
                         </div>
-                        <div style={{ marginTop: 10, fontSize: 11, fontWeight: 700, marginBottom: 5 }}>Event Log</div>
-                        <div style={{ maxHeight: 200, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                        <div className="mt-2.5 text-[11px] font-bold mb-1.5">Event Log</div>
+                        <div className="max-h-[200px] overflow-y-auto flex flex-col gap-1">
                             {(selected.events ?? []).map((ev, i) => (
-                                <div key={i} style={{ fontSize: 9, borderLeft: '2px solid #e5e7eb', paddingLeft: 6 }}>
-                                    <div style={{ fontWeight: 700, color: '#6b7280' }}>{ev.action} · {ev.by}</div>
-                                    <div style={{ color: '#374151' }}>{ev.note}</div>
-                                    <div style={{ color: '#9ca3af' }}>{new Date(ev.at).toLocaleString()}</div>
+                                <div key={i} className="text-[9px] border-l-2 border-gray-200 pl-1.5">
+                                    <div className="font-bold text-gray-500">{ev.action} · {ev.by}</div>
+                                    <div className="text-gray-700">{ev.note}</div>
+                                    <div className="text-gray-400">{new Date(ev.at).toLocaleString()}</div>
                                 </div>
                             ))}
                         </div>

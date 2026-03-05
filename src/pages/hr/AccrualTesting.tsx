@@ -1,5 +1,7 @@
 import { DatePicker } from '@/components/ui/DatePicker';
 import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -177,7 +179,7 @@ export default function AccrualTesting() {
                                     <div>
                                         <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-1">Evaluated Tier</p>
                                         <div className="flex items-center gap-2">
-                                            <Badge className="bg-indigo-100 text-indigo-800 hover:bg-indigo-200 dark:bg-indigo-900/50 dark:text-indigo-300">{result?.applicableTier}</Badge>
+                                            <StatusBadge status="info" label={result?.applicableTier} />
                                         </div>
                                     </div>
                                     <div>

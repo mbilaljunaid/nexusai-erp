@@ -6,6 +6,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { AlertTriangle, TrendingDown, Settings, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { StandardPage } from "@/components/layout/StandardPage";
 
 
@@ -25,14 +26,14 @@ export default function PredictiveMaintenance() {
 
     const getRiskBadge = (level: string) => {
         if (level === 'HIGH') return <Badge variant="destructive">High Risk</Badge>;
-        if (level === 'MEDIUM') return <Badge className="bg-orange-100 text-orange-700">Medium Risk</Badge>;
+        if (level === 'MEDIUM') return <StatusBadge status="warning" label="Medium Risk" />;
         return <Badge variant="secondary">Low Risk</Badge>;
     };
 
     return (
         <StandardPage title="Predictive Maintenance Engine">
             <div>
-                
+
                 <p className="text-muted-foreground">AI-powered failure prediction and maintenance scheduling</p>
             </div>
 

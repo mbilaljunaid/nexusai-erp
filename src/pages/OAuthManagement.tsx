@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 export default function OAuthManagement() {
   return (
@@ -17,7 +18,7 @@ export default function OAuthManagement() {
             <CardContent className="pt-6">
               <h3 className="font-semibold">{oauth.app}</h3>
               <p className="text-sm text-muted-foreground">Scope: {oauth.scope}</p>
-              <Badge className="mt-2 bg-green-100 text-green-800">{oauth.status}</Badge>
+              <StatusBadge status={oauth.status === 'Active' ? 'active' : 'info'} label={oauth.status} />
             </CardContent>
           </Card>
         ))}

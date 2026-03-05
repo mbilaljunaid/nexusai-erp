@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { FileText, CheckCircle2, XCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 interface EliminationJournal {
     id: string;
@@ -112,10 +113,7 @@ export default function EliminationJournalReview() {
                                                 <div className="flex gap-2 mt-2">
                                                     <Badge variant="outline" className="text-xs">Run: {journal.runId}</Badge>
                                                     <Badge variant="secondary" className="text-xs">{journal.appliedRule}</Badge>
-                                                    <Badge variant={journal.status === "Posted" ? "default" : "secondary"} className={journal.status === "Posted" ? "bg-green-600" : ""}>
-                                                        {journal.status === "Posted" && <CheckCircle2 className="h-3 w-3 mr-1" />}
-                                                        {journal.status}
-                                                    </Badge>
+                                                    <StatusBadge status={journal.status} />
                                                 </div>
                                             </div>
                                             <div className="text-right">

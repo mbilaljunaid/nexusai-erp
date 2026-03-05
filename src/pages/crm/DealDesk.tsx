@@ -255,7 +255,7 @@ export default function DealDesk() {
                                                 <TableCell>{request.customerName}</TableCell>
                                                 <TableCell className="text-right font-mono">${request.amount.toLocaleString()}</TableCell>
                                                 <TableCell className="text-right">
-                                                    <Badge className="bg-green-600">{request.requestedDiscount}%</Badge>
+                                                    <StatusBadge status="active" label={`${request.requestedDiscount}%`} />
                                                 </TableCell>
                                                 <TableCell className="text-sm text-muted-foreground">
                                                     {new Date(request.requestedAt).toLocaleDateString()}
