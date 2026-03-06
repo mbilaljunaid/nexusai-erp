@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -84,7 +85,7 @@ export default function BatchGenealogy() {
             id: "transactionDate",
             header: "Date",
             width: "200px",
-            cell: (row) => <span>{new Date(row.transactionDate).toLocaleString()}</span>
+            cell: (row) => <span>{formatDateTime(row.transactionDate)}</span>
         }
     ];
 

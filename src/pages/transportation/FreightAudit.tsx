@@ -88,7 +88,7 @@ export default function FreightAudit() {
                     </CardHeader>
                     <CardContent className="space-y-2 max-h-[600px] overflow-y-auto">
                         {invoices?.map((invoice: any) => (
-                            <div
+                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 key={invoice.id}
                                 className={`p-3 rounded-lg cursor-pointer border ${selectedInvoice?.id === invoice.id
                                     ? "border-primary bg-primary/5"

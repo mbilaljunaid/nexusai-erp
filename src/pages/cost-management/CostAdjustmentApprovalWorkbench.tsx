@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import React, { useState } from "react";
@@ -121,7 +122,7 @@ function ApprovalRow({
                             </div>
                             <div>
                                 <span className="text-muted-foreground">Date: </span>
-                                <span>{new Date(req.createdAt).toLocaleDateString()}</span>
+                                <span>{formatDate(req.createdAt)}</span>
                             </div>
                         </div>
                         {payload.justification && (

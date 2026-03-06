@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DollarSign, Globe, FileCheck, Download, PlusCircle, ChevronDown, ChevronUp } from 'lucide-react';
@@ -114,7 +115,7 @@ export default function WHTRemittance() {
         { id: "rate", header: "Rate", width: "80px", cell: (t) => <span className="rate">{fmtPct(t.wht_rate)}</span> },
         { id: "wht", header: "WHT", width: "120px", cell: (t) => <span className="amount red">{fmtCcy(t.wht_amount, t.currency_code)}</span> },
         { id: "net", header: "Net", width: "120px", cell: (t) => <span className="amount">{fmtCcy(t.net_amount, t.currency_code)}</span> },
-        { id: "remitted", header: "Remitted", width: "120px", cell: (t) => t.remitted_at ? <span className="remitted-badge">✓ {new Date(t.remitted_at).toLocaleDateString()}</span> : <span className="pending-badge">Pending</span> }
+        { id: "remitted", header: "Remitted", width: "120px", cell: (t) => t.remitted_at ? <span className="remitted-badge">✓ {formatDate(t.remitted_at)}</span> : <span className="pending-badge">Pending</span> }
     ];
 
     const ruleColumns: SpreadsheetColumn<WHTRule>[] = [

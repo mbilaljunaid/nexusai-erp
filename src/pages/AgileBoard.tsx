@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -118,7 +119,7 @@ export default function AgileBoard() {
           <CardHeader>
             <CardTitle className="text-base">{activeSprint.name}</CardTitle>
             <p className="text-sm text-muted-foreground">
-              {new Date(activeSprint.startDate).toLocaleDateString()} - {new Date(activeSprint.endDate).toLocaleDateString()}
+              {formatDate(activeSprint.startDate)} - {formatDate(activeSprint.endDate)}
             </p>
           </CardHeader>
         </Card>

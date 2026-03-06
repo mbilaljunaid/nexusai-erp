@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { useQuery } from "@tanstack/react-query";
@@ -90,7 +91,7 @@ export default function LcmAuditLogSideSheet({ entityId, entityTable = 'lcm_trad
                                         <div className="flex items-center justify-between">
                                             <span className="font-semibold text-sm">{log.action}</span>
                                             <span className="text-xs text-muted-foreground">
-                                                {new Date(log.createdAt).toLocaleString()}
+                                                {formatDateTime(log.createdAt)}
                                             </span>
                                         </div>
                                         <div className="text-sm">

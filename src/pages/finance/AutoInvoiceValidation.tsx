@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -5,6 +6,7 @@ import { CheckCircle2, AlertTriangle, Play, Download, RefreshCw, FileText } from
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from "@/components/ui/input";
 
 interface AutoInvRun {
     id: string;
@@ -99,7 +101,7 @@ export default function AutoInvoiceValidation() {
                         </div>
                         <div className="rf">
                             <label className="rl">Source Ref</label>
-                            <input className="ri" placeholder="e.g. ORD-2026-0042" value={sourceRef} onChange={e => setSourceRef(e.target.value)} aria-label="Source reference" />
+                            <Input className="h-9 text-[12px]" placeholder="e.g. ORD-2026-0042" value={sourceRef} onChange={e => setSourceRef(e.target.value)} aria-label="Source reference" />
                         </div>
                         <div className="rf">
                             <label className="rl">Lines (JSON array)</label>
@@ -130,7 +132,7 @@ export default function AutoInvoiceValidation() {
                                         <span className={`rc-status ${cfgClass}`}>{r.status}</span>
                                     </div>
                                     <div className="rc-meta">{r.total_lines} lines · {r.valid_lines} valid · {r.error_lines} err</div>
-                                    <div className="rc-date small">{new Date(r.run_at).toLocaleString()}</div>
+                                    <div className="rc-date small">{formatDateTime(r.run_at)}</div>
                                 </div>
                             );
                         })}

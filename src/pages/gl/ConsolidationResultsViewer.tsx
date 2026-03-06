@@ -163,7 +163,7 @@ export default function ConsolidationResultsViewer() {
                                 <div className="space-y-4">
                                     {balances.map((balance) => (
                                         <div key={balance.account}>
-                                            <div
+                                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                                 className="flex items-center justify-between p-3 rounded-lg hover:bg-muted cursor-pointer"
                                                 onClick={() => setExpandedAccount(expandedAccount === balance.account ? null : balance.account)}
                                             >

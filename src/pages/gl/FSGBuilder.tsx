@@ -270,7 +270,7 @@ export default function FSGBuilder() {
                             </Card>
                             <div className="space-y-2 max-h-[600px] overflow-y-auto">
                                 {rowSets?.map(rs => (
-                                    <div
+                                    <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         key={rs.id}
                                         className={`p-4 border rounded-md flex justify-between items-center cursor-pointer transition-colors ${selectedRowSet?.id === rs.id ? 'bg-blue-50 border-blue-200' : 'bg-card hover:bg-muted'}`}
                                         onClick={() => setSelectedRowSet(rs)}
@@ -372,7 +372,7 @@ export default function FSGBuilder() {
                             </Card>
                             <div className="space-y-2 max-h-[600px] overflow-y-auto">
                                 {colSets?.map(cs => (
-                                    <div
+                                    <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         key={cs.id}
                                         className={`p-4 border rounded-md flex justify-between items-center cursor-pointer transition-colors ${selectedColSet?.id === cs.id ? 'bg-blue-50 border-blue-200' : 'bg-card hover:bg-muted'}`}
                                         onClick={() => setSelectedColSet(cs)}

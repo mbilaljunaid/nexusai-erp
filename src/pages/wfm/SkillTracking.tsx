@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -69,7 +70,7 @@ export default function SkillTracking() {
                                                     className={cert.isExpiringSoon ? "bg-orange-100 text-orange-700" : ""}
                                                 >
                                                     {cert.name}
-                                                    {cert.expiryDate && ` (Exp: ${new Date(cert.expiryDate).toLocaleDateString()})`}
+                                                    {cert.expiryDate && ` (Exp: ${formatDate(cert.expiryDate)})`}
                                                 </Badge>
                                             ))}
                                         </div>

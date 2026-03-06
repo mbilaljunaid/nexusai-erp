@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -548,7 +549,7 @@ export default function SuccessionPlanning() {
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Review Date</span>
-                        <span className="font-medium">{plan.reviewDate ? new Date(plan.reviewDate).toLocaleDateString() : 'Not set'}</span>
+                        <span className="font-medium">{plan.reviewDate ? formatDate(plan.reviewDate) : 'Not set'}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Candidates</span>
@@ -670,7 +671,7 @@ export default function SuccessionPlanning() {
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-muted-foreground">
-                            Last assessed: {cand.lastAssessment ? new Date(cand.lastAssessment).toLocaleDateString() : 'Never'}
+                            Last assessed: {cand.lastAssessment ? formatDate(cand.lastAssessment) : 'Never'}
                           </span>
                           <Button
                             variant="ghost"

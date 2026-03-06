@@ -190,7 +190,7 @@ export function ArSideSheet({ isOpen, onClose, data, type }: ArSideSheetProps) {
                             </div>
                         ) : (
                             accounts?.map((acc: any) => (
-                                <div
+                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     key={acc.id}
                                     onClick={() => setSelectedAccountId(selectedAccountId === acc.id ? null : acc.id)}
                                     className={`p-4 rounded-xl border transition-all cursor-pointer ${selectedAccountId === acc.id

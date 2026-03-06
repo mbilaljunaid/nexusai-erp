@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -96,7 +97,7 @@ export default function InterviewScheduling() {
                                 <div>
                                     <div className="font-medium">{interview.candidateName}</div>
                                     <div className="text-sm text-muted-foreground">
-                                        {new Date(interview.scheduledTime).toLocaleString()}
+                                        {formatDateTime(interview.scheduledTime)}
                                     </div>
                                 </div>
                                 <Badge>{interview.type}</Badge>

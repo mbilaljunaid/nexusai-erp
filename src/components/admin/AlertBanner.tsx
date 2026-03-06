@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import React from 'react';
 import { AlertCircle, AlertTriangle, Info } from 'lucide-react';
 
@@ -57,7 +58,7 @@ export default function AlertBanner({ alert }: AlertBannerProps) {
                         {alert.message}
                     </p>
                     <div className={`mt-1 text-xs ${config.metaColor} flex items-center gap-3`}>
-                        <span>{new Date(alert.timestamp).toLocaleString()}</span>
+                        <span>{formatDateTime(alert.timestamp)}</span>
                         {alert.component && (
                             <>
                                 <span>•</span>

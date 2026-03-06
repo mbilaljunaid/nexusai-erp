@@ -297,7 +297,7 @@ export default function ConstructionContractWorkbench() {
                         ) : (
                             <div className="divide-y">
                                 {contracts.map(contract => (
-                                    <div
+                                    <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         key={contract.id}
                                         className={`p-4 cursor-pointer hover:bg-muted/50 transition-colors ${selectedContractId === contract.id ? "bg-muted border-l-4 border-primary" : ""}`}
                                         onClick={() => setSelectedContractId(contract.id)}

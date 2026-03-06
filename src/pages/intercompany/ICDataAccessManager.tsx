@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -152,7 +153,7 @@ export default function ICDataAccessManager() {
                                 {users.length > 0 && (
                                     <div className="border rounded-md max-h-40 overflow-y-auto">
                                         {users.map((user: any) => (
-                                            <div
+                                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                                 key={user.id}
                                                 className={`p-2 hover:bg-muted cursor-pointer ${selectedUserId === user.id ? "bg-muted" : ""}`}
                                                 onClick={() => {
@@ -247,7 +248,7 @@ export default function ICDataAccessManager() {
                                                 </Badge>
                                             </TableCell>
                                             <TableCell className="text-muted-foreground">
-                                                {new Date(set.createdAt).toLocaleDateString()}
+                                                {formatDate(set.createdAt)}
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <Button

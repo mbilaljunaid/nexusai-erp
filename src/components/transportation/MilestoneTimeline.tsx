@@ -1,3 +1,4 @@
+import { formatDate, formatDateTime } from "@/lib/dateUtils";
 import React from "react";
 import { CheckCircle2, Circle, AlertCircle, Clock, MapPin, Truck } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -51,11 +52,11 @@ export function MilestoneTimeline({ milestones, className }: MilestoneTimelinePr
                                 </h4>
                                 {milestone.actualDate ? (
                                     <span className="text-[10px] text-muted-foreground font-mono">
-                                        {new Date(milestone.actualDate).toLocaleString()}
+                                        {formatDateTime(milestone.actualDate)}
                                     </span>
                                 ) : milestone.plannedDate && (
                                     <span className="text-[10px] text-muted-foreground font-mono italic">
-                                        Planned: {new Date(milestone.plannedDate).toLocaleDateString()}
+                                        Planned: {formatDate(milestone.plannedDate)}
                                     </span>
                                 )}
                             </div>

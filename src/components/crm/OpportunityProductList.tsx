@@ -210,7 +210,7 @@ export function OpportunityProductList({ opportunityId }: OpportunityProductList
                                             <div className="p-4 text-center text-sm text-muted-foreground">No active products found</div>
                                         ) : (
                                             displayProducts.map((item: any) => (
-                                                <div
+                                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                                     key={item.id}
                                                     className="p-2 hover:bg-muted cursor-pointer flex items-center justify-between"
                                                     onClick={() => handleSelect(item)}

@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import React from 'react';
 import { Database, Download, Clock, CheckCircle, AlertTriangle, HardDrive } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -143,7 +144,7 @@ export default function DatabaseBackups() {
                                             <div>
                                                 <div className="font-medium">{backup.name}</div>
                                                 <div className="text-sm text-muted-foreground">
-                                                    {new Date(backup.createdAt).toLocaleString()}
+                                                    {formatDateTime(backup.createdAt)}
                                                 </div>
                                             </div>
                                         </div>

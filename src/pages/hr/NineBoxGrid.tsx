@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 interface NineBoxEntry { employee_id: string; performance: number; potential: number; box_label: string; assessed_by: string; notes: string; }
 
 const BOX_CONFIG: Record<string, { bg: string; border: string; label: string }> = {
@@ -61,7 +63,7 @@ export default function NineBoxGrid() {
             description="Performance × Potential · Cascading goal alignment · GDPR-compliant"
             actions={
                 <div className="flex gap-2">
-                    <input value={period} onChange={e => setPeriod(e.target.value)} placeholder="YYYY" className="px-2.5 py-1.5 border border-gray-300 rounded-[7px] text-xs w-20" aria-label="Year" />
+                    <Input value={period} onChange={e => setPeriod(e.target.value)} placeholder="YYYY" className="h-[30px] rounded-[7px] text-xs w-20" aria-label="Year" />
                     <button onClick={() => setShowAdd(true)} className="px-3 py-1.5 bg-violet-600 text-white border-none rounded-lg text-[11px] font-bold cursor-pointer hover:bg-violet-700">+ Add Assessment</button>
                     <button onClick={() => purgeMut.mutate()} className="px-3 py-1.5 bg-gray-100 text-gray-500 border-none rounded-lg text-[11px] cursor-pointer hover:bg-gray-200" title="GDPR purge expired records">🔒 GDPR Purge</button>
                 </div>
@@ -69,12 +71,12 @@ export default function NineBoxGrid() {
         >
 
             {showAdd && (
-                <div className="bg-purple-50 border border-purple-200 rounded-[10px] p-3.5 mb-4">
+                <Card className="bg-purple-50/50 border-purple-200 p-3.5 mb-4 shadow-sm">
                     <div className="font-bold text-xs mb-2">New Assessment — {period}</div>
                     <div className="grid grid-cols-5 gap-2 mb-2">
                         {[['Employee ID', 'employeeId', 'text'], ['Assessed By', 'assessedBy', 'text']].map(([lbl, key, type]) => (
                             <div key={key}><label className="text-[10px] font-bold block">{lbl}</label>
-                                <input type={type} value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="w-full px-2 py-1 border border-purple-200 rounded-md text-[11px] box-border" aria-label={lbl} />
+                                <Input type={type} value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="w-full h-7 px-2 py-1 border-purple-200 rounded-md text-[11px]" aria-label={lbl} />
                             </div>
                         ))}
                         {[['Performance', 'performance'], ['Potential', 'potential']].map(([lbl, key]) => (
@@ -88,14 +90,14 @@ export default function NineBoxGrid() {
                             </div>
                         ))}
                         <div><label className="text-[10px] font-bold block">Notes</label>
-                            <input value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} className="w-full px-2 py-1 border border-purple-200 rounded-md text-[11px] box-border" aria-label="Notes" />
+                            <Input value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} className="w-full h-7 px-2 py-1 border-purple-200 rounded-md text-[11px]" aria-label="Notes" />
                         </div>
                     </div>
                     <div className="flex gap-1.5 justify-end">
                         <button onClick={() => setShowAdd(false)} className="px-3 py-1 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer hover:bg-gray-300">Cancel</button>
                         <button disabled={!form.employeeId} onClick={() => addMut.mutate({ employeeId: form.employeeId, period, performance: parseInt(form.performance), potential: parseInt(form.potential), assessedBy: form.assessedBy || null, notes: form.notes || null })} className="px-3 py-1 bg-violet-600 text-white border-none rounded-md text-[11px] font-bold cursor-pointer hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed">Save</button>
                     </div>
-                </div>
+                </Card>
             )}
 
             {/* Axis labels */}
@@ -132,7 +134,7 @@ export default function NineBoxGrid() {
             </div>
 
             {/* Summary table */}
-            <div className="mt-5 bg-white border border-gray-200 rounded-xl overflow-hidden h-[400px]">
+            <Card className="mt-5 overflow-hidden h-[400px]">
                 <InteractiveSpreadsheet
                     columns={gridColumns}
                     data={grid}
@@ -140,7 +142,7 @@ export default function NineBoxGrid() {
                     containerHeight="400px"
                 />
                 {grid.length === 0 && <div className="p-6 text-center text-gray-400 border-t border-gray-200">No assessments for {period}</div>}
-            </div>
+            </Card>
         </StandardPage>
     );
 }

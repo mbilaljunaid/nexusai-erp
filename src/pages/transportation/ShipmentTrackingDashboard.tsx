@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -421,13 +422,13 @@ export default function ShipmentTrackingDashboard() {
                                         <div className="space-y-2 text-sm">
                                             <div className="flex justify-between">
                                                 <span className="text-muted-foreground">Created:</span>
-                                                <span>{new Date(alert.createdAt).toLocaleString()}</span>
+                                                <span>{formatDateTime(alert.createdAt)}</span>
                                             </div>
                                             {alert.acknowledgedAt && (
                                                 <div className="flex justify-between">
                                                     <span className="text-muted-foreground">Acknowledged:</span>
                                                     <span className="text-green-600">
-                                                        {new Date(alert.acknowledgedAt).toLocaleString()}
+                                                        {formatDateTime(alert.acknowledgedAt)}
                                                     </span>
                                                 </div>
                                             )}

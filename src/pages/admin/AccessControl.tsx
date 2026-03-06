@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -145,7 +146,7 @@ export default function AccessControl() {
                                     <TableBody>
                                         {auditLogs?.map((log: any) => (
                                             <TableRow key={log.id}>
-                                                <TableCell>{new Date(log.createdAt).toLocaleString()}</TableCell>
+                                                <TableCell>{formatDateTime(log.createdAt)}</TableCell>
                                                 <TableCell>{log.userId}</TableCell>
                                                 <TableCell className="font-mono text-xs">{log.action}</TableCell>
                                                 <TableCell>{log.entityType} ({log.entityId})</TableCell>

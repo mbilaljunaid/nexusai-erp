@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,11 +44,11 @@ export default function Sprints() {
               <div className="grid grid-cols-3 gap-4 text-sm mb-3">
                 <div>
                   <p className="text-muted-foreground">Start</p>
-                  <p className="font-semibold">{sprint.startDate ? new Date(sprint.startDate).toLocaleDateString() : "—"}</p>
+                  <p className="font-semibold">{sprint.startDate ? formatDate(sprint.startDate) : "—"}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">End</p>
-                  <p className="font-semibold">{sprint.endDate ? new Date(sprint.endDate).toLocaleDateString() : "—"}</p>
+                  <p className="font-semibold">{sprint.endDate ? formatDate(sprint.endDate) : "—"}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Velocity</p>

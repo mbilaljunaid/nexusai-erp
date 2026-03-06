@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Plus, Upload } from 'lucide-react';
@@ -89,7 +90,7 @@ export default function CashGrid({ accountId, legalEntityId, onAddTransaction, o
                                 onClick={() => onEditTransaction && onEditTransaction(row)}
                             >
                                 <td className="px-4 py-2 text-slate-900">
-                                    {new Date(row.transactionDate).toLocaleDateString()}
+                                    {formatDate(row.transactionDate)}
                                 </td>
                                 <td className="px-4 py-2 text-slate-600 font-mono text-xs">{row.reference || '-'}</td>
                                 <td className="px-4 py-2 text-slate-700">{row.description || '-'}</td>

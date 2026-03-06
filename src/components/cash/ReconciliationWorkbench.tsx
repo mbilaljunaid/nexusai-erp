@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useState, useMemo } from "react";
 import {
@@ -99,7 +100,7 @@ export function ReconciliationWorkbench({ accountId }: ReconciliationWorkbenchPr
                 <div className="flex flex-col">
                     <span className="font-medium text-sm truncate">{item.description}</span>
                     <span className="text-xs text-muted-foreground flex items-center gap-1">
-                        <Calendar className="w-3 h-3" /> {new Date(item.transactionDate).toLocaleDateString()}
+                        <Calendar className="w-3 h-3" /> {formatDate(item.transactionDate)}
                         {item.referenceNumber && <span className="ml-2">Ref: {item.referenceNumber}</span>}
                     </span>
                 </div>
@@ -137,7 +138,7 @@ export function ReconciliationWorkbench({ accountId }: ReconciliationWorkbenchPr
                         {item.reference || 'No Ref'} <span className="text-xs text-muted-foreground">({item.sourceModule})</span>
                     </span>
                     <span className="text-xs text-muted-foreground flex items-center gap-1">
-                        <Calendar className="w-3 h-3" /> {new Date(item.transactionDate!).toLocaleDateString()}
+                        <Calendar className="w-3 h-3" /> {formatDate(item.transactionDate!)}
                         {item.description && <span className="ml-2 truncate max-w-[150px]">{item.description}</span>}
                     </span>
                 </div>

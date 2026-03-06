@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Plus, Truck } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 interface Shipment {
     id: string;
@@ -84,7 +85,7 @@ export default function ShipmentList() {
                 </Button>
             }
         >
-            <div className="bg-white rounded-md border shadow-sm">
+            <Card className="overflow-hidden shadow-sm">
                 <InteractiveSpreadsheet
                     data={shipments}
                     columns={columns}
@@ -92,7 +93,7 @@ export default function ShipmentList() {
                     virtualized={true}
                     containerHeight="600px"
                 />
-            </div>
+            </Card>
         </StandardPage>
     );
 }

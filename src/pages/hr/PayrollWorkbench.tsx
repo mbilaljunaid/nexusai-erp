@@ -5,6 +5,7 @@ import { EnterpriseContextSwitcher, buildScopeHeaders } from '@/components/enter
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from "@/components/ui/input";
 interface PayrollRun {
     id: string;
     payroll_name: string;
@@ -197,7 +198,7 @@ export default function PayrollWorkbench() {
                         {(['payrollName', 'periodStart', 'periodEnd', 'payDate'] as const).map(field => (
                             <div key={field} className="mf">
                                 <label className="ml" htmlFor={`pr-${field}`}>{field.replace(/([A-Z])/g, ' $1').trim()}</label>
-                                <input id={`pr-${field}`} className="mi" type={field.includes('Date') || field.includes('Start') || field.includes('End') ? 'date' : 'text'} value={createForm[field]} onChange={e => setCreateForm(p => ({ ...p, [field]: e.target.value }))} />
+                                <Input id={`pr-${field}`} className="h-9 px-2.5 text-[13px]" type={field.includes('Date') || field.includes('Start') || field.includes('End') ? 'date' : 'text'} value={createForm[field] as string} onChange={e => setCreateForm(p => ({ ...p, [field]: e.target.value }))} />
                             </div>
                         ))}
                         <div className="mf">

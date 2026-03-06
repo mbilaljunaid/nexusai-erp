@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState, useMemo, useEffect } from 'react';
 import { AlertCircle, MessageSquare, TrendingUp, Clock, CheckCircle, XCircle, Loader2, Plus, User, Tag, Edit, Search, X, RefreshCw, ArrowUp, ArrowDown, ArrowUpDown, Download } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -300,7 +301,7 @@ export default function RequestsIssues() {
             id: 'createdAt',
             header: 'Date',
             width: '120px',
-            cell: (req) => <span>{new Date(req.createdAt).toLocaleDateString()}</span>,
+            cell: (req) => <span>{formatDate(req.createdAt)}</span>,
         },
         {
             id: 'type',

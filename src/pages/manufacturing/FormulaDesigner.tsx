@@ -316,13 +316,13 @@ export default function FormulaDesigner() {
                 </Sheet>
             }
         >
-            <div className="bg-white rounded-lg border shadow-sm">
+            <Card className="rounded-lg shadow-sm overflow-hidden">
                 <InteractiveSpreadsheet
                     data={formulasWithNames}
                     columns={columns}
                     onChange={() => { }} virtualized={true} containerHeight="600px"
                 />
-            </div>
+            </Card>
         </StandardPage>
     );
 }

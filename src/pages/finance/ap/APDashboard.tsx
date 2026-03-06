@@ -215,7 +215,7 @@ export default function APDashboard() {
                     <CardContent>
                         <div className="space-y-3">
                             {recentInvoices?.data?.slice(0, 10).map((invoice: any) => (
-                                <div
+                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     key={invoice.id}
                                     className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent cursor-pointer"
                                     onClick={() => setLocation(`/finance/ap/invoices/${invoice.id}`)}

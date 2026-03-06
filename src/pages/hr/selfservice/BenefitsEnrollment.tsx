@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from "react";
 import { useLocation } from "wouter";
 import { cn } from "@/lib/utils";
@@ -150,7 +151,7 @@ export default function BenefitsEnrollment() {
                                 </CardHeader>
                                 <CardContent>
                                     <div className="text-sm text-zinc-500 space-y-1">
-                                        <p>Ends: {new Date(prog.openEnrollmentEnd).toLocaleDateString()}</p>
+                                        <p>Ends: {formatDate(prog.openEnrollmentEnd)}</p>
                                     </div>
                                 </CardContent>
                                 <CardFooter>
@@ -184,7 +185,7 @@ export default function BenefitsEnrollment() {
                                 </CardHeader>
                                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
                                     {plan.options.map((opt: any) => (
-                                        <div
+                                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                             key={opt.planOptionId}
                                             onClick={() => handleSelectOption(plan.planId, opt.planOptionId)}
                                             className={`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`}
@@ -229,7 +230,7 @@ export default function BenefitsEnrollment() {
                                 </CardHeader>
                                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
                                     {plan.options.map((opt: any) => (
-                                        <div
+                                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                             key={opt.planOptionId}
                                             onClick={() => handleSelectOption(plan.planId, opt.planOptionId)}
                                             className={`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`}
@@ -274,7 +275,7 @@ export default function BenefitsEnrollment() {
                                 </CardHeader>
                                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
                                     {plan.options.map((opt: any) => (
-                                        <div
+                                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                             key={opt.planOptionId}
                                             onClick={() => handleSelectOption(plan.planId, opt.planOptionId)}
                                             className={`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`}

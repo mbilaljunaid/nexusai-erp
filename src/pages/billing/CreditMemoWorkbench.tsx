@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from "react";
 import { PromptDialog } from "@/components/shared/PromptDialog";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -261,7 +262,7 @@ export default function CreditMemoWorkbench() {
                                         { id: "amount", header: "Amount", width: "150px", cell: (item: any) => <div className="p-2 font-bold text-red-600">${Math.abs(parseFloat(item.amount || "0")).toLocaleString()}</div> },
                                         { id: "status", header: "Status", width: "150px", cell: (item: any) => <div className="p-2"><StatusBadge status={item.status} /></div> },
                                         { id: "description", header: "Reason", width: "250px", cell: (item: any) => <div className="p-2">{item.description}</div> },
-                                        { id: "createdAt", header: "Date", width: "150px", cell: (item: any) => <div className="p-2">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "—"}</div> },
+                                        { id: "createdAt", header: "Date", width: "150px", cell: (item: any) => <div className="p-2">{item.createdAt ? formatDate(item.createdAt) : "—"}</div> },
                                         {
                                             id: "actions", header: "Actions", width: "150px", cell: (item: any) => (
                                                 <div className="flex gap-2 p-2">
@@ -300,7 +301,7 @@ export default function CreditMemoWorkbench() {
                                         { id: "sourceTransactionId", header: "Original Invoice", width: "150px", cell: (item: any) => <div className="p-2">{item.sourceTransactionId || "—"}</div> },
                                         { id: "amount", header: "Amount", width: "150px", cell: (item: any) => <div className="p-2 font-bold text-red-600">${Math.abs(parseFloat(item.amount || "0")).toLocaleString()}</div> },
                                         { id: "description", header: "Reason", width: "250px", cell: (item: any) => <div className="p-2">{item.description}</div> },
-                                        { id: "createdAt", header: "Date", width: "150px", cell: (item: any) => <div className="p-2">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "—"}</div> },
+                                        { id: "createdAt", header: "Date", width: "150px", cell: (item: any) => <div className="p-2">{item.createdAt ? formatDate(item.createdAt) : "—"}</div> },
                                         {
                                             id: "actions", header: "Actions", width: "200px", cell: (item: any) => (
                                                 <div className="flex gap-2 p-2">

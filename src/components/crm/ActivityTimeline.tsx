@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -149,7 +150,7 @@ export function ActivityTimeline({ entityType, entityId }: ActivityTimelineProps
                                             <span className="text-muted-foreground text-xs">•</span>
                                             <span className="font-medium text-sm">{interaction.summary}</span>
                                         </div>
-                                        <span className="text-xs text-muted-foreground whitespace-nowrap" title={new Date(interaction.createdAt || "").toLocaleString()}>
+                                        <span className="text-xs text-muted-foreground whitespace-nowrap" title={formatDateTime(interaction.createdAt || "")}>
                                             {interaction.createdAt && formatDistanceToNow(new Date(interaction.createdAt), { addSuffix: true })}
                                         </span>
                                     </div>

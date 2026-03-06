@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 
 import {
     Sheet,
@@ -84,7 +85,7 @@ export function BillingEventDetailSheet({ event, open, onOpenChange }: BillingEv
                             <div className="font-mono text-xs">{event.sourceTransactionId}</div>
 
                             <div className="text-muted-foreground">Created At:</div>
-                            <div className="text-xs">{event.createdAt ? new Date(event.createdAt).toLocaleString() : '-'}</div>
+                            <div className="text-xs">{event.createdAt ? formatDateTime(event.createdAt) : '-'}</div>
 
                             {event.invoiceId && (
                                 <>

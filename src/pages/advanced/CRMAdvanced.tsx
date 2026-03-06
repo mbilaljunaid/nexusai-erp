@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -75,7 +76,7 @@ export default function CRMAdvanced() {
                         <div className="grid grid-cols-3 gap-4 text-sm">
                           <div>Probability: {score.probability}%</div>
                           <div>Next: {score.nextAction || "Review"}</div>
-                          <div>Updated: {score.updatedDate ? new Date(score.updatedDate).toLocaleDateString() : "N/A"}</div>
+                          <div>Updated: {score.updatedDate ? formatDate(score.updatedDate) : "N/A"}</div>
                         </div>
                       </div>
                     </CardContent>

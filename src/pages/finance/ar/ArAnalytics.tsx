@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -136,7 +137,7 @@ export default function ArAnalytics() {
                                                 <p className="text-xs text-muted-foreground">{p.reasoning}</p>
                                             </div>
                                             <div className="text-right">
-                                                <StatusBadge status="info" label={new Date(p.predictedDate).toLocaleDateString()} />
+                                                <StatusBadge status="info" label={formatDate(p.predictedDate)} />
                                                 <p className="text-xs text-slate-500 mt-1">{(p.confidence * 100).toFixed(0)}% Conf.</p>
                                             </div>
                                         </div>

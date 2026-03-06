@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { PromptDialog } from "@/components/shared/PromptDialog";
@@ -137,7 +138,7 @@ export default function ExpenseTracking() {
     {
       header: "Created",
       id: "createdAt", width: "150px",
-      cell: (r) => new Date(r.createdAt).toLocaleDateString()
+      cell: (r) => formatDate(r.createdAt)
     }
   ];
 
@@ -170,7 +171,7 @@ export default function ExpenseTracking() {
     {
       header: "Submitted",
       id: "submittedAt", width: "150px",
-      cell: (r) => r.submittedAt ? new Date(r.submittedAt).toLocaleDateString() :
+      cell: (r) => r.submittedAt ? formatDate(r.submittedAt) :
         <span className="text-muted-foreground">N/A</span>
     },
     {

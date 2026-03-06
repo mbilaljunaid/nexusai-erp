@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -118,7 +119,7 @@ export default function SupplierSourcing() {
                                 <div className="flex items-center gap-8 pr-4">
                                     <div className="text-right">
                                         <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Close Date</p>
-                                        <p className="text-xs font-medium">{rfq.closeDate ? new Date(rfq.closeDate).toLocaleDateString() : 'N/A'}</p>
+                                        <p className="text-xs font-medium">{rfq.closeDate ? formatDate(rfq.closeDate) : 'N/A'}</p>
                                     </div>
                                     <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                                 </div>

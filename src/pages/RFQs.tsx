@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -66,7 +67,7 @@ export default function RFQs() {
                   </div>
                   <div>
                     <p className="text-muted-foreground">Due Date</p>
-                    <p className="font-semibold">{rfq.dueDate ? new Date(rfq.dueDate).toLocaleDateString() : "N/A"}</p>
+                    <p className="font-semibold">{rfq.dueDate ? formatDate(rfq.dueDate) : "N/A"}</p>
                   </div>
                   <div className="col-span-2">
                     <p className="text-muted-foreground">Description</p>

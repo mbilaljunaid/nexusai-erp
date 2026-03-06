@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
@@ -262,7 +263,7 @@ export default function LegalEntitySetup() {
                                         <StatusBadge status={entity.isActive ? 'Active' : 'Inactive'} />
                                     </TableCell>
                                     <TableCell className="text-right text-muted-foreground text-sm">
-                                        {new Date(entity.createdAt).toLocaleDateString()}
+                                        {formatDate(entity.createdAt)}
                                     </TableCell>
                                 </TableRow>
                             ))}

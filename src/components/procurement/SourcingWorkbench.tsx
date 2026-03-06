@@ -1,3 +1,4 @@
+import { formatDate, formatDateTime } from "@/lib/dateUtils";
 
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -142,7 +143,7 @@ export default function SourcingWorkbench() {
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="text-[11px] text-muted-foreground">
-                                        {rfq.closeDate ? new Date(rfq.closeDate).toLocaleDateString() : 'No Limit'}
+                                        {rfq.closeDate ? formatDate(rfq.closeDate) : 'No Limit'}
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <Button variant="ghost" size="sm" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -272,7 +273,7 @@ export default function SourcingWorkbench() {
                                         </div>
                                         <div className="flex flex-col gap-1">
                                             <span className="text-[10px] text-muted-foreground flex items-center gap-1"><Calendar className="w-3 h-3" /> Closing</span>
-                                            <span className="text-sm font-medium">{selectedRFQ?.closeDate ? new Date(selectedRFQ.closeDate).toLocaleDateString() : 'OPEN'}</span>
+                                            <span className="text-sm font-medium">{selectedRFQ?.closeDate ? formatDate(selectedRFQ.closeDate) : 'OPEN'}</span>
                                         </div>
                                         <div className="flex flex-col gap-1">
                                             <span className="text-[10px] text-muted-foreground">Total Bids</span>
@@ -327,7 +328,7 @@ export default function SourcingWorkbench() {
                                                                 <h4 className="text-sm font-bold">Supplier: {bid.supplierId}</h4>
                                                                 {bid.bidStatus === 'AWARDED' && <Trophy className="w-4 h-4 text-primary" />}
                                                             </div>
-                                                            <p className="text-[10px] text-muted-foreground">Submitted: {new Date(bid.submissionDate).toLocaleString()}</p>
+                                                            <p className="text-[10px] text-muted-foreground">Submitted: {formatDateTime(bid.submissionDate)}</p>
                                                         </div>
                                                         <div className="text-right">
                                                             <p className="text-lg font-bold text-primary">${bid.totalBidAmount.toLocaleString()}</p>

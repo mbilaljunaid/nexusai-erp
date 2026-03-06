@@ -260,13 +260,13 @@ export default function RecipeManager() {
                 </Sheet>
             }
         >
-            <div className="bg-white rounded-lg border shadow-sm">
+            <Card className="rounded-lg shadow-sm overflow-hidden">
                 <InteractiveSpreadsheet
                     data={recipes}
                     columns={columns}
                     onChange={() => { }} virtualized={true} containerHeight="600px"
                 />
-            </div>
+            </Card>
         </StandardPage>
     );
 }

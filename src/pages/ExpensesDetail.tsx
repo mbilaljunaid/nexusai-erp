@@ -1,3 +1,4 @@
+import { formatDate, formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -323,7 +324,7 @@ export default function ExpensesDetail() {
     {
       header: "Date",
       id: "date", width: "150px",
-      cell: (line) => new Date(line.date).toLocaleDateString()
+      cell: (line) => formatDate(line.date)
     },
     {
       header: "Category",
@@ -428,7 +429,7 @@ export default function ExpensesDetail() {
             <CardTitle className="text-sm font-medium text-muted-foreground">Created</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm">{new Date(report.createdAt).toLocaleDateString()}</p>
+            <p className="text-sm">{formatDate(report.createdAt)}</p>
           </CardContent>
         </Card>
         <Card>
@@ -533,7 +534,7 @@ export default function ExpensesDetail() {
                 <div className="flex-1">
                   <p className="font-medium text-sm">{event.action}</p>
                   <p className="text-xs text-muted-foreground">
-                    {new Date(event.timestamp).toLocaleString()} by {event.actor}
+                    {formatDateTime(event.timestamp)} by {event.actor}
                   </p>
                   {event.comments && (
                     <p className="text-sm mt-1 text-muted-foreground italic">&ldquo;{event.comments}&rdquo;</p>

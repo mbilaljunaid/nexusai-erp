@@ -374,7 +374,7 @@ export default function CashManagementDashboard() {
                                             </p>
                                             <p className="text-xs text-muted-foreground">
                                                 Last reconciled: {account.lastReconciledDate
-                                                    ? new Date(account.lastReconciledDate).toLocaleDateString()
+                                                    ? formatDate(account.lastReconciledDate)
                                                     : "Never"
                                                 }
                                             </p>

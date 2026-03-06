@@ -1,10 +1,11 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { HardHat, AlertTriangle, Clock, CheckCircle2 } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-
+import { Card } from "@/components/ui/card";
 
 interface Permit { id: string; permit_number: string; permit_type: string; asset_id: string; location: string; description: string; status: string; requested_by: string; approved_by: string; contractor: string; start_datetime: string; end_datetime: string; events: PEvent[]; }
 interface PEvent { at: string; by: string; action: string; note: string; }
@@ -54,10 +55,10 @@ export default function PermitToWork() {
             {/* KPI row */}
             <div className="flex gap-2.5 mb-3.5">
                 {[{ lbl: 'Active', val: active, clr: '#059669' }, { lbl: 'Pending Approval', val: pending, clr: '#d97706' }, { lbl: 'Expiring 24h', val: expiring.length, clr: '#f59e0b' }, { lbl: 'CBM Alerts', val: cbmAlerts.length, clr: '#dc2626' }].map(k => (
-                    <div key={k.lbl} className="bg-white border border-gray-200 rounded-xl px-4 py-2.5 min-w-[100px]">
+                    <Card key={k.lbl} className="px-4 py-2.5 min-w-[100px] shadow-sm">
                         <div className="text-xl font-extrabold" style={{ color: k.clr }}>{k.val}</div>
                         <div className="text-[10px] text-gray-400">{k.lbl}</div>
-                    </div>
+                    </Card>
                 ))}
             </div>
 
@@ -78,7 +79,7 @@ export default function PermitToWork() {
             )}
 
             {showNew && (
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-3.5 mb-3">
+                <Card className="p-3.5 mb-3 bg-slate-50/50 shadow-sm border-gray-200">
                     <div className="font-bold text-xs mb-2">Create Permit</div>
                     <div className="grid grid-cols-4 gap-2 mb-2">
                         <div className="flex flex-col gap-0.5">
@@ -107,7 +108,7 @@ export default function PermitToWork() {
                         <button onClick={() => setShowNew(false)} className="px-3 py-1 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
                         <button disabled={!form.requestedBy} onClick={() => createMut.mutate(form)} className="px-3 py-1 bg-red-600 text-white border-none rounded-md text-[11px] font-bold cursor-pointer disabled:opacity-50">Create</button>
                     </div>
-                </div>
+                </Card>
             )}
 
             <div className="flex gap-1.5 mb-2.5">
@@ -123,7 +124,8 @@ export default function PermitToWork() {
                         const tclr = TYPE_CLR[p.permit_type] ?? '#6b7280';
                         const hrs = hoursLeft(p);
                         return (
-                            <div key={p.id} onClick={() => setSelected(selected?.id === p.id ? null : p)} className="bg-white rounded-xl px-3.5 py-2.5 mb-1.5 cursor-pointer" style={{ border: `1px solid ${selected?.id === p.id ? '#dc2626' : '#e5e7eb'}`, borderLeft: `4px solid ${tclr}` }}>
+                            <Card key={p.id} onClick={() => setSelected(selected?.id === p.id ? null : p)} className="px-3.5 py-2.5 mb-1.5 cursor-pointer shadow-sm relative overflow-hidden" style={{ border: `1px solid ${selected?.id === p.id ? '#dc2626' : '#e5e7eb'}` }}>
+                                <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: tclr }}></div>
                                 <div className="flex justify-between mb-0.5">
                                     <div className="flex gap-1.5 items-center">
                                         <HardHat size={12} color={tclr} />
@@ -139,22 +141,22 @@ export default function PermitToWork() {
                                         {(ACTIONS[p.status] ?? []).map(a => <button key={a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: p.id, action: a }); }} className={`px-1.5 py-px border-none rounded text-[9px] cursor-pointer font-bold ${a === 'APPROVE' || a === 'RESUME' || a === 'ISSUE' ? 'bg-blue-50 text-blue-700' : 'bg-red-50 text-red-600'}`}>{a}</button>)}
                                     </div>
                                 )}
-                            </div>
+                            </Card>
                         );
                     })}
                     {permits.length === 0 && <div className="text-center text-gray-400 p-8 bg-white rounded-xl">No permits</div>}
                 </div>
 
                 {selected && (
-                    <div className="w-[260px] shrink-0 bg-white border border-gray-200 rounded-xl p-3.5">
+                    <Card className="w-[260px] shrink-0 p-3.5 shadow-sm">
                         <div className="font-bold text-[13px] mb-2">{selected.permit_number}</div>
                         <div className="text-[10px] leading-[1.8] text-gray-700">
                             <strong>Type:</strong> {selected.permit_type}<br />
                             <strong>Asset:</strong> {selected.asset_id ?? '—'}<br />
                             <strong>Location:</strong> {selected.location ?? '—'}<br />
                             <strong>Contractor:</strong> {selected.contractor ?? '—'}<br />
-                            <strong>Start:</strong> {selected.start_datetime ? new Date(selected.start_datetime).toLocaleString() : '—'}<br />
-                            <strong>End:</strong> {selected.end_datetime ? new Date(selected.end_datetime).toLocaleString() : '—'}
+                            <strong>Start:</strong> {selected.start_datetime ? formatDateTime(selected.start_datetime) : '—'}<br />
+                            <strong>End:</strong> {selected.end_datetime ? formatDateTime(selected.end_datetime) : '—'}
                         </div>
                         <div className="mt-2.5 text-[11px] font-bold mb-1.5">Event Log</div>
                         <div className="max-h-[200px] overflow-y-auto flex flex-col gap-1">
@@ -162,11 +164,11 @@ export default function PermitToWork() {
                                 <div key={i} className="text-[9px] border-l-2 border-gray-200 pl-1.5">
                                     <div className="font-bold text-gray-500">{ev.action} · {ev.by}</div>
                                     <div className="text-gray-700">{ev.note}</div>
-                                    <div className="text-gray-400">{new Date(ev.at).toLocaleString()}</div>
+                                    <div className="text-gray-400">{formatDateTime(ev.at)}</div>
                                 </div>
                             ))}
                         </div>
-                    </div>
+                    </Card>
                 )}
             </div>
         </StandardPage>

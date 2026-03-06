@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { GitMerge, ChevronRight, AlertTriangle } from 'lucide-react';
@@ -13,7 +14,7 @@ const STATUS_CFG: Record<string, string> = {
     Active: 'bg-emerald-100 text-emerald-600', Consumed: 'bg-gray-100 text-gray-500',
     Quarantine: 'bg-red-100 text-red-600', Scrapped: 'bg-amber-100 text-amber-600', Expired: 'bg-gray-100 text-gray-400',
 };
-function fmtDate(d: string) { return d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'; }
+function fmtDate(d: string) { return d ? formatDate(d) : '—'; }
 
 export default function LotGenealogy() {
     const [selected, setSelected] = useState<Lot | null>(null);
@@ -150,7 +151,7 @@ export default function LotGenealogy() {
                             {(selected.trace_events ?? []).slice(-5).reverse().map((ev: any, i: number) => (
                                 <div key={i} className="flex gap-1.5 text-[9px] items-center py-1 px-1.5 bg-gray-50 rounded">
                                     <span className="py-0.5 px-1 rounded-sm bg-gray-900 text-white text-[8px]">{ev.event}</span>
-                                    <span className="text-gray-500">{new Date(ev.at).toLocaleDateString()}</span>
+                                    <span className="text-gray-500">{formatDate(ev.at)}</span>
                                     {ev.qty && <span className="font-mono">{ev.qty}</span>}
                                 </div>
                             ))}

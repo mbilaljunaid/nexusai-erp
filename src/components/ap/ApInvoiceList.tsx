@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -80,12 +81,12 @@ export function ApInvoiceList(props: { statusFilter?: string }) {
         {
             accessorKey: "invoiceDate",
             header: "Invoice Date",
-            cell: (item) => <span>{new Date(item.invoiceDate).toLocaleDateString()}</span>
+            cell: (item) => <span>{formatDate(item.invoiceDate)}</span>
         },
         {
             accessorKey: "dueDate",
             header: "Due Date",
-            cell: (item) => <span className="text-red-500">{item.dueDate ? new Date(item.dueDate).toLocaleDateString() : 'N/A'}</span>
+            cell: (item) => <span className="text-red-500">{item.dueDate ? formatDate(item.dueDate) : 'N/A'}</span>
         },
         {
             accessorKey: "invoiceStatus",

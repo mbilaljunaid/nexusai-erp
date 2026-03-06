@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -105,7 +106,7 @@ export default function TrialPlanManagementDashboard() {
                                         <div>
                                             <div className="font-medium">{trial.email}</div>
                                             <div className="text-sm text-gray-500">
-                                                Started: {new Date(trial.trial_started_at).toLocaleDateString()}
+                                                Started: {formatDate(trial.trial_started_at)}
                                             </div>
                                         </div>
                                         <Badge>{trial.status}</Badge>

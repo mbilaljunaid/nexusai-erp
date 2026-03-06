@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState, useRef } from 'react';
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -219,7 +220,7 @@ export default function LockboxWorkbench() {
                             return (
                                 <div key={b.id} className={`batch-card ${selectedBatch?.id === b.id ? 'selected' : ''}`} role="button" tabIndex={0} onClick={() => setSelectedBatch(b)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedBatch(b); } }}>
                                     <div className="bc-top">
-                                        <span className="bc-date mono">{new Date(b.batch_date).toLocaleDateString()}</span>
+                                        <span className="bc-date mono">{formatDate(b.batch_date)}</span>
                                         <span className={`bc-status ${cfg.bg} ${cfg.color}`}>{b.status}</span>
                                     </div>
                                     <div className="bc-meta">{b.item_count} items · {fmt(b.total_amount)}</div>
@@ -235,7 +236,7 @@ export default function LockboxWorkbench() {
                     {selectedBatch ? (
                         <>
                             <div className="item-header">
-                                <div className="ih-title">Batch: {new Date(selectedBatch.batch_date).toLocaleDateString()} — {selectedBatch.item_count} items</div>
+                                <div className="ih-title">Batch: {formatDate(selectedBatch.batch_date)} — {selectedBatch.item_count} items</div>
                                 <div className="ih-stats">
                                     <span className="green"><CheckCircle2 size={12} /> {matched} matched</span>
                                     <span className="orange"><AlertCircle size={12} /> {unmatched} unmatched</span>

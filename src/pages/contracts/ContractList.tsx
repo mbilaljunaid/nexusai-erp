@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -44,7 +45,7 @@ export default function ContractWorkbench() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          
+
           <p className="text-muted-foreground">Central Repository for Procurement, Sales, and Legal Agreements</p>
         </div>
         <Link href="/contracts/new">
@@ -75,7 +76,7 @@ export default function ContractWorkbench() {
       </div>
 
       {/* Toolbar */}
-      <div className="flex gap-4 p-4 bg-white rounded-lg border shadow-sm">
+      <Card className="flex gap-4 p-4 shadow-sm mb-4">
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
@@ -97,7 +98,7 @@ export default function ContractWorkbench() {
             <SelectItem value="EXPIRED">Expired</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+      </Card>
 
       {/* Grid */}
       <Card>
@@ -141,7 +142,7 @@ export default function ContractWorkbench() {
                     {c.title}
                   </TableCell>
                   <TableCell>{c.contractType}</TableCell>
-                  <TableCell>{new Date(c.startDate).toLocaleDateString()}</TableCell>
+                  <TableCell>{formatDate(c.startDate)}</TableCell>
                   <TableCell>
                     {c.totalAmount ?
                       new Intl.NumberFormat('en-US', { style: 'currency', currency: c.currency || 'USD' }).format(Number(c.totalAmount))

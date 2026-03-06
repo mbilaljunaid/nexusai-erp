@@ -18,6 +18,7 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 import { AuditDetailsSideSheet } from "@/components/compliance/AuditDetailsSideSheet";
 
 interface AuditLog {
@@ -152,7 +153,7 @@ export default function AuditTrails() {
         />
       </div>
 
-      <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+      <Card className="overflow-hidden">
         <div className="p-4 border-b bg-muted/30 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <h3 className="font-bold text-slate-700 italic">Audit Ledger</h3>
@@ -179,7 +180,7 @@ export default function AuditTrails() {
             onChange={() => { }}
           />
         )}
-      </div>
+      </Card>
 
       <AuditDetailsSideSheet
         entry={selectedEntry}

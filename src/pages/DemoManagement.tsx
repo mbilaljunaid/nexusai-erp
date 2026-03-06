@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -208,7 +209,7 @@ export default function DemoManagement() {
                           <div className="flex-1">
                             <h3 className="font-bold text-lg">{demo.industry}</h3>
                             <p className="text-sm text-muted-foreground" >ID: {demo.id}</p>
-                            <p className="text-sm text-muted-foreground" >Created: {new Date(demo.createdAt).toLocaleDateString()}</p>
+                            <p className="text-sm text-muted-foreground" >Created: {formatDate(demo.createdAt)}</p>
                             <div className="mt-3 flex gap-2">
                               <span className={`px-3 py-1 rounded text-xs font-semibold ${demo.status === "active" ? "bg-green-600/20 text-green-300" : "bg-slate-600/20 text-slate-300"
                                 }`}>

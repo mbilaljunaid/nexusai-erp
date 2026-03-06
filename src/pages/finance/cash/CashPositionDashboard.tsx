@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -164,11 +165,11 @@ export default function CashPositionDashboard() {
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis
                                     dataKey="date"
-                                    tickFormatter={(date) => new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                    tickFormatter={(date) => formatDate(date)}
                                 />
                                 <YAxis tickFormatter={(value: number) => formatCurrency(value)} />
                                 <Tooltip
-                                    labelFormatter={(date) => new Date(date).toLocaleDateString()}
+                                    labelFormatter={(date) => formatDate(date)}
                                     formatter={(value: number) => formatCurrency(value)}
                                 />
                                 <Legend />

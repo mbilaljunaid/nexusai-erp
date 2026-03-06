@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -70,7 +71,7 @@ export default function PurchaseOrders() {
                   </div>
                   <div>
                     <p className="text-muted-foreground">Delivery Date</p>
-                    <p className="font-semibold">{po.deliveryDate ? new Date(po.deliveryDate).toLocaleDateString() : "N/A"}</p>
+                    <p className="font-semibold">{po.deliveryDate ? formatDate(po.deliveryDate) : "N/A"}</p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">Payment Terms</p>

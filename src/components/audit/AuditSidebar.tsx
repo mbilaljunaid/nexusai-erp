@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import React from "react";
 import {
     Sheet,
@@ -64,7 +65,7 @@ export function AuditSidebar({
                                                 {event.action.replace(/_/g, " ")}
                                             </span>
                                             <span className="text-xs text-muted-foreground tabular-nums">
-                                                {new Date(event.timestamp).toLocaleString()}
+                                                {formatDateTime(event.timestamp)}
                                             </span>
                                         </div>
 

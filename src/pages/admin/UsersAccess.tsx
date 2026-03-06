@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { Users, Shield, Search, Plus, Edit, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -42,7 +43,7 @@ export default function UsersAccess() {
                 </Badge>
             )
         },
-        { id: "lastActive", header: "Last Active", width: "150px", cell: (item) => <span className="text-sm text-muted-foreground">{new Date(item.lastActive).toLocaleDateString()}</span> },
+        { id: "lastActive", header: "Last Active", width: "150px", cell: (item) => <span className="text-sm text-muted-foreground">{formatDate(item.lastActive)}</span> },
         {
             id: "actions", header: "Actions", width: "120px", cell: () => (
                 <div className="flex items-center justify-end gap-2 pr-2 w-full">

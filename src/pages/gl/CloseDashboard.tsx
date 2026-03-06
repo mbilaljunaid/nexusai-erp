@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -80,7 +81,7 @@ export default function CloseDashboard() {
         id: s.applicationId,
         name: s.applicationId,
         status: s.status,
-        message: `Last updated: ${new Date(s.updatedAt).toLocaleDateString()}`
+        message: `Last updated: ${formatDate(s.updatedAt)}`
     }));
 
     if (!graphStatuses.find((s: any) => s.id === 'GL')) {
@@ -319,7 +320,7 @@ export default function CloseDashboard() {
                                                 <h3 className={`font-semibold ${t.status === 'COMPLETED' ? 'line-through text-muted-foreground' : ''}`}>{t.taskName}</h3>
                                                 <Badge variant="outline">{t.status}</Badge>
                                             </div>
-                                            <p className="text-sm text-muted-foreground">{t.description} • Due: {new Date(t.dueDate).toLocaleDateString()}</p>
+                                            <p className="text-sm text-muted-foreground">{t.description} • Due: {formatDate(t.dueDate)}</p>
                                         </div>
                                         <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                             {t.status !== "COMPLETED" && (

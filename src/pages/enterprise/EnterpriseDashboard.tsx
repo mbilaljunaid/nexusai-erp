@@ -91,45 +91,45 @@ export default function EnterpriseDashboard() {
                         <CardDescription>Core structural components and their scoping boundaries</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="flex items-start gap-4 p-4 bg-white rounded-lg border">
+                        <Card className="flex items-start gap-4 p-4 shadow-none">
                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-100 text-indigo-700 font-bold shrink-0">GL</div>
                             <div>
                                 <h4 className="font-semibold">Ledger</h4>
                                 <p className="text-sm text-muted-foreground mt-1">The ultimate financial repository. Defines the 4 Cs (Chart of Accounts, Currency, Calendar, Convention).</p>
                             </div>
-                        </div>
+                        </Card>
 
-                        <div className="flex items-start gap-4 p-4 bg-white rounded-lg border">
+                        <Card className="flex items-start gap-4 p-4 shadow-none">
                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-700 font-bold shrink-0">LE</div>
                             <div>
                                 <h4 className="font-semibold">Legal Entity</h4>
                                 <p className="text-sm text-muted-foreground mt-1">A recognized legal body. Generally mapped to a Ledger. Owns the tax, HR/Payroll, and statutory reporting obligations.</p>
                             </div>
-                        </div>
+                        </Card>
 
-                        <div className="flex items-start gap-4 p-4 bg-white rounded-lg border">
+                        <Card className="flex items-start gap-4 p-4 shadow-none">
                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100 text-green-700 font-bold shrink-0">BU</div>
                             <div>
                                 <h4 className="font-semibold">Business Unit</h4>
                                 <p className="text-sm text-muted-foreground mt-1">(Formerly Operating Unit). Scopes subledger financial transactions (AP, AR, Procurement, Order Management). A BU processes transactions and posts the financial impact to a specific Primary Ledger. A BU is usually associated with a Primary Legal Entity.</p>
                             </div>
-                        </div>
+                        </Card>
 
-                        <div className="flex items-start gap-4 p-4 bg-white rounded-lg border">
+                        <Card className="flex items-start gap-4 p-4 shadow-none">
                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100 text-orange-700 font-bold shrink-0">INV</div>
                             <div>
                                 <h4 className="font-semibold">Inventory Organization</h4>
                                 <p className="text-sm text-muted-foreground mt-1">Scopes physical material, manufacturing, and supply chain operations. Rolls up to a BU (for financial tracking) and a Ledger.</p>
                             </div>
-                        </div>
+                        </Card>
 
-                        <div className="flex items-start gap-4 p-4 bg-white rounded-lg border">
+                        <Card className="flex items-start gap-4 p-4 shadow-none">
                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100 text-purple-700 font-bold shrink-0">REF</div>
                             <div>
                                 <h4 className="font-semibold">Reference Data Set (SetID)</h4>
                                 <p className="text-sm text-muted-foreground mt-1">Used to share master data (like Customer or Supplier definitions) across multiple BUs.</p>
                             </div>
-                        </div>
+                        </Card>
                     </CardContent>
                 </Card>
             </div>

@@ -121,7 +121,7 @@ export default function PaymentTermsMaster() {
                                 ].map(([key, label, type, ph]) => (
                                     <div key={key} className="ff">
                                         <label className="fl">{label}</label>
-                                        <input className="fi" type={type as string} placeholder={ph as string}
+                                        <Input className="h-9 text-[12px]" type={type as string} placeholder={ph as string}
                                             value={(newTerm as any)[key as string] ?? ''}
                                             onChange={e => setNewTerm(p => ({ ...p, [key as string]: type === 'number' ? parseFloat(e.target.value) || 0 : e.target.value }))}
                                             aria-label={label as string} />

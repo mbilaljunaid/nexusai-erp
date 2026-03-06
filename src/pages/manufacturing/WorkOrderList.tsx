@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
@@ -182,7 +183,7 @@ export default function WorkOrderList() {
             id: "scheduledDate",
             header: "Scheduled",
             width: "150px",
-            cell: (row: any) => <div className="p-2">{row.scheduledDate ? new Date(row.scheduledDate).toLocaleDateString() : '-'}</div>
+            cell: (row: any) => <div className="p-2">{row.scheduledDate ? formatDate(row.scheduledDate) : '-'}</div>
         },
         {
             id: "actions",

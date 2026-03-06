@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
@@ -121,7 +122,7 @@ export default function CampaignDashboard() {
                                             </Badge>
                                         </TableCell>
                                         <TableCell>${Number(c.budgetedCost).toLocaleString()}</TableCell>
-                                        <TableCell>{new Date(c.createdAt).toLocaleDateString()}</TableCell>
+                                        <TableCell>{formatDate(c.createdAt)}</TableCell>
                                         <TableCell className="text-right">
                                             <Link href={`/crm/campaigns/${c.id}`}>
                                                 <Button variant="ghost" size="sm">View Stats</Button>

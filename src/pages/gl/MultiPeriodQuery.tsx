@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -115,7 +116,7 @@ export default function MultiPeriodQuery() {
                 <div className="text-right w-full">
                     <div>{period.name}</div>
                     <div className="text-xs font-normal text-muted-foreground mr-1">
-                        {new Date(period.startDate).toLocaleDateString()}
+                        {formatDate(period.startDate)}
                     </div>
                 </div>
             ) as any,

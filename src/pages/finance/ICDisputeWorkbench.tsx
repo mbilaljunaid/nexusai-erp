@@ -1,3 +1,4 @@
+import { formatDate, formatDateTime } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, MessageSquare, CheckCircle2 } from 'lucide-react';
@@ -50,7 +51,7 @@ export default function ICDisputeWorkbench() {
         { id: "reason", header: "Reason", width: "120px", cell: (row) => <div className="ic-col-reason">{row.reason}</div> },
         { id: "amount", header: "Amount", width: "120px", cell: (row) => <div className="font-mono">{row.disputed_amount ? `$${Number(row.disputed_amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}` : '—'}</div> },
         { id: "status", header: "Status", width: "100px", cell: (row) => { const clrClass = STATUS_CFG[row.status] ?? 'text-gray-500 bg-gray-50'; return <span className={`ic-stat-badge ${clrClass}`}>{row.status}</span>; } },
-        { id: "opened_at", header: "Opened", width: "100px", cell: (row) => <div className="ic-col-date">{new Date(row.opened_at).toLocaleDateString()}</div> },
+        { id: "opened_at", header: "Opened", width: "100px", cell: (row) => <div className="ic-col-date">{formatDate(row.opened_at)}</div> },
         { id: "actions", header: "Actions", width: "200px", cell: (row) => <div className="ic-act-btns"><button onClick={(ev) => { ev.stopPropagation(); setSelected(selected?.id === row.id ? null : row); }} className="ic-btn-view">{selected?.id === row.id ? 'Unselect' : 'View'}</button>{row.status !== 'Resolved' && row.status !== 'Closed' && <><button onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'REVIEW', note: 'Under review' }); }} className="ic-btn-review">Review</button><button onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'ESCALATE', note: 'Escalated for management review' }); }} className="ic-btn-escalate">Escalate</button></>}</div> }
     ];
 
@@ -173,7 +174,7 @@ export default function ICDisputeWorkbench() {
                                 <div key={i} className="ic-evt-row">
                                     <MessageSquare size={10} className="ic-evt-icon" />
                                     <div>
-                                        <div className="ic-evt-hdr">{ev.action} · {ev.by} · {new Date(ev.at).toLocaleString()}</div>
+                                        <div className="ic-evt-hdr">{ev.action} · {ev.by} · {formatDateTime(ev.at)}</div>
                                         <div className="ic-evt-note">{ev.note}</div>
                                     </div>
                                 </div>

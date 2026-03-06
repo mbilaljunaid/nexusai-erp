@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -423,7 +424,7 @@ export default function LearningManagement() {
                     <div className="flex-1">
                       <h3 className="font-semibold text-lg">{enrollment.courseTitle}</h3>
                       <div className="flex gap-4 text-sm text-muted-foreground mt-1">
-                        <span>{new Date(enrollment.startDate).toLocaleDateString()}</span>
+                        <span>{formatDate(enrollment.startDate)}</span>
                         <span>•</span>
                         <span>{enrollment.type}</span>
                       </div>

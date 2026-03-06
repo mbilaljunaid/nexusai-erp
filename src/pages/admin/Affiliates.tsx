@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useMemo, useState, useEffect } from 'react';
 import { Users, DollarSign, TrendingUp, Link2, Award, BarChart3, Loader2, Plus, Target, Edit, Search, X, ArrowUp, ArrowDown, ArrowUpDown, Download } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -446,7 +447,7 @@ export default function Affiliates() {
                                                 <DollarSign className="w-5 h-5 text-muted-foreground" />
                                                 <div>
                                                     <div className="font-medium">{payment.affiliate}</div>
-                                                    <div className="text-sm text-muted-foreground">Due: {new Date(payment.date).toLocaleDateString()}</div>
+                                                    <div className="text-sm text-muted-foreground">Due: {formatDate(payment.date)}</div>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-3">

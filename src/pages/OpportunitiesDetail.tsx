@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
@@ -344,7 +345,7 @@ export default function OpportunitiesDetail() {
                 id: "closeDate",
                 header: "Close Date",
                 width: "150px",
-                cell: (opp: any) => <div className="p-2">{opp.closeDate ? new Date(opp.closeDate).toLocaleDateString() : '-'}</div>
+                cell: (opp: any) => <div className="p-2">{opp.closeDate ? formatDate(opp.closeDate) : '-'}</div>
               },
               {
                 id: "actions",
@@ -471,7 +472,7 @@ export default function OpportunitiesDetail() {
                       </div>
                       <div>
                         <p className="text-muted-foreground">Close Date</p>
-                        <p className="font-medium">{selectedOpp.closeDate ? new Date(selectedOpp.closeDate).toLocaleDateString() : 'None'}</p>
+                        <p className="font-medium">{selectedOpp.closeDate ? formatDate(selectedOpp.closeDate) : 'None'}</p>
                       </div>
                       <div>
                         <p className="text-muted-foreground">Owner</p>

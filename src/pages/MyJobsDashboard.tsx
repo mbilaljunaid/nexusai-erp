@@ -134,7 +134,7 @@ export default function MyJobsDashboard() {
   };
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return formatDate(dateStr);
   };
 
   const openJobs = myJobs?.filter(j => j.status === "open") || [];
@@ -208,7 +208,7 @@ export default function MyJobsDashboard() {
             ) : (
               <div className="space-y-3">
                 {myJobs.map(job => (
-                  <div
+                  <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                     key={job.id}
                     className={`p-4 border rounded-lg cursor-pointer hover-elevate ${selectedJob?.id === job.id ? 'border-primary bg-muted/50' : ''}`}
                     onClick={() => setSelectedJob(job)}

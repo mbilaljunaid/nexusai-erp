@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
@@ -50,7 +51,7 @@ export default function TimeAttendance() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-semibold">{entry.employeeId}</h4>
-                    <p className="text-sm text-muted-foreground">{new Date(entry.entryDate).toLocaleDateString()}</p>
+                    <p className="text-sm text-muted-foreground">{formatDate(entry.entryDate)}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-lg font-bold">{entry.hoursWorked}h</p>

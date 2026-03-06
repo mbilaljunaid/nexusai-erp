@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -311,11 +312,11 @@ export default function SubscriptionLifecycleManager() {
                             },
                             {
                                 id: "startDate", header: "Start Date", width: "150px",
-                                cell: (item: any) => <div className="p-2">{new Date(item.startDate).toLocaleDateString()}</div>,
+                                cell: (item: any) => <div className="p-2">{formatDate(item.startDate)}</div>,
                             },
                             {
                                 id: "endDate", header: "End Date", width: "150px",
-                                cell: (item: any) => <div className="p-2">{item.endDate ? new Date(item.endDate).toLocaleDateString() : "—"}</div>,
+                                cell: (item: any) => <div className="p-2">{item.endDate ? formatDate(item.endDate) : "—"}</div>,
                             },
                             {
                                 id: "actions", header: "Actions", width: "200px",

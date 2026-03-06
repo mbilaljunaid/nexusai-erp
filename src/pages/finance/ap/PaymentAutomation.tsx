@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { CreditCard, Play } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function PaymentAutomation() {
     const { toast } = useToast();
@@ -48,14 +49,14 @@ export default function PaymentAutomation() {
                         </Select>
                     </div>
                     <div className="flex items-center gap-2">
-                        <input type="checkbox" id="earlyPay" defaultChecked />
-                        <label htmlFor="earlyPay" className="text-sm">
+                        <Checkbox id="earlyPay" defaultChecked />
+                        <label htmlFor="earlyPay" className="text-sm cursor-pointer leading-none">
                             Enable Early Payment Discounts
                         </label>
                     </div>
                     <div className="flex items-center gap-2">
-                        <input type="checkbox" id="batchOptimize" defaultChecked />
-                        <label htmlFor="batchOptimize" className="text-sm">
+                        <Checkbox id="batchOptimize" defaultChecked />
+                        <label htmlFor="batchOptimize" className="text-sm cursor-pointer leading-none">
                             Batch Optimization (Group payments to same vendor)
                         </label>
                     </div>

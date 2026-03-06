@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -111,7 +112,7 @@ export function MyConsents({ personId }: { personId?: string }) {
                                 <div key={ack.id} className="flex items-center justify-between text-sm p-2 bg-slate-50 rounded">
                                     <span className="text-muted-foreground">{ack.policyCode} ({ack.consentVersion})</span>
                                     <Badge variant="outline" className="gap-1 bg-green-50 text-green-700 border-green-200">
-                                        <CheckCircle className="h-3 w-3" /> {new Date(ack.acknowledgedAt).toLocaleDateString()}
+                                        <CheckCircle className="h-3 w-3" /> {formatDate(ack.acknowledgedAt)}
                                     </Badge>
                                 </div>
                             ))

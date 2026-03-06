@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -132,7 +133,7 @@ export default function RevenueContractWorkbench() {
         {
             header: "Created",
             id: "createdAt", width: "150px",
-            cell: (item) => item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "-"
+            cell: (item) => item.createdAt ? formatDate(item.createdAt) : "-"
         },
         {
             header: "Actions",

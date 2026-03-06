@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -65,7 +66,7 @@ export function OpportunityQuoteList({ opportunityId }: OpportunityQuoteListProp
                                         <h4 className="font-semibold text-sm">{quote.name}</h4>
                                         <div className="text-xs text-muted-foreground flex items-center gap-2">
                                             <span>#{quote.quoteNumber?.slice(0, 8) || 'DRAFT'}</span>
-                                            <span>• {new Date(quote.createdAt || new Date()).toLocaleDateString()}</span>
+                                            <span>• {formatDate(quote.createdAt || new Date())}</span>
                                         </div>
                                     </div>
                                 </div>

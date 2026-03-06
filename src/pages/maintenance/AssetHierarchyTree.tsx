@@ -21,7 +21,7 @@ const TreeNode = ({ node, level = 0 }: { node: AssetNode, level?: number }) => {
 
     return (
         <div className="select-none">
-            <div
+            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                 className={`flex items-center gap-2 py-2 px-2 hover:bg-muted/50 rounded cursor-pointer ${level === 0 ? 'font-medium' : 'text-sm'}`}
                 style={{ paddingLeft: `${level * 16 + 8}px` }} // eslint-disable-line react-dom/no-unsafe-inline-style
                 onClick={() => setIsOpen(!isOpen)}

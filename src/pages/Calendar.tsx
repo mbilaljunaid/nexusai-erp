@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar as CalendarIcon, MapPin, Users } from "lucide-react";
@@ -34,7 +35,7 @@ export default function Calendar() {
               <div className="flex gap-4 mt-2 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <CalendarIcon className="h-3 w-3" />
-                  {new Date(event.startTime).toLocaleDateString()}
+                  {formatDate(event.startTime)}
                 </div>
                 <div className="flex items-center gap-1">
                   <MapPin className="h-3 w-3" />

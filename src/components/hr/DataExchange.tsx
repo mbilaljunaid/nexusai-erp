@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -106,7 +107,7 @@ EMP001,John,Doe,john.doe@example.com,1990-01-01,123456,1,EMPLOYEE,2024-01-01,DEV
                                     {imports?.length === 0 && <TableRow><TableCell colSpan={3}>No history found.</TableCell></TableRow>}
                                     {imports?.map((job: any) => (
                                         <TableRow key={job.id}>
-                                            <TableCell>{new Date(job.createdAt).toLocaleString()}</TableCell>
+                                            <TableCell>{formatDateTime(job.createdAt)}</TableCell>
                                             <TableCell>
                                                 <Badge variant={
                                                     job.status === "COMPLETED" ? "default" :

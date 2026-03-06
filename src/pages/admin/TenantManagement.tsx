@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { Search, Plus, Building2, Settings, Trash2, CheckCircle, XCircle, Loader2, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -163,7 +164,7 @@ export default function TenantManagement() {
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="text-sm text-muted-foreground">
-                                                    {tenant.createdAt ? new Date(tenant.createdAt).toLocaleDateString() : '—'}
+                                                    {tenant.createdAt ? formatDate(tenant.createdAt) : '—'}
                                                 </TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center justify-end gap-2">

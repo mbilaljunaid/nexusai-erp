@@ -1,10 +1,11 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle2, Clock, ArrowUp } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
-
+import { Card } from "@/components/ui/card";
 
 interface Obligation {
     id: string;
@@ -31,7 +32,7 @@ const OB_STATUS: Record<string, { bg: string; color: string }> = {
 
 const ESC_LABELS = ['—', '⚠ Warning', '🔴 Manager', '🚨 Legal'];
 
-function fmt(d: string) { return d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'; }
+function fmt(d: string) { return d ? formatDate(d) : '—'; }
 
 export default function ContractObligations() {
     const [filter, setFilter] = useState<string>('');
@@ -77,10 +78,10 @@ export default function ContractObligations() {
             {/* KPIs */}
             <div className="flex gap-2.5 mb-3.5">
                 {[['Total', summary?.total ?? 0, '#6b7280'], ['Pending', summary?.pending ?? 0, '#1d4ed8'], ['Overdue', summary?.overdue ?? 0, '#dc2626'], ['Met', summary?.met ?? 0, '#059669'], ['At Risk', `${summary?.currency_code ?? 'USD'} ${Number(summary?.total_at_risk ?? 0).toLocaleString()}`, '#d97706']].map(([l, v, c]) => (
-                    <div key={l as string} className="bg-white border border-gray-200 rounded-xl px-[18px] py-2.5 flex-1" style={{ borderLeft: `4px solid ${c}` }}>
+                    <Card key={l as string} className="px-[18px] py-2.5 flex-1 shadow-sm border-l-[4px]" style={{ borderLeftColor: c as string }}>
                         <div className="text-xl font-extrabold font-mono">{v}</div>
                         <div className="text-[11px] text-gray-400 mt-0.5">{l}</div>
-                    </div>
+                    </Card>
                 ))}
             </div>
 
@@ -97,7 +98,7 @@ export default function ContractObligations() {
 
             {/* Add form */}
             {showNew && (
-                <div className="bg-white border border-gray-200 rounded-xl p-3.5 mb-3">
+                <Card className="p-3.5 mb-3 shadow-sm">
                     <div className="text-[13px] font-bold mb-2.5">Add Contract Obligation</div>
                     <div className="grid grid-cols-3 gap-2">
                         {[['contractId', 'Contract ID', 'text'], ['supplierId', 'Supplier ID', 'text'], ['title', 'Title', 'text'], ['dueDate', 'Due Date', 'date'], ['penaltyAmount', 'Penalty Amount', 'number']].map(([k, l, t]) => (
@@ -125,7 +126,7 @@ export default function ContractObligations() {
                         <button onClick={() => setShowNew(false)} className="px-3 py-1.5 bg-gray-100 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
                         <button disabled={createMut.isPending || !newOb.contractId || !newOb.title} onClick={() => createMut.mutate(newOb)} className="px-3 py-1.5 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer disabled:opacity-50">Create</button>
                     </div>
-                </div>
+                </Card>
             )}
 
             {/* Filters */}
@@ -143,7 +144,7 @@ export default function ContractObligations() {
                     const cfg = OB_STATUS[ob.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
                     const sel = selected?.id === ob.id;
                     return (
-                        <div key={ob.id} onClick={() => setSelected(sel ? null : ob)} className="bg-white rounded-xl px-3.5 py-2.5 cursor-pointer" style={{ border: `1px solid ${sel ? '#1d4ed8' : '#e5e7eb'}`, borderLeft: `4px solid ${cfg.color}` }}>
+                        <Card key={ob.id} onClick={() => setSelected(sel ? null : ob)} className={`px-3.5 py-2.5 cursor-pointer shadow-sm border-l-[4px] ${sel ? 'border-y-blue-700 border-r-blue-700' : ''}`} style={{ borderLeftColor: cfg.color }}>
                             <div className="flex justify-between items-start mb-0.5">
                                 <div>
                                     <span className="text-[13px] font-bold text-gray-900">{ob.title}</span>
@@ -179,7 +180,7 @@ export default function ContractObligations() {
                                     </div>
                                 </div>
                             )}
-                        </div>
+                        </Card>
                     );
                 })}
                 {obligations.length === 0 && <div className="text-center text-gray-400 py-7">No obligations found</div>}

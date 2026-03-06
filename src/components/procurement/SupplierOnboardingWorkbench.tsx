@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -101,7 +102,7 @@ export default function SupplierOnboardingWorkbench() {
                                             <TableCell>
                                                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                                                     <Clock className="w-3 h-3" />
-                                                    {new Date(req.submittedAt).toLocaleDateString()}
+                                                    {formatDate(req.submittedAt)}
                                                 </div>
                                             </TableCell>
                                             <TableCell>

@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -65,7 +66,7 @@ export default function InterviewerDashboard() {
                                         <h3 className="font-semibold text-lg">{interview.candidateName}</h3>
                                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                             <Badge variant="outline">{interview.jobTitle}</Badge>
-                                            <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {new Date(interview.scheduledTime).toLocaleString()}</span>
+                                            <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {formatDateTime(interview.scheduledTime)}</span>
                                             {interview.location === 'Remote' && <span className="flex items-center gap-1"><Video className="w-3 h-3" /> Remote</span>}
                                         </div>
                                     </div>

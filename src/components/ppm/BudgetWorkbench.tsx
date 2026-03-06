@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -198,7 +199,7 @@ export function BudgetWorkbench() {
                                                 <TableCell>
                                                     {v.currentFlag && <CheckCircle className="h-4 w-4 text-green-500" />}
                                                 </TableCell>
-                                                <TableCell>{new Date(v.createdAt).toLocaleDateString()}</TableCell>
+                                                <TableCell>{formatDate(v.createdAt)}</TableCell>
                                                 <TableCell className="space-x-2">
                                                     <Dialog>
                                                         <DialogTrigger asChild>

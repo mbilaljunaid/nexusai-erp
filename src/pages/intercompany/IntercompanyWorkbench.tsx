@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -105,7 +106,7 @@ export default function IntercompanyWorkbench() {
 
     const outboundColumns: SpreadsheetColumn<any>[] = [
         { id: "id", header: "Batch ID", width: "100px", cell: (item: any) => <span className="font-mono text-xs">{item.id}</span> },
-        { id: "createdAt", header: "Date", width: "120px", cell: (item: any) => new Date(item.createdAt).toLocaleDateString() },
+        { id: "createdAt", header: "Date", width: "120px", cell: (item: any) => formatDate(item.createdAt) },
         { id: "receiverOrgId", header: "Counterparty", width: "150px", cell: (item: any) => item.receiverOrgId },
         { id: "totalAmount", header: "Amount", width: "120px", cell: (item: any) => <span className="font-mono text-right block w-full">{formatCurrency(item.totalAmount)}</span> },
         { id: "currency", header: "Currency", width: "100px", cell: (item: any) => item.currency || "USD" },
@@ -114,7 +115,7 @@ export default function IntercompanyWorkbench() {
 
     const inboundColumns: SpreadsheetColumn<any>[] = [
         { id: "id", header: "Transaction ID", width: "100px", cell: (item: any) => <span className="font-mono text-xs">{item.id.substring(0, 8)}...</span> },
-        { id: "createdAt", header: "Date", width: "120px", cell: (item: any) => new Date(item.createdAt).toLocaleDateString() },
+        { id: "createdAt", header: "Date", width: "120px", cell: (item: any) => formatDate(item.createdAt) },
         { id: "providerOrgId", header: "From Entity", width: "150px", cell: (item: any) => item.providerOrgId },
         { id: "transactionTypeId", header: "Type", width: "150px", cell: (item: any) => item.transactionTypeId },
         { id: "amount", header: "Amount", width: "120px", cell: (item: any) => <span className="font-mono text-right block w-full">{formatCurrency(item.amount)}</span> },

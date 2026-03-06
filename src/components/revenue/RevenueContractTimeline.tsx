@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import {
     Card,
@@ -62,7 +63,7 @@ export function RevenueContractTimeline({ contractId }: { contractId: string }) 
                             <div className="flex flex-col gap-1">
                                 <div className="flex items-center gap-2">
                                     <span className="font-semibold text-sm">Version {entry.version}</span>
-                                    <Badge variant="outline" className="text-[10px]">{entry.snapshotDate ? new Date(entry.snapshotDate).toLocaleDateString() : "—"}</Badge>
+                                    <Badge variant="outline" className="text-[10px]">{entry.snapshotDate ? formatDate(entry.snapshotDate) : "—"}</Badge>
                                     <Badge variant={entry.status === "Active" ? "default" : "secondary"} className="text-[10px]">{entry.status}</Badge>
                                 </div>
                                 <p className="text-sm text-muted-foreground">{entry.changeReason || "Initial creation"}</p>

@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -145,7 +146,7 @@ export default function LearningApprovals() {
                                     )}
 
                                     <p className="text-xs text-muted-foreground">
-                                        Requested: {new Date(request.requestedAt).toLocaleString()}
+                                        Requested: {formatDateTime(request.requestedAt)}
                                     </p>
 
                                     <div className="flex gap-2">

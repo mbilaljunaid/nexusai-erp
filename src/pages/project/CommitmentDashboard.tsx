@@ -1,9 +1,11 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertOctagon, Bell, TrendingDown, CheckCheck } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Checkbox } from "@/components/ui/checkbox";
 
 
 interface BudgetAlert { id: string; project_id: string; alert_type: string; severity: string; budget_amount: number; actual_amount: number; variance_pct: number; description: string; is_acknowledged: boolean; created_at: string; }
@@ -11,7 +13,7 @@ interface AlertSummary { critical: number; warnings: number; info: number; ackno
 interface VarRow { id: string; resource_id: string; resource_type: string; role: string; period_start: string; period_end: string; planned_hours: number; actual_hours: number; hour_variance: number; planned_cost: number; actual_cost: number; cost_variance: number; variance_pct: number; }
 
 function fmt(n: any) { return Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
-function fmtDate(d: string) { return d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'; }
+function fmtDate(d: string) { return d ? formatDate(d) : '—'; }
 
 const SEV_CFG: Record<string, { bg: string; color: string; border: string; borderLeft: string; iconColor: string; icon: React.ElementType }> = {
     Critical: { bg: 'bg-red-100', color: 'text-red-600', border: 'border-red-600/30', borderLeft: 'border-l-red-600', iconColor: '#dc2626', icon: AlertOctagon },
@@ -107,7 +109,7 @@ export default function CommitmentDashboard() {
                         </div>
                         {tab === 'alerts' && (
                             <label className="flex items-center gap-1.5 ml-auto text-[11px] cursor-pointer">
-                                <input type="checkbox" checked={showAck} onChange={e => setShowAck(e.target.checked)} className="m-0" />
+                                <Checkbox checked={showAck} onCheckedChange={c => setShowAck(!!c)} className="m-0" />
                                 Show acknowledged
                             </label>
                         )}

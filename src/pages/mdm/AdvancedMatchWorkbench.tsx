@@ -147,7 +147,7 @@ export default function AdvancedMatchWorkbench() {
                     </CardHeader>
                     <CardContent className="space-y-2 max-h-[600px] overflow-y-auto">
                         {matchCandidates?.map((match: MatchCandidate) => (
-                            <div
+                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 key={match.id}
                                 className={`p-3 rounded-lg cursor-pointer border ${selectedMatch?.id === match.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
                                     }`}
@@ -210,7 +210,7 @@ export default function AdvancedMatchWorkbench() {
                                                 <div key={i} className="border rounded-lg p-4">
                                                     <div className="font-medium mb-2">{conflict.field}</div>
                                                     <div className="grid grid-cols-2 gap-4">
-                                                        <div
+                                                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                                             className={`p-3 rounded border-2 cursor-pointer ${resolutions[conflict.field] === 'KEEP_MASTER'
                                                                 ? "border-primary bg-primary/5"
                                                                 : "border-border"
@@ -223,7 +223,7 @@ export default function AdvancedMatchWorkbench() {
                                                                 <Check className="h-4 w-4 text-primary mt-2" />
                                                             )}
                                                         </div>
-                                                        <div
+                                                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                                             className={`p-3 rounded border-2 cursor-pointer ${resolutions[conflict.field] === 'USE_CANDIDATE'
                                                                 ? "border-primary bg-primary/5"
                                                                 : "border-border"

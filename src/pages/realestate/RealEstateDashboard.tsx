@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -134,7 +135,7 @@ export default function RealEstateDashboard() {
                                                 {lease.properties?.property_name} - Unit {lease.property_units?.unit_number}
                                             </div>
                                             <div className="text-sm text-gray-500">
-                                                ${lease.monthly_rent}/mo • Ends {new Date(lease.end_date).toLocaleDateString()}
+                                                ${lease.monthly_rent}/mo • Ends {formatDate(lease.end_date)}
                                             </div>
                                         </div>
                                         <Badge variant="default">{lease.status}</Badge>

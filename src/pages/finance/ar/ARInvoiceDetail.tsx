@@ -249,7 +249,7 @@ export default function ARInvoiceDetail() {
                                         <h3 className="font-semibold mb-4 text-sm text-muted-foreground">Select Line</h3>
                                         <div className="space-y-2">
                                             {lines.map((l: any) => (
-                                                <div
+                                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                                     key={l.id}
                                                     className={`p-2 border rounded cursor-pointer text-sm ${selectedLineId === l.id ? 'bg-primary/10 border-primary' : 'hover:bg-slate-50'}`}
                                                     onClick={() => {

@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -94,7 +95,7 @@ export default function TaxJurisdictionManager() {
                         </CardHeader>
                         <CardContent className="space-y-2 max-h-[500px] overflow-y-auto">
                             {jurisdictions?.map((jurisdiction: any) => (
-                                <div
+                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     key={jurisdiction.id}
                                     className="border rounded-lg p-4 cursor-pointer hover:bg-accent"
                                     onClick={() => setSelectedJurisdiction(jurisdiction)}
@@ -113,7 +114,7 @@ export default function TaxJurisdictionManager() {
                                     </div>
                                     {jurisdiction.effectiveDate && (
                                         <div className="text-xs text-muted-foreground mt-2">
-                                            Effective: {new Date(jurisdiction.effectiveDate).toLocaleDateString()}
+                                            Effective: {formatDate(jurisdiction.effectiveDate)}
                                         </div>
                                     )}
                                 </div>

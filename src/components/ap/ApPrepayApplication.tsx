@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -89,7 +90,7 @@ export default function ApPrepayApplication({ invoiceId, open, onOpenChange }: A
                                             className={selectedPrepay?.id === prepay.id ? "bg-primary/5 border-primary/20" : ""}
                                         >
                                             <TableCell className="font-mono text-xs">{prepay.invoiceNumber}</TableCell>
-                                            <TableCell className="text-xs">{new Date(prepay.invoiceDate).toLocaleDateString()}</TableCell>
+                                            <TableCell className="text-xs">{formatDate(prepay.invoiceDate)}</TableCell>
                                             <TableCell className="text-right text-xs font-semibold">
                                                 ${parseFloat(prepay.prepayAmountRemaining).toLocaleString()}
                                             </TableCell>

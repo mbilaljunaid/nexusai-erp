@@ -127,7 +127,7 @@ export function StandardTable<T>({
         if (!item) return null;
 
         return (
-            <div
+            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                 style={style}
                 {...ariaAttributes}
                 className={cn(

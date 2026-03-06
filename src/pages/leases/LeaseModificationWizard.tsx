@@ -86,7 +86,7 @@ export default function LeaseModificationWizard({ leaseId }: { leaseId: string }
                     <CardContent>
                         {step === 1 && (
                             <div className="grid grid-cols-1 gap-4">
-                                <div
+                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     className="p-4 border rounded-lg hover:border-primary cursor-pointer transition-colors flex items-center gap-4"
                                     onClick={() => setStep(2)}
                                 >
@@ -98,7 +98,7 @@ export default function LeaseModificationWizard({ leaseId }: { leaseId: string }
                                         <p className="text-sm text-muted-foreground">Change in lease duration or option exercise</p>
                                     </div>
                                 </div>
-                                <div
+                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     className="p-4 border rounded-lg hover:border-primary cursor-pointer transition-colors flex items-center gap-4"
                                     onClick={() => setStep(2)}
                                 >

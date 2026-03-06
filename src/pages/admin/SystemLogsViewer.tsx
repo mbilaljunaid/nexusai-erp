@@ -5,6 +5,7 @@ import { FileText, Download, Search, Filter, X } from 'lucide-react';
 import LogEntry from '../../components/admin/LogEntry';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { ExportButton } from "@/components/ExportButton";
+import { Card } from "@/components/ui/card";
 
 interface Log {
     id: string;
@@ -114,7 +115,7 @@ export default function SystemLogsViewer() {
             }
         >
             {/* Filters */}
-            <div className="bg-white rounded-lg shadow-sm border p-4">
+            <Card className="p-4">
                 <div className="flex items-center gap-2 mb-4">
                     <Filter className="w-5 h-5 text-gray-400" />
                     <h3 className="text-sm font-semibold text-gray-900">Filters</h3>
@@ -214,10 +215,10 @@ export default function SystemLogsViewer() {
                         ))}
                     </div>
                 </div>
-            </div>
+            </Card>
 
             {/* Logs List */}
-            <div className="bg-white rounded-lg shadow-sm border">
+            <Card>
                 <div className="px-4 py-3 border-b bg-gray-50">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -252,7 +253,7 @@ export default function SystemLogsViewer() {
                         ))
                     )}
                 </div>
-            </div>
+            </Card>
         </StandardPage>
     );
 }

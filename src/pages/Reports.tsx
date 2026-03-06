@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ExcelJS from "exceljs";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const MODULES = [
   { id: "crm", label: "CRM", icon: "Target" },
@@ -313,7 +314,7 @@ export default function Reports() {
               <div className="space-y-3">
                 <h3 className="font-semibold text-sm">Auto-refresh Reports</h3>
                 <div className="flex items-center gap-3">
-                  <input type="checkbox" id="auto-refresh" defaultChecked className="w-4 h-4" />
+                  <Checkbox id="auto-refresh" defaultChecked className="w-4 h-4" />
                   <label htmlFor="auto-refresh" className="text-sm">
                     Automatically refresh reports every 5 minutes
                   </label>

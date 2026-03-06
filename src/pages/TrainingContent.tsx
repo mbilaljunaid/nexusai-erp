@@ -111,7 +111,7 @@ export default function TrainingContent() {
   };
 
   const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    return formatDate(date);
   };
 
   return (

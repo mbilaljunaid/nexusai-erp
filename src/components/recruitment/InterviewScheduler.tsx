@@ -288,7 +288,7 @@ export function InterviewScheduler({
                             <Label>Interviewers *</Label>
                             <div className="border rounded-lg p-3 space-y-2 max-h-48 overflow-y-auto">
                                 {availableInterviewers.map((interviewer) => (
-                                    <div
+                                    <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         key={interviewer.id}
                                         className={`p-2 rounded cursor-pointer border transition-colors ${formData.interviewerIds.includes(interviewer.id)
                                                 ? 'border-primary bg-primary/10'

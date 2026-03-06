@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useState, useEffect } from "react";
 import {
     Card, CardContent, CardDescription, CardHeader, CardTitle
@@ -355,7 +356,7 @@ export function NexusAIAgentRegistrySection() {
                                             {logs.map(log => (
                                                 <TableRow key={log.id}>
                                                     <TableCell className="text-xs whitespace-nowrap">
-                                                        {new Date(log.createdAt).toLocaleString()}
+                                                        {formatDateTime(log.createdAt)}
                                                     </TableCell>
                                                     <TableCell>
                                                         {log.status === "success" ? (

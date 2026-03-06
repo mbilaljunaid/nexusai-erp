@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -258,7 +259,7 @@ export default function DealDesk() {
                                                     <StatusBadge status="active" label={`${request.requestedDiscount}%`} />
                                                 </TableCell>
                                                 <TableCell className="text-sm text-muted-foreground">
-                                                    {new Date(request.requestedAt).toLocaleDateString()}
+                                                    {formatDate(request.requestedAt)}
                                                 </TableCell>
                                             </TableRow>
                                         ))}
@@ -296,7 +297,7 @@ export default function DealDesk() {
                                                     <Badge variant="outline" className="text-red-700 border-red-700">{request.requestedDiscount}%</Badge>
                                                 </TableCell>
                                                 <TableCell className="text-sm text-muted-foreground">
-                                                    {new Date(request.requestedAt).toLocaleDateString()}
+                                                    {formatDate(request.requestedAt)}
                                                 </TableCell>
                                             </TableRow>
                                         ))}

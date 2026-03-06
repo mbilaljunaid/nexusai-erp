@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -106,7 +107,7 @@ export default function DispatchConsole() {
                                                                     {wo.priority}
                                                                 </Badge>
                                                                 <span className="text-xs text-muted-foreground">
-                                                                    {new Date(wo.createdAt).toLocaleDateString()}
+                                                                    {formatDate(wo.createdAt)}
                                                                 </span>
                                                             </div>
                                                             <p className="text-sm font-medium mb-1">{wo.description}</p>

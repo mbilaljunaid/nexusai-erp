@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -43,7 +44,7 @@ export function AssetList() {
                                 <TableCell className="font-medium">{asset.assetNumber}</TableCell>
                                 <TableCell>{asset.description}</TableCell>
                                 <TableCell>{asset.categoryId}</TableCell>
-                                <TableCell>{new Date(asset.datePlacedInService).toLocaleDateString()}</TableCell>
+                                <TableCell>{formatDate(asset.datePlacedInService)}</TableCell>
                                 <TableCell className="text-right">{formatCurrency(Number(asset.originalCost))}</TableCell>
                                 <TableCell className="text-right">{asset.units}</TableCell>
                                 <TableCell>

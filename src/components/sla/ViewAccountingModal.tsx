@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription
@@ -107,7 +108,7 @@ export function ViewAccountingModal({ entityId, open, onOpenChange }: ViewAccoun
                             </div>
                             <div className="space-y-1 text-right">
                                 <div className="text-sm font-medium">GL Date</div>
-                                <div className="text-xs text-muted-foreground">{accounting?.glDate ? new Date(accounting.glDate).toLocaleDateString() : 'N/A'}</div>
+                                <div className="text-xs text-muted-foreground">{accounting?.glDate ? formatDate(accounting.glDate) : 'N/A'}</div>
                             </div>
                             <div>
                                 <Button variant="outline" size="sm" onClick={handleExplain} className="gap-2">

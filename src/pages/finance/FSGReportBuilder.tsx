@@ -5,6 +5,7 @@ import { Plus, Play, Trash2, ChevronRight, Table2, BarChart3 } from 'lucide-reac
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface FSGRow {
     rowNum: number;
@@ -134,8 +135,8 @@ export default function FSGReportBuilder() {
         { id: "label", header: "Label", width: "200px", cell: (row) => <Input className="h-7 px-2 py-1" aria-label="Label" value={row.label} onChange={e => updateRow(row.rowNum, 'label', e.target.value)} /> },
         { id: "accountRange", header: "Account Range", width: "150px", cell: (row) => <Input className="h-7 px-2 py-1 font-mono" aria-label="Account Range" value={row.accountRange ?? ''} placeholder="e.g. 5000-5999" onChange={e => updateRow(row.rowNum, 'accountRange', e.target.value)} /> },
         { id: "formula", header: "Formula (e.g. R1+R2)", width: "150px", cell: (row) => <Input className="h-7 px-2 py-1 font-mono" aria-label="Formula" value={row.formula ?? ''} placeholder="e.g. R1 - R2" onChange={e => updateRow(row.rowNum, 'formula', e.target.value)} /> },
-        { id: "isBold", header: "Bold", width: "60px", cell: (row) => <div className="text-center w-full"><input type="checkbox" aria-label="Bold" checked={!!row.isBold} onChange={e => updateRow(row.rowNum, 'isBold', e.target.checked)} /></div> },
-        { id: "isTotal", header: "Total", width: "60px", cell: (row) => <div className="text-center w-full"><input type="checkbox" aria-label="Total" checked={!!row.isTotal} onChange={e => updateRow(row.rowNum, 'isTotal', e.target.checked)} /></div> },
+        { id: "isBold", header: "Bold", width: "60px", cell: (row) => <div className="text-center w-full flex justify-center"><Checkbox aria-label="Bold" checked={!!row.isBold} onCheckedChange={c => updateRow(row.rowNum, 'isBold', !!c)} /></div> },
+        { id: "isTotal", header: "Total", width: "60px", cell: (row) => <div className="text-center w-full flex justify-center"><Checkbox aria-label="Total" checked={!!row.isTotal} onCheckedChange={c => updateRow(row.rowNum, 'isTotal', !!c)} /></div> },
         { id: "delete", header: "Del", width: "60px", cell: (row) => <button className="p-1 text-red-600 hover:bg-red-100 rounded w-full flex justify-center" aria-label="Delete" onClick={() => removeRow(row.rowNum)}><Trash2 size={14} /></button> }
     ];
 

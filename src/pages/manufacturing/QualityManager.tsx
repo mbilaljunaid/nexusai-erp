@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
@@ -89,7 +90,7 @@ export default function QualityManager() {
         { id: "id", header: "Inspection ID", width: "150px", cell: (row: Inspection) => <span className="font-mono text-xs">{row.id.substring(0, 8)}</span> },
         { id: "productionOrderId", header: "Work Order", width: "150px", cell: (row: any) => <span className="font-semibold">{row.orderNumber || row.productionOrderId.substring(0, 8) + '...'}</span> },
         { id: "status", header: "Status", width: "150px", cell: (row: Inspection) => <Badge variant={row.status === "pass" ? "default" : row.status === "fail" ? "destructive" : "secondary"}>{row.status.toUpperCase()}</Badge> },
-        { id: "inspectionDate", header: "Date", width: "150px", cell: (row: Inspection) => <span>{row.inspectionDate ? new Date(row.inspectionDate).toLocaleDateString() : '-'}</span> },
+        { id: "inspectionDate", header: "Date", width: "150px", cell: (row: Inspection) => <span>{row.inspectionDate ? formatDate(row.inspectionDate) : '-'}</span> },
         {
             id: "actions", header: "Actions", width: "150px", cell: (row: Inspection) => (
                 <Button variant="ghost" size="sm" onClick={() => { setSelectedInspection(row); setIsSheetOpen(true); }}>

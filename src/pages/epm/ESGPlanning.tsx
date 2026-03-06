@@ -5,6 +5,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 
 interface ESGGoal { id: string; goal_code: string; goal_name: string; category: string; subcategory: string; unit: string; baseline_value: number; target_value: number; target_year: number; status: string; owner: string; }
 interface Actual { actual_value: number; period: string; data_source: string; }
@@ -85,11 +86,11 @@ export default function ESGPlanning() {
                     {/* KPIs */}
                     <div className="flex gap-2.5 mb-3.5">
                         {[{ lbl: 'Environmental', val: env, clr: 'text-emerald-600', icon: '🌱' }, { lbl: 'Social', val: social, clr: 'text-blue-500', icon: '👥' }, { lbl: 'Governance', val: gov, clr: 'text-purple-600', icon: '⚖️' }, { lbl: 'On Track', val: onTrack, clr: 'text-emerald-600', icon: '✓' }].map(k => (
-                            <div key={k.lbl} className="bg-white border border-gray-200 rounded-xl px-4 py-2.5 min-w-[100px]">
+                            <Card key={k.lbl} className="px-4 py-2.5 min-w-[100px] shadow-sm">
                                 <div className="text-base">{k.icon}</div>
                                 <div className={`text-xl font-extrabold ${k.clr}`}>{k.val}</div>
                                 <div className="text-[10px] text-gray-400">{k.lbl}</div>
-                            </div>
+                            </Card>
                         ))}
                     </div>
 
@@ -141,7 +142,7 @@ export default function ESGPlanning() {
                                     const wcls = p >= 100 ? 'w-full' : p >= 90 ? 'w-[90%]' : p >= 80 ? 'w-[80%]' : p >= 70 ? 'w-[70%]' : p >= 60 ? 'w-[60%]' : p >= 50 ? 'w-[50%]' : p >= 40 ? 'w-[40%]' : p >= 30 ? 'w-[30%]' : p >= 20 ? 'w-[20%]' : p >= 10 ? 'w-[10%]' : 'w-0';
 
                                     return (
-                                        <div key={g.id} onClick={() => { setSelectedGoal(selectedGoal?.id === g.id ? null : g); setActualForm(a => ({ ...a, goalId: g.id })); }} className={`bg-white border hover:shadow-sm cursor-pointer border-l-[4px] rounded-xl px-3.5 py-2.5 ${selectedGoal?.id === g.id ? 'border-emerald-600' : 'border-gray-200'} ${bdrClr}`} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedGoal(selectedGoal?.id === g.id ? null : g); setActualForm(a => ({ ...a, goalId: g.id })); } }}>
+                                        <Card key={g.id} onClick={() => { setSelectedGoal(selectedGoal?.id === g.id ? null : g); setActualForm(a => ({ ...a, goalId: g.id })); }} className={`hover:shadow-md cursor-pointer border-l-[4px] px-3.5 py-2.5 shadow-sm ${selectedGoal?.id === g.id ? 'border-y-emerald-600 border-r-emerald-600' : ''} ${bdrClr}`} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedGoal(selectedGoal?.id === g.id ? null : g); setActualForm(a => ({ ...a, goalId: g.id })); } }}>
                                             <div className="flex justify-between mb-1">
                                                 <div className="font-bold text-[13px]">{g.goal_name}</div>
                                                 <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${clr}`}>{g.status}</span>
@@ -153,17 +154,17 @@ export default function ESGPlanning() {
                                                 </div>
                                                 <div className="text-[9px] text-gray-400 whitespace-nowrap">Target: {g.target_value ?? '—'} {g.unit} by {g.target_year}</div>
                                             </div>
-                                        </div>
+                                        </Card>
                                     );
                                 })}
-                                {goals.length === 0 && <div className="text-center text-gray-400 p-8 bg-white rounded-xl">No ESG goals — create one</div>}
+                                {goals.length === 0 && <Card className="text-center text-gray-400 p-8 shadow-sm">No ESG goals — create one</Card>}
                             </div>
                         </div>
 
                         {/* Detail + Record actual */}
                         {selectedGoal && (
                             <div className="w-[280px] flex-shrink-0">
-                                <div className="bg-white border border-gray-200 rounded-xl p-3.5 mb-2.5">
+                                <Card className="p-3.5 mb-2.5 shadow-sm">
                                     <div className="font-bold text-[13px] mb-2">{selectedGoal.goal_name}</div>
                                     <div className="text-[11px] leading-relaxed text-gray-700">
                                         Baseline: <strong>{selectedGoal.baseline_value ?? '—'} {selectedGoal.unit}</strong><br />
@@ -176,8 +177,8 @@ export default function ESGPlanning() {
                                             <span className="font-bold">{Number(a.actual_value).toFixed(2)} {selectedGoal.unit}</span>
                                         </div>
                                     ))}
-                                </div>
-                                <div className="bg-green-50 border border-green-200 rounded-xl p-3">
+                                </Card>
+                                <Card className="bg-green-50 border-green-200 p-3 shadow-sm">
                                     <div className="text-[11px] font-bold mb-2">Record Actual</div>
                                     {[['Period', 'period', 'text'], ['Value', 'actualValue', 'number'], ['Source', 'dataSource', 'text']].map(([lbl, key, type]) => (
                                         <div key={key} className="mb-1.5">
@@ -186,7 +187,7 @@ export default function ESGPlanning() {
                                         </div>
                                     ))}
                                     <button disabled={!actualForm.actualValue} onClick={() => recordActualMut.mutate({ goalId: selectedGoal.id, period: actualForm.period, actualValue: parseFloat(actualForm.actualValue), dataSource: actualForm.dataSource || null })} className="w-full py-1.5 bg-emerald-600 text-white border-none rounded-md text-[10px] cursor-pointer font-bold disabled:opacity-50 hover:bg-emerald-700">Record</button>
-                                </div>
+                                </Card>
                             </div>
                         )}
                     </div>
@@ -199,7 +200,7 @@ export default function ESGPlanning() {
                         <Input value={budgetPeriod} onChange={e => setBudgetPeriod(e.target.value)} placeholder="YYYY-MM" className="px-2.5 py-1.5 border border-gray-300 rounded-md text-xs" aria-label="Budget period" />
                         <span className="text-[11px] text-gray-400">Approved budget variance by cost center / GL account</span>
                     </div>
-                    <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
+                    <Card className="overflow-hidden shadow-sm">
                         {variance.length > 0 ? (
                             <InteractiveSpreadsheet
                                 data={variance}
@@ -211,7 +212,7 @@ export default function ESGPlanning() {
                         ) : (
                             <div className="p-6 text-center text-gray-400">No approved budget controls for {budgetPeriod}</div>
                         )}
-                    </div>
+                    </Card>
                 </div>
             )}
         </StandardPage>

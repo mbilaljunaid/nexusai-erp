@@ -41,7 +41,7 @@ export default function LearningCommunities() {
 
         return (
             <StandardPage title="Learning Communities">
-                <div
+                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                     className={`flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-colors ${selected ? "bg-primary text-primary-foreground" : "hover:bg-accent"
                         }`}
                     style={{ paddingLeft: `${depth * 1.5 + 0.75}rem` }}

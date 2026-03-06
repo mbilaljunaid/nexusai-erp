@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
@@ -365,7 +366,7 @@ export default function IndustrySetup() {
                     <div>
                       <p className="font-medium">{getIndustryName(deployment.industryId)}</p>
                       <p className="text-xs text-muted-foreground">
-                        Deployed {new Date(deployment.deployedAt).toLocaleDateString()}
+                        Deployed {formatDate(deployment.deployedAt)}
                       </p>
                     </div>
                     <StatusBadge status={deployment.status === 'active' || deployment.status === 'deployed' ? 'active' : 'info'} label={deployment.status || 'Unknown'} />

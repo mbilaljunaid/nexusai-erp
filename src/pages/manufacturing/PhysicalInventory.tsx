@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -132,7 +133,7 @@ export default function PhysicalInventory() {
                                             <div className="font-bold text-[13px]">{c.cycle_name}</div>
                                             <span className="px-1.5 py-0.5 rounded text-[10px] font-bold" style={{ background: clr + '18', color: clr }}>{c.status}</span>
                                         </div>
-                                        <div className="text-[10px] text-gray-500 mb-1.5">{c.cycle_type.replace(/_/g, ' ')} · {new Date(c.count_date).toLocaleDateString()} · {c.counted_lines}/{c.line_count} lines</div>
+                                        <div className="text-[10px] text-gray-500 mb-1.5">{c.cycle_type.replace(/_/g, ' ')} · {formatDate(c.count_date)} · {c.counted_lines}/{c.line_count} lines</div>
                                         <div className="bg-gray-100 rounded-full h-1">
                                             <div className="h-full rounded-full" style={{ width: pct + '%', background: pct === 100 ? '#059669' : '#1d4ed8' }} />
                                         </div>

@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -64,7 +65,7 @@ export default function JobRequisitionDetail() {
                                     {app.score && <Badge variant="outline" className="text-[10px]">{app.score}%</Badge>}
                                 </div>
                                 <div className="mt-2 text-xs text-muted-foreground flex gap-2">
-                                    <span>{new Date(app.createdAt).toLocaleDateString()}</span>
+                                    <span>{formatDate(app.createdAt)}</span>
                                 </div>
                             </CardContent>
                         </Card>

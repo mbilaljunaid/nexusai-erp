@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
@@ -71,7 +72,7 @@ export default function AssetWorkbench() {
             id: "datePlacedInService",
             header: "In Service Date",
             width: "150px",
-            cell: (asset: FaAssetWithFinancials) => <div className="px-2 h-full flex items-center">{new Date(asset.datePlacedInService).toLocaleDateString()}</div>
+            cell: (asset: FaAssetWithFinancials) => <div className="px-2 h-full flex items-center">{formatDate(asset.datePlacedInService)}</div>
         },
         {
             id: "originalCost",

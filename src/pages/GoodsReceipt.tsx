@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
@@ -56,7 +57,7 @@ export default function GoodsReceipt() {
                   </div>
                   <div>
                     <p className="text-muted-foreground">Received Date</p>
-                    <p className="font-semibold">{new Date(grn.receivedDate).toLocaleDateString()}</p>
+                    <p className="font-semibold">{formatDate(grn.receivedDate)}</p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">Quality</p>

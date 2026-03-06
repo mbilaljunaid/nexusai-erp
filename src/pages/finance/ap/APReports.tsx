@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -95,7 +96,7 @@ export default function APReports() {
         {
             header: "Timestamp",
             id: "timestamp", width: "150px",
-            cell: (row) => new Date(row.timestamp).toLocaleString()
+            cell: (row) => formatDateTime(row.timestamp)
         },
         { header: "User", id: "userId", width: "150px", cell: (r) => r.userId },
         {

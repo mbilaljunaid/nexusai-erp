@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -270,7 +271,7 @@ export default function CashReconciliation() {
                                                                 <div className="space-y-1">
                                                                     <div className="font-medium">{line.description}</div>
                                                                     <div className="text-xs text-muted-foreground">
-                                                                        {new Date(line.statementDate).toLocaleDateString()}
+                                                                        {formatDate(line.statementDate)}
                                                                     </div>
                                                                 </div>
                                                                 <Badge variant={line.amount > 0 ? "default" : "secondary"}>
@@ -297,7 +298,7 @@ export default function CashReconciliation() {
                                                                 <div className="space-y-1">
                                                                     <div className="font-medium">{txn.description}</div>
                                                                     <div className="text-xs text-muted-foreground">
-                                                                        {new Date(txn.transactionDate).toLocaleDateString()}
+                                                                        {formatDate(txn.transactionDate)}
                                                                     </div>
                                                                 </div>
                                                                 <Badge variant={txn.amount > 0 ? "default" : "secondary"}>

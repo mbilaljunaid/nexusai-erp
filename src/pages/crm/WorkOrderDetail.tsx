@@ -1,3 +1,4 @@
+import { formatTime, formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "wouter";
@@ -127,7 +128,7 @@ export default function WorkOrderDetail() {
                                                 <span className="font-semibold">{technicians?.find((t: any) => t.id === appt.technicianId)?.name || appt.technicianId}</span>
                                             </div>
                                             <div className="text-sm text-muted-foreground mt-1">
-                                                {new Date(appt.scheduledStart).toLocaleString()} - {new Date(appt.scheduledEnd).toLocaleTimeString()}
+                                                {formatDateTime(appt.scheduledStart)} - {formatTime(appt.scheduledEnd)}
                                             </div>
                                         </div>
                                         <Badge>{appt.status}</Badge>

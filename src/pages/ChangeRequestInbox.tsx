@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -67,7 +68,7 @@ export default function ChangeRequestInbox() {
         },
         { id: "entityType", width: "200px", header: "Entity Type", cell: (row: any) => <div className="px-2 h-full flex items-center font-medium">{row.entityType}</div> },
         { id: "requesterId", width: "200px", header: "Requested By", cell: (row: any) => <div className="px-2 h-full flex items-center text-muted-foreground">{row.requesterId}</div> },
-        { id: "createdAt", width: "150px", header: "Date", cell: (row: any) => <div className="px-2 h-full flex items-center text-muted-foreground">{new Date(row.createdAt).toLocaleDateString()}</div> },
+        { id: "createdAt", width: "150px", header: "Date", cell: (row: any) => <div className="px-2 h-full flex items-center text-muted-foreground">{formatDate(row.createdAt)}</div> },
         {
             id: "actions",
             header: "Actions",

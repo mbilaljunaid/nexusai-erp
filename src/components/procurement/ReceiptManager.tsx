@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -176,7 +177,7 @@ export function ReceiptManager() {
                                 <div className="flex justify-between items-center">
                                     <div>
                                         <p className="font-semibold">{r.receiptNumber}</p>
-                                        <span className="text-xs text-muted-foreground">{new Date(r.receiptDate).toLocaleDateString()} • PO: {r.purchaseOrder?.poNumber}</span>
+                                        <span className="text-xs text-muted-foreground">{formatDate(r.receiptDate)} • PO: {r.purchaseOrder?.poNumber}</span>
                                     </div>
                                 </div>
                                 <div className="mt-2 space-y-1">

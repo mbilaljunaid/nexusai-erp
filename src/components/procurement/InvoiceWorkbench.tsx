@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -119,7 +120,7 @@ export function InvoiceWorkbench() {
                                         <Badge variant={inv.status === 'Paid' ? 'default' : inv.status === 'Validated' ? 'secondary' : 'outline'}>{inv.status}</Badge>
                                         {Number(inv.amount) < 0 && <Badge variant="destructive" className="ml-2">Debit Memo</Badge>}
                                     </div>
-                                    <p className="text-sm text-muted-foreground">{inv.supplier?.supplierName} • ${inv.amount} • {new Date(inv.invoiceDate).toLocaleDateString()}</p>
+                                    <p className="text-sm text-muted-foreground">{inv.supplier?.supplierName} • ${inv.amount} • {formatDate(inv.invoiceDate)}</p>
                                 </div>
                                 <div className="flex gap-2 items-center">
                                     {inv.status === 'Draft' && <Button size="sm" variant="outline" onClick={() => validateInvoiceMutation.mutate(inv.id)}>Validate</Button>}

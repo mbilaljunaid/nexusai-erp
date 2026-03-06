@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery } from '@tanstack/react-query';
@@ -44,7 +45,7 @@ export default function SlaEventMonitor() {
     });
 
     const columns: SpreadsheetColumn<any>[] = [
-        { id: "accountingDate", header: "Accounting Date", width: "12%", cell: (item: any) => <div className="p-2">{new Date(item.accountingDate).toLocaleDateString()}</div> },
+        { id: "accountingDate", header: "Accounting Date", width: "12%", cell: (item: any) => <div className="p-2">{formatDate(item.accountingDate)}</div> },
         {
             id: "lineType", header: "Line Type", width: "12%", cell: (item: any) => (
                 <div className="p-2">

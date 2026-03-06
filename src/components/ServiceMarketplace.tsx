@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
@@ -656,7 +657,7 @@ export function ServiceMarketplace() {
                       </span>
                       <span className="flex items-center gap-1">
                         <Clock className="w-4 h-4" />
-                        {new Date(order.createdAt || "").toLocaleDateString()}
+                        {formatDate(order.createdAt || "")}
                       </span>
                     </CardDescription>
                   </CardHeader>
@@ -844,7 +845,7 @@ export function ServiceMarketplace() {
                               ))}
                             </div>
                             <span className="text-xs text-muted-foreground">
-                              {new Date(review.createdAt || "").toLocaleDateString()}
+                              {formatDate(review.createdAt || "")}
                             </span>
                           </div>
                           {review.comment && <p className="text-sm">{review.comment}</p>}

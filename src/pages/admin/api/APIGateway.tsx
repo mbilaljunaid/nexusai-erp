@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -95,7 +96,7 @@ export default function APIGateway() {
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="font-semibold text-lg" data-testid={`text-key-${key.id}`}>{key.name}</h3>
-                    <p className="text-xs text-gray-500">Created: {new Date(key.createdAt).toLocaleDateString()}</p>
+                    <p className="text-xs text-gray-500">Created: {formatDate(key.createdAt)}</p>
                   </div>
                   <StatusBadge status={key.status} />
                 </div>

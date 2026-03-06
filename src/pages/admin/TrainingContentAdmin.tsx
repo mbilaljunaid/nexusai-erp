@@ -122,7 +122,7 @@ export default function TrainingContentAdmin() {
   const counts = resourcesData?.counts || {};
 
   const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" });
+    return formatDate(date);
   };
 
   const openReviewDialog = (resource: TrainingResource, action: "approve" | "reject") => {

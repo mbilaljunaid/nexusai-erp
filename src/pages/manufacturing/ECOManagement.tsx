@@ -6,7 +6,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
-
+import { Card } from "@/components/ui/card";
 
 interface ECO {
     id: string; eco_number: string; title: string; change_type: string;
@@ -91,16 +91,16 @@ export default function ECOManagement() {
             {/* Status strip */}
             <div className="flex gap-2 mb-3.5">
                 {statusTotals.map(s => (
-                    <div key={s.status} onClick={() => setStatusFilter(statusFilter === s.status ? '' : s.status)} className={`flex-1 bg-white rounded-lg py-2 px-2.5 cursor-pointer border-r border-l border-b border-t-[3px] ${STATUS_BORDER_CLR[s.status]} ${statusFilter && statusFilter !== s.status ? 'opacity-50' : 'opacity-100'}`} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setStatusFilter(statusFilter === s.status ? '' : s.status); } }}>
+                    <Card key={s.status} onClick={() => setStatusFilter(statusFilter === s.status ? '' : s.status)} className={`flex-1 rounded-xl py-2 px-2.5 cursor-pointer border-t-[3px] shadow-sm ${STATUS_BORDER_CLR[s.status]} ${statusFilter && statusFilter !== s.status ? 'opacity-50' : 'opacity-100'}`} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setStatusFilter(statusFilter === s.status ? '' : s.status); } }}>
                         <div className={`text-lg font-extrabold font-mono ${STATUS_TEXT_CLR[s.status]}`}>{s.count}</div>
                         <div className="text-[9px] text-gray-400 font-semibold">{s.status.replace(/_/g, ' ')}</div>
-                    </div>
+                    </Card>
                 ))}
             </div>
 
             {/* New ECO form */}
             {showNew && (
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-3.5 mb-3">
+                <Card className="p-3.5 mb-3 bg-slate-50/50 shadow-sm border-gray-200">
                     <div className="text-[13px] font-bold mb-2.5">Create ECO</div>
                     <div className="grid grid-cols-4 gap-2 mb-2">
                         {(
@@ -134,12 +134,12 @@ export default function ECOManagement() {
                         <button onClick={() => setShowNew(false)} className="py-1 px-3 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
                         <button disabled={!form.title} onClick={() => createMut.mutate(form)} className="py-1 px-3 bg-blue-700 text-white border-none rounded-md text-[11px] font-bold cursor-pointer disabled:opacity-50">Create</button>
                     </div>
-                </div>
+                </Card>
             )}
 
             <div className="flex gap-3.5">
                 {/* ECO list */}
-                <div className="flex-1 min-h-[400px] h-full border border-gray-200 rounded-xl">
+                <Card className="flex-1 min-h-[400px] h-full overflow-hidden shadow-sm">
                     <InteractiveSpreadsheet
                         columns={ecoColumns}
                         data={ecos}
@@ -148,10 +148,10 @@ export default function ECOManagement() {
                         onChange={() => { }}
                         containerHeight="600px"
                     />
-                </div>
+                </Card>
                 {/* Detail */}
                 {selected && (
-                    <div className="w-[280px] shrink-0 bg-white border border-gray-200 rounded-xl p-3.5">
+                    <Card className="w-[280px] shrink-0 p-3.5 shadow-sm">
                         <div className="flex justify-between mb-2">
                             <div className="font-bold text-xs">{selected.eco_number}</div>
                             <button onClick={() => setSelected(null)} className="bg-transparent border-none cursor-pointer">✕</button>
@@ -170,7 +170,7 @@ export default function ECOManagement() {
                                 ))}
                             </>
                         )}
-                    </div>
+                    </Card>
                 )}
             </div>
         </StandardPage>

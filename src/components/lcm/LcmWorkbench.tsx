@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -238,7 +239,7 @@ export default function LcmWorkbench() {
                                                         {op.approvalStatus || 'DRAFT'}
                                                     </span>
                                                 </TableCell>
-                                                <TableCell>{new Date(op.createdAt).toLocaleDateString()}</TableCell>
+                                                <TableCell>{formatDate(op.createdAt)}</TableCell>
                                                 <TableCell className="text-right space-x-2">
                                                     <Button variant="outline" size="sm" onClick={() => allocateMutation.mutate(op.id)}>
                                                         Run Allocations

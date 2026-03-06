@@ -442,7 +442,7 @@ export default function CommunityForum() {
         <CardHeader className="py-3"><CardTitle className="text-sm flex items-center gap-2"><TrendingUp className="w-4 h-4" /> Trending Today</CardTitle></CardHeader>
         <CardContent className="pt-0 space-y-3">
           {trendingPosts.map((post, i) => (
-            <div key={post.id} className="cursor-pointer hover:bg-muted/50 p-2 rounded-md -mx-2" onClick={() => setSelectedPost(post.id)} data-testid={`trending-post-${i}`}>
+            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} key={post.id} className="cursor-pointer hover:bg-muted/50 p-2 rounded-md -mx-2" onClick={() => setSelectedPost(post.id)} data-testid={`trending-post-${i}`}>
               <p className="text-sm font-medium line-clamp-2">{post.title}</p>
               <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {post.viewCount || 0}</span>
@@ -461,7 +461,7 @@ export default function CommunityForum() {
             const displayName = user.userName || (user.userFirstName && user.userLastName ? `${user.userFirstName} ${user.userLastName}` : null) || user.userId?.slice(0, 12);
             const initials = displayName ? displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : '?';
             return (
-              <div key={user.id} className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded-md -mx-2" onClick={() => setProfileUserId(user.userId)} data-testid={`leaderboard-user-${index}`}>
+              <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} key={user.id} className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded-md -mx-2" onClick={() => setProfileUserId(user.userId)} data-testid={`leaderboard-user-${index}`}>
                 <div className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary font-bold text-[10px]">{index + 1}</div>
                 <Avatar className="w-7 h-7">
                   {user.profileImageUrl && <AvatarImage src={user.profileImageUrl} alt={displayName} />}

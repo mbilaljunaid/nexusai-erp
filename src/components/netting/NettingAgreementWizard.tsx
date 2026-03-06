@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -208,7 +209,7 @@ export function NettingAgreementWizard({ isOpen, onClose, onSuccess }: Agreement
                                     </div>
                                     <div className="space-y-2 max-h-64 overflow-y-auto">
                                         {orgs.map((org: any) => (
-                                            <div
+                                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                                 key={org.id}
                                                 className="flex items-center space-x-2 p-3 border rounded hover:bg-muted/50 cursor-pointer"
                                                 onClick={() => toggleEntity(org.id)}
@@ -312,7 +313,7 @@ export function NettingAgreementWizard({ isOpen, onClose, onSuccess }: Agreement
                                         </div>
                                         <div>
                                             <p className="text-muted-foreground">Effective Date</p>
-                                            <p className="font-medium">{new Date(effectiveDate).toLocaleDateString()}</p>
+                                            <p className="font-medium">{formatDate(effectiveDate)}</p>
                                         </div>
                                         <div>
                                             <p className="text-muted-foreground">Entities</p>

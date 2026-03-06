@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useRoute, Link } from "wouter";
@@ -188,7 +189,7 @@ export default function APInvoiceDetail() {
                                 <div key={i} className="flex justify-between items-center p-3 border rounded-md">
                                     <div>
                                         <div className="font-medium text-destructive">{h.holdReason}</div>
-                                        <div className="text-xs text-muted-foreground">Placed: {new Date(h.holdDate).toLocaleDateString()}</div>
+                                        <div className="text-xs text-muted-foreground">Placed: {formatDate(h.holdDate)}</div>
                                     </div>
                                     {h.released ? (
                                         <StatusBadge status="Released" />

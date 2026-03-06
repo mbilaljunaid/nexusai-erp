@@ -97,7 +97,7 @@ export function SmartViewBuilder({ formId, onViewSelect }: SmartViewBuilderProps
           smartViews.map((view: any) => (
             <Card key={view.id} className="hover-elevate cursor-pointer" data-testid={`card-smartview-${view.id}`}>
               <CardContent className="p-3 flex items-center justify-between">
-                <div onClick={() => onViewSelect?.(view.id)} className="flex-1">
+                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => onViewSelect?.(view.id)} className="flex-1">
                   <p className="font-medium text-sm">{view.name}</p>
                   <p className="text-xs text-muted-foreground">
                     {view.filters?.length || 0} filters

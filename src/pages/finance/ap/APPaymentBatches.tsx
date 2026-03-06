@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -114,7 +115,7 @@ export default function APPaymentBatches() {
         {
             header: "Payment Date",
             id: "checkDate", width: "150px",
-            cell: (row) => row.checkDate ? new Date(row.checkDate).toLocaleDateString() : "-"
+            cell: (row) => row.checkDate ? formatDate(row.checkDate) : "-"
         },
         { header: "Payment Method", id: "paymentMethodCode", width: "150px" },
         {

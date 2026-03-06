@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -70,7 +71,7 @@ export default function ERPAdvanced() {
                         <div><strong>{rule.name}</strong><div className="text-xs text-muted-foreground">{rule.jurisdiction}</div></div>
                         <div>{rule.taxType.toUpperCase()}<div className="text-xs text-muted-foreground">Type</div></div>
                         <div>{rule.rate}%<div className="text-xs text-muted-foreground">Rate</div></div>
-                        <div>{new Date(rule.effectiveDate).toLocaleDateString()}<div className="text-xs text-muted-foreground">Effective</div></div>
+                        <div>{formatDate(rule.effectiveDate)}<div className="text-xs text-muted-foreground">Effective</div></div>
                       </div>
                     </CardContent>
                   </Card>

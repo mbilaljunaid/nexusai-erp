@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -160,7 +161,7 @@ export default function DataLineageViewer() {
                                 <div className="text-sm text-muted-foreground">Last Modified</div>
                                 <div className="font-medium">
                                     {lineageData.currentRecord?.lastModified
-                                        ? new Date(lineageData.currentRecord.lastModified).toLocaleString()
+                                        ? formatDateTime(lineageData.currentRecord.lastModified)
                                         : "N/A"}
                                 </div>
                             </div>

@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -60,7 +61,7 @@ export default function BatchScheduler() {
                                 <div>
                                     <div className="text-muted-foreground">Last Run</div>
                                     <div className="font-medium">
-                                        {job.lastRun ? new Date(job.lastRun).toLocaleString() : "Never"}
+                                        {job.lastRun ? formatDateTime(job.lastRun) : "Never"}
                                     </div>
                                 </div>
                                 <div>

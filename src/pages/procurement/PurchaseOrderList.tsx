@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
@@ -79,7 +80,7 @@ export default function PurchaseOrderList() {
         {
             id: "createdAt", width: "150px",
             header: "Date",
-            cell: (item) => <span>{new Date(item.createdAt).toLocaleDateString()}</span>
+            cell: (item) => <span>{formatDate(item.createdAt)}</span>
         },
         {
             id: "actions",

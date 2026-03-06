@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { PageSkeleton } from "@/components/shared/PageSkeleton";
@@ -205,7 +206,7 @@ export default function Account360() {
                                                 <TableCell className="font-medium">{opp.name}</TableCell>
                                                 <TableCell><Badge variant="outline">{opp.stage}</Badge></TableCell>
                                                 <TableCell>${Number(opp.amount).toLocaleString()}</TableCell>
-                                                <TableCell>{new Date(opp.closeDate!).toLocaleDateString()}</TableCell>
+                                                <TableCell>{formatDate(opp.closeDate!)}</TableCell>
                                             </TableRow>
                                         ))}
                                         {opportunities.length === 0 && <TableRow><TableCell colSpan={4} className="text-center py-6 text-muted-foreground">No opportunities found</TableCell></TableRow>}

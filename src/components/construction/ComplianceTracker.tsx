@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -590,7 +591,7 @@ export function ComplianceTracker({ projectId }: ComplianceTrackerProps) {
                                         <div>{format(new Date(selectedRecord.expiryDate), "MMMM d, yyyy")}</div>
                                         <div className="text-xs mt-1">
                                             {getExpiryStatus(selectedRecord.expiryDate) && (
-                                                <span className={getExpiryStatus(selectedRecord.expiryDate)!.color}
+                                                <span role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} className={getExpiryStatus(selectedRecord.expiryDate)!.color}
                                                     onClick={() => trackComplianceExpiry("viewed", Math.floor((new Date(selectedRecord.expiryDate!).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))}
                                                 >
                                                     {getExpiryStatus(selectedRecord.expiryDate)!.text}
@@ -632,7 +633,7 @@ export function ComplianceTracker({ projectId }: ComplianceTrackerProps) {
                                                     <div className="min-w-0">
                                                         <div className="text-sm font-medium truncate">{attachment.filename}</div>
                                                         <div className="text-xs text-muted-foreground">
-                                                            {(attachment.fileSize / 1024).toFixed(2)} KB • {new Date(attachment.uploadedAt).toLocaleDateString()}
+                                                            {(attachment.fileSize / 1024).toFixed(2)} KB • {formatDate(attachment.uploadedAt)}
                                                         </div>
                                                     </div>
                                                 </div>

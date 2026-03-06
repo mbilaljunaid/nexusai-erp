@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import React, { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -62,7 +63,7 @@ export function JournalGrid({ data, onRowClick, loading }: JournalGridProps) {
                                 <TableCell className="font-medium">{journal.journalNumber}</TableCell>
                                 <TableCell>{journal.category}</TableCell>
                                 <TableCell>
-                                    {new Date(journal.effectiveDate).toLocaleDateString()}
+                                    {formatDate(journal.effectiveDate)}
                                 </TableCell>
                                 <TableCell className="max-w-[300px] truncate">{journal.description}</TableCell>
                                 <TableCell className="text-right font-mono">

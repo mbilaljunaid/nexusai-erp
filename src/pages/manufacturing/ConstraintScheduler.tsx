@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -72,8 +73,8 @@ export default function ConstraintScheduler() {
         { id: "workOrder", header: "Work Order", width: "150px", cell: (wo) => <div className="font-medium">{wo.orderNumber}</div> },
         { id: "product", header: "Product", width: "200px", cell: (wo) => wo.productName },
         { id: "quantity", header: "Quantity", width: "100px", cell: (wo) => <div className="text-right">{wo.quantity}</div> },
-        { id: "startDate", header: "Start Date", width: "150px", cell: (wo) => wo.scheduledStart ? new Date(wo.scheduledStart).toLocaleDateString() : '—' },
-        { id: "dueDate", header: "Due Date", width: "150px", cell: (wo) => wo.dueDate ? new Date(wo.dueDate).toLocaleDateString() : '—' },
+        { id: "startDate", header: "Start Date", width: "150px", cell: (wo) => wo.scheduledStart ? formatDate(wo.scheduledStart) : '—' },
+        { id: "dueDate", header: "Due Date", width: "150px", cell: (wo) => wo.dueDate ? formatDate(wo.dueDate) : '—' },
         {
             id: "status", header: "Status", width: "120px", cell: (wo) => (
                 <Badge variant={wo.isOnTime ? 'default' : 'destructive'}>

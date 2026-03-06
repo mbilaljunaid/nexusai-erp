@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -60,7 +61,7 @@ export default function CurrencyRevaluation() {
             id: "revaluationDate",
             header: "Date",
             width: "150px",
-            cell: (row: any) => <span>{new Date(row.revaluationDate).toLocaleDateString()}</span>
+            cell: (row: any) => <span>{formatDate(row.revaluationDate)}</span>
         },
         { id: "currency", header: "Currency", width: "120px", cell: (row: any) => <span>{row.currency}</span> },
         {

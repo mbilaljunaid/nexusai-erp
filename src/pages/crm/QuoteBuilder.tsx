@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -409,7 +410,7 @@ export default function QuoteBuilder() {
                                         <div>
                                             <div className="font-medium">Version {version.version}</div>
                                             <div className="text-xs text-muted-foreground">
-                                                {new Date(version.createdAt).toLocaleString()} by {version.createdBy}
+                                                {formatDateTime(version.createdAt)} by {version.createdBy}
                                             </div>
                                         </div>
                                         <Badge>{version.status}</Badge>

@@ -1,3 +1,4 @@
+import { formatTime } from "@/lib/dateUtils";
 
 import { useState, useMemo } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
@@ -292,7 +293,7 @@ export default function FinancialReports() {
                                             <span>Currency: USD</span>
                                         </CardDescription>
                                     </div>
-                                    <Badge variant="outline" className="font-mono">Generated: {new Date().toLocaleTimeString()}</Badge>
+                                    <Badge variant="outline" className="font-mono">Generated: {formatTime(new Date())}</Badge>
                                 </div>
                             </CardHeader>
                             <CardContent className="p-0 overflow-x-auto">

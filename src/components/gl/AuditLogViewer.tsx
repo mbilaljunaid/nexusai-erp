@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 
 import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow
@@ -66,7 +67,7 @@ export function AuditLogViewer() {
                                 logs?.map((log) => (
                                     <TableRow key={log.id} className="group hover:bg-muted/5">
                                         <TableCell className="font-mono text-xs text-muted-foreground">
-                                            {new Date(log.timestamp).toLocaleString()}
+                                            {formatDateTime(log.timestamp)}
                                         </TableCell>
                                         <TableCell>
                                             <Badge variant="outline" className="font-mono text-xs bg-slate-50">

@@ -1,9 +1,11 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Lock, Shield, Plus, Trash2 } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Card } from "@/components/ui/card";
 
 interface IPEntry {
   ip: string;
@@ -183,7 +185,7 @@ export default function SecurityAdminPanel() {
       </div>
 
       {/* Add IP Form */}
-      <div className="bg-white rounded-lg shadow-sm border p-6">
+      <Card className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Add IP Address</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -227,10 +229,10 @@ export default function SecurityAdminPanel() {
             Add to Blacklist
           </button>
         </div>
-      </div>
+      </Card>
 
       {/* IP Lists */}
-      <div className="bg-white rounded-lg shadow-sm border">
+      <Card>
         {/* Tabs */}
         <div className="border-b">
           <div className="flex">
@@ -269,7 +271,7 @@ export default function SecurityAdminPanel() {
                   <div className="mt-1 flex items-center gap-3 text-xs text-gray-500">
                     <span>Added by {entry.addedBy}</span>
                     <span>•</span>
-                    <span>{new Date(entry.addedAt).toLocaleString()}</span>
+                    <span>{formatDateTime(entry.addedAt)}</span>
                     {entry.reason && (
                       <>
                         <span>•</span>
@@ -289,7 +291,7 @@ export default function SecurityAdminPanel() {
             ))
           )}
         </div>
-      </div>
+      </Card>
 
       <AlertDialog open={showBlacklistConfirm} onOpenChange={setShowBlacklistConfirm}>
         <AlertDialogContent>

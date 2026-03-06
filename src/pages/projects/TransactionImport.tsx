@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -58,7 +59,7 @@ export default function TransactionImport() {
     };
 
     const columns = [
-        { id: "date", header: "Date", width: "150px", cell: (item: any) => <div className="px-2 h-full flex items-center">{new Date(item.date).toLocaleDateString()}</div> },
+        { id: "date", header: "Date", width: "150px", cell: (item: any) => <div className="px-2 h-full flex items-center">{formatDate(item.date)}</div> },
         {
             id: "source", header: "Source", width: "150px", cell: (item: any) => (
                 <div className="px-2 h-full flex items-center">

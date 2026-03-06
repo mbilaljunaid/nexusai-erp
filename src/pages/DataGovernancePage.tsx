@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Database, Play } from "lucide-react";
@@ -35,7 +36,7 @@ export default function DataGovernancePage() {
       const res = await fetch('/api/mdm/quality/match-batch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ batchName: "Manual Run " + new Date().toLocaleString() })
+        body: JSON.stringify({ batchName: "Manual Run " + formatDateTime(new Date()) })
       });
       if (!res.ok) throw new Error("Failed");
       const data = await res.json();

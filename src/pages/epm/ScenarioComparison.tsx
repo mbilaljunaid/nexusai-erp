@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -266,7 +267,7 @@ export default function ScenarioComparison() {
                                         <TableCell className="font-medium">{scenario.name}</TableCell>
                                         <TableCell><code className="text-xs">v{scenario.version}</code></TableCell>
                                         <TableCell>{scenario.createdBy}</TableCell>
-                                        <TableCell>{new Date(scenario.createdAt).toLocaleDateString()}</TableCell>
+                                        <TableCell>{formatDate(scenario.createdAt)}</TableCell>
                                         <TableCell>
                                             <StatusBadge status={scenario.status} />
                                         </TableCell>

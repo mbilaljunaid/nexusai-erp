@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -246,7 +247,7 @@ export default function RevenueSSPManager() {
                         ) : (
                             <div className="space-y-2">
                                 {books.map((book) => (
-                                    <div
+                                    <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         key={book.id}
                                         className={`p-3 border rounded-lg cursor-pointer transition-colors ${selectedBook?.id === book.id
                                             ? "bg-blue-50 border-blue-300"
@@ -258,7 +259,7 @@ export default function RevenueSSPManager() {
                                             <div className="flex-1">
                                                 <p className="font-semibold text-sm">{book.name}</p>
                                                 <p className="text-xs text-muted-foreground mt-1">
-                                                    {book.currency} • {new Date(book.effectiveFrom).toLocaleDateString()}
+                                                    {book.currency} • {formatDate(book.effectiveFrom)}
                                                 </p>
                                             </div>
                                             <Badge variant={book.status === "Active" ? "default" : "secondary"}>

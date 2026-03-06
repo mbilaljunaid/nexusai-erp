@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
@@ -124,7 +125,7 @@ export default function CaseDashboard() {
                                             <span className={c.priority === 'High' ? 'text-red-600 font-bold' : ''}>{c.priority}</span>
                                         </TableCell>
                                         <TableCell>{c.origin}</TableCell>
-                                        <TableCell>{new Date(c.createdAt).toLocaleDateString()}</TableCell>
+                                        <TableCell>{formatDate(c.createdAt)}</TableCell>
                                         <TableCell className="text-right">
                                             <Link href={`/crm/cases/${c.id}`}>
                                                 <Button variant="ghost" size="sm">

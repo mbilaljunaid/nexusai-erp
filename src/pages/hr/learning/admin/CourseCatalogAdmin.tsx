@@ -1,3 +1,4 @@
+import { formatDate, formatDateTime } from "@/lib/dateUtils";
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -9,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Card } from "@/components/ui/card";
 
 export default function CourseCatalogAdmin() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -76,7 +78,7 @@ export default function CourseCatalogAdmin() {
             id: "price", width: "150px",
             cell: (item) => Number(item.price) > 0 ? `${item.currency} ${item.price}` : "Free"
         },
-        { header: "Created At", id: "createdAt", width: "150px", cell: (item) => new Date(item.createdAt).toLocaleDateString() },
+        { header: "Created At", id: "createdAt", width: "150px", cell: (item) => formatDate(item.createdAt) },
         {
             header: "Actions",
             id: "actions",
@@ -87,7 +89,7 @@ export default function CourseCatalogAdmin() {
     ];
 
     const auditColumns: SpreadsheetColumn<any>[] = [
-        { header: "Date", id: "createdAt", width: "150px", cell: (item) => new Date(item.createdAt).toLocaleString() },
+        { header: "Date", id: "createdAt", width: "150px", cell: (item) => formatDateTime(item.createdAt) },
         { header: "Action", id: "action", width: "150px" },
         { header: "Entity", id: "entityType", width: "150px" },
         { header: "Entity ID", id: "entityId", width: "150px", className: "font-mono text-xs" },
@@ -123,22 +125,22 @@ export default function CourseCatalogAdmin() {
                     </TabsList>
 
                     <TabsContent value="courses" className="space-y-4">
-                        <div className="bg-white rounded-md border">
+                        <Card className="overflow-hidden">
                             <InteractiveSpreadsheet
                                 data={courses || []}
                                 columns={columns}
                                 isLoading={isLoading}
-                             onChange={() => {}} containerHeight="600px" />
-                        </div>
+                                onChange={() => { }} containerHeight="600px" />
+                        </Card>
                     </TabsContent>
 
                     <TabsContent value="audit" className="space-y-4">
-                        <div className="bg-white rounded-md border">
+                        <Card className="overflow-hidden">
                             <InteractiveSpreadsheet
                                 data={auditLogs || []}
                                 columns={auditColumns}
-                             onChange={() => {}} containerHeight="600px" />
-                        </div>
+                                onChange={() => { }} containerHeight="600px" />
+                        </Card>
                     </TabsContent>
                 </Tabs>
             </div>

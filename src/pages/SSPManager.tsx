@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -92,7 +93,7 @@ export default function SSPManager() {
             id: "currency", header: "Currency", width: "120px", cell: (item) => <div className="p-2"><Badge variant="outline">{item.currency}</Badge></div>
         },
         {
-            id: "effectiveFrom", header: "Effective From", width: "150px", cell: (item) => <div className="p-2">{new Date(item.effectiveFrom).toLocaleDateString()}</div>
+            id: "effectiveFrom", header: "Effective From", width: "150px", cell: (item) => <div className="p-2">{formatDate(item.effectiveFrom)}</div>
         },
         {
             id: "status", header: "Status", width: "120px", cell: (item) => <div className="p-2"><Badge>{item.status}</Badge></div>

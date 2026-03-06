@@ -4,6 +4,9 @@ import { AlertTriangle, DollarSign, Activity } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface FundingLimit { id: string; project_id: string; funding_source: string; limit_amount: number; utilized_amount: number; available: number; utilization_pct: number; status: string; alert_threshold_pct: number; restrict_charges: boolean; }
 interface Commitment { id: string; project_id: string; commitment_type: string; reference_number: string; vendor_id: string; description: string; committed_amount: number; invoiced_amount: number; remaining_amount: number; status: string; commitment_date: string; }
@@ -64,7 +67,7 @@ export default function FundingLimits() {
 
             {/* Project selector */}
             <div className="flex gap-2 mb-3.5">
-                <input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="py-1.5 px-3 border border-gray-300 rounded-lg text-xs min-w-[220px]" aria-label="Project ID" />
+                <Input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="h-[30px] rounded-lg text-xs min-w-[220px]" aria-label="Project ID" />
                 <button disabled={!projectId} onClick={() => setActiveProject(projectId)} className="py-1.5 px-4 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50">Load</button>
             </div>
 
@@ -85,7 +88,7 @@ export default function FundingLimits() {
                     {tab === 'funding' && (
                         <>
                             {showNewFL && (
-                                <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 mb-2.5">
+                                <Card className="bg-gray-50 p-3 mb-2.5 shadow-sm">
                                     <div className="text-xs font-bold mb-2">Add Funding Limit</div>
                                     <div className="grid grid-cols-3 gap-2">
                                         <div className="flex flex-col gap-0.5">
@@ -103,11 +106,11 @@ export default function FundingLimits() {
                                         ).map(([k, l, t]) => (
                                             <div key={k as string} className="flex flex-col gap-0.5">
                                                 <label className="text-[10px] font-semibold">{l as string}</label>
-                                                <input type={t as string} value={(flForm as any)[k as string]} onChange={e => setFlForm(p => ({ ...p, [k as string]: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px]" aria-label={l as string} />
+                                                <Input type={t as string} value={(flForm as any)[k as string] as string} onChange={e => setFlForm(p => ({ ...p, [k as string]: e.target.value }))} className="h-7 px-2 rounded-md text-[11px]" aria-label={l as string} />
                                             </div>
                                         ))}
                                         <div className="flex items-center gap-1.5 pt-3.5">
-                                            <input type="checkbox" id="restrict_charges" checked={flForm.restrictCharges} onChange={e => setFlForm(p => ({ ...p, restrictCharges: e.target.checked }))} className="m-0" />
+                                            <Checkbox id="restrict_charges" checked={flForm.restrictCharges} onCheckedChange={c => setFlForm(p => ({ ...p, restrictCharges: !!c }))} className="m-0" />
                                             <label htmlFor="restrict_charges" className="text-[11px]">Block charges when exceeded</label>
                                         </div>
                                     </div>
@@ -115,14 +118,14 @@ export default function FundingLimits() {
                                         <button onClick={() => setShowNewFL(false)} className="py-1 px-3 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
                                         <button disabled={!flForm.limitAmount} onClick={() => addFLMut.mutate({ ...flForm, projectId: activeProject })} className="py-1 px-3 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer disabled:opacity-50">Add</button>
                                     </div>
-                                </div>
+                                </Card>
                             )}
                             <div className="flex flex-col gap-2">
                                 {fundingLimits.map(fl => {
                                     const pct = Math.min(100, Number(fl.utilization_pct));
                                     const s = STATUS_STYLES[fl.status] || DEFAULT_STYLE;
                                     return (
-                                        <div key={fl.id} className={`bg-white rounded-xl p-3 px-4 border border-x border-y border-l-[4px] ${fl.status === 'Exhausted' ? 'border-red-300' : 'border-gray-200'} ${s.borderLeft}`}>
+                                        <Card key={fl.id} className={`p-3 px-4 border border-x border-y border-l-[4px] shadow-sm ${fl.status === 'Exhausted' ? 'border-red-300' : 'border-gray-200'} ${s.borderLeft}`}>
                                             <div className="flex justify-between mb-1.5">
                                                 <div className="font-bold text-[13px]">{fl.funding_source} <span className="font-mono text-gray-500 text-xs font-normal">(Limit: {fmt(fl.limit_amount)})</span></div>
                                                 <span className={`text-[10px] py-0.5 px-1.5 rounded-sm font-bold ${s.bg} ${s.text}`}>{fl.status}</span>
@@ -140,7 +143,7 @@ export default function FundingLimits() {
                                                 <div className={`h-full rounded-full transition-all duration-300 fl-progress-${fl.id} ${pct >= 100 ? 'bg-red-600' : pct >= fl.alert_threshold_pct ? 'bg-amber-600' : 'bg-emerald-600'}`} />
                                             </div>
                                             <div className="text-[10px] text-gray-500 mt-0.5">{pct.toFixed(1)}% utilized</div>
-                                        </div>
+                                        </Card>
                                     );
                                 })}
                                 {fundingLimits.length === 0 && <div className="text-center text-gray-400 p-6">No funding limits defined</div>}
@@ -155,17 +158,17 @@ export default function FundingLimits() {
                             {commitSummary.length > 0 && (
                                 <div className="flex gap-2 mb-2.5">
                                     {commitSummary.map(s => (
-                                        <div key={s.commitment_type} className="bg-white border border-gray-200 rounded-xl py-2.5 px-4 flex-1">
+                                        <Card key={s.commitment_type} className="py-2.5 px-4 flex-1 shadow-sm">
                                             <div className="text-[11px] text-gray-500 mb-0.5">{s.commitment_type}</div>
                                             <div className="text-[15px] font-extrabold font-mono">{fmt(s.total_committed)}</div>
                                             <div className="text-[10px] text-emerald-600">Remaining: {fmt(s.total_remaining)}</div>
-                                        </div>
+                                        </Card>
                                     ))}
                                 </div>
                             )}
 
                             {showNewCommit && (
-                                <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 mb-2.5">
+                                <Card className="bg-gray-50 p-3 mb-2.5 shadow-sm">
                                     <div className="text-xs font-bold mb-2">Add Commitment</div>
                                     <div className="grid grid-cols-3 gap-2">
                                         <div className="flex flex-col gap-0.5">
@@ -186,7 +189,7 @@ export default function FundingLimits() {
                                         ).map(([k, l, t]) => (
                                             <div key={k as string} className="flex flex-col gap-0.5">
                                                 <label className="text-[10px] font-semibold">{l as string}</label>
-                                                <input type={t as string} value={(commitForm as any)[k as string]} onChange={e => setCommitForm(p => ({ ...p, [k as string]: e.target.value }))} className="py-1.5 px-2 border border-gray-300 rounded-md text-[11px]" aria-label={l as string} />
+                                                <Input type={t as string} value={(commitForm as any)[k as string] as string} onChange={e => setCommitForm(p => ({ ...p, [k as string]: e.target.value }))} className="h-7 px-2 rounded-md text-[11px]" aria-label={l as string} />
                                             </div>
                                         ))}
                                     </div>
@@ -194,17 +197,17 @@ export default function FundingLimits() {
                                         <button onClick={() => setShowNewCommit(false)} className="py-1 px-3 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
                                         <button disabled={!commitForm.committedAmount} onClick={() => addCommitMut.mutate({ ...commitForm, projectId: activeProject })} className="py-1 px-3 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer disabled:opacity-50">Add</button>
                                     </div>
-                                </div>
+                                </Card>
                             )}
 
-                            <div className="min-h-[400px] h-full border border-gray-200 rounded-xl">
+                            <Card className="min-h-[400px] h-full overflow-hidden shadow-sm">
                                 <InteractiveSpreadsheet
                                     columns={commitColumns}
                                     data={commitments}
                                     onChange={() => { }}
                                     containerHeight="500px"
                                 />
-                            </div>
+                            </Card>
                         </>
                     )}
                 </>

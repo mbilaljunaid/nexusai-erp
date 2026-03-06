@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -81,7 +82,7 @@ export function InvoiceSideSheet({ invoiceId, onClose }: InvoiceSideSheetProps) 
                             </div>
                             <div>
                                 <span className="text-muted-foreground">Due Date:</span>
-                                <div className="font-medium">{invoice?.dueDate ? new Date(invoice.dueDate).toLocaleDateString() : 'N/A'}</div>
+                                <div className="font-medium">{invoice?.dueDate ? formatDate(invoice.dueDate) : 'N/A'}</div>
                             </div>
                             <div>
                                 <span className="text-muted-foreground">Supplier:</span>

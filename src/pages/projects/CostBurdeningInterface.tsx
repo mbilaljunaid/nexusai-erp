@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -337,7 +338,7 @@ export default function CostBurdeningInterface() {
                                                             </TableCell>
                                                             <TableCell className="font-mono text-xs">{exp.taskName}</TableCell>
                                                             <TableCell className="text-xs">{exp.expenditureTypeName}</TableCell>
-                                                            <TableCell className="text-xs">{new Date(exp.expenditureItemDate).toLocaleDateString()}</TableCell>
+                                                            <TableCell className="text-xs">{formatDate(exp.expenditureItemDate)}</TableCell>
                                                             <TableCell className="text-right font-medium">{formatCurrency(exp.rawCost)}</TableCell>
                                                             <TableCell className="text-right">
                                                                 <div className="flex flex-col items-end">

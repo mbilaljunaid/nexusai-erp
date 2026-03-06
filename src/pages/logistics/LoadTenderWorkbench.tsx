@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Truck, Send, CheckCircle2, XCircle, Plus, FileCode } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from "@/components/ui/input";
 
 
 interface LoadTender {
@@ -106,7 +107,7 @@ export default function LoadTenderWorkbench() {
                                 {[['carrierId', 'Carrier SCAC', 'text'], ['referenceNumber', 'Reference #', 'text'], ['originCity', 'Origin City', 'text'], ['originState', 'Origin State', 'text'], ['destCity', 'Dest City', 'text'], ['destState', 'Dest State', 'text'], ['pickupDate', 'Pickup Date', 'date'], ['weightLbs', 'Weight (lbs)', 'number'], ['palletCount', '# Pallets', 'number'], ['freightCharge', 'Freight $', 'number']].map(([k, label, t]) => (
                                     <div key={k} className="nff">
                                         <label className="nfl">{label}</label>
-                                        <input className="nfi" type={t as string} value={(newForm as any)[k as string] ?? ''} onChange={e => setNewForm(p => ({ ...p, [k as string]: t === 'number' ? parseFloat(e.target.value) || 0 : e.target.value }))} aria-label={label as string} />
+                                        <Input type={t as string} value={(newForm as any)[k as string] ?? ''} onChange={e => setNewForm(p => ({ ...p, [k as string]: t === 'number' ? parseFloat(e.target.value) || 0 : e.target.value }))} className="h-8 text-[11px]" aria-label={label as string} />
                                     </div>
                                 ))}
                                 <div className="nff">

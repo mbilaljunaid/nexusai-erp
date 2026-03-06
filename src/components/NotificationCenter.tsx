@@ -313,7 +313,7 @@ export function NotificationCenter() {
 
       {open && (
         <>
-          <div 
+          <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} 
             className="fixed inset-0 z-40" 
             onClick={() => setOpen(false)}
             data-testid="overlay-notifications-backdrop"

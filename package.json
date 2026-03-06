@@ -92,6 +92,7 @@
     "express-session": "^1.18.1",
     "file-saver": "^2.0.5",
     "framer-motion": "^11.13.1",
+    "glob": "^13.0.6",
     "handsontable": "^16.2.0",
     "html2canvas": "^1.4.1",
     "input-otp": "^1.4.2",

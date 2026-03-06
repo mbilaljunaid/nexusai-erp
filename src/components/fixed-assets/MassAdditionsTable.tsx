@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { FaMassAddition, FaCategory, FaBook } from "@/types/erp-types";
@@ -125,7 +126,7 @@ export function MassAdditionsTable() {
                                 <TableCell>{item.invoiceNumber}</TableCell>
                                 <TableCell>{item.description}</TableCell>
                                 <TableCell>{item.vendorName}</TableCell>
-                                <TableCell>{new Date(item.date).toLocaleDateString()}</TableCell>
+                                <TableCell>{formatDate(item.date)}</TableCell>
                                 <TableCell className="text-right font-medium text-blue-600">
                                     ${Number(item.amount).toLocaleString()}
                                 </TableCell>

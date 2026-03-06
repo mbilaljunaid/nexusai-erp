@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -167,7 +168,7 @@ export default function AdvancedAnalytics() {
                   </div>
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  Last trained: {new Date(model.lastTrainDate).toLocaleDateString()}
+                  Last trained: {formatDate(model.lastTrainDate)}
                 </div>
                 <Button size="sm" variant="outline" className="w-full" data-testid={`button-retrain-${model.id}`}>
                   Retrain Model

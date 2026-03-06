@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
@@ -88,7 +89,7 @@ export default function ThreeWayMatch() {
                 </div>
                 <div className="p-3 bg-slate-50 rounded">
                   <p className="text-muted-foreground text-xs font-semibold mb-1">MATCHED AT</p>
-                  <p className="font-semibold">{match.matchedAt ? new Date(match.matchedAt).toLocaleDateString() : "Pending"}</p>
+                  <p className="font-semibold">{match.matchedAt ? formatDate(match.matchedAt) : "Pending"}</p>
                 </div>
               </div>
 

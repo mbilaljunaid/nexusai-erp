@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
@@ -270,7 +271,7 @@ export default function BudgetBalanceDrillDown() {
                                     ) : (
                                         transactions.map((txn) => (
                                             <TableRow key={txn.id}>
-                                                <TableCell>{new Date(txn.date).toLocaleDateString()}</TableCell>
+                                                <TableCell>{formatDate(txn.date)}</TableCell>
                                                 <TableCell><code className="text-xs">{txn.journalNumber}</code></TableCell>
                                                 <TableCell>{txn.description}</TableCell>
                                                 <TableCell className="text-right font-mono">{formatCurrency(txn.amount)}</TableCell>

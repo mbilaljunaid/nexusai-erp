@@ -5,6 +5,7 @@ import { BarChart3, TrendingUp, TrendingDown, AlertTriangle, CheckCircle2, Minus
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { formatCurrency, formatNumber } from "@/lib/formatters";
+import { Card } from "@/components/ui/card";
 
 interface Quote { id: string; quote_number: string; customer_id: string; status: string; net_total: number; list_total: number; discount_pct: number; margin_pct: number | null; valid_until: string; currency: string; created_by: string; lines?: QuoteLine[]; }
 interface QuoteLine { id: string; line_number: number; product_id: string; description: string; quantity: number; unit_price: number; discount_pct: number; net_price: number; }
@@ -87,10 +88,10 @@ export default function CPQDashboard() {
                 <>
                     <div className="flex gap-2.5 mb-3.5">
                         {[{ lbl: 'Pipeline', val: `$${formatNumber(pipeline / 1000, 0)}K`, clr: 'text-blue-700' }, { lbl: 'Won', val: won, clr: 'text-emerald-600' }, { lbl: 'Lost', val: lost, clr: 'text-red-600' }, { lbl: 'Open', val: pending, clr: 'text-amber-600' }].map(k => (
-                            <div key={k.lbl} className="bg-white border border-gray-200 rounded-xl px-4 py-2.5 min-w-[100px]">
+                            <Card key={k.lbl} className="px-4 py-2.5 min-w-[100px] shadow-sm">
                                 <div className={`text-xl font-extrabold ${k.clr}`}>{k.val}</div>
                                 <div className="text-[10px] text-gray-400">{k.lbl}</div>
-                            </div>
+                            </Card>
                         ))}
                     </div>
                     <div className="flex gap-1.5 mb-2.5">
@@ -104,7 +105,7 @@ export default function CPQDashboard() {
                                 const statusClass = STATUS_CLR[q.status] ?? 'bg-gray-100 text-gray-400 border-l-gray-400';
                                 const acts = ACTIONS[q.status] ?? [];
                                 return (
-                                    <div key={q.id} onClick={() => setSelected(selected?.id === q.id ? null : q)} className={`bg-white border hover:shadow-sm cursor-pointer border-l-[4px] rounded-xl px-3.5 py-2.5 mb-1.5 ${selected?.id === q.id ? 'border-blue-700' : 'border-gray-200'} ${statusClass.split(' ').find(c => c.startsWith('border-l-'))}`}>
+                                    <Card key={q.id} onClick={() => setSelected(selected?.id === q.id ? null : q)} className={`hover:shadow-md cursor-pointer border-l-[4px] px-3.5 py-2.5 mb-1.5 shadow-sm ${selected?.id === q.id ? 'border-y-blue-700 border-r-blue-700' : ''} ${statusClass.split(' ').find(c => c.startsWith('border-l-'))}`}>
                                         <div className="flex justify-between mb-1">
                                             <div className="font-bold text-[13px]">{q.quote_number} — {q.customer_id}</div>
                                             <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${statusClass.replace(/border-l-\S+/, '')}`}>{q.status}</span>
@@ -120,27 +121,29 @@ export default function CPQDashboard() {
                                                 {acts.map(a => <button key={a.a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: q.id, action: a.a }); }} className={`px-[7px] py-[2px] border-none rounded font-bold text-[9px] cursor-pointer ${a.textClass} ${a.bgClass}`}>{a.label}</button>)}
                                             </div>
                                         )}
-                                    </div>
+                                    </Card>
                                 );
                             })}
-                            {quotes.length === 0 && <div className="text-center text-gray-400 p-8 bg-white rounded-xl">No quotes</div>}
+                            {quotes.length === 0 && <Card className="text-center text-gray-400 p-8 shadow-sm">No quotes</Card>}
                         </div>
                         {selected && (
-                            <div className="w-[280px] flex-shrink-0 bg-white border border-gray-200 rounded-xl p-3.5 h-fit sticky top-4">
+                            <Card className="w-[280px] flex-shrink-0 p-3.5 h-fit sticky top-4 shadow-sm">
                                 <div className="font-bold text-[13px] mb-2">{selected.quote_number}</div>
                                 <div className="text-[11px] font-bold mb-1.5">Line Items</div>
-                                {(selected.lines ?? []).map(l => (
-                                    <div key={l.id} className="border-b border-gray-100 pb-1 mb-1 text-[10px]">
-                                        <div className="font-semibold">#{l.line_number} {l.product_id}</div>
-                                        <div className="text-gray-500">{l.description}</div>
-                                        <div className="flex justify-between mt-0.5">
-                                            <span>{l.quantity} × {formatCurrency(Number(l.unit_price))}</span>
-                                            <span className="font-bold text-emerald-600">{formatCurrency(Number(l.net_price))}</span>
+                                <Card className="p-2 border-none shadow-none bg-gray-50">
+                                    {(selected.lines ?? []).map(l => (
+                                        <div key={l.id} className="border-b border-gray-100 pb-1 mb-1 text-[10px]">
+                                            <div className="font-semibold">#{l.line_number} {l.product_id}</div>
+                                            <div className="text-gray-500">{l.description}</div>
+                                            <div className="flex justify-between mt-0.5">
+                                                <span>{l.quantity} × {formatCurrency(Number(l.unit_price))}</span>
+                                                <span className="font-bold text-emerald-600">{formatCurrency(Number(l.net_price))}</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
-                                {!selected.lines?.length && <div className="text-gray-400 text-[10px]">No lines</div>}
-                            </div>
+                                    ))}
+                                    {!selected.lines?.length && <div className="text-gray-400 text-[10px]">No lines</div>}
+                                </Card>
+                            </Card>
                         )}
                     </div>
                 </>
@@ -153,7 +156,7 @@ export default function CPQDashboard() {
                             <strong>⚠️ {upcoming.length} contract(s)</strong> renewing within 30 days
                         </div>
                     )}
-                    <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
+                    <Card className="overflow-hidden shadow-sm">
                         {renewals.length > 0 ? (
                             <InteractiveSpreadsheet
                                 data={renewals}
@@ -165,7 +168,7 @@ export default function CPQDashboard() {
                         ) : (
                             <div className="p-6 text-center text-gray-400">No pending renewals</div>
                         )}
-                    </div>
+                    </Card>
                 </div>
             )}
 
@@ -185,7 +188,7 @@ export default function CPQDashboard() {
                         )}
                     </div>
                     {evmMetrics && (
-                        <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
+                        <Card className="overflow-hidden shadow-sm">
                             <InteractiveSpreadsheet
                                 data={evmMetrics.controlAccounts}
                                 columns={evmColumns}
@@ -193,9 +196,9 @@ export default function CPQDashboard() {
                                 containerHeight="500px"
                                 onChange={() => { }}
                             />
-                        </div>
+                        </Card>
                     )}
-                    {!evmBaseline && <div className="text-center text-gray-400 p-8 bg-white rounded-xl">Enter a Baseline ID to view EVM metrics</div>}
+                    {!evmBaseline && <Card className="text-center text-gray-400 p-8 shadow-sm">Enter a Baseline ID to view EVM metrics</Card>}
                 </div>
             )}
         </StandardPage>

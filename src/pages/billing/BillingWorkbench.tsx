@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -73,7 +74,7 @@ export default function BillingWorkbench() {
     const columns: SpreadsheetColumn<BillingEvent>[] = [
         {
             id: "eventDate", header: "Event Date", width: "150px",
-            cell: (e) => <div className="p-2">{new Date(e.eventDate).toLocaleDateString()}</div>
+            cell: (e) => <div className="p-2">{formatDate(e.eventDate)}</div>
         },
         {
             id: "sourceSystem", header: "Source", width: "150px",

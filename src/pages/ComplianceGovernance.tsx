@@ -51,6 +51,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Card } from "@/components/ui/card";
 import { Breadcrumb } from "@/components/Breadcrumb";
 
 interface ComplianceRule {
@@ -353,7 +354,7 @@ export default function ComplianceGovernance() {
         </TabsList>
 
         <TabsContent value="rules">
-          <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+          <Card className="overflow-hidden">
             <div className="p-4 border-b bg-muted/30 flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <Gavel className="h-5 w-5 text-slate-500" />
@@ -459,11 +460,11 @@ export default function ComplianceGovernance() {
               columns={columns}
               onChange={() => { }} virtualized={true} containerHeight="500px"
             />
-          </div>
+          </Card>
         </TabsContent>
 
         <TabsContent value="violations">
-          <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+          <Card className="overflow-hidden">
             <div className="p-4 border-b bg-muted/30 flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5 text-orange-500" />
@@ -475,7 +476,7 @@ export default function ComplianceGovernance() {
               columns={violationColumns}
               onChange={() => { }} virtualized={true} containerHeight="500px"
             />
-          </div>
+          </Card>
         </TabsContent>
 
         <TabsContent value="readiness">
@@ -486,7 +487,7 @@ export default function ComplianceGovernance() {
 
 
         <TabsContent value="risk-config">
-          <div className="bg-white rounded-xl border shadow-sm overflow-hidden p-6">
+          <Card className="p-6">
             <div className="flex items-center gap-2 mb-6">
               <Sliders className="h-5 w-5 text-indigo-500" />
               <h3 className="font-bold text-slate-700 italic">Heuristic Risk Weights</h3>
@@ -532,7 +533,7 @@ export default function ComplianceGovernance() {
                 Save Configuration (Coming Soon)
               </Button>
             </div>
-          </div>
+          </Card>
         </TabsContent>
       </Tabs>
 

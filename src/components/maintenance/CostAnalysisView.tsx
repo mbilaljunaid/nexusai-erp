@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -131,7 +132,7 @@ export default function CostAnalysisView({ workOrderId }: CostAnalysisViewProps)
                         <TableBody>
                             {costs?.length > 0 ? costs.map((c: any) => (
                                 <TableRow key={c.id}>
-                                    <TableCell className="text-xs">{new Date(c.date).toLocaleDateString()}</TableCell>
+                                    <TableCell className="text-xs">{formatDate(c.date)}</TableCell>
                                     <TableCell><Badge variant="outline">{c.costType}</Badge></TableCell>
                                     <TableCell>{c.description}</TableCell>
                                     <TableCell className="font-mono text-xs">{c.sourceReference?.substring(0, 8)}</TableCell>

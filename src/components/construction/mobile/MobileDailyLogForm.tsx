@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -146,7 +147,7 @@ export function MobileDailyLogForm({ projectId, onSubmit, onCancel }: MobileDail
                     <div className="flex items-center justify-between">
                         <div>
                             <h1 className="text-xl font-bold">Daily Log Entry</h1>
-                            <p className="text-sm opacity-90">{new Date().toLocaleDateString()}</p>
+                            <p className="text-sm opacity-90">{formatDate(new Date())}</p>
                         </div>
                         {onCancel && (
                             <Button variant="ghost" size="icon" onClick={onCancel} className="text-primary-foreground">

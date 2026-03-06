@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -47,7 +48,7 @@ export function PermitsSection({ workOrderId }: { workOrderId: string }) {
                         <div>
                             <div className="text-sm font-bold text-orange-800">{p.type}</div>
                             <div className="text-xs text-muted-foreground">#{p.permitNumber} • {p.status}</div>
-                            <div className="text-xs mt-1">Valid: {new Date(p.validFrom).toLocaleDateString()} - {new Date(p.validTo).toLocaleDateString()}</div>
+                            <div className="text-xs mt-1">Valid: {formatDate(p.validFrom)} - {formatDate(p.validTo)}</div>
                         </div>
                         {p.status === "ACTIVE" && <AlertTriangle className="h-5 w-5 text-orange-500" />}
                     </div>

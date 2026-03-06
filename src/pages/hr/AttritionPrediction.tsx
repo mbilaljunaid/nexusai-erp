@@ -1,9 +1,11 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { TrendingDown, AlertTriangle, User } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Card } from "@/components/ui/card";
 interface RiskScore {
     id: string; employee_id: string; risk_score: number; risk_band: string;
     tenure_months: number; engagement_score: number; last_promotion_days: number;
@@ -113,7 +115,7 @@ export default function AttritionPrediction() {
 
             {/* Score form */}
             {showScore && (
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-3.5 mb-3">
+                <Card className="p-3.5 mb-3 bg-slate-50/50 shadow-sm">
                     <div className="text-[13px] font-bold mb-2.5">Score Employee Flight Risk</div>
                     <div className="grid grid-cols-4 gap-2">
                         {[['employeeId', 'Employee ID', 'text'], ['tenureMonths', 'Tenure (months)', 'number'], ['engagementScore', 'Engagement (1-5)', 'number'], ['lastPromotionDays', 'Days Since Promo', 'number'], ['managerTenureMonths', 'Manager Tenure (mo)', 'number'], ['compaRatio', 'Compa-Ratio (0-1.5)', 'number'], ['recentAbsenceDays', 'Absence Days (30d)', 'number'], ['overdueGoals', 'Overdue Goals', 'number']].map(([k, l, t]) => (
@@ -129,14 +131,14 @@ export default function AttritionPrediction() {
                             {scoreMut.isPending ? 'Scoring…' : 'Calculate Risk Score'}
                         </button>
                     </div>
-                </div>
+                </Card>
             )}
 
             <div className="flex gap-3.5">
                 {/* Risk table */}
                 <div className="flex-1">
                     {bandFilter && <div className="text-[11px] text-gray-500 mb-1.5">Showing: {BAND_CFG[bandFilter]?.label} — <button onClick={() => setBandFilter('')} className="bg-transparent border-none text-blue-700 cursor-pointer text-[11px]">Clear</button></div>}
-                    <div className="bg-white rounded-xl overflow-hidden border border-gray-200 h-full min-h-[400px]">
+                    <Card className="overflow-hidden h-full min-h-[400px]">
                         <InteractiveSpreadsheet
                             columns={riskColumns}
                             data={highRisk}
@@ -145,13 +147,13 @@ export default function AttritionPrediction() {
                         />
                         {!isLoading && highRisk.length === 0 && <div className="text-center text-gray-400 p-6 border-t border-gray-200">No risk scores — submit an employee to calculate</div>}
                         {isLoading && <div className="text-center text-gray-400 p-6 border-t border-gray-200">Loading calculations...</div>}
-                    </div>
+                    </Card>
                 </div>
 
                 {/* Detail panel */}
                 {selected && (
                     <div className="w-[320px] shrink-0">
-                        <div className="bg-white border border-gray-200 rounded-xl p-3.5 mb-2.5">
+                        <Card className="p-3.5 mb-2.5 shadow-sm">
                             <div className="flex justify-between mb-2">
                                 <div className="font-bold text-[13px]">{selected.employee_id}</div>
                                 <button onClick={() => setSelected(null)} className="bg-transparent border-none cursor-pointer text-gray-400">✕</button>
@@ -169,20 +171,20 @@ export default function AttritionPrediction() {
                                     </div>
                                 ))}
                             </div>
-                        </div>
+                        </Card>
                         {/* History trend */}
                         {history.length > 1 && (
-                            <div className="bg-white border border-gray-200 rounded-xl p-3.5">
+                            <Card className="p-3.5 shadow-sm">
                                 <div className="text-[11px] font-bold mb-2">Score History</div>
                                 <div className="flex flex-col gap-1">
                                     {history.slice(0, 6).map((h, i) => (
                                         <div key={i} className="flex justify-between text-[10px] items-center">
-                                            <span className="text-gray-500">{new Date(h.scored_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                                            <span className="text-gray-500">{formatDate(h.scored_at)}</span>
                                             <div className="w-[100px] flex"><ScoreBar score={Number(h.risk_score)} /></div>
                                         </div>
                                     ))}
                                 </div>
-                            </div>
+                            </Card>
                         )}
                     </div>
                 )}

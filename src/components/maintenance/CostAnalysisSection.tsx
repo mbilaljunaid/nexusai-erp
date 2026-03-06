@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -131,7 +132,7 @@ export function CostAnalysisSection({ workOrderId }: Props) {
                         ) : (
                             costs?.map((cost: any) => (
                                 <TableRow key={cost.id}>
-                                    <TableCell className="text-xs">{new Date(cost.costDate).toLocaleDateString()}</TableCell>
+                                    <TableCell className="text-xs">{formatDate(cost.costDate)}</TableCell>
                                     <TableCell className="text-xs font-medium">{cost.costType}</TableCell>
                                     <TableCell className="text-xs text-muted-foreground">{cost.description}</TableCell>
                                     <TableCell>

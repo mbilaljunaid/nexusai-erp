@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
@@ -46,11 +47,11 @@ export default function TravelManagement() {
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div>
                     <span className="text-muted-foreground">Depart</span>
-                    <p className="font-medium">{new Date(req.departureDate).toLocaleDateString()}</p>
+                    <p className="font-medium">{formatDate(req.departureDate)}</p>
                   </div>
                   <div>
                     <span className="text-muted-foreground">Return</span>
-                    <p className="font-medium">{new Date(req.returnDate).toLocaleDateString()}</p>
+                    <p className="font-medium">{formatDate(req.returnDate)}</p>
                   </div>
                 </div>
               </CardContent>

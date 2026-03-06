@@ -38,7 +38,7 @@ const TreeNodeItem = ({ node, level, onSelect }: TreeNodeProps) => {
 
     return (
         <div className="select-none">
-            <div
+            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                 className={cn(
                     "flex items-center py-1 px-2 hover:bg-muted/50 rounded-sm cursor-pointer transition-colors",
                     "text-sm"

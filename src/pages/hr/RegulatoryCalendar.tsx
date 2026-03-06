@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -7,6 +8,7 @@ import './RegulatoryCalendar.css';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from "@/components/ui/input";
 
 interface RegEvent {
     id: string; title: string; regulation: string; jurisdiction: string;
@@ -19,7 +21,7 @@ interface FCPASummary { training_module: string; total: number; completed_passed
 const STATUS_CLR: Record<string, string> = { Upcoming: '#1d4ed8', In_Progress: '#d97706', Completed: '#059669', Overdue: '#dc2626', Waived: '#6b7280' };
 const REG_COLORS = ['#7c3aed', '#1d4ed8', '#059669', '#d97706', '#dc2626', '#ec4899', '#0891b2'];
 
-function fmtDate(d: string) { return d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'; }
+function fmtDate(d: string) { return d ? formatDate(d) : '—'; }
 function daysUntil(d: string) { return Math.ceil((new Date(d).getTime() - Date.now()) / 86400000); }
 
 const REGULATIONS = ['GDPR', 'SOX', 'HIPAA', 'FCPA', 'EEOC', 'OSHA', 'ADA', 'CUSTOM'];
@@ -186,7 +188,7 @@ export default function RegulatoryCalendar() {
                     <div className="form-grid">
                         <div className="form-group-full">
                             <label className="form-label">Title</label>
-                            <input value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} className="form-input" aria-label="Title" />
+                            <Input value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} className="form-input h-9 text-[13px]" aria-label="Title" />
                         </div>
                         {[['regulation', 'Regulation', REGULATIONS], ['eventType', 'Event Type', EVENT_TYPES], ['recurrence', 'Recurrence', ['NONE', 'MONTHLY', 'QUARTERLY', 'ANNUAL']]].map(([k, l, opts]) => (
                             <div key={k as string} className="form-group">
@@ -200,7 +202,7 @@ export default function RegulatoryCalendar() {
                         {[['jurisdiction', 'Jurisdiction', 'text'], ['dueDate', 'Due Date', 'date'], ['reminderDays', 'Remind (days before)', 'number']].map(([k, l, t]) => (
                             <div key={k as string} className="form-group">
                                 <label className="form-label">{l as string}</label>
-                                <input type={t as string} value={(form as any)[k as string]} onChange={e => setForm(p => ({ ...p, [k as string]: e.target.value }))} className="form-input" aria-label={l as string} />
+                                <Input type={t as string} value={(form as any)[k as string] as string} onChange={e => setForm(p => ({ ...p, [k as string]: e.target.value }))} className="form-input h-9 text-[13px]" aria-label={l as string} />
                             </div>
                         ))}
                         <div className="form-group-full">

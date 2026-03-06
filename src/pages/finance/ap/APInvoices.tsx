@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useState, useMemo } from "react";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -530,7 +531,7 @@ export default function APInvoices() {
                           </div>
                           <p className="text-sm text-muted-foreground">{hold.hold_reason}</p>
                           <p className="text-xs text-muted-foreground">
-                            Created: {new Date(hold.hold_date).toLocaleString()}
+                            Created: {formatDateTime(hold.hold_date)}
                           </p>
                         </div>
                         {!hold.release_lookup_code && (

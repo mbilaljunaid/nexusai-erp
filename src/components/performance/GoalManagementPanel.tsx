@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -240,7 +241,7 @@ export default function GoalManagementPanel({ personId }: { personId?: string })
                                     </td>
                                     <td className="p-3">{getStatusBadge(goal.status)}</td>
                                     <td className="p-3 text-sm">
-                                        {new Date(goal.targetDate).toLocaleDateString()}
+                                        {formatDate(goal.targetDate)}
                                     </td>
                                     <td className="p-3">
                                         <div className="flex justify-end gap-2">

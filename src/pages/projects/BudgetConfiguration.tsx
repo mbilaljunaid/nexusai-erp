@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
@@ -256,7 +257,7 @@ export default function BudgetConfiguration() {
                                                 </TableCell>
                                                 <TableCell><StatusBadge status={version.currentFlag ? "CURRENT" : version.status} /></TableCell>
                                                 <TableCell className="text-xs text-muted-foreground">
-                                                    {version.baselineDate ? new Date(version.baselineDate).toLocaleDateString() : "—"}
+                                                    {version.baselineDate ? formatDate(version.baselineDate) : "—"}
                                                 </TableCell>
                                             </TableRow>
                                         ))}

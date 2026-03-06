@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -141,7 +142,7 @@ export default function CalendarManager() {
             id: "createdAt",
             header: "Created",
             width: "150px",
-            cell: (row) => <span>{new Date(row.createdAt).toLocaleDateString()}</span>
+            cell: (row) => <span>{formatDate(row.createdAt)}</span>
         }
     ];
 

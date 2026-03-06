@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -126,7 +127,7 @@ export function CashForecastWidget() {
 
     // Prepare chart data
     const chartData = forecast.map(day => ({
-        date: new Date(day.date).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric' }),
+        date: formatDate(day.date),
         Balance: day.closingBalance,
         Inflow: day.inflow,
         Outflow: day.outflow,
@@ -313,7 +314,7 @@ export function CashForecastWidget() {
                             {forecast.map((day) => (
                                 <TableRow key={day.date}>
                                     <TableCell className="font-medium">
-                                        {new Date(day.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
+                                        {formatDate(day.date)}
                                     </TableCell>
                                     <TableCell className="text-right text-green-600">
                                         {day.inflow > 0 ? `+${day.inflow.toLocaleString()}` : "-"}

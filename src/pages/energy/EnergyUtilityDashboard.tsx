@@ -1,3 +1,4 @@
+import { formatDate, formatDateTime } from "@/lib/dateUtils";
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -123,7 +124,7 @@ export default function EnergyUtilityDashboard() {
                                                 {outage.cause} • {outage.affected_customers} customers affected
                                             </div>
                                             <div className="text-xs text-gray-400">
-                                                Started: {new Date(outage.started_at).toLocaleString()}
+                                                Started: {formatDateTime(outage.started_at)}
                                             </div>
                                         </div>
                                         <div className="text-right">
@@ -187,7 +188,7 @@ export default function EnergyUtilityDashboard() {
                                         </div>
                                         <div className="text-right">
                                             <div className="text-sm font-medium">
-                                                Due: {new Date(filing.due_date).toLocaleDateString()}
+                                                Due: {formatDate(filing.due_date)}
                                             </div>
                                             <Badge variant="secondary">{filing.status}</Badge>
                                         </div>

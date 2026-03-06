@@ -1,3 +1,4 @@
+import { formatDate, formatDateTime } from "@/lib/dateUtils";
 import { useState, useEffect } from "react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { formatCurrency } from "@/lib/formatters";
@@ -414,12 +415,12 @@ export function CostManagementHub() {
                                                 <span className="text-muted-foreground">Cost Center:</span> {item.costCenter}
                                             </div>
                                             <div>
-                                                <span className="text-muted-foreground">Queued:</span> {new Date(item.queuedDate).toLocaleDateString()}
+                                                <span className="text-muted-foreground">Queued:</span> {formatDate(item.queuedDate)}
                                             </div>
                                         </div>
                                         {item.postedDate && (
                                             <div className="text-xs text-green-600 mt-2">
-                                                Posted: {new Date(item.postedDate).toLocaleString()}
+                                                Posted: {formatDateTime(item.postedDate)}
                                             </div>
                                         )}
                                     </div>

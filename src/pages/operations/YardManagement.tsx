@@ -1,3 +1,4 @@
+import { formatTime } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Truck, Clock, CheckCircle2 } from 'lucide-react';
@@ -36,7 +37,7 @@ const STATUS_CFG: Record<string, { bg: string; color: string }> = {
     NoShow: { bg: '#fee2e2', color: '#dc2626' },
 };
 
-function fmtTime(d: string) { return d ? new Date(d).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '—'; }
+function fmtTime(d: string) { return d ? formatTime(d) : '—'; }
 
 export default function YardManagement() {
     const [tab, setTab] = useState<'docks' | 'appointments' | 'schedule'>('docks');

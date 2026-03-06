@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery } from '@tanstack/react-query';
@@ -67,7 +68,7 @@ export default function AssetWorkbench() {
                 </div>
             )
         },
-        { id: "datePlacedInService", header: "In Service Date", width: "20%", cell: (item: any) => <div className="p-2">{item.datePlacedInService ? new Date(item.datePlacedInService).toLocaleDateString() : '-'}</div> },
+        { id: "datePlacedInService", header: "In Service Date", width: "20%", cell: (item: any) => <div className="p-2">{item.datePlacedInService ? formatDate(item.datePlacedInService) : '-'}</div> },
         {
             id: "faAssetId", header: "FA Interface", width: "20%", cell: (item: any) => <div className="p-2">
                 {item.faAssetId ? (

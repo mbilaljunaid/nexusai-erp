@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -92,7 +93,7 @@ export default function LeaseApprovalsWorkbench() {
                             ) : (
                                 <div className="space-y-3">
                                     {pendingLeases.map((lease) => (
-                                        <div
+                                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                             key={lease.id}
                                             className={`p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md ${selectedLeaseId === lease.id ? "border-primary bg-primary/5 ring-1 ring-primary" : ""
                                                 }`}
@@ -102,7 +103,7 @@ export default function LeaseApprovalsWorkbench() {
                                                 <div>
                                                     <p className="font-semibold text-lg">{lease.leaseName}</p>
                                                     <p className="text-sm text-muted-foreground">
-                                                        Submitted by {lease.submittedBy} • {new Date(lease.submittedAt).toLocaleDateString()}
+                                                        Submitted by {lease.submittedBy} • {formatDate(lease.submittedAt)}
                                                     </p>
                                                 </div>
                                                 <div className="text-right">

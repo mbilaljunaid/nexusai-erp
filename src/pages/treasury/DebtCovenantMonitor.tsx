@@ -1,9 +1,12 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Shield, AlertTriangle, CheckCircle2, Search, RefreshCw, Eye } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 
 interface ScreeningResult {
@@ -118,7 +121,7 @@ export default function DebtCovenantMonitor() {
         { id: "score", header: "Score", width: "100px", cell: (row) => <span className="mono">{row.match_score?.toFixed(0) ?? '—'}%</span> },
         { id: "lists", header: "Lists", width: "150px", cell: (row) => <div className="lists">{(row.list_sources ?? []).map((l: string) => <span key={l} className="list-tag">{l}</span>)}</div> },
         { id: "programs", header: "Programs", width: "150px", cell: (row) => <div className="lists">{(row.program_tags ?? []).map((p: string) => <span key={p} className="prog-tag">{p}</span>)}</div> },
-        { id: "date", header: "Date", width: "100px", cell: (row) => <span className="mono small">{new Date(row.screened_at).toLocaleDateString()}</span> },
+        { id: "date", header: "Date", width: "100px", cell: (row) => <span className="mono small">{formatDate(row.screened_at)}</span> },
         {
             id: "action", header: "", width: "100px", cell: (row) => (
                 (row.match_status === 'PotentialMatch' || row.match_status === 'Confirmed') && !row.reviewed_by ? (
@@ -204,11 +207,11 @@ export default function DebtCovenantMonitor() {
                             </div>
                             <div className="sf">
                                 <label className="sl">Entity ID</label>
-                                <input className="si" placeholder="Supplier / Customer ID" value={screenForm.entityId} onChange={e => setScreenForm(p => ({ ...p, entityId: e.target.value }))} aria-label="Entity ID" />
+                                <Input placeholder="Supplier / Customer ID" value={screenForm.entityId} onChange={e => setScreenForm(p => ({ ...p, entityId: e.target.value }))} className="h-9 text-[12px]" aria-label="Entity ID" />
                             </div>
                             <div className="sf">
                                 <label className="sl">Entity Name</label>
-                                <input className="si" placeholder="Full legal name" value={screenForm.entityName} onChange={e => setScreenForm(p => ({ ...p, entityName: e.target.value }))} aria-label="Entity name" />
+                                <Input placeholder="Full legal name" value={screenForm.entityName} onChange={e => setScreenForm(p => ({ ...p, entityName: e.target.value }))} className="h-9 text-[12px]" aria-label="Entity name" />
                             </div>
                             <button className="screen-btn" disabled={!screenForm.entityName || screenMutation.isPending}
                                 onClick={() => screenMutation.mutate(screenForm)} aria-label="Screen entity">
@@ -249,23 +252,25 @@ export default function DebtCovenantMonitor() {
 
                     {/* Review Modal */}
                     {selectedResult && (
-                        <div className="modal-backdrop" onClick={() => setSelectedResult(null)}>
-                            <div className="review-modal" onClick={e => e.stopPropagation()}>
+                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} className="modal-backdrop" onClick={() => setSelectedResult(null)}>
+                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} className="review-modal" onClick={e => e.stopPropagation()}>
                                 <h3 className="rm-title">Review Match</h3>
                                 <div className="rm-entity">{selectedResult.entity_name}</div>
                                 {selectedResult.matched_name && <div className="rm-match">Matched against: <strong>{selectedResult.matched_name}</strong></div>}
                                 <div className="rm-score">Similarity score: <strong>{selectedResult.match_score}%</strong></div>
                                 <div className="rm-lists">Lists: {(selectedResult.list_sources ?? []).join(', ')}</div>
                                 <div className="rm-progs">Programs: {(selectedResult.program_tags ?? []).join(', ')}</div>
-                                <div className="rm-choice">
-                                    <label className="rc-label">
-                                        <input type="radio" name="outcome" value="FalsePositive" checked={reviewOutcome === 'FalsePositive'} onChange={() => setReviewOutcome('FalsePositive')} aria-label="Mark as false positive" />
-                                        False Positive — clear entity
-                                    </label>
-                                    <label className="rc-label">
-                                        <input type="radio" name="outcome" value="Confirmed" checked={reviewOutcome === 'Confirmed'} onChange={() => setReviewOutcome('Confirmed')} aria-label="Confirm match" />
-                                        Confirmed Match — escalate
-                                    </label>
+                                <div className="rm-choice" style={{ gap: '12px' }}>
+                                    <RadioGroup value={reviewOutcome} onValueChange={(v: any) => setReviewOutcome(v)} className="flex flex-col gap-3">
+                                        <div className="flex items-center space-x-2">
+                                            <RadioGroupItem value="FalsePositive" id="r1" />
+                                            <label htmlFor="r1" className="text-[13px] cursor-pointer">False Positive — clear entity</label>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                            <RadioGroupItem value="Confirmed" id="r2" />
+                                            <label htmlFor="r2" className="text-[13px] cursor-pointer">Confirmed Match — escalate</label>
+                                        </div>
+                                    </RadioGroup>
                                 </div>
                                 <div className="rm-actions">
                                     <button className="rm-cancel" onClick={() => setSelectedResult(null)} aria-label="Cancel review">Cancel</button>

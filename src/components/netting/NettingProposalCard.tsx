@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -212,7 +213,7 @@ export function NettingProposalCard({ proposal }: NettingProposalProps) {
                                         <TableCell className="text-right font-medium">
                                             {formatCurrency(txn.amount)}
                                         </TableCell>
-                                        <TableCell>{new Date(txn.dueDate).toLocaleDateString()}</TableCell>
+                                        <TableCell>{formatDate(txn.dueDate)}</TableCell>
                                     </TableRow>
                                 ))}
                                 <TableRow className="font-bold border-t-2">

@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { TrendingUp, CheckCircle2, BarChart2 } from 'lucide-react';
@@ -10,7 +11,7 @@ interface RevEvent { id: string; period_start: string; period_end: string; pct_c
 interface RevSummary { method: string; contract_value: number; total_recognized: number; cumulative: number; remaining: number; pct_recognized: number; period_count: number; gl_posted_count: number; }
 
 function fmt(n: number | string) { return Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
-function fmtDate(d: string) { return d ? new Date(d).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '—'; }
+function fmtDate(d: string) { return d ? formatDate(d) : '—'; }
 
 const METHODS = ['POC', 'MILESTONE', 'TIME_MATERIALS', 'COMPLETED_CONTRACT'] as const;
 

@@ -307,7 +307,7 @@ export default function Settings() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-3 gap-4">
-                <div
+                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                   className={`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'light' ? 'border-primary' : 'border-transparent'}`}
                   onClick={() => setTheme('light')}
                   data-testid="button-theme-light"
@@ -315,7 +315,7 @@ export default function Settings() {
                   <div className="h-20 rounded bg-white border mb-2" />
                   <p className="text-sm font-medium text-center">Light</p>
                 </div>
-                <div
+                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                   className={`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'dark' ? 'border-primary' : 'border-transparent'}`}
                   onClick={() => setTheme('dark')}
                   data-testid="button-theme-dark"
@@ -323,7 +323,7 @@ export default function Settings() {
                   <div className="h-20 rounded bg-gray-900 border border-gray-700 mb-2" />
                   <p className="text-sm font-medium text-center">Dark</p>
                 </div>
-                <div
+                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                   className={`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'system' ? 'border-primary' : 'border-transparent'}`}
                   onClick={() => setTheme('system')}
                   data-testid="button-theme-system"

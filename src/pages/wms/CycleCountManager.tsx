@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -97,7 +98,7 @@ export default function CycleCountManager() {
                                     <div className="text-right">
                                         <Badge variant="outline">Class {count.abcClass}</Badge>
                                         <div className="text-xs text-muted-foreground mt-1">
-                                            {new Date(count.scheduledDate).toLocaleDateString()}
+                                            {formatDate(count.scheduledDate)}
                                         </div>
                                     </div>
                                 </div>

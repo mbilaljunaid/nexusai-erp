@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -213,7 +214,7 @@ export default function CorporateCardReconciliation() {
                                     id: "transactionDate",
                                     header: "Date",
                                     width: "150px",
-                                    cell: (row: any) => <div className="p-2">{new Date(row.transactionDate).toLocaleDateString()}</div>
+                                    cell: (row: any) => <div className="p-2">{formatDate(row.transactionDate)}</div>
                                 },
                                 {
                                     id: "merchant",

@@ -71,7 +71,7 @@ export default function OnboardingWorkbench() {
 
                         {hires.map((hire: any) => (
                             <div key={hire.id} className="border rounded-lg overflow-hidden">
-                                <div
+                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     className="flex items-center justify-between p-4 bg-card hover:bg-muted/50 cursor-pointer transition-colors"
                                     onClick={() => toggleRow(hire.id)}
                                 >

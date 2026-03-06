@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -107,12 +108,12 @@ export default function APSystemConfig() {
         {
             header: "Start Date",
             id: "startDate", width: "150px",
-            cell: (row) => new Date(row.startDate).toLocaleDateString()
+            cell: (row) => formatDate(row.startDate)
         },
         {
             header: "End Date",
             id: "endDate", width: "150px",
-            cell: (row) => new Date(row.endDate).toLocaleDateString()
+            cell: (row) => formatDate(row.endDate)
         },
         {
             header: "Status",

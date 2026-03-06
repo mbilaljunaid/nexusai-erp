@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
     ClipboardList,
     ArrowRight,
@@ -51,19 +52,18 @@ export default function WavePlanning() {
     const waveColumns: SpreadsheetColumn<any>[] = [
         {
             id: "select",
-            header: <TooltipProvider><Tooltip><TooltipTrigger asChild><input type="checkbox" className="rounded bg-slate-900 border-slate-700" aria-label="Select all orders" /></TooltipTrigger><TooltipContent><p>Select all orders</p></TooltipContent></Tooltip></TooltipProvider>,
+            header: <TooltipProvider><Tooltip><TooltipTrigger asChild><Checkbox className="rounded bg-slate-900 border-slate-700" aria-label="Select all orders" /></TooltipTrigger><TooltipContent><p>Select all orders</p></TooltipContent></Tooltip></TooltipProvider>,
             width: "60px",
             cell: (row) => (
                 <div className="flex justify-center w-full">
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <input
-                                    type="checkbox"
+                                <Checkbox
                                     aria-label={`Select order ${row.orderNumber} `}
                                     checked={selectedOrders.includes(row.id)}
-                                    onChange={(e) => {
-                                        if (e.target.checked) setSelectedOrders([...selectedOrders, row.id]);
+                                    onCheckedChange={(checked) => {
+                                        if (checked) setSelectedOrders([...selectedOrders, row.id]);
                                         else setSelectedOrders(selectedOrders.filter(id => id !== row.id));
                                     }}
                                     className="rounded bg-slate-900 border-slate-700 mt-1"

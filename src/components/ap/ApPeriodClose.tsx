@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     Card, CardContent, CardHeader, CardTitle, CardDescription
@@ -71,7 +72,7 @@ export default function ApPeriodClose() {
                             <TableRow key={period.id}>
                                 <TableCell className="font-medium">{period.periodName}</TableCell>
                                 <TableCell className="text-xs text-muted-foreground">
-                                    {new Date(period.startDate).toLocaleDateString()} - {new Date(period.endDate).toLocaleDateString()}
+                                    {formatDate(period.startDate)} - {formatDate(period.endDate)}
                                 </TableCell>
                                 <TableCell>
                                     <Badge variant="secondary" className="font-normal">

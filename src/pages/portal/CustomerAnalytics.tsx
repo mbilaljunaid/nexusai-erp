@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,7 @@ export default function CustomerAnalytics() {
 
     const columns: SpreadsheetColumn<any>[] = [
         { id: "orderNumber", header: "Order #", width: "150px", cell: (order: any) => <span className="font-medium">{order.orderNumber}</span> },
-        { id: "date", header: "Date", width: "150px", cell: (order: any) => <span>{new Date(order.date).toLocaleDateString()}</span> },
+        { id: "date", header: "Date", width: "150px", cell: (order: any) => <span>{formatDate(order.date)}</span> },
         { id: "status", header: "Status", width: "150px", cell: (order: any) => <span>{order.status}</span> },
         { id: "amount", header: "Amount", width: "150px", cell: (order: any) => <span>${order.amount.toLocaleString()}</span> }
     ];

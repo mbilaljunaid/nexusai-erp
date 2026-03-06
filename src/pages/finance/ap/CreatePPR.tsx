@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -136,9 +137,9 @@ export default function CreatePPR() {
         },
         { header: "Supplier", id: "supplierId", width: "150px", cell: (r) => r.supplier?.name || "Unknown" },
         { header: "Invoice Number", id: "invoiceNumber", width: "150px" },
-        { header: "Date", id: "invoiceDate", width: "150px", cell: (r) => new Date(r.invoiceDate).toLocaleDateString() },
+        { header: "Date", id: "invoiceDate", width: "150px", cell: (r) => formatDate(r.invoiceDate) },
         { header: "Amount", id: "invoiceAmount", width: "150px", cell: (r) => `$${parseFloat(r.invoiceAmount).toLocaleString()}` },
-        { header: "Due Date", id: "dueDate", width: "150px", cell: (r) => r.dueDate ? new Date(r.dueDate).toLocaleDateString() : "-" }
+        { header: "Due Date", id: "dueDate", width: "150px", cell: (r) => r.dueDate ? formatDate(r.dueDate) : "-" }
     ];
 
     const paymentColumns: SpreadsheetColumn<any>[] = [

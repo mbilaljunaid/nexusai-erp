@@ -1,8 +1,10 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import React, { useEffect, useState } from 'react';
 import { Activity, AlertCircle, CheckCircle, XCircle, Database, Zap, Server, Clock } from 'lucide-react';
 import MetricCard from '../../components/admin/MetricCard';
 import AlertBanner from '../../components/admin/AlertBanner';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Card } from "@/components/ui/card";
 
 interface HealthStatus {
     status: 'healthy' | 'degraded' | 'unhealthy';
@@ -133,7 +135,7 @@ export default function SystemHealthDashboard() {
         >
             {/* Overall Status */}
             {health && (
-                <div className="bg-white rounded-lg shadow-sm border p-6">
+                <Card className="p-6">
                     <div className="flex items-center gap-4">
                         {getStatusIcon(health.status)}
                         <div className="flex-1">
@@ -144,11 +146,11 @@ export default function SystemHealthDashboard() {
                                 </span>
                             </h3>
                             <p className="text-sm text-gray-500 mt-1">
-                                Last updated: {new Date(health.timestamp).toLocaleString()}
+                                Last updated: {formatDateTime(health.timestamp)}
                             </p>
                         </div>
                     </div>
-                </div>
+                </Card>
             )}
 
             {/* Active Alerts */}
@@ -217,7 +219,7 @@ export default function SystemHealthDashboard() {
             </div>
 
             {/* Quick Stats */}
-            <div className="bg-white rounded-lg shadow-sm border p-6">
+            <Card className="p-6">
                 <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">
                     System Information
                 </h3>
@@ -235,7 +237,7 @@ export default function SystemHealthDashboard() {
                         <dd className="mt-1 text-lg font-semibold text-gray-900">99.9%</dd>
                     </div>
                 </dl>
-            </div>
+            </Card>
         </StandardPage>
     );
 }

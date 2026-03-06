@@ -1,3 +1,4 @@
+import { formatDate, formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -243,7 +244,7 @@ export default function BudgetWorkflow() {
                                         <div className="flex items-center gap-2">
                                             <span className="font-semibold">{item.userName}</span>
                                             <Badge variant="outline">{item.action}</Badge>
-                                            <span className="text-xs text-muted-foreground">{new Date(item.timestamp).toLocaleString()}</span>
+                                            <span className="text-xs text-muted-foreground">{formatDateTime(item.timestamp)}</span>
                                         </div>
                                         {item.comment && (
                                             <p className="mt-1 text-sm text-muted-foreground">{item.comment}</p>
@@ -335,7 +336,7 @@ function SubmissionsTable({
                             <TableCell>{submission.department}</TableCell>
                             <TableCell className="text-right font-mono">${submission.amount.toLocaleString()}</TableCell>
                             <TableCell>{submission.submittedBy}</TableCell>
-                            <TableCell>{new Date(submission.submittedAt).toLocaleDateString()}</TableCell>
+                            <TableCell>{formatDate(submission.submittedAt)}</TableCell>
                             <TableCell>
                                 <StatusBadge status={submission.status} />
                             </TableCell>

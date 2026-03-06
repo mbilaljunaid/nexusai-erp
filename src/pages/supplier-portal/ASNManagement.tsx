@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -36,7 +37,7 @@ export default function ASNManagement() {
                             <div>
                                 <div className="font-medium">{asn.asnNumber}</div>
                                 <div className="text-sm text-muted-foreground">
-                                    PO: {asn.poNumber} • Ship Date: {new Date(asn.shipDate).toLocaleDateString()}
+                                    PO: {asn.poNumber} • Ship Date: {formatDate(asn.shipDate)}
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">

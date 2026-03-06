@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -162,7 +163,7 @@ export default function QuotesDetail() {
                                     <div className="pt-4 border-t border-muted/20 flex items-center justify-between text-[11px] text-muted-foreground mt-auto">
                                         <div className="flex items-center gap-1.5">
                                             <Calendar className="h-3 w-3" />
-                                            Exp: {quote.expirationDate ? new Date(quote.expirationDate).toLocaleDateString() : 'N/A'}
+                                            Exp: {quote.expirationDate ? formatDate(quote.expirationDate) : 'N/A'}
                                         </div>
                                         <div className="flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
                                             Manage <ArrowRight className="h-3 w-3" />
@@ -229,7 +230,7 @@ export default function QuotesDetail() {
                                 </div>
                                 <div>
                                     <p className="text-muted-foreground">Expiration Date</p>
-                                    <p className="font-medium">{selectedQuote.expirationDate ? new Date(selectedQuote.expirationDate).toLocaleDateString(undefined, { dateStyle: 'long' }) : 'N/A'}</p>
+                                    <p className="font-medium">{selectedQuote.expirationDate ? formatDate(selectedQuote.expirationDate) : 'N/A'}</p>
                                 </div>
                             </div>
 

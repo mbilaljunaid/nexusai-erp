@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -153,7 +154,7 @@ export default function MDMAuditViewer() {
                                     <div className="flex items-center gap-2 text-sm">
                                         <Calendar className="w-4 h-4 text-muted-foreground" />
                                         <span className="text-muted-foreground">
-                                            {new Date(log.timestamp).toLocaleString()}
+                                            {formatDateTime(log.timestamp)}
                                         </span>
                                     </div>
                                 </CardContent>
@@ -201,7 +202,7 @@ export default function MDMAuditViewer() {
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-muted-foreground">Timestamp:</span>
-                                        <span>{new Date(selectedLog.timestamp).toLocaleString()}</span>
+                                        <span>{formatDateTime(selectedLog.timestamp)}</span>
                                     </div>
                                 </div>
 

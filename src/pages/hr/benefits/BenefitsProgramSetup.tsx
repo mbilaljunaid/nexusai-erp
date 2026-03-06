@@ -162,7 +162,7 @@ export default function BenefitsProgramSetup() {
 
         return (
             <div key={node.id} className="ml-4">
-                <div
+                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                     className={`flex items-center gap-2 py-1.5 px-2 rounded-md cursor-pointer group transition-colors ${isSelected ? 'bg-zinc-100 dark:bg-zinc-800' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50'}`}
                     onClick={() => setSelectedNodeId(node.id)}
                 >

@@ -6,6 +6,7 @@ import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card } from "@/components/ui/card";
 
 interface NettingSession { id: string; session_name: string; period: string; currency: string; status: string; entities_in_scope: string[]; net_positions: NetPos[]; settlement_date: string; created_at: string; }
 interface NetPos { id?: string; entity: string; payable: number; receivable: number; net: number; }
@@ -77,13 +78,13 @@ export default function NettingCenter() {
                             <button onClick={() => setShowNew(true)} className="px-[14px] py-[7px] bg-blue-700 text-white border-none rounded-lg text-[11px] font-bold cursor-pointer hover:bg-blue-800">+ New Session</button>
                         </div>
                         {showNew && (
-                            <div className="bg-gray-50 border border-gray-200 rounded-[10px] p-[14px] mb-[12px]">
+                            <Card className="bg-gray-50 p-[14px] mb-[12px] shadow-sm">
                                 <div className="font-bold text-[12px] mb-2">Create Netting Session</div>
                                 <div className="grid grid-cols-4 gap-2 mb-[10px]">
                                     {[['Session Name', 'sessionName', 'text'], ['Period (YYYY-MM)', 'period', 'text'], ['Currency', 'currency', 'text'], ['Settlement Date', 'settlementDate', 'date']].map(([lbl, key, type]) => (
                                         <div key={key} className="flex flex-col gap-[2px]">
                                             <label className="text-[10px] font-bold">{lbl}</label>
-                                            <input type={type} value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="px-2 py-[6px] border border-gray-300 rounded-md text-[12px]" aria-label={lbl} />
+                                            <Input type={type} value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="h-8 text-[12px]" aria-label={lbl} />
                                         </div>
                                     ))}
                                 </div>
@@ -95,14 +96,14 @@ export default function NettingCenter() {
                                     <button onClick={() => setShowNew(false)} className="px-3 py-[5px] bg-gray-200 border-none rounded-md text-[11px] cursor-pointer hover:bg-gray-300">Cancel</button>
                                     <button onClick={() => createMut.mutate({ ...form, entitiesInScope: form.entitiesText.split('\n').map(s => s.trim()).filter(Boolean) })} disabled={!form.sessionName || !form.period} className="px-3 py-[5px] bg-blue-700 text-white border-none rounded-md text-[11px] font-bold cursor-pointer hover:bg-blue-800 disabled:opacity-50">Create</button>
                                 </div>
-                            </div>
+                            </Card>
                         )}
                         <div className="flex gap-[14px]">
                             <div className="w-[340px] shrink-0 flex flex-col gap-[6px]">
                                 {sessions.map(s => {
                                     const style = STATUS_STYLES[s.status] ?? STATUS_STYLES['Draft'];
                                     return (
-                                        <div key={s.id} onClick={() => setSelectedSession(selectedSession?.id === s.id ? null : s)} className={`bg-white border rounded-[10px] p-[10px_12px] cursor-pointer outline-none border-l-[4px] border-l-solid ${selectedSession?.id === s.id ? 'border-blue-700' : 'border-gray-200'} ${style.border}`} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedSession(selectedSession?.id === s.id ? null : s); } }}>
+                                        <Card key={s.id} onClick={() => setSelectedSession(selectedSession?.id === s.id ? null : s)} className={`p-[10px_12px] cursor-pointer outline-none border-l-[4px] border-l-solid shadow-sm mb-2 ${selectedSession?.id === s.id ? 'border-l-blue-700' : 'border-l-gray-200'} ${style.border}`} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedSession(selectedSession?.id === s.id ? null : s); } }}>
                                             <div className="flex justify-between mb-[3px]">
                                                 <div className="font-bold text-[13px]">{s.session_name}</div>
                                                 <span className={`px-[6px] py-[2px] rounded-[4px] text-[9px] font-bold ${style.bg} ${style.text}`}>{s.status}</span>
@@ -110,7 +111,7 @@ export default function NettingCenter() {
                                             <div className="text-[10px] text-gray-400">{s.period} · {s.currency} · {(s.entities_in_scope ?? []).length} entities</div>
                                             {s.status === 'Draft' && <button onClick={ev => { ev.stopPropagation(); runMut.mutate(s.id); }} className="mt-[6px] px-[8px] py-[3px] bg-blue-50 border-none rounded-[4px] text-[9px] cursor-pointer text-blue-700 hover:bg-blue-100">▶ Run Netting</button>}
                                             {s.status === 'Completed' && <button onClick={ev => { ev.stopPropagation(); settleMut.mutate(s.id); }} className="mt-[6px] px-[8px] py-[3px] bg-emerald-50 border-none rounded-[4px] text-[9px] cursor-pointer text-emerald-600 font-bold hover:bg-emerald-100 flex items-center gap-1"><CheckCircle2 size={9} /> Settle</button>}
-                                        </div>
+                                        </Card>
                                     );
                                 })}
                                 {sessions.length === 0 && <div className="text-center text-gray-400 p-8 bg-white rounded-[10px]">No sessions — create one</div>}
@@ -119,14 +120,14 @@ export default function NettingCenter() {
                                 <div className="flex-1">
                                     <div className="font-bold text-[14px] mb-[10px]">{selectedSession.session_name} — Net Positions</div>
                                     {(selectedSession.net_positions ?? []).length > 0 ? (
-                                        <div className="border border-gray-200 rounded-[12px] overflow-hidden h-[300px] bg-white">
+                                        <Card className="overflow-hidden h-[300px] shadow-sm">
                                             <InteractiveSpreadsheet
                                                 columns={netPosColumns}
                                                 data={selectedSession.net_positions}
                                                 onChange={() => { }}
                                                 containerHeight="100%"
                                             />
-                                        </div>
+                                        </Card>
                                     ) : <div className="text-center text-gray-400 p-10">Run netting to compute positions</div>}
                                 </div>
                             )}
@@ -144,7 +145,7 @@ export default function NettingCenter() {
                                     <button onClick={() => setShowNewPolicy(true)} className="px-[10px] py-[4px] bg-blue-700 text-white border-none rounded-[6px] text-[10px] cursor-pointer hover:bg-blue-800">+ Policy</button>
                                 </div>
                                 {showNewPolicy && (
-                                    <div className="bg-gray-50 border border-gray-200 rounded-[8px] p-[10px] mb-[8px]">
+                                    <Card className="bg-gray-50 p-[10px] mb-[8px] shadow-sm">
                                         {[['Policy Name', 'policyName', 'text'], ['Category', 'transactionCategory', 'select'], ['Method', 'method', 'select'], ['Range Low %', 'benchmarkRangeLow', 'number'], ['Range High %', 'benchmarkRangeHigh', 'number'], ['Effective From', 'effectiveFrom', 'date']].map(([lbl, key, type]) => (
                                             <div key={key} className="mb-[5px]">
                                                 <label className="text-[9px] font-bold block">{lbl}</label>
@@ -152,22 +153,22 @@ export default function NettingCenter() {
                                                     ? <Select value={(policyForm as any)[key]} onValueChange={v => setPolicyForm(p => ({ ...p, [key]: v }))}><SelectTrigger aria-label={lbl} className="text-[11px]"><SelectValue /></SelectTrigger><SelectContent>{['GOODS', 'SERVICES', 'IP_ROYALTIES', 'LOANS', 'COST_SHARING'].map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent></Select>
                                                     : type === 'select' && key === 'method'
                                                         ? <Select value={(policyForm as any)[key]} onValueChange={v => setPolicyForm(p => ({ ...p, [key]: v }))}><SelectTrigger aria-label={lbl} className="text-[11px]"><SelectValue /></SelectTrigger><SelectContent>{['CUP', 'RESALE_PRICE', 'COST_PLUS', 'TNMM', 'PSM', 'CUSTOM'].map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent></Select>
-                                                        : <input type={type} value={(policyForm as any)[key]} onChange={e => setPolicyForm(p => ({ ...p, [key]: e.target.value }))} className="w-full px-[6px] py-[4px] border border-gray-300 rounded-[5px] text-[11px] box-border" aria-label={lbl} />}
+                                                        : <Input type={type} value={(policyForm as any)[key]} onChange={e => setPolicyForm(p => ({ ...p, [key]: e.target.value }))} className="h-7 text-[11px]" aria-label={lbl} />}
                                             </div>
                                         ))}
                                         <div className="flex gap-[4px] justify-end mt-[6px]">
                                             <button onClick={() => setShowNewPolicy(false)} className="px-[8px] py-[3px] bg-gray-200 border-none rounded-[5px] text-[10px] cursor-pointer hover:bg-gray-300">Cancel</button>
                                             <button onClick={() => createPolicyMut.mutate({ ...policyForm, benchmarkRangeLow: parseFloat(policyForm.benchmarkRangeLow) || null, benchmarkRangeHigh: parseFloat(policyForm.benchmarkRangeHigh) || null })} className="px-[8px] py-[3px] bg-blue-700 text-white border-none rounded-[5px] text-[10px] cursor-pointer hover:bg-blue-800">Save</button>
                                         </div>
-                                    </div>
+                                    </Card>
                                 )}
                                 {policies.map(p => (
-                                    <div key={p.id} className="bg-white border border-gray-200 rounded-[8px] p-[8px_10px] mb-[5px]">
+                                    <Card key={p.id} className="p-[8px_10px] mb-[5px] shadow-sm">
                                         <div className="font-bold text-[12px]">{p.policy_name}</div>
                                         <div className="text-[9px] text-gray-400 mb-[3px]">{p.method} · {p.transaction_category}</div>
                                         <div className="text-[10px] text-gray-700">Range: {p.benchmark_range_low ?? '—'}% – {p.benchmark_range_high ?? '—'}%</div>
                                         <button onClick={() => setAnalysisForm(af => ({ ...af, policyId: p.id }))} className="mt-[4px] px-[7px] py-[2px] bg-blue-50 border-none rounded-[4px] text-[9px] cursor-pointer text-blue-700 hover:bg-blue-100">Select for Analysis</button>
-                                    </div>
+                                    </Card>
                                 ))}
                             </div>
 
@@ -181,7 +182,7 @@ export default function NettingCenter() {
                                         <button disabled={!analysisForm.policyId || !analysisForm.actualMarginPct} onClick={() => runAnalysisMut.mutate({ policyId: analysisForm.policyId, period: analysisForm.period, actualMarginPct: parseFloat(analysisForm.actualMarginPct), transactionsReviewed: parseInt(analysisForm.transactionsReviewed) || 0 })} className="px-[12px] py-[5px] bg-violet-600 text-white border-none rounded-[6px] text-[11px] cursor-pointer flex items-center hover:bg-violet-700 disabled:opacity-50"><BarChart3 size={10} className="mr-[3px]" />Run Analysis</button>
                                     </div>
                                 </div>
-                                <div className="border border-gray-200 rounded-[12px] overflow-hidden h-[400px] bg-white">
+                                <Card className="overflow-hidden h-[400px] shadow-sm">
                                     {analyses.length > 0 ? (
                                         <InteractiveSpreadsheet
                                             columns={analysesColumns}
@@ -192,7 +193,7 @@ export default function NettingCenter() {
                                     ) : (
                                         <div className="p-5 text-center text-gray-400">No analyses — select a policy and run</div>
                                     )}
-                                </div>
+                                </Card>
                             </div>
                         </div>
                     </div>

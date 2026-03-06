@@ -161,11 +161,11 @@ export default function LeaseSchedulesView({ leaseId }: { leaseId: string }) {
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 <div>
                                     <p className="text-xs text-muted-foreground">Commencement Date</p>
-                                    <p className="font-medium">{new Date(lease.startDate).toLocaleDateString()}</p>
+                                    <p className="font-medium">{formatDate(lease.startDate)}</p>
                                 </div>
                                 <div>
                                     <p className="text-xs text-muted-foreground">End Date</p>
-                                    <p className="font-medium">{new Date(lease.endDate).toLocaleDateString()}</p>
+                                    <p className="font-medium">{formatDate(lease.endDate)}</p>
                                 </div>
                                 <div>
                                     <p className="text-xs text-muted-foreground">Initial Liability (NPV)</p>

@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -151,7 +152,7 @@ export default function LeasePortfolioWorkbench() {
                                         {lease.leaseNumber}
                                     </TableCell>
                                     <TableCell>{lease.description}</TableCell>
-                                    <TableCell>{new Date(lease.commencementDate).toLocaleDateString()}</TableCell>
+                                    <TableCell>{formatDate(lease.commencementDate)}</TableCell>
                                     <TableCell>
                                         <StatusBadge status="active" label={lease.status} />
                                     </TableCell>

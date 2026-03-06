@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -128,7 +129,7 @@ export default function ChangeRequestWorkbench() {
                                         </CardHeader>
                                         <CardContent>
                                             <p className="text-xs text-muted-foreground">
-                                                {new Date(request.requestedAt).toLocaleString()}
+                                                {formatDateTime(request.requestedAt)}
                                             </p>
                                         </CardContent>
                                     </Card>
@@ -208,7 +209,7 @@ export default function ChangeRequestWorkbench() {
                                                     <p className="text-xs text-muted-foreground mt-2">
                                                         Reviewed by {selectedRequest.reviewedBy} on{" "}
                                                         {selectedRequest.reviewedAt &&
-                                                            new Date(selectedRequest.reviewedAt).toLocaleString()}
+                                                            formatDateTime(selectedRequest.reviewedAt)}
                                                     </p>
                                                 </div>
                                             )}

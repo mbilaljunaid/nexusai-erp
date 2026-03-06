@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -47,7 +48,7 @@ export default function SupplierPortal() {
                                 <div>
                                     <div className="font-medium">{order.poNumber}</div>
                                     <div className="text-sm text-muted-foreground">
-                                        {new Date(order.orderDate).toLocaleDateString()}
+                                        {formatDate(order.orderDate)}
                                     </div>
                                 </div>
                                 <div className="text-right">

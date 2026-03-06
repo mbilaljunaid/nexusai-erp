@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -127,7 +128,7 @@ export function ArCollectorWorklist() {
                                         {task.taskType}
                                     </TableCell>
                                     <TableCell>{task.customerId}</TableCell>
-                                    <TableCell>{new Date(task.dueDate).toLocaleDateString()}</TableCell>
+                                    <TableCell>{formatDate(task.dueDate)}</TableCell>
                                     <TableCell>
                                         <Button size="sm" onClick={() => handleAction(task)} disabled={generateEmailForTaskMutation.isPending || completeTaskMutation.isPending}>
                                             {task.taskType === 'Email' ? (generateEmailForTaskMutation.isPending && selectedTask?.id === task.id ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Draft Email") : "Complete"}

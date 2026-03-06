@@ -163,7 +163,7 @@ export function ModuleSelectionStep({ data, onNext, onBack }: ModuleSelectionSte
                                 const isDisabled = module.isRequired;
 
                                 return (
-                                    <div
+                                    <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         key={module.id}
                                         className={`flex items-start gap-3 p-3 rounded-lg border transition-colors ${isSelected ? "bg-primary/5 border-primary" : "hover:bg-accent"
                                             } ${isDisabled ? "opacity-75" : "cursor-pointer"}`}

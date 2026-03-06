@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
@@ -83,7 +84,7 @@ export default function CostingWorkbench() {
             id: "effectiveDate",
             header: "Effective Date",
             width: "150px",
-            cell: (row: any) => <div className="p-2">{new Date(row.effectiveDate!).toLocaleDateString()}</div>
+            cell: (row: any) => <div className="p-2">{formatDate(row.effectiveDate!)}</div>
         },
         {
             id: "isActive",

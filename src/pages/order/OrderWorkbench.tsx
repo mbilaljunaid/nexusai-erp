@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -36,7 +37,7 @@ export function OrderWorkbench() {
             )
         },
         { header: "Customer", accessorKey: "customerName" },
-        { header: "Date", accessorKey: "orderedDate", cell: (info: any) => new Date(info.getValue()).toLocaleDateString() },
+        { header: "Date", accessorKey: "orderedDate", cell: (info: any) => formatDate(info.getValue()) },
         { header: "Total", accessorKey: "totalAmount", cell: (info: any) => `$${Number(info.getValue()).toFixed(2)}` },
         {
             header: "Status", accessorKey: "status", cell: (info: any) => (

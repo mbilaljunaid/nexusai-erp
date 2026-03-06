@@ -1,3 +1,4 @@
+import { formatDate, formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "wouter";
@@ -124,7 +125,7 @@ export default function CaseDetail() {
                             </div>
                             <div>
                                 <h3 className="text-muted-foreground">Created</h3>
-                                <p>{new Date(ticket?.createdAt).toLocaleDateString()}</p>
+                                <p>{formatDate(ticket?.createdAt)}</p>
                             </div>
                         </div>
                     </CardContent>
@@ -151,7 +152,7 @@ export default function CaseDetail() {
                                         <div className="flex-1 space-y-1">
                                             <div className="flex items-center gap-2">
                                                 <span className="font-semibold text-sm">System User</span>
-                                                <span className="text-xs text-muted-foreground">{new Date(c.createdAt).toLocaleString()}</span>
+                                                <span className="text-xs text-muted-foreground">{formatDateTime(c.createdAt)}</span>
                                             </div>
                                             <div className="bg-muted/50 p-3 rounded-md text-sm">
                                                 {c.body}

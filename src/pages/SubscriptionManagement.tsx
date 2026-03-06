@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -236,7 +237,7 @@ export default function SubscriptionManagement() {
                   </div>
                   <div className="text-xs text-muted-foreground pt-2">
                     <Clock className="w-3 h-3 inline mr-1" />
-                    Renews: {new Date(sub.renewalDate).toLocaleDateString()}
+                    Renews: {formatDate(sub.renewalDate)}
                   </div>
                 </div>
 

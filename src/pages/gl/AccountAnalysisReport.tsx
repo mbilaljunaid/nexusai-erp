@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import React, { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -62,7 +63,7 @@ export default function AccountAnalysisReport() {
         if (!generateReport.data) return;
         const headers = ["Date", "Source", "Description", "Account", "Debit (Ent)", "Credit (Ent)", "Debit (Acc)", "Credit (Acc)", "Currency"];
         const rows = generateReport.data.data.map(t => [
-            new Date(t.glDate).toLocaleDateString(),
+            formatDate(t.glDate),
             t.source,
             `"${t.description || ''}"`, // Quote description to handle commas
             t.accountCode,
@@ -147,7 +148,7 @@ export default function AccountAnalysisReport() {
                                 ) : (
                                     generateReport.data.data.map((tx, i) => (
                                         <TableRow key={i}>
-                                            <TableCell>{new Date(tx.glDate).toLocaleDateString()}</TableCell>
+                                            <TableCell>{formatDate(tx.glDate)}</TableCell>
                                             <TableCell>{tx.source}</TableCell>
                                             <TableCell className="font-mono text-xs">{tx.accountCode}</TableCell>
                                             <TableCell className="max-w-[300px] truncate">{tx.description}</TableCell>

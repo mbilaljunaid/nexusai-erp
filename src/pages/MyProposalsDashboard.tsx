@@ -62,7 +62,7 @@ export default function MyProposalsDashboard() {
   };
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return formatDate(dateStr);
   };
 
   const pendingProposals = proposals?.filter(p => p.status === "pending") || [];

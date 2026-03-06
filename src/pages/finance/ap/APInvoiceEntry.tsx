@@ -16,6 +16,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { Checkbox } from "@/components/ui/checkbox";
 function useActiveBu() {
     return useMemo(() => ({
         id: localStorage.getItem("nexus_active_bu") || null,
@@ -334,7 +335,7 @@ export default function APInvoiceEntry() {
                     </Select>
                     {line.lineType === 'ITEM' && (
                         <label className="flex items-center gap-2 text-xs text-slate-600 px-1 hover:text-slate-900 cursor-pointer">
-                            <input type="checkbox" className="rounded text-primary focus:ring-primary h-3.5 w-3.5" checked={line.trackAsAssetFlag} onChange={e => updateRow("trackAsAssetFlag", e.target.checked)} />
+                            <Checkbox className="rounded text-primary focus:ring-primary h-3.5 w-3.5 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" checked={line.trackAsAssetFlag} onCheckedChange={c => updateRow("trackAsAssetFlag", !!c)} />
                             Track as Asset
                         </label>
                     )}

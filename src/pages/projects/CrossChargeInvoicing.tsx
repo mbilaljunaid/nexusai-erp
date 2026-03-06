@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { PromptDialog } from "@/components/shared/PromptDialog";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -286,7 +287,7 @@ export default function CrossChargeInvoicing() {
                     </CardHeader>
                     <CardContent className="space-y-2">
                         {invoices?.map((invoice: CrossChargeInvoice) => (
-                            <div
+                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 key={invoice.id}
                                 className={`p-3 rounded-lg cursor-pointer border ${selectedInvoice === invoice.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
                                     }`}
@@ -304,7 +305,7 @@ export default function CrossChargeInvoicing() {
                                 </div>
                                 <div className="text-sm font-medium mt-2">${invoice.amount.toLocaleString()}</div>
                                 <div className="text-xs text-muted-foreground">
-                                    {invoice.createdDate && new Date(invoice.createdDate).toLocaleDateString()}
+                                    {invoice.createdDate && formatDate(invoice.createdDate)}
                                 </div>
                             </div>
                         ))}

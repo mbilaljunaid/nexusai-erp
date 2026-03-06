@@ -283,7 +283,7 @@ export default function ConstructionBillingWorkbench() {
                     </CardHeader>
                     <CardContent className="p-0">
                         {payApps.map(app => (
-                            <div
+                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 key={app.id}
                                 className={`p-4 border-b cursor-pointer hover:bg-muted/50 ${selectedPayAppId === app.id ? "bg-muted" : ""}`}
                                 onClick={() => setSelectedPayAppId(app.id)}

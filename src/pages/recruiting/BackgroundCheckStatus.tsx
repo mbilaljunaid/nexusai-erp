@@ -1,9 +1,12 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle2, ShieldAlert, ClipboardList } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 interface BGCOrder {
     id: string; applicant_id: string; candidate_name: string; package_type: string;
@@ -18,7 +21,7 @@ const STATUS_CLR: Record<string, string> = { Initiated: 'bg-blue-700/10 text-blu
 const ADJ_CLR: Record<string, string> = { Clear: 'text-emerald-600', Consider: 'text-amber-600', Adverse: 'text-red-600' };
 const RESULT_CLR: Record<string, string> = { Clear: 'text-emerald-600', Hit: 'text-red-600', Unable_To_Verify: 'text-amber-600' };
 
-function fmtDate(d: string) { return d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'; }
+function fmtDate(d: string) { return d ? formatDate(d) : '—'; }
 
 export default function BackgroundCheckStatus() {
     const [selectedOrder, setSelectedOrder] = useState<BGCDetail | null>(null);
@@ -93,10 +96,10 @@ export default function BackgroundCheckStatus() {
             {summary && (
                 <div className="flex gap-2.5 mb-3.5">
                     {([['Initiated', summary.initiated, 'border-gray-500', 'text-gray-500'], ['In Progress', summary.in_progress, 'border-amber-600', 'text-amber-600'], ['Clear', summary.clear, 'border-emerald-600', 'text-emerald-600'], ['Consider', summary.consider, 'border-amber-500', 'text-amber-500'], ['Adverse Action', summary.adverse_action, 'border-red-600', 'text-red-600'], ['Withdrawn', summary.withdrawn, 'border-gray-400', 'text-gray-400']] as [string, number, string, string][]).map(([l, v, bc, tc]) => (
-                        <div key={l} className={`flex-1 bg-white border border-gray-200 border-l-4 rounded-xl p-2.5 ${bc}`}>
+                        <Card key={l} className={`flex-1 border-l-4 p-2.5 shadow-sm rounded-xl ${bc}`}>
                             <div className={`text-xl font-extrabold font-mono ${tc}`}>{v ?? 0}</div>
                             <div className="text-[10px] text-gray-400">{l}</div>
-                        </div>
+                        </Card>
                     ))}
                 </div>
             )}
@@ -110,7 +113,7 @@ export default function BackgroundCheckStatus() {
 
             {/* New order form */}
             {showNew && (
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-3.5 mb-3">
+                <Card className="p-3.5 mb-3 bg-slate-50/50 shadow-sm border-gray-200">
                     <div className="text-[13px] font-bold mb-2.5">Initiate Background Check</div>
                     <div className="grid grid-cols-3 gap-2">
                         <div className="flex flex-col gap-0.5">
@@ -123,7 +126,7 @@ export default function BackgroundCheckStatus() {
                         {[['applicantId', 'Applicant ID', 'text'], ['candidateName', 'Candidate Name', 'text'], ['candidateEmail', 'Email', 'email']].map(([k, l, t]) => (
                             <div key={k} className="flex flex-col gap-0.5">
                                 <label className="text-[10px] font-semibold">{l}</label>
-                                <input type={t} value={(form as any)[k]} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label={l} />
+                                <Input type={t} value={(form as any)[k]} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} className="h-8 text-[11px]" aria-label={l} />
                             </div>
                         ))}
                     </div>
@@ -131,12 +134,12 @@ export default function BackgroundCheckStatus() {
                         <button onClick={() => setShowNew(false)} className="px-3 py-1 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
                         <button disabled={!form.applicantId} onClick={() => initMut.mutate(form)} className="px-3 py-1 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer disabled:opacity-50">Initiate</button>
                     </div>
-                </div>
+                </Card>
             )}
 
             <div className="flex gap-3.5">
                 {/* Orders list */}
-                <div className="flex-1 h-[600px] bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
+                <Card className="flex-1 h-[600px] overflow-hidden shadow-sm">
                     {orders.length === 0 ? (
                         <div className="text-center text-gray-400 p-6">No orders</div>
                     ) : (
@@ -147,11 +150,11 @@ export default function BackgroundCheckStatus() {
                             containerHeight="100%"
                         />
                     )}
-                </div>
+                </Card>
 
                 {/* Detail panel */}
                 {selectedOrder && (
-                    <div className="w-[340px] bg-white border border-gray-200 rounded-xl p-4 shrink-0">
+                    <Card className="w-[340px] p-4 shrink-0 shadow-sm">
                         <div className="flex justify-between mb-2.5">
                             <div className="text-[13px] font-bold">{selectedOrder.candidate_name ?? selectedOrder.applicant_id}</div>
                             <button onClick={() => setSelectedOrder(null)} className="bg-transparent border-none cursor-pointer text-sm">✕</button>
@@ -189,7 +192,7 @@ export default function BackgroundCheckStatus() {
                                         <SelectTrigger className="px-1.5 py-1 text-[10px]" aria-label="Result"><SelectValue /></SelectTrigger>
                                         <SelectContent>{['Clear', 'Hit', 'Unable_To_Verify'].map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
                                     </Select>
-                                    <input placeholder="Details (optional)" value={componentForm.details} onChange={e => setComponentForm(p => ({ ...p, details: e.target.value }))} className="px-1.5 py-1 border border-gray-300 rounded-md text-[10px]" aria-label="Details" />
+                                    <Input placeholder="Details (optional)" value={componentForm.details} onChange={e => setComponentForm(p => ({ ...p, details: e.target.value }))} className="h-7 text-[10px]" aria-label="Details" />
                                     <button onClick={() => componentMut.mutate({ id: selectedOrder.id, ...componentForm })} className="p-1 bg-emerald-600 text-white border-none rounded-md text-[10px] cursor-pointer">Record</button>
                                 </div>
                             </div>
@@ -213,11 +216,11 @@ export default function BackgroundCheckStatus() {
                                     <SelectTrigger className="px-1.5 py-1 text-[10px] w-full mb-1" aria-label="Decision"><SelectValue /></SelectTrigger>
                                     <SelectContent>{['Proceed', 'Withdraw', 'Conditional'].map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
                                 </Select>
-                                <input placeholder="Notes" value={decisionForm.notes} onChange={e => setDecisionForm(p => ({ ...p, notes: e.target.value }))} className="px-1.5 py-1 border border-gray-300 rounded-md text-[10px] w-full mb-1" aria-label="Notes" />
+                                <Input placeholder="Notes" value={decisionForm.notes} onChange={e => setDecisionForm(p => ({ ...p, notes: e.target.value }))} className="h-7 text-[10px] mb-1" aria-label="Notes" />
                                 <button onClick={() => decisionMut.mutate({ id: selectedOrder.id, ...decisionForm })} className="w-full p-1.5 bg-blue-700 text-white border-none rounded-md text-[10px] cursor-pointer">Finalize</button>
                             </div>
                         )}
-                    </div>
+                    </Card>
                 )}
             </div>
         </StandardPage>

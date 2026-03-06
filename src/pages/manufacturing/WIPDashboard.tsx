@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -51,7 +52,7 @@ export default function WIPDashboard() {
             id: "lastUpdated",
             header: "Last Updated",
             width: "200px",
-            cell: (row: any) => <div className="p-2">{new Date(row.lastUpdated!).toLocaleString()}</div>
+            cell: (row: any) => <div className="p-2">{formatDateTime(row.lastUpdated!)}</div>
         }
     ];
 

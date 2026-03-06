@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -181,7 +182,7 @@ export default function CasesDetail() {
                         <div className="col-span-2">Created</div>
                     </div>
                     {filteredCases.map(c => (
-                        <div key={c.id} className="grid grid-cols-12 p-3 border-t text-sm items-center hover:bg-muted/50 cursor-pointer" onClick={() => openEditCase(c)}>
+                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} key={c.id} className="grid grid-cols-12 p-3 border-t text-sm items-center hover:bg-muted/50 cursor-pointer" onClick={() => openEditCase(c)}>
                             <div className="col-span-4 font-medium flex items-center gap-2">
                                 <FileText className="h-4 w-4 text-muted-foreground" />
                                 {c.subject}
@@ -195,7 +196,7 @@ export default function CasesDetail() {
                             </div>
                             <div className="col-span-2">{c.origin}</div>
                             <div className="col-span-2 text-muted-foreground">
-                                {new Date(c.createdAt!).toLocaleDateString()}
+                                {formatDate(c.createdAt!)}
                             </div>
                         </div>
                     ))}
@@ -217,7 +218,7 @@ export default function CasesDetail() {
                                 </p>
                                 <div className="flex justify-between text-xs text-muted-foreground border-t pt-2">
                                     <span>{c.origin}</span>
-                                    <span>{new Date(c.createdAt!).toLocaleDateString()}</span>
+                                    <span>{formatDate(c.createdAt!)}</span>
                                 </div>
                             </CardContent>
                         </Card>

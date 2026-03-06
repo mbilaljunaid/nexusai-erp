@@ -121,7 +121,7 @@ export default function CoursePlayer() {
                 <div className="w-80 border-r overflow-y-auto p-4 space-y-2">
                     <h3 className="font-semibold mb-3">Course Modules</h3>
                     {modules.map((module, idx) => (
-                        <div
+                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             key={module.id}
                             className={`p-3 border rounded-lg cursor-pointer transition-colors ${idx === currentModuleIndex
                                 ? "bg-primary text-primary-foreground"

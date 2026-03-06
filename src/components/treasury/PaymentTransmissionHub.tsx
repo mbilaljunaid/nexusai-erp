@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -86,7 +87,7 @@ export function PaymentTransmissionHub() {
                                     <TableCell className="text-xs font-mono">{msg.type}</TableCell>
                                     <TableCell className="text-sm">{msg.bank}</TableCell>
                                     <TableCell className="text-sm text-muted-foreground">
-                                        {new Date(msg.timestamp).toLocaleString()}
+                                        {formatDateTime(msg.timestamp)}
                                     </TableCell>
                                     <TableCell>
                                         <Badge variant={

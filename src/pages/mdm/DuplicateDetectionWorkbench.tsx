@@ -136,7 +136,7 @@ export default function DuplicateDetectionWorkbench() {
                             <p className="text-sm text-muted-foreground">No duplicates found</p>
                         ) : (
                             duplicateSets.map((set: DuplicateSet) => (
-                                <div
+                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     key={set.id}
                                     className={`p-3 border rounded-lg cursor-pointer transition-colors hover:bg-accent ${selectedSet === set.id ? "bg-accent border-primary" : ""
                                         }`}
@@ -181,7 +181,7 @@ export default function DuplicateDetectionWorkbench() {
                                 {/* Side-by-side comparison */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {partyDetails.map((party: Party) => (
-                                        <div
+                                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                             key={party.id}
                                             className={`p-4 border rounded-lg cursor-pointer transition-all ${selectedSurvivor === party.id
                                                 ? "border-primary ring-2 ring-primary bg-primary/5"

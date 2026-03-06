@@ -1,3 +1,4 @@
+import { formatTime } from "@/lib/dateUtils";
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -42,7 +43,7 @@ export default function WarehouseOperations() {
             const res = await apiRequest("POST", "/api/scm/wms/waves/create", {
                 warehouseId: "warehouse-1",
                 orderIds: selectedOrders,
-                description: `Manual Wave ${new Date().toLocaleTimeString()}`
+                description: `Manual Wave ${formatTime(new Date())}`
             });
             return res.json();
         },

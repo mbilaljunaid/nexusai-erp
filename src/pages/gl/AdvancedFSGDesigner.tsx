@@ -335,7 +335,7 @@ export default function AdvancedFSGDesigner() {
                     </CardHeader>
                     <CardContent className="space-y-2">
                         {reports?.map((report: FSGReport) => (
-                            <div
+                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 key={report.id}
                                 className={`p-3 rounded-lg cursor-pointer border ${selectedReport === report.id
                                     ? "border-primary bg-primary/5"

@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -275,7 +276,7 @@ export function SettlementExecutionModal({
                                 </div>
                                 <div>
                                     <span className="text-muted-foreground">Settlement Date:</span>
-                                    <span className="ml-2 font-medium">{new Date(settlementDate).toLocaleDateString()}</span>
+                                    <span className="ml-2 font-medium">{formatDate(settlementDate)}</span>
                                 </div>
                                 <div>
                                     <span className="text-muted-foreground">Method:</span>

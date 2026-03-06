@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -124,7 +125,7 @@ export default function BankReconciliation() {
                         ) : (
                             <div className="divide-y divide-border/50">
                                 {unreconciledLines.map((line: any) => (
-                                    <div
+                                    <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         key={line.id}
                                         onClick={() => setSelectedStatementLine(line.id)}
                                         className={`p-4 cursor-pointer transition-colors hover:bg-muted/50 ${selectedStatementLine === line.id ? 'bg-blue-50/50 border-l-4 border-blue-500' : ''}`}
@@ -135,7 +136,7 @@ export default function BankReconciliation() {
                                         </div>
                                         <div className="flex justify-between items-center text-xs text-muted-foreground">
                                             <div className="flex gap-3">
-                                                <span>{new Date(line.transactionDate).toLocaleDateString()}</span>
+                                                <span>{formatDate(line.transactionDate)}</span>
                                                 <span className="uppercase">{line.referenceNumber}</span>
                                             </div>
                                             {line.reconciled && <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Reconciled</Badge>}
@@ -194,7 +195,7 @@ export default function BankReconciliation() {
                                             </div>
                                             <div className="flex justify-between items-center text-[10px] text-muted-foreground">
                                                 <div className="flex gap-2">
-                                                    <span>{new Date(trx.transactionDate).toLocaleDateString()}</span>
+                                                    <span>{formatDate(trx.transactionDate)}</span>
                                                     <Badge variant="secondary" className="text-[9px] h-4 py-0">{trx.sourceModule}</Badge>
                                                 </div>
                                             </div>

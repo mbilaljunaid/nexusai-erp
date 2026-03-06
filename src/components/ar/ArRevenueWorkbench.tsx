@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ArRevenueSchedule } from "@/types/erp-types";
@@ -124,7 +125,7 @@ export function ArRevenueWorkbench() {
                                         />
                                     </TableCell>
                                     <TableCell>{schedule.periodName}</TableCell>
-                                    <TableCell>{new Date(schedule.scheduleDate).toLocaleDateString()}</TableCell>
+                                    <TableCell>{formatDate(schedule.scheduleDate)}</TableCell>
                                     <TableCell>${Number(schedule.amount).toFixed(2)}</TableCell>
                                     <TableCell>
                                         <Badge variant={schedule.status === 'Recognized' ? 'default' : 'secondary'}>

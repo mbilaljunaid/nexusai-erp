@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -179,7 +180,7 @@ export function RiskDashboard({ projectId }: RiskDashboardProps) {
                         </div>
                     </div>
                     <div className="text-xs text-muted-foreground mt-3">
-                        Last updated: {new Date(riskData.lastUpdated).toLocaleString()}
+                        Last updated: {formatDateTime(riskData.lastUpdated)}
                     </div>
                 </CardContent>
             </Card>

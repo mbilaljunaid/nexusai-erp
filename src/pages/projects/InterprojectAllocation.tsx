@@ -277,7 +277,7 @@ export default function InterprojectAllocation() {
                     </CardHeader>
                     <CardContent className="space-y-2">
                         {rules?.map((rule: AllocationRule) => (
-                            <div
+                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 key={rule.id}
                                 className={`p-3 rounded-lg cursor-pointer border ${selectedRule === rule.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
                                     }`}

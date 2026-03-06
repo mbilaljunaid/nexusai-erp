@@ -1,3 +1,4 @@
+import { formatDate, formatDateTime } from "@/lib/dateUtils";
 import { FormatterType, FormattedData } from "@/types/formatter";
 
 // Mock cache for demo purposes. In real implementation, this would fetch from backend/cache.
@@ -42,14 +43,14 @@ class UIFormatterService {
         if (type === "date") {
             return {
                 raw: value,
-                formatted: new Date(value).toLocaleDateString(),
+                formatted: formatDate(value),
             };
         }
 
         if (type === "datetime") {
             return {
                 raw: value,
-                formatted: new Date(value).toLocaleString(),
+                formatted: formatDateTime(value),
             };
         }
 

@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery } from '@tanstack/react-query';
 import { Card } from "@/components/ui/card";
@@ -37,7 +38,7 @@ export default function ExpenditureInquiry() {
     });
 
     const columns = [
-        { id: "date", header: "Date", width: "150px", cell: (item: any) => <div className="px-2 h-full flex items-center">{new Date(item.date).toLocaleDateString()}</div> },
+        { id: "date", header: "Date", width: "150px", cell: (item: any) => <div className="px-2 h-full flex items-center">{formatDate(item.date)}</div> },
         {
             id: "projectName", header: "Project", width: "250px", cell: (item: any) => (
                 <div className="px-2 h-full flex flex-col justify-center">

@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -174,7 +175,7 @@ export default function BillingProfileManager() {
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <input type="checkbox" aria-label="Tax Exempt" className="h-4 w-4 rounded border-gray-300" checked={row.taxExempt || false} onChange={e => updateRow("taxExempt", e.target.checked)} />
+                                <Checkbox aria-label="Tax Exempt" className="h-4 w-4" checked={row.taxExempt || false} onCheckedChange={(checked) => updateRow("taxExempt", !!checked)} />
                             </TooltipTrigger>
                             <TooltipContent>
                                 <p>Tax Exempt</p>
@@ -201,7 +202,7 @@ export default function BillingProfileManager() {
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <input type="checkbox" aria-label="Auto-Email Invoices" className="h-4 w-4 rounded border-gray-300" checked={row.emailInvoices ?? true} onChange={e => updateRow("emailInvoices", e.target.checked)} />
+                                <Checkbox aria-label="Auto-Email Invoices" className="h-4 w-4" checked={row.emailInvoices ?? true} onCheckedChange={(checked) => updateRow("emailInvoices", !!checked)} />
                             </TooltipTrigger>
                             <TooltipContent>
                                 <p>Auto-Email Invoices</p>

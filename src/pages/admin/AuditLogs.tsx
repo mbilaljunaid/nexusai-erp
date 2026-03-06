@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { Activity, Filter, Download, Search, Loader2, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -138,7 +139,7 @@ export default function AuditLogs() {
                                                             {log.action}
                                                         </Badge>
                                                         <span className="text-sm text-muted-foreground">
-                                                            {log.created_at ? new Date(log.created_at).toLocaleString() : log.createdAt}
+                                                            {log.created_at ? formatDateTime(log.created_at) : log.createdAt}
                                                         </span>
                                                     </div>
                                                     <div className="text-sm">

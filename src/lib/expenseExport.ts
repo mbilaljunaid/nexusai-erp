@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 /**
  * Export Utility for Expense Management
  * Provides CSV export functionality for expense reports
@@ -46,9 +47,9 @@ export function exportExpensesToCSV(
         report.status,
         report.totalAmount || 0,
         report.currency || "USD",
-        report.submittedAt ? new Date(report.submittedAt).toLocaleDateString() : "",
-        report.approvedAt ? new Date(report.approvedAt).toLocaleDateString() : "",
-        report.createdAt ? new Date(report.createdAt).toLocaleDateString() : ""
+        report.submittedAt ? formatDate(report.submittedAt) : "",
+        report.approvedAt ? formatDate(report.approvedAt) : "",
+        report.createdAt ? formatDate(report.createdAt) : ""
     ]);
 
     // Combine headers and rows
@@ -99,7 +100,7 @@ export function exportExpenseLinesToCSV(
         line.category,
         `"${line.merchant || 'N/A'}"`,
         line.amount,
-        line.expenseDate ? new Date(line.expenseDate).toLocaleDateString() : "",
+        line.expenseDate ? formatDate(line.expenseDate) : "",
         `"${line.description || ''}"`
     ]);
 

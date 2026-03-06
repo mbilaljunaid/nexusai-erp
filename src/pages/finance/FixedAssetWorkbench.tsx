@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -93,7 +94,7 @@ export default function FixedAssetWorkbench() {
             header: "Description",
             width: "250px", cell: (row: any) => <span>{row.description}</span>
         },
-        { id: "datePlacedInService", header: "In Service", width: "150px", cell: (row: any) => <span>{new Date(row.datePlacedInService).toLocaleDateString()}</span> },
+        { id: "datePlacedInService", header: "In Service", width: "150px", cell: (row: any) => <span>{formatDate(row.datePlacedInService)}</span> },
         { id: "originalCost", header: "Cost", width: "150px", cell: (row: any) => <span className="tabular-nums">${parseFloat(row.originalCost || "0").toLocaleString()}</span> },
         {
             id: "category",

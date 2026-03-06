@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -352,7 +353,7 @@ export function TaxCalculationPreview() {
 
                     {/* Calculation Metadata */}
                     <div className="text-sm text-muted-foreground text-center">
-                        Last calculated: {new Date(calculationResult.lastCalculated).toLocaleString()}
+                        Last calculated: {formatDateTime(calculationResult.lastCalculated)}
                     </div>
                 </>
             )}

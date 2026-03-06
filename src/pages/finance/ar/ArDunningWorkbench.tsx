@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -333,7 +334,7 @@ export default function ArDunningWorkbench() {
                                     <TableBody>
                                         {safeRuns.map((run: any) => (
                                             <TableRow key={run.id} className="border-slate-800">
-                                                <TableCell className="text-slate-300">{new Date(run.runDate).toLocaleString()}</TableCell>
+                                                <TableCell className="text-slate-300">{formatDateTime(run.runDate)}</TableCell>
                                                 <TableCell className="text-white font-bold">{run.totalInvoicesProcessed}</TableCell>
                                                 <TableCell className="text-indigo-400 font-bold">{run.totalLettersGenerated}</TableCell>
                                                 <TableCell>

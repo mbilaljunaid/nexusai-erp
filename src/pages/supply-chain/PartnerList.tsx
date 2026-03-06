@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Plus, Users, MapPin } from "lucide-react";
 import { openFormInNewWindow } from "@/lib/formUtils";
 
@@ -80,7 +81,7 @@ export default function PartnerList() {
                 </Button>
             }
         >
-            <div className="bg-white rounded-md shadow-sm border">
+            <Card className="overflow-hidden shadow-sm">
                 <InteractiveSpreadsheet
                     data={partners}
                     columns={columns}
@@ -88,7 +89,7 @@ export default function PartnerList() {
                     virtualized={true}
                     containerHeight="600px"
                 />
-            </div>
+            </Card>
         </StandardPage>
     );
 }

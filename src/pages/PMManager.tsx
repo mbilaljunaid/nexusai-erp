@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
@@ -111,7 +112,7 @@ export default function PMManager() {
                                 <p className="text-sm text-muted-foreground">Every {pm.frequency} {pm.frequencyUom} • Asset: {pm.assetId}</p>
                             </div>
                             <div className="text-right text-sm">
-                                <p>Last Run: {pm.lastGeneratedDate ? new Date(pm.lastGeneratedDate).toLocaleDateString() : "Never"}</p>
+                                <p>Last Run: {pm.lastGeneratedDate ? formatDate(pm.lastGeneratedDate) : "Never"}</p>
                             </div>
                         </CardContent>
                     </Card>

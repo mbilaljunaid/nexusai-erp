@@ -1,3 +1,4 @@
+import { formatDate, formatTime } from "@/lib/dateUtils";
 import React, { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { i18n } from "@/lib/i18n";
@@ -119,7 +120,7 @@ export default function MyTimeCard() {
             id: "date", width: "150px",
             cell: (item) => (
                 <div className="font-medium">
-                    {new Date(item.date).toLocaleDateString("en-US", { weekday: 'short', month: 'short', day: 'numeric' })}
+                    {formatDate(item.date)}
                 </div>
             )
         },
@@ -135,12 +136,12 @@ export default function MyTimeCard() {
         {
             header: "Start",
             id: "startTime", width: "150px",
-            cell: (item) => item.startTime ? new Date(item.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--"
+            cell: (item) => item.startTime ? formatTime(item.startTime) : "--:--"
         },
         {
             header: "End",
             id: "endTime", width: "150px",
-            cell: (item) => item.endTime ? new Date(item.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--"
+            cell: (item) => item.endTime ? formatTime(item.endTime) : "--:--"
         },
         {
             header: "Project",

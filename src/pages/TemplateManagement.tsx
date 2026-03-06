@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState, useEffect } from 'react';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -405,7 +406,7 @@ export default function TemplateManagement() {
                             {applications.map((app) => (
                                 <TableRow key={app.id}>
                                     <TableCell>
-                                        {new Date(app.appliedAt).toLocaleDateString()}
+                                        {formatDate(app.appliedAt)}
                                     </TableCell>
                                     <TableCell>{app.templateId}</TableCell>
                                     <TableCell>

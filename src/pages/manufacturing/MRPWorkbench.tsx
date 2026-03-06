@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
@@ -120,7 +121,7 @@ export default function MRPWorkbench() {
             id: "suggestedDate",
             header: "Requested Date",
             width: "150px",
-            cell: (row: any) => <div className="p-2">{new Date(row.suggestedDate).toLocaleDateString()}</div>
+            cell: (row: any) => <div className="p-2">{formatDate(row.suggestedDate)}</div>
         },
         {
             id: "status",
@@ -186,14 +187,14 @@ export default function MRPWorkbench() {
                     <CardContent className="p-0">
                         <div className="divide-y cursor-pointer">
                             {plans.map(plan => (
-                                <div
+                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     key={plan.id}
                                     onClick={() => setSelectedPlanId(plan.id)}
                                     className={`p-4 hover:bg-muted/50 transition-colors ${selectedPlanId === plan.id ? 'bg-primary/5 border-r-4 border-primary' : ''}`}
                                 >
                                     <div className="font-semibold">{plan.planName}</div>
                                     <div className="flex justify-between items-center mt-1">
-                                        <span className="text-xs text-muted-foreground">{new Date(plan.planDate).toLocaleDateString()}</span>
+                                        <span className="text-xs text-muted-foreground">{formatDate(plan.planDate)}</span>
                                         <Badge variant="outline" className="text-[10px] h-4 px-1">{plan.status}</Badge>
                                     </div>
                                 </div>

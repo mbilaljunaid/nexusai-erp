@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -295,7 +296,7 @@ export default function PayrollWorkbench() {
                                     <TableRow key={run.id}>
                                         <TableCell className="font-medium">{run.periodName}</TableCell>
                                         <TableCell className="text-xs text-muted-foreground">
-                                            {new Date(run.periodStartDate).toLocaleDateString()} - {new Date(run.periodEndDate).toLocaleDateString()}
+                                            {formatDate(run.periodStartDate)} - {formatDate(run.periodEndDate)}
                                         </TableCell>
                                         <TableCell><Badge>{run.status}</Badge></TableCell>
                                         <TableCell>{run.totalGross ? `$${run.totalGross}` : '-'}</TableCell>

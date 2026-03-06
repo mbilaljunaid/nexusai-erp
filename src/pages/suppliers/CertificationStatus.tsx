@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ShieldCheck, ShieldAlert, ShieldOff, AlertCircle } from 'lucide-react';
@@ -5,7 +6,7 @@ import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
-
+import { Card } from "@/components/ui/card";
 
 interface Cert { id: string; supplier_id: string; cert_type: string; cert_number: string; issuing_body: string; issue_date: string; expiry_date: string; status: string; verified_by: string; days_remaining?: number; }
 interface Portfolio { cert_type: string; suppliers_with_cert: number; active: number; expired: number; earliest_expiry: string; }
@@ -17,7 +18,7 @@ const CERT_STATUS: Record<string, { className: string; color: string; icon: Reac
     Revoked: { className: 'bg-amber-100 text-amber-600', color: '#d97706', icon: AlertCircle },
 };
 
-function fmtDate(d: string) { return d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'; }
+function fmtDate(d: string) { return d ? formatDate(d) : '—'; }
 
 const CERT_TYPES = ['ISO9001', 'ISO14001', 'ISO45001', 'ISO27001', 'SOC2', 'GDPR', 'SMETA', 'FSSC22000', 'REACH', 'ROHS', 'CUSTOM'];
 
@@ -87,7 +88,7 @@ export default function CertificationStatus() {
 
             {/* Add form */}
             {showNew && (
-                <div className="bg-white border border-gray-200 rounded-xl p-3.5 mb-3">
+                <Card className="p-3.5 mb-3 shadow-sm">
                     <div className="text-[13px] font-bold mb-2.5">Add Certificate</div>
                     <div className="grid grid-cols-3 gap-2">
                         <div className="flex flex-col gap-[3px]">
@@ -108,7 +109,7 @@ export default function CertificationStatus() {
                         <button onClick={() => setShowNew(false)} className="px-3 py-1.5 bg-gray-100 border-0 rounded-md text-[11px] cursor-pointer">Cancel</button>
                         <button disabled={addMut.isPending || !form.supplierId} onClick={() => addMut.mutate(form)} className="px-3 py-1.5 bg-blue-700 text-white border-0 rounded-md text-[11px] font-semibold cursor-pointer">Add</button>
                     </div>
-                </div>
+                </Card>
             )}
 
             {tab === 'certs' && (
@@ -127,7 +128,7 @@ export default function CertificationStatus() {
                             const Icon = cfg.icon;
                             const sel = selected?.id === c.id;
                             return (
-                                <div key={c.id} onClick={() => setSelected(sel ? null : c)} className={`bg-white border-2 rounded-xl p-3.5 cursor-pointer ${sel ? 'border-blue-700' : 'border-gray-200'}`}>
+                                <Card key={c.id} onClick={() => setSelected(sel ? null : c)} className={`p-3.5 cursor-pointer shadow-sm border-2 ${sel ? 'border-blue-700' : 'border-gray-200'}`}>
                                     <div className="flex justify-between mb-2">
                                         <div className="flex items-center gap-1.5">
                                             <Icon size={14} color={cfg.color} />
@@ -148,7 +149,7 @@ export default function CertificationStatus() {
                                             {c.status === 'Active' && <button onClick={e => { e.stopPropagation(); revokeMut.mutate(c.id); }} className="px-2.5 py-1 bg-red-600 text-white border-0 rounded-md text-[11px] cursor-pointer">Revoke</button>}
                                         </div>
                                     )}
-                                </div>
+                                </Card>
                             );
                         })}
                         {certs.length === 0 && <div className="col-span-full text-center text-gray-400 p-6">No certificates found</div>}
@@ -157,7 +158,7 @@ export default function CertificationStatus() {
             )}
 
             {tab === 'portfolio' && (
-                <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
+                <Card className="overflow-hidden shadow-sm">
                     {portfolio.length > 0 ? (
                         <InteractiveSpreadsheet
                             data={portfolio}
@@ -169,7 +170,7 @@ export default function CertificationStatus() {
                     ) : (
                         <div className="text-center text-gray-400 p-5">No data</div>
                     )}
-                </div>
+                </Card>
             )}
 
             {tab === 'expiring' && (
@@ -178,7 +179,7 @@ export default function CertificationStatus() {
                         const days = c.days_remaining ?? Math.ceil((new Date(c.expiry_date).getTime() - Date.now()) / 86400000);
                         const isOk = days > 14;
                         return (
-                            <div key={c.id} className={`bg-white border rounded-xl py-2.5 px-3.5 flex justify-between items-center ${isOk ? 'border-amber-300 border-l-[4px] border-l-amber-600' : 'border-red-300 border-l-[4px] border-l-red-600'}`}>
+                            <Card key={c.id} className={`py-2.5 px-3.5 flex justify-between items-center shadow-sm border-l-[4px] ${isOk ? 'border-l-amber-600' : 'border-l-red-600'}`}>
                                 <div>
                                     <span className="text-[13px] font-bold font-mono">{c.cert_type}</span>
                                     <span className="ml-2 text-[11px] text-gray-500">Supplier: {c.supplier_id} · #{c.cert_number}</span>
@@ -186,7 +187,7 @@ export default function CertificationStatus() {
                                 <div className={`text-[12px] font-bold ${isOk ? 'text-amber-600' : 'text-red-600'}`}>
                                     {days <= 0 ? 'EXPIRED' : `${days} days remaining`} — Expires {fmtDate(c.expiry_date)}
                                 </div>
-                            </div>
+                            </Card>
                         );
                     })}
                     {expiring.length === 0 && <div className="text-center text-gray-400 p-6">No certificates expiring within 60 days</div>}

@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 
@@ -35,7 +36,7 @@ export default function LogEntry({ log }: LogEntryProps) {
 
     return (
         <div className="px-4 py-3 hover:bg-gray-50">
-            <div
+            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                 className={`flex items-start gap-3 ${hasMetadata ? 'cursor-pointer' : ''}`}
                 onClick={() => hasMetadata && setExpanded(!expanded)}
             >
@@ -61,7 +62,7 @@ export default function LogEntry({ log }: LogEntryProps) {
                         {log.message}
                     </p>
                     <div className="mt-1 flex items-center gap-4 text-xs text-gray-500">
-                        <span>{new Date(log.timestamp).toLocaleString()}</span>
+                        <span>{formatDateTime(log.timestamp)}</span>
                         {log.user && (
                             <>
                                 <span>•</span>

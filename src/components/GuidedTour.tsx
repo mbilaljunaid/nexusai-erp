@@ -87,7 +87,7 @@ export function GuidedTourOverlay() {
 
   return (
     <>
-      <div
+      <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
         className="fixed inset-0 bg-black/50 z-[9998]"
         onClick={skipTour}
         data-testid="tour-overlay"

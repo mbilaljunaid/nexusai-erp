@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
@@ -162,7 +163,7 @@ export default function ProductsDetail() {
                                         <div className="pt-4 border-t border-muted/20 flex items-center justify-between text-[11px] text-muted-foreground mt-auto">
                                             <div className="flex items-center gap-1.5">
                                                 <Calendar className="h-3 w-3" />
-                                                {product.createdAt ? new Date(product.createdAt).toLocaleDateString() : 'Unknown'}
+                                                {product.createdAt ? formatDate(product.createdAt) : 'Unknown'}
                                             </div>
                                             <div className="flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
                                                 View Details <ArrowLeft className="h-3 w-3 rotate-180" />
@@ -250,7 +251,7 @@ export default function ProductsDetail() {
                                         </div>
                                         <div>
                                             <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Created Date</p>
-                                            <p className="text-sm font-medium">{selectedProduct.createdAt ? new Date(selectedProduct.createdAt).toLocaleDateString(undefined, { dateStyle: 'long' }) : 'N/A'}</p>
+                                            <p className="text-sm font-medium">{selectedProduct.createdAt ? formatDate(selectedProduct.createdAt) : 'N/A'}</p>
                                         </div>
                                     </CardContent>
                                 </Card>

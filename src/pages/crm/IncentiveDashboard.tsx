@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -121,7 +122,7 @@ export default function IncentiveDashboard() {
                             ) : (
                                 commissions?.map((comm) => (
                                     <TableRow key={comm.id}>
-                                        <TableCell>{new Date(comm.generatedAt).toLocaleDateString()}</TableCell>
+                                        <TableCell>{formatDate(comm.generatedAt)}</TableCell>
                                         <TableCell className="font-mono text-xs">{comm.opportunityId.substring(0, 8)}...</TableCell>
                                         <TableCell>${Number(comm.baseAmount).toLocaleString()}</TableCell>
                                         <TableCell className="font-bold text-green-600">+${Number(comm.commissionAmount).toLocaleString()}</TableCell>

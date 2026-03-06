@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useRoute } from "wouter";
@@ -135,7 +136,7 @@ export default function AccountDetail() {
                                             { id: "name", header: "Name", width: "40%", cell: (o: any) => <div className="p-2 font-medium">{o.name}</div> },
                                             { id: "stage", header: "Stage", width: "20%", cell: (o: any) => <div className="p-2"><Badge variant="outline">{o.stage}</Badge></div> },
                                             { id: "amount", header: "Amount", width: "20%", cell: (o: any) => <div className="p-2">${Number(o.amount).toLocaleString()}</div> },
-                                            { id: "closeDate", header: "Close Date", width: "20%", cell: (o: any) => <div className="p-2">{o.closeDate ? new Date(o.closeDate).toLocaleDateString() : '-'}</div> }
+                                            { id: "closeDate", header: "Close Date", width: "20%", cell: (o: any) => <div className="p-2">{o.closeDate ? formatDate(o.closeDate) : '-'}</div> }
                                         ]}
                                         virtualized={true}
                                         containerHeight="400px"

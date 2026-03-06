@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -56,7 +57,7 @@ export function DocumentViewer({ attachment, isOpen, onClose }: DocumentViewerPr
                     </div>
                     <div className="text-sm text-muted-foreground">
                         {(attachment.fileSize / 1024).toFixed(2)} KB • Uploaded by {attachment.uploadedBy} on{" "}
-                        {new Date(attachment.uploadedAt).toLocaleDateString()}
+                        {formatDate(attachment.uploadedAt)}
                     </div>
                 </DialogHeader>
 

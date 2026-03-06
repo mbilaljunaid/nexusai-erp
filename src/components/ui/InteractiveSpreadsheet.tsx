@@ -172,7 +172,7 @@ export function InteractiveSpreadsheet<T = any>({
                             const isSelected = activeRow !== undefined && (activeRow === rowAny.id || activeRow === rowAny.lineNumber);
                             // eslint-disable-next-line react/forbid-dom-props
                             return (
-                                <div
+                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     key={rowAny.id || virtualRow.index}
                                     className={`grid gap-2 p-1 px-3 items-center border-b border-slate-50 absolute top-0 left-0 w-full ${isSelected ? 'bg-slate-100' : 'hover:bg-slate-50'} ${onRowSelect ? 'cursor-pointer' : ''} is-row-${uId}-${virtualRow.index}`}
                                     onClick={() => onRowSelect && onRowSelect(row)}

@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import AIConfigurationSection from "@/components/admin/AIConfigurationSection";
 import { NexusAIAgentRegistrySection } from "@/components/admin/NexusAIAgentRegistrySection";
@@ -191,7 +192,7 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
         />
       )
     },
-    { id: "joined", header: "Joined", width: 120, cell: (item) => <span className="text-xs text-muted-foreground">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A'}</span> },
+    { id: "joined", header: "Joined", width: 120, cell: (item) => <span className="text-xs text-muted-foreground">{item.createdAt ? formatDate(item.createdAt) : 'N/A'}</span> },
     {
       id: "actions", header: "Actions", width: 120, cell: (item) => (
         <div className="flex items-center justify-end gap-1 pr-2 w-full">

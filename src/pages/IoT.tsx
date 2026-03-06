@@ -1,3 +1,4 @@
+import { formatTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
@@ -78,7 +79,7 @@ export default function IoT() {
               <CardContent className="space-y-3">
                 <div className="text-3xl font-bold">{sensor.readingValue} {sensor.unit}</div>
                 <div className="text-sm text-muted-foreground">Device: {sensor.deviceId}</div>
-                <div className="text-sm text-muted-foreground">Reading time: {new Date(sensor.timestamp).toLocaleTimeString()}</div>
+                <div className="text-sm text-muted-foreground">Reading time: {formatTime(sensor.timestamp)}</div>
               </CardContent>
             </Card>
           ))}

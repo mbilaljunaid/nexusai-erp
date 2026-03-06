@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Toggle } from "@/components/ui/toggle";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Shield, Lock, Smartphone, Key } from "lucide-react";
 
 export default function SecuritySettings() {
@@ -36,18 +37,18 @@ export default function SecuritySettings() {
             {mfaEnabled && (
               <div className="space-y-2 pt-2 border-t">
                 <label className="text-sm">Available MFA Methods:</label>
-                <div className="space-y-2">
+                <div className="space-y-4 pt-4">
                   <div className="flex items-center gap-2">
-                    <input type="checkbox" defaultChecked id="email" />
-                    <label htmlFor="email" className="text-sm cursor-pointer">Email</label>
+                    <Checkbox defaultChecked id="email" />
+                    <label htmlFor="email" className="text-sm cursor-pointer leading-none">Email</label>
                   </div>
                   <div className="flex items-center gap-2">
-                    <input type="checkbox" defaultChecked id="sms" />
-                    <label htmlFor="sms" className="text-sm cursor-pointer">SMS</label>
+                    <Checkbox defaultChecked id="sms" />
+                    <label htmlFor="sms" className="text-sm cursor-pointer leading-none">SMS</label>
                   </div>
                   <div className="flex items-center gap-2">
-                    <input type="checkbox" defaultChecked id="app" />
-                    <label htmlFor="app" className="text-sm cursor-pointer">Authenticator App</label>
+                    <Checkbox defaultChecked id="app" />
+                    <label htmlFor="app" className="text-sm cursor-pointer leading-none">Authenticator App</label>
                   </div>
                 </div>
               </div>

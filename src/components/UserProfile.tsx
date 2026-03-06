@@ -162,7 +162,7 @@ export function UserProfile({ userId }: UserProfileProps) {
           </div>
           {user.createdAt && (
             <p className="text-sm text-muted-foreground mt-1">
-              Member since {new Date(user.createdAt).toLocaleDateString()}
+              Member since {formatDate(user.createdAt)}
             </p>
           )}
         </div>

@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
@@ -59,11 +60,11 @@ export default function SupplierInvoices() {
                   </div>
                   <div>
                     <p className="text-muted-foreground">Invoice Date</p>
-                    <p className="font-semibold">{inv.invoiceDate ? new Date(inv.invoiceDate).toLocaleDateString() : "N/A"}</p>
+                    <p className="font-semibold">{inv.invoiceDate ? formatDate(inv.invoiceDate) : "N/A"}</p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">Due Date</p>
-                    <p className="font-semibold">{inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : "N/A"}</p>
+                    <p className="font-semibold">{inv.dueDate ? formatDate(inv.dueDate) : "N/A"}</p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">PO</p>

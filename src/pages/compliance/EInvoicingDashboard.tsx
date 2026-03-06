@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -110,7 +111,7 @@ export default function EInvoicingDashboard() {
                 );
             }
         },
-        { id: "submitted", header: "Submitted", width: "120px", cell: (d) => d.submitted_at ? new Date(d.submitted_at).toLocaleDateString() : '—' },
+        { id: "submitted", header: "Submitted", width: "120px", cell: (d) => d.submitted_at ? formatDate(d.submitted_at) : '—' },
         {
             id: "actions", header: "Actions", width: "120px", cell: (d) => ['Submitted', 'Accepted'].includes(d.status) ? (
                 <button

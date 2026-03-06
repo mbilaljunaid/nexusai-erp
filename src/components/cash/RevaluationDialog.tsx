@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import { useState } from "react";
 import {
@@ -112,7 +113,7 @@ export function RevaluationDialog({ accountId, accountName, currency, isOpen, on
                                 <TableBody>
                                     {history?.map((item: any) => (
                                         <TableRow key={item.id}>
-                                            <TableCell>{new Date(item.revaluationDate).toLocaleDateString()}</TableCell>
+                                            <TableCell>{formatDate(item.revaluationDate)}</TableCell>
                                             <TableCell>{Number(item.usedRate).toFixed(4)}</TableCell>
                                             <TableCell className={Number(item.unrealizedGainLoss) >= 0 ? "text-green-600" : "text-red-600"}>
                                                 {Number(item.unrealizedGainLoss).toFixed(2)}

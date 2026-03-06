@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -111,7 +112,7 @@ export default function TaxReportingDashboard() {
                                     <div className="font-medium">{alert.title}</div>
                                     <div className="text-sm text-muted-foreground">{alert.description}</div>
                                     <Badge variant="destructive" className="mt-2">
-                                        Due: {new Date(alert.dueDate).toLocaleDateString()}
+                                        Due: {formatDate(alert.dueDate)}
                                     </Badge>
                                 </div>
                             ))}

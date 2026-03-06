@@ -177,7 +177,7 @@ export default function HedgeEffectiveness() {
                                             header: "Hedge ID",
                                             width: "120px",
                                             cell: (row, index, updateRow) => (
-                                                <div onClick={() => setTestForm(p => ({ ...p, hedgeRelId: row.id }))} className="w-full h-full cursor-pointer">
+                                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setTestForm(p => ({ ...p, hedgeRelId: row.id }))} className="w-full h-full cursor-pointer">
                                                     <Input className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent font-medium" placeholder="ID" value={row.hedge_id || ''} onChange={(e) => updateRow("hedge_id", e.target.value)} />
                                                 </div>
                                             )

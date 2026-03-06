@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useNexusAI } from "@/contexts/NexusAIContext";
 import { Button } from "@/components/ui/button";
@@ -300,7 +301,7 @@ export function NexusAIPanel() {
                       <div className="text-[10px] text-muted-foreground mt-1 flex items-center gap-2">
                         <span className="capitalize">{convo.moduleContext}</span>
                         <span>•</span>
-                        <span>{convo.updatedAt ? new Date(convo.updatedAt).toLocaleDateString() : 'Just now'}</span>
+                        <span>{convo.updatedAt ? formatDate(convo.updatedAt) : 'Just now'}</span>
                       </div>
                       <div className="absolute right-2 top-3 opacity-0 group-hover:opacity-100 transition-opacity">
                         <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />

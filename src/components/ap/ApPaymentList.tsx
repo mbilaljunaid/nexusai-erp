@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -60,7 +61,7 @@ export function ApPaymentList() {
                                     <Calendar className="h-3 w-3" /> Scheduled:
                                 </span>
                                 <span>
-                                    {payment.scheduledDate ? new Date(payment.scheduledDate).toLocaleDateString() : 'Immediate'}
+                                    {payment.scheduledDate ? formatDate(payment.scheduledDate) : 'Immediate'}
                                 </span>
                             </div>
                         </div>

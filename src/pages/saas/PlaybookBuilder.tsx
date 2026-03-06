@@ -153,7 +153,7 @@ export default function PlaybookBuilder() {
                     <CardContent>
                         <div className="space-y-2">
                             {playbooks.map((playbook) => (
-                                <div
+                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     key={playbook.id}
                                     className={`p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${selectedPlaybook?.id === playbook.id ? 'bg-blue-50 border-blue-500' : ''
                                         }`}

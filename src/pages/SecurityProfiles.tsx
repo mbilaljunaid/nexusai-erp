@@ -192,7 +192,7 @@ export default function SecurityProfiles() {
                 </Card>
             </div>
 
-            <div className="bg-white rounded-xl border shadow-sm">
+            <Card className="overflow-hidden">
                 <div className="p-4 border-b flex justify-between items-center bg-slate-50/50">
                     <h2 className="font-semibold text-lg">Access Assignments</h2>
                     <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
@@ -287,7 +287,7 @@ export default function SecurityProfiles() {
                         containerHeight="500px"
                     />
                 </div>
-            </div>
+            </Card>
         </StandardPage>
     );
 }

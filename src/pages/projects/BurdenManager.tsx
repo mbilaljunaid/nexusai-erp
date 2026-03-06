@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery } from '@tanstack/react-query';
@@ -52,7 +53,7 @@ export default function BurdenManager() {
                 </div>
             )
         },
-        { id: "createdAt", header: "Created", width: "20%", cell: (item: any) => <div className="p-2">{new Date(item.createdAt).toLocaleDateString()}</div> },
+        { id: "createdAt", header: "Created", width: "20%", cell: (item: any) => <div className="p-2">{formatDate(item.createdAt)}</div> },
         {
             id: "rules", header: "Rules", width: "20%", cell: (item: any) => (
                 <div className="p-2 text-muted-foreground">{item.rules?.length || 0} rules</div>

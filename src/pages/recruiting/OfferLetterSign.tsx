@@ -1,10 +1,11 @@
+import { formatDate, formatDateTime } from "@/lib/dateUtils";
 import React, { useState, useRef } from 'react';
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { FileText, CheckCircle2, XCircle, PenLine, Eye } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-
+import { Input } from "@/components/ui/input";
 
 interface EsigDoc {
     id: string; document_type: string; applicant_id: string; candidate_name: string;
@@ -22,7 +23,7 @@ const STATUS_CFG: Record<string, { bg: string; color: string }> = {
     Expired: { bg: '#f3f4f6', color: '#9ca3af' },
 };
 
-function fmtDate(d: string) { return d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'; }
+function fmtDate(d: string) { return d ? formatDate(d) : '—'; }
 
 export default function OfferLetterSign() {
     const [tab, setTab] = useState<'docs' | 'new' | 'sign'>('docs');
@@ -114,7 +115,7 @@ export default function OfferLetterSign() {
                                 {(audit.audit_trail as any[] ?? []).map((ev: any, i: number) => (
                                     <div key={i} style={{ display: 'flex', gap: 10, fontSize: 11, alignItems: 'center' }}>
                                         <span style={{ padding: '1px 7px', borderRadius: 4, background: '#111827', color: '#fff', fontSize: 10 }}>{ev.event}</span>
-                                        <span style={{ color: '#6b7280' }}>{new Date(ev.at).toLocaleString()}</span>
+                                        <span style={{ color: '#6b7280' }}>{formatDateTime(ev.at)}</span>
                                         {ev.ip && <span style={{ color: '#9ca3af' }}>IP: {ev.ip}</span>}
                                         {ev.reason && <span style={{ color: '#dc2626' }}>Reason: {ev.reason}</span>}
                                     </div>
@@ -141,7 +142,7 @@ export default function OfferLetterSign() {
                         {[['applicantId', 'Applicant ID', 'text'], ['candidateName', 'Candidate Name', 'text'], ['candidateEmail', 'Candidate Email', 'email'], ['expiresInDays', 'Expires In (days)', 'number']].map(([k, l, t]) => (
                             <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                                 <label style={{ fontSize: 10, fontWeight: 700 }}>{l}</label>
-                                <input type={t} value={(form as any)[k]} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} style={{ padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12 }} aria-label={l} />
+                                <Input type={t} value={(form as any)[k]} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} className="h-9 text-xs" aria-label={l} />
                             </div>
                         ))}
                         <div style={{ gridColumn: '1/-1', display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -170,7 +171,7 @@ export default function OfferLetterSign() {
                             <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10 }}>Sign Document</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 12 }}>
                                 <label style={{ fontSize: 10, fontWeight: 700 }}>Document ID</label>
-                                <input value={signDocId} onChange={e => setSignDocId(e.target.value)} placeholder="Paste document ID or use Send → Sign from list" style={{ padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12 }} aria-label="Document ID" />
+                                <Input value={signDocId} onChange={e => setSignDocId(e.target.value)} placeholder="Paste document ID or use Send → Sign from list" className="h-9 text-xs" aria-label="Document ID" />
                             </div>
                             <div style={{ fontSize: 11, fontWeight: 700, marginBottom: 6, color: '#374151', display: 'flex', alignItems: 'center', gap: 4 }}>
                                 <PenLine size={12} /> Draw your signature below

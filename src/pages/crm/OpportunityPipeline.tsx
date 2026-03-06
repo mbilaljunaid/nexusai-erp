@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -217,7 +218,7 @@ export default function OpportunityPipeline() {
                                 <div className="flex items-center justify-between text-xs">
                                     <div className="flex items-center gap-1 text-muted-foreground">
                                         <Calendar className="h-3 w-3" />
-                                        {new Date(opp.closeDate).toLocaleDateString()}
+                                        {formatDate(opp.closeDate)}
                                     </div>
                                     <Badge variant="outline" className="text-xs">
                                         {opp.probability}%
@@ -254,7 +255,7 @@ export default function OpportunityPipeline() {
                                     <div>
                                         <label className="text-sm font-medium">Close Date</label>
                                         <div className="text-sm text-muted-foreground">
-                                            {new Date(selectedOpportunity.closeDate).toLocaleDateString()}
+                                            {formatDate(selectedOpportunity.closeDate)}
                                         </div>
                                     </div>
                                     <div>

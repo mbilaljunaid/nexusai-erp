@@ -108,14 +108,14 @@ export default function ContractDashboard() {
                 </div>
             )}
 
-            <div className="bg-white rounded-md border h-[500px]">
+            <Card className="h-[500px] overflow-hidden shadow-sm">
                 <InteractiveSpreadsheet
                     columns={contractColumns}
                     data={contracts}
                     onChange={() => { }}
                     containerHeight="100%"
                 />
-            </div>
+            </Card>
 
             <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                 <DialogContent>

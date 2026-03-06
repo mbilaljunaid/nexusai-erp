@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -130,7 +131,7 @@ export default function JournalApprovalHub() {
                                         {Number(item.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
                                     </TableCell>
                                     <TableCell>{item.requester || "Unknown"}</TableCell>
-                                    <TableCell>{new Date(item.submittedDate).toLocaleDateString()}</TableCell>
+                                    <TableCell>{formatDate(item.submittedDate)}</TableCell>
                                     <TableCell className="text-right space-x-2">
                                         <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                             onClick={() => openAction('reject', item.journalId)}>

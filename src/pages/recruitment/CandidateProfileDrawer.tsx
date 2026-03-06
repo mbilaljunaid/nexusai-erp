@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 
 import {
     Sheet,
@@ -117,7 +118,7 @@ export function CandidateProfileDrawer({ open, onClose, candidate, applicationId
                                     <div>
                                         <p className="font-medium text-sm flex items-center gap-2">
                                             <Calendar className="w-4 h-4" />
-                                            {new Date(int.scheduledTime).toLocaleDateString()}
+                                            {formatDate(int.scheduledTime)}
                                         </p>
                                         <p className="text-xs text-muted-foreground mt-1">Location: {int.location}</p>
                                         {int.feedback && (

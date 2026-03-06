@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -63,7 +64,7 @@ function InstalledAppCard({ installation, onUninstall, onReview, isUninstalling 
             <span>{app.averageRating ? String(Number(app.averageRating).toFixed(1)) : "0.0"}</span>
           </div>
           <div className="text-xs">
-            Installed: {installation.installedAt ? new Date(installation.installedAt).toLocaleDateString() : "N/A"}
+            Installed: {installation.installedAt ? formatDate(installation.installedAt) : "N/A"}
           </div>
         </div>
         {app.tags && app.tags.length > 0 && (
@@ -230,7 +231,7 @@ function ReviewDialog({ app, open, onOpenChange }: ReviewDialogProps) {
                           ))}
                         </div>
                         <span className="text-xs text-muted-foreground">
-                          {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : ""}
+                          {review.createdAt ? formatDate(review.createdAt) : ""}
                         </span>
                       </div>
                       <p className="text-muted-foreground">{review.content}</p>

@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -455,9 +456,9 @@ export function AssetHealthDashboard() {
                         <ResponsiveContainer width="100%" height={300}>
                             <LineChart data={healthTrends}>
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="date" tickFormatter={(date) => new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} />
+                                <XAxis dataKey="date" tickFormatter={(date) => formatDate(date)} />
                                 <YAxis domain={[0, 100]} />
-                                <Tooltip labelFormatter={(date) => new Date(date).toLocaleDateString()} />
+                                <Tooltip labelFormatter={(date) => formatDate(date)} />
                                 <Legend />
                                 <ReferenceLine y={70} stroke="#22c55e" strokeDasharray="3 3" label="Good" />
                                 <ReferenceLine y={50} stroke="#eab308" strokeDasharray="3 3" label="Watch" />

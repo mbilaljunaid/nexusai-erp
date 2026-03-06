@@ -1,3 +1,4 @@
+import { formatTime } from "@/lib/dateUtils";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -65,7 +66,7 @@ export default function YardManagement() {
                                         <div className="text-sm">
                                             <div className="text-muted-foreground">Carrier: {slot.appointment.carrier}</div>
                                             <div className="text-muted-foreground">
-                                                Time: {new Date(slot.appointment.time).toLocaleTimeString()}
+                                                Time: {formatTime(slot.appointment.time)}
                                             </div>
                                         </div>
                                     )}

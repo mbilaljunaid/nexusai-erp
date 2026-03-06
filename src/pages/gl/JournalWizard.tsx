@@ -13,6 +13,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Card } from "@/components/ui/card";
 
 interface JournalLine {
     id: number;
@@ -218,7 +219,7 @@ export default function JournalWizard() {
 
     const Step2 = (
         <div className="space-y-4 h-full flex flex-col">
-            <div className="flex justify-between items-center bg-white p-4 rounded-lg border shadow-sm">
+            <Card className="flex justify-between items-center p-4 shadow-sm">
                 <div className="flex items-center gap-6 text-sm">
                     <div className="flex flex-col">
                         <span className="text-muted-foreground text-xs uppercase tracking-wider">Total Debit</span>
@@ -243,7 +244,7 @@ export default function JournalWizard() {
                         <Plus className="w-4 h-4 mr-2" /> Add 10 Rows
                     </Button>
                 </div>
-            </div>
+            </Card>
 
             {/* Virtualized Table Container */}
             <div className="flex-1 overflow-hidden min-h-[500px]">
@@ -289,7 +290,7 @@ export default function JournalWizard() {
 
     const Step3 = (
         <div className="space-y-6 max-w-3xl mx-auto">
-            <div className="flex justify-between items-center bg-muted/20 p-4 rounded-lg border">
+            <Card className="flex justify-between items-center bg-muted/20 p-4">
                 <div className="space-y-1">
                     <h3 className="font-semibold text-lg">Detailed Review</h3>
                     <p className="text-sm text-muted-foreground">Review your journal entry before submission.</p>
@@ -297,9 +298,9 @@ export default function JournalWizard() {
                 <Button onClick={() => createMutation.mutate()} disabled={createMutation.isPending} className="bg-green-600 hover:bg-green-700">
                     {createMutation.isPending ? "Submitting..." : "Submit Journal"}
                 </Button>
-            </div>
+            </Card>
 
-            <div className="grid grid-cols-2 gap-4 text-sm border p-6 rounded-lg bg-white shadow-sm">
+            <Card className="grid grid-cols-2 gap-4 text-sm p-6 shadow-sm">
                 <div>
                     <span className="text-muted-foreground block text-xs uppercase">Journal Name</span>
                     <span className="font-medium text-lg">{headerData.journalName}</span>
@@ -316,7 +317,7 @@ export default function JournalWizard() {
                     <span className="text-muted-foreground block text-xs uppercase">Ledger</span>
                     <span className="font-medium">{headerData.ledger}</span>
                 </div>
-            </div>
+            </Card>
         </div>
     );
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'wouter';
 import { Shield, Activity, FileText, Lock, Database, ChevronRight } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Card } from "@/components/ui/card";
 
 
 const adminNavItems = [
@@ -22,7 +23,7 @@ export default function ProductionLayout({ children }: { children?: React.ReactN
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center gap-3">
                             <Shield className="w-6 h-6 text-red-600" />
-                            
+
                         </div>
                         <div className="flex items-center gap-4">
                             <span className="text-sm text-gray-500">v1.0.0</span>
@@ -46,26 +47,28 @@ export default function ProductionLayout({ children }: { children?: React.ReactN
                 <div className="flex gap-6">
                     {/* Sidebar Navigation */}
                     <aside className="w-64 flex-shrink-0">
-                        <nav className="bg-white rounded-lg shadow-sm border p-2 space-y-1">
-                            {adminNavItems.map((item) => {
-                                const Icon = item.icon;
-                                const isActive = location === item.path;
+                        <Card className="p-2">
+                            <nav className="space-y-1">
+                                {adminNavItems.map((item) => {
+                                    const Icon = item.icon;
+                                    const isActive = location === item.path;
 
-                                return (
-                                    <Link
-                                        key={item.path}
-                                        to={item.path}
-                                        className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
-                                            ? 'bg-blue-50 text-blue-700'
-                                            : 'text-gray-700 hover:bg-gray-50'
-                                            }`}
-                                    >
-                                        <Icon className="w-5 h-5" />
-                                        {item.name}
-                                    </Link>
-                                );
-                            })}
-                        </nav>
+                                    return (
+                                        <Link
+                                            key={item.path}
+                                            to={item.path}
+                                            className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
+                                                ? 'bg-blue-50 text-blue-700'
+                                                : 'text-gray-700 hover:bg-gray-50'
+                                                }`}
+                                        >
+                                            <Icon className="w-5 h-5" />
+                                            {item.name}
+                                        </Link>
+                                    );
+                                })}
+                            </nav>
+                        </Card>
 
                         {/* Security Notice */}
                         <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-3">

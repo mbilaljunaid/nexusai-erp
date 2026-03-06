@@ -1,3 +1,4 @@
+import { formatDateTime } from "@/lib/dateUtils";
 
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -187,7 +188,7 @@ export default function Revaluation() {
                                             {run.journalBatchId}
                                         </TableCell>
                                         <TableCell className="text-muted-foreground text-xs">
-                                            {new Date(run.createdAt).toLocaleString()}
+                                            {formatDateTime(run.createdAt)}
                                         </TableCell>
                                     </TableRow>
                                 ))

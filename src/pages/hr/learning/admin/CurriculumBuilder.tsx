@@ -121,7 +121,7 @@ export default function CurriculumBuilder() {
                         <CardHeader><CardTitle>Existing Curricula</CardTitle></CardHeader>
                         <CardContent className="space-y-2">
                             {loadingCurricula ? <Loader2 className="animate-spin" /> : curricula?.map((c: any) => (
-                                <div key={c.id}
+                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} key={c.id}
                                     className={`p-3 border rounded cursor-pointer hover:bg-muted ${selectedCurriculum?.id === c.id ? 'border-primary bg-muted' : ''}`}
                                     onClick={() => setSelectedCurriculum(c)}
                                 >

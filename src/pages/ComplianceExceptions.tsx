@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RemediationSheet } from "@/components/compliance/RemediationSheet";
 import { Link } from "wouter";
+import { Card } from "@/components/ui/card";
 
 interface Violation {
   id: string;
@@ -173,7 +174,7 @@ export default function ComplianceExceptions() {
         />
       </div>
 
-      <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+      <Card className="overflow-hidden">
         <div className="p-4 border-b bg-muted/30 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <h3 className="font-bold text-slate-700">Exception Queue</h3>
@@ -202,7 +203,7 @@ export default function ComplianceExceptions() {
             containerHeight="600px"
           />
         </div>
-      </div>
+      </Card>
 
       <RemediationSheet
         violation={selectedViolation}

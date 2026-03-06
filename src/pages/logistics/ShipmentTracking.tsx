@@ -1,9 +1,11 @@
+import { formatDateTime } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { MapPin, AlertTriangle, Package, Zap, TrendingUp } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from "@/components/ui/input";
 
 interface Shipment {
     id: string;
@@ -143,7 +145,7 @@ export default function ShipmentTracking() {
                         <div className="edi-form">
                             <div className="ef-title">Log EDI 214 Event</div>
                             <div className="ef-row">
-                                <input className="ei" placeholder="PRO# or Tracking#" value={eventForm.proNumber} onChange={e => setEventForm(p => ({ ...p, proNumber: e.target.value }))} aria-label="PRO number" />
+                                <Input placeholder="PRO# or Tracking#" value={eventForm.proNumber} onChange={e => setEventForm(p => ({ ...p, proNumber: e.target.value }))} className="h-8 text-[11px]" aria-label="PRO number" />
                                 <Select value={eventForm.eventCode} onValueChange={v => setEventForm(p => ({ ...p, eventCode: v }))}>
                                     <SelectTrigger className="ei" aria-label="Event code"><SelectValue /></SelectTrigger>
                                     <SelectContent>
@@ -157,8 +159,8 @@ export default function ShipmentTracking() {
                                 </Select>
                             </div>
                             <div className="ef-row">
-                                <input className="ei" placeholder="City" value={eventForm.eventCity} onChange={e => setEventForm(p => ({ ...p, eventCity: e.target.value }))} aria-label="Event city" />
-                                <input className="ei" placeholder="State" value={eventForm.eventState} onChange={e => setEventForm(p => ({ ...p, eventState: e.target.value }))} aria-label="Event state" />
+                                <Input placeholder="City" value={eventForm.eventCity} onChange={e => setEventForm(p => ({ ...p, eventCity: e.target.value }))} className="h-8 text-[11px]" aria-label="Event city" />
+                                <Input placeholder="State" value={eventForm.eventState} onChange={e => setEventForm(p => ({ ...p, eventState: e.target.value }))} className="h-8 text-[11px]" aria-label="Event state" />
                             </div>
                             <button className="ef-btn" disabled={!eventForm.proNumber || eventMutation.isPending}
                                 onClick={() => eventMutation.mutate({ ...eventForm, shipmentId: selected?.id })} aria-label="Submit EDI event">
@@ -203,7 +205,7 @@ export default function ShipmentTracking() {
                                             <div className="tl-content">
                                                 <div className="tl-code"><span className="code-badge">{e.event_code}</span> {e.event_description}</div>
                                                 <div className="tl-loc">{e.event_city && `${e.event_city}, ${e.event_state}`}</div>
-                                                <div className="tl-time">{new Date(e.event_time).toLocaleString()}</div>
+                                                <div className="tl-time">{formatDateTime(e.event_time)}</div>
                                             </div>
                                         </div>
                                     ))}
@@ -237,7 +239,7 @@ export default function ShipmentTracking() {
                         {[['originZip', 'Origin ZIP', 'text'], ['destZip', 'Destination ZIP', 'text'], ['weightLbs', 'Weight (lbs)', 'number'], ['requiredTransitDays', 'Max Transit Days', 'number']].map(([k, label, t]) => (
                             <div key={k} className="mff">
                                 <label className="mfl">{label}</label>
-                                <input className="mfi" type={t as string} value={(modeForm as any)[k as string]} onChange={e => setModeForm(p => ({ ...p, [k as string]: t === 'number' ? parseInt(e.target.value) || 0 : e.target.value }))} aria-label={label as string} />
+                                <Input type={t as string} value={(modeForm as any)[k as string]} onChange={e => setModeForm(p => ({ ...p, [k as string]: t === 'number' ? parseInt(e.target.value) || 0 : e.target.value }))} className="h-9 text-[12px]" aria-label={label as string} />
                             </div>
                         ))}
                         <button className="opt-btn" disabled={modeMutation.isPending || !modeForm.originZip || !modeForm.destZip}

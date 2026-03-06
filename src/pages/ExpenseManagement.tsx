@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -195,7 +196,7 @@ export default function ExpenseManagement() {
       id: "createdAt",
       header: "Created",
       width: "150px",
-      cell: (r: any) => <div className="p-2">{new Date(r.createdAt).toLocaleDateString()}</div>
+      cell: (r: any) => <div className="p-2">{formatDate(r.createdAt)}</div>
     },
     {
       id: "employeeId",

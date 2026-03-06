@@ -193,7 +193,7 @@ export default function GLDashboard() {
                     <CardContent>
                         <div className="space-y-3">
                             {recentJournals?.data?.slice(0, 10).map((journal: any) => (
-                                <div
+                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     key={journal.id}
                                     className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent cursor-pointer"
                                     onClick={() => setLocation(`/finance/gl/journals/${journal.id}`)}

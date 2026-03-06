@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dateUtils";
 import React from 'react';
 import { Mail, Send, Clock, CheckCircle, XCircle, Edit } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -160,7 +161,7 @@ export default function EmailAutomation() {
                                                 <div>
                                                     <div className="font-medium">{template.name}</div>
                                                     <div className="text-sm text-muted-foreground">
-                                                        {template.category} • Last modified {new Date(template.lastModified).toLocaleDateString()}
+                                                        {template.category} • Last modified {formatDate(template.lastModified)}
                                                     </div>
                                                 </div>
                                             </div>
