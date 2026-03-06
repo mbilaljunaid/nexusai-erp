@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ArrowLeft, CheckCircle, FileText, User } from "lucide-react";
+import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -117,11 +118,11 @@ export default function ContractDetailView() {
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium text-muted-foreground">Start Date</label>
-                                    <p>{new Date(contract.startDate).toLocaleDateString()}</p>
+                                    <p>{format(new Date(contract.startDate), "MMM d, yyyy")}</p>
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium text-muted-foreground">End Date</label>
-                                    <p>{contract.endDate ? new Date(contract.endDate).toLocaleDateString() : 'Indefinite'}</p>
+                                    <p>{contract.endDate ? format(new Date(contract.endDate), "MMM d, yyyy") : 'Indefinite'}</p>
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium text-muted-foreground">Total Amount</label>
@@ -148,7 +149,7 @@ export default function ContractDetailView() {
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium text-muted-foreground">Next Renewal</label>
-                                    <p>{contract.renewalDate ? new Date(contract.renewalDate).toLocaleDateString() : 'N/A'}</p>
+                                    <p>{contract.renewalDate ? format(new Date(contract.renewalDate), "MMM d, yyyy") : 'N/A'}</p>
                                 </div>
                             </CardContent>
                         </Card>
@@ -237,7 +238,7 @@ export default function ContractDetailView() {
                                                 <FileText className="h-5 w-5 text-blue-500" />
                                                 <div>
                                                     <p className="font-medium text-sm">{doc.documentName}</p>
-                                                    <p className="text-xs text-muted-foreground">{new Date(doc.uploadedAt).toLocaleDateString()} • {doc.documentType}</p>
+                                                    <p className="text-xs text-muted-foreground">{format(new Date(doc.uploadedAt), "MMM d, yyyy")} • {doc.documentType}</p>
                                                 </div>
                                             </div>
                                             <Button variant="ghost" size="sm" asChild>

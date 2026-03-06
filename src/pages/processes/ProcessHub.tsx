@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Search } from 'lucide-react';
 import { Link } from 'wouter';
 import { StandardPage } from "@/components/layout/StandardPage";
-
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 interface ProcessCard {
   id: string;
@@ -248,7 +248,7 @@ export default function ProcessHub() {
     <StandardPage title="Processes Dashboard">
       {/* Header */}
       <div>
-        
+
         <p className="text-lg text-muted-foreground">All 18 End-to-End ERP Processes</p>
       </div>
 
@@ -347,9 +347,7 @@ export default function ProcessHub() {
                       <div className="text-sm text-muted-foreground">#{process.number}</div>
                       <h3 className="text-lg font-semibold text-foreground">{process.name}</h3>
                     </div>
-                    <Badge className={criticalityStyles[process.criticality]}>
-                      {process.criticality}
-                    </Badge>
+                    <StatusBadge status={process.criticality.toLowerCase()} label={process.criticality} />
                   </div>
 
                   <div className="space-y-3 mb-4">
@@ -387,7 +385,7 @@ export default function ProcessHub() {
               <Link key={process.id} href={`/processes/${process.id}`}>
                 <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" data-testid={`process-card-${process.id}`}>
                   <h3 className="text-lg font-semibold text-foreground mb-2">#{process.number} {process.name}</h3>
-                  <Badge className="mb-4 bg-red-100 text-red-800">CRITICAL</Badge>
+                  <StatusBadge className="mb-4" status="critical" label="CRITICAL" />
                   <div className="text-sm text-muted-foreground">{process.category}</div>
                 </Card>
               </Link>
@@ -401,7 +399,7 @@ export default function ProcessHub() {
               <Link key={process.id} href={`/processes/${process.id}`}>
                 <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" data-testid={`process-card-${process.id}`}>
                   <h3 className="text-lg font-semibold text-foreground mb-2">#{process.number} {process.name}</h3>
-                  <Badge className="mb-4 bg-orange-100 text-orange-800">HIGH</Badge>
+                  <StatusBadge className="mb-4" status="high" label="HIGH" />
                   <div className="text-sm text-muted-foreground">{process.category}</div>
                 </Card>
               </Link>

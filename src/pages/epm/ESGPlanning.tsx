@@ -141,7 +141,7 @@ export default function ESGPlanning() {
                                     const wcls = p >= 100 ? 'w-full' : p >= 90 ? 'w-[90%]' : p >= 80 ? 'w-[80%]' : p >= 70 ? 'w-[70%]' : p >= 60 ? 'w-[60%]' : p >= 50 ? 'w-[50%]' : p >= 40 ? 'w-[40%]' : p >= 30 ? 'w-[30%]' : p >= 20 ? 'w-[20%]' : p >= 10 ? 'w-[10%]' : 'w-0';
 
                                     return (
-                                        <div key={g.id} onClick={() => { setSelectedGoal(selectedGoal?.id === g.id ? null : g); setActualForm(a => ({ ...a, goalId: g.id })); }} className={`bg-white border hover:shadow-sm cursor-pointer border-l-[4px] rounded-xl px-3.5 py-2.5 ${selectedGoal?.id === g.id ? 'border-emerald-600' : 'border-gray-200'} ${bdrClr}`}>
+                                        <div key={g.id} onClick={() => { setSelectedGoal(selectedGoal?.id === g.id ? null : g); setActualForm(a => ({ ...a, goalId: g.id })); }} className={`bg-white border hover:shadow-sm cursor-pointer border-l-[4px] rounded-xl px-3.5 py-2.5 ${selectedGoal?.id === g.id ? 'border-emerald-600' : 'border-gray-200'} ${bdrClr}`} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedGoal(selectedGoal?.id === g.id ? null : g); setActualForm(a => ({ ...a, goalId: g.id })); } }}>
                                             <div className="flex justify-between mb-1">
                                                 <div className="font-bold text-[13px]">{g.goal_name}</div>
                                                 <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${clr}`}>{g.status}</span>

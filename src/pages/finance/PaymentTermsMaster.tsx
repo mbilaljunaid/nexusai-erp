@@ -87,7 +87,7 @@ export default function PaymentTermsMaster() {
                         terms.map(t => {
                             const cfg = TYPE_COLORS[t.term_type] ?? { bg: '#f3f4f6', color: '#6b7280' };
                             return (
-                                <div key={t.id} className={`term-card ${selected?.id === t.id ? 'selected' : ''}`} onClick={() => { setSelected(t); setSchedTest(p => ({ ...p, termCode: t.term_code })); }}>
+                                <div key={t.id} className={`term - card ${selected?.id === t.id ? 'selected' : ''} `} onClick={() => { setSelected(t); setSchedTest(p => ({ ...p, termCode: t.term_code })); }} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelected(t); setSchedTest(p => ({ ...p, termCode: t.term_code })); } }}>
                                     <div className="tc-top">
                                         <span className="tc-code">{t.term_code}</span>
                                         <span className="tc-type" style={{ background: cfg.bg, color: cfg.color }}>{t.term_type}</span>
@@ -151,7 +151,7 @@ export default function PaymentTermsMaster() {
                         <div className="st-row">
                             <div className="sf">
                                 <label className="sl">Term Code</label>
-                                <input className="si" value={schedTest.termCode} onChange={e => setSchedTest(p => ({ ...p, termCode: e.target.value }))} placeholder="e.g. NET30" aria-label="Term code for calculator" />
+                                <Input className="si" value={schedTest.termCode} onChange={e => setSchedTest(p => ({ ...p, termCode: e.target.value }))} placeholder="e.g. NET30" aria-label="Term code for calculator" />
                             </div>
                             <div className="sf">
                                 <label className="sl">Invoice Date</label>
@@ -159,7 +159,7 @@ export default function PaymentTermsMaster() {
                             </div>
                             <div className="sf">
                                 <label className="sl">Amount</label>
-                                <input className="si" type="number" value={schedTest.totalAmount} onChange={e => setSchedTest(p => ({ ...p, totalAmount: parseFloat(e.target.value) || 0 }))} aria-label="Invoice amount" />
+                                <Input className="si" type="number" value={schedTest.totalAmount} onChange={e => setSchedTest(p => ({ ...p, totalAmount: parseFloat(e.target.value) || 0 }))} aria-label="Invoice amount" />
                             </div>
                         </div>
                         <button className="calc-btn" disabled={!schedTest.termCode || schedMutation.isPending}
@@ -196,58 +196,58 @@ export default function PaymentTermsMaster() {
             </div>
 
             <style>{`
-                .ptm-container { padding: 24px; max-width: 1200px; margin: 0 auto; font-family: 'Inter', sans-serif; }
-                .ptm-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-                .ptm-title { font-size: 22px; font-weight: 700; color: #111827; margin: 0; }
-                .ptm-sub { font-size: 13px; color: #6b7280; margin: 4px 0 0; }
-                .add-btn { display: flex; align-items: center; gap: 6px; padding: 9px 16px; background: #1d4ed8; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
-                .ptm-layout { display: grid; grid-template-columns: 300px 1fr; gap: 20px; }
-                .terms-panel { display: flex; flex-direction: column; gap: 8px; }
-                .term-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px 14px; cursor: pointer; position: relative; }
-                .term-card.selected { border-color: #1d4ed8; background: #eff6ff; }
-                .term-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-                .tc-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
-                .tc-code { font-size: 13px; font-weight: 700; font-family: monospace; color: #111827; }
-                .tc-type { padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 700; }
-                .tc-name { font-size: 12px; color: #374151; margin-bottom: 6px; }
-                .tc-meta { display: flex; gap: 10px; font-size: 10px; color: #9ca3af; }
-                .tc-meta svg { vertical-align: middle; }
-                .tc-arrow { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #d1d5db; }
-                .empty, .loading { text-align: center; color: #9ca3af; font-size: 13px; padding: 24px; }
-                .detail-panel { display: flex; flex-direction: column; gap: 16px; }
-                .new-term-form { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 18px; }
-                .nf-title { font-size: 14px; font-weight: 700; color: #111827; margin: 0 0 12px; }
-                .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-                .ff { display: flex; flex-direction: column; gap: 4px; }
-                .fl { font-size: 11px; font-weight: 600; color: #374151; }
-                .fi { padding: 7px 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; }
-                .nf-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
-                .cancel-btn { padding: 8px 16px; background: #f3f4f6; border: none; border-radius: 8px; font-size: 12px; cursor: pointer; }
-                .save-btn { padding: 8px 16px; background: #1d4ed8; color: #fff; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
-                .save-btn:disabled { background: #9ca3af; }
-                .sched-tester { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 18px; }
-                .st-title { font-size: 14px; font-weight: 700; color: #111827; margin: 0 0 12px; }
-                .st-row { display: flex; gap: 10px; margin-bottom: 10px; }
-                .sf { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-                .sl { font-size: 11px; font-weight: 600; color: #374151; }
-                .si { padding: 7px 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; width: 100%; box-sizing: border-box; }
-                .calc-btn { display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: #059669; color: #fff; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; margin-bottom: 12px; }
-                .calc-btn:disabled { background: #9ca3af; }
-                .st-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
-                .st-table th { padding: 8px 12px; text-align: left; font-weight: 600; color: #374151; background: #f9fafb; border-bottom: 2px solid #e5e7eb; }
-                .st-row-tr:hover { background: #f9fafb; }
-                .st-table td { padding: 8px 12px; border-bottom: 1px solid #f3f4f6; }
-                .mono { font-family: monospace; }
-                .small { font-size: 11px; }
+    .ptm - container { padding: 24px; max - width: 1200px; margin: 0 auto; font - family: 'Inter', sans - serif; }
+                .ptm - header { display: flex; justify - content: space - between; align - items: center; margin - bottom: 24px; }
+                .ptm - title { font - size: 22px; font - weight: 700; color: #111827; margin: 0; }
+                .ptm - sub { font - size: 13px; color: #6b7280; margin: 4px 0 0; }
+                .add - btn { display: flex; align - items: center; gap: 6px; padding: 9px 16px; background: #1d4ed8; color: #fff; border: none; border - radius: 8px; font - size: 13px; font - weight: 600; cursor: pointer; }
+                .ptm - layout { display: grid; grid - template - columns: 300px 1fr; gap: 20px; }
+                .terms - panel { display: flex; flex - direction: column; gap: 8px; }
+                .term - card { background: #fff; border: 1px solid #e5e7eb; border - radius: 10px; padding: 12px 14px; cursor: pointer; position: relative; }
+                .term - card.selected { border - color: #1d4ed8; background: #eff6ff; }
+                .term - card:hover { box - shadow: 0 2px 8px rgba(0, 0, 0, 0.06); }
+                .tc - top { display: flex; justify - content: space - between; margin - bottom: 4px; }
+                .tc - code { font - size: 13px; font - weight: 700; font - family: monospace; color: #111827; }
+                .tc - type { padding: 2px 7px; border - radius: 4px; font - size: 10px; font - weight: 700; }
+                .tc - name { font - size: 12px; color: #374151; margin - bottom: 6px; }
+                .tc - meta { display: flex; gap: 10px; font - size: 10px; color: #9ca3af; }
+                .tc - meta svg { vertical - align: middle; }
+                .tc - arrow { position: absolute; right: 12px; top: 50 %; transform: translateY(-50 %); color: #d1d5db; }
+                .empty, .loading { text - align: center; color: #9ca3af; font - size: 13px; padding: 24px; }
+                .detail - panel { display: flex; flex - direction: column; gap: 16px; }
+                .new- term - form { background: #fff; border: 1px solid #e5e7eb; border - radius: 12px; padding: 18px; }
+                .nf - title { font - size: 14px; font - weight: 700; color: #111827; margin: 0 0 12px; }
+                .form - grid { display: grid; grid - template - columns: 1fr 1fr; gap: 10px; }
+                .ff { display: flex; flex - direction: column; gap: 4px; }
+                .fl { font - size: 11px; font - weight: 600; color: #374151; }
+                .fi { padding: 7px 10px; border: 1px solid #d1d5db; border - radius: 6px; font - size: 12px; }
+                .nf - actions { display: flex; justify - content: flex - end; gap: 8px; margin - top: 12px; }
+                .cancel - btn { padding: 8px 16px; background: #f3f4f6; border: none; border - radius: 8px; font - size: 12px; cursor: pointer; }
+                .save - btn { padding: 8px 16px; background: #1d4ed8; color: #fff; border: none; border - radius: 8px; font - size: 12px; font - weight: 600; cursor: pointer; }
+                .save - btn:disabled { background: #9ca3af; }
+                .sched - tester { background: #fff; border: 1px solid #e5e7eb; border - radius: 12px; padding: 18px; }
+                .st - title { font - size: 14px; font - weight: 700; color: #111827; margin: 0 0 12px; }
+                .st - row { display: flex; gap: 10px; margin - bottom: 10px; }
+                .sf { flex: 1; display: flex; flex - direction: column; gap: 4px; }
+                .sl { font - size: 11px; font - weight: 600; color: #374151; }
+                .si { padding: 7px 10px; border: 1px solid #d1d5db; border - radius: 6px; font - size: 12px; width: 100 %; box - sizing: border - box; }
+                .calc - btn { display: flex; align - items: center; gap: 6px; padding: 8px 16px; background: #059669; color: #fff; border: none; border - radius: 8px; font - size: 12px; font - weight: 600; cursor: pointer; margin - bottom: 12px; }
+                .calc - btn:disabled { background: #9ca3af; }
+                .st - table { width: 100 %; border - collapse: collapse; font - size: 12px; margin - top: 10px; }
+                .st - table th { padding: 8px 12px; text - align: left; font - weight: 600; color: #374151; background: #f9fafb; border - bottom: 2px solid #e5e7eb; }
+                .st - row - tr:hover { background: #f9fafb; }
+                .st - table td { padding: 8px 12px; border - bottom: 1px solid #f3f4f6; }
+                .mono { font - family: monospace; }
+                .small { font - size: 11px; }
                 .green { color: #059669; }
-                .due-date { font-weight: 600; }
-                .term-detail { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 18px; }
-                .td-title { font-size: 15px; font-weight: 700; color: #111827; margin: 0 0 14px; }
-                .td-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-                .td-kv { display: flex; flex-direction: column; background: #f9fafb; border-radius: 6px; padding: 8px 12px; }
-                .td-kv span { font-size: 11px; color: #9ca3af; margin-bottom: 2px; }
-                .td-kv strong { font-size: 13px; color: #111827; font-family: monospace; }
-            `}</style>
+                .due - date { font - weight: 600; }
+                .term - detail { background: #fff; border: 1px solid #e5e7eb; border - radius: 12px; padding: 18px; }
+                .td - title { font - size: 15px; font - weight: 700; color: #111827; margin: 0 0 14px; }
+                .td - grid { display: grid; grid - template - columns: 1fr 1fr; gap: 10px; }
+                .td - kv { display: flex; flex - direction: column; background: #f9fafb; border - radius: 6px; padding: 8px 12px; }
+                .td - kv span { font - size: 11px; color: #9ca3af; margin - bottom: 2px; }
+                .td - kv strong { font - size: 13px; color: #111827; font - family: monospace; }
+`}</style>
         </StandardPage >
     );
 }

@@ -11,6 +11,7 @@ import { StandardPage } from '@/components/layout/StandardPage';
 import { ViewModeToggle } from '@/components/admin/ViewModeToggle';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from '@/components/ui/InteractiveSpreadsheet';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { format } from "date-fns";
 import { useDemoEnvironments, useDeleteDemoEnvironment, useUpdateDemoStatus } from '@/hooks/admin/useAdminData';
 import { exportToCSV } from '@/utils/exportUtils';
 import { useToast } from '@/hooks/use-toast';
@@ -209,13 +210,13 @@ export default function DemoManagement() {
             id: 'createdAt',
             header: 'Created',
             width: '120px',
-            cell: (demo) => <span>{new Date(demo.createdAt).toLocaleDateString()}</span>,
+            cell: (demo) => <span>{format(new Date(demo.createdAt), "MMM d, yyyy")}</span>,
         },
         {
             id: 'expiresAt',
             header: 'Expires',
             width: '120px',
-            cell: (demo) => <span>{demo.expiresAt ? new Date(demo.expiresAt).toLocaleDateString() : 'Never'}</span>,
+            cell: (demo) => <span>{demo.expiresAt ? format(new Date(demo.expiresAt), "MMM d, yyyy") : 'Never'}</span>,
         },
         {
             id: 'actions',
@@ -487,11 +488,11 @@ export default function DemoManagement() {
                                             <div className="space-y-2">
                                                 <div className="flex justify-between text-sm">
                                                     <span className="text-muted-foreground">Created</span>
-                                                    <span>{new Date(demo.createdAt).toLocaleDateString()}</span>
+                                                    <span>{format(new Date(demo.createdAt), "MMM d, yyyy")}</span>
                                                 </div>
                                                 <div className="flex justify-between text-sm">
                                                     <span className="text-muted-foreground">Expires</span>
-                                                    <span>{demo.expiresAt ? new Date(demo.expiresAt).toLocaleDateString() : 'Never'}</span>
+                                                    <span>{demo.expiresAt ? format(new Date(demo.expiresAt), "MMM d, yyyy") : 'Never'}</span>
                                                 </div>
                                             </div>
 

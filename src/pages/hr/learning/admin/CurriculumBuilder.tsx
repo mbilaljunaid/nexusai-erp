@@ -226,7 +226,7 @@ function CoursePicker({ onSelect }: { onSelect: (id: string) => void }) {
     return (
         <div className="h-[300px] overflow-y-auto space-y-2">
             {courses?.map((c: any) => (
-                <div key={c.id} className="flex items-center justify-between p-2 hover:bg-muted rounded border cursor-pointer" onClick={() => onSelect(c.id)}>
+                <div key={c.id} className="flex items-center justify-between p-2 hover:bg-muted rounded border cursor-pointer" onClick={() => onSelect(c.id)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(c.id); } }}>
                     <span className="text-sm font-medium">{c.title}</span>
                     <Plus className="h-4 w-4 text-muted-foreground" />
                 </div>

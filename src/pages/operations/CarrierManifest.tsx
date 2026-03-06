@@ -103,7 +103,7 @@ export default function CarrierManifest() {
                     {manifests.map(m => {
                         const cfgClass = STATUS_CFG[m.status] ?? 'bg-gray-100 text-gray-500';
                         return (
-                            <div key={m.id} onClick={() => setSelected(m)} className={`border rounded-xl p-2.5 cursor-pointer ${selected?.id === m.id ? 'border-blue-700 bg-blue-50' : 'border-gray-200 bg-white'}`}>
+                            <div key={m.id} onClick={() => setSelected(m)} className={`border rounded-xl p-2.5 cursor-pointer ${selected?.id === m.id ? 'border-blue-700 bg-blue-50' : 'border-gray-200 bg-white'}`} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelected(m); } }}>
                                 <div className="flex justify-between mb-1">
                                     <span className="text-[11px] font-bold font-mono">{m.manifest_number}</span>
                                     <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${cfgClass}`}>{m.status}</span>

@@ -7,6 +7,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Clock, LogIn, LogOut, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { format } from "date-fns";
 
 
 export default function TimeClock() {
@@ -62,8 +63,8 @@ export default function TimeClock() {
                 <CardContent className="space-y-6">
                     <div className="text-center">
                         <Clock className="h-16 w-16 mx-auto mb-4 text-primary" />
-                        <div className="text-5xl font-bold">{currentTime.toLocaleTimeString()}</div>
-                        <div className="text-muted-foreground mt-2">{currentTime.toLocaleDateString()}</div>
+                        <div className="text-5xl font-bold">{format(currentTime, "pp")}</div>
+                        <div className="text-muted-foreground mt-2">{format(currentTime, "MMM d, yyyy")}</div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">

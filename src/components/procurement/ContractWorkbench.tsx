@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { format } from "date-fns";
 
 export default function ContractWorkbench() {
     const { toast } = useToast();
@@ -247,8 +248,8 @@ export default function ContractWorkbench() {
                                         <div className="flex flex-col gap-1">
                                             <span className="text-[10px] text-muted-foreground flex items-center gap-1"><Calendar className="w-3 h-3" /> Validity</span>
                                             <span className="text-sm font-medium">
-                                                {selectedContract?.startDate ? new Date(selectedContract.startDate).toLocaleDateString() : 'N/A'} -
-                                                {selectedContract?.endDate ? new Date(selectedContract.endDate).toLocaleDateString() : 'N/A'}
+                                                {selectedContract?.startDate ? format(new Date(selectedContract.startDate), "MMM d, yyyy") : 'N/A'} -
+                                                {selectedContract?.endDate ? format(new Date(selectedContract.endDate), "MMM d, yyyy") : 'N/A'}
                                             </span>
                                         </div>
                                         <div className="flex flex-col gap-1">
@@ -370,7 +371,7 @@ export default function ContractWorkbench() {
                                                 (contractDetails.data as any).linkedPOs?.map((po: any) => (
                                                     <TableRow key={po.id}>
                                                         <TableCell className="font-mono text-xs text-primary">{po.orderNumber}</TableCell>
-                                                        <TableCell className="text-xs">{new Date(po.createdAt).toLocaleDateString()}</TableCell>
+                                                        <TableCell className="text-xs">{format(new Date(po.createdAt), "MMM d, yyyy")}</TableCell>
                                                         <TableCell>
                                                             <Badge variant="outline" className="text-[10px]">{po.status}</Badge>
                                                         </TableCell>

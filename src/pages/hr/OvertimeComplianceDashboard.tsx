@@ -135,7 +135,7 @@ export default function OvertimeComplianceDashboard() {
                 <div className="panel tc-form">
                     <h3 className="tf-title">Log Timecard Punch</h3>
                     <div className="tf-grid">
-                        <div className="ff"><label className="fl">Employee ID</label><input className="fi" placeholder="UUID or emp code" value={tc.employeeId} onChange={e => setTc(p => ({ ...p, employeeId: e.target.value }))} aria-label="Employee ID" /></div>
+                        <div className="ff"><label className="fl">Employee ID</label><Input className="fi" placeholder="UUID or emp code" value={tc.employeeId} onChange={e => setTc(p => ({ ...p, employeeId: e.target.value }))} aria-label="Employee ID" /></div>
                         <div className="ff">
                             <label className="fl">Rule</label>
                             <Select value={tc.ruleCode} onValueChange={v => setTc(p => ({ ...p, ruleCode: v }))}>
@@ -146,9 +146,9 @@ export default function OvertimeComplianceDashboard() {
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div className="ff"><label className="fl">Clock In</label><input className="fi" type="datetime-local" value={tc.clockIn} onChange={e => setTc(p => ({ ...p, clockIn: e.target.value }))} aria-label="Clock in time" /></div>
-                        <div className="ff"><label className="fl">Clock Out</label><input className="fi" type="datetime-local" value={tc.clockOut} onChange={e => setTc(p => ({ ...p, clockOut: e.target.value }))} aria-label="Clock out time" /></div>
-                        <div className="ff"><label className="fl">Hourly Rate ($)</label><input className="fi" type="number" value={tc.hourlyRate} onChange={e => setTc(p => ({ ...p, hourlyRate: parseFloat(e.target.value) || 0 }))} aria-label="Hourly rate" /></div>
+                        <div className="ff"><label className="fl">Clock In</label><Input className="fi" type="datetime-local" value={tc.clockIn} onChange={e => setTc(p => ({ ...p, clockIn: e.target.value }))} aria-label="Clock in time" /></div>
+                        <div className="ff"><label className="fl">Clock Out</label><Input className="fi" type="datetime-local" value={tc.clockOut} onChange={e => setTc(p => ({ ...p, clockOut: e.target.value }))} aria-label="Clock out time" /></div>
+                        <div className="ff"><label className="fl">Hourly Rate ($)</label><Input className="fi" type="number" value={tc.hourlyRate} onChange={e => setTc(p => ({ ...p, hourlyRate: parseFloat(e.target.value) || 0 }))} aria-label="Hourly rate" /></div>
                     </div>
                     <button className="calc-btn" disabled={!tc.employeeId || tcMutation.isPending}
                         onClick={() => tcMutation.mutate(tc)} aria-label="Calculate overtime">

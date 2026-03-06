@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -83,7 +84,7 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
             ]}
             actions={
                 <div className="flex items-center gap-2">
-                    {lease.isModified && <Badge variant="secondary">Modified: {new Date(lease.modificationDate).toLocaleDateString()}</Badge>}
+                    {lease.isModified && <Badge variant="secondary">Modified: {format(new Date(lease.modificationDate), "MMM d, yyyy")}</Badge>}
                     <Button variant="outline" size="sm" onClick={() => addPaymentMutation.mutate()}>
                         Add Payment Term
                     </Button>
@@ -120,8 +121,8 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
                         <Card>
                             <CardHeader><CardTitle>Lease Terms</CardTitle></CardHeader>
                             <CardContent className="space-y-2">
-                                <div className="flex justify-between"><span>Start Date:</span> <span>{new Date(lease.commencementDate).toLocaleDateString()}</span></div>
-                                <div className="flex justify-between"><span>End Date:</span> <span>{new Date(lease.expirationDate).toLocaleDateString()}</span></div>
+                                <div className="flex justify-between"><span>Start Date:</span> <span>{format(new Date(lease.commencementDate), "MMM d, yyyy")}</span></div>
+                                <div className="flex justify-between"><span>End Date:</span> <span>{format(new Date(lease.expirationDate), "MMM d, yyyy")}</span></div>
                                 <div className="flex justify-between"><span>Discount Rate:</span> <span>{(Number(lease.discountRate) * 100).toFixed(2)}%</span></div>
                             </CardContent>
                         </Card>
@@ -199,7 +200,7 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
                                     {lease.schedules?.map((row: any) => (
                                         <TableRow key={row.id}>
                                             <TableCell>{row.period}</TableCell>
-                                            <TableCell>{new Date(row.date).toLocaleDateString()}</TableCell>
+                                            <TableCell>{format(new Date(row.date), "MMM d, yyyy")}</TableCell>
                                             <TableCell>${Number(row.paymentAmount).toFixed(2)}</TableCell>
                                             <TableCell className="text-red-500">${Number(row.interestExpense).toFixed(2)}</TableCell>
                                             <TableCell className="font-bold">${Number(row.closingLiability).toFixed(2)}</TableCell>

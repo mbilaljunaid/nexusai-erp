@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { ExportButton } from "@/components/ExportButton";
-
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 export default function PortalPayments() {
     const { data: payments, isLoading } = useQuery<any>({
@@ -43,10 +43,7 @@ export default function PortalPayments() {
         { id: "method", header: "Method", width: "120px", cell: (payment: any) => <span>{payment.paymentMethod}</span> },
         {
             id: "status", header: "Status", width: "150px", cell: (payment: any) => (
-                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
-                    <CheckCircle className="w-3 h-3 mr-1" />
-                    {payment.status}
-                </span>
+                <StatusBadge status={payment.status} />
             )
         }
     ];

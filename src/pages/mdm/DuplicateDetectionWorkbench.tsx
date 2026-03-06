@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlayCircle, AlertTriangle, CheckCircle, XCircle, Users } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { format } from "date-fns";
 
 
 interface DuplicateSet {
@@ -95,7 +96,7 @@ export default function DuplicateDetectionWorkbench() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    
+
                     <p className="text-muted-foreground">
                         Identify and resolve duplicate master records
                     </p>
@@ -151,7 +152,7 @@ export default function DuplicateDetectionWorkbench() {
                                         </Badge>
                                     </div>
                                     <p className="text-xs text-muted-foreground">
-                                        {new Date(set.createdAt).toLocaleDateString()}
+                                        {format(new Date(set.createdAt), "MMM d, yyyy")}
                                     </p>
                                 </div>
                             ))
@@ -183,8 +184,8 @@ export default function DuplicateDetectionWorkbench() {
                                         <div
                                             key={party.id}
                                             className={`p-4 border rounded-lg cursor-pointer transition-all ${selectedSurvivor === party.id
-                                                    ? "border-primary ring-2 ring-primary bg-primary/5"
-                                                    : "hover:border-primary/50"
+                                                ? "border-primary ring-2 ring-primary bg-primary/5"
+                                                : "hover:border-primary/50"
                                                 }`}
                                             onClick={() => setSelectedSurvivor(party.id)}
                                         >
@@ -212,7 +213,7 @@ export default function DuplicateDetectionWorkbench() {
                                                 )}
                                                 <div className="flex justify-between">
                                                     <span className="text-muted-foreground">Created:</span>
-                                                    <span>{new Date(party.createdAt).toLocaleDateString()}</span>
+                                                    <span>{format(new Date(party.createdAt), "MMM d, yyyy")}</span>
                                                 </div>
                                             </div>
 

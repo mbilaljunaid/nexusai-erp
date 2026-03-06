@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { queryClient } from "@/lib/queryClient";
 import { Plus } from "lucide-react";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 export default function TenantAdmin() {
   const [newTenant, setNewTenant] = useState({ name: "", slug: "" });
@@ -28,23 +29,23 @@ export default function TenantAdmin() {
       title="Tenant Manant Management"
       description="Manage organizational tenants and accounts"
     >
-      
+
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Create New Tenant</h2>
         <div className="space-y-4">
-          <Input 
-            placeholder="Tenant Name" 
+          <Input
+            placeholder="Tenant Name"
             value={newTenant.name}
-            onChange={e => setNewTenant({...newTenant, name: e.target.value})}
+            onChange={e => setNewTenant({ ...newTenant, name: e.target.value })}
             data-testid="input-tenant-name"
           />
-          <Input 
-            placeholder="Slug (optional)" 
+          <Input
+            placeholder="Slug (optional)"
             value={newTenant.slug}
-            onChange={e => setNewTenant({...newTenant, slug: e.target.value})}
+            onChange={e => setNewTenant({ ...newTenant, slug: e.target.value })}
             data-testid="input-tenant-slug"
           />
-          <Button 
+          <Button
             onClick={() => createMutation.mutate(newTenant)}
             disabled={!newTenant.name || createMutation.isPending}
             data-testid="button-create-tenant"
@@ -67,9 +68,9 @@ export default function TenantAdmin() {
                   <p className="text-sm text-gray-500">@{tenant.slug}</p>
                   <p className="text-xs text-gray-400 mt-1">{tenant.id}</p>
                 </div>
-                <span className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm font-medium" data-testid={`status-${tenant.id}`}>
-                  {tenant.status}
-                </span>
+                <div data-testid={`status-${tenant.id}`}>
+                  <StatusBadge status={tenant.status} />
+                </div>
               </div>
             </Card>
           ))}

@@ -217,7 +217,7 @@ export default function FSGReportBuilder() {
                     {/* Report Library */}
                     <div className="report-cards">
                         {reports.map(r => (
-                            <div key={r.id} className="report-card" onClick={() => { setSelectedReport(r.id); }}>
+                            <div key={r.id} className="report-card" role="button" tabIndex={0} onClick={() => { setSelectedReport(r.id); }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedReport(r.id); } }}>
                                 <div className="report-card-name">{r.name}</div>
                                 <div className="report-card-type">{r.report_type}</div>
                                 <ChevronRight size={16} color="#9ca3af" />

@@ -7,6 +7,7 @@ import { TrendingUp, TrendingDown, AlertCircle, CheckCircle, Calendar, User } fr
 import CustomerSuccessService, { CustomerHealthScore, RenewalForecast } from '@/services/customerSuccessService';
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { format } from "date-fns";
 
 
 interface CustomerHealthDashboardProps {
@@ -140,7 +141,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
             width: "150px",
             cell: (row: any) => (
                 <div className="p-2 text-sm text-gray-600">
-                    {row.last_engagement ? new Date(row.last_engagement).toLocaleDateString() : 'Never'}
+                    {row.last_engagement ? format(new Date(row.last_engagement), "MMM d, yyyy") : 'Never'}
                 </div>
             )
         },
@@ -186,7 +187,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
             cell: (row: any) => (
                 <div className="flex items-center space-x-2 p-2">
                     <Calendar className="h-4 w-4 text-gray-500" />
-                    <span>{new Date(row.renewal_date).toLocaleDateString()}</span>
+                    <span>{format(new Date(row.renewal_date), "MMM d, yyyy")}</span>
                 </div>
             )
         },

@@ -99,11 +99,11 @@ export function SubscriptionDetailSheet({ subscriptionId, open, onOpenChange }: 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <Label className="text-muted-foreground">Start Date</Label>
-                            <div className="font-medium">{new Date(sub.startDate).toLocaleDateString()}</div>
+                            <div className="font-medium">{format(new Date(sub.startDate), "MMM d, yyyy")}</div>
                         </div>
                         <div>
                             <Label className="text-muted-foreground">End Date</Label>
-                            <div className="font-medium">{new Date(sub.endDate).toLocaleDateString()}</div>
+                            <div className="font-medium">{format(new Date(sub.endDate), "MMM d, yyyy")}</div>
                         </div>
                     </div>
 
@@ -152,7 +152,7 @@ export function SubscriptionDetailSheet({ subscriptionId, open, onOpenChange }: 
                             {sub.actions?.map((action: any) => (
                                 <div key={action.id} className="text-xs flex justify-between border-b pb-1 last:border-0 border-muted">
                                     <span><span className="font-medium">{action.actionType}</span> - {action.reason}</span>
-                                    <span className="text-muted-foreground">{new Date(action.actionDate).toLocaleDateString()}</span>
+                                    <span className="text-muted-foreground">{format(new Date(action.actionDate), "MMM d, yyyy")}</span>
                                 </div>
                             ))}
                             {!sub.actions?.length && <div className="text-xs text-muted-foreground">No history available.</div>}

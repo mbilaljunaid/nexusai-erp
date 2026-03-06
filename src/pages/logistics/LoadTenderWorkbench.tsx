@@ -128,7 +128,7 @@ export default function LoadTenderWorkbench() {
                     {tenders.map(t => {
                         const cfg = STATUS_CFG[t.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
                         return (
-                            <div key={t.id} className={`tender-card ${selected?.id === t.id ? 'selected' : ''}`} onClick={() => setSelected(t)}>
+                            <div key={t.id} className={`tender-card ${selected?.id === t.id ? 'selected' : ''}`} onClick={() => setSelected(t)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelected(t); } }}>
                                 <div className="tc-top">
                                     <span className="tc-num">{t.tender_number}</span>
                                     <span className="tc-status" style={{ background: cfg.bg, color: cfg.color }}>{t.status}</span>

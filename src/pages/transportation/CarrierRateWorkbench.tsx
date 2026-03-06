@@ -16,6 +16,7 @@ import { exportToExcel, exportToCSV } from "@/lib/exportUtils";
 import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { format } from "date-fns";
 
 
 interface CarrierRate {
@@ -226,7 +227,7 @@ export default function CarrierRateWorkbench() {
     return (
         <StandardPage title="Carrier Rate Management">
             <div>
-                
+
                 <p className="text-muted-foreground">Manage rate cards, generate quotes, and compare carrier pricing</p>
             </div>
 
@@ -304,7 +305,7 @@ export default function CarrierRateWorkbench() {
                                                 <TableCell><Badge>{rate.serviceLevel}</Badge></TableCell>
                                                 <TableCell>${rate.baseRate}</TableCell>
                                                 <TableCell>${rate.perKgRate}</TableCell>
-                                                <TableCell>{rate.effectiveDate ? new Date(rate.effectiveDate).toLocaleDateString() : ''}</TableCell>
+                                                <TableCell>{rate.effectiveDate ? format(new Date(rate.effectiveDate), "MMM d, yyyy") : ''}</TableCell>
                                                 <TableCell>
                                                     <Badge variant={rate.status === "ACTIVE" ? "default" : "secondary"}>{rate.status}</Badge>
                                                 </TableCell>
@@ -463,7 +464,7 @@ export default function CarrierRateWorkbench() {
                                                 <TableCell>{contract.contractNumber}</TableCell>
                                                 <TableCell>{contract.fileName}</TableCell>
                                                 <TableCell>{contract.ratesCount}</TableCell>
-                                                <TableCell>{new Date(contract.uploadedAt).toLocaleDateString()}</TableCell>
+                                                <TableCell>{format(new Date(contract.uploadedAt), "MMM d, yyyy")}</TableCell>
                                                 <TableCell><Badge>{contract.status}</Badge></TableCell>
                                             </TableRow>
                                         ))

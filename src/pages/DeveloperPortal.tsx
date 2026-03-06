@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import type { MarketplaceDeveloper, MarketplaceApp, MarketplaceCategory, MarketplacePayout } from "@/types/erp-types";
 import { formatCurrency } from "@/lib/formatters";
+import { format } from "date-fns";
 
 interface EarningsSummary {
   totalEarnings: string;
@@ -845,7 +846,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                     {loadingEarnings ? <Skeleton className="h-8 w-20 inline-block" /> : formatCurrency(earnings?.totalPaidOut || "0")}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {earnings?.lastPayoutDate ? `Last: ${new Date(earnings.lastPayoutDate).toLocaleDateString()}` : "No payouts yet"}
+                    {earnings?.lastPayoutDate ? `Last: ${format(new Date(earnings.lastPayoutDate), "MMM d, yyyy")}` : "No payouts yet"}
                   </p>
                 </CardContent>
               </Card>
@@ -916,7 +917,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                         {payouts.map((payout) => (
                           <TableRow key={payout.id} data-testid={`row-payout-${payout.id}`}>
                             <TableCell>
-                              {new Date(payout.periodStart).toLocaleDateString()} - {new Date(payout.periodEnd).toLocaleDateString()}
+                              {format(new Date(payout.periodStart), "MMM d, yyyy")} - {format(new Date(payout.periodEnd), "MMM d, yyyy")}
                             </TableCell>
                             <TableCell>
                               <StatusBadge status={payout.status} />
@@ -925,7 +926,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                               {formatCurrency(payout.amount)}
                             </TableCell>
                             <TableCell className="text-right text-muted-foreground">
-                              {payout.paidAt ? new Date(payout.paidAt).toLocaleDateString() : "-"}
+                              {payout.paidAt ? format(new Date(payout.paidAt), "MMM d, yyyy") : "-"}
                             </TableCell>
                           </TableRow>
                         ))}

@@ -18,6 +18,7 @@ import { StandardPage } from '@/components/layout/StandardPage';
 import { i18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { useEnterpriseStore } from '@/lib/enterpriseStore';
+import { format } from 'date-fns';
 
 // Mock Oracle-style Action & Reason history for Effective Dating
 const MOCK_ASSIGNMENT_HISTORY = [
@@ -162,11 +163,11 @@ export default function AssignmentHistory() {
                                                         <div>
                                                             <div className="flex items-center gap-2 mb-1">
                                                                 <span className="font-semibold text-sm">
-                                                                    {new Date(record.effectiveStartDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                                    {format(new Date(record.effectiveStartDate), "MMM d, yyyy")}
                                                                 </span>
                                                                 <ArrowRight className="h-3 w-3 text-muted-foreground" />
                                                                 <span className={cn("text-sm", current ? "font-bold text-primary" : "text-muted-foreground")}>
-                                                                    {current ? "Present" : new Date(record.effectiveEndDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                                    {current ? "Present" : format(new Date(record.effectiveEndDate), "MMM d, yyyy")}
                                                                 </span>
                                                             </div>
                                                             <div className="flex items-center gap-2 mt-2">
@@ -225,7 +226,7 @@ export default function AssignmentHistory() {
                                                                     <span className="text-muted-foreground">Hours: <span className="font-medium text-foreground">{record.workingHours}/wk</span></span>
                                                                     <span className="text-muted-foreground">Status: <span className="font-medium text-foreground">{record.status}</span></span>
                                                                     {record.contractType && <span className="text-muted-foreground">Contract: <span className="font-medium text-foreground">{record.contractType}</span></span>}
-                                                                    {record.probationEndDate && <span className="text-muted-foreground">Probation Ends: <span className="font-medium text-amber-600">{new Date(record.probationEndDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span></span>}
+                                                                    {record.probationEndDate && <span className="text-muted-foreground">Probation Ends: <span className="font-medium text-amber-600">{format(new Date(record.probationEndDate), "MMM d, yyyy")}</span></span>}
                                                                 </div>
                                                             </div>
 

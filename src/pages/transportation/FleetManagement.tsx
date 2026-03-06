@@ -9,6 +9,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { format } from "date-fns";
 
 
 export default function FleetManagement() {
@@ -112,13 +113,13 @@ export default function FleetManagement() {
                                             <div>
                                                 <div className="text-xs text-muted-foreground">Last Service</div>
                                                 <div className="font-medium">
-                                                    {vehicle.lastService ? new Date(vehicle.lastService).toLocaleDateString() : "N/A"}
+                                                    {vehicle.lastService ? format(new Date(vehicle.lastService), "MMM d, yyyy") : "N/A"}
                                                 </div>
                                             </div>
                                             <div>
                                                 <div className="text-xs text-muted-foreground">Next Service</div>
                                                 <div className="font-medium">
-                                                    {vehicle.nextService ? new Date(vehicle.nextService).toLocaleDateString() : "N/A"}
+                                                    {vehicle.nextService ? format(new Date(vehicle.nextService), "MMM d, yyyy") : "N/A"}
                                                 </div>
                                             </div>
                                         </div>

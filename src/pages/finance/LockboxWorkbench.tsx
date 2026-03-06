@@ -176,7 +176,7 @@ export default function LockboxWorkbench() {
                     <div className="import-box">
                         <div className="ib-title">Import Lockbox File</div>
                         <input ref={fileRef} type="file" accept=".csv,.txt" onChange={handleFile} hidden />
-                        <div className="drop-zone" onClick={() => fileRef.current?.click()}>
+                        <div className="drop-zone" role="button" tabIndex={0} onClick={() => fileRef.current?.click()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileRef.current?.click(); } }}>
                             <UploadCloud size={24} color="#9ca3af" />
                             <div className="dz-text">Upload CSV or paste below</div>
                             <div className="dz-sub">check#, remit_ref, payer, account, amount, date</div>
@@ -217,7 +217,7 @@ export default function LockboxWorkbench() {
                         {safeBatches.map(b => {
                             const cfg = BATCH_STATUS_CFG[b.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
                             return (
-                                <div key={b.id} className={`batch-card ${selectedBatch?.id === b.id ? 'selected' : ''}`} onClick={() => setSelectedBatch(b)}>
+                                <div key={b.id} className={`batch-card ${selectedBatch?.id === b.id ? 'selected' : ''}`} role="button" tabIndex={0} onClick={() => setSelectedBatch(b)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedBatch(b); } }}>
                                     <div className="bc-top">
                                         <span className="bc-date mono">{new Date(b.batch_date).toLocaleDateString()}</span>
                                         <span className={`bc-status ${cfg.bg} ${cfg.color}`}>{b.status}</span>

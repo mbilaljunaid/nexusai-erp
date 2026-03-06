@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Header, Footer } from "@/components/Navigation";
 import { GlassmorphismCard } from "@/components/lovable";
+import { IconButton } from "@/components/shared/IconButton";
 import { colors } from "@/lib/design-tokens";
 import { animations } from "@/lib/animations";
 import { z } from "zod";
@@ -230,7 +231,6 @@ export default function SignupPage() {
                                   aria-label="Password"
                                   type={showPassword ? "text" : "password"}
                                   placeholder="••••••••"
-                                  title="Password"
                                   className="pl-10 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
                                   {...field}
                                 />
@@ -253,18 +253,17 @@ export default function SignupPage() {
                                   aria-label="Confirm Password"
                                   type={showPassword ? "text" : "password"}
                                   placeholder="••••••••"
-                                  title="Confirm Password"
                                   className="pl-4 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
                                   {...field}
                                 />
-                                <button
+                                <IconButton
                                   type="button"
-                                  title="Toggle password visibility"
+                                  tooltip="Toggle password visibility"
                                   onClick={() => setShowPassword(!showPassword)}
-                                  className="absolute right-3 top-3 text-muted-foreground hover:text-white transition-colors"
+                                  className="absolute right-3 top-3 text-muted-foreground hover:text-white transition-colors h-auto w-auto p-1 bg-transparent hover:bg-transparent border-0"
                                 >
                                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                </button>
+                                </IconButton>
                               </div>
                             </FormControl>
                             <FormMessage />

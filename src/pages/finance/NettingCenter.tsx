@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Network, TrendingDown, TrendingUp, CheckCircle2, BarChart3 } from 'lucide-react';
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface NettingSession { id: string; session_name: string; period: string; currency: string; status: string; entities_in_scope: string[]; net_positions: NetPos[]; settlement_date: string; created_at: string; }
@@ -34,7 +35,7 @@ export default function NettingCenter() {
     const { data: analyses = [] } = useQuery<TPAnalysis[]>({ queryKey: ['tp-analyses'], queryFn: () => fetch('/api/ic/tp/analyses').then(r => r.json()), enabled: tab === 'tp' });
 
     const createMut = useMutation({ mutationFn: (d: any) => fetch('/api/ic/netting/sessions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }).then(r => r.json()), onSuccess: () => { qc.invalidateQueries({ queryKey: ['netting-sessions'] }); setShowNew(false); } });
-    const runMut = useMutation({ mutationFn: (id: string) => fetch(`/api/ic/netting/sessions/${id}/run`, { method: 'POST', headers: { 'Content-Type': 'application/json' } }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['netting-sessions'] }) });
+    const runMut = useMutation({ mutationFn: (id: string) => fetch(`/ api / ic / netting / sessions / ${id} /run`, { method: 'POST', headers: { 'Content-Type': 'application/json' } }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['netting - sessions'] }) });
     const settleMut = useMutation({ mutationFn: (id: string) => fetch(`/api/ic/netting/sessions/${id}/settle`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ settledBy: 'current-user' }) }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['netting-sessions'] }) });
     const createPolicyMut = useMutation({ mutationFn: (d: any) => fetch('/api/ic/tp/policies', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }).then(r => r.json()), onSuccess: () => { qc.invalidateQueries({ queryKey: ['tp-policies'] }); setShowNewPolicy(false); } });
     const runAnalysisMut = useMutation({ mutationFn: (d: any) => fetch('/api/ic/tp/analyses', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['tp-analyses'] }) });
@@ -101,7 +102,7 @@ export default function NettingCenter() {
                                 {sessions.map(s => {
                                     const style = STATUS_STYLES[s.status] ?? STATUS_STYLES['Draft'];
                                     return (
-                                        <div key={s.id} onClick={() => setSelectedSession(selectedSession?.id === s.id ? null : s)} className={`bg-white border rounded-[10px] p-[10px_12px] cursor-pointer outline-none border-l-[4px] border-l-solid ${selectedSession?.id === s.id ? 'border-blue-700' : 'border-gray-200'} ${style.border}`}>
+                                        <div key={s.id} onClick={() => setSelectedSession(selectedSession?.id === s.id ? null : s)} className={`bg-white border rounded-[10px] p-[10px_12px] cursor-pointer outline-none border-l-[4px] border-l-solid ${selectedSession?.id === s.id ? 'border-blue-700' : 'border-gray-200'} ${style.border}`} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedSession(selectedSession?.id === s.id ? null : s); } }}>
                                             <div className="flex justify-between mb-[3px]">
                                                 <div className="font-bold text-[13px]">{s.session_name}</div>
                                                 <span className={`px-[6px] py-[2px] rounded-[4px] text-[9px] font-bold ${style.bg} ${style.text}`}>{s.status}</span>
@@ -175,8 +176,8 @@ export default function NettingCenter() {
                                 <div className="flex justify-between mb-[8px] items-center">
                                     <div className="font-bold text-[13px]">Analyses</div>
                                     <div className="flex gap-[6px] items-center">
-                                        <input placeholder="Period YYYY-MM" value={analysisForm.period} onChange={e => setAnalysisForm(p => ({ ...p, period: e.target.value }))} className="px-[8px] py-[5px] border border-gray-300 rounded-[6px] text-[11px] w-[110px]" aria-label="Analysis period" />
-                                        <input type="number" placeholder="Actual margin %" value={analysisForm.actualMarginPct} onChange={e => setAnalysisForm(p => ({ ...p, actualMarginPct: e.target.value }))} className="px-[8px] py-[5px] border border-gray-300 rounded-[6px] text-[11px] w-[120px]" aria-label="Actual margin pct" />
+                                        <Input placeholder="Period YYYY-MM" value={analysisForm.period} onChange={e => setAnalysisForm(p => ({ ...p, period: e.target.value }))} className="px-[8px] py-[5px] border border-gray-300 rounded-[6px] text-[11px] w-[110px]" aria-label="Analysis period" />
+                                        <Input type="number" placeholder="Actual margin %" value={analysisForm.actualMarginPct} onChange={e => setAnalysisForm(p => ({ ...p, actualMarginPct: e.target.value }))} className="px-[8px] py-[5px] border border-gray-300 rounded-[6px] text-[11px] w-[120px]" aria-label="Actual margin pct" />
                                         <button disabled={!analysisForm.policyId || !analysisForm.actualMarginPct} onClick={() => runAnalysisMut.mutate({ policyId: analysisForm.policyId, period: analysisForm.period, actualMarginPct: parseFloat(analysisForm.actualMarginPct), transactionsReviewed: parseInt(analysisForm.transactionsReviewed) || 0 })} className="px-[12px] py-[5px] bg-violet-600 text-white border-none rounded-[6px] text-[11px] cursor-pointer flex items-center hover:bg-violet-700 disabled:opacity-50"><BarChart3 size={10} className="mr-[3px]" />Run Analysis</button>
                                     </div>
                                 </div>

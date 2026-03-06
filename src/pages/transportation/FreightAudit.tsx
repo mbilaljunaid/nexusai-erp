@@ -8,6 +8,7 @@ import { FileText, DollarSign, AlertCircle, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/formatters";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { format } from "date-fns";
 
 
 export default function FreightAudit() {
@@ -133,13 +134,13 @@ export default function FreightAudit() {
                                     <div>
                                         <div className="text-sm text-muted-foreground">Shipment Date</div>
                                         <div className="font-medium">
-                                            {new Date(selectedInvoice.shipmentDate).toLocaleDateString()}
+                                            {format(new Date(selectedInvoice.shipmentDate), "MMM d, yyyy")}
                                         </div>
                                     </div>
                                     <div>
                                         <div className="text-sm text-muted-foreground">Invoice Date</div>
                                         <div className="font-medium">
-                                            {new Date(selectedInvoice.invoiceDate).toLocaleDateString()}
+                                            {format(new Date(selectedInvoice.invoiceDate), "MMM d, yyyy")}
                                         </div>
                                     </div>
                                 </div>

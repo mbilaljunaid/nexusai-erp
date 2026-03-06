@@ -127,7 +127,7 @@ export default function PhysicalInventory() {
                                 const clr = CYCLE_STATUS_CLR[c.status] ?? '#6b7280';
                                 const pct = c.line_count > 0 ? Math.round(Number(c.counted_lines) / Number(c.line_count) * 100) : 0;
                                 return (
-                                    <div key={c.id} onClick={() => setSelectedCycle(selectedCycle?.id === c.id ? null : c)} className="bg-white rounded-xl px-3.5 py-3 cursor-pointer" style={{ border: `1px solid ${selectedCycle?.id === c.id ? '#1d4ed8' : '#e5e7eb'}`, borderLeft: `4px solid ${clr}` }}>
+                                    <div key={c.id} onClick={() => setSelectedCycle(selectedCycle?.id === c.id ? null : c)} className="bg-white rounded-xl px-3.5 py-3 cursor-pointer" style={{ border: `1px solid ${selectedCycle?.id === c.id ? '#1d4ed8' : '#e5e7eb'}`, borderLeft: `4px solid ${clr}` }} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedCycle(selectedCycle?.id === c.id ? null : c); } }}>
                                         <div className="flex justify-between mb-1">
                                             <div className="font-bold text-[13px]">{c.cycle_name}</div>
                                             <span className="px-1.5 py-0.5 rounded text-[10px] font-bold" style={{ background: clr + '18', color: clr }}>{c.status}</span>

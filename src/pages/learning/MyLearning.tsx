@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { format } from "date-fns";
 import { BookOpen, Award, Clock, CheckCircle, PlayCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -116,7 +117,7 @@ export default function MyLearning() {
                                         <div className="flex-1">
                                             <CardTitle>{enrollment.courseTitle}</CardTitle>
                                             <CardDescription>
-                                                Enrolled {new Date(enrollment.enrolledAt).toLocaleDateString()}
+                                                Enrolled {format(new Date(enrollment.enrolledAt), "MMM d, yyyy")}
                                             </CardDescription>
                                         </div>
                                         <Badge variant="outline">{enrollment.category}</Badge>
@@ -134,7 +135,7 @@ export default function MyLearning() {
                                     {enrollment.dueDate && (
                                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                             <Clock className="w-4 h-4" />
-                                            Due: {new Date(enrollment.dueDate).toLocaleDateString()}
+                                            Due: {format(new Date(enrollment.dueDate), "MMM d, yyyy")}
                                         </div>
                                     )}
 
@@ -165,7 +166,7 @@ export default function MyLearning() {
                                         <div className="flex-1">
                                             <CardTitle>{enrollment.courseTitle}</CardTitle>
                                             <CardDescription>
-                                                Enrolled {new Date(enrollment.enrolledAt).toLocaleDateString()}
+                                                Enrolled {format(new Date(enrollment.enrolledAt), "MMM d, yyyy")}
                                             </CardDescription>
                                         </div>
                                         <Badge variant="secondary">{enrollment.category}</Badge>
@@ -202,7 +203,7 @@ export default function MyLearning() {
                                                 <CheckCircle className="w-5 h-5 text-green-600" />
                                             </div>
                                             <CardDescription>
-                                                Completed {enrollment.completedAt && new Date(enrollment.completedAt).toLocaleDateString()}
+                                                Completed {enrollment.completedAt && format(new Date(enrollment.completedAt), "MMM d, yyyy")}
                                             </CardDescription>
                                         </div>
                                         <StatusBadge status="info" label={enrollment.category} />

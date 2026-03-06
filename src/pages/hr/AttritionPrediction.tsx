@@ -102,7 +102,7 @@ export default function AttritionPrediction() {
                     const cfg = BAND_CFG[band];
                     const pct = totalHeadcount > 0 ? Math.round(Number(d?.count ?? 0) / totalHeadcount * 100) : 0;
                     return (
-                        <div key={band} onClick={() => setBandFilter(bandFilter === band ? '' : band)} className={`flex-1 rounded-xl py-2.5 px-3.5 cursor-pointer border border-l-[4px] ${cfg.bg} ${cfg.borderL} ${cfg.border} ${bandFilter && bandFilter !== band ? 'opacity-50' : 'opacity-100'}`}>
+                        <div key={band} onClick={() => setBandFilter(bandFilter === band ? '' : band)} className={`flex-1 rounded-xl py-2.5 px-3.5 cursor-pointer border border-l-[4px] ${cfg.bg} ${cfg.borderL} ${cfg.border} ${bandFilter && bandFilter !== band ? 'opacity-50' : 'opacity-100'}`} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setBandFilter(bandFilter === band ? '' : band); } }}>
                             <div className={`text-xl font-extrabold font-mono ${cfg.color}`}>{d?.count ?? 0}</div>
                             <div className={`text-[10px] font-bold ${cfg.color}`}>{cfg.label}</div>
                             <div className="text-[10px] text-gray-400">{pct}% of workforce</div>

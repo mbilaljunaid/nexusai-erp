@@ -5,6 +5,7 @@ import { Award, Download, Calendar, FileCheck } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { format } from "date-fns";
 import { downloadFile } from "@/lib/utils";
 
 interface Certificate {
@@ -104,12 +105,12 @@ export default function CertificateManager() {
                                     <div className="flex items-center gap-4 text-sm">
                                         <div className="flex items-center gap-1 text-muted-foreground">
                                             <FileCheck className="w-4 h-4" />
-                                            Earned: {new Date(cert.completedAt).toLocaleDateString()}
+                                            Earned: {format(new Date(cert.completedAt), "MMM d, yyyy")}
                                         </div>
                                         {cert.expiresAt && (
                                             <div className="flex items-center gap-1 text-muted-foreground">
                                                 <Calendar className="w-4 h-4" />
-                                                Expires: {new Date(cert.expiresAt).toLocaleDateString()}
+                                                Expires: {format(new Date(cert.expiresAt), "MMM d, yyyy")}
                                             </div>
                                         )}
                                     </div>
@@ -154,12 +155,12 @@ export default function CertificateManager() {
                                     <div className="flex items-center gap-4 text-sm">
                                         <div className="flex items-center gap-1 text-muted-foreground">
                                             <FileCheck className="w-4 h-4" />
-                                            Earned: {new Date(cert.completedAt).toLocaleDateString()}
+                                            Earned: {format(new Date(cert.completedAt), "MMM d, yyyy")}
                                         </div>
                                         {cert.expiresAt && (
                                             <div className="flex items-center gap-1 text-red-600">
                                                 <Calendar className="w-4 h-4" />
-                                                Expired: {new Date(cert.expiresAt).toLocaleDateString()}
+                                                Expired: {format(new Date(cert.expiresAt), "MMM d, yyyy")}
                                             </div>
                                         )}
                                     </div>

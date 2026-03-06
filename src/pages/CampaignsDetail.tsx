@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 import { CampaignForm } from "@/components/forms/CampaignForm";
 import type { Campaign } from "@/types/erp-types";
+import { format } from "date-fns";
 
 // Helper to format currency
 const formatCurrency = (val: number | string | null | undefined) => {
@@ -164,7 +165,7 @@ export default function CampaignsDetail() {
                   <div className="pt-4 border-t border-muted/20 flex items-center justify-between text-[11px] text-muted-foreground mt-auto">
                     <div className="flex items-center gap-1.5">
                       <Calendar className="h-3 w-3" />
-                      Started: {campaign.startDate ? new Date(campaign.startDate).toLocaleDateString() : 'N/A'}
+                      Started: {campaign.startDate ? format(new Date(campaign.startDate), "MMM d, yyyy") : 'N/A'}
                     </div>
                     <div className="flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
                       Insights <Target className="h-3 w-3" />
@@ -221,11 +222,11 @@ export default function CampaignsDetail() {
               <div className="grid grid-cols-2 gap-4 text-sm bg-muted/30 p-4 rounded-lg">
                 <div>
                   <p className="text-muted-foreground">Start Date</p>
-                  <p className="font-medium">{selectedCampaign.startDate ? new Date(selectedCampaign.startDate).toLocaleDateString(undefined, { dateStyle: 'long' }) : 'None'}</p>
+                  <p className="font-medium">{selectedCampaign.startDate ? format(new Date(selectedCampaign.startDate), "MMMM d, yyyy") : 'None'}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">End Date</p>
-                  <p className="font-medium">{selectedCampaign.endDate ? new Date(selectedCampaign.endDate).toLocaleDateString(undefined, { dateStyle: 'long' }) : 'None'}</p>
+                  <p className="font-medium">{selectedCampaign.endDate ? format(new Date(selectedCampaign.endDate), "MMMM d, yyyy") : 'None'}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground text-[10px] uppercase font-bold tracking-widest mt-2">Channel Type</p>

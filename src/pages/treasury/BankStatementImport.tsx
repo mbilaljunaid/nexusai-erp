@@ -111,7 +111,7 @@ export default function BankStatementImport() {
                         ))}
                     </div>
                     <input ref={fileRef} type="file" accept=".txt,.xml,.camt,.mt940,.bai2" onChange={handleFile} hidden />
-                    <div className="drop-zone" onClick={() => fileRef.current?.click()}>
+                    <div className="drop-zone" onClick={() => fileRef.current?.click()} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileRef.current?.click(); } }}>
                         <Upload size={32} className="text-gray-400 mb-2" />
                         <div className="dz-primary">Click to upload or paste below</div>
                         <div className="dz-sub">{format} format</div>
@@ -138,7 +138,7 @@ export default function BankStatementImport() {
                             {imports.map(imp => {
                                 const cfg = STATUS_CFG[imp.import_status] ?? 'bg-gray-100 text-gray-500';
                                 return (
-                                    <div key={imp.id} className={`hist-item ${activeImport?.id === imp.id ? 'selected' : ''}`} onClick={() => setActiveImport(imp)}>
+                                    <div key={imp.id} className={`hist-item ${activeImport?.id === imp.id ? 'selected' : ''}`} onClick={() => setActiveImport(imp)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiveImport(imp); } }}>
                                         <div className="hist-top">
                                             <span className="hist-fmt">{imp.format}</span>
                                             <span className={`hist-status ${cfg}`}>{imp.import_status}</span>

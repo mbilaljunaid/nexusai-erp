@@ -7,6 +7,7 @@ import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { AlertCircle, Clock } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const MOCK_TENANT_ID = "test-tenant-wfm-001";
 
@@ -80,8 +81,19 @@ export default function ViolationsDashboard() {
                                                 {v.violation.severity}
                                             </span>
                                         </TableCell>
-                                        <TableCell className="max-w-md truncate" title={v.violation.message}>
-                                            {v.violation.message}
+                                        <TableCell className="max-w-md">
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <div className="w-full truncate cursor-default">
+                                                            {v.violation.message}
+                                                        </div>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent side="top">
+                                                        <p className="max-w-xs">{v.violation.message}</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
                                         </TableCell>
                                         <TableCell>
                                             {/* Future: Acknowledge / Waive */}

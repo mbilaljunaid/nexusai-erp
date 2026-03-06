@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 export default function ThirdPartyApps() {
   return (
@@ -17,7 +17,7 @@ export default function ThirdPartyApps() {
             <CardContent className="pt-6">
               <h3 className="font-semibold">{app.app}</h3>
               <p className="text-sm text-muted-foreground">{app.users} users using</p>
-              <Badge className="mt-2 bg-green-100 text-green-800">{app.connected ? "Connected" : "Not Connected"}</Badge>
+              <StatusBadge className="mt-2" status={app.connected ? "connected" : "inactive"} label={app.connected ? "Connected" : "Not Connected"} />
             </CardContent>
           </Card>
         ))}

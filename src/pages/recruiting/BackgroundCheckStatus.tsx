@@ -46,7 +46,7 @@ export default function BackgroundCheckStatus() {
     const orderColumns: SpreadsheetColumn<any>[] = [
         {
             id: "candidate", header: "Candidate", width: "200px", cell: (row) => (
-                <div onClick={() => loadDetail(row.id)} className="cursor-pointer">
+                <div onClick={() => loadDetail(row.id)} className="cursor-pointer" role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); loadDetail(row.id); } }}>
                     <div className="font-bold">{row.candidate_name ?? row.applicant_id}</div>
                     <div className="text-[10px] text-gray-400">{row.applicant_id}</div>
                 </div>

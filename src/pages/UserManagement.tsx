@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Edit2, ShieldAlert, User as UserIcon, ShieldCheck } from "lucide-react";
@@ -94,8 +95,8 @@ export default function UserManagement() {
     { id: "name", header: "Name", width: "25%", cell: (row: any) => <div className="p-2 flex flex-col"><span className="font-semibold">{row.name}</span><span className="text-xs text-muted-foreground">{row.email}</span></div> },
     { id: "role", header: "Role", width: "15%", cell: (row: any) => <div className="p-2"><Badge variant="outline">{row.role}</Badge></div> },
     { id: "dept", header: "Department", width: "20%", cell: (row: any) => <div className="p-2">{row.dept}</div> },
-    { id: "mfa", header: "MFA", width: "15%", cell: (row: any) => <div className="p-2">{row.mfa ? <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">Enabled</Badge> : <span className="text-muted-foreground">-</span>}</div> },
-    { id: "status", header: "Status", width: "15%", cell: (row: any) => <div className="p-2"><Badge variant={row.status === "active" ? "default" : "secondary"}>{row.status}</Badge></div> },
+    { id: "mfa", header: "MFA", width: "15%", cell: (row: any) => <div className="p-2">{row.mfa ? <StatusBadge status="enabled" label="Enabled" /> : <span className="text-muted-foreground">-</span>}</div> },
+    { id: "status", header: "Status", width: "15%", cell: (row: any) => <div className="p-2"><StatusBadge status={row.status} /></div> },
     {
       id: "actions", header: "Actions", width: "10%", cell: (row: any) => (
         <div className="p-2">

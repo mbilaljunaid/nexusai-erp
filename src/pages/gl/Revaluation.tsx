@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2, Play, RefreshCw, BarChart3 } from "lucide-react";
 import { CodeCombinationPicker } from "@/components/gl/CodeCombinationPicker";
 import { useToast } from "@/hooks/use-toast";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Link } from "wouter";
 import { useLedger } from "@/context/LedgerContext";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
@@ -180,9 +181,7 @@ export default function Revaluation() {
                                         <TableCell>{run.currencyCode}</TableCell>
                                         <TableCell>{run.rateType}</TableCell>
                                         <TableCell>
-                                            <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
-                                                {run.status}
-                                            </span>
+                                            <StatusBadge status={run.status} />
                                         </TableCell>
                                         <TableCell className="font-mono text-xs">
                                             {run.journalBatchId}

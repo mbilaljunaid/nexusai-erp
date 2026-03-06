@@ -19,6 +19,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { useToast } from "@/hooks/use-toast";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { format } from "date-fns";
 
 export default function WavePlanning() {
     const { toast } = useToast();
@@ -37,7 +38,7 @@ export default function WavePlanning() {
             return await apiRequest("POST", "/api/scm/wms/waves", {
                 warehouseId: "WH-001",
                 orderIds: selectedOrders,
-                description: `Bulk Wave - ${new Date().toLocaleDateString()} `
+                description: `Bulk Wave - ${format(new Date(), "MMM d, yyyy")} `
             });
         },
         onSuccess: () => {
@@ -78,7 +79,7 @@ export default function WavePlanning() {
         },
         { id: "orderNumber", header: "Order #", width: "120px", cell: (row) => <div className="font-mono text-blue-400">{row.orderNumber}</div> },
         { id: "customer", header: "Customer", width: "150px", cell: () => <div className="text-white">Consolidated Express</div> },
-        { id: "requestedDate", header: "Requested Date", width: "150px", cell: () => <div className="text-slate-400">{new Date().toLocaleDateString()}</div> },
+        { id: "requestedDate", header: "Requested Date", width: "150px", cell: () => <div className="text-slate-400">{format(new Date(), "MMM d, yyyy")}</div> },
         { id: "items", header: "Items", width: "100px", cell: () => <div className="text-white">5 items</div> },
         { id: "priority", header: "Priority", width: "120px", cell: () => <StatusBadge status="high" /> }
     ];

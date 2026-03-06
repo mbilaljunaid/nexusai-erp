@@ -9,6 +9,7 @@ import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 import { Plus, Copy, Trash2, Eye, EyeOff } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 
 export default function APIGateway() {
@@ -25,10 +26,10 @@ export default function APIGateway() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => 
-      fetch("/api/api-keys", { 
-        method: "POST", 
-        headers: { "Content-Type": "application/json" }, 
+    mutationFn: (data: any) =>
+      fetch("/api/api-keys", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...data, tenantId, permissions: ["read", "write"] })
       }).then(r => r.json()),
     onSuccess: () => {
@@ -45,7 +46,7 @@ export default function APIGateway() {
   });
 
   const toggleSecret = (id: string) => {
-    setShowSecrets(prev => 
+    setShowSecrets(prev =>
       prev.includes(id) ? prev.filter(k => k !== id) : [...prev, id]
     );
   };
@@ -58,22 +59,22 @@ export default function APIGateway() {
     <StandardPage title="API Gateway">
       <Breadcrumb items={formMetadata?.breadcrumbs?.slice(1) || []} />
       <FormSearchWithMetadata formMetadata={formMetadata} value={searchQuery} onChange={setSearchQuery} data={apiKeys} onFilter={setFiltered} />
-      
+
       <div>
-        
+
         <p className="text-gray-600">Manage API keys and authentication tokens</p>
       </div>
 
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Create New API Key</h2>
         <div className="space-y-4">
-          <Input 
-            placeholder="Key Name (e.g., Production API, Mobile App)" 
+          <Input
+            placeholder="Key Name (e.g., Production API, Mobile App)"
             value={newKey.name}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewKey({...newKey, name: e.target.value})}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewKey({ ...newKey, name: e.target.value })}
             data-testid="input-api-key-name"
           />
-          <Button 
+          <Button
             onClick={() => createMutation.mutate(newKey)}
             disabled={!newKey.name || createMutation.isPending}
             data-testid="button-create-api-key"
@@ -96,9 +97,7 @@ export default function APIGateway() {
                     <h3 className="font-semibold text-lg" data-testid={`text-key-${key.id}`}>{key.name}</h3>
                     <p className="text-xs text-gray-500">Created: {new Date(key.createdAt).toLocaleDateString()}</p>
                   </div>
-                  <span className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm font-medium">
-                    {key.status}
-                  </span>
+                  <StatusBadge status={key.status} />
                 </div>
 
                 <div className="bg-gray-100 dark:bg-gray-900 p-3 rounded font-mono text-sm break-all flex justify-between items-center">
@@ -106,8 +105,8 @@ export default function APIGateway() {
                     {showSecrets.includes(key.id) ? key.key : '••••••••' + key.key.slice(-4)}
                   </span>
                   <div className="flex gap-2 ml-4">
-                    <Button 
-                      size="icon" 
+                    <Button
+                      size="icon"
                       variant="ghost"
                       onClick={() => toggleSecret(key.id)}
                       data-testid={`button-toggle-${key.id}`}
@@ -115,8 +114,8 @@ export default function APIGateway() {
                     >
                       {showSecrets.includes(key.id) ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </Button>
-                    <Button 
-                      size="icon" 
+                    <Button
+                      size="icon"
                       variant="ghost"
                       onClick={() => copyToClipboard(key.key)}
                       data-testid={`button-copy-${key.id}`}
@@ -135,8 +134,8 @@ export default function APIGateway() {
                       </span>
                     ))}
                   </div>
-                  <Button 
-                    size="icon" 
+                  <Button
+                    size="icon"
                     variant="ghost"
                     onClick={() => deleteMutation.mutate(key.id)}
                     disabled={deleteMutation.isPending}

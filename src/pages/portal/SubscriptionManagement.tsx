@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { format } from "date-fns";
 
 
 export default function SubscriptionManagement() {
@@ -47,7 +48,7 @@ export default function SubscriptionManagement() {
     });
 
     const columns: SpreadsheetColumn<any>[] = [
-        { id: "date", header: "Date", width: "150px", cell: (bill: any) => <span>{new Date(bill.date).toLocaleDateString()}</span> },
+        { id: "date", header: "Date", width: "150px", cell: (bill: any) => <span>{format(new Date(bill.date), "MMM d, yyyy")}</span> },
         { id: "description", header: "Description", width: "300px", cell: (bill: any) => <span>{bill.description}</span> },
         { id: "amount", header: "Amount", width: "120px", cell: (bill: any) => <span>${bill.amount}</span> },
         {
@@ -62,7 +63,7 @@ export default function SubscriptionManagement() {
     return (
         <StandardPage title="Subscription Management">
             <div>
-                
+
                 <p className="text-muted-foreground">Manage your subscription plan and billing</p>
             </div>
 
@@ -80,7 +81,7 @@ export default function SubscriptionManagement() {
                             <div className="flex justify-between text-sm">
                                 <span>Next billing date:</span>
                                 <span className="font-medium">
-                                    {subscription?.nextBillingDate && new Date(subscription.nextBillingDate).toLocaleDateString()}
+                                    {subscription?.nextBillingDate && format(new Date(subscription.nextBillingDate), "MMM d, yyyy")}
                                 </span>
                             </div>
                             <div className="flex justify-between text-sm">

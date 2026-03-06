@@ -10,6 +10,7 @@ import { FormSearchWithMetadata } from "@/components/FormSearchWithMetadata";
 import { getFormMetadata } from "@/lib/formMetadata";
 import { queryClient } from "@/lib/queryClient";
 import { Plus, Trash2 } from "lucide-react";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 const PERMISSIONS = [
   { id: "read", label: "Read" },
@@ -31,10 +32,10 @@ export default function AdminRoles() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => 
-      fetch("/api/roles", { 
-        method: "POST", 
-        headers: { "Content-Type": "application/json" }, 
+    mutationFn: (data: any) =>
+      fetch("/api/roles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...data, tenantId })
       }).then(r => r.json()),
     onSuccess: () => {
@@ -61,19 +62,19 @@ export default function AdminRoles() {
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Create New Role</h2>
         <div className="space-y-4">
-          <Input 
-            placeholder="Role Name (e.g., Manager, Operator)" 
+          <Input
+            placeholder="Role Name (e.g., Manager, Operator)"
             value={newRole.name}
-            onChange={e => setNewRole({...newRole, name: e.target.value})}
+            onChange={e => setNewRole({ ...newRole, name: e.target.value })}
             data-testid="input-role-name"
           />
-          
+
           <div className="space-y-2">
             <label className="text-sm font-medium">Permissions</label>
             <div className="space-y-2">
               {PERMISSIONS.map(perm => (
                 <div key={perm.id} className="flex items-center gap-2">
-                  <Checkbox 
+                  <Checkbox
                     id={perm.id}
                     checked={newRole.permissions.includes(perm.id)}
                     onCheckedChange={() => togglePermission(perm.id)}
@@ -85,7 +86,7 @@ export default function AdminRoles() {
             </div>
           </div>
 
-          <Button 
+          <Button
             onClick={() => createMutation.mutate(newRole)}
             disabled={!newRole.name || newRole.permissions.length === 0 || createMutation.isPending}
             data-testid="button-create-role"
@@ -113,9 +114,7 @@ export default function AdminRoles() {
                     ))}
                   </div>
                 </div>
-                <span className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm font-medium">
-                  {role.status}
-                </span>
+                <StatusBadge status={role.status} />
               </div>
             </Card>
           ))}

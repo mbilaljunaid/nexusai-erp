@@ -166,7 +166,7 @@ export default function BenefitsProgramSetup() {
                     className={`flex items-center gap-2 py-1.5 px-2 rounded-md cursor-pointer group transition-colors ${isSelected ? 'bg-zinc-100 dark:bg-zinc-800' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50'}`}
                     onClick={() => setSelectedNodeId(node.id)}
                 >
-                    <div className="w-4 h-4 flex items-center justify-center cursor-pointer opacity-70 hover:opacity-100" onClick={(e) => { e.stopPropagation(); toggleNode(node); }}>
+                    <div className="w-4 h-4 flex items-center justify-center cursor-pointer opacity-70 hover:opacity-100" onClick={(e) => { e.stopPropagation(); toggleNode(node); }} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggleNode(node); } }}>
                         {hasChildren ? (node.isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />) : <div className="w-4 h-4" />}
                     </div>
                     {getIconForType(node.type)}

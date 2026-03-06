@@ -12,6 +12,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Save } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 
@@ -93,7 +94,7 @@ export default function SurvivorshipRuleBuilder() {
     return (
         <StandardPage title="Survivorship Rule Builder">
             <div>
-                
+
                 <p className="text-muted-foreground">
                     Define which field values survive during merge
                 </p>
@@ -164,19 +165,28 @@ export default function SurvivorshipRuleBuilder() {
 
                         <div>
                             <Label htmlFor="priority">Priority: {formData.priority}</Label>
-                            <input
-                                type="range"
-                                id="priority"
-                                title="Set rule priority from 0 to 100"
-                                min="0"
-                                max="100"
-                                step="10"
-                                value={formData.priority}
-                                onChange={(e) =>
-                                    setFormData({ ...formData, priority: parseInt(e.target.value) })
-                                }
-                                className="w-full mt-2"
-                            />
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <input
+                                            aria-label="Priority"
+                                            type="range"
+                                            id="priority"
+                                            min="0"
+                                            max="100"
+                                            step="10"
+                                            value={formData.priority}
+                                            onChange={(e) =>
+                                                setFormData({ ...formData, priority: parseInt(e.target.value) })
+                                            }
+                                            className="w-full mt-2"
+                                        />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        Set rule priority from 0 to 100
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
                             <p className="text-xs text-muted-foreground mt-1">
                                 Higher priority rules evaluated first
                             </p>

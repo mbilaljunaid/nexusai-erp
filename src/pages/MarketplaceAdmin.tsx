@@ -19,6 +19,7 @@ import {
   Play, CreditCard, AlertTriangle, FileText, RefreshCw
 } from "lucide-react";
 import type { MarketplaceApp, MarketplaceDeveloper, MarketplacePayout, MarketplaceAuditLog } from "@/types/erp-types";
+import { format } from "date-fns";
 
 interface AppReviewDialogProps {
   app: MarketplaceApp | null;
@@ -491,7 +492,7 @@ export default function MarketplaceAdmin() {
                       </TableCell>
                       <TableCell>
                         <span className="text-sm text-muted-foreground">
-                          {app.createdAt ? new Date(app.createdAt).toLocaleDateString() : "-"}
+                          {app.createdAt ? format(new Date(app.createdAt), "MMM d, yyyy") : "-"}
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
@@ -615,7 +616,7 @@ export default function MarketplaceAdmin() {
                       <TableRow key={payout.id} data-testid={`row-admin-payout-${payout.id}`}>
                         <TableCell className="font-medium">{payout.developerId}</TableCell>
                         <TableCell className="text-sm text-muted-foreground">
-                          {new Date(payout.periodStart).toLocaleDateString()} - {new Date(payout.periodEnd).toLocaleDateString()}
+                          {format(new Date(payout.periodStart), "MMM d, yyyy")} - {format(new Date(payout.periodEnd), "MMM d, yyyy")}
                         </TableCell>
                         <TableCell>
                           <Badge
@@ -681,7 +682,7 @@ export default function MarketplaceAdmin() {
                             )}
                             {payout.status === "paid" && (
                               <span className="text-sm text-muted-foreground">
-                                {payout.paidAt ? new Date(payout.paidAt).toLocaleDateString() : ""}
+                                {payout.paidAt ? format(new Date(payout.paidAt), "MMM d, yyyy") : ""}
                               </span>
                             )}
                           </div>
@@ -742,7 +743,7 @@ export default function MarketplaceAdmin() {
                             {log.actorId || "System"}
                           </TableCell>
                           <TableCell className="text-sm text-muted-foreground">
-                            {log.createdAt ? new Date(log.createdAt).toLocaleString() : "-"}
+                            {log.createdAt ? format(new Date(log.createdAt), "MMM d, yyyy") : "-"}
                           </TableCell>
                         </TableRow>
                       ))}

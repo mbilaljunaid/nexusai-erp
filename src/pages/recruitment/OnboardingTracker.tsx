@@ -11,6 +11,7 @@ import { ClipboardList, CheckCircle2, Clock, AlertTriangle, User } from "lucide-
 import { toast } from "@/hooks/use-toast";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { format } from "date-fns";
 
 interface OnboardingTask {
     id: string;
@@ -137,7 +138,7 @@ export default function OnboardingTracker() {
             width: "150px",
             cell: (row) => (
                 <div className={`px-2 text-sm text-left ${isOverdue(row.dueDate, row.status) ? 'text-red-600 font-semibold' : ''}`}>
-                    {new Date(row.dueDate).toLocaleDateString()}
+                    {format(new Date(row.dueDate), "MMM d, yyyy")}
                     {isOverdue(row.dueDate, row.status) && ' (Overdue)'}
                 </div>
             )
@@ -276,7 +277,7 @@ export default function OnboardingTracker() {
                                         <div>
                                             <CardTitle className="text-lg">{hire.employeeName}</CardTitle>
                                             <CardDescription>
-                                                {hire.position} • {hire.department} • Hired {new Date(hire.hireDate).toLocaleDateString()}
+                                                {hire.position} • {hire.department} • Hired {format(new Date(hire.hireDate), "MMM d, yyyy")}
                                             </CardDescription>
                                         </div>
                                         <div className="text-right">
