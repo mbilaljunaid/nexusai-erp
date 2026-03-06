@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
@@ -249,10 +250,10 @@ export default function RevenueSSPManager() {
                                 {books.map((book) => (
                                     <div role="button" tabIndex={0}
                                         key={book.id}
-                                        className={`p-3 border rounded-lg cursor-pointer transition-colors ${selectedBook?.id === book.id
+                                        className={cn(`p-3 border rounded-lg cursor-pointer transition-colors ${selectedBook?.id === book.id
                                             ? "bg-blue-50 border-blue-300"
                                             : "hover:bg-slate-50"
-                                            }`}
+                                            }`)}
                                         onClick={() => setSelectedBook(book)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     >
                                         <div className="flex justify-between items-start">

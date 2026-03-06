@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -58,7 +59,7 @@ export default function TaskList() {
 
                 return (
                     <div className="p-2">
-                        <Badge variant="secondary" className={`${color} capitalize border-none`}>
+                        <Badge variant="secondary" className={cn(`${color} capitalize border-none`)}>
                             {task.priority}
                         </Badge>
                     </div>

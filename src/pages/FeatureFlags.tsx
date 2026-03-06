@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -157,7 +158,7 @@ export default function FeatureFlags() {
           <Card key={label}>
             <CardContent className="pt-5">
               <p className="text-xs text-muted-foreground">{label}</p>
-              <p className={`text-3xl font-bold ${color}`}>{value}</p>
+              <p className={cn(`text-3xl font-bold ${color}`)}>{value}</p>
             </CardContent>
           </Card>
         ))}

@@ -364,7 +364,7 @@ export default function DemoManagement() {
                                 {/* Filters */}
                                 <div className="flex items-center gap-2">
                                     <Select value={filters.status} onValueChange={(v) => handleFilterChange('status', v)}>
-                                        <SelectTrigger className="w-[180px]">
+                                        <SelectTrigger className="w-44">
                                             <SelectValue placeholder="Status" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -376,7 +376,7 @@ export default function DemoManagement() {
                                     </Select>
 
                                     <Select value={filters.industry} onValueChange={(v) => handleFilterChange('industry', v)}>
-                                        <SelectTrigger className="w-[180px]">
+                                        <SelectTrigger className="w-44">
                                             <SelectValue placeholder="Industry" />
                                         </SelectTrigger>
                                         <SelectContent>

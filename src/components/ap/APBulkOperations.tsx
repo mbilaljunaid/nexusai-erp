@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useToast } from "@/hooks/use-toast";
-import { CheckCircle, XCircle, FileDown, DollarSign, RefreshCw, AlertCircle } from "lucide-react";
+import { useState} from"react";
+import { useMutation} from"@tanstack/react-query";
+import { Button} from"@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter} from"@/components/ui/dialog";
+import { Textarea} from"@/components/ui/textarea";
+import { Progress} from"@/components/ui/progress";
+import { Badge} from"@/components/ui/badge";
+import { Alert, AlertDescription} from"@/components/ui/alert";
+import { useToast} from"@/hooks/use-toast";
+import { CheckCircle, XCircle, FileDown, DollarSign, RefreshCw, AlertCircle} from"lucide-react";
 
 interface APBulkOperationsProps {
     selectedInvoices: any[];
@@ -18,11 +18,11 @@ interface APBulkOperationsProps {
 interface BulkOperationResult {
     success: number;
     failed: number;
-    errors: { invoiceId: string; error: string }[];
+    errors: { invoiceId: string; error: string}[];
 }
 
-export function APBulkOperations({ selectedInvoices, onSuccess, onClearSelection }: APBulkOperationsProps) {
-    const { toast } = useToast();
+export function APBulkOperations({ selectedInvoices, onSuccess, onClearSelection}: APBulkOperationsProps) {
+    const { toast} = useToast();
     const [showRejectDialog, setShowRejectDialog] = useState(false);
     const [rejectReason, setRejectReason] = useState("");
     const [operationProgress, setOperationProgress] = useState(0);
@@ -36,41 +36,41 @@ export function APBulkOperations({ selectedInvoices, onSuccess, onClearSelection
     const approveMutation = useMutation({
         mutationFn: async (invoiceIds: string[]) => {
             const res = await fetch("/api/ap/invoices/bulk-approve", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ invoiceIds })
-            });
+                method:"POST",
+                headers: {"Content-Type":"application/json"},
+                body: JSON.stringify({ invoiceIds})
+           });
             if (!res.ok) throw new Error("Bulk approve failed");
             return res.json();
-        },
+       },
         onSuccess: (result: BulkOperationResult) => {
             setLastResult(result);
             setShowResults(true);
             if (result.success > 0) {
                 toast({
-                    title: "Bulk Approve Complete",
-                    description: `${result.success} invoices approved${result.failed > 0 ? `, ${result.failed} failed` : ""}`
-                });
+                    title:"Bulk Approve Complete",
+                    description:`${result.success} invoices approved${result.failed > 0 ?`, ${result.failed} failed` :""}`
+               });
                 onSuccess();
                 onClearSelection();
-            }
-        },
+           }
+       },
         onError: () => {
-            toast({ title: "Bulk approve failed", variant: "destructive" });
-        }
-    });
+            toast({ title:"Bulk approve failed", variant:"destructive"});
+       }
+   });
 
     // Bulk Reject
     const rejectMutation = useMutation({
-        mutationFn: async ({ invoiceIds, reason }: { invoiceIds: string[]; reason: string }) => {
+        mutationFn: async ({ invoiceIds, reason}: { invoiceIds: string[]; reason: string}) => {
             const res = await fetch("/api/ap/invoices/bulk-reject", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ invoiceIds, reason })
-            });
+                method:"POST",
+                headers: {"Content-Type":"application/json"},
+                body: JSON.stringify({ invoiceIds, reason})
+           });
             if (!res.ok) throw new Error("Bulk reject failed");
             return res.json();
-        },
+       },
         onSuccess: (result: BulkOperationResult) => {
             setLastResult(result);
             setShowResults(true);
@@ -78,83 +78,83 @@ export function APBulkOperations({ selectedInvoices, onSuccess, onClearSelection
             setRejectReason("");
             if (result.success > 0) {
                 toast({
-                    title: "Bulk Reject Complete",
-                    description: `${result.success} invoices rejected${result.failed > 0 ? `, ${result.failed} failed` : ""}`
-                });
+                    title:"Bulk Reject Complete",
+                    description:`${result.success} invoices rejected${result.failed > 0 ?`, ${result.failed} failed` :""}`
+               });
                 onSuccess();
                 onClearSelection();
-            }
-        }
-    });
+           }
+       }
+   });
 
     // Bulk Payment Batch
     const createPaymentBatchMutation = useMutation({
         mutationFn: async (invoiceIds: string[]) => {
             const res = await fetch("/api/ap/payment-batches/create-from-invoices", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ invoiceIds })
-            });
+                method:"POST",
+                headers: {"Content-Type":"application/json"},
+                body: JSON.stringify({ invoiceIds})
+           });
             if (!res.ok) throw new Error("Payment batch creation failed");
             return res.json();
-        },
+       },
         onSuccess: (data) => {
             toast({
-                title: "Payment Batch Created",
-                description: `Batch #${data.batchNumber} created with ${selectedCount} invoices`
-            });
+                title:"Payment Batch Created",
+                description:`Batch #${data.batchNumber} created with ${selectedCount} invoices`
+           });
             onSuccess();
             onClearSelection();
-        }
-    });
+       }
+   });
 
     // Bulk Export
     const exportMutation = useMutation({
         mutationFn: async (invoiceIds: string[]) => {
             const res = await fetch("/api/ap/invoices/bulk-export", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ invoiceIds, format: "excel" })
-            });
+                method:"POST",
+                headers: {"Content-Type":"application/json"},
+                body: JSON.stringify({ invoiceIds, format:"excel"})
+           });
             if (!res.ok) throw new Error("Export failed");
             return res.blob();
-        },
+       },
         onSuccess: (blob) => {
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `ap-invoices-${new Date().toISOString().split('T')[0]}.xlsx`;
+            a.download =`ap-invoices-${new Date().toISOString().split('T')[0]}.xlsx`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
-            toast({ title: "Export complete", description: `${selectedCount} invoices exported` });
-        }
-    });
+            toast({ title:"Export complete", description:`${selectedCount} invoices exported`});
+       }
+   });
 
     const handleBulkApprove = () => {
         const invoiceIds = selectedInvoices.map(inv => inv.id);
         approveMutation.mutate(invoiceIds);
-    };
+   };
 
     const handleBulkReject = () => {
         if (!rejectReason.trim()) {
-            toast({ title: "Rejection reason required", variant: "destructive" });
+            toast({ title:"Rejection reason required", variant:"destructive"});
             return;
-        }
+       }
         const invoiceIds = selectedInvoices.map(inv => inv.id);
-        rejectMutation.mutate({ invoiceIds, reason: rejectReason });
-    };
+        rejectMutation.mutate({ invoiceIds, reason: rejectReason});
+   };
 
     const handleCreatePaymentBatch = () => {
         const invoiceIds = selectedInvoices.map(inv => inv.id);
         createPaymentBatchMutation.mutate(invoiceIds);
-    };
+   };
 
     const handleExport = () => {
         const invoiceIds = selectedInvoices.map(inv => inv.id);
         exportMutation.mutate(invoiceIds);
-    };
+   };
 
     if (selectedCount === 0) return null;
 
@@ -163,7 +163,7 @@ export function APBulkOperations({ selectedInvoices, onSuccess, onClearSelection
 
     return (
         <>
-            <div className="sticky top-0 z-10 bg-background border-b shadow-sm p-4">
+            <div className="sticky top-0 bg-background border-b shadow-sm p-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <Badge variant="secondary" className="text-base px-3 py-1">

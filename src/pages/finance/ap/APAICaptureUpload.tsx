@@ -219,7 +219,7 @@ export default function APAICaptureUpload() {
                             {extractedData.lineItems && extractedData.lineItems.length > 0 && (
                                 <div className="mt-6">
                                     <h4 className="font-semibold mb-3">Line Items</h4>
-                                    <div className="border rounded-lg overflow-hidden h-[300px]">
+                                    <div className="border rounded-lg overflow-hidden h-72">
                                         <InteractiveSpreadsheet
                                             columns={lineItemColumns}
                                             data={extractedData.lineItems}

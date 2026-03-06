@@ -15,7 +15,7 @@ export function LedgerSelector() {
     const { currentLedgerId, setCurrentLedgerId, ledgers, isLoading } = useLedger();
 
     if (isLoading) {
-        return <Skeleton className="h-8 w-[180px]" />;
+        return <Skeleton className="h-8 w-44" />;
     }
 
     if (!ledgers || ledgers.length === 0) {
@@ -28,7 +28,7 @@ export function LedgerSelector() {
 
     return (
         <Select value={currentLedgerId} onValueChange={setCurrentLedgerId}>
-            <SelectTrigger className="w-[200px] h-8 border-dashed">
+            <SelectTrigger className="w-48 h-8 border-dashed">
                 <SelectValue placeholder="Select Ledger" />
             </SelectTrigger>
             <SelectContent>

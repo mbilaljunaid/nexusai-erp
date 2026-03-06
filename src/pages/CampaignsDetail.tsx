@@ -1,31 +1,33 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
-import { ArrowLeft, Search, Megaphone, Calendar, FileText, Plus, CheckCircle2, TrendingUp, Wallet, Target, ArrowRight } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
-import { CampaignForm } from "@/components/forms/CampaignForm";
-import type { Campaign } from "@/types/erp-types";
-import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
+import { useState} from"react";
+import { useQuery} from"@tanstack/react-query";
+import { Card, CardContent} from"@/components/ui/card";
+import { Button} from"@/components/ui/button";
+import { Link} from"wouter";
+import { ArrowLeft, Search, Megaphone, Calendar, FileText, Plus, CheckCircle2, TrendingUp, Wallet, Target, ArrowRight} from"lucide-react";
+import { Input} from"@/components/ui/input";
+import { Badge} from"@/components/ui/badge";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger} from"@/components/ui/sheet";
+import { CampaignForm} from"@/components/forms/CampaignForm";
+import type { Campaign} from"@/types/erp-types";
+import { format} from"date-fns";
 
 // Helper to format currency
 const formatCurrency = (val: number | string | null | undefined) => {
-  if (val === null || val === undefined) return "$0";
+  if (val === null || val === undefined) return"$0";
   const num = Number(val);
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
+  return new Intl.NumberFormat('en-US', { style:'currency', currency:'USD', maximumFractionDigits: 0}).format(num);
 };
 
 export default function CampaignsDetail() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
 
-  const { data: fetchResult, isLoading } = useQuery<{ data: Campaign[], pagination: any }>({
-    queryKey: ["/api/crm/campaigns", "limit=100"],
+  const { data: fetchResult, isLoading} = useQuery<{ data: Campaign[], pagination: any}>({
+    queryKey: ["/api/crm/campaigns","limit=100"],
     queryFn: () => fetch("/api/crm/campaigns?limit=100").then(res => res.json())
-  });
+ });
 
   const campaigns = fetchResult?.data || [];
 
@@ -35,12 +37,12 @@ export default function CampaignsDetail() {
 
   const totalRevenue = campaigns.reduce((acc, c) => acc + Number(c.expectedRevenue || 0), 0);
   const totalCost = campaigns.reduce((acc, c) => acc + Number(c.budgetedCost || 0), 0);
-  const activeCount = campaigns.filter(c => c.status === 'In Progress').length;
+  const activeCount = campaigns.filter(c => c.status ==='In Progress').length;
 
   return (
     <div className="space-y-6 flex flex-col flex-1 overflow-y-auto pb-10">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 pb-4 border-b">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 pb-4 border-b">
         <div className="flex items-center gap-2">
           <Link href="/crm">
             <Button variant="ghost" size="icon" className="hover:bg-primary/10 transition-colors"><ArrowLeft className="h-4 w-4" /></Button>
@@ -121,7 +123,7 @@ export default function CampaignsDetail() {
       <div className="flex-1 min-h-0">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
           </div>
         ) : filteredCampaigns.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center rounded-xl border-2 border-dashed bg-muted/20">
@@ -130,7 +132,7 @@ export default function CampaignsDetail() {
             </div>
             <h3 className="text-lg font-semibold">No campaigns found</h3>
             <p className="text-muted-foreground max-w-xs mt-2">
-              {searchQuery ? `No campaigns matching "${searchQuery}"` : "You haven't launched any marketing campaigns yet."}
+              {searchQuery ?`No campaigns matching"${searchQuery}"` :"You haven't launched any marketing campaigns yet."}
             </p>
           </div>
         ) : (
@@ -139,15 +141,15 @@ export default function CampaignsDetail() {
               <Card
                 key={campaign.id}
                 className="group shadow-sm hover:shadow-xl hover:-translate-y-1 border-muted-foreground/10 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col h-full bg-card"
-                onClick={() => setSelectedCampaign(campaign)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                onClick={() => setSelectedCampaign(campaign)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key ==='Enter' || e.key ==='') { e.preventDefault(); e.currentTarget.click();}}}
               >
-                <div className={`h-1.5 w-full ${campaign.status === 'In Progress' ? 'bg-gradient-to-r from-purple-500 to-pink-600' : 'bg-muted'}`} />
+                <div className={cn(`h-1.5 w-full ${campaign.status ==='In Progress' ?'bg-gradient-to-r from-purple-500 to-pink-600' :'bg-muted'}`)} />
                 <CardContent className="p-5 flex flex-col flex-1">
                   <div className="flex justify-between items-start mb-4">
-                    <div className={`p-3 rounded-xl transition-colors duration-300 ${campaign.status === 'In Progress' ? 'bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300' : 'bg-muted text-muted-foreground'}`}>
+                    <div className={cn(`p-3 rounded-xl transition-colors duration-300 ${campaign.status ==='In Progress' ?'bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300' :'bg-muted text-muted-foreground'}`)}>
                       <Megaphone className="h-6 w-6" />
                     </div>
-                    <Badge variant={campaign.status === "In Progress" ? "default" : "secondary"} className="font-medium px-2 py-0.5 text-[10px] uppercase tracking-wider">
+                    <Badge variant={campaign.status ==="In Progress" ?"default" :"secondary"} className="font-medium px-2 py-0.5 text-[10px] uppercase tracking-wider">
                       {campaign.status}
                     </Badge>
                   </div>
@@ -165,7 +167,7 @@ export default function CampaignsDetail() {
                   <div className="pt-4 border-t border-muted/20 flex items-center justify-between text-[11px] text-muted-foreground mt-auto">
                     <div className="flex items-center gap-1.5">
                       <Calendar className="h-3 w-3" />
-                      Started: {campaign.startDate ? format(new Date(campaign.startDate), "MMM d, yyyy") : 'N/A'}
+                      Started: {campaign.startDate ? format(new Date(campaign.startDate),"MMM d, yyyy") :'N/A'}
                     </div>
                     <div className="flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
                       Insights <Target className="h-3 w-3" />
@@ -222,11 +224,11 @@ export default function CampaignsDetail() {
               <div className="grid grid-cols-2 gap-4 text-sm bg-muted/30 p-4 rounded-lg">
                 <div>
                   <p className="text-muted-foreground">Start Date</p>
-                  <p className="font-medium">{selectedCampaign.startDate ? format(new Date(selectedCampaign.startDate), "MMMM d, yyyy") : 'None'}</p>
+                  <p className="font-medium">{selectedCampaign.startDate ? format(new Date(selectedCampaign.startDate),"MMMM d, yyyy") :'None'}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">End Date</p>
-                  <p className="font-medium">{selectedCampaign.endDate ? format(new Date(selectedCampaign.endDate), "MMMM d, yyyy") : 'None'}</p>
+                  <p className="font-medium">{selectedCampaign.endDate ? format(new Date(selectedCampaign.endDate),"MMMM d, yyyy") :'None'}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground text-[10px] uppercase font-bold tracking-widest mt-2">Channel Type</p>
@@ -243,9 +245,9 @@ export default function CampaignsDetail() {
                   <FileText className="h-4 w-4" />
                   Campaign Strategy
                 </h3>
-                <div className="p-6 rounded-xl bg-card border shadow-sm min-h-[100px]">
+                <div className="p-6 rounded-xl bg-card border shadow-sm min-h-24">
                   <p className="text-sm leading-relaxed text-foreground/80 whitespace-pre-wrap italic">
-                    {selectedCampaign.description || "No strategic overview provided for this campaign yet."}
+                    {selectedCampaign.description ||"No strategic overview provided for this campaign yet."}
                   </p>
                 </div>
               </div>

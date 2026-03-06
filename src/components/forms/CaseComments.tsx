@@ -79,7 +79,7 @@ export function CaseComments({ caseId }: CaseCommentsProps) {
                         value={commentBody}
                         onChange={(e) => setCommentBody(e.target.value)}
                         placeholder="Write a comment..."
-                        className="min-h-[80px]"
+                        className="min-h-20"
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' && !e.shiftKey) {
                                 e.preventDefault();

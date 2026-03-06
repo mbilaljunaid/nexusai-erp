@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -145,7 +146,7 @@ export default function HedgeEffectiveness() {
             {/* Tabs */}
             <div className="he-tabs">
                 {(['hedges', 'covenants', 'debt'] as const).map(t => (
-                    <button key={t} className={`he-tab ${activeTab === t ? 'active' : ''}`} onClick={() => setActiveTab(t)}>
+                    <button key={t} className={cn(`he-tab ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)}>
                         {t.charAt(0).toUpperCase() + t.slice(1)}
                     </button>
                 ))}
@@ -280,7 +281,7 @@ export default function HedgeEffectiveness() {
                             </button>
 
                             {testResult && (
-                                <div className={`test-result ${testResult.isHighlyEffective ? 'pass' : 'fail'}`}>
+                                <div className={cn(`test-result ${testResult.isHighlyEffective ? 'pass' : 'fail'}`)}>
                                     <div className="tr-header">
                                         {testResult.isHighlyEffective ? <CheckCircle2 size={16} /> : <AlertTriangle size={16} />}
                                         {testResult.isHighlyEffective ? 'Highly Effective' : 'Ineffective — Hedge Discontinued'}
@@ -322,7 +323,7 @@ export default function HedgeEffectiveness() {
                             const util = pct(f.drawn_amount, f.facility_amount);
                             const hasBreaches = f.recent_breaches > 0;
                             return (
-                                <div key={f.id} className={`debt-card ${hasBreaches ? 'breach' : ''}`}>
+                                <div key={f.id} className={cn(`debt-card ${hasBreaches ? 'breach' : ''}`)}>
                                     <div className="dc-top">
                                         <div className="dc-name">{f.facility_name}</div>
                                         {hasBreaches && <span className="breach-badge"><AlertTriangle size={10} /> Breach</span>}
@@ -331,7 +332,7 @@ export default function HedgeEffectiveness() {
                                     <div className="dc-util">
                                         <div className="util-bar-bg">
                                             <style>{`.util-bar-he-${f.id} { width: ${util}%; }`}</style>
-                                            <div className={`util-bar util-bar-he-${f.id} ${util > 80 ? 'bg-red-600' : 'bg-blue-700'}`} />
+                                            <div className={cn(`util-bar util-bar-he-${f.id} ${util > 80 ? 'bg-red-600' : 'bg-blue-700'}`)} />
                                         </div>
                                         <span className="util-pct">{util}% utilised</span>
                                     </div>
@@ -416,10 +417,10 @@ export default function HedgeEffectiveness() {
 
 function HeKpi({ label, value, icon, colorClass, borderClass }: { label: string; value: string; icon: React.ReactNode; colorClass: string; borderClass: string }) {
     return (
-        <div className={`bg-white border flex items-center gap-3 min-w-[160px] px-4 py-3 rounded-xl border-gray-200 border-l-4 ${borderClass}`}>
+        <div className={cn(`bg-white border flex items-center gap-3 min-w-40 px-4 py-3 rounded-xl border-gray-200 border-l-4 ${borderClass}`)}>
             <div className={colorClass}>{icon}</div>
             <div>
-                <div className={`text-xl font-extrabold ${colorClass}`}>{value}</div>
+                <div className={cn(`text-xl font-extrabold ${colorClass}`)}>{value}</div>
                 <div className="text-xs text-gray-500 mt-0.5">{label}</div>
             </div>
         </div>

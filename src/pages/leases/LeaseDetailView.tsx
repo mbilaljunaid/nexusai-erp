@@ -172,7 +172,7 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
                     <Card>
                         <CardHeader><CardTitle>Liability & ROU Amortization</CardTitle></CardHeader>
                         <CardContent>
-                            <div className="h-[200px] w-full mb-6">
+                            <div className="h-48 w-full mb-6">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <LineChart data={lease.schedules}>
                                         <XAxis dataKey="period" />

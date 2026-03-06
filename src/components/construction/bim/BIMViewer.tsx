@@ -3,19 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-    Box,
-    ZoomIn,
-    ZoomOut,
-    RotateCw,
-    Maximize2,
-    Home,
-    Eye,
-    EyeOff,
-    Layers,
-    Info,
-    AlertTriangle
-} from "lucide-react";
+import { Box, ZoomIn, ZoomOut, RotateCw, Maximize2, Home, Eye, EyeOff, Layers, Info, AlertTriangle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface BIMModel {
@@ -188,7 +176,7 @@ export function BIMViewer({ projectId, modelId, onClashDetected }: BIMViewerProp
                     >
                         {isLoading ? (
                             <div className="text-center text-white">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+                                <Loader2 className="h-12 w-12 animate-spin text-white mx-auto mb-4" />
                                 <p className="text-sm">Loading 3D Model...</p>
                                 <p className="text-xs text-gray-400 mt-2">Initializing Autodesk Forge Viewer</p>
                             </div>

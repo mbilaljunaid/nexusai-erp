@@ -95,7 +95,7 @@ export default function UsersAccess() {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="h-[350px]">
+                            <div className="h-80">
                                 <InteractiveSpreadsheet
                                     columns={adminUserColumns}
                                     data={filteredUsers}

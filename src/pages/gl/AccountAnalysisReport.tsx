@@ -151,7 +151,7 @@ export default function AccountAnalysisReport() {
                                             <TableCell>{formatDate(tx.glDate)}</TableCell>
                                             <TableCell>{tx.source}</TableCell>
                                             <TableCell className="font-mono text-xs">{tx.accountCode}</TableCell>
-                                            <TableCell className="max-w-[300px] truncate">{tx.description}</TableCell>
+                                            <TableCell className="max-w-72 truncate">{tx.description}</TableCell>
                                             <TableCell className="text-right">{Number(tx.accountedDr).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                                             <TableCell className="text-right">{Number(tx.accountedCr).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                                         </TableRow>

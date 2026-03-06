@@ -185,7 +185,7 @@ function DeveloperRegistrationForm({ onSuccess }: { onSuccess: () => void }) {
                   <FormControl>
                     <Textarea
                       placeholder="Tell us about your company and the apps you plan to build..."
-                      className="min-h-[100px]"
+                      className="min-h-24"
                       {...field}
                       data-testid="input-dev-description"
                     />
@@ -337,7 +337,7 @@ function AppFormDialog({
                         <FormControl>
                           <Textarea
                             placeholder="Detailed description of your app, features, and benefits..."
-                            className="min-h-[120px]"
+                            className="min-h-28"
                             {...field}
                             data-testid="input-app-long-desc"
                           />
@@ -764,7 +764,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                           </div>
                           <div>
                             <div className="font-medium">{app.name}</div>
-                            <div className="text-sm text-muted-foreground truncate max-w-[200px]">
+                            <div className="text-sm text-muted-foreground truncate max-w-48">
                               {app.shortDescription || "No description"}
                             </div>
                           </div>

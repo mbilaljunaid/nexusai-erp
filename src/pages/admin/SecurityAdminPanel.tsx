@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDateTime } from "@/lib/dateUtils";
 import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
@@ -238,19 +239,19 @@ export default function SecurityAdminPanel() {
           <div className="flex">
             <button
               onClick={() => setActiveTab('whitelist')}
-              className={`px-6 py-3 text-sm font-medium border-b-2 ${activeTab === 'whitelist'
+              className={cn(`px-6 py-3 text-sm font-medium border-b-2 ${activeTab === 'whitelist'
                 ? 'border-green-600 text-green-700'
                 : 'border-transparent text-gray-600 hover:text-gray-900'
-                }`}
+                }`)}
             >
               Whitelist ({whitelist.length})
             </button>
             <button
               onClick={() => setActiveTab('blacklist')}
-              className={`px-6 py-3 text-sm font-medium border-b-2 ${activeTab === 'blacklist'
+              className={cn(`px-6 py-3 text-sm font-medium border-b-2 ${activeTab === 'blacklist'
                 ? 'border-red-600 text-red-700'
                 : 'border-transparent text-gray-600 hover:text-gray-900'
-                }`}
+                }`)}
             >
               Blacklist ({blacklist.length})
             </button>

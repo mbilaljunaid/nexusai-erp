@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -64,10 +65,10 @@ export default function PartnerDashboard() {
         { id: "amount", header: "Amount", width: "120px", cell: (row) => <span className="font-medium">${Number(row.amount).toLocaleString()}</span> },
         {
             id: "status", header: "Status", width: "120px", cell: (row) => (
-                <span className={`text-xs px-2 py-1 rounded-full ${row.status === 'Approved' ? 'bg-green-100 text-green-800' :
+                <span className={cn(`text-xs px-2 py-1 rounded-full ${row.status === 'Approved' ? 'bg-green-100 text-green-800' :
                     row.status === 'Rejected' ? 'bg-red-100 text-red-800' :
                         'bg-amber-100 text-amber-800'
-                    }`}>
+                    }`)}>
                     {row.status}
                 </span>
             )

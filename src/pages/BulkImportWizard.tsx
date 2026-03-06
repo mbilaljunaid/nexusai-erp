@@ -183,7 +183,7 @@ export default function BulkImportWizard() {
                                             <AlertTriangle className="w-4 h-4 mr-1 text-red-500" />
                                             Error Log
                                         </h3>
-                                        <ScrollArea className="h-[300px] border rounded-md p-4 bg-muted/30">
+                                        <ScrollArea className="h-72 border rounded-md p-4 bg-muted/30">
                                             <div className="space-y-3">
                                                 {result.errors.map((err, i) => (
                                                     <Alert key={i} variant="destructive" className="bg-white">

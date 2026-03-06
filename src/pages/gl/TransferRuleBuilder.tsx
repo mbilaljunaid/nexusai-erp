@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -218,19 +219,19 @@ export default function TransferRuleBuilder() {
                         {rules?.map((rule: TransferRule) => (
                             <div role="button" tabIndex={0}
                                 key={rule.id}
-                                className={`p-3 rounded-lg cursor-pointer border ${selectedRule === rule.id
+                                className={cn(`p-3 rounded-lg cursor-pointer border ${selectedRule === rule.id
                                     ? "border-primary bg-primary/5"
                                     : "border-border hover:bg-accent"
-                                    }`}
+                                    }`)}
                                 onClick={() => loadRule(rule)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <div className="flex justify-between items-start">
                                     <div className="font-medium">{rule.name}</div>
                                     <div
-                                        className={`px-2 py-0.5 rounded text-xs ${rule.isActive
+                                        className={cn(`px-2 py-0.5 rounded text-xs ${rule.isActive
                                             ? "bg-green-100 text-green-700"
                                             : "bg-gray-100 text-gray-700"
-                                            }`}
+                                            }`)}
                                     >
                                         {rule.isActive ? "Active" : "Inactive"}
                                     </div>

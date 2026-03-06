@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { StandardDashboard, DashboardWidget } from '@/components/layout/StandardDashboard';
@@ -99,7 +100,7 @@ export default function HrDashboard() {
             {metrics.map((metric, i) => (
                 <DashboardWidget key={i} title={metric.label} colSpan={1}>
                     <div className="flex items-center gap-4">
-                        <div className={`p-3 rounded-full ${metric.color}`}>
+                        <div className={cn(`p-3 rounded-full ${metric.color}`)}>
                             <metric.icon className="h-6 w-6" />
                         </div>
                         <div>
@@ -112,8 +113,8 @@ export default function HrDashboard() {
                 </DashboardWidget>
             ))}
 
-            <DashboardWidget title="Headcount by Department" colSpan={2} className="min-h-[350px]">
-                <div className="h-[300px] w-full mt-4">
+            <DashboardWidget title="Headcount by Department" colSpan={2} className="min-h-80">
+                <div className="h-72 w-full mt-4">
                     <AnalyticsChart
                         title=""
                         data={departmentDist}
@@ -123,8 +124,8 @@ export default function HrDashboard() {
                 </div>
             </DashboardWidget>
 
-            <DashboardWidget title="Data Quality Trends" colSpan={2} className="min-h-[350px]">
-                <div className="flex items-center justify-center h-[300px] text-muted-foreground bg-muted/20 rounded-lg border border-dashed">
+            <DashboardWidget title="Data Quality Trends" colSpan={2} className="min-h-80">
+                <div className="flex items-center justify-center h-72 text-muted-foreground bg-muted/20 rounded-lg border border-dashed">
                     Historical Trend Analysis Coming Soon
                 </div>
             </DashboardWidget>

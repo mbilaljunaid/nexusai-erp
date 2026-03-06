@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -105,7 +106,7 @@ export default function CycleCountManager() {
                                 {count.variance && (
                                     <div className="mt-2 text-sm">
                                         <span className="text-muted-foreground">Variance:</span>
-                                        <span className={`ml-2 font-medium ${count.variance > 0 ? "text-red-600" : "text-green-600"}`}>
+                                        <span className={cn(`ml-2 font-medium ${count.variance > 0 ? "text-red-600" : "text-green-600"}`)}>
                                             {count.variance} units
                                         </span>
                                     </div>

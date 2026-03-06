@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
-import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
-import { Badge } from "@/components/ui/badge";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { StandardPage } from "@/components/layout/StandardPage";
-import { Button } from "@/components/ui/button";
-import { Plus, Save, X, FlaskConical, Scale, Trash2 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
+import React, { useState} from'react';
+import { InteractiveSpreadsheet, type SpreadsheetColumn} from"@/components/ui/InteractiveSpreadsheet";
+import { Badge} from"@/components/ui/badge";
+import { useQuery, useMutation, useQueryClient} from"@tanstack/react-query";
+import { StandardPage} from"@/components/layout/StandardPage";
+import { Button} from"@/components/ui/button";
+import { Plus, Save, X, FlaskConical, Scale, Trash2} from"lucide-react";
+import { Card, CardContent, CardHeader, CardTitle} from"@/components/ui/card";
+import { Input} from"@/components/ui/input";
+import { Label} from"@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from"@/components/ui/select";
+import { useToast} from"@/hooks/use-toast";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription} from"@/components/ui/sheet";
 
 interface InventoryItem {
     id: string;
@@ -33,12 +34,12 @@ interface FormulaHeader {
     productId: string;
     displayName?: string;
     version: string;
-    status: "active" | "draft" | "obsolete";
+    status:"active" |"draft" |"obsolete";
     totalYield: number;
 }
 
 export default function FormulaDesigner() {
-    const { toast } = useToast();
+    const { toast} = useToast();
     const queryClient = useQueryClient();
     const [isSheetOpen, setIsSheetOpen] = useState(false);
 
@@ -52,43 +53,43 @@ export default function FormulaDesigner() {
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(50);
 
-    const { data, isLoading: formulasLoading } = useQuery<{ items: FormulaHeader[], total: number }>({
+    const { data, isLoading: formulasLoading} = useQuery<{ items: FormulaHeader[], total: number}>({
         queryKey: ["/api/manufacturing/formulas", page, pageSize],
         queryFn: async () => {
             const offset = (page - 1) * pageSize;
             const res = await fetch(`/api/manufacturing/formulas?limit=${pageSize}&offset=${offset}`);
             return res.json();
-        }
-    });
+       }
+   });
 
     const formulas = data?.items || [];
     const totalItems = data?.total || 0;
 
-    const { data: inventory = [] } = useQuery<InventoryItem[]>({
+    const { data: inventory = []} = useQuery<InventoryItem[]>({
         queryKey: ["/api/scm/inventory"],
         queryFn: async () => {
             const res = await fetch("/api/scm/inventory");
             return res.json();
-        }
-    });
+       }
+   });
 
     const createMutation = useMutation({
         mutationFn: async (data: any) => {
             const res = await fetch("/api/manufacturing/formulas", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
+                method:"POST",
+                headers: {"Content-Type":"application/json"},
                 body: JSON.stringify(data),
-            });
+           });
             if (!res.ok) throw new Error("Failed to save Formula");
             return res.json();
-        },
+       },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["/api/manufacturing/formulas"] });
+            queryClient.invalidateQueries({ queryKey: ["/api/manufacturing/formulas"]});
             setIsSheetOpen(false);
             resetForm();
-            toast({ title: "Success", description: "Process Formula saved successfully" });
-        }
-    });
+            toast({ title:"Success", description:"Process Formula saved successfully"});
+       }
+   });
 
     const resetForm = () => {
         setIngredients([]);
@@ -96,34 +97,34 @@ export default function FormulaDesigner() {
         setFormulaName("");
         setTargetProduct("");
         setVersion("1.0");
-    };
+   };
 
     const addIngredient = () => {
-        setIngredients([...ingredients, { ingredientId: "", percentage: 0, lossFactor: 0, uom: "KG" }]);
-    };
+        setIngredients([...ingredients, { ingredientId:"", percentage: 0, lossFactor: 0, uom:"KG"}]);
+   };
 
     const removeIngredient = (index: number) => {
         setIngredients(ingredients.filter((_, i) => i !== index));
-    };
+   };
 
     const updateIngredient = (index: number, field: keyof FormulaIngredient, value: any) => {
         const updated = [...ingredients];
-        updated[index] = { ...updated[index], [field]: value };
+        updated[index] = { ...updated[index], [field]: value};
         setIngredients(updated);
-    };
+   };
 
     const totalPercentage = ingredients.reduce((sum, ing) => sum + ing.percentage, 0);
 
     const handleSave = () => {
         if (!formulaCode || !formulaName || !targetProduct || ingredients.length === 0) {
-            toast({ title: "Validation Error", description: "Please fill all required fields", variant: "destructive" });
+            toast({ title:"Validation Error", description:"Please fill all required fields", variant:"destructive"});
             return;
-        }
+       }
 
         if (Math.abs(totalPercentage - 100) > 0.01) {
-            toast({ title: "Validation Error", description: `Total percentage must equal 100% (Current: ${totalPercentage.toFixed(2)}%)`, variant: "destructive" });
+            toast({ title:"Validation Error", description:`Total percentage must equal 100% (Current: ${totalPercentage.toFixed(2)}%)`, variant:"destructive"});
             return;
-        }
+       }
 
         const payload = {
             header: {
@@ -131,75 +132,75 @@ export default function FormulaDesigner() {
                 name: formulaName,
                 productId: targetProduct,
                 version,
-                status: "active",
+                status:"active",
                 totalYield: 100 // Default yield percentage
-            },
+           },
             ingredients: ingredients.map(i => ({
                 ingredientId: i.ingredientId,
                 percentage: i.percentage,
                 lossFactor: i.lossFactor,
                 uom: i.uom
-            }))
-        };
+           }))
+       };
         createMutation.mutate(payload);
-    };
+   };
 
     const formulasWithNames = formulas.map(f => {
         const product = inventory.find(i => i.id === f.productId);
-        return { ...f, displayName: product ? product.itemName : f.productId };
-    });
+        return { ...f, displayName: product ? product.itemName : f.productId};
+   });
 
     const columns: SpreadsheetColumn<any>[] = [
         {
-            id: "formulaCode",
-            header: "Formula ID",
-            width: "150px",
+            id:"formulaCode",
+            header:"Formula ID",
+            width:"150px",
             cell: (row: any) => <div className="p-2"><span className="font-mono font-bold text-indigo-700">{row.formulaCode}</span></div>
-        },
+       },
         {
-            id: "name",
-            header: "Formula Name",
-            width: "250px",
+            id:"name",
+            header:"Formula Name",
+            width:"250px",
             cell: (row: any) => <div className="p-2">{row.name}</div>
-        },
+       },
         {
-            id: "displayName",
-            header: "Product",
-            width: "250px",
+            id:"displayName",
+            header:"Product",
+            width:"250px",
             cell: (row: any) => <div className="p-2">{row.displayName}</div>
-        },
+       },
         {
-            id: "version",
-            header: "Version",
-            width: "100px",
+            id:"version",
+            header:"Version",
+            width:"100px",
             cell: (row: any) => <div className="p-2"><Badge variant="outline">v{row.version}</Badge></div>
-        },
+       },
         {
-            id: "status",
-            header: "Status",
-            width: "120px",
+            id:"status",
+            header:"Status",
+            width:"120px",
             cell: (row: any) => (
                 <div className="p-2">
-                    <Badge variant={row.status === "active" ? "default" : "secondary"}>
+                    <Badge variant={row.status ==="active" ?"default" :"secondary"}>
                         {row.status.toUpperCase()}
                     </Badge>
                 </div>
             )
-        }
+       }
     ];
 
     return (
         <StandardPage
             title="Formula & Recipe Designer"
             breadcrumbs={[
-                { label: "Manufacturing", href: "/manufacturing" },
-                { label: "Process Engineering" },
-                { label: "Formulas" }
+                { label:"Manufacturing", href:"/manufacturing"},
+                { label:"Process Engineering"},
+                { label:"Formulas"}
             ]}
             actions={
                 <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <SheetTrigger asChild>
-                        <Button onClick={() => { resetForm(); setIsSheetOpen(true); }} className="bg-indigo-600 hover:bg-indigo-700">
+                        <Button onClick={() => { resetForm(); setIsSheetOpen(true);}} className="bg-indigo-600 hover:bg-indigo-700">
                             <Plus className="mr-2 h-4 w-4" /> New Formula
                         </Button>
                     </SheetTrigger>
@@ -250,7 +251,7 @@ export default function FormulaDesigner() {
                                     <Scale className="h-4 w-4 text-muted-foreground" />
                                     Material Balance (Ingredients)
                                 </h3>
-                                <div className={`text-xs font-bold px-2 py-1 rounded ${Math.abs(totalPercentage - 100) < 0.01 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                <div className={cn(`text-xs font-bold px-2 py-1 rounded ${Math.abs(totalPercentage - 100) < 0.01 ?'bg-green-100 text-green-700' :'bg-red-100 text-red-700'}`)}>
                                     Total: {totalPercentage.toFixed(2)}%
                                 </div>
                             </div>
@@ -262,7 +263,7 @@ export default function FormulaDesigner() {
                                             <div key={idx} className="p-4 flex gap-4 items-end group relative">
                                                 <div className="flex-1 space-y-2">
                                                     <Label className="text-[10px] uppercase text-muted-foreground">Ingredient</Label>
-                                                    <Select value={ing.ingredientId} onValueChange={val => updateIngredient(idx, "ingredientId", val)}>
+                                                    <Select value={ing.ingredientId} onValueChange={val => updateIngredient(idx,"ingredientId", val)}>
                                                         <SelectTrigger className="h-9"><SelectValue placeholder="Search Inventory" /></SelectTrigger>
                                                         <SelectContent>
                                                             {inventory.map(item => (
@@ -274,14 +275,14 @@ export default function FormulaDesigner() {
                                                 <div className="w-24 space-y-2">
                                                     <Label className="text-[10px] uppercase text-muted-foreground">Weight %</Label>
                                                     <div className="relative">
-                                                        <Input type="number" className="h-9 pr-7" value={ing.percentage} onChange={e => updateIngredient(idx, "percentage", parseFloat(e.target.value) || 0)} />
+                                                        <Input type="number" className="h-9 pr-7" value={ing.percentage} onChange={e => updateIngredient(idx,"percentage", parseFloat(e.target.value) || 0)} />
                                                         <span className="absolute right-2 top-2 text-xs opacity-40">%</span>
                                                     </div>
                                                 </div>
                                                 <div className="w-24 space-y-2">
                                                     <Label className="text-[10px] uppercase text-muted-foreground">Loss %</Label>
                                                     <div className="relative">
-                                                        <Input type="number" className="h-9 pr-7" value={ing.lossFactor} onChange={e => updateIngredient(idx, "lossFactor", parseFloat(e.target.value) || 0)} />
+                                                        <Input type="number" className="h-9 pr-7" value={ing.lossFactor} onChange={e => updateIngredient(idx,"lossFactor", parseFloat(e.target.value) || 0)} />
                                                         <span className="absolute right-2 top-2 text-xs opacity-40">%</span>
                                                     </div>
                                                 </div>
@@ -305,22 +306,22 @@ export default function FormulaDesigner() {
                                 </CardContent>
                             </Card>
 
-                            <div className="fixed bottom-0 left-0 right-0 p-6 bg-white border-t flex justify-end gap-3 z-50">
+                            <div className="fixed bottom-0 left-0 right-0 p-6 bg-white border-t flex justify-end gap-3">
                                 <Button variant="outline" onClick={() => setIsSheetOpen(false)}>Close Designer</Button>
                                 <Button onClick={handleSave} disabled={createMutation.isPending} className="bg-indigo-600 hover:bg-indigo-700">
-                                    <Save className="mr-2 h-4 w-4" /> {createMutation.isPending ? "Validating..." : "Finalize Formula"}
+                                    <Save className="mr-2 h-4 w-4" /> {createMutation.isPending ?"Validating..." :"Finalize Formula"}
                                 </Button>
                             </div>
                         </div>
                     </SheetContent>
                 </Sheet>
-            }
+           }
         >
             <Card className="rounded-lg shadow-sm overflow-hidden">
                 <InteractiveSpreadsheet
                     data={formulasWithNames}
                     columns={columns}
-                    onChange={() => { }} virtualized={true} containerHeight="600px"
+                    onChange={() => {}} virtualized={true} containerHeight="600px"
                 />
             </Card>
         </StandardPage>

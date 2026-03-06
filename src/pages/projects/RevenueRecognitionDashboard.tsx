@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -215,8 +216,8 @@ export default function RevenueRecognitionDashboard() {
                                     {contracts.map((contract) => (
                                         <Card
                                             key={contract.id}
-                                            className={`cursor-pointer transition-colors ${selectedContractId === contract.id ? "bg-blue-50 border-blue-200" : "hover:bg-muted/50"
-                                                }`}
+                                            className={cn(`cursor-pointer transition-colors ${selectedContractId === contract.id ? "bg-blue-50 border-blue-200" : "hover:bg-muted/50"
+                                                }`)}
                                             onClick={() => setSelectedContractId(contract.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <CardContent className="pt-4 pb-4">

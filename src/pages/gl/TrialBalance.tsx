@@ -203,7 +203,7 @@ export default function TrialBalance() {
                         </div>
                         <div className="flex items-center gap-4">
                             <Select value={accountTypeFilter} onValueChange={setAccountTypeFilter}>
-                                <SelectTrigger className="w-[180px]">
+                                <SelectTrigger className="w-44">
                                     <SelectValue placeholder="Account Type" />
                                 </SelectTrigger>
                                 <SelectContent>

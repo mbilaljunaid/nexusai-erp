@@ -1,15 +1,16 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { cn } from "@/lib/utils";
+import { useState, useEffect} from"react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle} from"@/components/ui/card";
+import { Button} from"@/components/ui/button";
+import { Progress} from"@/components/ui/progress";
+import { Badge} from"@/components/ui/badge";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger} from"@/components/ui/collapsible";
 import {
   CheckCircle2, Circle, ChevronDown, ChevronUp, X, Rocket,
   User, Settings, Users, Bell, BarChart3, FileText, Sparkles
-} from "lucide-react";
-import { Link } from "wouter";
-import { useLocalStorage } from "@/hooks/use-local-storage";
+} from"lucide-react";
+import { Link} from"wouter";
+import { useLocalStorage} from"@/hooks/use-local-storage";
 
 interface ChecklistItem {
   id: string;
@@ -22,57 +23,57 @@ interface ChecklistItem {
 
 const checklistItems: ChecklistItem[] = [
   {
-    id: "profile",
-    title: "Complete your profile",
-    description: "Add your name, role, and profile picture to personalize your experience",
+    id:"profile",
+    title:"Complete your profile",
+    description:"Add your name, role, and profile picture to personalize your experience",
     icon: User,
-    href: "/settings/profile",
-    action: "Go to Profile",
-  },
+    href:"/settings/profile",
+    action:"Go to Profile",
+ },
   {
-    id: "preferences",
-    title: "Set your preferences",
-    description: "Configure notifications, theme, and display settings",
+    id:"preferences",
+    title:"Set your preferences",
+    description:"Configure notifications, theme, and display settings",
     icon: Settings,
-    href: "/settings",
-    action: "Open Settings",
-  },
+    href:"/settings",
+    action:"Open Settings",
+ },
   {
-    id: "team",
-    title: "Invite team members",
-    description: "Add colleagues to collaborate on projects and tasks",
+    id:"team",
+    title:"Invite team members",
+    description:"Add colleagues to collaborate on projects and tasks",
     icon: Users,
-    href: "/user-management",
-    action: "Manage Team",
-  },
+    href:"/user-management",
+    action:"Manage Team",
+ },
   {
-    id: "notifications",
-    title: "Configure notifications",
-    description: "Choose which alerts and updates you want to receive",
+    id:"notifications",
+    title:"Configure notifications",
+    description:"Choose which alerts and updates you want to receive",
     icon: Bell,
-    href: "/settings/notifications",
-    action: "Set Up Notifications",
-  },
+    href:"/settings/notifications",
+    action:"Set Up Notifications",
+ },
   {
-    id: "dashboard",
-    title: "Customize your dashboard",
-    description: "Add widgets and arrange your dashboard to fit your workflow",
+    id:"dashboard",
+    title:"Customize your dashboard",
+    description:"Add widgets and arrange your dashboard to fit your workflow",
     icon: BarChart3,
-    href: "/dashboard",
-    action: "Customize Dashboard",
-  },
+    href:"/dashboard",
+    action:"Customize Dashboard",
+ },
   {
-    id: "explore",
-    title: "Explore key features",
-    description: "Take a tour of CRM, ERP, HR, and Analytics modules",
+    id:"explore",
+    title:"Explore key features",
+    description:"Take a tour of CRM, ERP, HR, and Analytics modules",
     icon: Sparkles,
-    href: "/processes",
-    action: "Start Exploring",
-  },
+    href:"/processes",
+    action:"Start Exploring",
+ },
 ];
 
-const STORAGE_KEY = "nexusai-onboarding-progress";
-const DISMISSED_KEY = "nexusai-onboarding-dismissed";
+const STORAGE_KEY ="nexusai-onboarding-progress";
+const DISMISSED_KEY ="nexusai-onboarding-dismissed";
 
 export function OnboardingChecklist() {
   const [completedItems, setCompletedItems] = useLocalStorage<string[]>(STORAGE_KEY, []);
@@ -82,7 +83,7 @@ export function OnboardingChecklist() {
 
   useEffect(() => {
     setIsHydrated(true);
-  }, []);
+ }, []);
 
   const toggleComplete = (itemId: string) => {
     setCompletedItems(prev => {
@@ -90,16 +91,16 @@ export function OnboardingChecklist() {
         ? prev.filter(id => id !== itemId)
         : [...prev, itemId];
       return newItems;
-    });
-  };
+   });
+ };
 
   const handleDismiss = () => {
     setIsDismissed(true);
-  };
+ };
 
   const handleReopen = () => {
     setIsDismissed(false);
-  };
+ };
 
   const progress = (completedItems.length / checklistItems.length) * 100;
   const isComplete = completedItems.length === checklistItems.length;
@@ -112,18 +113,18 @@ export function OnboardingChecklist() {
         variant="outline"
         size="sm"
         onClick={handleReopen}
-        className="fixed bottom-4 right-4 z-50 shadow-lg"
+        className="fixed bottom-4 right-4 shadow-lg"
         data-testid="button-reopen-onboarding"
       >
         <Rocket className="w-4 h-4 mr-2" />
         Resume Setup
       </Button>
     );
-  }
+ }
 
   if (isComplete) {
     return null;
-  }
+ }
 
   return (
     <Card className="border-primary/20 shadow-lg" data-testid="onboarding-checklist">
@@ -167,10 +168,10 @@ export function OnboardingChecklist() {
               return (
                 <div
                   key={item.id}
-                  className={`flex items-start gap-3 p-3 rounded-lg border transition-all ${isCompleted
-                      ? "bg-green-500/5 border-green-200 dark:border-green-800"
-                      : "bg-card hover-elevate"
-                    }`}
+                  className={cn(`flex items-start gap-3 p-3 rounded-lg border transition-all ${isCompleted
+                      ?"bg-green-500/5 border-green-200 dark:border-green-800"
+                      :"bg-card hover-elevate"
+                   }`)}
                   data-testid={`onboarding-item-${item.id}`}
                 >
                   <Button
@@ -188,8 +189,8 @@ export function OnboardingChecklist() {
                   </Button>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <item.icon className={`w-4 h-4 ${isCompleted ? "text-green-600" : "text-muted-foreground"}`} />
-                      <h4 className={`font-medium text-sm ${isCompleted ? "line-through text-muted-foreground" : ""}`}>
+                      <item.icon className={cn(`w-4 h-4 ${isCompleted ?"text-green-600" :"text-muted-foreground"}`)} />
+                      <h4 className={cn(`font-medium text-sm ${isCompleted ?"line-through text-muted-foreground" :""}`)}>
                         {item.title}
                       </h4>
                     </div>
@@ -209,7 +210,7 @@ export function OnboardingChecklist() {
                   )}
                 </div>
               );
-            })}
+           })}
           </CardContent>
         </CollapsibleContent>
       </Collapsible>
@@ -223,7 +224,7 @@ export function OnboardingProgress() {
 
   useEffect(() => {
     setIsHydrated(true);
-  }, []);
+ }, []);
 
   if (!isHydrated) return null;
 

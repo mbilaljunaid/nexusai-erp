@@ -100,7 +100,7 @@ export function FlagContentDialog({ open, onOpenChange, targetType, targetId }: 
               placeholder="Provide any additional context that might help our moderators..."
               value={details}
               onChange={(e) => setDetails(e.target.value)}
-              className="min-h-[100px]"
+              className="min-h-24"
               data-testid="input-flag-details"
             />
           </div>

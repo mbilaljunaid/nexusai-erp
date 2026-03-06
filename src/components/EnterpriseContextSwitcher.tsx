@@ -32,7 +32,7 @@ export function EnterpriseContextSwitcher() {
                 <div className="flex items-center gap-2">
                     <Building2 className="h-4 w-4 text-muted-foreground" />
                     <Select value={activeBuId || undefined} onValueChange={(v) => setActiveContext('BU', v)}>
-                        <SelectTrigger className="w-[180px] h-8 bg-black/40 border-slate-700/50">
+                        <SelectTrigger className="w-44 h-8 bg-black/40 border-slate-700/50">
                             <SelectValue placeholder="Select Business Unit" />
                         </SelectTrigger>
                         <SelectContent>
@@ -50,7 +50,7 @@ export function EnterpriseContextSwitcher() {
                 <div className="flex items-center gap-2">
                     <Scale className="h-4 w-4 text-muted-foreground" />
                     <Select value={activeLeId || undefined} onValueChange={(v) => setActiveContext('LE', v)}>
-                        <SelectTrigger className="w-[180px] h-8 bg-black/40 border-slate-700/50">
+                        <SelectTrigger className="w-44 h-8 bg-black/40 border-slate-700/50">
                             <SelectValue placeholder="Select Legal Entity" />
                         </SelectTrigger>
                         <SelectContent>
@@ -68,7 +68,7 @@ export function EnterpriseContextSwitcher() {
                 <div className="flex items-center gap-2">
                     <Factory className="h-4 w-4 text-muted-foreground" />
                     <Select value={activeInvOrgId || undefined} onValueChange={(v) => setActiveContext('INV_ORG', v)}>
-                        <SelectTrigger className="w-[180px] h-8 bg-black/40 border-slate-700/50">
+                        <SelectTrigger className="w-44 h-8 bg-black/40 border-slate-700/50">
                             <SelectValue placeholder="Select Inventory Org" />
                         </SelectTrigger>
                         <SelectContent>

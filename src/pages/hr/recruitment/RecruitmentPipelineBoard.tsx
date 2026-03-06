@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -102,7 +103,7 @@ export default function RecruitmentPipelineBoard() {
                     <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-md border">
                         <Briefcase className="h-4 w-4 text-slate-500" />
                         <Select value={selectedJobId || ""} onValueChange={setSelectedJobId}>
-                            <SelectTrigger className="w-[280px] border-none bg-transparent h-7 focus:ring-0">
+                            <SelectTrigger className="w-72 border-none bg-transparent h-7 focus:ring-0">
                                 <SelectValue placeholder="Select Job Requisition" />
                             </SelectTrigger>
                             <SelectContent>
@@ -145,7 +146,7 @@ export default function RecruitmentPipelineBoard() {
                                     {/* Column Header */}
                                     <div className="p-4 flex items-center justify-between border-b bg-white rounded-t-xl">
                                         <div className="flex items-center gap-2">
-                                            <span className={`w-2 h-2 rounded-full ${stageColors[stage].split(' ')[0]}`} />
+                                            <span className={cn(`w-2 h-2 rounded-full ${stageColors[stage].split(' ')[0]}`)} />
                                             <h3 className="font-bold text-sm tracking-wide text-slate-700">{stage}</h3>
                                         </div>
                                         <Badge variant="secondary" className="bg-slate-100 text-slate-600 rounded-md font-medium">

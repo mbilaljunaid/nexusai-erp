@@ -154,7 +154,7 @@ export default function UsageMeteringDashboard() {
             <div className="flex gap-2 items-center">
                 <Label>Filter by Customer:</Label>
                 <Select value={selectedCustomer} onValueChange={setSelectedCustomer}>
-                    <SelectTrigger className="w-[300px]">
+                    <SelectTrigger className="w-72">
                         <SelectValue placeholder="All Customers" />
                     </SelectTrigger>
                     <SelectContent>

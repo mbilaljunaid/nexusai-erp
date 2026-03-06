@@ -104,7 +104,7 @@ export default function KnowledgeBaseDashboard() {
                         </div>
                         <div className="space-y-2">
                             <Label>Content</Label>
-                            <Textarea className="min-h-[200px]" value={newItem.content} onChange={e => setNewItem({ ...newItem, content: e.target.value })} />
+                            <Textarea className="min-h-48" value={newItem.content} onChange={e => setNewItem({ ...newItem, content: e.target.value })} />
                         </div>
                         <div className="space-y-2">
                             <Label>Tags (comma separated)</Label>

@@ -228,7 +228,7 @@ export function CaseForm({ onSuccess, defaultValues, caseId }: CaseFormProps) {
                             <FormControl>
                                 <Textarea
                                     placeholder="Detailed description of the issue..."
-                                    className="min-h-[100px]"
+                                    className="min-h-24"
                                     {...field}
                                     value={field.value || ""}
                                 />

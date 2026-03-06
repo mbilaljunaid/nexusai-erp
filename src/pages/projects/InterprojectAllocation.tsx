@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -279,8 +280,8 @@ export default function InterprojectAllocation() {
                         {rules?.map((rule: AllocationRule) => (
                             <div role="button" tabIndex={0}
                                 key={rule.id}
-                                className={`p-3 rounded-lg cursor-pointer border ${selectedRule === rule.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
-                                    }`}
+                                className={cn(`p-3 rounded-lg cursor-pointer border ${selectedRule === rule.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
+                                    }`)}
                                 onClick={() => {
                                     setSelectedRule(rule.id || null);
                                     setRuleName(rule.name);
@@ -404,7 +405,7 @@ export default function InterprojectAllocation() {
                                 </Button>
                             </div>
 
-                            <div className="border rounded-lg h-[300px]">
+                            <div className="border rounded-lg h-72">
                                 <InteractiveSpreadsheet
                                     data={targetProjects}
                                     columns={targetColumns}
@@ -414,11 +415,11 @@ export default function InterprojectAllocation() {
                             </div>
                             <div className="flex justify-between items-center mt-4 border-t pt-2">
                                 <div className="font-bold pl-2">TOTAL</div>
-                                <div className="flex gap-16 pr-[120px]">
-                                    <div className={`font-bold ${calculateTotalPercentage() !== 100 ? "text-red-600" : "text-green-600"}`}>
+                                <div className="flex gap-16 pr-28">
+                                    <div className={cn(`font-bold ${calculateTotalPercentage() !== 100 ? "text-red-600" : "text-green-600"}`)}>
                                         {calculateTotalPercentage().toFixed(2)}%
                                     </div>
-                                    <div className="font-bold text-right w-[150px]">
+                                    <div className="font-bold text-right w-36">
                                         {preview?.totalAmount ? `$${preview.totalAmount.toLocaleString()}` : "-"}
                                     </div>
                                 </div>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -138,9 +139,9 @@ export default function ArReports() {
                                     <div className="text-sm text-muted-foreground">GL Control Account</div>
                                     <div className="text-2xl font-bold">{formatCurrency(recon?.glBalance ?? 0)}</div>
                                 </div>
-                                <div className={`p-4 border rounded ${recon?.difference === 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}>
+                                <div className={cn(`p-4 border rounded ${recon?.difference === 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`)}>
                                     <div className="text-sm text-muted-foreground">Difference</div>
-                                    <div className={`text-2xl font-bold ${recon?.difference === 0 ? 'text-emerald-700' : 'text-red-700'}`}>
+                                    <div className={cn(`text-2xl font-bold ${recon?.difference === 0 ? 'text-emerald-700' : 'text-red-700'}`)}>
                                         {formatCurrency(recon?.difference ?? 0)}
                                     </div>
                                 </div>
@@ -190,7 +191,7 @@ export default function ArReports() {
                                             <TableRow key={i}>
                                                 <TableCell>{row.date}</TableCell>
                                                 <TableCell>{row.description}</TableCell>
-                                                <TableCell className={`text-right ${row.amount < 0 ? 'text-emerald-600' : ''}`}>
+                                                <TableCell className={cn(`text-right ${row.amount < 0 ? 'text-emerald-600' : ''}`)}>
                                                     {formatCurrency(row.amount)}
                                                 </TableCell>
                                                 <TableCell className="text-right font-semibold">{formatCurrency(row.balance)}</TableCell>

@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { InteractiveSpreadsheet } from '@/components/ui/InteractiveSpreadsheet';
 import PIMService from '@/services/pimService';
-import { Package, Upload, FileText } from 'lucide-react';
+import { Package, Upload, FileText, Loader2 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 
 
@@ -74,7 +74,7 @@ export default function ProductCatalogDashboard() {
 
     if (loading) {
         return <div className="flex items-center justify-center h-96">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
         </div>;
     }
 

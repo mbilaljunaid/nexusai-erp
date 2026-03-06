@@ -88,14 +88,14 @@ export function JournalLineRuleTable({ eventClassId }: { eventClassId: string })
                 <Table>
                     <TableHeader>
                         <TableRow className="bg-muted/50">
-                            <TableHead className="w-[50px]">#</TableHead>
+                            <TableHead className="w-12">#</TableHead>
                             <TableHead>Template Name</TableHead>
                             <TableHead>Code</TableHead>
                             <TableHead>Side</TableHead>
                             <TableHead>Acct Class</TableHead>
                             <TableHead>Condition</TableHead>
                             <TableHead>Balance Type</TableHead>
-                            <TableHead className="w-[80px] text-right">Action</TableHead>
+                            <TableHead className="w-20 text-right">Action</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, LucideIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -44,14 +45,14 @@ export function MetricCard({
                 <div className="flex items-center gap-1 mt-2">
                   {isPositive && <TrendingUp className="h-3 w-3 text-green-500" />}
                   {isNegative && <TrendingDown className="h-3 w-3 text-red-500" />}
-                  <span className={`text-xs ${isPositive ? 'text-green-500' : isNegative ? 'text-red-500' : 'text-muted-foreground'}`}>
+                  <span className={cn(`text-xs ${isPositive ? 'text-green-500' : isNegative ? 'text-red-500' : 'text-muted-foreground'}`)}>
                     {isPositive && '+'}{change}%
                   </span>
                   <span className="text-xs text-muted-foreground">{changeLabel}</span>
                 </div>
               )}
             </div>
-            <div className={`p-3 rounded-md bg-primary/10 ${iconColor}`}>
+            <div className={cn(`p-3 rounded-md bg-primary/10 ${iconColor}`)}>
               <Icon className="h-5 w-5" />
             </div>
           </div>

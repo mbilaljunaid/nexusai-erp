@@ -1,24 +1,25 @@
-import React from 'react';
-import { Link, useLocation } from 'wouter';
-import { Shield, Activity, FileText, Lock, Database, ChevronRight } from 'lucide-react';
-import { StandardPage } from "@/components/layout/StandardPage";
-import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import React from'react';
+import { Link, useLocation} from'wouter';
+import { Shield, Activity, FileText, Lock, Database, ChevronRight} from'lucide-react';
+import { StandardPage} from"@/components/layout/StandardPage";
+import { Card} from"@/components/ui/card";
 
 
 const adminNavItems = [
-    { name: 'Health Dashboard', path: '/admin/production/health', icon: Activity },
-    { name: 'System Logs', path: '/admin/production/logs', icon: FileText },
-    { name: 'Security', path: '/admin/production/security', icon: Lock },
-    { name: 'Backups', path: '/admin/production/backups', icon: Database },
+    { name:'Health Dashboard', path:'/admin/production/health', icon: Activity},
+    { name:'System Logs', path:'/admin/production/logs', icon: FileText},
+    { name:'Security', path:'/admin/production/security', icon: Lock},
+    { name:'Backups', path:'/admin/production/backups', icon: Database},
 ];
 
-export default function ProductionLayout({ children }: { children?: React.ReactNode }) {
+export default function ProductionLayout({ children}: { children?: React.ReactNode}) {
     const [location] = useLocation();
 
     return (
         <StandardPage title="System Administration">
             {/* Header */}
-            <div className="bg-white border-b sticky top-0 z-10">
+            <div className="bg-white border-b sticky top-0">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center gap-3">
@@ -57,16 +58,16 @@ export default function ProductionLayout({ children }: { children?: React.ReactN
                                         <Link
                                             key={item.path}
                                             to={item.path}
-                                            className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
-                                                ? 'bg-blue-50 text-blue-700'
-                                                : 'text-gray-700 hover:bg-gray-50'
-                                                }`}
+                                            className={cn(`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
+                                                ?'bg-blue-50 text-blue-700'
+                                                :'text-gray-700 hover:bg-gray-50'
+                                               }`)}
                                         >
                                             <Icon className="w-5 h-5" />
                                             {item.name}
                                         </Link>
                                     );
-                                })}
+                               })}
                             </nav>
                         </Card>
 

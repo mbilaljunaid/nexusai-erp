@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -157,7 +158,7 @@ export default function APWithholdingTax() {
                                 {groups?.map((g: any) => (
                                     <TableRow
                                         key={g.id}
-                                        className={`cursor-pointer ${selectedGroupId === g.id ? 'bg-muted' : ''}`}
+                                        className={cn(`cursor-pointer ${selectedGroupId === g.id ? 'bg-muted' : ''}`)}
                                         onClick={() => setSelectedGroupId(g.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     >
                                         <TableCell className="font-medium">{g.groupName}</TableCell>

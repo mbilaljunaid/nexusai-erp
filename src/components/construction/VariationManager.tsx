@@ -184,7 +184,7 @@ export default function VariationManager({ contractId }: VariationManagerProps) 
                                     <TableCell className="font-medium">{v.variationNumber}</TableCell>
                                     <TableCell>
                                         <div className="font-medium">{v.title}</div>
-                                        <div className="text-xs text-muted-foreground truncate max-w-[200px]">{v.description}</div>
+                                        <div className="text-xs text-muted-foreground truncate max-w-48">{v.description}</div>
                                     </TableCell>
                                     <TableCell className="text-right font-mono">
                                         ${Number(v.amount).toLocaleString()}

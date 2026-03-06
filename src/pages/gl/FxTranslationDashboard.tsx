@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -168,14 +169,14 @@ export default function FxTranslationDashboard() {
                             <div className="text-2xl font-bold text-orange-900">{missingRates}</div>
                         </CardContent>
                     </Card>
-                    <Card className={`${totalGainLoss >= 0 ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`}>
+                    <Card className={cn(`${totalGainLoss >= 0 ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`)}>
                         <CardHeader className="pb-2">
-                            <CardTitle className={`text-xs font-bold uppercase ${totalGainLoss >= 0 ? 'text-green-800' : 'text-red-800'}`}>
+                            <CardTitle className={cn(`text-xs font-bold uppercase ${totalGainLoss >= 0 ? 'text-green-800' : 'text-red-800'}`)}>
                                 FX Gain/Loss
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className={`text-2xl font-bold ${totalGainLoss >= 0 ? 'text-green-900' : 'text-red-900'}`}>
+                            <div className={cn(`text-2xl font-bold ${totalGainLoss >= 0 ? 'text-green-900' : 'text-red-900'}`)}>
                                 {totalGainLoss >= 0 ? '+' : ''}${totalGainLoss.toFixed(0)}
                             </div>
                         </CardContent>

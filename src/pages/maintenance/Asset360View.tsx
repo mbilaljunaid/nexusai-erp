@@ -104,7 +104,7 @@ export default function Asset360View() {
                     <div className="grid grid-cols-3 gap-6">
                         <Card className="col-span-2">
                             <CardHeader><CardTitle>Real-Time Telemetry</CardTitle></CardHeader>
-                            <CardContent className="h-[300px]">
+                            <CardContent className="h-72">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <LineChart data={telemetry}>
                                         <XAxis dataKey="time" />

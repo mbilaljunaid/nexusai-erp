@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -37,7 +38,7 @@ export default function BillingPlans() {
     >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {plans.map((plan: any) => (
-          <Card key={plan.id} className={`p-6 relative flex flex-col ${currentPlanId === plan.id ? 'ring-2 ring-blue-500' : ''}`}>
+          <Card key={plan.id} className={cn(`p-6 relative flex flex-col ${currentPlanId === plan.id ? 'ring-2 ring-blue-500' : ''}`)}>
             {currentPlanId === plan.id && (
               <div className="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                 Current Plan

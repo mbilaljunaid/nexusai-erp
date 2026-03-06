@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Package, Printer, Archive, Send } from 'lucide-react';
@@ -71,7 +72,7 @@ export default function CarrierManifest() {
                     ['Tendered', summary?.tendered_manifests ?? 0, 'border-l-emerald-600'],
                     ['Pkgs Today', summary?.total_packages_today ?? 0, 'border-l-gray-500']
                 ].map(([l, v, c]) => (
-                    <div key={l} className={`bg-white border border-gray-200 rounded-xl py-2.5 px-4 flex-1 border-l-4 ${c}`}>
+                    <div key={l} className={cn(`bg-white border border-gray-200 rounded-xl py-2.5 px-4 flex-1 border-l-4 ${c}`)}>
                         <div className="text-[22px] font-extrabold font-mono">{v}</div>
                         <div className="text-[11px] text-gray-400 mt-0.5">{l}</div>
                     </div>
@@ -103,10 +104,10 @@ export default function CarrierManifest() {
                     {manifests.map(m => {
                         const cfgClass = STATUS_CFG[m.status] ?? 'bg-gray-100 text-gray-500';
                         return (
-                            <div key={m.id} onClick={() => setSelected(m)} className={`border rounded-xl p-2.5 cursor-pointer ${selected?.id === m.id ? 'border-blue-700 bg-blue-50' : 'border-gray-200 bg-white'}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                            <div key={m.id} onClick={() => setSelected(m)} className={cn(`border rounded-xl p-2.5 cursor-pointer ${selected?.id === m.id ? 'border-blue-700 bg-blue-50' : 'border-gray-200 bg-white'}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                 <div className="flex justify-between mb-1">
                                     <span className="text-[11px] font-bold font-mono">{m.manifest_number}</span>
-                                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${cfgClass}`}>{m.status}</span>
+                                    <span className={cn(`px-1.5 py-0.5 rounded text-[9px] font-bold ${cfgClass}`)}>{m.status}</span>
                                 </div>
                                 <div className="text-[10px] text-gray-700 mb-0.5">{m.carrier_scac} · {m.ship_date}</div>
                                 <div className="text-[10px] text-gray-500 flex items-center gap-1"><Package size={10} /> {m.total_packages} pkgs · {Number(m.total_weight_kg || 0).toFixed(1)} kg</div>
@@ -176,7 +177,7 @@ export default function CarrierManifest() {
                                             <TableCell className="py-2 px-2.5">{p.ship_to_city}, {p.ship_to_state} {p.ship_to_zip}</TableCell>
                                             <TableCell className="py-2 px-2.5 font-mono">{Number(p.weight_kg).toFixed(2)} kg</TableCell>
                                             <TableCell className="py-2 px-2.5">{p.service_code}</TableCell>
-                                            <TableCell className="py-2 px-2.5"><span className={`font-semibold text-[10px] ${p.label_printed ? 'text-emerald-600' : 'text-gray-400'}`}>{p.label_printed ? '✓ Printed' : 'Pending'}</span></TableCell>
+                                            <TableCell className="py-2 px-2.5"><span className={cn(`font-semibold text-[10px] ${p.label_printed ? 'text-emerald-600' : 'text-gray-400'}`)}>{p.label_printed ? '✓ Printed' : 'Pending'}</span></TableCell>
                                             <TableCell className="py-2 px-2.5">
                                                 <button onClick={() => printMut.mutate(p.id)} className="flex items-center gap-1 px-2 py-1 bg-gray-900 text-white border-none rounded-md text-[10px] cursor-pointer">
                                                     <Printer size={10} /> Print ZPL
@@ -196,11 +197,11 @@ export default function CarrierManifest() {
                             {zplPreview && (
                                 <div className="mt-3.5 bg-gray-900 rounded-lg p-3">
                                     <div className="text-[11px] font-bold text-gray-400 mb-1.5 flex items-center gap-1.5"><Printer size={11} /> ZPL II Label Payload</div>
-                                    <pre className="text-[10px] font-mono text-emerald-100 m-0 whitespace-pre-wrap max-h-[300px] overflow-y-auto">{zplPreview}</pre>
+                                    <pre className="text-[10px] font-mono text-emerald-100 m-0 whitespace-pre-wrap max-h-72 overflow-y-auto">{zplPreview}</pre>
                                 </div>
                             )}
                         </>
-                    ) : <div className="flex items-center justify-center h-[200px] text-gray-400 text-sm">Select a manifest to view details</div>}
+                    ) : <div className="flex items-center justify-center h-48 text-gray-400 text-sm">Select a manifest to view details</div>}
                 </div>
             </div>
         </div>

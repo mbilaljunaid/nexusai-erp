@@ -181,7 +181,7 @@ export default function SubscriptionBilling() {
                                     <CardTitle>Active Subscriptions</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="h-[300px]">
+                                    <div className="h-72">
                                         <InteractiveSpreadsheet
                                             columns={subscriptionColumns}
                                             data={subscriptionData}

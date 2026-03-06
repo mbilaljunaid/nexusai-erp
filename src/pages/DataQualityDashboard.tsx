@@ -119,7 +119,7 @@ export default function DataQualityDashboard() {
                     <CardHeader>
                         <CardTitle>Duplicate Resolution Status</CardTitle>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-72">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={chartData}>
                                 <CartesianGrid strokeDasharray="3 3" />

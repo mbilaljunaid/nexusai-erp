@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -71,7 +72,7 @@ export default function ESSDashboard() {
                         action.external ? (
                             <Card key={action.name} className="hover:shadow-lg transition-all cursor-pointer group border-zinc-200/50 dark:border-zinc-800/50 hover:border-teal-500/30 overflow-hidden" onClick={() => window.open(action.path, '_blank')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                 <CardContent className="p-6">
-                                    <div className={`p-3 rounded-2xl ${action.bg} ${action.color} w-fit mb-4 group-hover:scale-110 transition-transform`}>
+                                    <div className={cn(`p-3 rounded-2xl ${action.bg} ${action.color} w-fit mb-4 group-hover:scale-110 transition-transform`)}>
                                         <action.icon className="h-6 w-6" />
                                     </div>
                                     <h3 className="font-semibold text-lg">{action.name}</h3>
@@ -82,7 +83,7 @@ export default function ESSDashboard() {
                             <Link key={action.name} href={action.path}>
                                 <Card className="hover:shadow-lg transition-all cursor-pointer group border-zinc-200/50 dark:border-zinc-800/50 hover:border-teal-500/30 overflow-hidden">
                                     <CardContent className="p-6">
-                                        <div className={`p-3 rounded-2xl ${action.bg} ${action.color} w-fit mb-4 group-hover:scale-110 transition-transform`}>
+                                        <div className={cn(`p-3 rounded-2xl ${action.bg} ${action.color} w-fit mb-4 group-hover:scale-110 transition-transform`)}>
                                             <action.icon className="h-6 w-6" />
                                         </div>
                                         <h3 className="font-semibold text-lg">{action.name}</h3>

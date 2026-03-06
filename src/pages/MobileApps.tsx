@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,7 +26,7 @@ export default function MobileApps() {
           {apps.map((app: any) => (
             <Card
               key={app.id}
-              className={`cursor-pointer transition-all ${selectedApp === app.id ? "ring-2 ring-blue-500" : ""}`}
+              className={cn(`cursor-pointer transition-all ${selectedApp === app.id ? "ring-2 ring-blue-500" : ""}`)}
               onClick={() => setSelectedApp(app.id)}
               data-testid={`card-app-${app.id}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
             >

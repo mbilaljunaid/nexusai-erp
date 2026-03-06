@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -165,8 +166,8 @@ export function ModuleSelectionStep({ data, onNext, onBack }: ModuleSelectionSte
                                 return (
                                     <div role="button" tabIndex={0}
                                         key={module.id}
-                                        className={`flex items-start gap-3 p-3 rounded-lg border transition-colors ${isSelected ? "bg-primary/5 border-primary" : "hover:bg-accent"
-                                            } ${isDisabled ? "opacity-75" : "cursor-pointer"}`}
+                                        className={cn(`flex items-start gap-3 p-3 rounded-lg border transition-colors ${isSelected ? "bg-primary/5 border-primary" : "hover:bg-accent"
+                                            } ${isDisabled ? "opacity-75" : "cursor-pointer"}`)}
                                         onClick={() => !isDisabled && toggleModule(module.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     >
                                         <Checkbox

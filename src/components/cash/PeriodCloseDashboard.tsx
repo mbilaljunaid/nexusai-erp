@@ -123,7 +123,7 @@ export function PeriodCloseDashboard() {
                                             <span className="text-xs text-muted-foreground">{account.currency}</span>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="w-[200px]">
+                                    <TableCell className="w-48">
                                         <div className="space-y-1">
                                             <div className="flex justify-between text-[10px] text-muted-foreground">
                                                 <span>{Math.round(account.percentComplete)}%</span>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -99,13 +100,13 @@ export function IndustrySelectionStep({ data, onNext, onBack }: IndustrySelectio
                     return (
                         <Card
                             key={industry.id}
-                            className={`cursor-pointer transition-all hover:scale-105 ${isSelected ? "ring-2 ring-primary shadow-lg" : "hover:shadow-md"
-                                }`}
+                            className={cn(`cursor-pointer transition-all hover:scale-105 ${isSelected ? "ring-2 ring-primary shadow-lg" : "hover:shadow-md"
+                                }`)}
                             onClick={() => setSelectedIndustry(industry.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                         >
                             <CardContent className="p-4 text-center space-y-2">
-                                <div className={`w-12 h-12 mx-auto rounded-lg ${industry.bgColor} flex items-center justify-center`}>
-                                    <Icon className={`w-6 h-6 ${industry.color}`} />
+                                <div className={cn(`w-12 h-12 mx-auto rounded-lg ${industry.bgColor} flex items-center justify-center`)}>
+                                    <Icon className={cn(`w-6 h-6 ${industry.color}`)} />
                                 </div>
                                 <h3 className="font-medium text-sm">{industry.name}</h3>
                                 <p className="text-xs text-muted-foreground">{industry.description}</p>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, AlertCircle, CheckCircle2, TrendingUp } from "lucide-react";
@@ -76,8 +77,8 @@ export function ArMetricCards({ buId }: { buId?: string }) {
                         <CardTitle className="text-sm font-medium text-muted-foreground">
                             {card.title}
                         </CardTitle>
-                        <div className={`p-2 rounded-lg ${card.bg}`}>
-                            <card.icon className={`h-4 w-4 ${card.color}`} />
+                        <div className={cn(`p-2 rounded-lg ${card.bg}`)}>
+                            <card.icon className={cn(`h-4 w-4 ${card.color}`)} />
                         </div>
                     </CardHeader>
                     <CardContent>

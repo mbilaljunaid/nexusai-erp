@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useParams, Link } from "wouter";
@@ -93,7 +94,7 @@ export default function ContractDetail() {
                         </div>
                         <div>
                             <h3 className="font-semibold text-sm text-muted-foreground">End Date</h3>
-                            <p className={`font-medium ${contract.status === 'Expired' ? 'text-red-600' : ''}`}>
+                            <p className={cn(`font-medium ${contract.status === 'Expired' ? 'text-red-600' : ''}`)}>
                                 {contract.endDate ? format(new Date(contract.endDate), "PPP") : "-"}
                             </p>
                         </div>

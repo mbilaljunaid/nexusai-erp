@@ -68,7 +68,7 @@ export default function CashReconciliationWorkbench() {
                 <div className="flex items-center gap-4 bg-muted/30 p-4 rounded-lg border">
                     <label className="text-sm font-medium">Bank Account:</label>
                     <Select value={selectedAccountId} onValueChange={setSelectedAccountId}>
-                        <SelectTrigger className="w-[300px]">
+                        <SelectTrigger className="w-72">
                             <SelectValue placeholder="Select a bank account" />
                         </SelectTrigger>
                         <SelectContent>

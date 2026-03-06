@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import {
     Sheet,
     SheetContent,
@@ -178,7 +179,7 @@ export function ArSideSheet({ isOpen, onClose, data, type }: ArSideSheetProps) {
                     <Badge variant="outline" className="text-[10px] font-bold">{accounts?.length || 0} Accounts</Badge>
                 </div>
 
-                <ScrollArea className="h-[250px] pr-4">
+                <ScrollArea className="h-64 pr-4">
                     <div className="space-y-3">
                         {accountsLoading ? (
                             <div className="space-y-2">
@@ -193,10 +194,10 @@ export function ArSideSheet({ isOpen, onClose, data, type }: ArSideSheetProps) {
                                 <div role="button" tabIndex={0}
                                     key={acc.id}
                                     onClick={() => setSelectedAccountId(selectedAccountId === acc.id ? null : acc.id)}
-                                    className={`p-4 rounded-xl border transition-all cursor-pointer ${selectedAccountId === acc.id
+                                    className={cn(`p-4 rounded-xl border transition-all cursor-pointer ${selectedAccountId === acc.id
                                         ? "border-emerald-500 bg-emerald-50/30 ring-1 ring-emerald-200 shadow-sm"
                                         : "hover:border-emerald-200 hover:bg-muted/50 border-muted-foreground/10"
-                                        }`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                        }`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <div className="flex justify-between items-start mb-2">
                                         <div className="flex items-center gap-2">
@@ -233,7 +234,7 @@ export function ArSideSheet({ isOpen, onClose, data, type }: ArSideSheetProps) {
                                                                     <span className="text-[11px] font-bold">{site.siteName}</span>
                                                                     {site.isBillTo && <Badge className="text-[8px] h-3 px-1 bg-sky-500">Bill-To</Badge>}
                                                                 </div>
-                                                                <p className="text-[10px] text-muted-foreground truncate max-w-[180px]">{site.address}</p>
+                                                                <p className="text-[10px] text-muted-foreground truncate max-w-44">{site.address}</p>
                                                             </div>
                                                         </div>
                                                     ))}

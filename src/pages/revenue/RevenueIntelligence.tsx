@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertTriangle, TrendingUp, AlertCircle, LineChart, ShieldAlert } from "lucide-react";
+import { AlertTriangle, TrendingUp, AlertCircle, LineChart, ShieldAlert, Loader2 } from "lucide-react";
 import { CartesianGrid, Line, LineChart as RechartsLine, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 export function RevenueIntelligence() {
@@ -66,11 +66,11 @@ export function RevenueIntelligence() {
                             Predictive analysis based on historical recognition patterns.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-72">
                         {isLoadingForecast ? (
                             <div className="h-full flex items-center justify-center">
                                 <div className="flex flex-col items-center gap-2">
-                                    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+                                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
                                     <p className="text-sm text-muted-foreground">Training model...</p>
                                 </div>
                             </div>
@@ -158,7 +158,7 @@ export function RevenueIntelligence() {
                                 </TableBody>
                             </Table>
                         ) : (
-                            <div className="h-full flex flex-col items-center justify-center text-muted-foreground gap-2 min-h-[200px]">
+                            <div className="h-full flex flex-col items-center justify-center text-muted-foreground gap-2 min-h-48">
                                 <ShieldAlert className="w-12 h-12 opacity-20" />
                                 <p>No high-risk contracts detected.</p>
                             </div>

@@ -89,7 +89,7 @@ export function StandardTable<T extends { id: string | number }>({
                                     )}
                                 </TableHead>
                             ))}
-                            {actions && <TableHead className="w-[100px]">Actions</TableHead>}
+                            {actions && <TableHead className="w-24">Actions</TableHead>}
                         </TableRow>
                     </TableHeader>
                     <TableBody>

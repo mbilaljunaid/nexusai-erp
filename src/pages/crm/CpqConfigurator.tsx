@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -213,7 +214,7 @@ export default function CpqConfigurator() {
                                             return (
                                                 <div
                                                     key={option.id}
-                                                    className={`space-y-2 pb-4 border-b last:border-0 ${!isAvailable ? 'opacity-50' : ''}`}
+                                                    className={cn(`space-y-2 pb-4 border-b last:border-0 ${!isAvailable ? 'opacity-50' : ''}`)}
                                                 >
                                                     <div className="flex items-center justify-between">
                                                         <Label className="flex items-center gap-2">
@@ -310,7 +311,7 @@ export default function CpqConfigurator() {
                             {/* Summary Panel */}
                             <div className="space-y-4">
                                 {/* Validation Status */}
-                                <Card className={`border-l-4 ${isConfigValid ? 'border-l-green-500' : 'border-l-red-500'}`}>
+                                <Card className={cn(`border-l-4 ${isConfigValid ? 'border-l-green-500' : 'border-l-red-500'}`)}>
                                     <CardHeader>
                                         <CardTitle className="text-sm flex items-center gap-2">
                                             {isConfigValid ? (

@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { StandardPage } from "@/components/layout/StandardPage";
-import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { useState} from"react";
+import { StandardPage} from"@/components/layout/StandardPage";
+import { useQuery} from"@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription} from"@/components/ui/card";
+import { Input} from"@/components/ui/input";
+import { Link} from"wouter";
+import { Button} from"@/components/ui/button";
 import {
     Search,
     FileText,
@@ -17,13 +18,13 @@ import {
     FileSearch,
     ChevronRight,
     CheckCircle2
-} from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { StatusBadge } from "@/components/shared/StatusBadge";
-import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { format } from "date-fns";
-import { Skeleton } from "@/components/ui/skeleton";
+} from"lucide-react";
+import { Badge} from"@/components/ui/badge";
+import { StatusBadge} from"@/components/shared/StatusBadge";
+import { InteractiveSpreadsheet} from"@/components/ui/InteractiveSpreadsheet";
+import { Tabs, TabsContent, TabsList, TabsTrigger} from"@/components/ui/tabs";
+import { format} from"date-fns";
+import { Skeleton} from"@/components/ui/skeleton";
 
 export default function RevenueAuditConsole() {
     const [searchId, setSearchId] = useState("");
@@ -31,14 +32,14 @@ export default function RevenueAuditConsole() {
     const [isSearching, setIsSearching] = useState(false);
     const [error, setError] = useState("");
 
-    const { data: complianceHealth, isLoading: isLoadingHealth } = useQuery<any>({
+    const { data: complianceHealth, isLoading: isLoadingHealth} = useQuery<any>({
         queryKey: ["revenueComplianceHealth"],
         queryFn: async () => {
             const res = await fetch("/api/revenue/audit/compliance-health");
-            if (!res.ok) return { score: 95, issues: [] };
+            if (!res.ok) return { score: 95, issues: []};
             return res.json();
-        }
-    });
+       }
+   });
 
     const handleSearch = async () => {
         if (!searchId) return;
@@ -51,15 +52,15 @@ export default function RevenueAuditConsole() {
             if (!res.ok) {
                 if (res.status === 404) throw new Error("Source Event ID not found.");
                 throw new Error("Failed to fetch audit trace.");
-            }
+           }
             const data = await res.json();
             setAuditTrace(data);
-        } catch (err: any) {
+       } catch (err: any) {
             setError(err.message);
-        } finally {
+       } finally {
             setIsSearching(false);
-        }
-    };
+       }
+   };
 
     return (
         <StandardPage
@@ -73,13 +74,13 @@ export default function RevenueAuditConsole() {
                                 <p className="text-xs font-semibold text-slate-500 uppercase">Compliance Score</p>
                                 <p className="text-2xl font-bold text-indigo-600">{complianceHealth?.score || 100}%</p>
                             </div>
-                            <div className={`h-10 w-10 rounded-full border-4 flex items-center justify-center text-[10px] font-bold ${(complianceHealth?.score || 100) > 90 ? 'border-green-500 text-green-600' : 'border-yellow-500 text-yellow-600'}`}>
+                            <div className={cn(`h-10 w-10 rounded-full border-4 flex items-center justify-center text-[10px] font-bold ${(complianceHealth?.score || 100) > 90 ?'border-green-500 text-green-600' :'border-yellow-500 text-yellow-600'}`)}>
                                 OK
                             </div>
                         </div>
                     </Card>
                 </div>
-            }
+           }
         >
 
             <Tabs defaultValue="trace" className="space-y-6">
@@ -109,11 +110,11 @@ export default function RevenueAuditConsole() {
                                     className="pl-9 bg-slate-50 border-slate-200"
                                     value={searchId}
                                     onChange={(e) => setSearchId(e.target.value)}
-                                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                    onKeyDown={(e) => e.key ==='Enter' && handleSearch()}
                                 />
                             </div>
                             <Button onClick={handleSearch} disabled={!searchId || isSearching} className="bg-indigo-600 hover:bg-indigo-700">
-                                {isSearching ? "Searching..." : "Trace"}
+                                {isSearching ?"Searching..." :"Trace"}
                             </Button>
                         </CardContent>
                     </Card>
@@ -131,13 +132,13 @@ export default function RevenueAuditConsole() {
                         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                             {/* Visual Timeline */}
                             <div className="relative">
-                                <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-200 -z-10" />
+                                <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-200" />
                                 <div className="flex items-center justify-between px-10">
                                     <StepNode icon={Database} label="Source Event" sublabel={auditTrace.sourceEvent?.sourceSystem} status="success" />
-                                    <StepNode icon={FileText} label="Contract" sublabel={auditTrace.contract?.contractNumber} status={auditTrace.contract ? "success" : "pending"} />
-                                    <StepNode icon={CheckCircle2} label="Allocation" sublabel="ASC 606 Step 4" status={auditTrace.contract?.totalAllocatedPrice > 0 ? "success" : "pending"} />
-                                    <StepNode icon={History} label="Recognition" sublabel={`${auditTrace.recognitions?.length || 0} Entries`} status={auditTrace.recognitions?.length > 0 ? "success" : "pending"} />
-                                    <StepNode icon={ExternalLink} label="GL Posting" sublabel="Subledger Entry" status={auditTrace.recognitions?.some((r: any) => r.status === "Posted") ? "success" : "pending"} />
+                                    <StepNode icon={FileText} label="Contract" sublabel={auditTrace.contract?.contractNumber} status={auditTrace.contract ?"success" :"pending"} />
+                                    <StepNode icon={CheckCircle2} label="Allocation" sublabel="ASC 606 Step 4" status={auditTrace.contract?.totalAllocatedPrice > 0 ?"success" :"pending"} />
+                                    <StepNode icon={History} label="Recognition" sublabel={`${auditTrace.recognitions?.length || 0} Entries`} status={auditTrace.recognitions?.length > 0 ?"success" :"pending"} />
+                                    <StepNode icon={ExternalLink} label="GL Posting" sublabel="Subledger Entry" status={auditTrace.recognitions?.some((r: any) => r.status ==="Posted") ?"success" :"pending"} />
                                 </div>
                             </div>
 
@@ -155,12 +156,12 @@ export default function RevenueAuditConsole() {
                                             <span className="font-mono text-indigo-600 bg-indigo-50 px-2 rounded">{auditTrace.sourceEvent.sourceId}</span>
                                         </div>
                                         <div className="flex justify-between border-b pb-2"><span className="text-muted-foreground">Type:</span> <Badge variant="outline">{auditTrace.sourceEvent.eventType}</Badge></div>
-                                        <div className="flex justify-between border-b pb-2"><span className="text-muted-foreground">Event Date:</span> <span>{format(new Date(auditTrace.sourceEvent.eventDate), "MMM dd, yyyy")}</span></div>
+                                        <div className="flex justify-between border-b pb-2"><span className="text-muted-foreground">Event Date:</span> <span>{format(new Date(auditTrace.sourceEvent.eventDate),"MMM dd, yyyy")}</span></div>
                                         <div className="flex justify-between"><span className="text-muted-foreground">Raw Amount:</span> <span className="font-bold">{auditTrace.sourceEvent.currency} {auditTrace.sourceEvent.amount}</span></div>
                                     </CardContent>
                                 </Card>
 
-                                <Card className={`lg:col-span-2 border-none shadow-sm ${!auditTrace.contract ? "opacity-60 bg-slate-50" : ""}`}>
+                                <Card className={cn(`lg:col-span-2 border-none shadow-sm ${!auditTrace.contract ?"opacity-60 bg-slate-50" :""}`)}>
                                     <CardHeader className="bg-indigo-50/30 border-b flex flex-row items-center justify-between">
                                         <CardTitle className="text-sm font-semibold flex items-center gap-2">
                                             <FileText className="h-4 w-4 text-indigo-500" /> Derived Revenue Contract
@@ -200,21 +201,21 @@ export default function RevenueAuditConsole() {
                                     <CardContent className="p-0">
                                         <InteractiveSpreadsheet
                                             data={auditTrace.recognitions}
-                                            onChange={() => { }}
+                                            onChange={() => {}}
                                             virtualized={true}
                                             containerHeight="400px"
                                             columns={[
-                                                { id: "periodName", header: "Period", width: "150px", cell: (row: any) => <span className="font-semibold">{row.periodName}</span> },
-                                                { id: "scheduleDate", header: "Date", width: "150px", cell: (row: any) => format(new Date(row.scheduleDate), "MMM dd, yyyy") },
-                                                { id: "eventType", header: "Type", width: "150px", cell: (row: any) => <Badge variant="outline">{row.eventType}</Badge> },
-                                                { id: "accountType", header: "Account", width: "150px", cell: (row: any) => <span>{row.accountType}</span> },
-                                                { id: "amount", header: "Amount", width: "150px", cell: (row: any) => <span className="font-mono">${parseFloat(row.amount).toLocaleString()}</span> },
+                                                { id:"periodName", header:"Period", width:"150px", cell: (row: any) => <span className="font-semibold">{row.periodName}</span>},
+                                                { id:"scheduleDate", header:"Date", width:"150px", cell: (row: any) => format(new Date(row.scheduleDate),"MMM dd, yyyy")},
+                                                { id:"eventType", header:"Type", width:"150px", cell: (row: any) => <Badge variant="outline">{row.eventType}</Badge>},
+                                                { id:"accountType", header:"Account", width:"150px", cell: (row: any) => <span>{row.accountType}</span>},
+                                                { id:"amount", header:"Amount", width:"150px", cell: (row: any) => <span className="font-mono">${parseFloat(row.amount).toLocaleString()}</span>},
                                                 {
-                                                    id: "status", header: "Status", width: "150px", cell: (row: any) => (
+                                                    id:"status", header:"Status", width:"150px", cell: (row: any) => (
                                                         <StatusBadge status={row.status} />
                                                     )
-                                                },
-                                                { id: "glJournalId", header: "GL Journal", width: "150px", cell: (row: any) => row.glJournalId ? <span className="font-mono text-xs">{row.glJournalId}</span> : "-" }
+                                               },
+                                                { id:"glJournalId", header:"GL Journal", width:"150px", cell: (row: any) => row.glJournalId ? <span className="font-mono text-xs">{row.glJournalId}</span> :"-"}
                                             ]}
                                         />
                                     </CardContent>
@@ -286,18 +287,18 @@ export default function RevenueAuditConsole() {
                             <InteractiveSpreadsheet
                                 virtualized={true}
                                 containerHeight="400px"
-                                onChange={() => { }}
+                                onChange={() => {}}
                                 data={[
-                                    { id: "1", date: new Date(), user: "Admin", action: "Updated SSP Book", detail: "Revised pricing for Subscription v2", ip: "10.0.1.45" },
-                                    { id: "2", date: new Date(Date.now() - 86400000), user: "System", action: "Period Close Sweep", detail: "Feb-26 period sweep completed.", ip: "internal" },
-                                    { id: "3", date: new Date(Date.now() - 172800000), user: "Finance-Lead", action: "Override Allocation", detail: "Manual override for Contract REV-2026-X812", ip: "10.4.2.11" }
+                                    { id:"1", date: new Date(), user:"Admin", action:"Updated SSP Book", detail:"Revised pricing for Subscription v2", ip:"10.0.1.45"},
+                                    { id:"2", date: new Date(Date.now() - 86400000), user:"System", action:"Period Close Sweep", detail:"Feb-26 period sweep completed.", ip:"internal"},
+                                    { id:"3", date: new Date(Date.now() - 172800000), user:"Finance-Lead", action:"Override Allocation", detail:"Manual override for Contract REV-2026-X812", ip:"10.4.2.11"}
                                 ]}
                                 columns={[
-                                    { id: "date", header: "Date & Time", width: "200px", cell: (row: any) => format(row.date, "MMM dd, yyyy HH:mm") },
-                                    { id: "user", header: "User", width: "150px", cell: (row: any) => <span>{row.user}</span> },
-                                    { id: "action", header: "Action", width: "200px", cell: (row: any) => <span className="font-semibold text-indigo-600">{row.action}</span> },
-                                    { id: "detail", header: "Details", width: "300px", cell: (row: any) => <span>{row.detail}</span> },
-                                    { id: "ip", header: "Auditable IP", width: "150px", cell: (row: any) => <span className="font-mono text-xs opacity-50">{row.ip}</span> }
+                                    { id:"date", header:"Date & Time", width:"200px", cell: (row: any) => format(row.date,"MMM dd, yyyy HH:mm")},
+                                    { id:"user", header:"User", width:"150px", cell: (row: any) => <span>{row.user}</span>},
+                                    { id:"action", header:"Action", width:"200px", cell: (row: any) => <span className="font-semibold text-indigo-600">{row.action}</span>},
+                                    { id:"detail", header:"Details", width:"300px", cell: (row: any) => <span>{row.detail}</span>},
+                                    { id:"ip", header:"Auditable IP", width:"150px", cell: (row: any) => <span className="font-mono text-xs opacity-50">{row.ip}</span>}
                                 ]}
                             />
                         </CardContent>
@@ -308,23 +309,23 @@ export default function RevenueAuditConsole() {
     );
 }
 
-function StepNode({ icon: Icon, label, sublabel, status }: { icon: any, label: string, sublabel?: string, status: "success" | "pending" | "error" }) {
+function StepNode({ icon: Icon, label, sublabel, status}: { icon: any, label: string, sublabel?: string, status:"success" |"pending" |"error"}) {
     return (
-        <div className="flex flex-col items-center gap-2 relative bg-slate-50 p-2 rounded-lg min-w-[120px]">
-            <div className={`h-14 w-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${status === "success" ? 'bg-white text-indigo-600 border-2 border-indigo-500 scale-110' :
-                status === "error" ? 'bg-red-50 text-red-600 border-2 border-red-500' :
-                    'bg-slate-100 text-slate-400 border border-slate-200'
-                }`}>
+        <div className="flex flex-col items-center gap-2 relative bg-slate-50 p-2 rounded-lg min-w-28">
+            <div className={cn(`h-14 w-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${status ==="success" ?'bg-white text-indigo-600 border-2 border-indigo-500 scale-110' :
+                status ==="error" ?'bg-red-50 text-red-600 border-2 border-red-500' :
+                   'bg-slate-100 text-slate-400 border border-slate-200'
+               }`)}>
                 <Icon className="h-6 w-6" />
-                {status === "success" && (
+                {status ==="success" && (
                     <div className="absolute -top-1 -right-1 bg-green-500 text-white rounded-full p-0.5 border-2 border-white">
                         <CheckCircle2 className="h-3 w-3" />
                     </div>
                 )}
             </div>
             <div className="text-center">
-                <p className={`text-[11px] font-bold uppercase tracking-wider ${status === "success" ? "text-indigo-900" : "text-slate-400"}`}>{label}</p>
-                <p className="text-[10px] text-muted-foreground font-mono truncate max-w-[100px]">{sublabel || "..."}</p>
+                <p className={cn(`text-[11px] font-bold uppercase tracking-wider ${status ==="success" ?"text-indigo-900" :"text-slate-400"}`)}>{label}</p>
+                <p className="text-[10px] text-muted-foreground font-mono truncate max-w-24">{sublabel ||"..."}</p>
             </div>
         </div>
     );

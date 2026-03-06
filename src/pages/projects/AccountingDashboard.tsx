@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DollarSign, PieChart, TrendingUp, AlertTriangle, ArrowUpRight, ArrowDownRight, Activity } from "lucide-react";
@@ -85,7 +86,7 @@ export default function AccountingDashboard() {
                         <CardTitle>Cost Trends</CardTitle>
                     </CardHeader>
                     <CardContent className="pl-2">
-                        <div className="h-[200px] flex items-center justify-center text-muted-foreground bg-muted/20 rounded-md border border-dashed border-muted">
+                        <div className="h-48 flex items-center justify-center text-muted-foreground bg-muted/20 rounded-md border border-dashed border-muted">
                             Cost Transaction Volume Chart Placeholder
                         </div>
                     </CardContent>
@@ -98,7 +99,7 @@ export default function AccountingDashboard() {
                         <div className="space-y-4">
                             {summary.alerts.map((alert: any) => (
                                 <div key={alert.id} className="flex items-start gap-4 rounded-md border p-3">
-                                    <AlertTriangle className={`mt-0.5 h-5 w-5 ${alert.type === 'critical' ? 'text-red-500' : 'text-amber-500'}`} />
+                                    <AlertTriangle className={cn(`mt-0.5 h-5 w-5 ${alert.type === 'critical' ? 'text-red-500' : 'text-amber-500'}`)} />
                                     <div className="space-y-1">
                                         <p className="text-sm font-medium leading-none">{alert.type === 'critical' ? 'Critical Action' : 'Warning'}</p>
                                         <p className="text-sm text-muted-foreground">{alert.message}</p>

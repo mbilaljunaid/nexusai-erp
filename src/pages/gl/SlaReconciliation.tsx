@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import React, { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
@@ -41,7 +42,7 @@ export default function SlaReconciliation() {
                         <p className="text-muted-foreground mt-2">Compare Subledger Accounting (SLA) vs General Ledger (GL) Balances.</p>
                     </div>
                     <Button variant="outline" onClick={() => refetch()} disabled={isLoading}>
-                        <RefreshCcw className={`mr-2 h-4 w-4 ${isLoading ? "animate-spin" : ""}`} /> Refresh
+                        <RefreshCcw className={cn(`mr-2 h-4 w-4 ${isLoading ? "animate-spin" : ""}`)} /> Refresh
                     </Button>
                 </div>
             }
@@ -70,7 +71,7 @@ export default function SlaReconciliation() {
             {data && (
                 <>
                     <DashboardWidget colSpan={1} title="Status">
-                        <div className={`p-6 flex flex-col items-center justify-center h-full rounded-md border ${data.status === "RECONCILED" ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`}>
+                        <div className={cn(`p-6 flex flex-col items-center justify-center h-full rounded-md border ${data.status === "RECONCILED" ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`)}>
                             {data.status === "RECONCILED" ? (
                                 <>
                                     <CheckCircle className="h-12 w-12 text-green-600 mb-2" />
@@ -99,7 +100,7 @@ export default function SlaReconciliation() {
                             </div>
                             <div className="p-4 border rounded bg-card">
                                 <h4 className="text-sm font-medium text-muted-foreground">Variance</h4>
-                                <div className={`text-2xl font-bold mt-2 ${data.variance.dr !== 0 ? "text-red-600" : "text-green-600"}`}>
+                                <div className={cn(`text-2xl font-bold mt-2 ${data.variance.dr !== 0 ? "text-red-600" : "text-green-600"}`)}>
                                     {data.variance.dr.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </div>
                                 <div className="text-xs text-muted-foreground">Difference</div>

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Truck, PackageCheck, Undo2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -140,11 +141,13 @@ export function ReceiptManager() {
                 </Card>
             )}
 
-            {returnReceiptLine && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-                    <Card className="w-full max-w-md">
-                        <CardHeader><CardTitle>Return Item</CardTitle></CardHeader>
-                        <CardContent className="space-y-4">
+            <Dialog open={!!returnReceiptLine} onOpenChange={(open) => { if (!open) { setReturnReceiptLine(null); setReturnQty(""); } }}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Return Item</DialogTitle>
+                    </DialogHeader>
+                    {returnReceiptLine && (
+                        <div className="space-y-4 pt-4">
                             <p className="text-sm">Returning: <strong>{returnReceiptLine.poLine?.itemDescription || "Item"}</strong></p>
                             <p className="text-xs text-muted-foreground">Original Receipt: {returnReceiptLine.header?.receiptNumber}</p>
                             <div className="grid grid-cols-2 gap-4">
@@ -155,16 +158,16 @@ export function ReceiptManager() {
                                 <label className="text-xs font-semibold">Quantity to Return</label>
                                 <Input type="number" value={returnQty} onChange={e => setReturnQty(e.target.value)} />
                             </div>
-                            <div className="flex justify-end gap-2 mt-4">
+                            <div className="flex justify-end gap-2 mt-4 pt-4">
                                 <Button variant="outline" onClick={() => { setReturnReceiptLine(null); setReturnQty(""); }}>Cancel</Button>
                                 <Button variant="destructive" onClick={submitReturn} disabled={!returnQty || parseFloat(returnQty) <= 0}>
                                     <Undo2 className="w-4 h-4 mr-2" /> Confirm Return
                                 </Button>
                             </div>
-                        </CardContent>
-                    </Card>
-                </div>
-            )}
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
 
             <Card>
                 <CardHeader><CardTitle className="text-base">Recent Receipts & Returns</CardTitle></CardHeader>

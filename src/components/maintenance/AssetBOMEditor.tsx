@@ -94,7 +94,7 @@ export default function AssetBOMEditor({ assetId }: AssetBOMEditorProps) {
                             <TableHead>Description</TableHead>
                             <TableHead>Qty</TableHead>
                             <TableHead>Critical</TableHead>
-                            <TableHead className="w-[50px]"></TableHead>
+                            <TableHead className="w-12"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

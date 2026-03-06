@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { Users, Activity, DollarSign, Building2, TrendingUp, Server, CheckCircle, AlertCircle, Loader2, RefreshCw } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -31,7 +32,7 @@ export default function AdminDashboard() {
                     <p className="text-muted-foreground">Overview of platform metrics and activity</p>
                 </div>
                 <Button variant="outline" onClick={handleRefresh} disabled={isLoading}>
-                    <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+                    <RefreshCw className={cn(`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`)} />
                     Refresh
                 </Button>
             </div>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -187,8 +188,8 @@ function StatCard({ title, value, icon: Icon, color, bg }: any) {
                     <p className="text-sm font-medium text-slate-500">{title}</p>
                     <div className="text-2xl font-bold mt-1">{value}</div>
                 </div>
-                <div className={`h-12 w-12 rounded-full ${bg} flex items-center justify-center`}>
-                    <Icon className={`h-6 w-6 ${color}`} />
+                <div className={cn(`h-12 w-12 rounded-full ${bg} flex items-center justify-center`)}>
+                    <Icon className={cn(`h-6 w-6 ${color}`)} />
                 </div>
             </CardContent>
         </Card>

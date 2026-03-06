@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState, useCallback } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -76,7 +77,7 @@ export default function TaxProvisionWorkbench() {
         { id: "current_tax_expense", header: "Tax Expense", width: "150px", cell: (row) => fmtCurrency(row.current_tax_expense) },
         { id: "effective_tax_rate", header: "ETR", width: "100px", cell: (row) => fmtPct(row.effective_tax_rate) },
         { id: "standard", header: "Standard", width: "100px", cell: (row) => <span className="standard-tag">{row.standard}</span> },
-        { id: "status", header: "Status", width: "120px", cell: (row) => <span className={`prov-status ${row.status.toLowerCase()}`}>{row.status}</span> }
+        { id: "status", header: "Status", width: "120px", cell: (row) => <span className={cn(`prov-status ${row.status.toLowerCase()}`)}>{row.status}</span> }
     ];
 
     const handleCompute = useCallback(() => {
@@ -127,7 +128,7 @@ export default function TaxProvisionWorkbench() {
                         {(['ASC740', 'IAS12'] as const).map(s => (
                             <button
                                 key={s}
-                                className={`std-btn ${standard === s ? 'active' : ''}`}
+                                className={cn(`std-btn ${standard === s ? 'active' : ''}`)}
                                 onClick={() => setStandard(s)}
                                 aria-pressed={standard === s}
                             >
@@ -220,7 +221,7 @@ export default function TaxProvisionWorkbench() {
             {provisions.length > 0 && (
                 <div className="provision-history">
                     <h2 className="card-title">Provision History — FY {year}</h2>
-                    <div className="border rounded-lg overflow-hidden h-[300px]">
+                    <div className="border rounded-lg overflow-hidden h-72">
                         <InteractiveSpreadsheet
                             columns={provisionColumns}
                             data={provisions}

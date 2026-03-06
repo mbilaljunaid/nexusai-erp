@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -310,7 +311,7 @@ export default function CompetencyManagement() {
                                                             {[1, 2, 3, 4, 5].map(level => (
                                                                 <div
                                                                     key={level}
-                                                                    className={`h-2 w-8 rounded ${level <= skill.proficiency ? getProficiencyColor(skill.proficiency) : 'bg-gray-200'}`}
+                                                                    className={cn(`h-2 w-8 rounded ${level <= skill.proficiency ? getProficiencyColor(skill.proficiency) : 'bg-gray-200'}`)}
                                                                 />
                                                             ))}
                                                         </div>

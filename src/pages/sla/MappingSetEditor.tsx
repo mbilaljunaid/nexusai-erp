@@ -138,10 +138,10 @@ export function MappingSetEditor({ setId, onBack }: { setId: string, onBack: () 
                         <TableHeader>
                             <TableRow className="bg-muted/10">
                                 <TableHead className="w-[30%]">Input Value ({setDetails?.inputType})</TableHead>
-                                <TableHead className="w-[10px]"></TableHead>
+                                <TableHead className="w-2.5"></TableHead>
                                 <TableHead className="w-[35%]">Output Value ({setDetails?.outputType})</TableHead>
                                 <TableHead>Description</TableHead>
-                                <TableHead className="w-[70px] text-right">Actions</TableHead>
+                                <TableHead className="w-16 text-right">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>

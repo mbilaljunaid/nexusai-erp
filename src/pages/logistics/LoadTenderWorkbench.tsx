@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Truck, Send, CheckCircle2, XCircle, Plus, FileCode } from 'lucide-react';
@@ -88,13 +89,13 @@ export default function LoadTenderWorkbench() {
                     { label: 'Declined', val: tenders.filter(t => t.status === 'Declined').length, cls: 'red' },
                     { label: 'Freight Value', val: fmt(totalAccepted), cls: 'purple' },
                 ].map(k => (
-                    <div key={k.label} className={`kpi-card ${k.cls}`}><div className="kv">{k.val}</div><div className="kl">{k.label}</div></div>
+                    <div key={k.label} className={cn(`kpi-card ${k.cls}`)}><div className="kv">{k.val}</div><div className="kl">{k.label}</div></div>
                 ))}
             </div>
 
             <div className="filter-row">
                 {['', 'Draft', 'Sent', 'Accepted', 'Declined', 'Cancelled'].map(s => (
-                    <button key={s} className={`fp ${statusFilter === s ? 'active' : ''}`} onClick={() => setStatusFilter(s)}>{s || 'All'}</button>
+                    <button key={s} className={cn(`fp ${statusFilter === s ? 'active' : ''}`)} onClick={() => setStatusFilter(s)}>{s || 'All'}</button>
                 ))}
             </div>
 
@@ -129,7 +130,7 @@ export default function LoadTenderWorkbench() {
                     {tenders.map(t => {
                         const cfg = STATUS_CFG[t.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
                         return (
-                            <div key={t.id} className={`tender-card ${selected?.id === t.id ? 'selected' : ''}`} onClick={() => setSelected(t)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                            <div key={t.id} className={cn(`tender-card ${selected?.id === t.id ? 'selected' : ''}`)} onClick={() => setSelected(t)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                 <div className="tc-top">
                                     <span className="tc-num">{t.tender_number}</span>
                                     <span className="tc-status" style={{ background: cfg.bg, color: cfg.color }}>{t.status}</span>

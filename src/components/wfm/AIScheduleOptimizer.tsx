@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
@@ -209,10 +210,10 @@ export function AIScheduleOptimizer({
                                 <div className="grid grid-cols-3 gap-3">
                                     <button
                                         onClick={() => setOptimizationGoal('cost')}
-                                        className={`p-4 border-2 rounded-lg text-left transition-colors ${optimizationGoal === 'cost'
+                                        className={cn(`p-4 border-2 rounded-lg text-left transition-colors ${optimizationGoal === 'cost'
                                                 ? 'border-primary bg-primary/5'
                                                 : 'border-muted hover:border-muted-foreground/20'
-                                            }`}
+                                            }`)}
                                     >
                                         <DollarSign className="h-5 w-5 mb-2 text-green-600" />
                                         <p className="font-medium">Minimize Cost</p>
@@ -222,10 +223,10 @@ export function AIScheduleOptimizer({
                                     </button>
                                     <button
                                         onClick={() => setOptimizationGoal('coverage')}
-                                        className={`p-4 border-2 rounded-lg text-left transition-colors ${optimizationGoal === 'coverage'
+                                        className={cn(`p-4 border-2 rounded-lg text-left transition-colors ${optimizationGoal === 'coverage'
                                                 ? 'border-primary bg-primary/5'
                                                 : 'border-muted hover:border-muted-foreground/20'
-                                            }`}
+                                            }`)}
                                     >
                                         <Users className="h-5 w-5 mb-2 text-blue-600" />
                                         <p className="font-medium">Maximize Coverage</p>
@@ -235,10 +236,10 @@ export function AIScheduleOptimizer({
                                     </button>
                                     <button
                                         onClick={() => setOptimizationGoal('balance')}
-                                        className={`p-4 border-2 rounded-lg text-left transition-colors ${optimizationGoal === 'balance'
+                                        className={cn(`p-4 border-2 rounded-lg text-left transition-colors ${optimizationGoal === 'balance'
                                                 ? 'border-primary bg-primary/5'
                                                 : 'border-muted hover:border-muted-foreground/20'
-                                            }`}
+                                            }`)}
                                     >
                                         <TrendingDown className="h-5 w-5 mb-2 text-purple-600" />
                                         <p className="font-medium">Balance Workload</p>

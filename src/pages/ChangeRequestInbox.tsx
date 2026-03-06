@@ -121,7 +121,7 @@ export default function ChangeRequestInbox() {
 
                     {selectedRequest && (
                         <div className="space-y-4 my-4">
-                            <div className="bg-muted p-4 rounded-md font-mono text-xs overflow-auto max-h-[200px]">
+                            <div className="bg-muted p-4 rounded-md font-mono text-xs overflow-auto max-h-48">
                                 {JSON.stringify(selectedRequest.proposedChanges, null, 2)}
                             </div>
 

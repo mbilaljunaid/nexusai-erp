@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -189,11 +190,11 @@ export default function ConfigurationHub() {
                 {configTiles.map((tile, idx) => (
                     <RouterLink key={idx} href={tile.path}>
                         <Card className="group cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-slate-200 overflow-hidden relative">
-                            <div className={`absolute top-0 right-0 p-8 ${tile.color} opacity-5 group-hover:scale-110 transition-transform`}>
+                            <div className={cn(`absolute top-0 right-0 p-8 ${tile.color} opacity-5 group-hover:scale-110 transition-transform`)}>
                                 <tile.icon className="h-24 w-24" />
                             </div>
                             <CardHeader className="flex flex-row items-center gap-4 pb-2">
-                                <div className={`p-3 rounded-xl ${tile.bgColor} ${tile.color}`}>
+                                <div className={cn(`p-3 rounded-xl ${tile.bgColor} ${tile.color}`)}>
                                     <tile.icon className="h-6 w-6" />
                                 </div>
                                 <CardTitle className="text-xl group-hover:text-primary transition-colors">{tile.title}</CardTitle>

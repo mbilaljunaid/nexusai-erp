@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import React, { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
@@ -212,8 +213,8 @@ export default function NettingWorkbench() {
                                                         : `${Math.abs(parseFloat(batch.netAmount)).toFixed(2)} (A pays B)`}
                                                 </TableCell>
                                                 <TableCell>
-                                                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${batch.status === 'Settled' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                                                        }`}>
+                                                    <span className={cn(`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${batch.status === 'Settled' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                                                        }`)}>
                                                         {batch.status}
                                                     </span>
                                                 </TableCell>

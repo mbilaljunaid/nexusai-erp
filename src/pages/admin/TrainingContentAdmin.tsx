@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
@@ -175,7 +176,7 @@ export default function TrainingContentAdmin() {
 
           <TabsContent value="content">
             <div className="flex flex-wrap gap-3 mb-6">
-              <div className="relative flex-1 min-w-[200px]">
+              <div className="relative flex-1 min-w-48">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input
                   placeholder="Search submissions..."
@@ -234,7 +235,7 @@ export default function TrainingContentAdmin() {
                     <Card key={resource.id} className="bg-slate-800 border-slate-700" data-testid={`card-resource-${resource.id}`}>
                       <CardContent className="p-4">
                         <div className="flex gap-4">
-                          <div className={`w-12 h-12 rounded-lg bg-slate-700 flex items-center justify-center flex-shrink-0 ${typeConf.color}`}>
+                          <div className={cn(`w-12 h-12 rounded-lg bg-slate-700 flex items-center justify-center flex-shrink-0 ${typeConf.color}`)}>
                             <TypeIcon className="w-6 h-6" />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -277,7 +278,7 @@ export default function TrainingContentAdmin() {
                                     </>
                                   )}
                                   <DropdownMenuItem onClick={() => updateResourceMutation.mutate({ id: resource.id, featured: !resource.featured })}>
-                                    <Star className={`w-4 h-4 mr-2 ${resource.featured ? "text-yellow-400" : ""}`} />
+                                    <Star className={cn(`w-4 h-4 mr-2 ${resource.featured ? "text-yellow-400" : ""}`)} />
                                     {resource.featured ? "Unfeature" : "Feature"}
                                   </DropdownMenuItem>
                                   {resource.resource_url && (

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -49,10 +50,10 @@ export default function DataQualityDashboard() {
                     </CardHeader>
                     <CardContent>
                         <div className="flex items-center justify-between">
-                            <div className={`text-3xl font-bold ${scoreColor}`}>
+                            <div className={cn(`text-3xl font-bold ${scoreColor}`)}>
                                 {qualityScore}%
                             </div>
-                            <TrendingUp className={`w-8 h-8 ${scoreColor}`} />
+                            <TrendingUp className={cn(`w-8 h-8 ${scoreColor}`)} />
                         </div>
                     </CardContent>
                 </Card>

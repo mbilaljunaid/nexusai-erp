@@ -183,7 +183,7 @@ export default function RevenueAccountingSetup() {
             actions={
                 <div className="bg-white p-1 rounded-lg border shadow-sm flex items-center gap-2 pr-2">
                     <span className="text-xs font-bold text-slate-500 px-2 uppercase">Ledger context</span>
-                    <div className="w-[200px] flex flex-col justify-center">
+                    <div className="w-48 flex flex-col justify-center">
                         <EnterpriseContextSwitcher
                             type="ledger"
                             value={ledgerId || undefined}
@@ -281,7 +281,7 @@ export default function RevenueAccountingSetup() {
                                     </div>
 
                                     <div className="pt-4 border-t flex justify-end">
-                                        <Button type="submit" disabled={saveAccountMutation.isPending} className="bg-indigo-600 hover:bg-indigo-700 min-w-[140px]">
+                                        <Button type="submit" disabled={saveAccountMutation.isPending} className="bg-indigo-600 hover:bg-indigo-700 min-w-36">
                                             {saveAccountMutation.isPending ? "Saving..." : <><Save className="h-4 w-4 mr-2" /> Save Config</>}
                                         </Button>
                                     </div>

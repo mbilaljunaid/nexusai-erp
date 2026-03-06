@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -93,21 +94,21 @@ export default function Planning() {
       <div className="flex gap-4 border-b">
         <button
           onClick={() => setActiveTab("revenue")}
-          className={`px-4 py-2 font-medium ${activeTab === "revenue" ? "border-b-2 border-primary" : ""}`}
+          className={cn(`px-4 py-2 font-medium ${activeTab === "revenue" ? "border-b-2 border-primary" : ""}`)}
           data-testid="tab-revenue"
         >
           Revenue Planning
         </button>
         <button
           onClick={() => setActiveTab("budget")}
-          className={`px-4 py-2 font-medium ${activeTab === "budget" ? "border-b-2 border-primary" : ""}`}
+          className={cn(`px-4 py-2 font-medium ${activeTab === "budget" ? "border-b-2 border-primary" : ""}`)}
           data-testid="tab-budget"
         >
           Budget Allocation
         </button>
         <button
           onClick={() => setActiveTab("scenarios")}
-          className={`px-4 py-2 font-medium ${activeTab === "scenarios" ? "border-b-2 border-primary" : ""}`}
+          className={cn(`px-4 py-2 font-medium ${activeTab === "scenarios" ? "border-b-2 border-primary" : ""}`)}
           data-testid="tab-scenarios"
         >
           What-If Scenarios

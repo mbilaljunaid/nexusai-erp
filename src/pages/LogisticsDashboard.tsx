@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardDashboard } from "@/components/ui/StandardDashboard";
@@ -78,7 +79,7 @@ export default function LogisticsDashboard() {
                                     </div>
                                     <div className="text-right">
                                         <p className="font-mono font-semibold">{k.actual}</p>
-                                        <span className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded ${k.status === 'healthy' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+                                        <span className={cn(`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded ${k.status === 'healthy' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`)}>
                                             {k.status}
                                         </span>
                                     </div>

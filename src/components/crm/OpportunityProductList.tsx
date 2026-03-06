@@ -205,7 +205,7 @@ export function OpportunityProductList({ opportunityId }: OpportunityProductList
                                             className="pl-8"
                                         />
                                     </div>
-                                    <div className="max-h-[200px] overflow-y-auto border rounded-md">
+                                    <div className="max-h-48 overflow-y-auto border rounded-md">
                                         {displayProducts.length === 0 ? (
                                             <div className="p-4 text-center text-sm text-muted-foreground">No active products found</div>
                                         ) : (
@@ -291,7 +291,7 @@ export function OpportunityProductList({ opportunityId }: OpportunityProductList
                             <TableHead className="text-right">Qty</TableHead>
                             <TableHead className="text-right">Sales Price</TableHead>
                             <TableHead className="text-right">Total</TableHead>
-                            <TableHead className="w-[50px]"></TableHead>
+                            <TableHead className="w-12"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

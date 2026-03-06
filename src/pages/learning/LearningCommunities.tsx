@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -42,8 +43,8 @@ export default function LearningCommunities() {
         return (
             <StandardPage title="Learning Communities">
                 <div role="button" tabIndex={0}
-                    className={`flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-colors ${selected ? "bg-primary text-primary-foreground" : "hover:bg-accent"
-                        }`}
+                    className={cn(`flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-colors ${selected ? "bg-primary text-primary-foreground" : "hover:bg-accent"
+                        }`)}
                     style={{ paddingLeft: `${depth * 1.5 + 0.75}rem` }}
                     onClick={() => setSelectedCommunityId(community.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                 >

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState, useCallback } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -122,7 +123,7 @@ export default function FSGReportBuilder() {
             cell: (row: any) => {
                 const val = runResult?.data?.[row.rowNum]?.[c.colNum] ?? 0;
                 return (
-                    <div className={`text-right w-full font-variant-numeric tabular-nums ${val < 0 ? 'text-red-600' : ''}`}>
+                    <div className={cn(`text-right w-full font-variant-numeric tabular-nums ${val < 0 ? 'text-red-600' : ''}`)}>
                         {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val)}
                     </div>
                 );
@@ -149,7 +150,7 @@ export default function FSGReportBuilder() {
                     {(['library', 'builder'] as const).map(tab => (
                         <button
                             key={tab}
-                            className={`fsg-tab ${activeTab === tab ? 'active' : ''}`}
+                            className={cn(`fsg-tab ${activeTab === tab ? 'active' : ''}`)}
                             onClick={() => setActiveTab(tab)}
                             aria-selected={activeTab === tab}
                         >
@@ -204,7 +205,7 @@ export default function FSGReportBuilder() {
                     {runResult && (
                         <div className="run-result">
                             <h2 className="panel-title">{runResult.reportName} — {runResult.periodName}</h2>
-                            <div className="border rounded-lg overflow-hidden h-[300px]">
+                            <div className="border rounded-lg overflow-hidden h-72">
                                 <InteractiveSpreadsheet
                                     columns={runResultColumns}
                                     data={runResult.rows ?? []}

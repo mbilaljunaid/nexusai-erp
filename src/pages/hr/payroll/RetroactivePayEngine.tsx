@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -50,7 +51,7 @@ export default function RetroactivePayEngine() {
         { id: "element", header: "Element", width: "200px", cell: (row) => row.element },
         { id: "original", header: "Original Value", width: "150px", cell: (row) => <div className="text-right w-full text-zinc-500">{row.original}</div> },
         { id: "recalculated", header: "Recalculated", width: "150px", cell: (row) => <div className="text-right w-full text-zinc-500">{row.recalculated}</div> },
-        { id: "variance", header: "Variance", width: "150px", cell: (row) => <div className={`text-right w-full font-semibold ${row.varClass}`}>{row.variance}</div> }
+        { id: "variance", header: "Variance", width: "150px", cell: (row) => <div className={cn(`text-right w-full font-semibold ${row.varClass}`)}>{row.variance}</div> }
     ];
 
     return (

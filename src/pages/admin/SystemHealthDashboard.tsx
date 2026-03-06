@@ -1,7 +1,8 @@
+import { cn } from "@/lib/utils";
 import { formatDateTime } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Activity, AlertCircle, CheckCircle, XCircle, Database, Zap, Server, Clock } from 'lucide-react';
+import { Activity, AlertCircle, CheckCircle, XCircle, Database, Zap, Server, Clock, Loader2 } from "lucide-react";
 import MetricCard from '../../components/admin/MetricCard';
 import AlertBanner from '../../components/admin/AlertBanner';
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -80,7 +81,7 @@ export default function SystemHealthDashboard() {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
             </div>
         );
     }
@@ -93,10 +94,10 @@ export default function SystemHealthDashboard() {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => setAutoRefresh(!autoRefresh)}
-                        className={`px-3 py-2 text-sm rounded-md border ${autoRefresh
+                        className={cn(`px-3 py-2 text-sm rounded-md border ${autoRefresh
                             ? 'bg-blue-50 text-blue-700 border-blue-200'
                             : 'bg-white text-gray-700 border-gray-300'
-                            }`}
+                            }`)}
                     >
                         {autoRefresh ? 'Auto-refresh: ON' : 'Auto-refresh: OFF'}
                     </button>
@@ -120,7 +121,7 @@ export default function SystemHealthDashboard() {
                         <div className="flex-1">
                             <h3 className="text-lg font-semibold text-gray-900">
                                 System Status:
-                                <span className={`ml-2 px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(health.status)}`}>
+                                <span className={cn(`ml-2 px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(health.status)}`)}>
                                     {health.status.toUpperCase()}
                                 </span>
                             </h3>

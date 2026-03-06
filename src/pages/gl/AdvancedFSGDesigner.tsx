@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -13,6 +14,9 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select";
+import {
+    Dialog, DialogContent, DialogHeader, DialogTitle
+} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import {
@@ -274,7 +278,7 @@ export default function AdvancedFSGDesigner() {
         {
             id: "account", header: "Account", width: "250px", cell: (row) => (
                 <div
-                    className={`${{ 0: 'pl-0', 1: 'pl-5', 2: 'pl-10', 3: 'pl-[60px]', 4: 'pl-[80px]', 5: 'pl-[100px]' }[row.indent || 0] || 'pl-0'} ${row.rowType === "HEADER" ? "font-semibold text-muted-foreground" : ""} ${row.rowType === "TOTAL" ? "font-bold" : ""}`}
+                    className={cn(`${{ 0: 'pl-0', 1: 'pl-5', 2: 'pl-10', 3: 'pl-14', 4: 'pl-20', 5: 'pl-24' }[row.indent || 0] || 'pl-0'} ${row.rowType === "HEADER" ? "font-semibold text-muted-foreground" : ""} ${row.rowType === "TOTAL" ? "font-bold" : ""}`)}
                 >
                     {row.label}
                 </div>
@@ -337,17 +341,17 @@ export default function AdvancedFSGDesigner() {
                         {reports?.map((report: FSGReport) => (
                             <div role="button" tabIndex={0}
                                 key={report.id}
-                                className={`p-3 rounded-lg cursor-pointer border ${selectedReport === report.id
+                                className={cn(`p-3 rounded-lg cursor-pointer border ${selectedReport === report.id
                                     ? "border-primary bg-primary/5"
                                     : "border-border hover:bg-accent"
-                                    }`}
+                                    }`)}
                                 onClick={() => {
                                     setSelectedReport(report.id);
                                     setReportName(report.name);
                                     setReportDescription(report.description);
                                     setRows(report.rows || []);
                                     setColumns(report.columns || []);
-                                }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === '') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <div className="font-medium">{report.name}</div>
                                 <div className="text-xs text-muted-foreground">
@@ -400,7 +404,7 @@ export default function AdvancedFSGDesigner() {
                                     </Button>
                                 </div>
 
-                                <div className="min-h-[300px] h-full border border-gray-200 rounded-lg">
+                                <div className="min-h-72 h-full border border-gray-200 rounded-lg">
                                     <InteractiveSpreadsheet
                                         columns={rowColumns}
                                         data={rows}
@@ -511,7 +515,7 @@ export default function AdvancedFSGDesigner() {
                                             Export to Excel
                                         </Button>
                                     </div>
-                                    <div className="min-h-[300px] h-full border border-gray-200 rounded-lg">
+                                    <div className="min-h-72 h-full border border-gray-200 rounded-lg">
                                         <InteractiveSpreadsheet
                                             columns={previewColumns}
                                             data={rows}
@@ -527,13 +531,13 @@ export default function AdvancedFSGDesigner() {
             </div>
 
             {/* Row Editor Dialog */}
-            {editingRow && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-                    <Card className="w-full max-w-2xl">
-                        <CardHeader>
-                            <CardTitle>Row Properties: {editingRow.label}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
+            <Dialog open={!!editingRow} onOpenChange={(open) => { if (!open) setEditingRow(null); }}>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Row Properties: {editingRow?.label}</DialogTitle>
+                    </DialogHeader>
+                    {editingRow && (
+                        <div className="space-y-4 pt-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <Label>Indent Level</Label>
@@ -543,7 +547,7 @@ export default function AdvancedFSGDesigner() {
                                         onChange={(e) =>
                                             setEditingRow({
                                                 ...editingRow,
-                                                indent: parseInt(e.target.value),
+                                                indent: parseInt(e.target.value) || 0,
                                             })
                                         }
                                     />
@@ -551,7 +555,7 @@ export default function AdvancedFSGDesigner() {
                                 <div className="space-y-2">
                                     <div className="flex items-center space-x-2">
                                         <Switch
-                                            checked={editingRow.isBold}
+                                            checked={editingRow.isBold || false}
                                             onCheckedChange={(checked) =>
                                                 setEditingRow({ ...editingRow, isBold: checked })
                                             }
@@ -560,7 +564,7 @@ export default function AdvancedFSGDesigner() {
                                     </div>
                                     <div className="flex items-center space-x-2">
                                         <Switch
-                                            checked={editingRow.isUnderline}
+                                            checked={editingRow.isUnderline || false}
                                             onCheckedChange={(checked) =>
                                                 setEditingRow({ ...editingRow, isUnderline: checked })
                                             }
@@ -604,7 +608,7 @@ export default function AdvancedFSGDesigner() {
                                                 ...editingRow,
                                                 conditionalFormat: {
                                                     ...editingRow.conditionalFormat,
-                                                    value1: parseFloat(e.target.value),
+                                                    value1: parseFloat(e.target.value) || 0,
                                                 } as ConditionalFormat,
                                             })
                                         }
@@ -625,7 +629,7 @@ export default function AdvancedFSGDesigner() {
                                 </div>
                             </div>
 
-                            <div className="flex justify-end gap-2">
+                            <div className="flex justify-end gap-2 pt-4">
                                 <Button variant="outline" onClick={() => setEditingRow(null)}>
                                     Cancel
                                 </Button>
@@ -638,10 +642,10 @@ export default function AdvancedFSGDesigner() {
                                     Apply
                                 </Button>
                             </div>
-                        </CardContent>
-                    </Card>
-                </div>
-            )}
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
         </StandardPage>
     );
 }

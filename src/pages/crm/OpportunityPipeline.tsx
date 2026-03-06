@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -175,9 +176,9 @@ export default function OpportunityPipeline() {
                     renderColumnHeader={(column) => {
                         const metrics = getStageMetrics(column.id as OpportunityStage);
                         return (
-                            <Card className={`${column.bgColor} border-2 mb-3`}>
+                            <Card className={cn(`${column.bgColor} border-2 mb-3`)}>
                                 <CardHeader className="pb-3">
-                                    <CardTitle className={`text-sm ${column.color}`}>
+                                    <CardTitle className={cn(`text-sm ${column.color}`)}>
                                         {column.title}
                                     </CardTitle>
                                 </CardHeader>

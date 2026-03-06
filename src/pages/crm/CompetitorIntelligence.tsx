@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -272,10 +273,10 @@ export default function CompetitorIntelligence() {
                                                     </Badge>
                                                 </TableCell>
                                                 <TableCell className="text-right">
-                                                    <span className={`font-bold ${data.winRate >= 70 ? "text-green-700" :
+                                                    <span className={cn(`font-bold ${data.winRate >= 70 ? "text-green-700" :
                                                         data.winRate >= 50 ? "text-amber-700" :
                                                             "text-red-700"
-                                                        }`}>
+                                                        }`)}>
                                                         {formatNumber(data.winRate, 0)}%
                                                     </span>
                                                 </TableCell>

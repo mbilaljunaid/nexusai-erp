@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate, formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -231,10 +232,10 @@ export default function BudgetWorkflow() {
                         <CardContent className="space-y-4">
                             {workflowHistory.map((item) => (
                                 <div key={item.id} className="flex gap-4 border-b pb-4 last:border-b-0">
-                                    <div className={`p-2 rounded-full h-10 w-10 flex items-center justify-center ${item.action === "APPROVE" ? "bg-green-100" :
+                                    <div className={cn(`p-2 rounded-full h-10 w-10 flex items-center justify-center ${item.action === "APPROVE" ? "bg-green-100" :
                                         item.action === "REJECT" ? "bg-red-100" :
                                             item.action === "SUBMIT" ? "bg-blue-100" : "bg-gray-100"
-                                        }`}>
+                                        }`)}>
                                         {item.action === "APPROVE" && <CheckCircle className="h-5 w-5 text-green-600" />}
                                         {item.action === "REJECT" && <XCircle className="h-5 w-5 text-red-600" />}
                                         {item.action === "SUBMIT" && <Send className="h-5 w-5 text-blue-600" />}

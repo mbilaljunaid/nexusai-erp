@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDateTime } from "@/lib/dateUtils";
 import React from 'react';
 import { AlertCircle, AlertTriangle, Info } from 'lucide-react';
@@ -50,14 +51,14 @@ export default function AlertBanner({ alert }: AlertBannerProps) {
     const Icon = config.icon;
 
     return (
-        <div className={`${config.bgColor} ${config.borderColor} border rounded-lg p-4`}>
+        <div className={cn(`${config.bgColor} ${config.borderColor} border rounded-lg p-4`)}>
             <div className="flex gap-3">
-                <Icon className={`w-5 h-5 ${config.iconColor} flex-shrink-0 mt-0.5`} />
+                <Icon className={cn(`w-5 h-5 ${config.iconColor} flex-shrink-0 mt-0.5`)} />
                 <div className="flex-1 min-w-0">
-                    <p className={`text-sm font-medium ${config.textColor}`}>
+                    <p className={cn(`text-sm font-medium ${config.textColor}`)}>
                         {alert.message}
                     </p>
-                    <div className={`mt-1 text-xs ${config.metaColor} flex items-center gap-3`}>
+                    <div className={cn(`mt-1 text-xs ${config.metaColor} flex items-center gap-3`)}>
                         <span>{formatDateTime(alert.timestamp)}</span>
                         {alert.component && (
                             <>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from 'react';
 import { LucideIcon } from 'lucide-react';
 import { CheckCircle, AlertCircle, XCircle, Activity } from 'lucide-react';
@@ -39,7 +40,7 @@ export default function MetricCard({ title, value, status, message, responseTime
     };
 
     return (
-        <div className={`bg-white rounded-lg border-2 ${getStatusColor()} p-4 transition-all hover:shadow-md`}>
+        <div className={cn(`bg-white rounded-lg border-2 ${getStatusColor()} p-4 transition-all hover:shadow-md`)}>
             <div className="flex items-start justify-between">
                 <div className="flex-1">
                     <div className="flex items-center gap-2">

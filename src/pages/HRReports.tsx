@@ -140,7 +140,7 @@ export default function HRReports() {
                                         setVisibleColumns([...visibleColumns, val]);
                                     }
                                 }}>
-                                    <SelectTrigger className="w-[200px]">
+                                    <SelectTrigger className="w-48">
                                         <SelectValue placeholder="Toggle Columns" />
                                     </SelectTrigger>
                                     <SelectContent>

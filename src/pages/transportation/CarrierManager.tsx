@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Shield, Star, Globe, Phone, Mail, Award, TrendingUp, Search } from "lucide-react";
@@ -165,7 +166,7 @@ export default function CarrierManager() {
                                 <TooltipProvider key={i}>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <div className={`w-8 bg-emerald-500/20 hover:bg-emerald-500 transition-all rounded-t-sm cursor-help h-[${h}%]`}></div>
+                                            <div className={cn(`w-8 bg-emerald-500/20 hover:bg-emerald-500 transition-all rounded-t-sm cursor-help h-[${h}%]`)}></div>
                                         </TooltipTrigger>
                                         <TooltipContent>
                                             <p>{`Month ${i + 1}: $${h * 10}`}</p>

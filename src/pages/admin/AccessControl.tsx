@@ -105,7 +105,7 @@ export default function AccessControl() {
                                                         defaultValue={user.role}
                                                         onValueChange={(val) => updateRoleMutation.mutate({ userId: user.id, role: val })}
                                                     >
-                                                        <SelectTrigger className="w-[180px]">
+                                                        <SelectTrigger className="w-44">
                                                             <SelectValue />
                                                         </SelectTrigger>
                                                         <SelectContent>

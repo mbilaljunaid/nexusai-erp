@@ -28,7 +28,7 @@ export function PriceBookSelector({ value, onChange, disabled }: PriceBookSelect
                 onValueChange={onChange}
                 disabled={disabled || isLoading}
             >
-                <SelectTrigger className="w-[200px]">
+                <SelectTrigger className="w-48">
                     <SelectValue placeholder="Select Price Book" />
                 </SelectTrigger>
                 <SelectContent>

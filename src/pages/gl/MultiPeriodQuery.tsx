@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -108,7 +109,7 @@ export default function MultiPeriodQuery() {
     };
 
     const queryColumns: SpreadsheetColumn<any>[] = [
-        { id: "accountCode", header: "Account", width: "150px", cell: (row) => <span className={`font-mono ${row.isTotal ? 'font-bold' : ''}`}>{row.accountCode}</span> },
+        { id: "accountCode", header: "Account", width: "150px", cell: (row) => <span className={cn(`font-mono ${row.isTotal ? 'font-bold' : ''}`)}>{row.accountCode}</span> },
         { id: "description", header: "Description", width: "200px", cell: (row) => row.description },
         ...(queryData?.periods || []).map((period: any, i: number) => ({
             id: `period_${i}`,
@@ -150,14 +151,14 @@ export default function MultiPeriodQuery() {
             cell: (row: any) => {
                 if (row.isTotal) {
                     return (
-                        <div className={`text-right font-bold w-full ${row.variance >= 0 ? "text-green-600" : "text-red-600"}`}>
+                        <div className={cn(`text-right font-bold w-full ${row.variance >= 0 ? "text-green-600" : "text-red-600"}`)}>
                             {formatPercent(row.variance)}
                         </div>
                     );
                 }
                 return (
                     <div className="text-right w-full">
-                        <div className={`font-medium ${row.variance >= 0 ? "text-green-600" : "text-red-600"}`}>
+                        <div className={cn(`font-medium ${row.variance >= 0 ? "text-green-600" : "text-red-600"}`)}>
                             {row.variance >= 0 ? <TrendingUp className="h-4 w-4 inline mr-1" /> : <TrendingDown className="h-4 w-4 inline mr-1" />}
                             {formatPercent(row.variance)}
                         </div>

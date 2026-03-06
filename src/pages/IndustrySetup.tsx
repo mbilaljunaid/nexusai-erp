@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -416,7 +417,7 @@ export default function IndustrySetup() {
                     {count} {count === 1 ? "industry" : "industries"} deployed
                   </p>
                 </div>
-                <CheckCircle2 className={`w-5 h-5 ${count > 0 ? "text-green-600" : "text-muted"}`} />
+                <CheckCircle2 className={cn(`w-5 h-5 ${count > 0 ? "text-green-600" : "text-muted"}`)} />
               </div>
             );
           })}
@@ -501,7 +502,7 @@ export default function IndustrySetup() {
                   setEditedConfig(e.target.value);
                   setConfigError(null);
                 }}
-                className="font-mono text-sm min-h-[150px]"
+                className="font-mono text-sm min-h-36"
                 placeholder='{"customSetting": "value"}'
                 disabled={updateDeploymentMutation.isPending}
                 data-testid="textarea-custom-config"

@@ -155,7 +155,7 @@ export function ReconciliationRuleManager() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-[50px]">Priority</TableHead>
+                                <TableHead className="w-12">Priority</TableHead>
                                 <TableHead>Rule Name</TableHead>
                                 <TableHead>Criteria Summary</TableHead>
                                 <TableHead>Status</TableHead>

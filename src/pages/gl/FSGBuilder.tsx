@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -272,7 +273,7 @@ export default function FSGBuilder() {
                                 {rowSets?.map(rs => (
                                     <div role="button" tabIndex={0}
                                         key={rs.id}
-                                        className={`p-4 border rounded-md flex justify-between items-center cursor-pointer transition-colors ${selectedRowSet?.id === rs.id ? 'bg-blue-50 border-blue-200' : 'bg-card hover:bg-muted'}`}
+                                        className={cn(`p-4 border rounded-md flex justify-between items-center cursor-pointer transition-colors ${selectedRowSet?.id === rs.id ? 'bg-blue-50 border-blue-200' : 'bg-card hover:bg-muted'}`)}
                                         onClick={() => setSelectedRowSet(rs)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     >
                                         <div>
@@ -333,7 +334,7 @@ export default function FSGBuilder() {
                                         </div>
 
                                         {/* Rows Table */}
-                                        <div className="min-h-[300px] h-full border-t border-gray-200">
+                                        <div className="min-h-72 h-full border-t border-gray-200">
                                             <InteractiveSpreadsheet
                                                 columns={rowColumns}
                                                 data={activeRows || []}
@@ -374,7 +375,7 @@ export default function FSGBuilder() {
                                 {colSets?.map(cs => (
                                     <div role="button" tabIndex={0}
                                         key={cs.id}
-                                        className={`p-4 border rounded-md flex justify-between items-center cursor-pointer transition-colors ${selectedColSet?.id === cs.id ? 'bg-blue-50 border-blue-200' : 'bg-card hover:bg-muted'}`}
+                                        className={cn(`p-4 border rounded-md flex justify-between items-center cursor-pointer transition-colors ${selectedColSet?.id === cs.id ? 'bg-blue-50 border-blue-200' : 'bg-card hover:bg-muted'}`)}
                                         onClick={() => setSelectedColSet(cs)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     >
                                         <div>
@@ -462,7 +463,7 @@ export default function FSGBuilder() {
                                         </div>
 
                                         {/* Cols Table */}
-                                        <div className="min-h-[300px] h-full border-t border-gray-200">
+                                        <div className="min-h-72 h-full border-t border-gray-200">
                                             <InteractiveSpreadsheet
                                                 columns={colColumns}
                                                 data={activeCols || []}

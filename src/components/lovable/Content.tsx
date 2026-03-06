@@ -131,7 +131,7 @@ export function CodeBlock({ code, language = 'typescript', title }: CodeBlockPro
             )}
 
             <pre className="p-6 overflow-x-auto">
-                <code className={`language-${language} text-sm text-slate-100`}>
+                <code className={cn(`language-${language} text-sm text-slate-100`)}>
                     {code}
                 </code>
             </pre>

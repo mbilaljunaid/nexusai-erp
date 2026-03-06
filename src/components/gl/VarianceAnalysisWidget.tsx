@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -48,7 +49,7 @@ export function VarianceAnalysisWidget({ currentPeriodId, onClose }: VarianceAna
             <div className="flex items-center gap-2 mb-4">
                 <span className="text-sm font-medium">Benchmark:</span>
                 <Select value={benchmarkPeriodId} onValueChange={setBenchmarkPeriodId}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-44">
                         <SelectValue placeholder="Select period" />
                     </SelectTrigger>
                     <SelectContent>
@@ -66,8 +67,8 @@ export function VarianceAnalysisWidget({ currentPeriodId, onClose }: VarianceAna
                         <div key={i} className="flex items-center space-x-4">
                             <Skeleton className="h-12 w-12 rounded-full" />
                             <div className="space-y-2">
-                                <Skeleton className="h-4 w-[250px]" />
-                                <Skeleton className="h-4 w-[200px]" />
+                                <Skeleton className="h-4 w-64" />
+                                <Skeleton className="h-4 w-48" />
                             </div>
                         </div>
                     ))
@@ -81,7 +82,7 @@ export function VarianceAnalysisWidget({ currentPeriodId, onClose }: VarianceAna
                             <CardContent className="pt-4">
                                 <div className="flex justify-between items-start mb-2">
                                     <h4 className="font-semibold">{item.account}</h4>
-                                    <div className={`flex items-center gap-1 text-sm font-bold ${item.variance > 0 ? "text-green-600" : "text-red-500"}`}>
+                                    <div className={cn(`flex items-center gap-1 text-sm font-bold ${item.variance > 0 ? "text-green-600" : "text-red-500"}`)}>
                                         {item.variance > 0 ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
                                         {Math.abs(item.variancePercent)}%
                                         <span className="text-xs font-normal text-muted-foreground ml-1">

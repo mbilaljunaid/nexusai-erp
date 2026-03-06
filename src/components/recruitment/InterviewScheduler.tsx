@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -290,10 +291,10 @@ export function InterviewScheduler({
                                 {availableInterviewers.map((interviewer) => (
                                     <div role="button" tabIndex={0}
                                         key={interviewer.id}
-                                        className={`p-2 rounded cursor-pointer border transition-colors ${formData.interviewerIds.includes(interviewer.id)
+                                        className={cn(`p-2 rounded cursor-pointer border transition-colors ${formData.interviewerIds.includes(interviewer.id)
                                                 ? 'border-primary bg-primary/10'
                                                 : 'border-transparent hover:bg-muted'
-                                            }`}
+                                            }`)}
                                         onClick={() => toggleInterviewer(interviewer.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     >
                                         <div className="flex items-center justify-between">

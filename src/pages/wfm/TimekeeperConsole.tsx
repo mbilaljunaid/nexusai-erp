@@ -122,12 +122,12 @@ export default function TimekeeperConsole() {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead className="min-w-[200px]">Employee</TableHead>
-                                    <TableHead className="min-w-[120px]">Shift</TableHead>
-                                    <TableHead className="w-[150px]">In Time</TableHead>
-                                    <TableHead className="w-[150px]">Out Time</TableHead>
-                                    <TableHead className="w-[100px] text-right">Hours</TableHead>
-                                    <TableHead className="w-[50px]"></TableHead>
+                                    <TableHead className="min-w-48">Employee</TableHead>
+                                    <TableHead className="min-w-28">Shift</TableHead>
+                                    <TableHead className="w-36">In Time</TableHead>
+                                    <TableHead className="w-36">Out Time</TableHead>
+                                    <TableHead className="w-24 text-right">Hours</TableHead>
+                                    <TableHead className="w-12"></TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>

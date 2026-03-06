@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React, { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -132,7 +133,7 @@ export default function WHTRemittance() {
         { id: "country", header: "Country", width: "100px", cell: (b) => <span className="country-badge">{b.country_code}</span> },
         { id: "totalWHT", header: "Total WHT", width: "150px", cell: (b) => <span className="amount red">{fmtCcy(b.total_wht, b.currency_code)}</span> },
         { id: "dueDate", header: "Due Date", width: "150px", cell: (b) => b.due_date ?? '—' },
-        { id: "status", header: "Status", width: "120px", cell: (b) => <span className={`batch-status ${b.status.toLowerCase()}`}>{b.status}</span> },
+        { id: "status", header: "Status", width: "120px", cell: (b) => <span className={cn(`batch-status ${b.status.toLowerCase()}`)}>{b.status}</span> },
         {
             id: "actions", header: "Actions", width: "120px", cell: (b) => b.status === 'Pending' ? (
                 <button
@@ -187,7 +188,7 @@ export default function WHTRemittance() {
             {/* Tabs */}
             <div className="wht-tabs">
                 {(['transactions', 'rules', 'batches'] as const).map(t => (
-                    <button key={t} className={`wht-tab ${activeTab === t ? 'active' : ''}`} onClick={() => setActiveTab(t)}>
+                    <button key={t} className={cn(`wht-tab ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)}>
                         {t.charAt(0).toUpperCase() + t.slice(1)}
                     </button>
                 ))}

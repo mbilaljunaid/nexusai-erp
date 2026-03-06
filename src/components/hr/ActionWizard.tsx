@@ -1,15 +1,15 @@
-import { useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar as CalendarIcon, CheckCircle2, ChevronRight, Save } from "lucide-react";
-import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
+import { useState} from"react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter} from"@/components/ui/dialog";
+import { Button} from"@/components/ui/button";
+import { Input} from"@/components/ui/input";
+import { Label} from"@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from"@/components/ui/select";
+import { Calendar as CalendarIcon, CheckCircle2, ChevronRight, Save} from"lucide-react";
+import { format} from"date-fns";
+import { Calendar} from"@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger} from"@/components/ui/popover";
+import { cn} from"@/lib/utils";
+import { Textarea} from"@/components/ui/textarea";
 
 export type WizardStep = {
     id: string;
@@ -21,12 +21,12 @@ export type WizardStep = {
 export interface ActionWizardProps {
     isOpen: boolean;
     onClose: () => void;
-    actionType: "TRANSFER" | "PROMOTE" | "TERMINATE" | "SALARY_CHANGE" | null;
+    actionType:"TRANSFER" |"PROMOTE" |"TERMINATE" |"SALARY_CHANGE" | null;
     employeeName?: string;
     onComplete?: (data: any) => void;
 }
 
-export default function ActionWizard({ isOpen, onClose, actionType, employeeName = "Employee", onComplete }: ActionWizardProps) {
+export default function ActionWizard({ isOpen, onClose, actionType, employeeName ="Employee", onComplete}: ActionWizardProps) {
     const [currentStep, setCurrentStep] = useState(0);
     const [date, setDate] = useState<Date>(new Date());
 
@@ -37,40 +37,40 @@ export default function ActionWizard({ isOpen, onClose, actionType, employeeName
     // Mock Data for Steps based on action type
     const getSteps = (): WizardStep[] => {
         const baseSteps = [
-            { id: "when-why", title: "When and Why", description: "Effective date and reason" }
+            { id:"when-why", title:"When and Why", description:"Effective date and reason"}
         ];
 
         switch (actionType) {
-            case "TRANSFER":
+            case"TRANSFER":
                 return [
                     ...baseSteps,
-                    { id: "assignment", title: "Assignment Details", description: "New department or location" },
-                    { id: "manager", title: "Manager", description: "Reporting structure" },
-                    { id: "review", title: "Review", description: "Verify changes" }
+                    { id:"assignment", title:"Assignment Details", description:"New department or location"},
+                    { id:"manager", title:"Manager", description:"Reporting structure"},
+                    { id:"review", title:"Review", description:"Verify changes"}
                 ];
-            case "PROMOTE":
+            case"PROMOTE":
                 return [
                     ...baseSteps,
-                    { id: "job", title: "Job Details", description: "New grade and title" },
-                    { id: "compensation", title: "Compensation", description: "Salary adjustment" },
-                    { id: "review", title: "Review", description: "Verify changes" }
+                    { id:"job", title:"Job Details", description:"New grade and title"},
+                    { id:"compensation", title:"Compensation", description:"Salary adjustment"},
+                    { id:"review", title:"Review", description:"Verify changes"}
                 ];
-            case "TERMINATE":
+            case"TERMINATE":
                 return [
                     ...baseSteps,
-                    { id: "details", title: "Termination Details", description: "Offboarding info" },
-                    { id: "review", title: "Review", description: "Verify and submit" }
+                    { id:"details", title:"Termination Details", description:"Offboarding info"},
+                    { id:"review", title:"Review", description:"Verify and submit"}
                 ];
-            case "SALARY_CHANGE":
+            case"SALARY_CHANGE":
                 return [
                     ...baseSteps,
-                    { id: "compensation", title: "Compensation", description: "New salary details" },
-                    { id: "review", title: "Review", description: "Verify changes" }
+                    { id:"compensation", title:"Compensation", description:"New salary details"},
+                    { id:"review", title:"Review", description:"Verify changes"}
                 ];
             default:
-                return [...baseSteps, { id: "review", title: "Review", description: "Verify changes" }];
-        }
-    };
+                return [...baseSteps, { id:"review", title:"Review", description:"Verify changes"}];
+       }
+   };
 
     const steps = getSteps();
     const isFirstStep = currentStep === 0;
@@ -79,38 +79,38 @@ export default function ActionWizard({ isOpen, onClose, actionType, employeeName
     const handleNext = () => {
         if (!isLastStep) {
             setCurrentStep(prev => prev + 1);
-        } else {
+       } else {
             // Submit
             if (onComplete) {
-                onComplete({ actionType, date, actionReason, notes });
-            }
+                onComplete({ actionType, date, actionReason, notes});
+           }
             onClose();
             // Reset for next time
             setTimeout(() => setCurrentStep(0), 300);
-        }
-    };
+       }
+   };
 
     const handleBack = () => {
         if (!isFirstStep) {
             setCurrentStep(prev => prev - 1);
-        }
-    };
+       }
+   };
 
     if (!actionType) return null;
 
     const actionTitles: Record<string, string> = {
-        "TRANSFER": "Transfer Worker",
-        "PROMOTE": "Promote Worker",
-        "TERMINATE": "Terminate Worker",
-        "SALARY_CHANGE": "Change Salary"
-    };
+       "TRANSFER":"Transfer Worker",
+       "PROMOTE":"Promote Worker",
+       "TERMINATE":"Terminate Worker",
+       "SALARY_CHANGE":"Change Salary"
+   };
 
     const actionReasons: Record<string, string[]> = {
-        "TRANSFER": ["Reorganization", "Internal Mobility", "Relocation", "Performance"],
-        "PROMOTE": ["Outstanding Performance", "Role Expansion", "Annual Cycle", "Retention"],
-        "TERMINATE": ["Voluntary - Better Opportunity", "Voluntary - Relocation", "Involuntary - Performance", "Involuntary - Restructuring"],
-        "SALARY_CHANGE": ["Market Adjustment", "Merit Increase", "Promotion", "Equity Review"]
-    };
+       "TRANSFER": ["Reorganization","Internal Mobility","Relocation","Performance"],
+       "PROMOTE": ["Outstanding Performance","Role Expansion","Annual Cycle","Retention"],
+       "TERMINATE": ["Voluntary - Better Opportunity","Voluntary - Relocation","Involuntary - Performance","Involuntary - Restructuring"],
+       "SALARY_CHANGE": ["Market Adjustment","Merit Increase","Promotion","Equity Review"]
+   };
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -135,20 +135,20 @@ export default function ActionWizard({ isOpen, onClose, actionType, employeeName
                                 return (
                                     <div key={step.id} className="relative flex items-center gap-3">
                                         <div className={cn(
-                                            "flex items-center justify-center w-8 h-8 rounded-full border-2 bg-background z-10 shrink-0 shadow-sm transition-colors",
-                                            isActive ? "border-primary text-primary" :
-                                                isPast ? "border-primary bg-primary text-primary-foreground" :
-                                                    "border-muted-foreground/30 text-muted-foreground font-medium"
+                                           "flex items-center justify-center w-8 h-8 rounded-full border-2 bg-background shrink-0 shadow-sm transition-colors",
+                                            isActive ?"border-primary text-primary" :
+                                                isPast ?"border-primary bg-primary text-primary-foreground" :
+                                                   "border-muted-foreground/30 text-muted-foreground font-medium"
                                         )}>
                                             {isPast ? <CheckCircle2 className="w-5 h-5" /> : <span>{index + 1}</span>}
                                         </div>
                                         <div>
-                                            <p className={cn("text-sm font-semibold", isActive ? "text-foreground" : "text-muted-foreground")}>{step.title}</p>
+                                            <p className={cn("text-sm font-semibold", isActive ?"text-foreground" :"text-muted-foreground")}>{step.title}</p>
                                             <p className="text-xs text-muted-foreground">{step.description}</p>
                                         </div>
                                     </div>
                                 );
-                            })}
+                           })}
                         </div>
                     </div>
 
@@ -169,12 +169,12 @@ export default function ActionWizard({ isOpen, onClose, actionType, employeeName
                                                     <Button
                                                         variant={"outline"}
                                                         className={cn(
-                                                            "w-full justify-start text-left font-normal",
-                                                            !date && "text-muted-foreground"
+                                                           "w-full justify-start text-left font-normal",
+                                                            !date &&"text-muted-foreground"
                                                         )}
                                                     >
                                                         <CalendarIcon className="mr-2 h-4 w-4" />
-                                                        {date ? format(date, "PPP") : <span>Pick a date</span>}
+                                                        {date ? format(date,"PPP") : <span>Pick a date</span>}
                                                     </Button>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-auto p-0" align="start">
@@ -209,7 +209,7 @@ export default function ActionWizard({ isOpen, onClose, actionType, employeeName
                                                 placeholder="Provide any additional context or justification for this action..."
                                                 value={notes}
                                                 onChange={(e) => setNotes(e.target.value)}
-                                                className="min-h-[100px]"
+                                                className="min-h-24"
                                             />
                                         </div>
                                     </div>
@@ -241,15 +241,15 @@ export default function ActionWizard({ isOpen, onClose, actionType, employeeName
                                                 </div>
                                                 <div className="grid grid-cols-3 gap-4 border-b border-primary/10 pb-3">
                                                     <dt className="text-muted-foreground">Effective Date</dt>
-                                                    <dd className="col-span-2 font-medium">{format(date, "PPP")}</dd>
+                                                    <dd className="col-span-2 font-medium">{format(date,"PPP")}</dd>
                                                 </div>
                                                 <div className="grid grid-cols-3 gap-4 border-b border-primary/10 pb-3">
                                                     <dt className="text-muted-foreground">Action Reason</dt>
-                                                    <dd className="col-span-2 font-medium">{actionReason || "Not specified"}</dd>
+                                                    <dd className="col-span-2 font-medium">{actionReason ||"Not specified"}</dd>
                                                 </div>
                                                 <div className="grid grid-cols-3 gap-4">
                                                     <dt className="text-muted-foreground">Comments</dt>
-                                                    <dd className="col-span-2 text-muted-foreground italic">{notes || "None provided"}</dd>
+                                                    <dd className="col-span-2 text-muted-foreground italic">{notes ||"None provided"}</dd>
                                                 </div>
                                             </dl>
                                         </div>
@@ -271,7 +271,7 @@ export default function ActionWizard({ isOpen, onClose, actionType, employeeName
                                 variant="outline"
                                 onClick={handleBack}
                                 disabled={isFirstStep}
-                                className="w-[100px]"
+                                className="w-24"
                             >
                                 Back
                             </Button>
@@ -280,7 +280,7 @@ export default function ActionWizard({ isOpen, onClose, actionType, employeeName
                                 <Button variant="ghost" onClick={onClose}>Cancel</Button>
                                 <Button
                                     onClick={handleNext}
-                                    className={cn("w-[140px]", isLastStep && "bg-green-600 hover:bg-green-700 text-white")}
+                                    className={cn("w-36", isLastStep &&"bg-green-600 hover:bg-green-700 text-white")}
                                     disabled={currentStep === 0 && !actionReason}
                                 >
                                     {isLastStep ? (

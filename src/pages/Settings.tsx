@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -308,7 +309,7 @@ export default function Settings() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-3 gap-4">
                 <div role="button" tabIndex={0}
-                  className={`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'light' ? 'border-primary' : 'border-transparent'}`}
+                  className={cn(`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'light' ? 'border-primary' : 'border-transparent'}`)}
                   onClick={() => setTheme('light')}
                   data-testid="button-theme-light" onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                 >
@@ -316,7 +317,7 @@ export default function Settings() {
                   <p className="text-sm font-medium text-center">Light</p>
                 </div>
                 <div role="button" tabIndex={0}
-                  className={`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'dark' ? 'border-primary' : 'border-transparent'}`}
+                  className={cn(`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'dark' ? 'border-primary' : 'border-transparent'}`)}
                   onClick={() => setTheme('dark')}
                   data-testid="button-theme-dark" onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                 >
@@ -324,7 +325,7 @@ export default function Settings() {
                   <p className="text-sm font-medium text-center">Dark</p>
                 </div>
                 <div role="button" tabIndex={0}
-                  className={`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'system' ? 'border-primary' : 'border-transparent'}`}
+                  className={cn(`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'system' ? 'border-primary' : 'border-transparent'}`)}
                   onClick={() => setTheme('system')}
                   data-testid="button-theme-system" onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                 >
@@ -346,15 +347,15 @@ export default function Settings() {
                   <button
                     key={color.name}
                     onClick={() => setAccentColor(color)}
-                    className={`group relative flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all hover-elevate ${accentColor.name === color.name
+                    className={cn(`group relative flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all hover-elevate ${accentColor.name === color.name
                       ? 'border-foreground/50 bg-muted/50'
                       : 'border-transparent'
-                      }`}
+                      }`)}
                     data-testid={`button-accent-${color.name.toLowerCase()}`}
                   >
                     <div
-                      className={`w-8 h-8 rounded-full transition-transform group-hover:scale-110 ${accentColor.name === color.name ? 'ring-2 ring-offset-2 ring-offset-background' : ''
-                        }`}
+                      className={cn(`w-8 h-8 rounded-full transition-transform group-hover:scale-110 ${accentColor.name === color.name ? 'ring-2 ring-offset-2 ring-offset-background' : ''
+                        }`)}
                       style={{
                         backgroundColor: color.value,
                         boxShadow: accentColor.name === color.name ? `0 0 0 2px var(--background), 0 0 0 4px ${color.value}` : 'none'

@@ -100,7 +100,7 @@ export function RevaluationDialog({ accountId, accountName, currency, isOpen, on
 
                     <div className="pt-4">
                         <h4 className="text-sm font-medium mb-2">Revaluation History</h4>
-                        <div className="border rounded-md max-h-[200px] overflow-y-auto">
+                        <div className="border rounded-md max-h-48 overflow-y-auto">
                             <Table>
                                 <TableHeader>
                                     <TableRow>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import MRRAnalyticsService, { SaaSMetrics } from '@/services/mrrAnalyticsService';
-import { TrendingUp, DollarSign, Users, Target } from 'lucide-react';
+import { TrendingUp, DollarSign, Users, Target, Loader2 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 
 
@@ -36,7 +36,7 @@ export default function MRRAnalyticsDashboard() {
     if (loading) {
         return (
             <StandardPage title="MRR Analytics">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                <Loader2 className="h-12 w-12 animate-spin text-primary" />
             </StandardPage>
         );
     }

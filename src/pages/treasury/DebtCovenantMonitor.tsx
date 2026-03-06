@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -115,7 +116,7 @@ export default function DebtCovenantMonitor() {
         {
             id: "status", header: "Status", width: "120px", cell: (row) => {
                 const cfg = STATUS_CFG[row.match_status] ?? 'bg-gray-100 text-gray-500';
-                return <span className={`status-chip ${cfg}`}>{row.match_status}</span>;
+                return <span className={cn(`status-chip ${cfg}`)}>{row.match_status}</span>;
             }
         },
         { id: "score", header: "Score", width: "100px", cell: (row) => <span className="mono">{row.match_score?.toFixed(0) ?? '—'}%</span> },
@@ -139,13 +140,13 @@ export default function DebtCovenantMonitor() {
         {
             id: "variance", header: "Variance", width: "150px", cell: (row) => {
                 const variance = Number(row.reconciled_balance) - Number(row.gl_balance);
-                return <span className={`mono ${Math.abs(variance) < 0.01 ? 'green' : 'red'}`}>{fmt(variance)}</span>;
+                return <span className={cn(`mono ${Math.abs(variance) < 0.01 ? 'green' : 'red'}`)}>{fmt(variance)}</span>;
             }
         },
         {
             id: "status", header: "Status", width: "120px", cell: (row) => {
                 const cfg = RECON_CFG[row.status] ?? 'bg-gray-100 text-gray-500';
-                return <span className={`status-chip ${cfg}`}>{row.status}</span>;
+                return <span className={cn(`status-chip ${cfg}`)}>{row.status}</span>;
             }
         },
         {
@@ -182,7 +183,7 @@ export default function DebtCovenantMonitor() {
             {/* Tabs */}
             <div className="dcm-tabs">
                 {(['sanctions', 'recon'] as const).map(t => (
-                    <button key={t} className={`dcm-tab ${activeTab === t ? 'active' : ''}`} onClick={() => setActiveTab(t)}>
+                    <button key={t} className={cn(`dcm-tab ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)}>
                         {t === 'sanctions' ? '🛡 Sanctions Screening' : '📋 Bank Recon Sign-off'}
                         {t === 'sanctions' && pending > 0 && <span className="tab-badge">{pending}</span>}
                         {t === 'recon' && (reconSummary?.pending_approval > 0) && <span className="tab-badge">{reconSummary.pending_approval}</span>}
@@ -222,7 +223,7 @@ export default function DebtCovenantMonitor() {
                                 <RefreshCw size={14} /> {batchScreenMutation.isPending ? 'Screening…' : 'Batch Screen Suppliers'}
                             </button>
                             {screenMutation.isSuccess && screenMutation.data && (
-                                <div className={`screen-result ${(screenMutation.data as ScreeningResult).match_status.toLowerCase()}`}>
+                                <div className={cn(`screen-result ${(screenMutation.data as ScreeningResult).match_status.toLowerCase()}`)}>
                                     <div className="sr-status">{(screenMutation.data as ScreeningResult).match_status}</div>
                                     {(screenMutation.data as ScreeningResult).match_score > 0 && <div className="sr-score">Score: {(screenMutation.data as ScreeningResult).match_score}%</div>}
                                     {(screenMutation.data as ScreeningResult).matched_name && <div className="sr-match">Matched: {(screenMutation.data as ScreeningResult).matched_name}</div>}
@@ -275,7 +276,7 @@ export default function DebtCovenantMonitor() {
                                 <div className="rm-actions">
                                     <button className="rm-cancel" onClick={() => setSelectedResult(null)} aria-label="Cancel review">Cancel</button>
                                     <button
-                                        className={`rm-confirm ${reviewOutcome === 'Confirmed' ? 'danger' : 'success'}`}
+                                        className={cn(`rm-confirm ${reviewOutcome === 'Confirmed' ? 'danger' : 'success'}`)}
                                         disabled={reviewMutation.isPending}
                                         onClick={() => reviewMutation.mutate({ id: selectedResult.id, outcome: reviewOutcome })}
                                         aria-label="Submit review"
@@ -385,8 +386,8 @@ export default function DebtCovenantMonitor() {
 
 function DcmKpi({ label, value, colorClass, borderClass, alert }: { label: string; value: number | string; colorClass: string; borderClass: string; alert?: boolean }) {
     return (
-        <div className={`bg-white border-y border-r border-l-4 rounded-xl px-4 py-3 min-w-[120px] ${alert ? 'border-y-red-300 border-r-red-300' : 'border-y-gray-200 border-r-gray-200'} ${borderClass}`}>
-            <div className={`text-[22px] font-[800] ${colorClass}`}>{value}</div>
+        <div className={cn(`bg-white border-y border-r border-l-4 rounded-xl px-4 py-3 min-w-28 ${alert ? 'border-y-red-300 border-r-red-300' : 'border-y-gray-200 border-r-gray-200'} ${borderClass}`)}>
+            <div className={cn(`text-[22px] font-[800] ${colorClass}`)}>{value}</div>
             <div className="text-[11px] text-gray-500 mt-0.5">{label}</div>
         </div>
     );
@@ -395,7 +396,7 @@ function DcmKpi({ label, value, colorClass, borderClass, alert }: { label: strin
 function ReconKpi({ label, value, colorClass, isText }: { label: string; value: number | string; colorClass: string; isText?: boolean }) {
     return (
         <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 flex-1">
-            <div className={`font-[800] ${colorClass} ${isText ? 'text-base font-mono' : 'text-[22px]'}`}>{value}</div>
+            <div className={cn(`font-[800] ${colorClass} ${isText ? 'text-base font-mono' : 'text-[22px]'}`)}>{value}</div>
             <div className="text-[11px] text-gray-400 mt-0.5">{label}</div>
         </div>
     );

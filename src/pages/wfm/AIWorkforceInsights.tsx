@@ -65,7 +65,7 @@ export default function AIWorkforceInsights() {
                 <div className="flex gap-2">
                     <Popover>
                         <PopoverTrigger asChild>
-                            <Button variant={"outline"} className={cn("w-[240px] justify-start text-left font-normal", !date && "text-muted-foreground")}>
+                            <Button variant={"outline"} className={cn("w-60 justify-start text-left font-normal", !date && "text-muted-foreground")}>
                                 <CalendarIcon className="mr-2 h-4 w-4" />
                                 {date ? format(date, "PPP") : <span>Pick a date</span>}
                             </Button>
@@ -88,7 +88,7 @@ export default function AIWorkforceInsights() {
                         <CardDescription>Predicted labor hours based on historical trends.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="h-[200px] w-full">
+                        <div className="h-48 w-full">
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart data={chartData}>
                                     <CartesianGrid strokeDasharray="3 3" />

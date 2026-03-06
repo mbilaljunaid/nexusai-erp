@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -83,7 +84,7 @@ export default function BudgetVariance() {
                 <Card>
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Variance</div>
-                        <div className={`text-3xl font-bold mt-1 ${variance?.variance >= 0 ? 'text-red-600' : 'text-green-600'}`}>
+                        <div className={cn(`text-3xl font-bold mt-1 ${variance?.variance >= 0 ? 'text-red-600' : 'text-green-600'}`)}>
                             ${Math.abs(variance?.variance || 0).toLocaleString()}
                         </div>
                     </CardContent>
@@ -91,7 +92,7 @@ export default function BudgetVariance() {
                 <Card>
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Variance %</div>
-                        <div className={`text-3xl font-bold mt-1 ${variance?.variancePercent >= 0 ? 'text-red-600' : 'text-green-600'}`}>
+                        <div className={cn(`text-3xl font-bold mt-1 ${variance?.variancePercent >= 0 ? 'text-red-600' : 'text-green-600'}`)}>
                             {variance?.variancePercent}%
                         </div>
                     </CardContent>
@@ -124,13 +125,13 @@ export default function BudgetVariance() {
                                     </div>
                                     <div>
                                         <div className="text-muted-foreground">Variance</div>
-                                        <div className={`font-medium ${item.variance >= 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                        <div className={cn(`font-medium ${item.variance >= 0 ? 'text-red-600' : 'text-green-600'}`)}>
                                             ${Math.abs(item.variance).toLocaleString()}
                                         </div>
                                     </div>
                                     <div>
                                         <div className="text-muted-foreground">% Variance</div>
-                                        <div className={`font-medium ${item.variancePercent >= 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                        <div className={cn(`font-medium ${item.variancePercent >= 0 ? 'text-red-600' : 'text-green-600'}`)}>
                                             {item.variancePercent}%
                                         </div>
                                     </div>

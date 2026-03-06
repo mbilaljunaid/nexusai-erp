@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Link } from 'wouter';
@@ -78,7 +79,7 @@ export function Footer() {
           >
             <span>Process Flows (18 Processes)</span>
             <ChevronDown
-              className={`w-5 h-5 transition-transform ${isProcessesOpen ? 'rotate-180' : ''}`}
+              className={cn(`w-5 h-5 transition-transform ${isProcessesOpen ? 'rotate-180' : ''}`)}
               data-testid="icon-chevron-processes"
             />
           </button>

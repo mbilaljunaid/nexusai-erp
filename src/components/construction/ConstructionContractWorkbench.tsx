@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -233,7 +234,7 @@ export default function ConstructionContractWorkbench() {
 
                 <div className="flex items-center gap-2">
                     <Select value={selectedProjectId || ""} onValueChange={setSelectedProjectId}>
-                        <SelectTrigger className="w-[300px]">
+                        <SelectTrigger className="w-72">
                             <SelectValue placeholder="Select Project" />
                         </SelectTrigger>
                         <SelectContent>
@@ -299,7 +300,7 @@ export default function ConstructionContractWorkbench() {
                                 {contracts.map(contract => (
                                     <div role="button" tabIndex={0}
                                         key={contract.id}
-                                        className={`p-4 cursor-pointer hover:bg-muted/50 transition-colors ${selectedContractId === contract.id ? "bg-muted border-l-4 border-primary" : ""}`}
+                                        className={cn(`p-4 cursor-pointer hover:bg-muted/50 transition-colors ${selectedContractId === contract.id ? "bg-muted border-l-4 border-primary" : ""}`)}
                                         onClick={() => setSelectedContractId(contract.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     >
                                         <div className="flex justify-between items-start mb-1">
@@ -380,7 +381,7 @@ export default function ConstructionContractWorkbench() {
                                                             <Textarea
                                                                 name="csvData"
                                                                 placeholder="1, Excavation, 50000&#10;2, Foundation, 75000"
-                                                                className="min-h-[200px] font-mono text-xs"
+                                                                className="min-h-48 font-mono text-xs"
                                                             />
                                                             <SheetFooter className="pt-4">
                                                                 <Button type="submit" disabled={bulkImportMutation.isPending} className="w-full">

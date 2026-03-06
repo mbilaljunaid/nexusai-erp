@@ -1,21 +1,21 @@
-import { formatDate } from "@/lib/dateUtils";
-import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, GraduationCap, PlayCircle, Plus, Download, Sparkles } from "lucide-react";
-import { Link, useLocation } from "wouter";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
-import { Progress } from "@/components/ui/progress";
-import { useNexusAI } from "@/contexts/NexusAIContext";
-import { StandardPage } from "@/components/layout/StandardPage";
-import { StatusBadge } from "@/components/shared/StatusBadge";
-import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { formatDate} from"@/lib/dateUtils";
+import { useState} from"react";
+import { useQuery, useMutation, useQueryClient} from"@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription} from"@/components/ui/card";
+import { Button} from"@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger} from"@/components/ui/tabs";
+import { BookOpen, GraduationCap, PlayCircle, Plus, Download, Sparkles} from"lucide-react";
+import { Link, useLocation} from"wouter";
+import { Badge} from"@/components/ui/badge";
+import { Input} from"@/components/ui/input";
+import { Label} from"@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from"@/components/ui/dialog";
+import { useToast} from"@/hooks/use-toast";
+import { Progress} from"@/components/ui/progress";
+import { useNexusAI} from"@/contexts/NexusAIContext";
+import { StandardPage} from"@/components/layout/StandardPage";
+import { StatusBadge} from"@/components/shared/StatusBadge";
+import { useEnterpriseStore} from"@/lib/enterpriseStore";
 
 import {
   Select,
@@ -23,122 +23,122 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+} from"@/components/ui/select";
+import { z} from"zod";
+import { useForm} from"react-hook-form";
+import { zodResolver} from"@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from"@/components/ui/form";
 
 const courseSchema = z.object({
-  title: z.string().min(1, "Course Title is required"),
+  title: z.string().min(1,"Course Title is required"),
   description: z.string().optional()
 });
 
 export default function LearningManagement() {
-  const { open, sendMessage } = useNexusAI();
+  const { open, sendMessage} = useNexusAI();
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("catalog");
-  const { toast } = useToast();
+  const { toast} = useToast();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("ALL");
   const [providerFilter, setProviderFilter] = useState("ALL");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const { legalEntityId } = useEnterpriseStore();
+  const { legalEntityId} = useEnterpriseStore();
 
   // Fetch Catalog
-  const { data: courses, isLoading: isCatalogLoading } = useQuery<any>({
+  const { data: courses, isLoading: isCatalogLoading} = useQuery<any>({
     queryKey: ["learning-courses", searchQuery, categoryFilter, providerFilter, legalEntityId],
     queryFn: async () => {
       const res = await fetch(`/api/learning/courses?q=${searchQuery}&category=${categoryFilter}&provider=${providerFilter}`, {
-        headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined
-      });
+        headers: legalEntityId ? {"x-legal-entity-id": legalEntityId} : undefined
+     });
       if (!res.ok) throw new Error("Failed to fetch catalog");
       return res.json();
-    }
-  });
+   }
+ });
 
   // Fetch Recommendations
-  const { data: recommendations } = useQuery<any>({
+  const { data: recommendations} = useQuery<any>({
     queryKey: ["learning-recommendations", legalEntityId],
     queryFn: async () => {
       // Fallback for MVP if user context is missing in strict fetch
       const res = await fetch("/api/learning/recommendations?personId=current_user", {
-        headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined
-      });
+        headers: legalEntityId ? {"x-legal-entity-id": legalEntityId} : undefined
+     });
       if (!res.ok) return [];
       return res.json();
-    }
-  });
+   }
+ });
 
   // Fetch My Learning (Mocking PersonID for MVP dev)
-  const { data: enrollments, isLoading: isMyLearningLoading } = useQuery<any>({
+  const { data: enrollments, isLoading: isMyLearningLoading} = useQuery<any>({
     queryKey: ["my-learning"],
     queryFn: async () => {
       // Assuming context middleware provides user, but for now we might need a fallback if not logged in
       const res = await fetch("/api/learning/my-enrollments?personId=current_user"); // Dev hack: query param fallback
       if (!res.ok) throw new Error("Failed to fetch enrollments");
       return res.json();
-    }
-  });
+   }
+ });
 
   // Create Course Mutation
   const createCourseMutation = useMutation({
     mutationFn: async (data: any) => {
       const res = await fetch("/api/learning/courses", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method:"POST",
+        headers: {"Content-Type":"application/json"},
         body: JSON.stringify(data),
-      });
+     });
       if (!res.ok) throw new Error("Failed to create course");
       return res.json();
-    },
+   },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["learning-courses"] });
+      queryClient.invalidateQueries({ queryKey: ["learning-courses"]});
       setIsCreateOpen(false);
       form.reset();
-      toast({ title: "Course Created" });
-    },
-  });
+      toast({ title:"Course Created"});
+   },
+ });
 
   const form = useForm<z.infer<typeof courseSchema>>({
     resolver: zodResolver(courseSchema),
     defaultValues: {
-      title: "",
-      description: ""
-    }
-  });
+      title:"",
+      description:""
+   }
+ });
 
   const onSubmit = (values: z.infer<typeof courseSchema>) => {
     createCourseMutation.mutate({
       title: values.title,
       description: values.description,
-      provider: "Internal",
+      provider:"Internal",
       durationMinutes: 60
-    });
-  };
+   });
+ };
 
   // Enroll / Request Mutation
   const enrollMutation = useMutation({
     mutationFn: async (course: any) => {
       // 1. Create Offering (Simplified)
       const offeringRes = await fetch("/api/learning/offerings", {
-        method: "POST", headers: { "Content-Type": "application/json" },
+        method:"POST", headers: {"Content-Type":"application/json"},
         body: JSON.stringify({
           courseId: course.id,
-          title: "Self Paced Session", // Default
+          title:"Self Paced Session", // Default
           startDate: new Date().toISOString()
-        })
-      });
+       })
+     });
       const offering = await offeringRes.json();
 
       // 2. Check Price for Approval
       const isPaid = Number(offering.price) > 0;
       const endpoint = isPaid
-        ? `/api/learning/enrollments/${offering.id}/request-approval` // Technically we need enrollment first, but let's assume we create enrollment as PENDING
-        : "/api/learning/enroll";
+        ?`/api/learning/enrollments/${offering.id}/request-approval` // Technically we need enrollment first, but let's assume we create enrollment as PENDING
+        :"/api/learning/enroll";
 
-      // For this demo: We assume "enroll" endpoint creates ENROLLED status if clean, or PENDING if logic dictates.
+      // For this demo: We assume"enroll" endpoint creates ENROLLED status if clean, or PENDING if logic dictates.
       // But our Plan said: Enroll -> Pending Approval.
       // Let's stick to: Create Enrollment normally. Backend sets status based on flow?
       // OR: Frontend explicitly requests approval?
@@ -148,21 +148,21 @@ export default function LearningManagement() {
       // B. If Paid, we call request-approval.
 
       // Simplified for this step:
-      // We will call "/api/learning/enroll". If it returns "PENDING_APPROVAL" or needs it?
+      // We will call"/api/learning/enroll". If it returns"PENDING_APPROVAL" or needs it?
 
       // Let's implement the logic from the Plan:
       // POST /api/learning/enroll
-      // body: { personId, offeringId, requestApproval: isPaid }
+      // body: { personId, offeringId, requestApproval: isPaid}
 
       const res = await fetch("/api/learning/enroll", {
-        method: "POST", headers: { "Content-Type": "application/json", ...(legalEntityId ? { "x-legal-entity-id": legalEntityId } : {}) },
+        method:"POST", headers: {"Content-Type":"application/json", ...(legalEntityId ? {"x-legal-entity-id": legalEntityId} : {})},
         body: JSON.stringify({
-          personId: "current_user",
+          personId:"current_user",
           offeringId: offering.id,
-          status: isPaid ? "PENDING_APPROVAL" : "ENROLLED",
+          status: isPaid ?"PENDING_APPROVAL" :"ENROLLED",
           entLegalEntityId: legalEntityId
-        }),
-      });
+       }),
+     });
 
       if (!res.ok) throw new Error("Failed to enroll");
       const enrollment = await res.json();
@@ -172,19 +172,19 @@ export default function LearningManagement() {
 
       if (isPaid) {
         await fetch(`/api/learning/enrollments/${enrollment.id}/request-approval`, {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: "current_user" })
-        });
-      }
+          method:"POST", headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ userId:"current_user"})
+       });
+     }
 
       return enrollment;
-    },
+   },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["my-learning"] });
-      toast({ title: "Request Processed", description: "Enrollment status updated." });
+      queryClient.invalidateQueries({ queryKey: ["my-learning"]});
+      toast({ title:"Request Processed", description:"Enrollment status updated."});
       setActiveTab("my-learning");
-    },
-  });
+   },
+ });
 
 
 
@@ -218,7 +218,7 @@ export default function LearningManagement() {
                   <FormField
                     control={form.control}
                     name="title"
-                    render={({ field }) => (
+                    render={({ field}) => (
                       <FormItem>
                         <FormLabel>Course Title</FormLabel>
                         <FormControl>
@@ -231,11 +231,11 @@ export default function LearningManagement() {
                   <FormField
                     control={form.control}
                     name="description"
-                    render={({ field }) => (
+                    render={({ field}) => (
                       <FormItem>
                         <FormLabel>Description</FormLabel>
                         <FormControl>
-                          <Input {...field} value={field.value || ""} />
+                          <Input {...field} value={field.value ||""} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -253,7 +253,7 @@ export default function LearningManagement() {
           <div className="absolute top-0 right-0 p-4 opacity-10">
             <BookOpen className="h-32 w-32 rotate-12" />
           </div>
-          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="h-5 w-5 text-yellow-300" />
@@ -268,7 +268,7 @@ export default function LearningManagement() {
               onClick={() => {
                 open();
                 sendMessage("I need AI-powered course recommendations based on my career goals and current skill set.");
-              }}
+             }}
             >
               Ask NexusAI for Recommendations
             </Button>
@@ -277,7 +277,7 @@ export default function LearningManagement() {
 
         {/* Active Learning */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {enrollments?.filter((e: any) => e.status !== 'COMPLETED').map((enrollment: any) => (
+          {enrollments?.filter((e: any) => e.status !=='COMPLETED').map((enrollment: any) => (
             <Card key={enrollment.id} className="hover:shadow-md transition-shadow">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium truncate" title={enrollment.title}>
@@ -317,7 +317,7 @@ export default function LearningManagement() {
               <GraduationCap className="h-4 w-4 text-emerald-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{enrollments?.filter((e: any) => e.status === 'COMPLETED').length || 0}</div>
+              <div className="text-2xl font-bold">{enrollments?.filter((e: any) => e.status ==='COMPLETED').length || 0}</div>
               <p className="text-xs text-muted-foreground">Total certifications</p>
             </CardContent>
           </Card>
@@ -338,7 +338,7 @@ export default function LearningManagement() {
                 className="max-w-sm"
               />
 
-              <div className="w-[180px]">
+              <div className="w-44">
                 <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                   <SelectTrigger>
                     <SelectValue placeholder="Category" />
@@ -353,7 +353,7 @@ export default function LearningManagement() {
                 </Select>
               </div>
 
-              <div className="w-[180px]">
+              <div className="w-44">
                 <Select value={providerFilter} onValueChange={setProviderFilter}>
                   <SelectTrigger>
                     <SelectValue placeholder="Provider" />
@@ -368,12 +368,12 @@ export default function LearningManagement() {
                 </Select>
               </div>
 
-              {(categoryFilter !== "ALL" || providerFilter !== "ALL" || searchQuery) && (
+              {(categoryFilter !=="ALL" || providerFilter !=="ALL" || searchQuery) && (
                 <Button variant="ghost" onClick={() => {
                   setCategoryFilter("ALL");
                   setProviderFilter("ALL");
                   setSearchQuery("");
-                }}>
+               }}>
                   Clear Filters
                 </Button>
               )}
@@ -387,7 +387,7 @@ export default function LearningManagement() {
                   <Card key={course.id} className="flex flex-col">
                     <CardHeader>
                       <div className="flex justify-between">
-                        <Badge variant="outline">{course.provider || "Internal"}</Badge>
+                        <Badge variant="outline">{course.provider ||"Internal"}</Badge>
                         {(enrollments?.find((e: any) => e.courseTitle === course.title)) && <StatusBadge status="Enrolled" />}
                       </div>
                       <CardTitle className="mt-2">{course.title}</CardTitle>
@@ -403,8 +403,8 @@ export default function LearningManagement() {
                         onClick={() => enrollMutation.mutate(course)}
                       >
                         {enrollments?.find((e: any) => e.courseTitle === course.title)
-                          ? "Continue Learning"
-                          : (Number(course.price) > 0 ? "Request Approval" : "Enroll Now")}
+                          ?"Continue Learning"
+                          : (Number(course.price) > 0 ?"Request Approval" :"Enroll Now")}
                       </Button>
                     </CardContent>
                   </Card>
@@ -434,11 +434,11 @@ export default function LearningManagement() {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      {enrollment.status === 'COMPLETED' ? (
-                        <Button variant="outline" onClick={() => window.open(`/api/learning/enrollments/${enrollment.enrollmentId}/certificate`, '_blank')}>
+                      {enrollment.status ==='COMPLETED' ? (
+                        <Button variant="outline" onClick={() => window.open(`/api/learning/enrollments/${enrollment.enrollmentId}/certificate`,'_blank')}>
                           <Download className="mr-2 h-4 w-4" /> Certificate
                         </Button>
-                      ) : enrollment.status === 'PENDING_APPROVAL' ? (
+                      ) : enrollment.status ==='PENDING_APPROVAL' ? (
                         <Button variant="outline" disabled>
                           Pending Approval
                         </Button>

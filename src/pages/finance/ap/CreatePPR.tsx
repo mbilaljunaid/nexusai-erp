@@ -1,151 +1,152 @@
-import { formatDate } from "@/lib/dateUtils";
-import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { StandardPage } from "@/components/layout/StandardPage";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/hooks/use-toast";
-import { useLocation } from "wouter";
-import { ChevronRight, ChevronLeft, Save, Plus, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
-import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
-import { DatePicker } from '@/components/ui/DatePicker';
+import { cn } from "@/lib/utils";
+import { formatDate} from"@/lib/dateUtils";
+import { useState} from"react";
+import { useQuery, useMutation, useQueryClient} from"@tanstack/react-query";
+import { StandardPage} from"@/components/layout/StandardPage";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription} from"@/components/ui/card";
+import { Button} from"@/components/ui/button";
+import { Input} from"@/components/ui/input";
+import { Label} from"@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from"@/components/ui/select";
+import { Checkbox} from"@/components/ui/checkbox";
+import { useToast} from"@/hooks/use-toast";
+import { useLocation} from"wouter";
+import { ChevronRight, ChevronLeft, Save, Plus, ArrowRight, CheckCircle2, Loader2} from"lucide-react";
+import { InteractiveSpreadsheet, SpreadsheetColumn} from"@/components/ui/InteractiveSpreadsheet";
+import { DatePicker} from'@/components/ui/DatePicker';
 
 const steps = [
-    { id: 1, name: "Template & Criteria" },
-    { id: 2, name: "Review Selected Invoices" },
-    { id: 3, name: "Build Payments" },
-    { id: 4, name: "Review & Submit" }
+    { id: 1, name:"Template & Criteria"},
+    { id: 2, name:"Review Selected Invoices"},
+    { id: 3, name:"Build Payments"},
+    { id: 4, name:"Review & Submit"}
 ];
 
 export default function CreatePPR() {
     const [currentStep, setCurrentStep] = useState(1);
     const [, setLocation] = useLocation();
-    const { toast } = useToast();
+    const { toast} = useToast();
     const queryClient = useQueryClient();
 
     const [formData, setFormData] = useState<any>({
-        batchName: `PPR-${new Date().toISOString().split('T')[0]}-01`,
-        paymentMethodCode: "EFT",
-        paymentCurrency: "USD",
+        batchName:`PPR-${new Date().toISOString().split('T')[0]}-01`,
+        paymentMethodCode:"EFT",
+        paymentCurrency:"USD",
         checkDate: new Date().toISOString().split("T")[0],
-        bankAccountId: "",
+        bankAccountId:"",
         payThroughDate: new Date().toISOString().split("T")[0],
-        supplierId: "all",
-        businessUnitId: "all",
-        templateId: "none",
-    });
+        supplierId:"all",
+        businessUnitId:"all",
+        templateId:"none",
+   });
 
     // Step 2 & 3 State
     const [selectedInvoices, setSelectedInvoices] = useState<Set<string>>(new Set());
     const [proposedPayments, setProposedPayments] = useState<any[]>([]);
 
-    const { data: bankAccounts = [] } = useQuery<any>({
+    const { data: bankAccounts = []} = useQuery<any>({
         queryKey: ["/api/cash/accounts"],
-    });
+   });
 
-    const { data: eligibleInvoices, isLoading: loadingInvoices } = useQuery<any>({
+    const { data: eligibleInvoices, isLoading: loadingInvoices} = useQuery<any>({
         queryKey: ["/api/ap/invoices/eligible-for-payment", formData.payThroughDate, formData.paymentMethodCode],
         queryFn: () => fetch(`/api/ap/invoices?status=Approved&validationStatus=Validated&limit=100`).then(r => r.json()),
         enabled: currentStep === 2
-    });
+   });
 
     const createBatchMutation = useMutation({
         mutationFn: (data: any) =>
             fetch("/api/ap/payment-batches", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
+                method:"POST",
+                headers: {"Content-Type":"application/json"},
                 body: JSON.stringify(data)
-            }).then(r => r.json()),
+           }).then(r => r.json()),
         onSuccess: (res) => {
-            queryClient.invalidateQueries({ queryKey: ["/api/ap/payment-batches"] });
-            toast({ title: "Payment Process Request submitted successfully", description: `Batch ID: ${res[0]?.id || 'N/A'}` });
+            queryClient.invalidateQueries({ queryKey: ["/api/ap/payment-batches"]});
+            toast({ title:"Payment Process Request submitted successfully", description:`Batch ID: ${res[0]?.id ||'N/A'}`});
             setLocation("/finance/ap/payments");
-        },
+       },
         onError: () => {
-            toast({ title: "Error submitting PPR", variant: "destructive" });
-        }
-    });
+            toast({ title:"Error submitting PPR", variant:"destructive"});
+       }
+   });
 
     const handleNext = () => {
         if (currentStep === 1) {
             if (!formData.bankAccountId) {
-                toast({ title: "Please select a bank account", variant: "destructive" });
+                toast({ title:"Please select a bank account", variant:"destructive"});
                 return;
-            }
-        }
+           }
+       }
         if (currentStep === 2) {
-            // Group selected invoices by supplier to form "proposed payments"
+            // Group selected invoices by supplier to form"proposed payments"
             if (selectedInvoices.size === 0) {
-                toast({ title: "Please select at least one invoice", variant: "destructive" });
+                toast({ title:"Please select at least one invoice", variant:"destructive"});
                 return;
-            }
+           }
             const invoicesToPay = (eligibleInvoices?.data || []).filter((i: any) => selectedInvoices.has(i.id));
             const grouped = invoicesToPay.reduce((acc: any, inv: any) => {
                 const supId = inv.supplierId;
                 if (!acc[supId]) {
-                    acc[supId] = { supplierId: supId, supplierName: inv.supplier?.name, invoiceCount: 0, totalAmount: 0, invoices: [] };
-                }
+                    acc[supId] = { supplierId: supId, supplierName: inv.supplier?.name, invoiceCount: 0, totalAmount: 0, invoices: []};
+               }
                 acc[supId].invoiceCount++;
                 acc[supId].totalAmount += parseFloat(inv.invoiceAmount);
                 acc[supId].invoices.push(inv);
                 return acc;
-            }, {});
+           }, {});
             setProposedPayments(Object.values(grouped));
-        }
+       }
 
         if (currentStep < 4) setCurrentStep(currentStep + 1);
-    };
+   };
 
     const handleBack = () => {
         if (currentStep > 1) setCurrentStep(currentStep - 1);
-    };
+   };
 
     const handleSubmit = () => {
         const payload = {
             ...formData,
             invoiceIds: Array.from(selectedInvoices),
-            status: "NEW"
-        }
+            status:"NEW"
+       }
         createBatchMutation.mutate(payload);
-    };
+   };
 
     const toggleInvoice = (id: string) => {
         const next = new Set(selectedInvoices);
         if (next.has(id)) next.delete(id);
         else next.add(id);
         setSelectedInvoices(next);
-    };
+   };
 
     const toggleAllInvoices = () => {
         if (selectedInvoices.size === eligibleInvoices?.data?.length) {
             setSelectedInvoices(new Set());
-        } else {
+       } else {
             setSelectedInvoices(new Set((eligibleInvoices?.data || []).map((i: any) => i.id)));
-        }
-    };
+       }
+   };
 
     const invoiceColumns: SpreadsheetColumn<any>[] = [
         {
-            header: "Select",
-            id: "id", width: "150px",
+            header:"Select",
+            id:"id", width:"150px",
             cell: (row) => <Checkbox checked={selectedInvoices.has(row.id)} onCheckedChange={() => toggleInvoice(row.id)} />,
-            className: "w-12 text-center"
-        },
-        { header: "Supplier", id: "supplierId", width: "150px", cell: (r) => r.supplier?.name || "Unknown" },
-        { header: "Invoice Number", id: "invoiceNumber", width: "150px" },
-        { header: "Date", id: "invoiceDate", width: "150px", cell: (r) => formatDate(r.invoiceDate) },
-        { header: "Amount", id: "invoiceAmount", width: "150px", cell: (r) => `$${parseFloat(r.invoiceAmount).toLocaleString()}` },
-        { header: "Due Date", id: "dueDate", width: "150px", cell: (r) => r.dueDate ? formatDate(r.dueDate) : "-" }
+            className:"w-12 text-center"
+       },
+        { header:"Supplier", id:"supplierId", width:"150px", cell: (r) => r.supplier?.name ||"Unknown"},
+        { header:"Invoice Number", id:"invoiceNumber", width:"150px"},
+        { header:"Date", id:"invoiceDate", width:"150px", cell: (r) => formatDate(r.invoiceDate)},
+        { header:"Amount", id:"invoiceAmount", width:"150px", cell: (r) =>`$${parseFloat(r.invoiceAmount).toLocaleString()}`},
+        { header:"Due Date", id:"dueDate", width:"150px", cell: (r) => r.dueDate ? formatDate(r.dueDate) :"-"}
     ];
 
     const paymentColumns: SpreadsheetColumn<any>[] = [
-        { header: "Payee (Supplier)", id: "supplierName", width: "150px" },
-        { header: "Invoices to Pay", id: "invoiceCount", width: "150px" },
-        { header: "Total Payment Amount", id: "totalAmount", width: "150px", cell: (r) => <span className="font-bold text-green-700">£{parseFloat(r.totalAmount).toLocaleString()}</span> }
+        { header:"Payee (Supplier)", id:"supplierName", width:"150px"},
+        { header:"Invoices to Pay", id:"invoiceCount", width:"150px"},
+        { header:"Total Payment Amount", id:"totalAmount", width:"150px", cell: (r) => <span className="font-bold text-green-700">£{parseFloat(r.totalAmount).toLocaleString()}</span>}
     ];
 
     return (
@@ -153,24 +154,24 @@ export default function CreatePPR() {
             title="Submit Payment Process Request"
             description="Wizard to select invoices and build a payment batch"
             breadcrumbs={[
-                { label: "Finance", href: "/finance" },
-                { label: "AP", href: "/finance/ap" },
-                { label: "Payment Batches", href: "/finance/ap/payments" },
-                { label: "Create PPR" }
+                { label:"Finance", href:"/finance"},
+                { label:"AP", href:"/finance/ap"},
+                { label:"Payment Batches", href:"/finance/ap/payments"},
+                { label:"Create PPR"}
             ]}
         >
             <div className="max-w-5xl mx-auto space-y-6">
                 {/* Stepper */}
                 <div className="relative">
-                    <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -z-10 -translate-y-1/2 rounded" />
-                    <div className="absolute top-1/2 left-0 h-1 bg-blue-600 -z-10 -translate-y-1/2 transition-all duration-300 rounded" style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }} />
+                    <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -translate-y-1/2 rounded" />
+                    <div className="absolute top-1/2 left-0 h-1 bg-blue-600 -translate-y-1/2 transition-all duration-300 rounded" style={{ width:`${((currentStep - 1) / (steps.length - 1)) * 100}%`}} />
                     <div className="flex justify-between">
                         {steps.map((step) => (
                             <div key={step.id} className="flex flex-col items-center gap-2">
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${currentStep >= step.id ? "bg-blue-600 text-white" : "bg-white border-2 border-gray-300 text-gray-500"}`}>
+                                <div className={cn(`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${currentStep >= step.id ?"bg-blue-600 text-white" :"bg-white border-2 border-gray-300 text-gray-500"}`)}>
                                     {currentStep > step.id ? <CheckCircle2 className="w-5 h-5" /> : step.id}
                                 </div>
-                                <span className={`text-xs font-medium ${currentStep >= step.id ? "text-blue-900" : "text-gray-500"}`}>{step.name}</span>
+                                <span className={cn(`text-xs font-medium ${currentStep >= step.id ?"text-blue-900" :"text-gray-500"}`)}>{step.name}</span>
                             </div>
                         ))}
                     </div>
@@ -180,10 +181,10 @@ export default function CreatePPR() {
                     <CardHeader>
                         <CardTitle>{steps[currentStep - 1].name}</CardTitle>
                         <CardDescription>
-                            {currentStep === 1 && "Define selection criteria and payment parameters."}
-                            {currentStep === 2 && "Review and adjust the specific invoices selected by the criteria."}
-                            {currentStep === 3 && "Review the consolidated proposed payments before submission."}
-                            {currentStep === 4 && "Final review of the Payment Process Request."}
+                            {currentStep === 1 &&"Define selection criteria and payment parameters."}
+                            {currentStep === 2 &&"Review and adjust the specific invoices selected by the criteria."}
+                            {currentStep === 3 &&"Review the consolidated proposed payments before submission."}
+                            {currentStep === 4 &&"Final review of the Payment Process Request."}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6 min-h-[400px]">
@@ -195,12 +196,12 @@ export default function CreatePPR() {
                                         <div className="flex items-center gap-2">
                                             <Label className="text-xs text-muted-foreground">Load Template</Label>
                                             <Select value={formData.templateId} onValueChange={(v) => {
-                                                if (v === 'weekly_eft') {
-                                                    setFormData({ ...formData, templateId: v, paymentMethodCode: 'EFT', batchName: `PPR-Weekly-${new Date().toISOString().split('T')[0]}` });
-                                                    toast({ title: "Weekly Check Run template applied" });
-                                                }
-                                            }}>
-                                                <SelectTrigger className="h-7 text-xs w-[140px]"><SelectValue placeholder="None" /></SelectTrigger>
+                                                if (v ==='weekly_eft') {
+                                                    setFormData({ ...formData, templateId: v, paymentMethodCode:'EFT', batchName:`PPR-Weekly-${new Date().toISOString().split('T')[0]}`});
+                                                    toast({ title:"Weekly Check Run template applied"});
+                                               }
+                                           }}>
+                                                <SelectTrigger className="h-7 text-xs w-36"><SelectValue placeholder="None" /></SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value="none">None</SelectItem>
                                                     <SelectItem value="weekly_eft">Weekly EFT Run</SelectItem>
@@ -211,15 +212,15 @@ export default function CreatePPR() {
                                     </div>
                                     <div className="space-y-2">
                                         <Label>PPR Name</Label>
-                                        <Input value={formData.batchName} onChange={e => setFormData({ ...formData, batchName: e.target.value })} />
+                                        <Input value={formData.batchName} onChange={e => setFormData({ ...formData, batchName: e.target.value})} />
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Payment Date</Label>
-                                        <DatePicker value={formData.checkDate} onChange={v => setFormData({ ...formData, checkDate: v })} />
+                                        <DatePicker value={formData.checkDate} onChange={v => setFormData({ ...formData, checkDate: v})} />
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Disbursement Bank Account *</Label>
-                                        <Select value={formData.bankAccountId} onValueChange={(v) => setFormData({ ...formData, bankAccountId: v })}>
+                                        <Select value={formData.bankAccountId} onValueChange={(v) => setFormData({ ...formData, bankAccountId: v})}>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Select Account" />
                                             </SelectTrigger>
@@ -234,7 +235,7 @@ export default function CreatePPR() {
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Payment Method</Label>
-                                        <Select value={formData.paymentMethodCode} onValueChange={(v) => setFormData({ ...formData, paymentMethodCode: v })}>
+                                        <Select value={formData.paymentMethodCode} onValueChange={(v) => setFormData({ ...formData, paymentMethodCode: v})}>
                                             <SelectTrigger><SelectValue /></SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="EFT">EFT / BACS</SelectItem>
@@ -245,7 +246,7 @@ export default function CreatePPR() {
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Payment Currency</Label>
-                                        <Select value={formData.paymentCurrency} onValueChange={(v) => setFormData({ ...formData, paymentCurrency: v })}>
+                                        <Select value={formData.paymentCurrency} onValueChange={(v) => setFormData({ ...formData, paymentCurrency: v})}>
                                             <SelectTrigger><SelectValue /></SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="USD">USD</SelectItem>
@@ -259,7 +260,7 @@ export default function CreatePPR() {
                                     <h3 className="font-semibold text-sm border-b pb-2">Selection Criteria</h3>
                                     <div className="space-y-2">
                                         <Label>Business Unit *</Label>
-                                        <Select value={formData.businessUnitId} onValueChange={(v) => setFormData({ ...formData, businessUnitId: v })}>
+                                        <Select value={formData.businessUnitId} onValueChange={(v) => setFormData({ ...formData, businessUnitId: v})}>
                                             <SelectTrigger><SelectValue placeholder="Select Business Unit" /></SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="all">All BUs</SelectItem>
@@ -270,12 +271,12 @@ export default function CreatePPR() {
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Pay Through Date</Label>
-                                        <DatePicker value={formData.payThroughDate} onChange={v => setFormData({ ...formData, payThroughDate: v })} />
+                                        <DatePicker value={formData.payThroughDate} onChange={v => setFormData({ ...formData, payThroughDate: v})} />
                                         <p className="text-xs text-muted-foreground">Selects invoices due on or before this date.</p>
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Supplier Group/Type</Label>
-                                        <Select value={formData.supplierId} onValueChange={(v) => setFormData({ ...formData, supplierId: v })}>
+                                        <Select value={formData.supplierId} onValueChange={(v) => setFormData({ ...formData, supplierId: v})}>
                                             <SelectTrigger><SelectValue /></SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="all">All Suppliers</SelectItem>
@@ -285,7 +286,7 @@ export default function CreatePPR() {
                                         </Select>
                                     </div>
                                     <div className="p-4 bg-slate-50 border rounded text-sm text-slate-600 mt-4">
-                                        Note: Only invoices with 'Validated' status and 'Approved' workflow will be selected in the next step.
+                                        Note: Only invoices with'Validated' status and'Approved' workflow will be selected in the next step.
                                     </div>
                                 </div>
                             </div>

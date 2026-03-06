@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -153,7 +154,7 @@ export default function Industries() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {industries.map((industry) => (
-          <Card key={industry.code} className={`hover:shadow-lg transition-all h-full bg-gradient-to-br ${industry.color}`}>
+          <Card key={industry.code} className={cn(`hover:shadow-lg transition-all h-full bg-gradient-to-br ${industry.color}`)}>
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useRef } from "react";
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, useDraggable, useDroppable } from "@dnd-kit/core";
 import { Card, CardContent } from "@/components/ui/card";
@@ -92,8 +93,8 @@ function DraggableCandidate({ candidate, onAutoPosition }: { candidate: Candidat
             ref={setNodeRef}
             {...listeners}
             {...attributes}
-            className={`bg-white border rounded-lg p-2 cursor-move hover:shadow-md transition-shadow relative ${readinessColor} ${isDragging ? "opacity-50" : ""
-                }`}
+            className={cn(`bg-white border rounded-lg p-2 cursor-move hover:shadow-md transition-shadow relative ${readinessColor} ${isDragging ? "opacity-50" : ""
+                }`)}
         >
             <div className="flex items-center gap-2">
                 <Avatar className="h-6 w-6">
@@ -144,8 +145,8 @@ function DroppableBox({
     return (
         <div
             ref={setNodeRef}
-            className={`${box.color} border-2 rounded-lg p-3 min-h-[140px] transition-all ${isOver ? "ring-2 ring-blue-400 ring-offset-2" : ""
-                }`}
+            className={cn(`${box.color} border-2 rounded-lg p-3 min-h-36 transition-all ${isOver ? "ring-2 ring-blue-400 ring-offset-2" : ""
+                }`)}
         >
             <div className="mb-2">
                 <h4 className="text-xs font-semibold text-gray-700">{box.label}</h4>

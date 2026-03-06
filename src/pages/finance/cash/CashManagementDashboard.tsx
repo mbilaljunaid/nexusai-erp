@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -253,8 +254,8 @@ export default function CashManagementDashboard() {
                                 <Card className="cursor-pointer hover:shadow-md transition-shadow group h-full">
                                     <CardHeader>
                                         <div className="flex items-center gap-3">
-                                            <div className={`p - 2 rounded - lg bg - opacity - 10 group - hover: bg - opacity - 20 transition - colors ${card.color.replace('text-', 'bg-')} `}>
-                                                <card.icon className={`h - 6 w - 6 ${card.color} `} />
+                                            <div className={cn(`p - 2 rounded - lg bg - opacity - 10 group - hover: bg - opacity - 20 transition - colors ${card.color.replace('text-', 'bg-')} `)}>
+                                                <card.icon className={cn(`h - 6 w - 6 ${card.color} `)} />
                                             </div>
                                             <CardTitle className="text-base">{card.title}</CardTitle>
                                         </div>

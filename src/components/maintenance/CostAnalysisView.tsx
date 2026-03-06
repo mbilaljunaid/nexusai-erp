@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 
 import { useState } from "react";
@@ -81,7 +82,7 @@ export default function CostAnalysisView({ workOrderId }: CostAnalysisViewProps)
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{budgetUsage.toFixed(1)}%</div>
-                        <Progress value={budgetUsage} className={`h-2 mt-2 ${budgetUsage > 90 ? "bg-red-100" : ""}`} />
+                        <Progress value={budgetUsage} className={cn(`h-2 mt-2 ${budgetUsage > 90 ? "bg-red-100" : ""}`)} />
                         <p className="text-xs text-muted-foreground mt-1">
                             Est. Budget: ${estimatedBudget.toFixed(2)}
                         </p>

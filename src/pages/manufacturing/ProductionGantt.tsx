@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from 'react';
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -97,7 +98,7 @@ export default function ProductionGantt() {
                         {/* Work Center Rows */}
                         <div className="divide-y">
                             {workCenters.map(wc => (
-                                <div key={wc.id} className="flex min-h-[100px] hover:bg-muted/5 transition-colors">
+                                <div key={wc.id} className="flex min-h-24 hover:bg-muted/5 transition-colors">
                                     <div className="w-64 p-4 border-r flex flex-col justify-center">
                                         <div className="font-semibold text-gray-900">{wc.name}</div>
                                         <div className="text-xs text-muted-foreground">Capacity: 100%</div>
@@ -110,8 +111,8 @@ export default function ProductionGantt() {
                                                     {dayOrders.map(wo => (
                                                         <div
                                                             key={wo.id}
-                                                            className={`text - [10px] p - 1.5 rounded - md shadow - sm border truncate cursor - pointer hover: scale - [1.02] transition - transform
-                                                                ${wo.status === 'in_progress' ? 'bg-blue-100 border-blue-200 text-blue-800' : 'bg-green-100 border-green-200 text-green-800'} `}
+                                                            className={cn(`text - [10px] p - 1.5 rounded - md shadow - sm border truncate cursor - pointer hover: scale - [1.02] transition - transform
+                                                                ${wo.status === 'in_progress' ? 'bg-blue-100 border-blue-200 text-blue-800' : 'bg-green-100 border-green-200 text-green-800'} `)}
                                                         >
                                                             <div className="font-bold">{wo.orderNumber}</div>
                                                             <div className="opacity-70">{wo.quantity} Units</div>

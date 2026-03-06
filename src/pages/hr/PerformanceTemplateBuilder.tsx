@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -183,7 +184,7 @@ export default function PerformanceTemplateBuilder() {
                                 <p className="text-sm text-muted-foreground">Define what needs to be reviewed and who can evaluate it.</p>
                             </div>
                             <div className="flex items-center gap-4">
-                                <div className={`px-3 py-1.5 rounded border text-sm font-semibold flex items-center gap-2 ${totalWeight === 100 ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30' : 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30'}`}>
+                                <div className={cn(`px-3 py-1.5 rounded border text-sm font-semibold flex items-center gap-2 ${totalWeight === 100 ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30' : 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30'}`)}>
                                     Total Weight: {totalWeight}%
                                     {totalWeight !== 100 && <span className="text-xs font-normal">(Must equal 100%)</span>}
                                 </div>
@@ -203,7 +204,7 @@ export default function PerformanceTemplateBuilder() {
                                     <div className="pl-12 pr-4 py-4 flex flex-col md:flex-row gap-6 items-start md:items-center">
 
                                         {/* Basic Info */}
-                                        <div className="flex-1 space-y-3 min-w-[250px]">
+                                        <div className="flex-1 space-y-3 min-w-64">
                                             <div className="flex items-center gap-2">
                                                 <Badge variant="outline" className="bg-background text-[10px] tracking-wider uppercase">Section {index + 1}</Badge>
                                             </div>
@@ -229,14 +230,14 @@ export default function PerformanceTemplateBuilder() {
                                         </div>
 
                                         {/* Multi-Participant Matrix */}
-                                        <div className="flex-1 min-w-[300px] border rounded-lg p-3 bg-zinc-50 dark:bg-zinc-900/50">
+                                        <div className="flex-1 min-w-72 border rounded-lg p-3 bg-zinc-50 dark:bg-zinc-900/50">
                                             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-1.5"><Users className="h-3 w-3" /> Evaluating Roles</p>
                                             <div className="flex flex-wrap gap-2">
                                                 {(["WORKER", "MANAGER", "PEER", "MATRIX_MANAGER"] as ParticipantRole[]).map(role => (
                                                     <Badge
                                                         key={role}
                                                         variant={section.participants.includes(role) ? "default" : "outline"}
-                                                        className={`cursor-pointer transition-colors ${section.participants.includes(role) ? 'bg-blue-600 hover:bg-blue-700' : 'hover:bg-muted text-muted-foreground'}`}
+                                                        className={cn(`cursor-pointer transition-colors ${section.participants.includes(role) ? 'bg-blue-600 hover:bg-blue-700' : 'hover:bg-muted text-muted-foreground'}`)}
                                                         onClick={() => toggleParticipant(section.id, role)}
                                                     >
                                                         {role.replace('_', ' ')}

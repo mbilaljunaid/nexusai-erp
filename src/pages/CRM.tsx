@@ -47,7 +47,7 @@ export default function CRM() {
       description="Overview of your sales performance and pipeline activities."
       breadcrumbs={[]}
       actions={
-        <Tabs value={scope} onValueChange={(v) => setScope(v as "all" | "mine")} className="w-[300px]">
+        <Tabs value={scope} onValueChange={(v) => setScope(v as "all" | "mine")} className="w-72">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="all">Team Pipeline</TabsTrigger>
             <TabsTrigger value="mine">My Pipeline</TabsTrigger>
@@ -118,12 +118,12 @@ export default function CRM() {
           </CardContent>
         </Card>
 
-        <Card className="min-h-[300px]">
+        <Card className="min-h-72">
           <CardHeader>
             <CardTitle>Revenue Trend</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[250px] w-full">
+            <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={metrics?.revenueTrend || []}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -137,12 +137,12 @@ export default function CRM() {
           </CardContent>
         </Card>
 
-        <Card className="min-h-[300px]">
+        <Card className="min-h-72">
           <CardHeader>
             <CardTitle>Leads by Source</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[250px] w-full">
+            <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={metrics?.leadsBySource || []}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />

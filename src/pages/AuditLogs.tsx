@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
@@ -25,7 +26,7 @@ export default function AuditLogs() {
         const val = row.assignmentStatus;
         return (
           <div className="p-2">
-            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${val === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+            <span className={cn(`px-2 py-1 rounded-full text-xs font-semibold ${val === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`)}>
               {val}
             </span>
           </div>

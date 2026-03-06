@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, DollarSign, Activity } from 'lucide-react';
@@ -52,7 +53,7 @@ export default function FundingLimits() {
         {
             id: "status", header: "Status", width: "120px", cell: (c) => {
                 const s = STATUS_STYLES[c.status] || DEFAULT_STYLE;
-                return <span className={`py-0.5 px-1.5 rounded-sm text-[10px] font-bold ${s.bg} ${s.text}`}>{c.status}</span>;
+                return <span className={cn(`py-0.5 px-1.5 rounded-sm text-[10px] font-bold ${s.bg} ${s.text}`)}>{c.status}</span>;
             }
         },
         { id: "actions", header: "", width: "100px", cell: (c) => c.status !== 'Closed' && c.status !== 'Cancelled' ? <button onClick={() => closeCommitMut.mutate(c.id)} className="py-1 px-2 bg-gray-100 border-none rounded-md text-[10px] cursor-pointer">Close</button> : null }
@@ -67,7 +68,7 @@ export default function FundingLimits() {
 
             {/* Project selector */}
             <div className="flex gap-2 mb-3.5">
-                <Input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="h-[30px] rounded-lg text-xs min-w-[220px]" aria-label="Project ID" />
+                <Input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="h-7 rounded-lg text-xs min-w-56" aria-label="Project ID" />
                 <button disabled={!projectId} onClick={() => setActiveProject(projectId)} className="py-1.5 px-4 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50">Load</button>
             </div>
 
@@ -78,7 +79,7 @@ export default function FundingLimits() {
                         <div className="flex gap-1">
                             {/* eslint-disable-next-line react/forbid-dom-props */}
                             {(['funding', 'commitments'] as const).map(t => (
-                                <button key={t} onClick={() => setTab(t)} className={`py-1.5 px-4 border border-gray-200 rounded-lg text-xs font-semibold cursor-pointer capitalize ${tab === t ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`}>{t === 'funding' ? `Funding Limits (${fundingLimits.length})` : `Commitments (${commitments.length})`}</button>
+                                <button key={t} onClick={() => setTab(t)} className={cn(`py-1.5 px-4 border border-gray-200 rounded-lg text-xs font-semibold cursor-pointer capitalize ${tab === t ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{t === 'funding' ? `Funding Limits (${fundingLimits.length})` : `Commitments (${commitments.length})`}</button>
                             ))}
                         </div>
                         <button onClick={() => tab === 'funding' ? setShowNewFL(true) : setShowNewCommit(true)} className="ml-auto py-1.5 px-3.5 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer">+ Add</button>
@@ -125,10 +126,10 @@ export default function FundingLimits() {
                                     const pct = Math.min(100, Number(fl.utilization_pct));
                                     const s = STATUS_STYLES[fl.status] || DEFAULT_STYLE;
                                     return (
-                                        <Card key={fl.id} className={`p-3 px-4 border border-x border-y border-l-[4px] shadow-sm ${fl.status === 'Exhausted' ? 'border-red-300' : 'border-gray-200'} ${s.borderLeft}`}>
+                                        <Card key={fl.id} className={cn(`p-3 px-4 border border-x border-y border-l-[4px] shadow-sm ${fl.status === 'Exhausted' ? 'border-red-300' : 'border-gray-200'} ${s.borderLeft}`)}>
                                             <div className="flex justify-between mb-1.5">
                                                 <div className="font-bold text-[13px]">{fl.funding_source} <span className="font-mono text-gray-500 text-xs font-normal">(Limit: {fmt(fl.limit_amount)})</span></div>
-                                                <span className={`text-[10px] py-0.5 px-1.5 rounded-sm font-bold ${s.bg} ${s.text}`}>{fl.status}</span>
+                                                <span className={cn(`text-[10px] py-0.5 px-1.5 rounded-sm font-bold ${s.bg} ${s.text}`)}>{fl.status}</span>
                                             </div>
                                             <div className="flex gap-4 text-[11px] text-gray-500 mb-1.5">
                                                 <span>Utilized: <strong>{fmt(fl.utilized_amount)}</strong></span>
@@ -140,7 +141,7 @@ export default function FundingLimits() {
                                                 <style>{`
                                                     .fl-progress-${fl.id} { width: ${pct}%; }
                                                 `}</style>
-                                                <div className={`h-full rounded-full transition-all duration-300 fl-progress-${fl.id} ${pct >= 100 ? 'bg-red-600' : pct >= fl.alert_threshold_pct ? 'bg-amber-600' : 'bg-emerald-600'}`} />
+                                                <div className={cn(`h-full rounded-full transition-all duration-300 fl-progress-${fl.id} ${pct >= 100 ? 'bg-red-600' : pct >= fl.alert_threshold_pct ? 'bg-amber-600' : 'bg-emerald-600'}`)} />
                                             </div>
                                             <div className="text-[10px] text-gray-500 mt-0.5">{pct.toFixed(1)}% utilized</div>
                                         </Card>

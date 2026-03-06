@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDateTime } from "@/lib/dateUtils";
 import { useState, useMemo } from "react";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
@@ -298,7 +299,7 @@ export default function APInvoices() {
             }}
             title="Manage Attachment"
           >
-            <Paperclip className={`h-4 w-4 ${row.documentUrl ? 'text-blue-600' : 'text-gray-400'}`} />
+            <Paperclip className={cn(`h-4 w-4 ${row.documentUrl ? 'text-blue-600' : 'text-gray-400'}`)} />
           </Button>
         </div>
       )

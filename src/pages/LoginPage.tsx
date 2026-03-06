@@ -1,18 +1,18 @@
-import { useState, useEffect } from "react";
-import { PageSkeleton } from "@/components/shared/PageSkeleton";
-import { Link, useLocation } from "wouter";
-import { motion } from "framer-motion";
-import { ArrowRight, Mail, Lock, Eye, EyeOff, CheckCircle, Star } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Header, Footer } from "@/components/Navigation";
-import { GlassmorphismCard } from "@/components/lovable"; // Premium card
-import { useRBAC } from "@/components/RBACContext";
-import { colors } from "@/lib/design-tokens";
-import { animations } from "@/lib/animations";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState, useEffect} from"react";
+import { PageSkeleton} from"@/components/shared/PageSkeleton";
+import { Link, useLocation} from"wouter";
+import { motion} from"framer-motion";
+import { ArrowRight, Mail, Lock, Eye, EyeOff, CheckCircle, Star} from"lucide-react";
+import { Button} from"@/components/ui/button";
+import { Input} from"@/components/ui/input";
+import { Header, Footer} from"@/components/Navigation";
+import { GlassmorphismCard} from"@/components/lovable"; // Premium card
+import { useRBAC} from"@/components/RBACContext";
+import { colors} from"@/lib/design-tokens";
+import { animations} from"@/lib/animations";
+import { z} from"zod";
+import { useForm} from"react-hook-form";
+import { zodResolver} from"@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -20,12 +20,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Checkbox } from "@/components/ui/checkbox";
+} from"@/components/ui/form";
+import { Checkbox} from"@/components/ui/checkbox";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
+  password: z.string().min(1,"Password is required"),
   rememberMe: z.boolean().optional(),
 });
 
@@ -35,26 +35,26 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [, navigate] = useLocation();
-  const { login, isAuthenticated, isLoading } = useRBAC();
+  const { login, isAuthenticated, isLoading} = useRBAC();
 
   useEffect(() => {
-    document.title = "Login | NexusAI - Premium ERP";
-  }, []);
+    document.title ="Login | NexusAI - Premium ERP";
+ }, []);
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
       navigate("/dashboard");
-    }
-  }, [isLoading, isAuthenticated, navigate]);
+   }
+ }, [isLoading, isAuthenticated, navigate]);
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email:"",
+      password:"",
       rememberMe: false,
-    },
-  });
+   },
+ });
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     setLoading(true);
@@ -62,63 +62,63 @@ export default function LoginPage() {
 
     try {
       const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email: values.email, password: values.password }),
-      });
+        method:"POST",
+        headers: {"Content-Type":"application/json"},
+        credentials:"include",
+        body: JSON.stringify({ email: values.email, password: values.password}),
+     });
 
       if (res.ok) {
         const data = await res.json();
-        await login(data.user.id, data.user.role || "viewer");
+        await login(data.user.id, data.user.role ||"viewer");
         setSuccess(true);
         setTimeout(() => {
           navigate("/dashboard");
-        }, 1000);
-      } else {
+       }, 1000);
+     } else {
         const data = await res.json();
-        setError(data.message || "Invalid credentials");
-      }
-    } catch (e) {
+        setError(data.message ||"Invalid credentials");
+     }
+   } catch (e) {
       setError("Login failed. Please try again.");
-    } finally {
+   } finally {
       setLoading(false);
-    }
-  };
+   }
+ };
 
   const handleQuickAdminLogin = async () => {
     setLoading(true);
     setError("");
     try {
-      await login("demo-admin-user", "admin");
+      await login("demo-admin-user","admin");
       setSuccess(true);
       setTimeout(() => {
         navigate("/dashboard");
-      }, 1000);
-    } catch (e) {
+     }, 1000);
+   } catch (e) {
       setError("Login failed. Please try again.");
-    } finally {
+   } finally {
       setLoading(false);
-    }
-  };
+   }
+ };
 
   if (isLoading) return <PageSkeleton showCards={false} rows={4} />;
 
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-hidden relative">
       {/* Animated Background */}
-      <style>{`.lp-bg-gradient { background: radial-gradient(circle at 50% 50%, ${colors.brand.purple}20 0%, transparent 100%); opacity: 0.5; }`}</style>
-      <div className="absolute inset-0 -z-10 lp-bg-gradient" />
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+      <style>{`.lp-bg-gradient { background: radial-gradient(circle at 50% 50%, ${colors.brand.purple}20 0%, transparent 100%); opacity: 0.5;}`}</style>
+      <div className="absolute inset-0 lp-bg-gradient" />
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
         <motion.div
           className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-primary/20 blur-[100px]"
-          animate={{ x: [0, -50, 0], y: [0, 50, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          animate={{ x: [0, -50, 0], y: [0, 50, 0]}}
+          transition={{ duration: 20, repeat: Infinity, ease:"linear"}}
         />
         <motion.div
           className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] rounded-full bg-purple-500/10 blur-[120px]"
-          animate={{ x: [0, 50, 0], y: [0, -50, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          animate={{ x: [0, 50, 0], y: [0, -50, 0]}}
+          transition={{ duration: 25, repeat: Infinity, ease:"linear"}}
         />
       </div>
 
@@ -168,7 +168,7 @@ export default function LoginPage() {
           <motion.div
             className="w-full max-w-md mx-auto"
             {...animations.fadeInUp}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.2}}
           >
             <GlassmorphismCard className="p-8 backdrop-blur-xl border-white/10">
               <div className="text-center mb-8">
@@ -179,8 +179,8 @@ export default function LoginPage() {
               {success ? (
                 <div className="text-center py-12">
                   <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
+                    initial={{ scale: 0}}
+                    animate={{ scale: 1}}
                     className="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4"
                   >
                     <CheckCircle className="w-8 h-8" />
@@ -193,8 +193,8 @@ export default function LoginPage() {
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     {error && (
                       <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, y: -10}}
+                        animate={{ opacity: 1, y: 0}}
                         className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-sm text-center"
                       >
                         {error}
@@ -205,7 +205,7 @@ export default function LoginPage() {
                       <FormField
                         control={form.control}
                         name="email"
-                        render={({ field }) => (
+                        render={({ field}) => (
                           <FormItem>
                             <FormLabel className="ml-1">Email</FormLabel>
                             <FormControl>
@@ -227,14 +227,14 @@ export default function LoginPage() {
                       <FormField
                         control={form.control}
                         name="password"
-                        render={({ field }) => (
+                        render={({ field}) => (
                           <FormItem>
                             <FormLabel className="ml-1">Password</FormLabel>
                             <FormControl>
                               <div className="relative group">
                                 <Lock className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                                 <Input
-                                  type={showPassword ? "text" : "password"}
+                                  type={showPassword ?"text" :"password"}
                                   placeholder="••••••••"
                                   className="pl-10 h-11 bg-white/5 border-white/10 focus:border-primary/50 transition-all"
                                   {...field}
@@ -258,7 +258,7 @@ export default function LoginPage() {
                       <FormField
                         control={form.control}
                         name="rememberMe"
-                        render={({ field }) => (
+                        render={({ field}) => (
                           <FormItem className="flex items-center gap-2 space-y-0">
                             <FormControl>
                               <Checkbox
@@ -286,7 +286,7 @@ export default function LoginPage() {
                       disabled={loading}
                       size="lg"
                     >
-                      {loading ? "Signing in..." : "Sign In"}
+                      {loading ?"Signing in..." :"Sign In"}
                       {!loading && <ArrowRight className="ml-2 w-4 h-4" />}
                     </Button>
                   </form>
@@ -304,7 +304,7 @@ export default function LoginPage() {
                 </Button>
 
                 <p className="text-sm text-muted-foreground">
-                  Don't have an account?{" "}
+                  Don't have an account?{""}
                   <Link to="/signup">
                     <span className="text-primary hover:text-primary/80 font-medium cursor-pointer">
                       Create free account

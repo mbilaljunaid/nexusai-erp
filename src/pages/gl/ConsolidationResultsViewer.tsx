@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "wouter";
@@ -121,14 +122,14 @@ export default function ConsolidationResultsViewer() {
                             <div className="text-2xl font-bold text-orange-900">{formatCurrency(totalEliminations)}</div>
                         </CardContent>
                     </Card>
-                    <Card className={`${totalFxImpact >= 0 ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`}>
+                    <Card className={cn(`${totalFxImpact >= 0 ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`)}>
                         <CardHeader className="pb-2">
-                            <CardTitle className={`text-xs font-bold uppercase ${totalFxImpact >= 0 ? 'text-green-800' : 'text-red-800'}`}>
+                            <CardTitle className={cn(`text-xs font-bold uppercase ${totalFxImpact >= 0 ? 'text-green-800' : 'text-red-800'}`)}>
                                 FX Gain/Loss
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className={`text-2xl font-bold ${totalFxImpact >= 0 ? 'text-green-900' : 'text-red-900'}`}>
+                            <div className={cn(`text-2xl font-bold ${totalFxImpact >= 0 ? 'text-green-900' : 'text-red-900'}`)}>
                                 {totalFxImpact >= 0 ? '+' : ''}{formatCurrency(Math.abs(totalFxImpact))}
                             </div>
                         </CardContent>
@@ -168,7 +169,7 @@ export default function ConsolidationResultsViewer() {
                                                 onClick={() => setExpandedAccount(expandedAccount === balance.account ? null : balance.account)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                             >
                                                 <div className="flex items-center gap-2">
-                                                    <ChevronRight className={`h-4 w-4 transition-transform ${expandedAccount === balance.account ? 'rotate-90' : ''}`} />
+                                                    <ChevronRight className={cn(`h-4 w-4 transition-transform ${expandedAccount === balance.account ? 'rotate-90' : ''}`)} />
                                                     <span className="font-medium">{balance.account}</span>
                                                 </div>
                                                 <div className="flex gap-8 text-sm">
@@ -246,7 +247,7 @@ export default function ConsolidationResultsViewer() {
                                                 <TableCell className="font-medium">{adj.account}</TableCell>
                                                 <TableCell>{adj.entity}</TableCell>
                                                 <TableCell><Badge variant="outline">{adj.originalCurrency}</Badge></TableCell>
-                                                <TableCell className={`text-right font-mono font-bold ${adj.fxGainLoss >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                                <TableCell className={cn(`text-right font-mono font-bold ${adj.fxGainLoss >= 0 ? 'text-green-600' : 'text-red-600'}`)}>
                                                     {adj.fxGainLoss >= 0 ? '+' : ''}{formatCurrency(Math.abs(adj.fxGainLoss))}
                                                 </TableCell>
                                             </TableRow>

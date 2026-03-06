@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { DatePicker } from '@/components/ui/DatePicker';
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -163,7 +164,7 @@ export default function AccrualTesting() {
                 </Card>
 
                 {/* Results Section */}
-                <div className={`transition-all duration-500 ease-in-out ${result ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none hidden'}`}>
+                <div className={cn(`transition-all duration-500 ease-in-out ${result ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none hidden'}`)}>
                     <Card className="border-teal-500/30 overflow-hidden shadow-md">
                         <div className="bg-teal-500/10 px-6 py-3 border-b border-teal-500/20 flex justify-between items-center">
                             <h3 className="font-semibold text-teal-900 dark:text-teal-300 flex items-center gap-2">

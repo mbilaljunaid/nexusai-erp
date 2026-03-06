@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, TrendingUp, BarChart3, Target, AlertTriangle, CheckCircle2, RefreshCw } from "lucide-react";
@@ -46,7 +47,7 @@ export default function RevenueAssurance() {
                         <p className="text-muted-foreground mt-1">ASC 606 anomaly detection &amp; revenue integrity checks</p>
                     </div>
                     <Button variant="outline" onClick={() => refetch()} disabled={isFetching}>
-                        <RefreshCw className={`h-4 w-4 mr-2 ${isFetching ? "animate-spin" : ""}`} />
+                        <RefreshCw className={cn(`h-4 w-4 mr-2 ${isFetching ? "animate-spin" : ""}`)} />
                         Run Check
                     </Button>
                 </div>
@@ -58,7 +59,7 @@ export default function RevenueAssurance() {
                         <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                     </div>
                     <div>
-                        <div className={`text-2xl font-bold tracking-tight ${statusColor}`}>
+                        <div className={cn(`text-2xl font-bold tracking-tight ${statusColor}`)}>
                             {isLoading ? "—" : (result?.summary?.status || "Pending")}
                         </div>
                         <p className="text-xs text-muted-foreground">Overall health</p>

@@ -92,7 +92,7 @@ export default function JournalEntries() {
       id: "description", width: "35%",
       cell: (item: any) => (
         <div className="flex flex-col">
-          <span className="font-medium truncate max-w-[300px]">{item.description}</span>
+          <span className="font-medium truncate max-w-72">{item.description}</span>
           <span className="text-xs text-muted-foreground">{item.source} • {item.category}</span>
         </div>
       )

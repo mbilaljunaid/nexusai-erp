@@ -1,17 +1,17 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation } from "wouter";
-import { motion } from "framer-motion";
-import { ArrowRight, Mail, Lock, User, Eye, EyeOff, CheckCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Header, Footer } from "@/components/Navigation";
-import { GlassmorphismCard } from "@/components/lovable";
-import { IconButton } from "@/components/shared/IconButton";
-import { colors } from "@/lib/design-tokens";
-import { animations } from "@/lib/animations";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState, useEffect} from"react";
+import { Link, useLocation} from"wouter";
+import { motion} from"framer-motion";
+import { ArrowRight, Mail, Lock, User, Eye, EyeOff, CheckCircle} from"lucide-react";
+import { Button} from"@/components/ui/button";
+import { Input} from"@/components/ui/input";
+import { Header, Footer} from"@/components/Navigation";
+import { GlassmorphismCard} from"@/components/lovable";
+import { IconButton} from"@/components/shared/IconButton";
+import { colors} from"@/lib/design-tokens";
+import { animations} from"@/lib/animations";
+import { z} from"zod";
+import { useForm} from"react-hook-form";
+import { zodResolver} from"@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -19,17 +19,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Checkbox } from "@/components/ui/checkbox";
+} from"@/components/ui/form";
+import { Checkbox} from"@/components/ui/checkbox";
 
 const signupSchema = z.object({
-  name: z.string().min(2, "Name is required"),
+  name: z.string().min(2,"Name is required"),
   email: z.string().email("Valid email is required"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  password: z.string().min(8,"Password must be at least 8 characters"),
   confirmPassword: z.string(),
-  terms: z.boolean().refine((val) => val === true, "You must agree to the terms"),
+  terms: z.boolean().refine((val) => val === true,"You must agree to the terms"),
 }).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
+  message:"Passwords don't match",
   path: ["confirmPassword"],
 });
 
@@ -41,19 +41,19 @@ export default function SignupPage() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    document.title = "Sign Up | NexusAI";
-  }, []);
+    document.title ="Sign Up | NexusAI";
+ }, []);
 
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+      name:"",
+      email:"",
+      password:"",
+      confirmPassword:"",
       terms: false,
-    },
-  });
+   },
+ });
 
   const onSubmit = async (values: z.infer<typeof signupSchema>) => {
     setError("");
@@ -61,37 +61,37 @@ export default function SignupPage() {
 
     try {
       const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: values.name, email: values.email, password: values.password }),
-      });
+        method:"POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ name: values.name, email: values.email, password: values.password}),
+     });
 
       if (res.ok) {
         setSuccess(true);
         setTimeout(() => {
           setLocation("/login");
-        }, 2000);
-      } else {
+       }, 2000);
+     } else {
         const data = await res.json();
-        setError(data.message || "Signup failed");
-      }
-    } catch (e) {
+        setError(data.message ||"Signup failed");
+     }
+   } catch (e) {
       setError("Signup failed. Please try again.");
-    } finally {
+   } finally {
       setLoading(false);
-    }
-  };
+   }
+ };
 
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-hidden relative">
       {/* Animated Background */}
-      <style>{`.sp-bg-gradient { background: radial-gradient(circle at 60% 40%, ${colors.brand.blue}20 0%, transparent 100%); opacity: 0.5; }`}</style>
-      <div className="absolute inset-0 -z-10 sp-bg-gradient" />
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+      <style>{`.sp-bg-gradient { background: radial-gradient(circle at 60% 40%, ${colors.brand.blue}20 0%, transparent 100%); opacity: 0.5;}`}</style>
+      <div className="absolute inset-0 sp-bg-gradient" />
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
         <motion.div
           className="absolute bottom-[-20%] left-[10%] w-[600px] h-[600px] rounded-full bg-blue-500/10 blur-[120px]"
-          animate={{ x: [0, 50, 0], y: [0, -50, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          animate={{ x: [0, 50, 0], y: [0, -50, 0]}}
+          transition={{ duration: 25, repeat: Infinity, ease:"linear"}}
         />
       </div>
 
@@ -120,9 +120,9 @@ export default function SignupPage() {
 
             <div className="grid gap-4">
               {[
-                { title: "Unlimited Users", desc: "No per-seat pricing" },
-                { title: "85+ Modules", desc: "Finance, HR, CRM included" },
-                { title: "Self-Hosted", desc: "Your data, your control" },
+                { title:"Unlimited Users", desc:"No per-seat pricing"},
+                { title:"85+ Modules", desc:"Finance, HR, CRM included"},
+                { title:"Self-Hosted", desc:"Your data, your control"},
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
                   <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
@@ -151,8 +151,8 @@ export default function SignupPage() {
               {success ? (
                 <div className="text-center py-12">
                   <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
+                    initial={{ scale: 0}}
+                    animate={{ scale: 1}}
                     className="w-16 h-16 bg-blue-500/20 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4"
                   >
                     <CheckCircle className="w-8 h-8" />
@@ -165,8 +165,8 @@ export default function SignupPage() {
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
                     {error && (
                       <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, y: -10}}
+                        animate={{ opacity: 1, y: 0}}
                         className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-sm text-center"
                       >
                         {error}
@@ -176,7 +176,7 @@ export default function SignupPage() {
                     <FormField
                       control={form.control}
                       name="name"
-                      render={({ field }) => (
+                      render={({ field}) => (
                         <FormItem>
                           <FormLabel className="ml-1">Full Name</FormLabel>
                           <FormControl>
@@ -198,7 +198,7 @@ export default function SignupPage() {
                     <FormField
                       control={form.control}
                       name="email"
-                      render={({ field }) => (
+                      render={({ field}) => (
                         <FormItem>
                           <FormLabel className="ml-1">Email</FormLabel>
                           <FormControl>
@@ -222,7 +222,7 @@ export default function SignupPage() {
                       <FormField
                         control={form.control}
                         name="password"
-                        render={({ field }) => (
+                        render={({ field}) => (
                           <FormItem>
                             <FormLabel className="ml-1">Password</FormLabel>
                             <FormControl>
@@ -230,7 +230,7 @@ export default function SignupPage() {
                                 <Lock className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
                                 <Input
                                   aria-label="Password"
-                                  type={showPassword ? "text" : "password"}
+                                  type={showPassword ?"text" :"password"}
                                   placeholder="••••••••"
                                   className="pl-10 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
                                   {...field}
@@ -245,14 +245,14 @@ export default function SignupPage() {
                       <FormField
                         control={form.control}
                         name="confirmPassword"
-                        render={({ field }) => (
+                        render={({ field}) => (
                           <FormItem>
                             <FormLabel className="ml-1">Confirm</FormLabel>
                             <FormControl>
                               <div className="relative group">
                                 <Input
                                   aria-label="Confirm Password"
-                                  type={showPassword ? "text" : "password"}
+                                  type={showPassword ?"text" :"password"}
                                   placeholder="••••••••"
                                   className="pl-4 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
                                   {...field}
@@ -276,7 +276,7 @@ export default function SignupPage() {
                     <FormField
                       control={form.control}
                       name="terms"
-                      render={({ field }) => (
+                      render={({ field}) => (
                         <FormItem className="flex items-start gap-2 pt-2 space-y-0">
                           <FormControl>
                             <Checkbox
@@ -303,7 +303,7 @@ export default function SignupPage() {
                       disabled={loading}
                       size="lg"
                     >
-                      {loading ? "Creating..." : "Create Account"}
+                      {loading ?"Creating..." :"Create Account"}
                       {!loading && <ArrowRight className="ml-2 w-4 h-4" />}
                     </Button>
                   </form>
@@ -312,7 +312,7 @@ export default function SignupPage() {
 
               <div className="mt-8 pt-6 border-t border-white/10 text-center">
                 <p className="text-sm text-muted-foreground">
-                  Already have an account?{" "}
+                  Already have an account?{""}
                   <Link to="/login">
                     <span className="text-blue-400 hover:text-blue-300 font-medium cursor-pointer">
                       Sign in

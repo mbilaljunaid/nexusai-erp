@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState, useEffect } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -80,8 +81,8 @@ export default function AccountCertPortal() {
 
     const certColumns: SpreadsheetColumn<Certification>[] = [
         { id: "account_id", header: "Account", width: "120px", cell: (row) => <div className="account-code">{row.account_id}</div> },
-        { id: "status", header: "Status", width: "150px", cell: (row) => { const cfg = STATUS_CONFIG[row.status]; const Icon = cfg.icon; return <span className={`status-badge ${cfg.className}`}><Icon size={12} /> {row.status}</span>; } },
-        { id: "variance", header: <div className="sortable-col" role="button" tabIndex={0} onClick={() => { setSortField('variance'); setSortDir(d => d === 'asc' ? 'desc' : 'asc'); }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>Variance{sortField === 'variance' && (sortDir === 'desc' ? <ChevronDown size={14} /> : <ChevronUp size={14} />)}</div>, width: "120px", cell: (row) => <div className={`variance-cell ${Math.abs(row.variance) > 1000 ? 'high-variance' : ''}`}>{row.variance >= 0 ? '+' : ''}{row.variance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div> },
+        { id: "status", header: "Status", width: "150px", cell: (row) => { const cfg = STATUS_CONFIG[row.status]; const Icon = cfg.icon; return <span className={cn(`status-badge ${cfg.className}`)}><Icon size={12} /> {row.status}</span>; } },
+        { id: "variance", header: <div className="sortable-col" role="button" tabIndex={0} onClick={() => { setSortField('variance'); setSortDir(d => d === 'asc' ? 'desc' : 'asc'); }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>Variance{sortField === 'variance' && (sortDir === 'desc' ? <ChevronDown size={14} /> : <ChevronUp size={14} />)}</div>, width: "120px", cell: (row) => <div className={cn(`variance-cell ${Math.abs(row.variance) > 1000 ? 'high-variance' : ''}`)}>{row.variance >= 0 ? '+' : ''}{row.variance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div> },
         { id: "gl_balance", header: "GL Balance", width: "120px", cell: (row) => row.balance_per_gl.toLocaleString('en-US', { minimumFractionDigits: 2 }) },
         { id: "sub_balance", header: "Sub Balance", width: "120px", cell: (row) => row.balance_per_sub.toLocaleString('en-US', { minimumFractionDigits: 2 }) },
         { id: "preparer", header: "Preparer", width: "150px", cell: (row) => <div className="email-cell">{row.preparer_email}</div> },
@@ -149,9 +150,9 @@ export default function AccountCertPortal() {
                         const cfg = STATUS_CONFIG[s.status as keyof typeof STATUS_CONFIG];
                         const Icon = cfg?.icon ?? Clock;
                         return (
-                            <div key={s.status} className={`kpi-status-card ${cfg?.border}`}>
+                            <div key={s.status} className={cn(`kpi-status-card ${cfg?.border}`)}>
                                 <Icon size={18} className={cfg?.text} />
-                                <div className={`kpi-status-count ${cfg?.text}`}>{s.count}</div>
+                                <div className={cn(`kpi-status-count ${cfg?.text}`)}>{s.count}</div>
                                 <div className="kpi-status-label">{s.status}</div>
                             </div>
                         );

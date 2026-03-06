@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -102,7 +103,7 @@ export function MassAdditionsTable() {
                     onClick={() => scanMutation.mutate()}
                     disabled={scanMutation.isPending}
                 >
-                    <RefreshCw className={`mr-2 h-4 w-4 ${scanMutation.isPending ? 'animate-spin' : ''}`} />
+                    <RefreshCw className={cn(`mr-2 h-4 w-4 ${scanMutation.isPending ? 'animate-spin' : ''}`)} />
                     Scan AP Invoices
                 </Button>
             </div>

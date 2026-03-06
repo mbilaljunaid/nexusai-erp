@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -238,20 +239,20 @@ export function RiskDashboard() {
                 <div className="flex items-center gap-2">
                     <Progress
                         value={item.percentage}
-                        className={`flex-1 ${item.isBreach
+                        className={cn(`flex-1 ${item.isBreach
                                 ? "bg-red-100 [&>div]:bg-red-500"
                                 : item.isWarning
                                     ? "bg-amber-100 [&>div]:bg-amber-500"
                                     : ""
-                            }`}
+                            }`)}
                     />
                     <span
-                        className={`text-xs font-bold ${item.isBreach
+                        className={cn(`text-xs font-bold ${item.isBreach
                                 ? "text-red-600"
                                 : item.isWarning
                                     ? "text-amber-600"
                                     : "text-emerald-600"
-                            }`}
+                            }`)}
                     >
                         {item.percentage.toFixed(0)}%
                     </span>
@@ -472,8 +473,8 @@ export function RiskDashboard() {
                     </CardHeader>
                     <CardContent>
                         <p
-                            className={`text-2xl font-black ${metrics.totalMtM >= 0 ? "text-emerald-600" : "text-red-600"
-                                }`}
+                            className={cn(`text-2xl font-black ${metrics.totalMtM >= 0 ? "text-emerald-600" : "text-red-600"
+                                }`)}
                         >
                             {metrics.totalMtM >= 0 ? "+" : ""}$
                             {metrics.totalMtM.toLocaleString(undefined, {
@@ -535,7 +536,7 @@ export function RiskDashboard() {
                         <CardTitle className="text-sm">Counterparty Exposure Heatmap</CardTitle>
                         <CardDescription>Limit utilization by counterparty</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-72">
                         {heatmapData.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={heatmapData} layout="vertical">
@@ -583,7 +584,7 @@ export function RiskDashboard() {
                         <CardTitle className="text-sm">VaR Breakdown by Risk Factor</CardTitle>
                         <CardDescription>95% confidence level, 1-day holding period</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-72">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={varBreakdown}>
                                 <CartesianGrid strokeDasharray="3 3" opacity={0.3} />

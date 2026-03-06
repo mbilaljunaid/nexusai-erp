@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
 import { FormatterType, FormattedData } from "@/types/formatter";
 import { uiFormatter } from "@/services/uiFormatterService";
@@ -61,7 +62,7 @@ export function FormattedValue({ value, type, className }: FormattedValueProps) 
             <TooltipProvider>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <span className={`cursor-help border-b border-dotted border-muted-foreground/50 ${className}`}>
+                        <span className={cn(`cursor-help border-b border-dotted border-muted-foreground/50 ${className}`)}>
                             {data.formatted}
                         </span>
                     </TooltipTrigger>

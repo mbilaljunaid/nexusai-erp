@@ -1,15 +1,15 @@
-import { formatDate } from "@/lib/dateUtils";
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Camera, MapPin, Users, Clock, CloudRain, ThermometerSun, Save, X } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
-import { DatePicker } from '@/components/ui/DatePicker';
+import { formatDate} from"@/lib/dateUtils";
+import { useState} from"react";
+import { Card, CardContent, CardHeader, CardTitle} from"@/components/ui/card";
+import { Button} from"@/components/ui/button";
+import { Input} from"@/components/ui/input";
+import { Label} from"@/components/ui/label";
+import { Textarea} from"@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from"@/components/ui/select";
+import { Camera, MapPin, Users, Clock, CloudRain, ThermometerSun, Save, X} from"lucide-react";
+import { useToast} from"@/hooks/use-toast";
+import { cn} from"@/lib/utils";
+import { DatePicker} from'@/components/ui/DatePicker';
 
 interface DailyLogEntry {
     date: string;
@@ -18,12 +18,12 @@ interface DailyLogEntry {
         condition: string;
         temperature: number;
         precipitation: boolean;
-    };
+   };
     workforce: {
         contractors: number;
         subcontractors: number;
         visitors: number;
-    };
+   };
     workPerformed: string;
     equipment: string;
     materials: string;
@@ -32,7 +32,7 @@ interface DailyLogEntry {
     location?: {
         latitude: number;
         longitude: number;
-    };
+   };
 }
 
 interface MobileDailyLogFormProps {
@@ -41,28 +41,28 @@ interface MobileDailyLogFormProps {
     onCancel?: () => void;
 }
 
-export function MobileDailyLogForm({ projectId, onSubmit, onCancel }: MobileDailyLogFormProps) {
-    const { toast } = useToast();
+export function MobileDailyLogForm({ projectId, onSubmit, onCancel}: MobileDailyLogFormProps) {
+    const { toast} = useToast();
     const [photos, setPhotos] = useState<File[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+    const [location, setLocation] = useState<{ latitude: number; longitude: number} | null>(null);
 
     const handlePhotoCapture = async () => {
         // In production, this would use the device camera
         const input = document.createElement("input");
-        input.type = "file";
-        input.accept = "image/*";
-        input.capture = "environment"; // Use rear camera on mobile
+        input.type ="file";
+        input.accept ="image/*";
+        input.capture ="environment"; // Use rear camera on mobile
         input.multiple = true;
 
         input.onchange = (e) => {
             const files = Array.from((e.target as HTMLInputElement).files || []);
             setPhotos(prev => [...prev, ...files]);
-            toast({ title: "Photos Added", description: `${files.length} photo(s) added to log entry.` });
-        };
+            toast({ title:"Photos Added", description:`${files.length} photo(s) added to log entry.`});
+       };
 
         input.click();
-    };
+   };
 
     const handleGetLocation = () => {
         if ("geolocation" in navigator) {
@@ -71,19 +71,19 @@ export function MobileDailyLogForm({ projectId, onSubmit, onCancel }: MobileDail
                     setLocation({
                         latitude: position.coords.latitude,
                         longitude: position.coords.longitude
-                    });
-                    toast({ title: "Location Captured", description: "GPS coordinates added to log." });
-                },
+                   });
+                    toast({ title:"Location Captured", description:"GPS coordinates added to log."});
+               },
                 (error) => {
                     toast({
-                        title: "Location Error",
-                        description: "Could not get location. Please enable GPS.",
-                        variant: "destructive"
-                    });
-                }
+                        title:"Location Error",
+                        description:"Could not get location. Please enable GPS.",
+                        variant:"destructive"
+                   });
+               }
             );
-        }
-    };
+       }
+   };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -97,20 +97,20 @@ export function MobileDailyLogForm({ projectId, onSubmit, onCancel }: MobileDail
             weather: {
                 condition: formData.get("weather") as string,
                 temperature: Number(formData.get("temperature")),
-                precipitation: formData.get("precipitation") === "yes"
-            },
+                precipitation: formData.get("precipitation") ==="yes"
+           },
             workforce: {
                 contractors: Number(formData.get("contractors")),
                 subcontractors: Number(formData.get("subcontractors")),
                 visitors: Number(formData.get("visitors"))
-            },
+           },
             workPerformed: formData.get("workPerformed") as string,
             equipment: formData.get("equipment") as string,
             materials: formData.get("materials") as string,
             issues: formData.get("issues") as string,
             photos,
             location: location || undefined
-        };
+       };
 
         try {
             // Simulate API call
@@ -118,31 +118,31 @@ export function MobileDailyLogForm({ projectId, onSubmit, onCancel }: MobileDail
 
             if (onSubmit) {
                 onSubmit(entry);
-            }
+           }
 
             toast({
-                title: "Log Entry Saved",
-                description: "Daily log submitted successfully."
-            });
+                title:"Log Entry Saved",
+                description:"Daily log submitted successfully."
+           });
 
             // Reset form for next entry
             e.currentTarget.reset();
             setPhotos([]);
             setLocation(null);
-        } catch (error) {
+       } catch (error) {
             toast({
-                title: "Submission Failed",
-                description: "Could not save log entry. Please try again.",
-                variant: "destructive"
-            });
-        } finally {
+                title:"Submission Failed",
+                description:"Could not save log entry. Please try again.",
+                variant:"destructive"
+           });
+       } finally {
             setIsSubmitting(false);
-        }
-    };
+       }
+   };
 
     return (
         <div className="min-h-screen bg-background pb-20">
-            <div className="sticky top-0 z-10 bg-primary text-primary-foreground shadow-md">
+            <div className="sticky top-0 bg-primary text-primary-foreground shadow-md">
                 <div className="container max-w-2xl px-4 py-4">
                     <div className="flex items-center justify-between">
                         <div>
@@ -355,13 +355,13 @@ export function MobileDailyLogForm({ projectId, onSubmit, onCancel }: MobileDail
                                 type="button"
                                 variant="outline"
                                 className={cn(
-                                    "h-14 text-base",
-                                    location && "bg-green-50 border-green-500"
+                                   "h-14 text-base",
+                                    location &&"bg-green-50 border-green-500"
                                 )}
                                 onClick={handleGetLocation}
                             >
-                                <MapPin className={cn("h-5 w-5 mr-2", location && "text-green-600")} />
-                                {location ? "Location Set" : "Get Location"}
+                                <MapPin className={cn("h-5 w-5 mr-2", location &&"text-green-600")} />
+                                {location ?"Location Set" :"Get Location"}
                             </Button>
                         </div>
                         {photos.length > 0 && (
@@ -393,7 +393,7 @@ export function MobileDailyLogForm({ projectId, onSubmit, onCancel }: MobileDail
                             disabled={isSubmitting}
                         >
                             <Save className="h-5 w-5 mr-2" />
-                            {isSubmitting ? "Saving..." : "Save Daily Log"}
+                            {isSubmitting ?"Saving..." :"Save Daily Log"}
                         </Button>
                     </div>
                 </div>

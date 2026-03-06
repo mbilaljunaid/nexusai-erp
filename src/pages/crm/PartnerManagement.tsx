@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -223,7 +224,7 @@ export default function PartnerManagement() {
                                                     ${(partner.revenue / 1000).toFixed(0)}K
                                                 </TableCell>
                                                 <TableCell className="text-right">
-                                                    <span className={`font-semibold ${partner.winRate >= 50 ? 'text-green-700' : 'text-amber-700'}`}>
+                                                    <span className={cn(`font-semibold ${partner.winRate >= 50 ? 'text-green-700' : 'text-amber-700'}`)}>
                                                         {partner.winRate}%
                                                     </span>
                                                 </TableCell>

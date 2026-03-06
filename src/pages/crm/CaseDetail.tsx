@@ -168,7 +168,7 @@ export default function CaseDetail() {
                                     value={comment}
                                     onChange={e => setComment(e.target.value)}
                                     placeholder="Type a reply..."
-                                    className="min-h-[80px]"
+                                    className="min-h-20"
                                 />
                                 <Button
                                     className="h-auto"

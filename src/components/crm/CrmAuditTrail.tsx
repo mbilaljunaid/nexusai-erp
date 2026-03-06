@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import {
     Card, CardContent, CardHeader, CardTitle, CardDescription
@@ -105,7 +106,7 @@ export default function CrmAuditTrail({ entityId }: { entityId?: string }) {
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    <Badge variant="outline" className={`font-mono text-[10px] ${getActionColor(log.action)} border-none px-2 py-0.5`}>
+                                    <Badge variant="outline" className={cn(`font-mono text-[10px] ${getActionColor(log.action)} border-none px-2 py-0.5`)}>
                                         {log.action}
                                     </Badge>
                                 </TableCell>
@@ -129,13 +130,13 @@ export default function CrmAuditTrail({ entityId }: { entityId?: string }) {
                                             <div className="grid grid-cols-2 gap-4 mt-4">
                                                 <div className="space-y-2">
                                                     <h4 className="text-sm font-semibold text-muted-foreground uppercase">Before</h4>
-                                                    <pre className="p-2 bg-muted rounded text-[10px] overflow-auto h-[200px]">
+                                                    <pre className="p-2 bg-muted rounded text-[10px] overflow-auto h-48">
                                                         {JSON.stringify(log.beforeState, null, 2) || "N/A"}
                                                     </pre>
                                                 </div>
                                                 <div className="space-y-2">
                                                     <h4 className="text-sm font-semibold text-primary uppercase">After</h4>
-                                                    <pre className="p-2 bg-primary/5 border border-primary/20 rounded text-[10px] overflow-auto h-[200px]">
+                                                    <pre className="p-2 bg-primary/5 border border-primary/20 rounded text-[10px] overflow-auto h-48">
                                                         {JSON.stringify(log.afterState, null, 2) || "N/A"}
                                                     </pre>
                                                 </div>

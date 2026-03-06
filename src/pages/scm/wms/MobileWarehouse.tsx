@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -235,7 +236,7 @@ function MenuButton({ icon: Icon, label, color, onClick, count }: any) {
     return (
         <Button
             onClick={onClick}
-            className={`flex items-center justify-start gap-4 h-24 w-full ${color} hover:opacity-90 transition-opacity p-6 rounded-xl border-none relative overflow-hidden group`}
+            className={cn(`flex items-center justify-start gap-4 h-24 w-full ${color} hover:opacity-90 transition-opacity p-6 rounded-xl border-none relative overflow-hidden group`)}
         >
             <div className="p-3 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
                 <Icon className="w-8 h-8 text-white" />

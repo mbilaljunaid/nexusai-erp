@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { MetricCard } from "@/components/MetricCard";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -91,7 +92,7 @@ export function TaxDashboardTab() {
                                             <TableCell>{tx.jurisdiction}</TableCell>
                                             <TableCell className="text-right">{tx.tax}</TableCell>
                                             <TableCell>
-                                                <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${tx.status === 'Posted' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                                                <span className={cn(`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${tx.status === 'Posted' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`)}>
                                                     {tx.status}
                                                 </span>
                                             </TableCell>

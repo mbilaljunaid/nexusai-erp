@@ -111,7 +111,7 @@ export default function WfmAnalytics() {
                         <CardDescription>Based on Flat Rate</CardDescription>
                     </CardHeader>
                     <CardContent className="pl-2">
-                        <div className="h-[350px] flex items-center justify-center text-muted-foreground">
+                        <div className="h-80 flex items-center justify-center text-muted-foreground">
                             Pie Chart Placeholder (Need Recharts Pie Import)
                         </div>
                     </CardContent>

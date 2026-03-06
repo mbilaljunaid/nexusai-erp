@@ -146,12 +146,12 @@ export default function GLInquiry() {
                             <Table>
                                 <TableHeader>
                                     <TableRow className="hover:bg-transparent">
-                                        <TableHead className="w-[120px] pl-6">Batch #</TableHead>
-                                        <TableHead className="w-[150px]">Date</TableHead>
+                                        <TableHead className="w-28 pl-6">Batch #</TableHead>
+                                        <TableHead className="w-36">Date</TableHead>
                                         <TableHead>Description</TableHead>
-                                        <TableHead className="w-[120px]">Source</TableHead>
-                                        <TableHead className="text-right w-[150px]">Debit ({activeLedger?.currencyCode || 'USD'})</TableHead>
-                                        <TableHead className="text-right w-[150px] pr-6">Credit ({activeLedger?.currencyCode || 'USD'})</TableHead>
+                                        <TableHead className="w-28">Source</TableHead>
+                                        <TableHead className="text-right w-36">Debit ({activeLedger?.currencyCode || 'USD'})</TableHead>
+                                        <TableHead className="text-right w-36 pr-6">Credit ({activeLedger?.currencyCode || 'USD'})</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -179,7 +179,7 @@ export default function GLInquiry() {
                                                 <TableCell className="text-sm">
                                                     {line.journal?.accountingDate ? format(new Date(line.journal.accountingDate), 'dd-MMM-yyyy') : '-'}
                                                 </TableCell>
-                                                <TableCell className="text-sm max-w-[300px] truncate">
+                                                <TableCell className="text-sm max-w-72 truncate">
                                                     {line.description || line.journal?.description || '-'}
                                                 </TableCell>
                                                 <TableCell className="text-sm">

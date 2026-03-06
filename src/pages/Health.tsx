@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -111,8 +112,8 @@ export default function Health() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-md ${overallHealth === "healthy" ? "bg-green-500/10" : overallHealth === "warning" ? "bg-yellow-500/10" : "bg-red-500/10"}`}>
-                <Activity className={`h-4 w-4 ${overallHealth === "healthy" ? "text-green-500" : overallHealth === "warning" ? "text-yellow-500" : "text-red-500"}`} />
+              <div className={cn(`p-2 rounded-md ${overallHealth === "healthy" ? "bg-green-500/10" : overallHealth === "warning" ? "bg-yellow-500/10" : "bg-red-500/10"}`)}>
+                <Activity className={cn(`h-4 w-4 ${overallHealth === "healthy" ? "text-green-500" : overallHealth === "warning" ? "text-yellow-500" : "text-red-500"}`)} />
               </div>
               <div>
                 <p className="text-sm font-medium capitalize">{overallHealth}</p>
@@ -176,8 +177,8 @@ export default function Health() {
                   return (
                     <div key={service.name} className="flex items-center justify-between p-3 rounded-md bg-muted/50">
                       <div className="flex items-center gap-3">
-                        <div className={`p-1.5 rounded-md ${config.bg}`}>
-                          <StatusIcon className={`h-4 w-4 ${config.color}`} />
+                        <div className={cn(`p-1.5 rounded-md ${config.bg}`)}>
+                          <StatusIcon className={cn(`h-4 w-4 ${config.color}`)} />
                         </div>
                         <div>
                           <p className="text-sm font-medium">{service.name}</p>
@@ -193,7 +194,7 @@ export default function Health() {
                           <p className="text-sm font-mono">{service.uptime}%</p>
                           <p className="text-xs text-muted-foreground">Uptime</p>
                         </div>
-                        <Badge variant="secondary" className={`${config.bg} ${config.color} capitalize`}>
+                        <Badge variant="secondary" className={cn(`${config.bg} ${config.color} capitalize`)}>
                           {service.status}
                         </Badge>
                       </div>
@@ -213,9 +214,9 @@ export default function Health() {
                 {diagnosticLogs.map((log) => {
                   const config = logTypeConfig[log.type];
                   return (
-                    <div key={log.id} className={`p-3 rounded-md ${config.bg}`}>
+                    <div key={log.id} className={cn(`p-3 rounded-md ${config.bg}`)}>
                       <div className="flex items-center justify-between">
-                        <p className={`text-sm font-medium ${config.color}`}>{log.message}</p>
+                        <p className={cn(`text-sm font-medium ${config.color}`)}>{log.message}</p>
                         <span className="text-xs text-muted-foreground font-mono">{log.timestamp}</span>
                       </div>
                       {log.details && (

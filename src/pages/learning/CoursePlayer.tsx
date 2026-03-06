@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -123,10 +124,10 @@ export default function CoursePlayer() {
                     {modules.map((module, idx) => (
                         <div role="button" tabIndex={0}
                             key={module.id}
-                            className={`p-3 border rounded-lg cursor-pointer transition-colors ${idx === currentModuleIndex
+                            className={cn(`p-3 border rounded-lg cursor-pointer transition-colors ${idx === currentModuleIndex
                                 ? "bg-primary text-primary-foreground"
                                 : "hover:bg-accent"
-                                }`}
+                                }`)}
                             onClick={() => setCurrentModuleIndex(idx)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                         >
                             <div className="flex items-start justify-between gap-2">

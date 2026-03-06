@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React, { useState, useRef } from 'react';
 import { Textarea } from "@/components/ui/textarea";
@@ -153,7 +154,7 @@ export default function LockboxWorkbench() {
         { id: "amount", header: "Amount", width: "120px", cell: (row) => <div className="mono">{fmt(row.amount)}</div> },
         { id: "method", header: "Method", width: "100px", cell: (row) => <div>{row.match_method ? <span className="method-tag">{row.match_method}</span> : <span className="grey">—</span>}</div> },
         { id: "status", header: "Status", width: "120px", cell: (row) => <div>{row.match_status === 'Matched' ? <span className="status-green"><CheckCircle2 size={11} /> Matched</span> : <span className="status-orange"><AlertCircle size={11} /> {row.match_status}</span>}</div> },
-        { id: "unapplied", header: "Unapplied", width: "120px", cell: (row) => <div className={`mono ${row.unapplied_amount > 0 ? 'red' : 'grey'}`}>{row.unapplied_amount > 0 ? fmt(row.unapplied_amount) : '—'}</div> },
+        { id: "unapplied", header: "Unapplied", width: "120px", cell: (row) => <div className={cn(`mono ${row.unapplied_amount > 0 ? 'red' : 'grey'}`)}>{row.unapplied_amount > 0 ? fmt(row.unapplied_amount) : '—'}</div> },
         { id: "action", header: "Action", width: "80px", cell: (row) => <div>{row.match_status !== 'Matched' && row.unapplied_amount > 0 && <button className="btn-match-action" onClick={() => setMatchingItem(row)}>Match</button>}</div> }
     ];
 
@@ -218,10 +219,10 @@ export default function LockboxWorkbench() {
                         {safeBatches.map(b => {
                             const cfg = BATCH_STATUS_CFG[b.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
                             return (
-                                <div key={b.id} className={`batch-card ${selectedBatch?.id === b.id ? 'selected' : ''}`} role="button" tabIndex={0} onClick={() => setSelectedBatch(b)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                                <div key={b.id} className={cn(`batch-card ${selectedBatch?.id === b.id ? 'selected' : ''}`)} role="button" tabIndex={0} onClick={() => setSelectedBatch(b)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                     <div className="bc-top">
                                         <span className="bc-date mono">{formatDate(b.batch_date)}</span>
-                                        <span className={`bc-status ${cfg.bg} ${cfg.color}`}>{b.status}</span>
+                                        <span className={cn(`bc-status ${cfg.bg} ${cfg.color}`)}>{b.status}</span>
                                     </div>
                                     <div className="bc-meta">{b.item_count} items · {fmt(b.total_amount)}</div>
                                 </div>
@@ -245,7 +246,7 @@ export default function LockboxWorkbench() {
                             <div className="filter-row-container">
                                 <div className="filter-buttons">
                                     {['', 'Matched', 'Unmatched', 'Partial', 'Overpayment'].map(s => (
-                                        <button key={s} className={`filter-pill ${matchFilter === s ? 'active' : ''}`} onClick={() => setMatchFilter(s)}>{s || 'All'}</button>
+                                        <button key={s} className={cn(`filter-pill ${matchFilter === s ? 'active' : ''}`)} onClick={() => setMatchFilter(s)}>{s || 'All'}</button>
                                     ))}
                                 </div>
                                 <Input

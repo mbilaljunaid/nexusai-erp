@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -61,7 +62,7 @@ export default function ContractDashboard() {
             id: "status", header: "Status", width: "120px", cell: (row) => {
                 const val = row.status;
                 return (
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${val === 'Active' ? 'bg-green-100 text-green-700' : val === 'Expired' ? 'bg-red-100 text-red-700' : 'bg-slate-100'}`}>
+                    <span className={cn(`px-2 py-1 rounded text-xs font-medium ${val === 'Active' ? 'bg-green-100 text-green-700' : val === 'Expired' ? 'bg-red-100 text-red-700' : 'bg-slate-100'}`)}>
                         {val}
                     </span>
                 );

@@ -1,16 +1,16 @@
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Battery, MapPin, Gauge, Clock, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useState} from"react";
+import { Card, CardContent} from"@/components/ui/card";
+import { Button} from"@/components/ui/button";
+import { Badge} from"@/components/ui/badge";
+import { Battery, MapPin, Gauge, Clock, AlertTriangle, ChevronDown, ChevronUp} from"lucide-react";
+import { cn} from"@/lib/utils";
 
 interface Equipment {
     id: string;
     equipmentNumber: string;
     type: string;
     model: string;
-    status: "ACTIVE" | "IDLE" | "MAINTENANCE" | "OFFLINE";
+    status:"ACTIVE" |"IDLE" |"MAINTENANCE" |"OFFLINE";
     location: string;
     operator?: string;
     hoursToday: number;
@@ -24,32 +24,32 @@ interface MobileEquipmentCardProps {
     onSelect?: (equipment: Equipment) => void;
 }
 
-export function MobileEquipmentCard({ equipment, onSelect }: MobileEquipmentCardProps) {
+export function MobileEquipmentCard({ equipment, onSelect}: MobileEquipmentCardProps) {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const statusConfig = {
-        ACTIVE: { color: "bg-green-100 text-green-800 border-green-300", label: "Active", icon: Gauge },
-        IDLE: { color: "bg-yellow-100 text-yellow-800 border-yellow-300", label: "Idle", icon: Clock },
-        MAINTENANCE: { color: "bg-orange-100 text-orange-800 border-orange-300", label: "Maintenance", icon: AlertTriangle },
-        OFFLINE: { color: "bg-gray-100 text-gray-800 border-gray-300", label: "Offline", icon: AlertTriangle }
-    };
+        ACTIVE: { color:"bg-green-100 text-green-800 border-green-300", label:"Active", icon: Gauge},
+        IDLE: { color:"bg-yellow-100 text-yellow-800 border-yellow-300", label:"Idle", icon: Clock},
+        MAINTENANCE: { color:"bg-orange-100 text-orange-800 border-orange-300", label:"Maintenance", icon: AlertTriangle},
+        OFFLINE: { color:"bg-gray-100 text-gray-800 border-gray-300", label:"Offline", icon: AlertTriangle}
+   };
 
     const config = statusConfig[equipment.status];
     const StatusIcon = config.icon;
 
     const getFuelColor = (level: number) => {
-        if (level < 20) return "text-red-600";
-        if (level < 50) return "text-orange-600";
-        return "text-green-600";
-    };
+        if (level < 20) return"text-red-600";
+        if (level < 50) return"text-orange-600";
+        return"text-green-600";
+   };
 
     return (
         <Card
             className={cn(
-                "border-2 transition-all",
-                equipment.alerts && equipment.alerts.length > 0 && "border-orange-400"
+               "border-2 transition-all",
+                equipment.alerts && equipment.alerts.length > 0 &&"border-orange-400"
             )}
-            onClick={() => setIsExpanded(!isExpanded)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+            onClick={() => setIsExpanded(!isExpanded)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key ==='Enter' || e.key ==='') { e.preventDefault(); e.currentTarget.click();}}}
         >
             <CardContent className="p-4">
                 {/* Compact View */}
@@ -159,7 +159,7 @@ export function MobileEquipmentCard({ equipment, onSelect }: MobileEquipmentCard
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         onSelect(equipment);
-                                    }}
+                                   }}
                                 >
                                     View Details
                                 </Button>
@@ -176,68 +176,68 @@ interface MobileEquipmentListProps {
     projectId?: string;
 }
 
-export function MobileEquipmentList({ projectId }: MobileEquipmentListProps) {
+export function MobileEquipmentList({ projectId}: MobileEquipmentListProps) {
     // Mock data - in production would fetch from API
     const equipment: Equipment[] = [
         {
-            id: "1",
-            equipmentNumber: "EXC-001",
-            type: "Excavator",
-            model: "CAT 320",
-            status: "ACTIVE",
-            location: "Zone A - Foundation",
-            operator: "John Martinez",
+            id:"1",
+            equipmentNumber:"EXC-001",
+            type:"Excavator",
+            model:"CAT 320",
+            status:"ACTIVE",
+            location:"Zone A - Foundation",
+            operator:"John Martinez",
             hoursToday: 6.5,
             fuelLevel: 75,
             utilization: 85,
             alerts: []
-        },
+       },
         {
-            id: "2",
-            equipmentNumber: "DOZ-003",
-            type: "Bulldozer",
-            model: "CAT D6",
-            status: "ACTIVE",
-            location: "Zone B - Grading",
-            operator: "Sarah Chen",
+            id:"2",
+            equipmentNumber:"DOZ-003",
+            type:"Bulldozer",
+            model:"CAT D6",
+            status:"ACTIVE",
+            location:"Zone B - Grading",
+            operator:"Sarah Chen",
             hoursToday: 7.2,
             fuelLevel: 45,
             utilization: 92,
             alerts: ["Fuel level below 50%"]
-        },
+       },
         {
-            id: "3",
-            equipmentNumber: "CRN-005",
-            type: "Tower Crane",
-            model: "Liebherr 630",
-            status: "IDLE",
-            location: "Central Lift Point",
+            id:"3",
+            equipmentNumber:"CRN-005",
+            type:"Tower Crane",
+            model:"Liebherr 630",
+            status:"IDLE",
+            location:"Central Lift Point",
             hoursToday: 3.5,
             fuelLevel: 90,
             utilization: 45,
             alerts: []
-        },
+       },
         {
-            id: "4",
-            equipmentNumber: "LOD-008",
-            type: "Front Loader",
-            model: "CAT 950",
-            status: "MAINTENANCE",
-            location: "Equipment Yard",
+            id:"4",
+            equipmentNumber:"LOD-008",
+            type:"Front Loader",
+            model:"CAT 950",
+            status:"MAINTENANCE",
+            location:"Equipment Yard",
             hoursToday: 0,
             fuelLevel: 15,
             utilization: 0,
-            alerts: ["Scheduled maintenance in progress", "Fuel level critically low"]
-        }
+            alerts: ["Scheduled maintenance in progress","Fuel level critically low"]
+       }
     ];
 
-    const activeCount = equipment.filter(e => e.status === "ACTIVE").length;
+    const activeCount = equipment.filter(e => e.status ==="ACTIVE").length;
     const alertCount = equipment.filter(e => e.alerts && e.alerts.length > 0).length;
 
     return (
         <div className="min-h-screen bg-background pb-20">
             {/* Sticky Header */}
-            <div className="sticky top-0 z-10 bg-primary text-primary-foreground shadow-md">
+            <div className="sticky top-0 bg-primary text-primary-foreground shadow-md">
                 <div className="container max-w-2xl px-4 py-4">
                     <h1 className="text-xl font-bold">Equipment Status</h1>
                     <div className="flex gap-4 mt-2 text-sm">

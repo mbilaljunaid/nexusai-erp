@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import React, { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
@@ -122,7 +123,7 @@ export default function CurriculumBuilder() {
                         <CardContent className="space-y-2">
                             {loadingCurricula ? <Loader2 className="animate-spin" /> : curricula?.map((c: any) => (
                                 <div role="button" tabIndex={0} key={c.id}
-                                    className={`p-3 border rounded cursor-pointer hover:bg-muted ${selectedCurriculum?.id === c.id ? 'border-primary bg-muted' : ''}`}
+                                    className={cn(`p-3 border rounded cursor-pointer hover:bg-muted ${selectedCurriculum?.id === c.id ? 'border-primary bg-muted' : ''}`)}
                                     onClick={() => setSelectedCurriculum(c)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <div className="font-medium">{c.title}</div>
@@ -224,7 +225,7 @@ function CoursePicker({ onSelect }: { onSelect: (id: string) => void }) {
     });
 
     return (
-        <div className="h-[300px] overflow-y-auto space-y-2">
+        <div className="h-72 overflow-y-auto space-y-2">
             {courses?.map((c: any) => (
                 <div key={c.id} className="flex items-center justify-between p-2 hover:bg-muted rounded border cursor-pointer" onClick={() => onSelect(c.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                     <span className="text-sm font-medium">{c.title}</span>

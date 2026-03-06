@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 
 import React, { useState } from "react";
@@ -126,7 +127,7 @@ export function BudgetWorkbench() {
                     <p className="text-muted-foreground">Manage Project Plans and Budgetary Control</p>
                 </div>
                 <Select value={projectId} onValueChange={setProjectId}>
-                    <SelectTrigger className="w-[300px]">
+                    <SelectTrigger className="w-72">
                         <SelectValue placeholder="Select Project" />
                     </SelectTrigger>
                     <SelectContent>
@@ -296,7 +297,7 @@ export function BudgetWorkbench() {
                                 </div>
 
                                 {testResult && (
-                                    <div className={`p-4 rounded-md border ${testResult.status === "FAIL" ? "bg-red-50 border-red-200" : testResult.status === "ADVISORY" ? "bg-yellow-50 border-yellow-200" : "bg-green-50 border-green-200"}`}>
+                                    <div className={cn(`p-4 rounded-md border ${testResult.status === "FAIL" ? "bg-red-50 border-red-200" : testResult.status === "ADVISORY" ? "bg-yellow-50 border-yellow-200" : "bg-green-50 border-green-200"}`)}>
                                         <div className="flex items-center gap-2 mb-2">
                                             {testResult.status === "FAIL" && <AlertTriangle className="text-red-600" />}
                                             {testResult.status === "ADVISORY" && <AlertTriangle className="text-yellow-600" />}

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -301,7 +302,7 @@ export default function AccountsDetail() {
                                     <p className="text-sm font-medium text-muted-foreground">{m.label}</p>
                                     <p className="text-3xl font-bold">{m.value}</p>
                                 </div>
-                                <div className={`p-2 rounded-xl bg-muted/50 group-hover:scale-110 transition-transform ${m.color}`}>
+                                <div className={cn(`p-2 rounded-xl bg-muted/50 group-hover:scale-110 transition-transform ${m.color}`)}>
                                     <m.icon className="h-4 w-4" />
                                 </div>
                             </div>

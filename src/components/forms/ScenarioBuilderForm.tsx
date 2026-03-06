@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -273,7 +274,7 @@ export function ScenarioBuilderForm() {
                         <p className="text-xs"><span className="text-muted-foreground">Base:</span> <span className="font-mono font-semibold">${item.base.toFixed(0)}K</span></p>
                         <p className="text-xs"><span className="text-muted-foreground">Scenario:</span> <span className="font-mono font-semibold">${item.scenario.toFixed(0)}K</span></p>
                       </div>
-                      <div className={`text-xs font-semibold ${change < 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
+                      <div className={cn(`text-xs font-semibold ${change < 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`)}>
                         {change > 0 ? '+' : ''}{change.toFixed(1)}%
                       </div>
                     </div>

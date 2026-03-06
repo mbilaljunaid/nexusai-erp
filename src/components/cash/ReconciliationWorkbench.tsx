@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 
 import { useState, useMemo } from "react";
@@ -139,7 +140,7 @@ export function ReconciliationWorkbench({ accountId }: ReconciliationWorkbenchPr
                     </span>
                     <span className="text-xs text-muted-foreground flex items-center gap-1">
                         <Calendar className="w-3 h-3" /> {formatDate(item.transactionDate!)}
-                        {item.description && <span className="ml-2 truncate max-w-[150px]">{item.description}</span>}
+                        {item.description && <span className="ml-2 truncate max-w-36">{item.description}</span>}
                     </span>
                 </div>
             )
@@ -210,7 +211,7 @@ export function ReconciliationWorkbench({ accountId }: ReconciliationWorkbenchPr
                         <div className="flex items-center gap-4 bg-muted px-4 py-2 rounded-md">
                             <div className="flex flex-col items-end">
                                 <span className="text-xs font-semibold uppercase text-muted-foreground">Selection Difference</span>
-                                <span className={`font-mono font-bold ${difference < 0.01 ? "text-green-600" : "text-red-500"}`}>
+                                <span className={cn(`font-mono font-bold ${difference < 0.01 ? "text-green-600" : "text-red-500"}`)}>
                                     {difference.toFixed(2)}
                                 </span>
                             </div>

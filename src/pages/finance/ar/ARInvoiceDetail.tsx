@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
@@ -213,7 +214,7 @@ export default function ARInvoiceDetail() {
                     <CardTitle>Invoice Details</CardTitle>
                     <CardDescription>Lines, distributions, and sales credits</CardDescription>
                 </CardHeader>
-                <CardContent className="min-h-[300px] p-0">
+                <CardContent className="min-h-72 p-0">
                     <Tabs defaultValue="lines" className="w-full">
                         <div className="border-b px-4 py-2">
                             <TabsList>
@@ -251,7 +252,7 @@ export default function ARInvoiceDetail() {
                                             {lines.map((l: any) => (
                                                 <div role="button" tabIndex={0}
                                                     key={l.id}
-                                                    className={`p-2 border rounded cursor-pointer text-sm ${selectedLineId === l.id ? 'bg-primary/10 border-primary' : 'hover:bg-slate-50'}`}
+                                                    className={cn(`p-2 border rounded cursor-pointer text-sm ${selectedLineId === l.id ? 'bg-primary/10 border-primary' : 'hover:bg-slate-50'}`)}
                                                     onClick={() => {
                                                         setSelectedLineId(l.id);
                                                         form.setValue("amount", l.amount);

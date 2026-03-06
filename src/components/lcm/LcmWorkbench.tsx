@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 
 import React, { useState } from 'react';
@@ -230,12 +231,12 @@ export default function LcmWorkbench() {
                                                 <TableCell className="font-medium">{op.operationNumber}</TableCell>
                                                 <TableCell>{op.name}</TableCell>
                                                 <TableCell>
-                                                    <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent ${op.status === 'CLOSED' ? 'bg-gray-500' : 'bg-blue-500'} text-white`}>
+                                                    <span className={cn(`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent ${op.status === 'CLOSED' ? 'bg-gray-500' : 'bg-blue-500'} text-white`)}>
                                                         {op.status}
                                                     </span>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent ${op.approvalStatus === 'APPROVED' ? 'bg-green-500' : op.approvalStatus === 'PENDING_APPROVAL' ? 'bg-orange-500' : 'bg-gray-300'} text-white`}>
+                                                    <span className={cn(`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent ${op.approvalStatus === 'APPROVED' ? 'bg-green-500' : op.approvalStatus === 'PENDING_APPROVAL' ? 'bg-orange-500' : 'bg-gray-300'} text-white`)}>
                                                         {op.approvalStatus || 'DRAFT'}
                                                     </span>
                                                 </TableCell>
@@ -276,7 +277,7 @@ export default function LcmWorkbench() {
                                                     <AlertDialog>
                                                         <AlertDialogTrigger asChild>
                                                             <Button variant="ghost" size="sm" title="Close & Calculate Variance" disabled={op.status === 'CLOSED' || op.approvalStatus !== 'APPROVED'}>
-                                                                <Lock className={`h-4 w-4 ${op.status === 'CLOSED' ? 'text-gray-400' : 'text-red-600'}`} />
+                                                                <Lock className={cn(`h-4 w-4 ${op.status === 'CLOSED' ? 'text-gray-400' : 'text-red-600'}`)} />
                                                             </Button>
                                                         </AlertDialogTrigger>
                                                         <AlertDialogContent>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { useQuery } from "@tanstack/react-query";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
@@ -83,7 +84,7 @@ export function StatementDrilldownSheet({ accountId, accountName, isOpen, onClos
                                                 <span className="text-[10px] text-muted-foreground uppercase">{line.referenceNumber}</span>
                                             </div>
                                         </TableCell>
-                                        <TableCell className={`text-right font-semibold ${Number(line.amount) >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                                        <TableCell className={cn(`text-right font-semibold ${Number(line.amount) >= 0 ? 'text-emerald-500' : 'text-rose-500'}`)}>
                                             <div className="flex items-center justify-end gap-1">
                                                 {Number(line.amount) >= 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownLeft className="h-3 w-3" />}
                                                 {formatCurrency(Math.abs(Number(line.amount)))}

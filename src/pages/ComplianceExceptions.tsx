@@ -182,7 +182,7 @@ export default function ComplianceExceptions() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Filter by rule or entity..."
-                className="pl-9 h-9 w-[300px] bg-white border-slate-200"
+                className="pl-9 h-9 w-72 bg-white border-slate-200"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />

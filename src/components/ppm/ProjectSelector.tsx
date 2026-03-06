@@ -57,7 +57,7 @@ export function ProjectSelector({ value, onChange }: ProjectSelectorProps) {
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-[300px] justify-between h-12 px-4 shadow-sm border-slate-200"
+                    className="w-72 justify-between h-12 px-4 shadow-sm border-slate-200"
                 >
                     <div className="flex items-center gap-3 text-left">
                         <div className="bg-primary/10 p-2 rounded-md">
@@ -65,7 +65,7 @@ export function ProjectSelector({ value, onChange }: ProjectSelectorProps) {
                         </div>
                         <div className="flex flex-col items-start gap-0.5">
                             <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Active Project</span>
-                            <span className="font-semibold text-slate-900 truncate max-w-[180px]">
+                            <span className="font-semibold text-slate-900 truncate max-w-44">
                                 {isLoading ? "Loading..." : selectedProject ? selectedProject.name : "Select Project..."}
                             </span>
                         </div>
@@ -73,7 +73,7 @@ export function ProjectSelector({ value, onChange }: ProjectSelectorProps) {
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[300px] p-0">
+            <PopoverContent className="w-72 p-0">
                 <Command>
                     <CommandInput placeholder="Search projects..." />
                     <CommandList>

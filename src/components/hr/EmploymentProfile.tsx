@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -427,7 +428,7 @@ function AllocatedChecklist({ allocation }: { allocation: any }) {
                         />
                         <label
                             htmlFor={task.id}
-                            className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${task.status === 'DONE' ? 'line-through text-muted-foreground' : ''}`}
+                            className={cn(`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${task.status === 'DONE' ? 'line-through text-muted-foreground' : ''}`)}
                         >
                             {task.taskName}
                         </label>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
@@ -30,7 +31,7 @@ export function PageSkeleton({ cards = 4, rows = 6, showCards = true }: PageSkel
 
             {/* KPI stat cards */}
             {showCards && (
-                <div className={`grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-${Math.min(cards, 4)}`}>
+                <div className={cn(`grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-${Math.min(cards, 4)}`)}>
                     {Array.from({ length: cards }).map((_, i) => (
                         <Card key={i} className="border shadow-sm">
                             <CardHeader className="pb-2">

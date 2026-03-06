@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import React, { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
@@ -87,7 +88,7 @@ export default function AccrualTesting() {
                                 balances.map((b: any) => (
                                     <div key={b.id} className="flex justify-between items-center border p-3 rounded">
                                         <span className="font-medium">{b.leaveType}</span>
-                                        <span className={`text-lg font-bold ${Number(b.balanceHours) < 0 ? "text-red-500" : "text-green-600"}`}>
+                                        <span className={cn(`text-lg font-bold ${Number(b.balanceHours) < 0 ? "text-red-500" : "text-green-600"}`)}>
                                             {b.balanceHours} hrs
                                         </span>
                                     </div>

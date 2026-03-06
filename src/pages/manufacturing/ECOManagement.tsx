@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -59,19 +60,19 @@ export default function ECOManagement() {
         { id: "type", header: "Type", width: "120px", cell: (e) => <span className="text-[10px] text-gray-500">{e.change_type}</span> },
         {
             id: "priority", header: "Priority", width: "120px", cell: (e) => (
-                <span className={`py-0.5 px-2 rounded font-bold text-[10px] ${PRIORITY_CLR[e.priority]}`}>{e.priority}</span>
+                <span className={cn(`py-0.5 px-2 rounded font-bold text-[10px] ${PRIORITY_CLR[e.priority]}`)}>{e.priority}</span>
             )
         },
         {
             id: "status", header: "Status", width: "150px", cell: (e) => (
-                <span className={`py-0.5 px-2 rounded font-bold text-[10px] ${STATUS_CLR[e.status]}`}>{e.status.replace(/_/g, ' ')}</span>
+                <span className={cn(`py-0.5 px-2 rounded font-bold text-[10px] ${STATUS_CLR[e.status]}`)}>{e.status.replace(/_/g, ' ')}</span>
             )
         },
         {
             id: "actions", header: "Actions", width: "150px", cell: (e) => (
                 <div className="flex gap-1">
                     {(ACTIONS[e.status] ?? []).map(a => (
-                        <button key={a.action} onClick={(ev) => { ev.stopPropagation(); actionMut.mutate({ id: e.id, action: a.action }); }} className={`py-1 px-2 text-white border-none rounded-md text-[10px] cursor-pointer ${a.color}`}>{a.label}</button>
+                        <button key={a.action} onClick={(ev) => { ev.stopPropagation(); actionMut.mutate({ id: e.id, action: a.action }); }} className={cn(`py-1 px-2 text-white border-none rounded-md text-[10px] cursor-pointer ${a.color}`)}>{a.label}</button>
                     ))}
                 </div>
             )
@@ -91,8 +92,8 @@ export default function ECOManagement() {
             {/* Status strip */}
             <div className="flex gap-2 mb-3.5">
                 {statusTotals.map(s => (
-                    <Card key={s.status} onClick={() => setStatusFilter(statusFilter === s.status ? '' : s.status)} className={`flex-1 rounded-xl py-2 px-2.5 cursor-pointer border-t-[3px] shadow-sm ${STATUS_BORDER_CLR[s.status]} ${statusFilter && statusFilter !== s.status ? 'opacity-50' : 'opacity-100'}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                        <div className={`text-lg font-extrabold font-mono ${STATUS_TEXT_CLR[s.status]}`}>{s.count}</div>
+                    <Card key={s.status} onClick={() => setStatusFilter(statusFilter === s.status ? '' : s.status)} className={cn(`flex-1 rounded-xl py-2 px-2.5 cursor-pointer border-t-[3px] shadow-sm ${STATUS_BORDER_CLR[s.status]} ${statusFilter && statusFilter !== s.status ? 'opacity-50' : 'opacity-100'}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                        <div className={cn(`text-lg font-extrabold font-mono ${STATUS_TEXT_CLR[s.status]}`)}>{s.count}</div>
                         <div className="text-[9px] text-gray-400 font-semibold">{s.status.replace(/_/g, ' ')}</div>
                     </Card>
                 ))}
@@ -151,7 +152,7 @@ export default function ECOManagement() {
                 </Card>
                 {/* Detail */}
                 {selected && (
-                    <Card className="w-[280px] shrink-0 p-3.5 shadow-sm">
+                    <Card className="w-72 shrink-0 p-3.5 shadow-sm">
                         <div className="flex justify-between mb-2">
                             <div className="font-bold text-xs">{selected.eco_number}</div>
                             <button onClick={() => setSelected(null)} className="bg-transparent border-none cursor-pointer">✕</button>

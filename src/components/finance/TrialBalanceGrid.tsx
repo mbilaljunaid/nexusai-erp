@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,7 +27,7 @@ export function TrialBalanceGrid() {
                 <div className="flex gap-8 text-sm text-muted-foreground mt-2">
                     <div>Total Debits: <span className="text-foreground font-bold font-mono">${totalDebits.toLocaleString()}</span></div>
                     <div>Total Credits: <span className="text-foreground font-bold font-mono">${totalCredits.toLocaleString()}</span></div>
-                    <div>Difference: <span className={`font-bold font-mono ${isBalanced ? 'text-green-600' : 'text-red-600'}`}>${Math.abs(totalDebits - totalCredits).toLocaleString()}</span></div>
+                    <div>Difference: <span className={cn(`font-bold font-mono ${isBalanced ? 'text-green-600' : 'text-red-600'}`)}>${Math.abs(totalDebits - totalCredits).toLocaleString()}</span></div>
                 </div>
             </CardHeader>
             <CardContent>

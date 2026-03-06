@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDateTime } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -97,14 +98,14 @@ export default function ShipmentTracking() {
             id: "score", header: "Score", width: "200px", cell: (row) => (
                 <div className="perf-bar-bg w-full">
                     <style>{`.perf-bar-${row.carrier_scac.replace(/\\W/g, '')} { width: ${row.on_time_pct}%; }`}</style>
-                    <div className={`perf-bar perf-bar-${row.carrier_scac.replace(/\\W/g, '')} ${Number(row.on_time_pct) >= 95 ? 'bg-emerald-600' : Number(row.on_time_pct) >= 85 ? 'bg-amber-600' : 'bg-red-600'}`} />
+                    <div className={cn(`perf-bar perf-bar-${row.carrier_scac.replace(/\\W/g, '')} ${Number(row.on_time_pct) >= 95 ? 'bg-emerald-600' : Number(row.on_time_pct) >= 85 ? 'bg-amber-600' : 'bg-red-600'}`)} />
                 </div>
             )
         }
     ];
 
     const modeColumns: SpreadsheetColumn<any>[] = [
-        { id: "mode", header: "Mode", width: "150px", cell: (row) => <span className={`mono bold ${row.mode === modeResult?.recommended?.mode ? 'text-emerald-600' : ''}`}>{row.mode}</span> },
+        { id: "mode", header: "Mode", width: "150px", cell: (row) => <span className={cn(`mono bold ${row.mode === modeResult?.recommended?.mode ? 'text-emerald-600' : ''}`)}>{row.mode}</span> },
         { id: "cost", header: "Cost", width: "150px", cell: (row) => <span className="mono">${row.cost?.toFixed(2)}</span> },
         { id: "transit", header: "Transit", width: "100px", cell: (row) => <span>{row.transitDays}d</span> },
         { id: "co2", header: "CO₂ (kg)", width: "150px", cell: (row) => <span>{row.co2Kg?.toFixed(1)}</span> },
@@ -129,7 +130,7 @@ export default function ShipmentTracking() {
 
             <div className="tab-bar">
                 {(['shipments', 'performance', 'mode'] as const).map(t => (
-                    <button key={t} className={`tab-btn ${activeTab === t ? 'active' : ''}`} onClick={() => setActiveTab(t)} data-active={activeTab === t}>
+                    <button key={t} className={cn(`tab-btn ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)} data-active={activeTab === t}>
                         {t === 'shipments' && <Package size={12} />}
                         {t === 'performance' && <TrendingUp size={12} />}
                         {t === 'mode' && <Zap size={12} />}
@@ -172,10 +173,10 @@ export default function ShipmentTracking() {
                         {shipments.map(s => {
                             const cfg = STATUS_CFG[s.current_status] ?? 'bg-gray-100 text-gray-500';
                             return (
-                                <div key={s.id} className={`ship-card ${selected?.id === s.id ? 'selected' : ''}`} onClick={() => setSelected(s)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                                <div key={s.id} className={cn(`ship-card ${selected?.id === s.id ? 'selected' : ''}`)} onClick={() => setSelected(s)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                     <div className="sc-top">
                                         <span className="sc-pro">{s.pro_number || s.tracking_number || s.id.slice(0, 8)}</span>
-                                        <span className={`sc-status ${cfg}`}>{s.current_status}</span>
+                                        <span className={cn(`sc-status ${cfg}`)}>{s.current_status}</span>
                                     </div>
                                     <div className="sc-route"><MapPin size={10} /> {s.origin_city ?? '?'} → {s.dest_city ?? '?'}</div>
                                     <div className="sc-meta">{s.carrier_scac} · {s.edi_214_count} updates</div>
@@ -200,7 +201,7 @@ export default function ShipmentTracking() {
                                 )}
                                 <div className="timeline">
                                     {selectedDetail.events.map((e, i) => (
-                                        <div key={e.id} className={`tl-item ${i === 0 ? 'current' : ''}`}>
+                                        <div key={e.id} className={cn(`tl-item ${i === 0 ? 'current' : ''}`)}>
                                             <div className="tl-dot" />
                                             <div className="tl-content">
                                                 <div className="tl-code"><span className="code-badge">{e.event_code}</span> {e.event_description}</div>

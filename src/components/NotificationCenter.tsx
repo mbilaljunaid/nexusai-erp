@@ -1,20 +1,21 @@
-import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Bell, X, CheckCheck, Trash2, AlertCircle, Info, Star, Sparkles, Clock } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatDate } from "@/lib/dateUtils";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { apiRequest } from "@/lib/queryClient";
-import { useLocalStorage } from "@/hooks/use-local-storage";
+import { cn } from "@/lib/utils";
+import { useState, useEffect} from"react";
+import { useQuery, useMutation, useQueryClient} from"@tanstack/react-query";
+import { Bell, X, CheckCheck, Trash2, AlertCircle, Info, Star, Sparkles, Clock} from"lucide-react";
+import { Button} from"@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle} from"@/components/ui/card";
+import { Badge} from"@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger} from"@/components/ui/tabs";
+import { formatDate} from"@/lib/dateUtils";
+import { ScrollArea} from"@/components/ui/scroll-area";
+import { apiRequest} from"@/lib/queryClient";
+import { useLocalStorage} from"@/hooks/use-local-storage";
 
 interface Notification {
   id: string | number;
   title: string;
   message: string;
-  type: "alert" | "update" | "recommendation" | "info";
+  type:"alert" |"update" |"recommendation" |"info";
   timestamp?: string;
   createdAt?: string;
   read: boolean;
@@ -34,53 +35,53 @@ interface APINotification {
   createdAt: string;
 }
 
-const STORAGE_KEY_DISMISSED = "nexusai-notifications-dismissed";
+const STORAGE_KEY_DISMISSED ="nexusai-notifications-dismissed";
 
 const fallbackNotifications: Notification[] = [
   {
-    id: "n1",
-    title: "System Maintenance",
-    message: "Scheduled maintenance on Dec 20th, 2-4 AM UTC",
-    type: "alert",
-    timestamp: "2 hours ago",
+    id:"n1",
+    title:"System Maintenance",
+    message:"Scheduled maintenance on Dec 20th, 2-4 AM UTC",
+    type:"alert",
+    timestamp:"2 hours ago",
     read: false,
-  },
+ },
   {
-    id: "n2",
-    title: "High Churn Risk Detected",
-    message: "3 accounts show signs of potential churn. Review recommended.",
-    type: "alert",
-    timestamp: "3 hours ago",
+    id:"n2",
+    title:"High Churn Risk Detected",
+    message:"3 accounts show signs of potential churn. Review recommended.",
+    type:"alert",
+    timestamp:"3 hours ago",
     read: false,
-    actionUrl: "/analytics/churn-risk",
-  },
+    actionUrl:"/analytics/churn-risk",
+ },
   {
-    id: "n3",
-    title: "New Feature: AI Insights",
-    message: "Explore AI-powered analytics in your dashboard",
-    type: "update",
-    timestamp: "1 day ago",
+    id:"n3",
+    title:"New Feature: AI Insights",
+    message:"Explore AI-powered analytics in your dashboard",
+    type:"update",
+    timestamp:"1 day ago",
     read: false,
-    actionUrl: "/copilot",
-  },
+    actionUrl:"/copilot",
+ },
   {
-    id: "n4",
-    title: "Workflow Automation Available",
-    message: "Create automated workflows to save time on repetitive tasks",
-    type: "update",
-    timestamp: "2 days ago",
+    id:"n4",
+    title:"Workflow Automation Available",
+    message:"Create automated workflows to save time on repetitive tasks",
+    type:"update",
+    timestamp:"2 days ago",
     read: true,
-    actionUrl: "/workflow-builder",
-  },
+    actionUrl:"/workflow-builder",
+ },
   {
-    id: "n5",
-    title: "Optimize Your Sales Pipeline",
-    message: "Based on your data, consider adding lead scoring to improve conversions",
-    type: "recommendation",
-    timestamp: "3 days ago",
+    id:"n5",
+    title:"Optimize Your Sales Pipeline",
+    message:"Based on your data, consider adding lead scoring to improve conversions",
+    type:"recommendation",
+    timestamp:"3 days ago",
     read: true,
-    actionUrl: "/lead-scoring",
-  },
+    actionUrl:"/lead-scoring",
+ },
 ];
 
 function formatTimestamp(dateStr: string): string {
@@ -91,9 +92,9 @@ function formatTimestamp(dateStr: string): string {
   const diffHours = Math.floor(diffMs / 3600000);
   const diffDays = Math.floor(diffMs / 86400000);
 
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
+  if (diffMins < 60) return`${diffMins}m ago`;
+  if (diffHours < 24) return`${diffHours}h ago`;
+  if (diffDays < 7) return`${diffDays}d ago`;
   return date.toLocaleDateString();
 }
 
@@ -102,11 +103,11 @@ function normalizeNotification(n: APINotification): Notification {
     id: n.id,
     title: n.title,
     message: n.message,
-    type: (n.type as Notification["type"]) || "info",
+    type: (n.type as Notification["type"]) ||"info",
     timestamp: formatTimestamp(n.createdAt),
     read: n.isRead,
     actionUrl: n.actionUrl || undefined,
-  };
+ };
 }
 
 export function NotificationCenter() {
@@ -116,96 +117,96 @@ export function NotificationCenter() {
   const [dismissedIds, setDismissedIds] = useLocalStorage<(string | number)[]>(STORAGE_KEY_DISMISSED, []);
   const [isHydrated, setIsHydrated] = useState(false);
 
-  const { data: apiNotifications, isLoading } = useQuery<APINotification[]>({
+  const { data: apiNotifications, isLoading} = useQuery<APINotification[]>({
     queryKey: ['/api/notifications'],
     retry: false,
-  });
+ });
 
-  const { data: unreadCountData } = useQuery<{ count: number }>({
+  const { data: unreadCountData} = useQuery<{ count: number}>({
     queryKey: ['/api/notifications/unread-count'],
     retry: false,
     refetchInterval: 30000,
-  });
+ });
 
   const markReadMutation = useMutation({
     mutationFn: async (id: string | number) => {
-      await apiRequest('PATCH', `/api/notifications/${id}/read`);
-    },
+      await apiRequest('PATCH',`/api/notifications/${id}/read`);
+   },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/notifications/unread-count'] });
-    },
-  });
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications']});
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications/unread-count']});
+   },
+ });
 
   const markAllReadMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest('POST', '/api/notifications/mark-all-read');
-    },
+      await apiRequest('POST','/api/notifications/mark-all-read');
+   },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/notifications/unread-count'] });
-    },
-  });
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications']});
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications/unread-count']});
+   },
+ });
 
   useEffect(() => {
     setIsHydrated(true);
-  }, []);
+ }, []);
 
   const notifications: Notification[] = apiNotifications
     ? apiNotifications.map(normalizeNotification).filter(n => !dismissedIds.includes(n.id))
     : fallbackNotifications.filter(n => !dismissedIds.includes(n.id));
 
   const unreadCount = unreadCountData?.count ?? notifications.filter(n => !n.read).length;
-  const alertNotifications = notifications.filter(n => n.type === "alert");
-  const updateNotifications = notifications.filter(n => n.type === "update");
-  const recommendationNotifications = notifications.filter(n => n.type === "recommendation" || n.type === "info");
+  const alertNotifications = notifications.filter(n => n.type ==="alert");
+  const updateNotifications = notifications.filter(n => n.type ==="update");
+  const recommendationNotifications = notifications.filter(n => n.type ==="recommendation" || n.type ==="info");
 
   const saveDismissedState = (dismissedId: string | number) => {
     setDismissedIds((prev) => [...prev, dismissedId]);
-  };
+ };
 
   const markAsRead = (id: string | number) => {
     markReadMutation.mutate(id);
-  };
+ };
 
   const markAllAsRead = () => {
     markAllReadMutation.mutate();
-  };
+ };
 
   const dismissNotification = (id: string | number) => {
     saveDismissedState(id);
-  };
+ };
 
   const clearAll = () => {
     const currentIds = notifications.map(n => n.id);
     setDismissedIds((prev) => [...new Set([...prev, ...currentIds])]);
-  };
+ };
 
   const getTypeIcon = (type: Notification["type"]) => {
     switch (type) {
-      case "alert":
+      case"alert":
         return <AlertCircle className="w-4 h-4 text-red-500" />;
-      case "update":
+      case"update":
         return <Sparkles className="w-4 h-4 text-blue-500" />;
-      case "recommendation":
+      case"recommendation":
         return <Star className="w-4 h-4 text-yellow-500" />;
-      case "info":
+      case"info":
         return <Info className="w-4 h-4 text-muted-foreground" />;
-    }
-  };
+   }
+ };
 
   const getTypeBadge = (type: Notification["type"]) => {
     switch (type) {
-      case "alert":
+      case"alert":
         return <Badge variant="destructive" className="text-xs" data-testid={`badge-type-alert`}>Alert</Badge>;
-      case "update":
+      case"update":
         return <Badge className="bg-blue-500/10 text-blue-600 border-blue-200 text-xs" data-testid={`badge-type-update`}>Update</Badge>;
-      case "recommendation":
+      case"recommendation":
         return <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-200 text-xs" data-testid={`badge-type-tip`}>Tip</Badge>;
-      case "info":
+      case"info":
         return <Badge variant="secondary" className="text-xs" data-testid={`badge-type-info`}>Info</Badge>;
-    }
-  };
+   }
+ };
 
   const renderNotificationList = (items: Notification[]) => {
     if (items.length === 0) {
@@ -214,15 +215,15 @@ export function NotificationCenter() {
           No notifications
         </div>
       );
-    }
+   }
 
     return (
       <div className="space-y-2">
         {items.map((notif) => (
           <div
             key={notif.id}
-            className={`flex items-start gap-3 p-3 rounded-lg transition-all ${notif.read ? "bg-muted/50" : "bg-primary/5 border border-primary/10"
-              }`}
+            className={cn(`flex items-start gap-3 p-3 rounded-lg transition-all ${notif.read ?"bg-muted/50" :"bg-primary/5 border border-primary/10"
+             }`)}
             data-testid={`notification-item-${notif.id}`}
           >
             <div className="shrink-0 mt-0.5">
@@ -231,7 +232,7 @@ export function NotificationCenter() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <h4
-                  className={`font-medium text-sm ${notif.read ? "text-muted-foreground" : ""}`}
+                  className={cn(`font-medium text-sm ${notif.read ?"text-muted-foreground" :""}`)}
                   data-testid={`text-notification-title-${notif.id}`}
                 >
                   {notif.title}
@@ -279,7 +280,7 @@ export function NotificationCenter() {
         ))}
       </div>
     );
-  };
+ };
 
   return (
     <div className="relative">
@@ -293,7 +294,7 @@ export function NotificationCenter() {
         <Bell className="h-4 w-4" />
         {isHydrated && unreadCount > 0 && (
           <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs" data-testid="badge-notification-count">
-            {unreadCount > 9 ? "9+" : unreadCount}
+            {unreadCount > 9 ?"9+" : unreadCount}
           </Badge>
         )}
       </Button>
@@ -301,12 +302,12 @@ export function NotificationCenter() {
       {open && (
         <>
           <div role="button" tabIndex={0}
-            className="fixed inset-0 z-40"
+            className="fixed inset-0"
             onClick={() => setOpen(false)}
-            data-testid="overlay-notifications-backdrop" onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+            data-testid="overlay-notifications-backdrop" onKeyDown={(e) => { if (e.key ==='Enter' || e.key ==='') { e.preventDefault(); e.currentTarget.click();}}}
           />
           <Card
-            className="absolute right-0 mt-2 w-96 animate-in slide-in-from-top-2 shadow-xl z-50"
+            className="absolute right-0 mt-2 w-96 animate-in slide-in-from-top-2 shadow-xl"
             data-testid="panel-notifications"
           >
             <CardHeader className="pb-2">

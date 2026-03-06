@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import React from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
@@ -14,7 +15,7 @@ interface SideSheetProps {
 export function SideSheet({ open, onOpenChange, title, description, children, className }: SideSheetProps) {
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
-            <SheetContent className={`sm:max-w-xl w-[400px] overflow-y-auto ${className || ""}`}>
+            <SheetContent className={cn(`sm:max-w-xl w-[400px] overflow-y-auto ${className || ""}`)}>
                 <SheetHeader className="mb-6">
                     <SheetTitle>{title}</SheetTitle>
                     {description && <SheetDescription>{description}</SheetDescription>}

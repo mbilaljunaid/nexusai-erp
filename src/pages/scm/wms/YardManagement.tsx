@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -91,7 +92,7 @@ export default function YardManagement() {
                                 <div key={appt.id} className="p-4 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between hover:border-blue-500/50 transition-colors">
                                     <div className="flex items-center gap-4">
                                         <div className="p-3 bg-slate-900 rounded-lg">
-                                            <Truck className={`w-6 h-6 ${appt.type === 'INBOUND' ? 'text-blue-400' : 'text-purple-400'}`} />
+                                            <Truck className={cn(`w-6 h-6 ${appt.type === 'INBOUND' ? 'text-blue-400' : 'text-purple-400'}`)} />
                                         </div>
                                         <div>
                                             <h4 className="font-bold text-white">{appt.carrier}</h4>
@@ -107,11 +108,11 @@ export default function YardManagement() {
                                         </div>
                                         <Badge
                                             variant="outline"
-                                            className={`
+                                            className={cn(`
                                                 ${appt.status === 'ARRIVED' ? 'border-green-500/20 text-green-400 bg-green-500/5' : ''}
                                                 ${appt.status === 'DELAYED' ? 'border-red-500/20 text-red-400 bg-red-500/5' : ''}
                                                 ${appt.status === 'SCHEDULED' ? 'border-blue-500/20 text-blue-400 bg-blue-500/5' : ''}
-                                            `}
+                                            `)}
                                         >
                                             {appt.status}
                                         </Badge>
@@ -131,7 +132,7 @@ export default function YardManagement() {
                         <CardContent>
                             <div className="grid grid-cols-4 gap-2">
                                 {Array.from({ length: 12 }).map((_, i) => (
-                                    <div key={i} className={`h-16 rounded border flex flex-col items-center justify-center gap-1 ${i < 4 ? 'bg-blue-500/10 border-blue-500/30' : 'bg-slate-950 border-slate-800 opacity-50'}`}>
+                                    <div key={i} className={cn(`h-16 rounded border flex flex-col items-center justify-center gap-1 ${i < 4 ? 'bg-blue-500/10 border-blue-500/30' : 'bg-slate-950 border-slate-800 opacity-50'}`)}>
                                         <span className="text-[10px] text-slate-500 font-bold uppercase">D-{(i + 1).toString().padStart(2, '0')}</span>
                                         {i < 4 ? <Truck className="w-4 h-4 text-blue-400" /> : <div className="w-4 h-4" />}
                                     </div>

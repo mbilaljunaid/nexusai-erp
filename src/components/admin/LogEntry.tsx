@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDateTime } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
@@ -37,7 +38,7 @@ export default function LogEntry({ log }: LogEntryProps) {
     return (
         <div className="px-4 py-3 hover:bg-gray-50">
             <div role="button" tabIndex={0}
-                className={`flex items-start gap-3 ${hasMetadata ? 'cursor-pointer' : ''}`}
+                className={cn(`flex items-start gap-3 ${hasMetadata ? 'cursor-pointer' : ''}`)}
                 onClick={() => hasMetadata && setExpanded(!expanded)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
             >
                 {/* Expand Icon */}
@@ -52,7 +53,7 @@ export default function LogEntry({ log }: LogEntryProps) {
                 )}
 
                 {/* Level Badge */}
-                <span className={`flex-shrink-0 px-2 py-1 rounded text-xs font-medium uppercase ${getLevelColor()}`}>
+                <span className={cn(`flex-shrink-0 px-2 py-1 rounded text-xs font-medium uppercase ${getLevelColor()}`)}>
                     {log.level}
                 </span>
 

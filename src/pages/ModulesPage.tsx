@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -280,8 +281,8 @@ export default function ModulesPage() {
                     {/* Left: Module Info */}
                     <div>
                       <div className="flex items-start gap-4 mb-4">
-                        <div className={`p-3 rounded-xl ${colors.bg}`}>
-                          <IconComponent className={`w-8 h-8 ${colors.text}`} />
+                        <div className={cn(`p-3 rounded-xl ${colors.bg}`)}>
+                          <IconComponent className={cn(`w-8 h-8 ${colors.text}`)} />
                         </div>
                         <div>
                           <h3 className="text-xl font-bold mb-1">{module.title}</h3>
@@ -302,7 +303,7 @@ export default function ModulesPage() {
                     <div className="bg-gradient-to-br from-muted/50 to-muted rounded-xl p-5">
                       <div className="flex items-center gap-2 mb-3">
                         <Brain className="w-5 h-5 text-purple-500" />
-                        <Badge className={`${colors.badge} text-white text-xs`}>
+                        <Badge className={cn(`${colors.badge} text-white text-xs`)}>
                           AI-POWERED
                         </Badge>
                       </div>

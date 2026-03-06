@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -138,8 +139,8 @@ export default function DuplicateDetectionWorkbench() {
                             duplicateSets.map((set: DuplicateSet) => (
                                 <div role="button" tabIndex={0}
                                     key={set.id}
-                                    className={`p-3 border rounded-lg cursor-pointer transition-colors hover:bg-accent ${selectedSet === set.id ? "bg-accent border-primary" : ""
-                                        }`}
+                                    className={cn(`p-3 border rounded-lg cursor-pointer transition-colors hover:bg-accent ${selectedSet === set.id ? "bg-accent border-primary" : ""
+                                        }`)}
                                     onClick={() => setSelectedSet(set.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <div className="flex items-center justify-between mb-1">
@@ -183,10 +184,10 @@ export default function DuplicateDetectionWorkbench() {
                                     {partyDetails.map((party: Party) => (
                                         <div role="button" tabIndex={0}
                                             key={party.id}
-                                            className={`p-4 border rounded-lg cursor-pointer transition-all ${selectedSurvivor === party.id
+                                            className={cn(`p-4 border rounded-lg cursor-pointer transition-all ${selectedSurvivor === party.id
                                                 ? "border-primary ring-2 ring-primary bg-primary/5"
                                                 : "hover:border-primary/50"
-                                                }`}
+                                                }`)}
                                             onClick={() => setSelectedSurvivor(party.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <div className="flex items-start justify-between mb-3">

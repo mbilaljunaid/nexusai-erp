@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +44,7 @@ export function ProjectHealthCard({ metrics, alerts }: ProjectHealthCardProps) {
                         <CardTitle className="text-xs font-semibold text-muted-foreground">CPI (Cost Performance)</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className={`text-2xl font-black ${getCpiColor(metrics.cpi)} flex items-center gap-2`}>
+                        <div className={cn(`text-2xl font-black ${getCpiColor(metrics.cpi)} flex items-center gap-2`)}>
                             {metrics.cpi.toFixed(2)}
                             {metrics.cpi >= 1 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
                         </div>
@@ -55,7 +56,7 @@ export function ProjectHealthCard({ metrics, alerts }: ProjectHealthCardProps) {
                         <CardTitle className="text-xs font-semibold text-muted-foreground">SPI (Schedule Performance)</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className={`text-2xl font-black ${getSpiColor(metrics.spi)} flex items-center gap-2`}>
+                        <div className={cn(`text-2xl font-black ${getSpiColor(metrics.spi)} flex items-center gap-2`)}>
                             {metrics.spi.toFixed(2)}
                             {metrics.spi >= 1 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
                         </div>
@@ -67,7 +68,7 @@ export function ProjectHealthCard({ metrics, alerts }: ProjectHealthCardProps) {
                         <CardTitle className="text-xs font-semibold text-muted-foreground">Cost Variance (EV - AC)</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className={`text-2xl font-bold ${metrics.earnedValue - metrics.actualCost >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                        <div className={cn(`text-2xl font-bold ${metrics.earnedValue - metrics.actualCost >= 0 ? 'text-emerald-600' : 'text-rose-600'}`)}>
                             {formatCurrency(metrics.earnedValue - metrics.actualCost)}
                         </div>
                     </CardContent>

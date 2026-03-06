@@ -205,7 +205,7 @@ export default function Affiliates() {
 
                             <div className="flex items-center gap-2">
                                 <Select value={filters.status} onValueChange={(v) => handleFilterChange('status', v)}>
-                                    <SelectTrigger className="w-[160px]">
+                                    <SelectTrigger className="w-40">
                                         <SelectValue placeholder="Status" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -217,7 +217,7 @@ export default function Affiliates() {
                                 </Select>
 
                                 <Select value={filters.tier} onValueChange={(v) => handleFilterChange('tier', v)}>
-                                    <SelectTrigger className="w-[160px]">
+                                    <SelectTrigger className="w-40">
                                         <SelectValue placeholder="Tier" />
                                     </SelectTrigger>
                                     <SelectContent>

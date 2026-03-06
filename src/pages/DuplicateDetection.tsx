@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
@@ -100,7 +101,7 @@ export default function DuplicateDetection() {
             {selectedSet?.parties?.map((p: any) => (
               <Card
                 key={p.partyId}
-                className={`cursor-pointer transition-all border-2 ${survivorId === p.partyId ? 'border-primary ring-2 ring-primary/20 bg-primary/5' : 'border-transparent hover:border-slate-200 bg-slate-50'}`}
+                className={cn(`cursor-pointer transition-all border-2 ${survivorId === p.partyId ? 'border-primary ring-2 ring-primary/20 bg-primary/5' : 'border-transparent hover:border-slate-200 bg-slate-50'}`)}
                 onClick={() => setSurvivorId(p.partyId)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
               >
                 <CardContent className="p-4 space-y-3">

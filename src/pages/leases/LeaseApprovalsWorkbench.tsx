@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
@@ -95,8 +96,8 @@ export default function LeaseApprovalsWorkbench() {
                                     {pendingLeases.map((lease) => (
                                         <div role="button" tabIndex={0}
                                             key={lease.id}
-                                            className={`p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md ${selectedLeaseId === lease.id ? "border-primary bg-primary/5 ring-1 ring-primary" : ""
-                                                }`}
+                                            className={cn(`p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md ${selectedLeaseId === lease.id ? "border-primary bg-primary/5 ring-1 ring-primary" : ""
+                                                }`)}
                                             onClick={() => setSelectedLeaseId(lease.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <div className="flex justify-between items-start">

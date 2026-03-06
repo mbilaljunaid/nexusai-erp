@@ -88,14 +88,14 @@ export function GuidedTourOverlay() {
   return (
     <>
       <div role="button" tabIndex={0}
-        className="fixed inset-0 bg-black/50 z-[9998]"
+        className="fixed inset-0 bg-black/50 z-50"
         onClick={skipTour}
         data-testid="tour-overlay" onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
       />
 
       {highlightRect && (
         <div
-          className="fixed z-[9999] pointer-events-none rounded-lg"
+          className="fixed z-50 pointer-events-none rounded-lg"
           style={{
             top: highlightRect.top - 4,
             left: highlightRect.left - 4,
@@ -109,7 +109,7 @@ export function GuidedTourOverlay() {
 
       {position && (
         <Card
-          className="fixed z-[10000] w-[350px] shadow-xl animate-in fade-in-0 zoom-in-95"
+          className="fixed z-50 w-80 shadow-xl animate-in fade-in-0 zoom-in-95"
           style={{ top: position.top, left: position.left }}
           data-testid="tour-card"
         >
@@ -212,7 +212,7 @@ export const dashboardTour: Tour = {
 
 export function GuidedTour() {
   const { startTour, hasCompletedTour } = useTour();
-  
+
   return (
     <Button
       onClick={() => startTour(dashboardTour)}

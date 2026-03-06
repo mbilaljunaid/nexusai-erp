@@ -106,7 +106,7 @@ export function ArRevenueWorkbench() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-[50px]"></TableHead>
+                                <TableHead className="w-12"></TableHead>
                                 <TableHead>Period</TableHead>
                                 <TableHead>Schedule Date</TableHead>
                                 <TableHead>Amount</TableHead>

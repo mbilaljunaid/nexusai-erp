@@ -474,7 +474,7 @@ export default function PricingPage() {
                         <Textarea
                           placeholder="Tell us about your needs, timeline, and any specific requirements..."
                           {...field}
-                          className="min-h-[120px]"
+                          className="min-h-28"
                           data-testid="input-contact-message"
                         />
                       </FormControl>

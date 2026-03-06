@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -249,7 +250,7 @@ export default function EmailCampaignBuilder() {
                                                         </TableCell>
                                                         <TableCell className="text-right">
                                                             {campaign.stats ? (
-                                                                <span className={`font-semibold ${Number(openRate) >= 20 ? 'text-green-700' : 'text-amber-700'}`}>
+                                                                <span className={cn(`font-semibold ${Number(openRate) >= 20 ? 'text-green-700' : 'text-amber-700'}`)}>
                                                                     {openRate}%
                                                                 </span>
                                                             ) : (

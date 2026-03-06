@@ -124,7 +124,7 @@ export default function WmsUnitTypeManager() {
                             <TableHead>Description</TableHead>
                             <TableHead>Dimensions (L x W x H)</TableHead>
                             <TableHead>Max Weight</TableHead>
-                            <TableHead className="w-[100px]">Actions</TableHead>
+                            <TableHead className="w-24">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

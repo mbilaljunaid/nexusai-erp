@@ -193,7 +193,7 @@ function CreateRuleDialog({ open, onOpenChange, orgs, onSubmit }: { open: boolea
                                 <Select value={line.targetOrgId} onValueChange={(val) => {
                                     const newLines = [...lines]; newLines[idx].targetOrgId = val; setLines(newLines);
                                 }}>
-                                    <SelectTrigger className="w-[200px]"><SelectValue placeholder="Target Org" /></SelectTrigger>
+                                    <SelectTrigger className="w-48"><SelectValue placeholder="Target Org" /></SelectTrigger>
                                     <SelectContent>
                                         {orgs.map((o: any) => <SelectItem key={o.id} value={o.id}>{o.orgName}</SelectItem>)}
                                     </SelectContent>

@@ -1,21 +1,22 @@
-import { useRoute, Link } from "wouter";
-import { Header, Footer } from "@/components/Navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { getFeatureBySlug, getFeaturesByModule, FeatureDetail } from "@/data/featureRegistry";
-import { CheckCircle, ArrowRight, ArrowLeft, Sparkles, Target, Lightbulb, Link2 } from "lucide-react";
-import NotFound from "./not-found";
+import { cn } from "@/lib/utils";
+import { useRoute, Link} from"wouter";
+import { Header, Footer} from"@/components/Navigation";
+import { Card, CardContent, CardHeader, CardTitle} from"@/components/ui/card";
+import { Button} from"@/components/ui/button";
+import { Badge} from"@/components/ui/badge";
+import { getFeatureBySlug, getFeaturesByModule, FeatureDetail} from"@/data/featureRegistry";
+import { CheckCircle, ArrowRight, ArrowLeft, Sparkles, Target, Lightbulb, Link2} from"lucide-react";
+import NotFound from"./not-found";
 
 export default function FeatureDetailPage() {
   const [match, params] = useRoute("/features/:slug");
-  const slug = (params as any)?.slug || "";
+  const slug = (params as any)?.slug ||"";
   
   const feature = getFeatureBySlug(slug);
   
   if (!feature) {
     return <NotFound />;
-  }
+ }
 
   const relatedFeatures = feature.relatedFeatures
     .map(slug => getFeatureBySlug(slug))
@@ -29,9 +30,9 @@ export default function FeatureDetailPage() {
       <Header />
       
       <main className="pt-20">
-        <section className={`relative py-20 ${feature.color} text-white overflow-hidden`}>
+        <section className={cn(`relative py-20 ${feature.color} text-white overflow-hidden`)}>
           <div className="absolute inset-0 bg-black/20" />
-          <div className="container mx-auto px-4 relative z-10">
+          <div className="container mx-auto px-4 relative">
             <Link href="/features">
               <Button variant="ghost" className="mb-6 text-white/80 hover:text-white hover:bg-white/10" data-testid="link-back-features">
                 <ArrowLeft className="w-4 h-4 mr-2" />
@@ -104,7 +105,7 @@ export default function FeatureDetailPage() {
                   <ul className="space-y-3">
                     {feature.benefits.map((benefit, index) => (
                       <li key={index} className="flex items-start gap-3" data-testid={`text-benefit-${index}`}>
-                        <div className={`w-2 h-2 rounded-full ${feature.color} mt-2 flex-shrink-0`} />
+                        <div className={cn(`w-2 h-2 rounded-full ${feature.color} mt-2 flex-shrink-0`)} />
                         <span className="text-muted-foreground">{benefit}</span>
                       </li>
                     ))}
@@ -125,7 +126,7 @@ export default function FeatureDetailPage() {
               {feature.useCases.map((useCase, index) => (
                 <Card key={index} className="hover-elevate">
                   <CardContent className="p-4">
-                    <div className={`w-3 h-3 rounded-full ${feature.color} mb-3`} />
+                    <div className={cn(`w-3 h-3 rounded-full ${feature.color} mb-3`)} />
                     <p className="font-medium" data-testid={`text-usecase-${index}`}>{useCase}</p>
                   </CardContent>
                 </Card>
@@ -148,7 +149,7 @@ export default function FeatureDetailPage() {
                     <Link key={related.slug} href={`/features/${related.slug}`}>
                       <Card className="hover-elevate cursor-pointer h-full" data-testid={`card-related-${related.slug}`}>
                         <CardContent className="p-6">
-                          <div className={`p-3 ${related.color} text-white rounded-lg w-fit mb-4`}>
+                          <div className={cn(`p-3 ${related.color} text-white rounded-lg w-fit mb-4`)}>
                             <RelatedIcon className="w-5 h-5" />
                           </div>
                           <h3 className="font-semibold mb-2">{related.name}</h3>
@@ -157,7 +158,7 @@ export default function FeatureDetailPage() {
                       </Card>
                     </Link>
                   );
-                })}
+               })}
               </div>
             </div>
           </section>

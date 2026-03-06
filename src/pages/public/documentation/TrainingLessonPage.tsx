@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -2048,8 +2049,8 @@ export default function TrainingLessonPage() {
           </Link>
 
           <div className="flex items-start gap-4 mb-6">
-            <div className={`p-3 rounded-lg ${colors.bg} ${colors.darkBg}`}>
-              <GraduationCap className={`w-8 h-8 ${colors.text} ${colors.darkText}`} />
+            <div className={cn(`p-3 rounded-lg ${colors.bg} ${colors.darkBg}`)}>
+              <GraduationCap className={cn(`w-8 h-8 ${colors.text} ${colors.darkText}`)} />
             </div>
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-2 mb-2">

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
@@ -167,7 +168,7 @@ export default function CloseDashboard() {
             actions={
                 <div className="flex gap-2">
                     <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-                        <SelectTrigger className="w-[180px] bg-background">
+                        <SelectTrigger className="w-44 bg-background">
                             <SelectValue placeholder="Select Period" />
                         </SelectTrigger>
                         <SelectContent>
@@ -231,7 +232,7 @@ export default function CloseDashboard() {
 
                 {/* AI Insights Panel */}
                 {prediction && (
-                    <Card className={`border-l-4 ${prediction.riskLevel === 'High' ? 'border-l-red-500' : prediction.riskLevel === 'Medium' ? 'border-l-orange-500' : 'border-l-green-500'}`}>
+                    <Card className={cn(`border-l-4 ${prediction.riskLevel === 'High' ? 'border-l-red-500' : prediction.riskLevel === 'Medium' ? 'border-l-orange-500' : 'border-l-green-500'}`)}>
                         <CardHeader className="pb-2">
                             <CardTitle className="text-lg flex justify-between items-center">
                                 <span>Smart Close Insights</span>
@@ -267,8 +268,8 @@ export default function CloseDashboard() {
                                 <Card className="cursor-pointer hover:shadow-md transition-shadow group h-full">
                                     <CardHeader>
                                         <div className="flex items-center gap-3">
-                                            <div className={`p-2 rounded-lg bg-opacity-10 group-hover:bg-opacity-20 transition-colors ${card.color.replace('text-', 'bg-')}`}>
-                                                <card.icon className={`h-6 w-6 ${card.color}`} />
+                                            <div className={cn(`p-2 rounded-lg bg-opacity-10 group-hover:bg-opacity-20 transition-colors ${card.color.replace('text-', 'bg-')}`)}>
+                                                <card.icon className={cn(`h-6 w-6 ${card.color}`)} />
                                             </div>
                                             <CardTitle className="text-base">{card.title}</CardTitle>
                                         </div>
@@ -317,7 +318,7 @@ export default function CloseDashboard() {
                                     <div key={t.id} className="p-3 border rounded-lg flex justify-between items-center group">
                                         <div>
                                             <div className="flex items-center gap-2">
-                                                <h3 className={`font-semibold ${t.status === 'COMPLETED' ? 'line-through text-muted-foreground' : ''}`}>{t.taskName}</h3>
+                                                <h3 className={cn(`font-semibold ${t.status === 'COMPLETED' ? 'line-through text-muted-foreground' : ''}`)}>{t.taskName}</h3>
                                                 <Badge variant="outline">{t.status}</Badge>
                                             </div>
                                             <p className="text-sm text-muted-foreground">{t.description} • Due: {formatDate(t.dueDate)}</p>

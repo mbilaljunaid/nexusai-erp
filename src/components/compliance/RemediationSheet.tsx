@@ -116,7 +116,7 @@ export function RemediationSheet({ violation, onOpenChange }: RemediationSheetPr
                         <Textarea
                             id="notes"
                             placeholder="Detail the actions taken to resolve this violation..."
-                            className="min-h-[120px]"
+                            className="min-h-28"
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
                         />

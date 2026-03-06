@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -58,7 +59,7 @@ export default function IntercompanyReconciliation() {
             header: "Diff",
             width: "120px",
             cell: (row) => (
-                <div className={`px-2 text-right font-medium ${row.difference !== 0 ? "text-red-500" : "text-green-500"}`}>
+                <div className={cn(`px-2 text-right font-medium ${row.difference !== 0 ? "text-red-500" : "text-green-500"}`)}>
                     {formatCurrency(row.difference)}
                 </div>
             )
@@ -105,7 +106,7 @@ export default function IntercompanyReconciliation() {
                 <Card>
                     <CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Variance (Uneliminated)</CardTitle></CardHeader>
                     <CardContent>
-                        <div className={`text-2xl font-bold ${summary.variance !== 0 ? "text-red-500" : "text-green-500"}`}>
+                        <div className={cn(`text-2xl font-bold ${summary.variance !== 0 ? "text-red-500" : "text-green-500"}`)}>
                             {formatCurrency(summary.variance)}
                         </div>
                     </CardContent>

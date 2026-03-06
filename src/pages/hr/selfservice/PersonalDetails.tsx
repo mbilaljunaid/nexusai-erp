@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { i18n } from "@/lib/i18n";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -368,7 +369,7 @@ export default function PersonalDetails() {
                             </Button>
                         </div>
 
-                        <div className="min-h-[300px] h-full border border-gray-200 rounded-lg">
+                        <div className="min-h-72 h-full border border-gray-200 rounded-lg">
                             <InteractiveSpreadsheet
                                 columns={documentColumns}
                                 data={documents}
@@ -406,7 +407,7 @@ export default function PersonalDetails() {
                                 <Card key={ben.enrollmentId} className="group hover:border-teal-500/50 transition-all border-zinc-200/50 dark:border-zinc-800/50 shadow-sm">
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                         <CardTitle className="text-sm font-medium text-zinc-500 uppercase tracking-wider">{ben.planType}</CardTitle>
-                                        <Activity className={`h-4 w-4 ${ben.planType === 'MEDICAL' ? 'text-red-500' : 'text-teal-500'}`} />
+                                        <Activity className={cn(`h-4 w-4 ${ben.planType === 'MEDICAL' ? 'text-red-500' : 'text-teal-500'}`)} />
                                     </CardHeader>
                                     <CardContent>
                                         <h4 className="text-lg font-bold mb-1">{ben.planName}</h4>
@@ -427,7 +428,7 @@ export default function PersonalDetails() {
                             <div className="absolute top-0 right-0 p-8 opacity-10">
                                 <CreditCard className="h-32 w-32" />
                             </div>
-                            <CardContent className="p-8 relative z-10">
+                            <CardContent className="p-8 relative">
                                 <h3 className="text-xl font-bold mb-2">Flexible Spending Account (FSA)</h3>
                                 <p className="text-zinc-400 max-w-lg mb-6">Manage your tax-advantaged accounts for healthcare and dependent care expenses. Current balance: <span className="text-white font-bold">$1,240.50</span></p>
                                 <Button variant="outline" className="text-white border-zinc-700 hover:bg-zinc-800">

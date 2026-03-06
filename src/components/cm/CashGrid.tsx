@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -99,15 +100,15 @@ export default function CashGrid({ accountId, legalEntityId, onAddTransaction, o
                                         {row.sourceModule}
                                     </span>
                                 </td>
-                                <td className={`px-4 py-2 text-right font-medium ${Number(row.amount) < 0 ? 'text-red-600' : 'text-green-600'
-                                    }`}>
+                                <td className={cn(`px-4 py-2 text-right font-medium ${Number(row.amount) < 0 ? 'text-red-600' : 'text-green-600'
+                                    }`)}>
                                     {Number(row.amount).toLocaleString(undefined, { style: 'currency', currency: 'USD' })}
                                 </td>
                                 <td className="px-4 py-2 text-center">
-                                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${row.status === 'Reconciled' || row.status === 'Cleared'
+                                    <span className={cn(`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${row.status === 'Reconciled' || row.status === 'Cleared'
                                         ? 'bg-green-100 text-green-800'
                                         : 'bg-yellow-100 text-yellow-800'
-                                        }`}>
+                                        }`)}>
                                         {row.status}
                                     </span>
                                 </td>

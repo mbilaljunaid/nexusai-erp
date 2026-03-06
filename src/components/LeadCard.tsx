@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -51,7 +52,7 @@ export function LeadCard({ lead, onCall, onEmail }: LeadCardProps) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <h4 className="font-medium text-sm truncate">{lead.name}</h4>
-              <Badge variant="secondary" className={`text-xs ${statusColors[lead.status]}`}>
+              <Badge variant="secondary" className={cn(`text-xs ${statusColors[lead.status]}`)}>
                 {lead.status}
               </Badge>
             </div>

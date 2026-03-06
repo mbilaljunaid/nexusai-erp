@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -46,7 +47,7 @@ export default function LotGenealogy() {
         {
             id: "status", header: "Status", width: "120px", cell: (l) => {
                 const cfg = STATUS_CFG[l.status] ?? STATUS_CFG.Active;
-                return <span className={`py-0.5 px-2 rounded font-bold text-[10px] ${cfg}`}>{l.status}</span>;
+                return <span className={cn(`py-0.5 px-2 rounded font-bold text-[10px] ${cfg}`)}>{l.status}</span>;
             }
         },
         { id: "actions", header: "", width: "80px", cell: (l) => l.status === 'Active' ? <button onClick={ev => { ev.stopPropagation(); statusMut.mutate({ lot: l.lot_number, status: 'Quarantine' }); }} className="py-0.5 px-2 bg-red-100 border-none rounded text-[9px] cursor-pointer text-red-600">Hold</button> : null }
@@ -99,9 +100,9 @@ export default function LotGenealogy() {
 
             <div className="flex gap-1.5 mb-3 flex-wrap">
                 {['', 'Active', 'Quarantine', 'Consumed', 'Scrapped', 'Expired'].map(s => (
-                    <button key={s} onClick={() => setStatusFilter(s)} className={`py-1 px-2 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`}>{s || 'All'}</button>
+                    <button key={s} onClick={() => setStatusFilter(s)} className={cn(`py-1 px-2 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</button>
                 ))}
-                <Input value={itemFilter} onChange={e => setItemFilter(e.target.value)} placeholder="Filter by item…" className="py-1 px-2 border border-gray-300 rounded-md text-[11px] w-[140px]" aria-label="Filter by item" />
+                <Input value={itemFilter} onChange={e => setItemFilter(e.target.value)} placeholder="Filter by item…" className="py-1 px-2 border border-gray-300 rounded-md text-[11px] w-36" aria-label="Filter by item" />
             </div>
 
             <div className="flex gap-3.5">
@@ -117,7 +118,7 @@ export default function LotGenealogy() {
                 </div>
 
                 {selected && (
-                    <div className="w-[300px] shrink-0 bg-white border border-gray-200 rounded-xl p-3.5">
+                    <div className="w-72 shrink-0 bg-white border border-gray-200 rounded-xl p-3.5">
                         <div className="flex justify-between mb-2">
                             <div className="font-bold">{selected.lot_number}</div>
                             <button onClick={() => setSelected(null)} className="bg-transparent border-none cursor-pointer">✕</button>
@@ -129,10 +130,10 @@ export default function LotGenealogy() {
                             {selected.supplier_lot && <div>Supplier Lot: {selected.supplier_lot}</div>}
                         </div>
                         <div className="flex gap-1.5 mb-2.5">
-                            <button onClick={() => setTraceMode(traceMode === 'up' ? null : 'up')} className={`flex-1 py-1 rounded-md text-[10px] cursor-pointer flex items-center justify-center gap-1 border-none ${traceMode === 'up' ? 'bg-blue-700 text-white' : 'bg-gray-100 text-gray-700'}`}>
+                            <button onClick={() => setTraceMode(traceMode === 'up' ? null : 'up')} className={cn(`flex-1 py-1 rounded-md text-[10px] cursor-pointer flex items-center justify-center gap-1 border-none ${traceMode === 'up' ? 'bg-blue-700 text-white' : 'bg-gray-100 text-gray-700'}`)}>
                                 <GitMerge size={10} /> Parents
                             </button>
-                            <button onClick={() => setTraceMode(traceMode === 'down' ? null : 'down')} className={`flex-1 py-1 rounded-md text-[10px] cursor-pointer flex items-center justify-center gap-1 border-none ${traceMode === 'down' ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700'}`}>
+                            <button onClick={() => setTraceMode(traceMode === 'down' ? null : 'down')} className={cn(`flex-1 py-1 rounded-md text-[10px] cursor-pointer flex items-center justify-center gap-1 border-none ${traceMode === 'down' ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700'}`)}>
                                 <ChevronRight size={10} /> Children
                             </button>
                         </div>

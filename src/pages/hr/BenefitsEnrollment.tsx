@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Heart, Shield, Eye, Star, DollarSign, BarChart3, CheckCircle2, X } from 'lucide-react';
@@ -110,7 +111,7 @@ export default function BenefitsEnrollment() {
         {
             id: "type", header: "Type", width: "100px", cell: (row) => {
                 const cls = TYPE_CLASSES[row.benefit_type] ?? { lightBg: 'bg-gray-100', text: 'text-gray-500' };
-                return <span className={`type-badge ${cls.lightBg} ${cls.text}`}>{row.benefit_type}</span>;
+                return <span className={cn(`type-badge ${cls.lightBg} ${cls.text}`)}>{row.benefit_type}</span>;
             }
         },
         { id: "emp_cost", header: "Employee Cost", width: "120px", cell: (row) => <span>{fmt(row.employee_cost, row.currency_code)}</span> },
@@ -131,7 +132,7 @@ export default function BenefitsEnrollment() {
         {
             id: "type", header: "Benefit Type", width: "150px", cell: (row) => {
                 const cls = TYPE_CLASSES[row.benefit_type] ?? { lightBg: 'bg-gray-100', text: 'text-gray-500' };
-                return <span className={`type-badge ${cls.lightBg} ${cls.text}`}>{row.benefit_type}</span>;
+                return <span className={cn(`type-badge ${cls.lightBg} ${cls.text}`)}>{row.benefit_type}</span>;
             }
         },
         { id: "enrolled", header: "Enrolled", width: "100px", cell: (row) => <span className="num-cell block w-full text-right">{Number(row.enrolled).toLocaleString()}</span> },
@@ -147,9 +148,9 @@ export default function BenefitsEnrollment() {
                     <div className="pct-row flex items-center gap-2">
                         <div className="pct-bar-bg flex-1 h-1.5 bg-gray-200 rounded-full">
                             <style>{`.pct-bar-fill-${row.benefit_type.replace(/\\W/g, '')} { width: ${pct}%; }`}</style>
-                            <div className={`pct-bar-fill pct-bar-fill-${row.benefit_type.replace(/\\W/g, '')} h-full rounded-full ${cls.bg}`} />
+                            <div className={cn(`pct-bar-fill pct-bar-fill-${row.benefit_type.replace(/\\W/g, '')} h-full rounded-full ${cls.bg}`)} />
                         </div>
-                        <span className="pct-label text-xs min-w-[30px]">{pct}%</span>
+                        <span className="pct-label text-xs min-w-7">{pct}%</span>
                     </div>
                 );
             }
@@ -164,7 +165,7 @@ export default function BenefitsEnrollment() {
             {/* Tabs */}
             <div className="be-tabs">
                 {(['catalog', 'enrollments', 'summary'] as const).map(t => (
-                    <button key={t} className={`be-tab ${activeTab === t ? 'active' : ''}`} onClick={() => setActiveTab(t)}>
+                    <button key={t} className={cn(`be-tab ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)}>
                         {t.charAt(0).toUpperCase() + t.slice(1)}
                     </button>
                 ))}
@@ -177,7 +178,7 @@ export default function BenefitsEnrollment() {
                         const icon = TYPE_ICONS[plan.benefit_type] ?? <Star size={18} />;
                         return (
                             <div key={plan.id} className="plan-card">
-                                <div className={`plan-type-header ${cls.bg}`}>
+                                <div className={cn(`plan-type-header ${cls.bg}`)}>
                                     <span className="text-white">{icon}</span>
                                     <span className="plan-type-label text-white">{plan.benefit_type}</span>
                                 </div>

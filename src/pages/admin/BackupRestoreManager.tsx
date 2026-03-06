@@ -1,6 +1,6 @@
 import { formatDate, formatDateTime } from "@/lib/dateUtils";
 import React, { useState, useEffect } from 'react';
-import { Database, Play, CheckCircle, Download, AlertTriangle, Clock } from 'lucide-react';
+import { Database, Play, CheckCircle, Download, AlertTriangle, Clock, Loader2 } from "lucide-react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { useToast } from "@/hooks/use-toast";
@@ -147,7 +147,7 @@ export default function BackupRestoreManager() {
                 >
                     {creating ? (
                         <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                            <Loader2 className="h-4 w-4 animate-spin text-white" />
                             Creating...
                         </>
                     ) : (
@@ -226,7 +226,7 @@ export default function BackupRestoreManager() {
                 <div className="h-[400px]">
                     {loading ? (
                         <div className="flex items-center justify-center p-12">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                            <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
                         </div>
                     ) : restorePoints.length === 0 ? (
                         <div className="p-12 text-center text-gray-500">

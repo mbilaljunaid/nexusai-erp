@@ -26,7 +26,7 @@ export default function RevenueWaterfall() {
             description="Visualize recognized revenue over time."
             actions={
                 <Select value={year} onValueChange={setYear}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-44">
                         <SelectValue placeholder="Select Year" />
                     </SelectTrigger>
                     <SelectContent>

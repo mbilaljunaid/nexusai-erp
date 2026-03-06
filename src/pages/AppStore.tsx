@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { Link } from "wouter";
@@ -185,10 +186,10 @@ function ReviewDialog({ app, open, onOpenChange }: ReviewDialogProps) {
                   data-testid={`button-rating-star-${star}`}
                 >
                   <Star
-                    className={`w-6 h-6 ${star <= (hoveredRating || rating)
+                    className={cn(`w-6 h-6 ${star <= (hoveredRating || rating)
                       ? "text-yellow-500 fill-yellow-500"
                       : "text-muted-foreground"
-                      }`}
+                      }`)}
                   />
                 </button>
               ))}
@@ -214,7 +215,7 @@ function ReviewDialog({ app, open, onOpenChange }: ReviewDialogProps) {
           ) : reviews && reviews.length > 0 ? (
             <div>
               <h4 className="text-sm font-medium mb-2">Recent Reviews</h4>
-              <ScrollArea className="h-[150px]">
+              <ScrollArea className="h-36">
                 <div className="space-y-3 pr-4">
                   {reviews.slice(0, 5).map((review) => (
                     <div key={review.id} className="border rounded-lg p-3 text-sm">
@@ -223,10 +224,10 @@ function ReviewDialog({ app, open, onOpenChange }: ReviewDialogProps) {
                           {[1, 2, 3, 4, 5].map((star) => (
                             <Star
                               key={star}
-                              className={`w-3 h-3 ${star <= review.rating
+                              className={cn(`w-3 h-3 ${star <= review.rating
                                 ? "text-yellow-500 fill-yellow-500"
                                 : "text-muted-foreground"
-                                }`}
+                                }`)}
                             />
                           ))}
                         </div>

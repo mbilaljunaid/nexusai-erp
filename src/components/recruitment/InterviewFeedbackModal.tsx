@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -151,10 +152,10 @@ export function InterviewFeedbackModal({
                     {[1, 2, 3, 4, 5].map((star) => (
                         <Star
                             key={star}
-                            className={`h-6 w-6 cursor-pointer transition-colors ${star <= (hovered || value)
+                            className={cn(`h-6 w-6 cursor-pointer transition-colors ${star <= (hovered || value)
                                     ? 'fill-yellow-400 text-yellow-400'
                                     : 'text-muted-foreground'
-                                }`}
+                                }`)}
                             onMouseEnter={() => setHovered(star)}
                             onMouseLeave={() => setHovered(0)}
                             onClick={() => onChange(star)}
@@ -192,10 +193,10 @@ export function InterviewFeedbackModal({
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <Star
                                         key={star}
-                                        className={`h-8 w-8 cursor-pointer transition-all ${star <= (hoveredRating || overallRating)
+                                        className={cn(`h-8 w-8 cursor-pointer transition-all ${star <= (hoveredRating || overallRating)
                                                 ? 'fill-yellow-400 text-yellow-400 scale-110'
                                                 : 'text-muted-foreground hover:text-yellow-200'
-                                            }`}
+                                            }`)}
                                         onMouseEnter={() => setHoveredRating(star)}
                                         onMouseLeave={() => setHoveredRating(0)}
                                         onClick={() => setOverallRating(star)}

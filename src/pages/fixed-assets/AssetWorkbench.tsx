@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 
 import { useQuery } from "@tanstack/react-query";
@@ -93,7 +94,7 @@ export default function AssetWorkbench() {
             width: "150px",
             cell: (asset: FaAssetWithFinancials) => (
                 <div className="px-2 h-full flex items-center">
-                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${asset.status === "ACTIVE" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}>
+                    <span className={cn(`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${asset.status === "ACTIVE" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`)}>
                         {asset.status}
                     </span>
                 </div>

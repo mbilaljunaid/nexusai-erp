@@ -1,33 +1,33 @@
-import { useEffect } from "react";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Breadcrumb } from "@/components/Breadcrumb";
-import { MetadataFormRenderer } from "@/components/forms/MetadataFormRenderer";
-import { getFormMetadata } from "@/lib/formMetadata";
-import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useEffect} from"react";
+import { SidebarTrigger} from"@/components/ui/sidebar";
+import { Breadcrumb} from"@/components/Breadcrumb";
+import { MetadataFormRenderer} from"@/components/forms/MetadataFormRenderer";
+import { getFormMetadata} from"@/lib/formMetadata";
+import { ArrowLeft} from"lucide-react";
+import { Button} from"@/components/ui/button";
 
 interface FormPageProps {
   formId?: string;
 }
 
-export default function FormPage({ formId: propFormId }: FormPageProps) {
+export default function FormPage({ formId: propFormId}: FormPageProps) {
   // Extract formId from URL search params or use prop
-  const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
-  const formId = propFormId || searchParams.get('formId') || 'default';
+  const searchParams = new URLSearchParams(typeof window !=='undefined' ? window.location.search :'');
+  const formId = propFormId || searchParams.get('formId') ||'default';
   const formMetadata = getFormMetadata(formId);
 
   const handleBack = () => {
     if (window.opener) {
       window.close();
-    } else {
+   } else {
       window.history.back();
-    }
-  };
+   }
+ };
 
   return (
     <div className="flex flex-col h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-card sticky top-0 z-40">
+      <header className="border-b bg-card sticky top-0">
         <div className="flex items-center justify-between p-4 gap-4">
           <div className="flex items-center gap-4 flex-1">
             <Button 
@@ -39,8 +39,8 @@ export default function FormPage({ formId: propFormId }: FormPageProps) {
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
-              <h1 className="text-xl font-bold">{formMetadata?.name || 'Form'}</h1>
-              <p className="text-sm text-muted-foreground">{formMetadata?.breadcrumbs?.[0]?.label || 'Enter your information'}</p>
+              <h1 className="text-xl font-bold">{formMetadata?.name ||'Form'}</h1>
+              <p className="text-sm text-muted-foreground">{formMetadata?.breadcrumbs?.[0]?.label ||'Enter your information'}</p>
             </div>
           </div>
           <SidebarTrigger data-testid="button-sidebar-toggle" />
@@ -66,11 +66,11 @@ export default function FormPage({ formId: propFormId }: FormPageProps) {
                   if (window.opener) {
                     window.opener.location.reload();
                     window.close();
-                  } else {
+                 } else {
                     window.history.back();
-                  }
-                }, 1000);
-              }}
+                 }
+               }, 1000);
+             }}
             />
           </div>
         </div>

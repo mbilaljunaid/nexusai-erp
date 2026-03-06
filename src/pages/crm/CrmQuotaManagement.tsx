@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -128,8 +129,8 @@ export default function CrmQuotaManagement() {
                                 <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{stat.label}</p>
                                 <p className="text-2xl font-black text-slate-900 tracking-tighter">{stat.value}</p>
                             </div>
-                            <div className={`${stat.bg} p-3 rounded-2xl`}>
-                                <stat.icon className={`h-6 w-6 ${stat.color}`} />
+                            <div className={cn(`${stat.bg} p-3 rounded-2xl`)}>
+                                <stat.icon className={cn(`h-6 w-6 ${stat.color}`)} />
                             </div>
                         </CardContent>
                     </Card>
@@ -158,7 +159,7 @@ export default function CrmQuotaManagement() {
                     <Table>
                         <TableHeader>
                             <TableRow className="bg-slate-50/50 hover:bg-slate-50/50 border-slate-100">
-                                <TableHead className="w-[300px] h-12 uppercase text-[10px] font-black tracking-widest text-slate-400 px-8">Sales Representative</TableHead>
+                                <TableHead className="w-72 h-12 uppercase text-[10px] font-black tracking-widest text-slate-400 px-8">Sales Representative</TableHead>
                                 <TableHead className="h-12 uppercase text-[10px] font-black tracking-widest text-slate-400">Target Type</TableHead>
                                 <TableHead className="h-12 uppercase text-[10px] font-black tracking-widest text-slate-400">Quota Amount</TableHead>
                                 <TableHead className="h-12 uppercase text-[10px] font-black tracking-widest text-slate-400">Actual Revenue</TableHead>
@@ -200,7 +201,7 @@ export default function CrmQuotaManagement() {
                                         <TableCell className="px-8">
                                             <div className="space-y-2">
                                                 <div className="flex justify-between items-center text-[10px] font-black tracking-tighter">
-                                                    <span className={`${perf.attainment >= 100 ? 'text-emerald-600' : 'text-slate-400'}`}>
+                                                    <span className={cn(`${perf.attainment >= 100 ? 'text-emerald-600' : 'text-slate-400'}`)}>
                                                         {Math.round(perf.attainment)}% Complete
                                                     </span>
                                                     {perf.attainment >= 100 && (
@@ -209,9 +210,9 @@ export default function CrmQuotaManagement() {
                                                 </div>
                                                 <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner border border-slate-50">
                                                     <div
-                                                        className={`h-full rounded-full transition-all duration-1000 w-[var(--tw-progress-width)] ${perf.attainment >= 100 ? 'bg-emerald-500' :
+                                                        className={cn(`h-full rounded-full transition-all duration-1000 w-[var(--tw-progress-width)] ${perf.attainment >= 100 ? 'bg-emerald-500' :
                                                             perf.attainment >= 70 ? 'bg-indigo-500' : 'bg-amber-500'
-                                                            }`}
+                                                            }`)}
                                                         style={{ "--tw-progress-width": `${Math.min(perf.attainment, 100)}%` } as React.CSSProperties}
                                                     />
                                                 </div>

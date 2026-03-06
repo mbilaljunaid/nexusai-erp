@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -153,7 +154,7 @@ export default function ProcessFlowsPage() {
               <Card key={i} className="p-4" data-testid={`card-category-${i}`}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className={`w-3 h-3 rounded-full ${cat.color}`} />
+                    <div className={cn(`w-3 h-3 rounded-full ${cat.color}`)} />
                     <span className="font-semibold">{cat.category}</span>
                   </div>
                   <Badge variant="outline">{cat.count} processes</Badge>

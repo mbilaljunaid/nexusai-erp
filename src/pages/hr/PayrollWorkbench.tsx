@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PlayCircle, CheckCircle2, XCircle, FileText, Download, Globe, DollarSign, Users, RefreshCw } from 'lucide-react';
@@ -101,7 +102,7 @@ export default function PayrollWorkbench() {
         {
             id: "status", header: "Status", width: "120px", cell: (row) => {
                 const cfg = STATUS_CFG[row.status] ?? { color: 'text-gray-500', bg: 'bg-gray-100', label: row.status };
-                return <span className={`status-pill ${cfg.bg} ${cfg.color}`}>{cfg.label}</span>;
+                return <span className={cn(`status-pill ${cfg.bg} ${cfg.color}`)}>{cfg.label}</span>;
             }
         },
         {
@@ -165,7 +166,7 @@ export default function PayrollWorkbench() {
                 {['', ...COUNTRIES].map(c => (
                     <button
                         key={c}
-                        className={`country-pill ${countryFilter === c ? 'active' : ''}`}
+                        className={cn(`country-pill ${countryFilter === c ? 'active' : ''}`)}
                         onClick={() => setCountryFilter(c)}
                     >
                         {c || 'All Countries'}
@@ -178,7 +179,7 @@ export default function PayrollWorkbench() {
                 {isLoading ? (
                     <div className="empty-td p-8 text-center text-zinc-500">Loading…</div>
                 ) : (
-                    <div className="min-h-[300px] h-full">
+                    <div className="min-h-72 h-full">
                         <InteractiveSpreadsheet
                             columns={runColumns}
                             data={runs}
@@ -268,10 +269,10 @@ export default function PayrollWorkbench() {
 
 function PWKpi({ label, value, icon, colorClass, borderClass }: { label: string; value: string; icon: React.ReactNode; colorClass: string; borderClass: string }) {
     return (
-        <div className={`pw-kpi-card ${borderClass}`}>
+        <div className={cn(`pw-kpi-card ${borderClass}`)}>
             <div className={colorClass}>{icon}</div>
             <div>
-                <div className={`pw-kpi-val ${colorClass}`}>{value}</div>
+                <div className={cn(`pw-kpi-val ${colorClass}`)}>{value}</div>
                 <div className="pw-kpi-lbl">{label}</div>
             </div>
         </div>

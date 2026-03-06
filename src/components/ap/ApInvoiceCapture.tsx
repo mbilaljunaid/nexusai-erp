@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState, useRef, useEffect } from "react";
 import {
     Dialog,
@@ -266,7 +267,7 @@ export function ApInvoiceCapture({ open, onOpenChange }: ApInvoiceCaptureProps) 
                         <TabsContent value="audio" className="mt-6">
                             <Card className="border-primary/20 bg-primary/[0.01]">
                                 <CardContent className="pt-10 flex flex-col items-center justify-center gap-6">
-                                    <div className={`relative ${isRecording ? 'animate-pulse' : ''}`}>
+                                    <div className={cn(`relative ${isRecording ? 'animate-pulse' : ''}`)}>
                                         <Button
                                             size="lg"
                                             variant={isRecording ? "destructive" : "default"}
@@ -368,7 +369,7 @@ export function ApInvoiceCapture({ open, onOpenChange }: ApInvoiceCaptureProps) 
                     </div>
                 )}
 
-                <DialogFooter className={`mt-6 ${step === "verifying" ? 'flex-row gap-2' : ''}`}>
+                <DialogFooter className={cn(`mt-6 ${step === "verifying" ? 'flex-row gap-2' : ''}`)}>
                     {step === "idle" ? (
                         <>
                             <Button variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>

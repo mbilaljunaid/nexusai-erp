@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,11 +32,11 @@ export function CashPositionMetrics() {
                 {[...Array(4)].map((_, i) => (
                     <Card key={i} className="animate-pulse">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <Skeleton className="h-4 w-[100px]" />
+                            <Skeleton className="h-4 w-24" />
                         </CardHeader>
                         <CardContent>
-                            <Skeleton className="h-8 w-[120px] mb-2" />
-                            <Skeleton className="h-4 w-[80px]" />
+                            <Skeleton className="h-8 w-28 mb-2" />
+                            <Skeleton className="h-4 w-20" />
                         </CardContent>
                     </Card>
                 ))}
@@ -82,7 +83,7 @@ export function CashPositionMetrics() {
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {metrics.map((m, i) => (
-                <Card key={i} className={`bg-card/50 backdrop-blur-sm transition-all duration-300 ${m.isLive ? 'border-primary/50 bg-primary/5' : 'border-primary/10 hover:border-primary/30'}`}>
+                <Card key={i} className={cn(`bg-card/50 backdrop-blur-sm transition-all duration-300 ${m.isLive ? 'border-primary/50 bg-primary/5' : 'border-primary/10 hover:border-primary/30'}`)}>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">{m.title}</CardTitle>
                         {m.icon}
@@ -92,7 +93,7 @@ export function CashPositionMetrics() {
                         <p className="text-xs text-muted-foreground mt-1">
                             {m.description}
                         </p>
-                        <div className={`text-xs mt-2 flex items-center ${m.trendUp ? 'text-emerald-500' : 'text-destructive font-medium'}`}>
+                        <div className={cn(`text-xs mt-2 flex items-center ${m.trendUp ? 'text-emerald-500' : 'text-destructive font-medium'}`)}>
                             {m.trendUp ? <ArrowUpRight className="h-3 w-3 mr-1" /> : <ArrowDownRight className="h-3 w-3 mr-1" />}
                             {m.trend}
                         </div>

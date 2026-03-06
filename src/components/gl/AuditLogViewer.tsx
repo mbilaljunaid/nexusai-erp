@@ -49,10 +49,10 @@ export function AuditLogViewer() {
                     <Table>
                         <TableHeader>
                             <TableRow className="bg-muted/50">
-                                <TableHead className="w-[180px]">Timestamp</TableHead>
-                                <TableHead className="w-[150px]">Action</TableHead>
-                                <TableHead className="w-[150px]">Entity</TableHead>
-                                <TableHead className="w-[150px]">User</TableHead>
+                                <TableHead className="w-44">Timestamp</TableHead>
+                                <TableHead className="w-36">Action</TableHead>
+                                <TableHead className="w-36">Entity</TableHead>
+                                <TableHead className="w-36">User</TableHead>
                                 <TableHead>Details</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -77,7 +77,7 @@ export function AuditLogViewer() {
                                         <TableCell className="text-xs">
                                             <span className="font-medium">{log.entity}</span>
                                             <br />
-                                            <span className="text-[10px] text-muted-foreground font-mono truncate max-w-[100px] inline-block">
+                                            <span className="text-[10px] text-muted-foreground font-mono truncate max-w-24 inline-block">
                                                 {log.entityId}
                                             </span>
                                         </TableCell>

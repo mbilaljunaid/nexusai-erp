@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Clock, AlertTriangle, CheckCircle2, TrendingUp, RefreshCw } from 'lucide-react';
@@ -73,15 +74,15 @@ export default function OvertimeComplianceDashboard() {
     const totalPayroll = report.reduce((s, r) => s + Number(r.gross_pay), 0);
 
     const otColumns: SpreadsheetColumn<any>[] = [
-        { id: "employee_id", header: "Employee", width: "150px", cell: (row) => <div className={`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{row.employee_id.slice(0, 8)}…</div> },
-        { id: "regular_hours", header: "Regular", width: "120px", cell: (row) => <div className={`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{formatNumber(row.regular_hours, 1)}h</div> },
-        { id: "ot_hours", header: "OT (1.5×)", width: "120px", cell: (row) => <div className={`mono ot-cell w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{Number(row.ot_hours) > 0 ? <><AlertTriangle size={11} /> {formatNumber(row.ot_hours, 1)}h</> : '—'}</div> },
-        { id: "double_hours", header: "Double (2×)", width: "120px", cell: (row) => <div className={`mono dbl-cell w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{Number(row.double_hours) > 0 ? `${formatNumber(row.double_hours, 1)}h` : '—'}</div> },
-        { id: "gross_pay", header: "Gross Pay", width: "150px", cell: (row) => <div className={`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`}>{formatCurrency(row.gross_pay)}</div> },
+        { id: "employee_id", header: "Employee", width: "150px", cell: (row) => <div className={cn(`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`)}>{row.employee_id.slice(0, 8)}…</div> },
+        { id: "regular_hours", header: "Regular", width: "120px", cell: (row) => <div className={cn(`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`)}>{formatNumber(row.regular_hours, 1)}h</div> },
+        { id: "ot_hours", header: "OT (1.5×)", width: "120px", cell: (row) => <div className={cn(`mono ot-cell w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`)}>{Number(row.ot_hours) > 0 ? <><AlertTriangle size={11} /> {formatNumber(row.ot_hours, 1)}h</> : '—'}</div> },
+        { id: "double_hours", header: "Double (2×)", width: "120px", cell: (row) => <div className={cn(`mono dbl-cell w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`)}>{Number(row.double_hours) > 0 ? `${formatNumber(row.double_hours, 1)}h` : '—'}</div> },
+        { id: "gross_pay", header: "Gross Pay", width: "150px", cell: (row) => <div className={cn(`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`)}>{formatCurrency(row.gross_pay)}</div> },
         {
             id: "jurisdiction", header: "Jurisdiction", width: "150px", cell: (row) => {
                 const style = JURI_STYLES[row.jurisdiction] ?? { bg: 'bg-gray-100', text: 'text-gray-500' };
-                return <div className="w-full"><span className={`juri-tag ${style.bg} ${style.text}`}>{row.jurisdiction}</span></div>;
+                return <div className="w-full"><span className={cn(`juri-tag ${style.bg} ${style.text}`)}>{row.jurisdiction}</span></div>;
             }
         }
     ];
@@ -101,7 +102,7 @@ export default function OvertimeComplianceDashboard() {
 
             <div className="tab-bar">
                 {(['report', 'timecard', 'rules'] as const).map(t => (
-                    <button key={t} className={`tab-btn ${activeTab === t ? 'active' : ''}`} onClick={() => setActiveTab(t)}
+                    <button key={t} className={cn(`tab-btn ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)}
                         data-active={activeTab === t}>{t.charAt(0).toUpperCase() + t.slice(1)}</button>
                 ))}
             </div>
@@ -118,7 +119,7 @@ export default function OvertimeComplianceDashboard() {
                     {reportLoading ? (
                         <div className="loading">Loading…</div>
                     ) : (
-                        <div className="min-h-[300px] h-full border border-gray-200 rounded-lg">
+                        <div className="min-h-72 h-full border border-gray-200 rounded-lg">
                             <InteractiveSpreadsheet
                                 columns={otColumns}
                                 data={report}
@@ -171,7 +172,7 @@ export default function OvertimeComplianceDashboard() {
                         <div key={r.id} className="rule-card">
                             <div className="rc-top">
                                 <span className="rc-code">{r.rule_code}</span>
-                                <span className={`rc-juri ${JURI_STYLES[r.jurisdiction]?.text ?? 'text-gray-500'}`}>{r.jurisdiction}</span>
+                                <span className={cn(`rc-juri ${JURI_STYLES[r.jurisdiction]?.text ?? 'text-gray-500'}`)}>{r.jurisdiction}</span>
                             </div>
                             <div className="rc-grid">
                                 <div className="rcg"><span>Daily Threshold</span><strong>{r.daily_threshold_hours}h</strong></div>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState, useEffect } from 'react';
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -214,7 +215,7 @@ export default function TemplateManagement() {
                             />
                         </div>
                         <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                            <SelectTrigger className="w-full md:w-[200px]">
+                            <SelectTrigger className="w-full md:w-48">
                                 <SelectValue placeholder="All Categories" />
                             </SelectTrigger>
                             <SelectContent>
@@ -280,7 +281,7 @@ export default function TemplateManagement() {
                                             {template.templateCategory && (
                                                 <Badge
                                                     variant="secondary"
-                                                    className={`text-xs ${getCategoryBadgeColor(template.templateCategory)}`}
+                                                    className={cn(`text-xs ${getCategoryBadgeColor(template.templateCategory)}`)}
                                                 >
                                                     {template.templateCategory}
                                                 </Badge>

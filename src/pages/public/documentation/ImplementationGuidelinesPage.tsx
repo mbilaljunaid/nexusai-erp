@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -116,7 +117,7 @@ export default function ImplementationGuidelinesPage() {
               {prerequisites.map((prereq, i) => (
                 <div key={i} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg" data-testid={`prereq-${i}`}>
                   <div className="flex items-center gap-3">
-                    <CheckCircle className={`w-5 h-5 ${prereq.required ? "text-green-500" : "text-muted-foreground"}`} />
+                    <CheckCircle className={cn(`w-5 h-5 ${prereq.required ? "text-green-500" : "text-muted-foreground"}`)} />
                     <span>{prereq.title}</span>
                   </div>
                   <Badge variant={prereq.required ? "default" : "secondary"}>

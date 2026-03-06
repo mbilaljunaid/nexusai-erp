@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -207,7 +208,7 @@ export function HedgeAccountingWorkbench() {
                 return (
                     <div className="flex flex-col">
                         <div className="flex items-center gap-2">
-                            <span className={`font-bold ${isEffective ? "text-emerald-600" : "text-red-600"}`}>
+                            <span className={cn(`font-bold ${isEffective ? "text-emerald-600" : "text-red-600"}`)}>
                                 {eff.toFixed(1)}%
                             </span>
                             {isEffective ? (
@@ -233,7 +234,7 @@ export function HedgeAccountingWorkbench() {
                     TERMINATED: "bg-red-50 text-red-700 border-red-200",
                 };
                 return (
-                    <Badge className={`${colors[item.status] || colors.ACTIVE} border`}>
+                    <Badge className={cn(`${colors[item.status] || colors.ACTIVE} border`)}>
                         {item.status}
                     </Badge>
                 );

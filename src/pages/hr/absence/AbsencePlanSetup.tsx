@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -351,7 +352,7 @@ export default function AbsencePlanSetup() {
                         <CardContent className="p-2 space-y-1">
                             <Button
                                 variant={activeTab === 'GENERAL' ? 'secondary' : 'ghost'}
-                                className={`w-full justify-start ${activeTab === 'GENERAL' ? 'font-medium bg-muted' : 'font-normal text-muted-foreground'}`}
+                                className={cn(`w-full justify-start ${activeTab === 'GENERAL' ? 'font-medium bg-muted' : 'font-normal text-muted-foreground'}`)}
                                 onClick={() => setActiveTab('GENERAL')}
                             >
                                 <span className="p-1.5 rounded-md bg-background mr-2"><Clock className="w-4 h-4 text-primary" /></span>
@@ -363,7 +364,7 @@ export default function AbsencePlanSetup() {
                             </Button>
                             <Button
                                 variant={activeTab === 'CERTIFICATION' ? 'secondary' : 'ghost'}
-                                className={`w-full justify-start ${activeTab === 'CERTIFICATION' ? 'font-medium bg-muted text-foreground' : 'font-normal text-muted-foreground'}`}
+                                className={cn(`w-full justify-start ${activeTab === 'CERTIFICATION' ? 'font-medium bg-muted text-foreground' : 'font-normal text-muted-foreground'}`)}
                                 onClick={() => setActiveTab('CERTIFICATION')}
                             >
                                 <span className="p-1.5 rounded-md bg-transparent mr-2"><FileText className="w-4 h-4" /></span>
@@ -371,7 +372,7 @@ export default function AbsencePlanSetup() {
                             </Button>
                             <Button
                                 variant={activeTab === 'CONCURRENT' ? 'secondary' : 'ghost'}
-                                className={`w-full justify-start ${activeTab === 'CONCURRENT' ? 'font-medium bg-muted text-foreground' : 'font-normal text-muted-foreground'}`}
+                                className={cn(`w-full justify-start ${activeTab === 'CONCURRENT' ? 'font-medium bg-muted text-foreground' : 'font-normal text-muted-foreground'}`)}
                                 onClick={() => setActiveTab('CONCURRENT')}
                             >
                                 <span className="p-1.5 rounded-md bg-transparent mr-2"><Layers className="w-4 h-4" /></span>

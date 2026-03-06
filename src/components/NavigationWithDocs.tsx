@@ -1,12 +1,13 @@
-import { useState } from 'react';
-import { Link } from 'wouter';
-import { ChevronDown, BookOpen, Code2, Zap, Compass } from 'lucide-react';
+import { cn } from "@/lib/utils";
+import { useState} from'react';
+import { Link} from'wouter';
+import { ChevronDown, BookOpen, Code2, Zap, Compass} from'lucide-react';
 
 export function Header() {
   const [isDocsOpen, setIsDocsOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+    <header className="sticky top-0 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
       <nav className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 font-bold text-xl text-blue-600 dark:text-blue-400">
@@ -29,7 +30,7 @@ export function Header() {
             >
               <BookOpen className="w-4 h-4" />
               Documentation
-              <ChevronDown className={`w-4 h-4 transition-transform ${isDocsOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown className={cn(`w-4 h-4 transition-transform ${isDocsOpen ?'rotate-180' :''}`)} />
             </button>
 
             {/* Dropdown Menu */}
@@ -99,24 +100,24 @@ export function Footer() {
   const [isProcessesOpen, setIsProcessesOpen] = useState(false);
 
   const processes = [
-    { name: 'Procure-to-Pay', href: '/public/processes/procure-to-pay' },
-    { name: 'Order-to-Cash', href: '/public/processes/order-to-cash' },
-    { name: 'Hire-to-Retire', href: '/public/processes/hire-to-retire' },
-    { name: 'Month-End Consolidation', href: '/public/processes/month-end-consolidation' },
-    { name: 'Compliance & Risk', href: '/public/processes/compliance-risk' },
-    { name: 'Inventory Management', href: '/public/processes/inventory-management' },
-    { name: 'Fixed Asset Lifecycle', href: '/public/processes/fixed-asset-lifecycle' },
-    { name: 'Production Planning', href: '/public/processes/production-planning' },
-    { name: 'Material Requirements Planning', href: '/public/processes/mrp' },
-    { name: 'Quality Assurance', href: '/public/processes/quality-assurance' },
-    { name: 'Contract Management', href: '/public/processes/contract-management' },
-    { name: 'Budget Planning', href: '/public/processes/budget-planning' },
-    { name: 'Demand Planning', href: '/public/processes/demand-planning' },
-    { name: 'Capacity Planning', href: '/public/processes/capacity-planning' },
-    { name: 'Warehouse Management', href: '/public/processes/warehouse-management' },
-    { name: 'Customer Returns & RMA', href: '/public/processes/customer-returns' },
-    { name: 'Vendor Performance', href: '/public/processes/vendor-performance' },
-    { name: 'Subscription Billing', href: '/public/processes/subscription-billing' }
+    { name:'Procure-to-Pay', href:'/public/processes/procure-to-pay'},
+    { name:'Order-to-Cash', href:'/public/processes/order-to-cash'},
+    { name:'Hire-to-Retire', href:'/public/processes/hire-to-retire'},
+    { name:'Month-End Consolidation', href:'/public/processes/month-end-consolidation'},
+    { name:'Compliance & Risk', href:'/public/processes/compliance-risk'},
+    { name:'Inventory Management', href:'/public/processes/inventory-management'},
+    { name:'Fixed Asset Lifecycle', href:'/public/processes/fixed-asset-lifecycle'},
+    { name:'Production Planning', href:'/public/processes/production-planning'},
+    { name:'Material Requirements Planning', href:'/public/processes/mrp'},
+    { name:'Quality Assurance', href:'/public/processes/quality-assurance'},
+    { name:'Contract Management', href:'/public/processes/contract-management'},
+    { name:'Budget Planning', href:'/public/processes/budget-planning'},
+    { name:'Demand Planning', href:'/public/processes/demand-planning'},
+    { name:'Capacity Planning', href:'/public/processes/capacity-planning'},
+    { name:'Warehouse Management', href:'/public/processes/warehouse-management'},
+    { name:'Customer Returns & RMA', href:'/public/processes/customer-returns'},
+    { name:'Vendor Performance', href:'/public/processes/vendor-performance'},
+    { name:'Subscription Billing', href:'/public/processes/subscription-billing'}
   ];
 
   return (
@@ -170,7 +171,7 @@ export function Footer() {
           >
             <span>Process Flows (18 Processes)</span>
             <ChevronDown 
-              className={`w-5 h-5 transition-transform ${isProcessesOpen ? 'rotate-180' : ''}`}
+              className={cn(`w-5 h-5 transition-transform ${isProcessesOpen ?'rotate-180' :''}`)}
               data-testid="icon-chevron-processes"
             />
           </button>
@@ -182,7 +183,7 @@ export function Footer() {
                   key={process.href} 
                   href={process.href}
                   className="text-sm text-slate-400 hover:text-blue-400 transition-colors flex items-center gap-2"
-                  data-testid={`link-process-${process.name.toLowerCase().replace(/\s+/g, '-')}`}
+                  data-testid={`link-process-${process.name.toLowerCase().replace(/\s+/g,'-')}`}
                 >
                   <span className="text-blue-500">→</span> {process.name}
                 </Link>

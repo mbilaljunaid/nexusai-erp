@@ -100,7 +100,7 @@ export function LeaseAuditTrail({ leaseId }: { leaseId: string }) {
                         {amendments.map((amendment, index) => (
                             <div key={amendment.id} className="relative">
                                 {/* Timeline dot */}
-                                <div className="absolute -left-[29px] top-1.5 h-4 w-4 rounded-full border-2 border-primary bg-background" />
+                                <div className="absolute -left-7 top-1.5 h-4 w-4 rounded-full border-2 border-primary bg-background" />
 
                                 {/* Amendment card */}
                                 <Card>

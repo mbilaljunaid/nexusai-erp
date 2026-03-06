@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocalStorage } from "@/hooks/use-local-storage";
@@ -359,7 +360,7 @@ export default function CommunityForum() {
             ))}
             <Card>
               <CardHeader><CardTitle className="text-base">Your Answer</CardTitle></CardHeader>
-              <CardContent><Textarea placeholder="Share your knowledge..." value={newComment} onChange={(e) => setNewComment(e.target.value)} className="min-h-[120px]" data-testid="input-new-answer" /></CardContent>
+              <CardContent><Textarea placeholder="Share your knowledge..." value={newComment} onChange={(e) => setNewComment(e.target.value)} className="min-h-28" data-testid="input-new-answer" /></CardContent>
               <CardFooter><Button onClick={() => createCommentMutation.mutate({ postId: postDetail.id, content: newComment })} disabled={!newComment.trim() || createCommentMutation.isPending} data-testid="button-submit-answer">Post Answer (+5 rep)</Button></CardFooter>
             </Card>
           </div>
@@ -411,7 +412,7 @@ export default function CommunityForum() {
       <Card>
         <CardHeader className="py-3"><CardTitle className="text-sm flex items-center gap-2"><LayoutGrid className="w-4 h-4" /> All Spaces</CardTitle></CardHeader>
         <CardContent className="pt-0">
-          <ScrollArea className="h-[300px]">
+          <ScrollArea className="h-72">
             <div className="space-y-1">
               {spacesLoading ? [1, 2, 3].map(i => <Skeleton key={i} className="h-8 w-full" />) : spaces?.map(space => (
                 <div key={space.id} className="flex items-center gap-1">
@@ -464,7 +465,7 @@ export default function CommunityForum() {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{displayName}</p>
                   <div className="flex items-center gap-1">
-                    <Badge variant="outline" className={`text-[10px] px-1 py-0 ${trustInfo.color}`}>
+                    <Badge variant="outline" className={cn(`text-[10px] px-1 py-0 ${trustInfo.color}`)}>
                       <trustInfo.icon className="w-2 h-2 mr-0.5" />{trustInfo.name}
                     </Badge>
                   </div>
@@ -522,7 +523,7 @@ export default function CommunityForum() {
                     </Select>
                   </div>
                   <Input placeholder="Post title..." value={newPost.title} onChange={(e) => setNewPost({ ...newPost, title: e.target.value })} data-testid="input-post-title" />
-                  <Textarea placeholder="Describe your question or share your knowledge..." value={newPost.content} onChange={(e) => setNewPost({ ...newPost, content: e.target.value })} className="min-h-[200px]" data-testid="input-post-content" />
+                  <Textarea placeholder="Describe your question or share your knowledge..." value={newPost.content} onChange={(e) => setNewPost({ ...newPost, content: e.target.value })} className="min-h-48" data-testid="input-post-content" />
                 </div>
                 <DialogFooter>
                   <Button variant="outline" onClick={() => setIsNewPostOpen(false)}>Cancel</Button>
@@ -540,7 +541,7 @@ export default function CommunityForum() {
 
           <div className="lg:col-span-6 space-y-4">
             <div className="flex items-center gap-2 flex-wrap">
-              <div className="flex-1 min-w-[200px]">
+              <div className="flex-1 min-w-48">
                 <ContextualSearch
                   placeholder="Search posts..."
                   fields={[{ key: "query", label: "Search", type: "text" }]}
@@ -566,7 +567,7 @@ export default function CommunityForum() {
               <Button variant={sortBy === "rising" ? "default" : "outline"} size="sm" onClick={() => setSortBy("rising")} data-testid="sort-rising"><TrendingUp className="w-4 h-4 mr-1" /> Rising</Button>
               <Separator orientation="vertical" className="h-6" />
               <Select value={filterByPostType} onValueChange={setFilterByPostType}>
-                <SelectTrigger className="w-[130px] h-8" data-testid="filter-post-type"><SelectValue placeholder="Post Type" /></SelectTrigger>
+                <SelectTrigger className="w-32 h-8" data-testid="filter-post-type"><SelectValue placeholder="Post Type" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Types</SelectItem>
                   <SelectItem value="question">Questions</SelectItem>
@@ -609,10 +610,10 @@ export default function CommunityForum() {
                     <Card key={post.id} className="cursor-pointer hover-elevate" onClick={() => setSelectedPost(post.id)} data-testid={`card-post-${post.id}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                       <CardContent className="py-4">
                         <div className="flex gap-3">
-                          <div className="flex flex-col items-center gap-0.5 text-center min-w-[50px]">
+                          <div className="flex flex-col items-center gap-0.5 text-center min-w-12">
                             <span className="font-bold text-base">{(post.upvotes || 0) - (post.downvotes || 0)}</span>
                             <span className="text-xs text-muted-foreground">votes</span>
-                            <span className={`font-medium text-sm mt-1 ${post.acceptedAnswerId ? "text-green-600" : ""}`}>{post.answerCount || 0}</span>
+                            <span className={cn(`font-medium text-sm mt-1 ${post.acceptedAnswerId ? "text-green-600" : ""}`)}>{post.answerCount || 0}</span>
                             <span className="text-xs text-muted-foreground">answers</span>
                           </div>
                           <div className="flex-1 min-w-0">

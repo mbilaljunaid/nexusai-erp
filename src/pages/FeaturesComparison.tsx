@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Header, Footer } from "@/components/Navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -73,7 +74,7 @@ export default function FeaturesComparison() {
           {/* Company Overview */}
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-12">
             {companies.map((company) => (
-              <Card key={company.name} className={`p-6 ${company.color}`}>
+              <Card key={company.name} className={cn(`p-6 ${company.color}`)}>
                 <h3 className="font-bold text-lg mb-2">{company.name}</h3>
                 <p className="text-sm text-muted-foreground">{company.strength}</p>
               </Card>
@@ -85,7 +86,7 @@ export default function FeaturesComparison() {
             {features.map((section) => (
               <div key={section.category}>
                 <h2 className="text-2xl font-bold mb-4">{section.category}</h2>
-                <div className="overflow-hidden border rounded-lg h-[250px]">
+                <div className="overflow-hidden border rounded-lg h-64">
                   <InteractiveSpreadsheet
                     columns={compColumns}
                     data={section.items}

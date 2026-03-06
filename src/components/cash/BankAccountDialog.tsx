@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -180,5 +181,5 @@ export function BankAccountDialog({ isOpen, onClose, account }: BankAccountDialo
 }
 
 function Separator({ className }: { className?: string }) {
-    return <div className={`h-[1px] bg-muted ${className}`} />;
+    return <div className={cn(`h-px bg-muted ${className}`)} />;
 }

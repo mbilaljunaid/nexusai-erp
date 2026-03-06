@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from 'react';
 import { StandardDashboard, DashboardWidget } from '@/components/layout/StandardDashboard';
@@ -80,12 +81,12 @@ export default function CostDashboard() {
             {metrics.map((metric: any, i: number) => (
                 <DashboardWidget key={i} title={metric.label} colSpan={1}>
                     <div className="flex items-center gap-4">
-                        <div className={`p-3 rounded-full ${metric.color}`}>
+                        <div className={cn(`p-3 rounded-full ${metric.color}`)}>
                             <metric.icon className="h-6 w-6" />
                         </div>
                         <div>
                             <div className="text-2xl font-bold">{metric.value}</div>
-                            <p className={`text-xs ${metric.change.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+                            <p className={cn(`text-xs ${metric.change.startsWith('+') ? 'text-green-600' : 'text-red-600'}`)}>
                                 {metric.change} from last period
                             </p>
                         </div>
@@ -94,8 +95,8 @@ export default function CostDashboard() {
             ))}
 
             {/* Charts */}
-            <DashboardWidget title="Inventory Valuation Trend" colSpan={2} className="min-h-[350px]">
-                <div className="h-[300px] w-full mt-4">
+            <DashboardWidget title="Inventory Valuation Trend" colSpan={2} className="min-h-80">
+                <div className="h-72 w-full mt-4">
                     <AnalyticsChart
                         title=""
                         data={valuationChatData}
@@ -105,8 +106,8 @@ export default function CostDashboard() {
                 </div>
             </DashboardWidget>
 
-            <DashboardWidget title="Cost Elements Breakdown" colSpan={2} className="min-h-[350px]">
-                <div className="flex justify-center items-center h-[300px] text-muted-foreground">
+            <DashboardWidget title="Cost Elements Breakdown" colSpan={2} className="min-h-80">
+                <div className="flex justify-center items-center h-72 text-muted-foreground">
                     <p>Pie Chart Component Pending</p>
                 </div>
             </DashboardWidget>

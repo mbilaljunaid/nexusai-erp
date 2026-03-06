@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
@@ -86,7 +87,7 @@ export default function SupplierDashboard() {
 
     if (isLoading) {
         return <div className="p-8 space-y-4">
-            <Skeleton className="h-12 w-[300px]" />
+            <Skeleton className="h-12 w-72" />
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-32" />)}
             </div>
@@ -125,7 +126,7 @@ export default function SupplierDashboard() {
                         <Truck className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className={`text-2xl font-bold ${scorecard?.deliveryScore >= 90 ? 'text-green-600' : 'text-yellow-600'}`}>
+                        <div className={cn(`text-2xl font-bold ${scorecard?.deliveryScore >= 90 ? 'text-green-600' : 'text-yellow-600'}`)}>
                             {scorecard?.deliveryScore ?? 0}%
                         </div>
                         <p className="text-xs text-muted-foreground">Current Period</p>
@@ -138,7 +139,7 @@ export default function SupplierDashboard() {
                         <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className={`text-2xl font-bold ${scorecard?.qualityScore >= 90 ? 'text-green-600' : 'text-yellow-600'}`}>
+                        <div className={cn(`text-2xl font-bold ${scorecard?.qualityScore >= 90 ? 'text-green-600' : 'text-yellow-600'}`)}>
                             {scorecard?.qualityScore ?? 0}/100
                         </div>
                         <p className="text-xs text-muted-foreground">Defect Rate Calculated</p>

@@ -148,7 +148,7 @@ export function SubscriptionDetailSheet({ subscriptionId, open, onOpenChange }: 
                     {/* Audit Trail */}
                     <div className="bg-muted/10 p-4 rounded-md">
                         <h4 className="text-sm font-semibold mb-3">Audit Trail</h4>
-                        <div className="space-y-2 max-h-[150px] overflow-y-auto">
+                        <div className="space-y-2 max-h-36 overflow-y-auto">
                             {sub.actions?.map((action: any) => (
                                 <div key={action.id} className="text-xs flex justify-between border-b pb-1 last:border-0 border-muted">
                                     <span><span className="font-medium">{action.actionType}</span> - {action.reason}</span>

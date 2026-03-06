@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import {
   Table,
@@ -209,7 +210,7 @@ export function LeadTable({ leads, onSelectLead, onBulkAction }: LeadTableProps)
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="secondary" className={`text-xs ${statusColors[lead.status]}`}>
+                    <Badge variant="secondary" className={cn(`text-xs ${statusColors[lead.status]}`)}>
                       {lead.status}
                     </Badge>
                   </TableCell>

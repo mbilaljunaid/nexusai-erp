@@ -334,7 +334,7 @@ export default function FreightAccountingWorkbench() {
                                         <Filter className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                                     </div>
                                     <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                                        <SelectTrigger className="w-[180px]">
+                                        <SelectTrigger className="w-44">
                                             <SelectValue placeholder="Filter by status" />
                                         </SelectTrigger>
                                         <SelectContent>

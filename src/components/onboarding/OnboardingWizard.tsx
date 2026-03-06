@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -127,20 +128,20 @@ export default function OnboardingWizard() {
                     {STEPS.map((step) => (
                         <div
                             key={step.id}
-                            className={`flex items-center gap-2 p-3 rounded-lg border ${step.id === currentStep
+                            className={cn(`flex items-center gap-2 p-3 rounded-lg border ${step.id === currentStep
                                 ? "bg-primary/10 border-primary"
                                 : step.id < currentStep
                                     ? "bg-green-50 border-green-200"
                                     : "bg-white border-gray-200"
-                                }`}
+                                }`)}
                         >
                             <div
-                                className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${step.id === currentStep
+                                className={cn(`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${step.id === currentStep
                                     ? "bg-primary text-primary-foreground"
                                     : step.id < currentStep
                                         ? "bg-green-500 text-white"
                                         : "bg-gray-200 text-gray-500"
-                                    }`}
+                                    }`)}
                             >
                                 {step.id < currentStep ? (
                                     <Check className="w-4 h-4" />

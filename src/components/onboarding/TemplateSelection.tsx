@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -136,8 +137,8 @@ export function TemplateSelection({
                         return (
                             <Card
                                 key={template.id}
-                                className={`cursor-pointer transition-all ${isSelected ? 'ring-2 ring-primary' : 'hover:shadow-md'
-                                    }`}
+                                className={cn(`cursor-pointer transition-all ${isSelected ? 'ring-2 ring-primary' : 'hover:shadow-md'
+                                    }`)}
                                 onClick={() => toggleTemplate(template.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <CardHeader>
@@ -152,7 +153,7 @@ export function TemplateSelection({
                                             {template.templateCategory && (
                                                 <Badge
                                                     variant="secondary"
-                                                    className={`text-xs ${getCategoryBadgeColor(template.templateCategory)}`}
+                                                    className={cn(`text-xs ${getCategoryBadgeColor(template.templateCategory)}`)}
                                                 >
                                                     {template.templateCategory}
                                                 </Badge>

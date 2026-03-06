@@ -93,8 +93,8 @@ export default function ManufacturingDashboard() {
                     {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-32 w-full" />)}
                 </div>
                 <div className="grid grid-cols-2 gap-8">
-                    <Skeleton className="h-[300px] w-full" />
-                    <Skeleton className="h-[300px] w-full" />
+                    <Skeleton className="h-72 w-full" />
+                    <Skeleton className="h-72 w-full" />
                 </div>
             </StandardPage>
         );
@@ -166,7 +166,7 @@ export default function ManufacturingDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <Card>
                     <CardHeader><CardTitle>Work Order Status Distribution</CardTitle></CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-72">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={statusDistribution}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} />

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
@@ -202,7 +203,7 @@ export default function FundsCheckInterface() {
 
                     {/* Check Results */}
                     {checkResult && (
-                        <Card className={`border-t-4 ${checkResult.available ? "border-t-green-500" : "border-t-red-500"}`}>
+                        <Card className={cn(`border-t-4 ${checkResult.available ? "border-t-green-500" : "border-t-red-500"}`)}>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     {checkResult.available ? (
@@ -234,7 +235,7 @@ export default function FundsCheckInterface() {
                                     </div>
                                     <div className="flex justify-between text-sm font-bold pt-2 border-t">
                                         <span className="text-muted-foreground">Remaining:</span>
-                                        <span className={`font-mono ${checkResult.remainingFunds >= 0 ? "text-green-600" : "text-red-600"}`}>
+                                        <span className={cn(`font-mono ${checkResult.remainingFunds >= 0 ? "text-green-600" : "text-red-600"}`)}>
                                             {formatCurrency(checkResult.remainingFunds)}
                                         </span>
                                     </div>

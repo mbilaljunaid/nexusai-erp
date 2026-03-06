@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -146,11 +147,11 @@ export function WhatsNew() {
                   data-testid={`whats-new-item-${update.id}`}
                 >
                   <div className="shrink-0">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${update.type === "feature" ? "bg-blue-500/10 text-blue-600" :
+                    <div className={cn(`w-10 h-10 rounded-lg flex items-center justify-center ${update.type === "feature" ? "bg-blue-500/10 text-blue-600" :
                         update.type === "improvement" ? "bg-green-500/10 text-green-600" :
                           update.type === "security" ? "bg-purple-500/10 text-purple-600" :
                             "bg-orange-500/10 text-orange-600"
-                      }`}>
+                      }`)}>
                       <update.icon className="w-5 h-5" />
                     </div>
                   </div>

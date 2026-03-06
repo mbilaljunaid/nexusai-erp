@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 
 import { useQuery } from "@tanstack/react-query";
@@ -106,7 +107,7 @@ export default function ArAnalytics() {
                             <CardTitle>DSO Optimization Trend</CardTitle>
                             <CardDescription>Comparison vs Industry Benchmark</CardDescription>
                         </CardHeader>
-                        <CardContent className="h-[300px]">
+                        <CardContent className="h-72">
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={dsoTrend}>
                                     <CartesianGrid strokeDasharray="3 3" />
@@ -168,8 +169,8 @@ export default function ArAnalytics() {
 
                         {selectedCustomer && !loadingAdvice && advice && (
                             <div className="flex items-start gap-4 p-4 bg-slate-50 rounded-lg border">
-                                <div className={`p-3 rounded-full ${advice.priority === "High" ? "bg-red-100 text-red-600" : "bg-blue-100 text-blue-600"
-                                    }`}>
+                                <div className={cn(`p-3 rounded-full ${advice.priority === "High" ? "bg-red-100 text-red-600" : "bg-blue-100 text-blue-600"
+                                    }`)}>
                                     <AlertTriangle className="h-6 w-6" />
                                 </div>
                                 <div>
@@ -199,8 +200,8 @@ function FeatureCard({ title, value, desc, icon: Icon, color }: any) {
         <Card>
             <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                    <div className={`p-2 rounded-lg bg-opacity-10 ${color.replace('text-', 'bg-')}`}>
-                        <Icon className={`h-6 w-6 ${color}`} />
+                    <div className={cn(`p-2 rounded-lg bg-opacity-10 ${color.replace('text-', 'bg-')}`)}>
+                        <Icon className={cn(`h-6 w-6 ${color}`)} />
                     </div>
                     <span className="text-xs font-medium text-emerald-600 flex items-center bg-emerald-50 px-2 py-1 rounded">
                         <ArrowUpRight className="h-3 w-3 mr-1" /> +12%

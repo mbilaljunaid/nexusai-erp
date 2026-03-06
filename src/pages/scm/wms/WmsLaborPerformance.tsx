@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -52,7 +53,7 @@ export default function WmsLaborPerformance() {
                         .wms-bar-${row.name.replace(/\\s+/g, '')} { width: ${Math.min(row.efficiency, 100)}%; }
                     `}</style>
                     <div className="w-16 h-2 bg-slate-800 rounded-full overflow-hidden">
-                        <div className={`h-full bg-blue-500 wms-bar-${row.name.replace(/\\s+/g, '')}`} />
+                        <div className={cn(`h-full bg-blue-500 wms-bar-${row.name.replace(/\\s+/g, '')}`)} />
                     </div>
                     <span className="text-white">{row.efficiency}%</span>
                 </div>
@@ -127,7 +128,7 @@ export default function WmsLaborPerformance() {
                         <CardDescription>Based on efficiency and quality score</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="h-[300px]">
+                        <div className="h-72">
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={performanceData} layout="vertical">
                                     <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" horizontal={false} />
@@ -150,7 +151,7 @@ export default function WmsLaborPerformance() {
                         <CardDescription>Average tasks completed per shift</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="h-[300px]">
+                        <div className="h-72">
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart data={[
                                     { time: '08:00', value: 12 },

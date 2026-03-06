@@ -57,12 +57,12 @@ export function FormulaBuilder({ value, onChange }: FormulaBuilderProps) {
                     <h4 className="font-medium leading-none">Condition Builder</h4>
                     <p className="text-sm text-muted-foreground">Define rules for when this line matches.</p>
 
-                    <div className="space-y-2 max-h-[300px] overflow-y-auto">
+                    <div className="space-y-2 max-h-72 overflow-y-auto">
                         {parts.map((part, index) => (
                             <div key={part.id} className="flex items-center gap-2 p-2 border rounded-md bg-muted/20">
                                 {index > 0 && (
                                     <Select value={part.logic} onValueChange={v => setParts(parts.map(p => p.id === part.id ? { ...p, logic: v as any } : p))}>
-                                        <SelectTrigger className="w-[80px] h-8"><SelectValue /></SelectTrigger>
+                                        <SelectTrigger className="w-20 h-8"><SelectValue /></SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="AND">AND</SelectItem>
                                             <SelectItem value="OR">OR</SelectItem>
@@ -70,7 +70,7 @@ export function FormulaBuilder({ value, onChange }: FormulaBuilderProps) {
                                     </Select>
                                 )}
                                 <Select value={part.source} onValueChange={v => setParts(parts.map(p => p.id === part.id ? { ...p, source: v } : p))}>
-                                    <SelectTrigger className="w-[140px] h-8"><SelectValue /></SelectTrigger>
+                                    <SelectTrigger className="w-36 h-8"><SelectValue /></SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="source.amount">Amount</SelectItem>
                                         <SelectItem value="source.invoiceType">Invoice Type</SelectItem>
@@ -80,7 +80,7 @@ export function FormulaBuilder({ value, onChange }: FormulaBuilderProps) {
                                     </SelectContent>
                                 </Select>
                                 <Select value={part.operator} onValueChange={v => setParts(parts.map(p => p.id === part.id ? { ...p, operator: v } : p))}>
-                                    <SelectTrigger className="w-[80px] h-8"><SelectValue /></SelectTrigger>
+                                    <SelectTrigger className="w-20 h-8"><SelectValue /></SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="=">=</SelectItem>
                                         <SelectItem value="!=">!=</SelectItem>

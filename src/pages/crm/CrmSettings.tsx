@@ -165,11 +165,11 @@ export default function CrmSettings() {
                 <CardContent className="space-y-4">
                     {settings.scoringRules.map((rule, index) => (
                         <div key={rule.id} className="flex gap-4 items-center p-4 border rounded-lg bg-card/50">
-                            <div className="w-[150px]">
+                            <div className="w-36">
                                 <Label className="text-xs text-muted-foreground">Field</Label>
                                 <Input value={rule.field} onChange={(e) => updateRule(index, 'field', e.target.value)} />
                             </div>
-                            <div className="w-[150px]">
+                            <div className="w-36">
                                 <Label className="text-xs text-muted-foreground">Condition</Label>
                                 <Input value={rule.condition} disabled />
                             </div>
@@ -177,7 +177,7 @@ export default function CrmSettings() {
                                 <Label className="text-xs text-muted-foreground">Value</Label>
                                 <Input value={rule.value} onChange={(e) => updateRule(index, 'value', e.target.value)} />
                             </div>
-                            <div className="w-[100px]">
+                            <div className="w-24">
                                 <Label className="text-xs text-muted-foreground">Points</Label>
                                 <Input type="number" value={rule.points} onChange={(e) => updateRule(index, 'points', Number(e.target.value))} />
                             </div>

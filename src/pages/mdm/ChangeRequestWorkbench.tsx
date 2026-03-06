@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -98,10 +99,10 @@ export default function ChangeRequestWorkbench() {
                                 {filteredRequests.map((request: ChangeRequest) => (
                                     <Card
                                         key={request.id}
-                                        className={`cursor-pointer transition-all ${selectedRequest?.id === request.id
+                                        className={cn(`cursor-pointer transition-all ${selectedRequest?.id === request.id
                                                 ? "border-primary ring-2 ring-primary"
                                                 : "hover:border-primary/50"
-                                            }`}
+                                            }`)}
                                         onClick={() => setSelectedRequest(request)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     >
                                         <CardHeader className="pb-3">

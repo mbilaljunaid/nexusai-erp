@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -285,20 +286,20 @@ export default function CostImportWorkbench() {
                 {/* Progress Indicator */}
                 <div className="flex items-center justify-between">
                     <div className="flex gap-4">
-                        <div className={`flex items-center gap-2 ${importStep === "upload" ? "text-primary font-bold" : "text-muted-foreground"}`}>
-                            <div className={`h-8 w-8 rounded-full flex items-center justify-center ${importStep === "upload" ? "bg-primary text-white" : "bg-muted"}`}>1</div>
+                        <div className={cn(`flex items-center gap-2 ${importStep === "upload" ? "text-primary font-bold" : "text-muted-foreground"}`)}>
+                            <div className={cn(`h-8 w-8 rounded-full flex items-center justify-center ${importStep === "upload" ? "bg-primary text-white" : "bg-muted"}`)}>1</div>
                             <span>Upload</span>
                         </div>
-                        <div className={`flex items-center gap-2 ${importStep === "mapping" ? "text-primary font-bold" : "text-muted-foreground"}`}>
-                            <div className={`h-8 w-8 rounded-full flex items-center justify-center ${importStep === "mapping" ? "bg-primary text-white" : "bg-muted"}`}>2</div>
+                        <div className={cn(`flex items-center gap-2 ${importStep === "mapping" ? "text-primary font-bold" : "text-muted-foreground"}`)}>
+                            <div className={cn(`h-8 w-8 rounded-full flex items-center justify-center ${importStep === "mapping" ? "bg-primary text-white" : "bg-muted"}`)}>2</div>
                             <span>Map Fields</span>
                         </div>
-                        <div className={`flex items-center gap-2 ${importStep === "validation" ? "text-primary font-bold" : "text-muted-foreground"}`}>
-                            <div className={`h-8 w-8 rounded-full flex items-center justify-center ${importStep === "validation" ? "bg-primary text-white" : "bg-muted"}`}>3</div>
+                        <div className={cn(`flex items-center gap-2 ${importStep === "validation" ? "text-primary font-bold" : "text-muted-foreground"}`)}>
+                            <div className={cn(`h-8 w-8 rounded-full flex items-center justify-center ${importStep === "validation" ? "bg-primary text-white" : "bg-muted"}`)}>3</div>
                             <span>Validate</span>
                         </div>
-                        <div className={`flex items-center gap-2 ${importStep === "complete" ? "text-green-600 font-bold" : "text-muted-foreground"}`}>
-                            <div className={`h-8 w-8 rounded-full flex items-center justify-center ${importStep === "complete" ? "bg-green-600 text-white" : "bg-muted"}`}>
+                        <div className={cn(`flex items-center gap-2 ${importStep === "complete" ? "text-green-600 font-bold" : "text-muted-foreground"}`)}>
+                            <div className={cn(`h-8 w-8 rounded-full flex items-center justify-center ${importStep === "complete" ? "bg-green-600 text-white" : "bg-muted"}`)}>
                                 <CheckCircle2 className="h-4 w-4" />
                             </div>
                             <span>Complete</span>

@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Plus, Save, Settings, Layers, ShieldCheck, CreditCard, Receipt, Trash2 } from "lucide-react";
+import { Plus, Save, Settings, Layers, ShieldCheck, CreditCard, Receipt, Trash2, Loader2 } from "lucide-react";
 
 export default function ApSettings() {
     const { toast } = useToast();
@@ -114,7 +114,7 @@ export default function ApSettings() {
 
     if (paramsLoading) return (
         <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
     );
 

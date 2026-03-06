@@ -98,7 +98,7 @@ export default function ConstructionSetup() {
                                     accessorKey: "configValue",
                                     cell: (item: SetupEntry) => (
                                         <Input
-                                            className="h-8 max-w-[200px]"
+                                            className="h-8 max-w-48"
                                             defaultValue={item.configValue}
                                             onBlur={(e) => handleUpdate(item.configKey, e.target.value, item.category, item.description)}
                                         />

@@ -191,7 +191,7 @@ function TaxCodesTab({ legalEntityId }: { legalEntityId: string | null }) {
               className="max-w-sm"
             />
             <Select value={filterType} onValueChange={setFilterType}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-44">
                 <SelectValue placeholder="Filter by type" />
               </SelectTrigger>
               <SelectContent>
@@ -202,7 +202,7 @@ function TaxCodesTab({ legalEntityId }: { legalEntityId: string | null }) {
               </SelectContent>
             </Select>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-44">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
@@ -358,7 +358,7 @@ function TaxJurisdictionsTab({ legalEntityId }: { legalEntityId: string | null }
               className="max-w-sm"
             />
             <Select value={filterType} onValueChange={setFilterType}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-44">
                 <SelectValue placeholder="Filter by type" />
               </SelectTrigger>
               <SelectContent>

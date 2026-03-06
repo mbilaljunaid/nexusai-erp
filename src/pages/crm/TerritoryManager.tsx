@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
@@ -154,7 +155,7 @@ export default function TerritoryManager() {
                     {territories?.map((t) => (
                         <Card
                             key={t.id}
-                            className={`cursor-pointer transition-colors hover:bg-accent/50 ${selectedTerritory?.id === t.id ? 'border-primary bg-accent' : ''}`}
+                            className={cn(`cursor-pointer transition-colors hover:bg-accent/50 ${selectedTerritory?.id === t.id ? 'border-primary bg-accent' : ''}`)}
                             onClick={() => setSelectedTerritory(t)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                         >
                             <CardHeader className="p-4">
@@ -250,7 +251,7 @@ function TerritoryRulesEditor({ territory }: { territory: Territory }) {
                             <TableHead>Field</TableHead>
                             <TableHead>Operator</TableHead>
                             <TableHead>Value</TableHead>
-                            <TableHead className="w-[50px]"></TableHead>
+                            <TableHead className="w-12"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -304,7 +305,7 @@ function TerritoryRulesEditor({ territory }: { territory: Territory }) {
                                 control={form.control}
                                 name="operator"
                                 render={({ field }) => (
-                                    <FormItem className="w-[150px]">
+                                    <FormItem className="w-36">
                                         <FormLabel>Operator</FormLabel>
                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                             <FormControl>

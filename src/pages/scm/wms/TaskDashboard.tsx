@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -36,7 +37,7 @@ export default function TaskDashboard() {
         {
             id: "status", header: "Status", width: "150px", cell: (row) => (
                 <div className="flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${row.status === 'COMPLETED' ? 'bg-green-500' : 'bg-blue-500 animate-pulse'}`} />
+                    <div className={cn(`w-2 h-2 rounded-full ${row.status === 'COMPLETED' ? 'bg-green-500' : 'bg-blue-500 animate-pulse'}`)} />
                     <span className="text-white capitalize">{row.status.toLowerCase().replace('_', ' ')}</span>
                 </div>
             )
@@ -71,9 +72,9 @@ export default function TaskDashboard() {
                         <CardContent className="p-6 flex items-center justify-between">
                             <div>
                                 <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">{stat.label}</p>
-                                <p className={`text-3xl font-bold mt-1 ${stat.color}`}>{stat.count}</p>
+                                <p className={cn(`text-3xl font-bold mt-1 ${stat.color}`)}>{stat.count}</p>
                             </div>
-                            <stat.icon className={`w-8 h-8 opacity-20 ${stat.color}`} />
+                            <stat.icon className={cn(`w-8 h-8 opacity-20 ${stat.color}`)} />
                         </CardContent>
                     </Card>
                 ))}

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DashboardWidget } from "@/components/layout/StandardDashboard";
@@ -74,12 +75,12 @@ export function ApMetricCards() {
                 {[1, 2, 3, 4].map((i) => (
                     <DashboardWidget key={i} colSpan={1}>
                         <div className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <Skeleton className="h-4 w-[100px]" />
+                            <Skeleton className="h-4 w-24" />
                             <Skeleton className="h-4 w-4 rounded-full" />
                         </div>
                         <div className="mt-2">
-                            <Skeleton className="h-8 w-[60px] mb-2" />
-                            <Skeleton className="h-3 w-[80px]" />
+                            <Skeleton className="h-8 w-14 mb-2" />
+                            <Skeleton className="h-3 w-20" />
                         </div>
                     </DashboardWidget>
                 ))}
@@ -96,13 +97,13 @@ export function ApMetricCards() {
                             : 'border-blue-500';
 
                 return (
-                    <DashboardWidget key={idx} colSpan={1} className={`relative overflow-hidden border-l-4 ${borderColor}`}>
+                    <DashboardWidget key={idx} colSpan={1} className={cn(`relative overflow-hidden border-l-4 ${borderColor}`)}>
                         <div className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <h3 className="text-sm font-medium text-muted-foreground">
                                 {card.title}
                             </h3>
-                            <div className={`p-2 rounded-full ${card.bg}`}>
-                                <card.icon className={`h-4 w-4 ${card.color}`} />
+                            <div className={cn(`p-2 rounded-full ${card.bg}`)}>
+                                <card.icon className={cn(`h-4 w-4 ${card.color}`)} />
                             </div>
                         </div>
                         <div>

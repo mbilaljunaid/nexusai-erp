@@ -35,7 +35,7 @@ export function JournalGrid({ data, onRowClick, loading }: JournalGridProps) {
             <Table>
                 <TableHeader>
                     <TableRow className="hover:bg-transparent">
-                        <TableHead className="w-[150px] cursor-pointer" onClick={() => handleSort("journalNumber")}>
+                        <TableHead className="w-36 cursor-pointer" onClick={() => handleSort("journalNumber")}>
                             Journal # <ArrowUpDown className="ml-2 h-4 w-4 inline" />
                         </TableHead>
                         <TableHead className="cursor-pointer" onClick={() => handleSort("category")}>Category</TableHead>
@@ -43,7 +43,7 @@ export function JournalGrid({ data, onRowClick, loading }: JournalGridProps) {
                         <TableHead>Description</TableHead>
                         <TableHead className="text-right cursor-pointer" onClick={() => handleSort("totalDebit")}>Amount</TableHead>
                         <TableHead className="text-center">Status</TableHead>
-                        <TableHead className="w-[50px]"></TableHead>
+                        <TableHead className="w-12"></TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -65,7 +65,7 @@ export function JournalGrid({ data, onRowClick, loading }: JournalGridProps) {
                                 <TableCell>
                                     {formatDate(journal.effectiveDate)}
                                 </TableCell>
-                                <TableCell className="max-w-[300px] truncate">{journal.description}</TableCell>
+                                <TableCell className="max-w-72 truncate">{journal.description}</TableCell>
                                 <TableCell className="text-right font-mono">
                                     {Number(journal.totalDebit).toLocaleString(undefined, { minimumFractionDigits: 2 })} {journal.currencyCode}
                                 </TableCell>

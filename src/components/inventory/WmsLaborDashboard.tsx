@@ -61,7 +61,7 @@ export default function WmsLaborDashboard() {
                     <CardTitle>Productivity by User</CardTitle>
                 </CardHeader>
                 <CardContent className="pl-2">
-                    <div className="h-[300px]">
+                    <div className="h-72">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={metrics || []}>
                                 <CartesianGrid strokeDasharray="3 3" />

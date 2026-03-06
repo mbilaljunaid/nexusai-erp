@@ -69,7 +69,7 @@ export default function VarianceAnalysis() {
             header: "Amount",
             width: "150px",
             cell: (row: any) => (
-                <div className={`p-2 ${Number(row.amount) > 0 ? "text-red-500 font-medium" : "text-green-500 font-medium"}`}>
+                <div className={cn(`p-2 ${Number(row.amount) > 0 ? "text-red-500 font-medium" : "text-green-500 font-medium"}`)}>
                     ${Number(row.amount).toFixed(2)}
                 </div>
             )
@@ -100,7 +100,7 @@ export default function VarianceAnalysis() {
                                     id="date"
                                     variant={"outline"}
                                     className={cn(
-                                        "w-[300px] justify-start text-left font-normal",
+                                        "w-72 justify-start text-left font-normal",
                                         !dateRange && "text-muted-foreground"
                                     )}
                                 >
@@ -159,7 +159,7 @@ export default function VarianceAnalysis() {
                         <CardTitle>Variance Distribution</CardTitle>
                         <CardDescription>Breakdown by variance category.</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-72">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
                                 <Pie

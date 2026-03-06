@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -380,12 +381,12 @@ function NettingBatchDetail({ batchId }: { batchId: string }) {
                                                 return (
                                                     <TableCell
                                                         key={toEntity}
-                                                        className={`text-center font-mono text-xs ${amount > 0
+                                                        className={cn(`text-center font-mono text-xs ${amount > 0
                                                                 ? "bg-emerald-50 text-emerald-700 font-bold"
                                                                 : amount < 0
                                                                     ? "bg-red-50 text-red-700 font-bold"
                                                                     : "text-muted-foreground"
-                                                            }`}
+                                                            }`)}
                                                     >
                                                         {amount !== 0
                                                             ? `${amount > 0 ? "+" : ""}${amount.toLocaleString()}`
@@ -394,12 +395,12 @@ function NettingBatchDetail({ batchId }: { batchId: string }) {
                                                 );
                                             })}
                                             <TableCell
-                                                className={`text-right font-mono font-bold ${netPosition > 0
+                                                className={cn(`text-right font-mono font-bold ${netPosition > 0
                                                         ? "text-emerald-600"
                                                         : netPosition < 0
                                                             ? "text-red-600"
                                                             : "text-muted-foreground"
-                                                    }`}
+                                                    }`)}
                                             >
                                                 {netPosition > 0 ? "+" : ""}
                                                 {netPosition.toLocaleString()}

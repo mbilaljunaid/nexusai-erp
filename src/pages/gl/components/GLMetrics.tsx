@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
@@ -86,13 +87,13 @@ export function GLMetrics() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {cards.map((card, i) => (
                 <Card key={i} className="border-none shadow-sm hover:shadow-md transition-all group bg-white/80 backdrop-blur-md overflow-hidden relative">
-                    <div className={`absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 rounded-full ${card.bg}/30 group-hover:scale-110 transition-transform`} />
+                    <div className={cn(`absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 rounded-full ${card.bg}/30 group-hover:scale-110 transition-transform`)} />
                     <CardContent className="p-6 relative">
                         <div className="flex justify-between items-start mb-4">
-                            <div className={`p-2 rounded-xl ${card.bg}`}>
-                                <card.icon className={`h-5 w-5 ${card.color}`} />
+                            <div className={cn(`p-2 rounded-xl ${card.bg}`)}>
+                                <card.icon className={cn(`h-5 w-5 ${card.color}`)} />
                             </div>
-                            <div className={`flex items-center text-[10px] font-bold px-2 py-1 rounded-full ${card.trendUp ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
+                            <div className={cn(`flex items-center text-[10px] font-bold px-2 py-1 rounded-full ${card.trendUp ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`)}>
                                 {card.trendUp ? <ArrowUpRight className="h-3 w-3 mr-0.5" /> : null}
                                 {card.trend}
                             </div>

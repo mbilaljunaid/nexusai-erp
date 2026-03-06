@@ -69,7 +69,7 @@ export default function Account360() {
                         </div>
                         <p className="max-w-3xl text-muted-foreground">{account.description}</p>
                     </div>
-                    <div className="flex flex-col gap-2 min-w-[150px]">
+                    <div className="flex flex-col gap-2 min-w-36">
                         <Button>Create Opportunity</Button>
                         <Button variant="outline">Log Interaction</Button>
                     </div>

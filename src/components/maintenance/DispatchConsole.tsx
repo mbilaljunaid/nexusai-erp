@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -120,7 +121,7 @@ export default function DispatchConsole() {
 
                                                         <div className="flex items-center gap-2">
                                                             <Select onValueChange={setSelectedTech} value={selectedTech || undefined}>
-                                                                <SelectTrigger className="w-[180px]">
+                                                                <SelectTrigger className="w-44">
                                                                     <SelectValue placeholder="Select Technician" />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
@@ -183,7 +184,7 @@ export default function DispatchConsole() {
                                 {loadingTechs ? <Skeleton className="h-12 w-full" /> : technicians?.map((tech: any) => (
                                     <div key={tech.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
                                         <div className="flex items-center gap-3">
-                                            <div className={`h-2 w-2 rounded-full ${tech.status === 'AVAILABLE' ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                                            <div className={cn(`h-2 w-2 rounded-full ${tech.status === 'AVAILABLE' ? 'bg-green-500' : 'bg-yellow-500'}`)} />
                                             <div>
                                                 <div className="font-medium text-sm">{tech.name}</div>
                                                 <div className="text-xs text-muted-foreground">{tech.skill}</div>

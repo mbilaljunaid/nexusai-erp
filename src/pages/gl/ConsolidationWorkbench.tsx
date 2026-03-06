@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -193,7 +194,7 @@ export default function ConsolidationWorkbench() {
                                         {ledgerSets.map((set) => (
                                             <Card
                                                 key={set.id}
-                                                className={`cursor-pointer transition-all ${selectedLedgerSet === set.id ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-muted'}`}
+                                                className={cn(`cursor-pointer transition-all ${selectedLedgerSet === set.id ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-muted'}`)}
                                                 onClick={() => setSelectedLedgerSet(set.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                             >
                                                 <CardContent className="pt-4 pb-4">

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
@@ -168,14 +169,14 @@ export default function BudgetForecastingDashboard() {
                             <div className="text-2xl font-bold text-green-900">{formatCurrency(totalActual)}</div>
                         </CardContent>
                     </Card>
-                    <Card className={`${variance >= 0 ? 'bg-orange-50 border-orange-100' : 'bg-green-50 border-green-100'}`}>
+                    <Card className={cn(`${variance >= 0 ? 'bg-orange-50 border-orange-100' : 'bg-green-50 border-green-100'}`)}>
                         <CardHeader className="pb-2">
-                            <CardTitle className={`text-xs font-bold uppercase ${variance >= 0 ? 'text-orange-800' : 'text-green-800'}`}>
+                            <CardTitle className={cn(`text-xs font-bold uppercase ${variance >= 0 ? 'text-orange-800' : 'text-green-800'}`)}>
                                 Variance
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className={`text-2xl font-bold ${variance >= 0 ? 'text-orange-900' : 'text-green-900'}`}>
+                            <div className={cn(`text-2xl font-bold ${variance >= 0 ? 'text-orange-900' : 'text-green-900'}`)}>
                                 {variance >= 0 ? '+' : ''}{formatCurrency(Math.abs(variance))}
                             </div>
                         </CardContent>
@@ -371,10 +372,10 @@ export default function BudgetForecastingDashboard() {
                                 ) : (
                                     <div className="space-y-3">
                                         {insights.map((insight, idx) => (
-                                            <Card key={idx} className={`${insight.type === 'warning' ? 'bg-orange-50 border-orange-200' :
+                                            <Card key={idx} className={cn(`${insight.type === 'warning' ? 'bg-orange-50 border-orange-200' :
                                                 insight.type === 'opportunity' ? 'bg-green-50 border-green-200' :
                                                     'bg-blue-50 border-blue-200'
-                                                }`}>
+                                                }`)}>
                                                 <CardContent className="pt-4">
                                                     <div className="flex items-start gap-3">
                                                         {getInsightIcon(insight.type)}

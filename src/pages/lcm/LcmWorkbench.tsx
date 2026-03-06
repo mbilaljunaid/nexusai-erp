@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Ship, Calendar, DollarSign, ExternalLink, Filter, Search, MoreHorizontal, Building2 } from 'lucide-react';
+import { Plus, Ship, Calendar, DollarSign, ExternalLink, Filter, Search, MoreHorizontal, Building2, Loader2 } from "lucide-react";
 import { Badge } from '@/components/ui/badge';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { format } from 'date-fns';
@@ -202,7 +202,7 @@ export default function LcmWorkbench() {
                                         <TableRow>
                                             <TableCell colSpan={6} className="text-center py-10">
                                                 <div className="flex flex-col items-center gap-2">
-                                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                                                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
                                                     <span className="text-sm text-muted-foreground font-medium italic">Syncing with logistics core...</span>
                                                 </div>
                                             </TableCell>
@@ -228,11 +228,11 @@ export default function LcmWorkbench() {
                                                 <TableCell>
                                                     <div className="flex flex-col gap-1">
                                                         <div className="flex items-center gap-2 text-[10px]">
-                                                            <Badge variant="outline" className="px-1 py-0 h-4 min-w-[32px] justify-center">ETD</Badge>
+                                                            <Badge variant="outline" className="px-1 py-0 h-4 min-w-8 justify-center">ETD</Badge>
                                                             <span className="text-muted-foreground">{op.departureDate ? format(new Date(op.departureDate), 'MMM d') : 'Pending'}</span>
                                                         </div>
                                                         <div className="flex items-center gap-2 text-[10px]">
-                                                            <Badge variant="outline" className="px-1 py-0 h-4 min-w-[32px] justify-center">ETA</Badge>
+                                                            <Badge variant="outline" className="px-1 py-0 h-4 min-w-8 justify-center">ETA</Badge>
                                                             <span className="text-muted-foreground font-medium">{op.arrivalDate ? format(new Date(op.arrivalDate), 'MMM d') : 'Pending'}</span>
                                                         </div>
                                                     </div>

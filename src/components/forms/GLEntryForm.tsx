@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -242,10 +243,10 @@ export function GLEntryForm() {
               </div>
 
               {/* Balance Status */}
-              <div className={`p-3 rounded-lg border-2 ${isBalanced ? 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-900' : 'bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-900'}`}>
+              <div className={cn(`p-3 rounded-lg border-2 ${isBalanced ? 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-900' : 'bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-900'}`)}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className={`text-sm font-semibold ${isBalanced ? 'text-green-900 dark:text-green-100' : 'text-red-900 dark:text-red-100'}`}>
+                    <p className={cn(`text-sm font-semibold ${isBalanced ? 'text-green-900 dark:text-green-100' : 'text-red-900 dark:text-red-100'}`)}>
                       {isBalanced ? '✓ Journal Balanced' : '✗ Out of Balance'}
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">

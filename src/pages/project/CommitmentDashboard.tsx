@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
@@ -47,14 +48,14 @@ export default function CommitmentDashboard() {
         { id: "period", header: "Period", width: "100px", cell: (v) => <span className="text-gray-500 whitespace-nowrap">{fmtDate(v.period_start)}</span> },
         { id: "planHrs", header: "Plan Hrs", width: "100px", cell: (v) => <span className="font-mono">{v.planned_hours}</span> },
         { id: "actHrs", header: "Act Hrs", width: "100px", cell: (v) => <span className="font-mono">{v.actual_hours}</span> },
-        { id: "delHrs", header: "Δ Hrs", width: "100px", cell: (v) => <span className={`font-mono ${v.hour_variance < 0 ? 'text-red-600' : 'text-emerald-600'}`}>{v.hour_variance > 0 ? '+' : ''}{v.hour_variance}</span> },
+        { id: "delHrs", header: "Δ Hrs", width: "100px", cell: (v) => <span className={cn(`font-mono ${v.hour_variance < 0 ? 'text-red-600' : 'text-emerald-600'}`)}>{v.hour_variance > 0 ? '+' : ''}{v.hour_variance}</span> },
         { id: "planCost", header: "Plan Cost", width: "120px", cell: (v) => <span className="font-mono">{fmt(v.planned_cost)}</span> },
         { id: "actCost", header: "Act Cost", width: "120px", cell: (v) => <span className="font-mono">{fmt(v.actual_cost)}</span> },
-        { id: "delCost", header: "Δ Cost", width: "120px", cell: (v) => <span className={`font-mono ${v.cost_variance < 0 ? 'text-red-600' : 'text-emerald-600'}`}>{v.cost_variance > 0 ? '+' : ''}{fmt(v.cost_variance)}</span> },
+        { id: "delCost", header: "Δ Cost", width: "120px", cell: (v) => <span className={cn(`font-mono ${v.cost_variance < 0 ? 'text-red-600' : 'text-emerald-600'}`)}>{v.cost_variance > 0 ? '+' : ''}{fmt(v.cost_variance)}</span> },
         {
             id: "varPct", header: "Var %", width: "100px", cell: (v) => {
                 const overBudget = Number(v.variance_pct) > 0;
-                return <span className={`font-bold ${overBudget ? 'text-red-600' : 'text-emerald-600'}`}>{overBudget ? '+' : ''}{Number(v.variance_pct).toFixed(1)}%</span>;
+                return <span className={cn(`font-bold ${overBudget ? 'text-red-600' : 'text-emerald-600'}`)}>{overBudget ? '+' : ''}{Number(v.variance_pct).toFixed(1)}%</span>;
             }
         },
     ];
@@ -82,8 +83,8 @@ export default function CommitmentDashboard() {
                             ['Acknowledged', summary.acknowledged, 'text-emerald-600', 'border-l-emerald-600']
                         ] as const
                     ).map(([l, v, textClass, borderClass]) => (
-                        <div key={l as string} className={`bg-white border border-gray-200 rounded-xl py-2.5 px-4 flex-1 border-l-[4px] ${borderClass}`}>
-                            <div className={`text-[22px] font-extrabold font-mono ${textClass}`}>{v as number}</div>
+                        <div key={l as string} className={cn(`bg-white border border-gray-200 rounded-xl py-2.5 px-4 flex-1 border-l-[4px] ${borderClass}`)}>
+                            <div className={cn(`text-[22px] font-extrabold font-mono ${textClass}`)}>{v as number}</div>
                             <div className="text-[11px] text-gray-400 mt-0.5">{l as string}</div>
                         </div>
                     ))}
@@ -92,7 +93,7 @@ export default function CommitmentDashboard() {
 
             {/* Project picker */}
             <div className="flex gap-2 mb-3">
-                <Input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="text-xs min-w-[220px] h-8" aria-label="Project ID" />
+                <Input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="text-xs min-w-56 h-8" aria-label="Project ID" />
                 <button disabled={!projectId} onClick={() => setActiveProject(projectId)} className="py-1.5 px-4 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50">Load</button>
             </div>
 
@@ -102,7 +103,7 @@ export default function CommitmentDashboard() {
                     <div className="flex gap-1 mb-3">
                         <div className="flex gap-1">
                             {(['alerts', 'variance'] as const).map(t => (
-                                <button key={t} onClick={() => setTab(t)} className={`py-1.5 px-4 border border-gray-200 rounded-lg text-xs font-semibold cursor-pointer ${tab === t ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`}>
+                                <button key={t} onClick={() => setTab(t)} className={cn(`py-1.5 px-4 border border-gray-200 rounded-lg text-xs font-semibold cursor-pointer ${tab === t ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>
                                     {t === 'alerts' ? `Budget Alerts (${alerts.length})` : 'Resource Variance'}
                                 </button>
                             ))}
@@ -121,12 +122,12 @@ export default function CommitmentDashboard() {
                                 const cfg = SEV_CFG[a.severity] ?? SEV_CFG.Info;
                                 const Icon = cfg.icon;
                                 return (
-                                    <div key={a.id} className={`rounded-xl p-2.5 px-3.5 flex justify-between items-center border border-l-[4px] ${cfg.bg} ${cfg.border} ${cfg.borderLeft}`}>
+                                    <div key={a.id} className={cn(`rounded-xl p-2.5 px-3.5 flex justify-between items-center border border-l-[4px] ${cfg.bg} ${cfg.border} ${cfg.borderLeft}`)}>
                                         <div>
                                             <div className="flex items-center gap-1.5 mb-0.5">
                                                 <Icon size={13} color={cfg.iconColor} />
                                                 <span className="text-xs font-bold text-gray-900">{a.alert_type.replace(/_/g, ' ')}</span>
-                                                <span className={`text-[10px] font-bold ${cfg.color}`}>{a.severity}</span>
+                                                <span className={cn(`text-[10px] font-bold ${cfg.color}`)}>{a.severity}</span>
                                             </div>
                                             <div className="text-[11px] text-gray-700">{a.description}</div>
                                             {a.budget_amount && <div className="text-[10px] text-gray-500 mt-0.5">Budget: {fmt(a.budget_amount)} · Actual: {fmt(a.actual_amount)} · Variance: {Number(a.variance_pct).toFixed(1)}%</div>}

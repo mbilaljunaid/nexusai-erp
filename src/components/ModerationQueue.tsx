@@ -338,7 +338,7 @@ export function ModerationQueue() {
                   <Card key={flag.id} data-testid={`flag-card-${flag.id}`}>
                     <CardContent className="pt-6">
                       <div className="flex items-start justify-between gap-4 flex-wrap">
-                        <div className="flex-1 min-w-[200px]">
+                        <div className="flex-1 min-w-48">
                           <div className="flex items-center gap-2 mb-2 flex-wrap">
                             {getStatusBadge(flag.status)}
                             <Badge variant="outline">
@@ -466,7 +466,7 @@ export function ModerationQueue() {
                 <Card key={anomaly.id} data-testid={`anomaly-card-${anomaly.id}`}>
                   <CardContent className="pt-6">
                     <div className="flex items-start justify-between gap-4 flex-wrap">
-                      <div className="flex-1 min-w-[200px]">
+                      <div className="flex-1 min-w-48">
                         <div className="flex items-center gap-2 mb-2 flex-wrap">
                           {getAnomalyTypeBadge(anomaly.anomalyType)}
                           {getSeverityBadge(anomaly.severity)}

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { Textarea } from "@/components/ui/textarea";
@@ -53,7 +54,7 @@ export default function RegulatoryCalendar() {
         { id: "total", header: "Total", width: "100px", cell: (row) => <span className="fcpa-td-mono">{row.total}</span> },
         { id: "completed_passed", header: "Passed", width: "100px", cell: (row) => <span className="fcpa-td-mono fcpa-td-passed">{row.completed_passed}</span> },
         { id: "in_progress", header: "In Progress", width: "100px", cell: (row) => <span className="fcpa-td-mono fcpa-td-progress">{row.in_progress}</span> },
-        { id: "overdue", header: "Overdue", width: "100px", cell: (row) => <span className={`fcpa-td-mono ${Number(row.overdue) > 0 ? 'fcpa-td-overdue' : 'fcpa-td-pending'}`}>{row.overdue}</span> },
+        { id: "overdue", header: "Overdue", width: "100px", cell: (row) => <span className={cn(`fcpa-td-mono ${Number(row.overdue) > 0 ? 'fcpa-td-overdue' : 'fcpa-td-pending'}`)}>{row.overdue}</span> },
         { id: "pending", header: "Pending", width: "100px", cell: (row) => <span className="fcpa-td-mono fcpa-td-pending">{row.pending}</span> },
         {
             id: "completion_rate_pct", header: "Completion %", width: "200px", cell: (row) => {
@@ -64,7 +65,7 @@ export default function RegulatoryCalendar() {
                             <style>{`
                                 .fcpa-bar-w-${Math.round(pct)} { width: ${pct}%; }
                             `}</style>
-                            <div className={`progress-bar-fill fcpa-bar-w-${Math.round(pct)} ${pct >= 90 ? 'progress-safe' : pct >= 70 ? 'progress-warn' : 'progress-danger'}`} />
+                            <div className={cn(`progress-bar-fill fcpa-bar-w-${Math.round(pct)} ${pct >= 90 ? 'progress-safe' : pct >= 70 ? 'progress-warn' : 'progress-danger'}`)} />
                         </div>
                         <span className="progress-bar-text w-12 text-right">{pct}%</span>
                     </div>
@@ -89,8 +90,8 @@ export default function RegulatoryCalendar() {
             {/* Summary cards by regulation */}
             <div className="summary-grid">
                 {regSummary.map((r, i) => (
-                    <div key={r.regulation} onClick={() => setRegFilter(regFilter === r.regulation ? '' : r.regulation)} className={`summary-card summary-card-color reg-color-${i % REG_COLORS.length} ${regFilter && regFilter !== r.regulation ? 'summary-card-dim' : 'summary-card-active'}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                        <div className={`summary-card-title summary-card-title-color reg-color-${i % REG_COLORS.length}`}>{r.regulation ?? 'Other'}</div>
+                    <div key={r.regulation} onClick={() => setRegFilter(regFilter === r.regulation ? '' : r.regulation)} className={cn(`summary-card summary-card-color reg-color-${i % REG_COLORS.length} ${regFilter && regFilter !== r.regulation ? 'summary-card-dim' : 'summary-card-active'}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                        <div className={cn(`summary-card-title summary-card-title-color reg-color-${i % REG_COLORS.length}`)}>{r.regulation ?? 'Other'}</div>
                         <div className="summary-card-count">{r.total} events</div>
                         {Number(r.overdue) > 0 && <div className="summary-card-overdue">⚑ {r.overdue} overdue</div>}
                         {r.next_due && <div className="summary-card-next">Next: {fmtDate(r.next_due)}</div>}
@@ -115,14 +116,14 @@ export default function RegulatoryCalendar() {
             {/* Tabs */}
             <div className="tabs-container">
                 {(['calendar', 'fcpa', 'new'] as const).map(t => (
-                    <button key={t} onClick={() => setTab(t)} className={`btn-tab ${tab === t ? 'btn-tab-active' : 'btn-tab-inactive'}`}>
+                    <button key={t} onClick={() => setTab(t)} className={cn(`btn-tab ${tab === t ? 'btn-tab-active' : 'btn-tab-inactive'}`)}>
                         {t === 'calendar' ? `Events (${events.length})` : t === 'fcpa' ? 'FCPA Training' : '+ New Event'}
                     </button>
                 ))}
                 {tab === 'calendar' && (
                     <>
                         {['', 'Upcoming', 'In_Progress', 'Completed', 'Overdue'].map(s => (
-                            <button key={s} onClick={() => setStatusFilter(s)} className={`btn-filter ${statusFilter === s ? 'btn-filter-active' : 'btn-filter-inactive'} ${s === '' ? 'btn-filter-first' : ''}`}>{s || 'All'}</button>
+                            <button key={s} onClick={() => setStatusFilter(s)} className={cn(`btn-filter ${statusFilter === s ? 'btn-filter-active' : 'btn-filter-inactive'} ${s === '' ? 'btn-filter-first' : ''}`)}>{s || 'All'}</button>
                         ))}
                         {regFilter && <button onClick={() => setRegFilter('')} className="btn-filter-clear">✕ {regFilter}</button>}
                     </>
@@ -136,15 +137,15 @@ export default function RegulatoryCalendar() {
                         const days = daysUntil(e.due_date);
                         const clrClass = `status-clr-${e.status in STATUS_CLR ? e.status : 'Unknown'}`;
                         return (
-                            <div key={e.id} className={`event-card event-card-${e.status === 'Overdue' ? 'Overdue' : 'Normal'} ${clrClass}`}>
+                            <div key={e.id} className={cn(`event-card event-card-${e.status === 'Overdue' ? 'Overdue' : 'Normal'} ${clrClass}`)}>
                                 <div>
                                     <div className="event-header">
                                         <span className="event-title">{e.title}</span>
-                                        <span className={`event-status event-status-color ${clrClass}`}>{e.status}</span>
+                                        <span className={cn(`event-status event-status-color ${clrClass}`)}>{e.status}</span>
                                         {e.regulation && <span className="event-regulation">{e.regulation}</span>}
                                         <span className="event-type">{e.event_type}</span>
                                     </div>
-                                    <div className="event-due">Due: <strong>{fmtDate(e.due_date)}</strong> {e.status !== 'Completed' && <span className={`${days < 0 ? 'event-due-overdue' : days < 14 ? 'event-due-soon' : 'event-due-safe'}`}>({days < 0 ? Math.abs(days) + 'd overdue' : days + 'd remaining'})</span>}</div>
+                                    <div className="event-due">Due: <strong>{fmtDate(e.due_date)}</strong> {e.status !== 'Completed' && <span className={cn(`${days < 0 ? 'event-due-overdue' : days < 14 ? 'event-due-soon' : 'event-due-safe'}`)}>({days < 0 ? Math.abs(days) + 'd overdue' : days + 'd remaining'})</span>}</div>
                                     {e.description && <div className="event-desc">{e.description}</div>}
                                 </div>
                                 <div className="event-actions">
@@ -169,7 +170,7 @@ export default function RegulatoryCalendar() {
                     <div className="fcpa-header">
                         <button onClick={() => fcpaSweepMut.mutate()} className="btn-sweep"><RefreshCw size={11} /> Sweep Overdue</button>
                     </div>
-                    <div className="min-h-[300px] h-full border border-gray-200 rounded-lg">
+                    <div className="min-h-72 h-full border border-gray-200 rounded-lg">
                         <InteractiveSpreadsheet
                             columns={fcpaColumns}
                             data={fcpaSummary}

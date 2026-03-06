@@ -75,7 +75,7 @@ export default function RecruitmentCampaignBuilder() {
                             <Input
                                 value={campaignName}
                                 onChange={(e) => setCampaignName(e.target.value)}
-                                className="text-xl font-bold h-8 border-transparent hover:border-zinc-200 focus-visible:ring-1 bg-transparent px-2 w-[300px] md:w-[400px]"
+                                className="text-xl font-bold h-8 border-transparent hover:border-zinc-200 focus-visible:ring-1 bg-transparent px-2 w-72 md:w-[400px]"
                             />
                             <div className="flex items-center gap-2 mt-1 px-2">
                                 <StatusBadge status="Draft" className="text-[10px]" />
@@ -201,7 +201,7 @@ export default function RecruitmentCampaignBuilder() {
 
                                     {/* Step 1 */}
                                     <div className="relative">
-                                        <div className="absolute -left-[35px] top-2 h-4 w-4 rounded-full bg-fuchsia-600 border-4 border-white dark:border-zinc-950" />
+                                        <div className="absolute -left-9 top-2 h-4 w-4 rounded-full bg-fuchsia-600 border-4 border-white dark:border-zinc-950" />
                                         <div className="border rounded-lg shadow-sm">
                                             <div className="bg-zinc-50 dark:bg-zinc-900/50 p-3 px-4 border-b flex justify-between items-center rounded-t-lg">
                                                 <span className="font-medium text-sm">Step 1: Initial Outreach</span>
@@ -218,7 +218,7 @@ export default function RecruitmentCampaignBuilder() {
                                                         <Button variant="link" className="h-auto p-0 text-[10px]">Insert Token {`{}`}</Button>
                                                     </div>
                                                     <Textarea
-                                                        className="min-h-[150px] font-mono text-sm leading-relaxed"
+                                                        className="min-h-36 font-mono text-sm leading-relaxed"
                                                         defaultValue={`Hi {Candidate_First_Name},\n\nGiven your impressive background in distributed systems, I wanted to personally invite you to an exclusive leadership summit we are hosting.\n\nWe're bringing together top engineering minds to discuss scaling architecture.\n\n[Link_To_Landing_Page]\n\nBest,\n{Recruiter_Name}`}
                                                     />
                                                 </div>

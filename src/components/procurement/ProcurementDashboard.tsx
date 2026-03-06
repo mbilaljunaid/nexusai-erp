@@ -58,7 +58,7 @@ export function ProcurementDashboard({ onViewChange }: Props) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Card>
                     <CardHeader><CardTitle>Spend by Supplier</CardTitle></CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-72">
                         {spendBySupplier.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={spendBySupplier}>
@@ -74,7 +74,7 @@ export function ProcurementDashboard({ onViewChange }: Props) {
                 </Card>
                 <Card>
                     <CardHeader><CardTitle>PO Status Breakdown</CardTitle></CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-72">
                         {poStatusData.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>

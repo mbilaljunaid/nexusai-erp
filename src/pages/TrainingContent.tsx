@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
@@ -122,7 +123,7 @@ export default function TrainingContent() {
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="flex-1">
             <div className="flex items-center gap-4 mb-6">
-              <div className={`p-3 rounded-xl bg-slate-800 ${config.color}`}>
+              <div className={cn(`p-3 rounded-xl bg-slate-800 ${config.color}`)}>
                 <Icon className="w-8 h-8" />
               </div>
               <div>
@@ -161,7 +162,7 @@ export default function TrainingContent() {
             </Tabs>
 
             <div className="flex flex-wrap gap-3 mb-6">
-              <div className="relative flex-1 min-w-[200px]">
+              <div className="relative flex-1 min-w-48">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input
                   placeholder="Search content..."
@@ -246,7 +247,7 @@ export default function TrainingContent() {
             ) : resources.length === 0 ? (
               <Card className="bg-slate-800/50 border-slate-700">
                 <CardContent className="py-16 text-center">
-                  <Icon className={`w-16 h-16 mx-auto mb-4 ${config.color} opacity-50`} />
+                  <Icon className={cn(`w-16 h-16 mx-auto mb-4 ${config.color} opacity-50`)} />
                   <h3 className="text-xl font-semibold mb-2">No content yet</h3>
                   <p className="text-slate-400 mb-6">Be the first to contribute {config.title.toLowerCase()}!</p>
                   <Link to="/contributor/training/submit">
@@ -262,7 +263,7 @@ export default function TrainingContent() {
                 {resources.map(resource => (
                   <Card 
                     key={resource.id} 
-                    className={`bg-slate-800 border-slate-700 hover:border-slate-600 transition-colors ${resource.featured ? "ring-2 ring-yellow-500/30" : ""}`}
+                    className={cn(`bg-slate-800 border-slate-700 hover:border-slate-600 transition-colors ${resource.featured ? "ring-2 ring-yellow-500/30" : ""}`)}
                     data-testid={`card-resource-${resource.id}`}
                   >
                     <CardContent className="p-4">
@@ -274,7 +275,7 @@ export default function TrainingContent() {
                             className="w-40 h-24 object-cover rounded-lg flex-shrink-0"
                           />
                         ) : (
-                          <div className={`w-40 h-24 rounded-lg bg-slate-700 flex items-center justify-center flex-shrink-0 ${config.color}`}>
+                          <div className={cn(`w-40 h-24 rounded-lg bg-slate-700 flex items-center justify-center flex-shrink-0 ${config.color}`)}>
                             <Icon className="w-8 h-8" />
                           </div>
                         )}
@@ -405,8 +406,8 @@ export default function TrainingContent() {
                   const TypeIcon = cfg.icon;
                   return (
                     <Link key={key} to={`/training/${key === "video" ? "videos" : key === "api" ? "apis" : key === "guide" ? "guides" : "materials"}`}>
-                      <div className={`flex items-center gap-3 p-2 rounded-lg hover:bg-slate-700 transition-colors cursor-pointer ${type === key ? "bg-slate-700" : ""}`}>
-                        <TypeIcon className={`w-5 h-5 ${cfg.color}`} />
+                      <div className={cn(`flex items-center gap-3 p-2 rounded-lg hover:bg-slate-700 transition-colors cursor-pointer ${type === key ? "bg-slate-700" : ""}`)}>
+                        <TypeIcon className={cn(`w-5 h-5 ${cfg.color}`)} />
                         <span className="text-sm">{cfg.title}</span>
                         {counts[key] && (
                           <Badge variant="outline" className="ml-auto text-xs">{counts[key]}</Badge>

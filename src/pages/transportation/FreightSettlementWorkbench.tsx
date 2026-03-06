@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -608,10 +609,10 @@ export default function FreightSettlementWorkbench() {
                             <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                                 <div className="flex justify-between items-center">
                                     <span className="text-sm font-medium text-blue-900">Variance</span>
-                                    <span className={`font-mono font-semibold ${parseFloat(invoiceAmount) - parseFloat(selectedCharge.plannedAmount) > 0
+                                    <span className={cn(`font-mono font-semibold ${parseFloat(invoiceAmount) - parseFloat(selectedCharge.plannedAmount) > 0
                                         ? "text-rose-600"
                                         : "text-emerald-600"
-                                        }`}>
+                                        }`)}>
                                         {parseFloat(invoiceAmount) - parseFloat(selectedCharge.plannedAmount) > 0 ? "+" : ""}
                                         {formatCurrency(Math.abs(parseFloat(invoiceAmount) - parseFloat(selectedCharge.plannedAmount)))}
                                     </span>

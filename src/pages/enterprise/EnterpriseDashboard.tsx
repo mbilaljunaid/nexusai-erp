@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -72,7 +73,7 @@ export default function EnterpriseDashboard() {
                             >
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                                     <div className="flex items-center gap-3">
-                                        <card.icon className={`h-6 w-6 ${card.color}`} />
+                                        <card.icon className={cn(`h-6 w-6 ${card.color}`)} />
                                         <CardTitle className="text-base">{card.title}</CardTitle>
                                     </div>
                                     <span className="text-2xl font-bold text-muted-foreground">{card.count}</span>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -66,16 +67,16 @@ export default function BackgroundCheckStatus() {
                             {Number(row.hits) > 0 && <span className="text-red-600 font-bold">⚑ {row.hits} hit{Number(row.hits) > 1 ? 's' : ''}</span>}
                         </div>
                         <style>{`.bgc-pct-${row.id} { width: ${pct}%; }`}</style>
-                        <div className="bg-gray-100 rounded-full h-[5px] mt-0.5">
+                        <div className="bg-gray-100 rounded-full h-1 mt-0.5">
                             {/* eslint-disable-next-line react/forbid-dom-props */}
-                            <div className={`h-full rounded-full bgc-pct-${row.id} ${pct === 100 ? 'bg-emerald-600' : 'bg-blue-700'}`} />
+                            <div className={cn(`h-full rounded-full bgc-pct-${row.id} ${pct === 100 ? 'bg-emerald-600' : 'bg-blue-700'}`)} />
                         </div>
                     </div>
                 );
             }
         },
-        { id: "adjudication", header: "Adjudication", width: "120px", cell: (row) => row.adjudication ? <span className={`font-bold ${ADJ_CLR[row.adjudication] ?? 'text-gray-500'}`}>{row.adjudication}</span> : <span className="text-gray-400 text-[10px]">—</span> },
-        { id: "status", header: "Status", width: "150px", cell: (row) => <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${STATUS_CLR[row.status] ?? 'bg-gray-500/10 text-gray-500'}`}>{row.status.replace(/_/g, ' ')}</span> },
+        { id: "adjudication", header: "Adjudication", width: "120px", cell: (row) => row.adjudication ? <span className={cn(`font-bold ${ADJ_CLR[row.adjudication] ?? 'text-gray-500'}`)}>{row.adjudication}</span> : <span className="text-gray-400 text-[10px]">—</span> },
+        { id: "status", header: "Status", width: "150px", cell: (row) => <span className={cn(`px-2 py-0.5 rounded text-[10px] font-bold ${STATUS_CLR[row.status] ?? 'bg-gray-500/10 text-gray-500'}`)}>{row.status.replace(/_/g, ' ')}</span> },
         {
             id: "actions", header: "", width: "160px", cell: (row) => (
                 <div className="flex gap-1.5 justify-end w-full">
@@ -96,8 +97,8 @@ export default function BackgroundCheckStatus() {
             {summary && (
                 <div className="flex gap-2.5 mb-3.5">
                     {([['Initiated', summary.initiated, 'border-gray-500', 'text-gray-500'], ['In Progress', summary.in_progress, 'border-amber-600', 'text-amber-600'], ['Clear', summary.clear, 'border-emerald-600', 'text-emerald-600'], ['Consider', summary.consider, 'border-amber-500', 'text-amber-500'], ['Adverse Action', summary.adverse_action, 'border-red-600', 'text-red-600'], ['Withdrawn', summary.withdrawn, 'border-gray-400', 'text-gray-400']] as [string, number, string, string][]).map(([l, v, bc, tc]) => (
-                        <Card key={l} className={`flex-1 border-l-4 p-2.5 shadow-sm rounded-xl ${bc}`}>
-                            <div className={`text-xl font-extrabold font-mono ${tc}`}>{v ?? 0}</div>
+                        <Card key={l} className={cn(`flex-1 border-l-4 p-2.5 shadow-sm rounded-xl ${bc}`)}>
+                            <div className={cn(`text-xl font-extrabold font-mono ${tc}`)}>{v ?? 0}</div>
                             <div className="text-[10px] text-gray-400">{l}</div>
                         </Card>
                     ))}
@@ -107,7 +108,7 @@ export default function BackgroundCheckStatus() {
             {/* Filter row */}
             <div className="flex gap-1.5 mb-3">
                 {['', 'Initiated', 'In_Progress', 'Complete', 'Adverse_Action'].map(s => (
-                    <button key={s} onClick={() => setFilter(s)} className={`px-3 py-1 border border-gray-200 rounded-md text-[11px] font-semibold cursor-pointer ${filter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`}>{s || 'All'}</button>
+                    <button key={s} onClick={() => setFilter(s)} className={cn(`px-3 py-1 border border-gray-200 rounded-md text-[11px] font-semibold cursor-pointer ${filter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</button>
                 ))}
             </div>
 
@@ -154,7 +155,7 @@ export default function BackgroundCheckStatus() {
 
                 {/* Detail panel */}
                 {selectedOrder && (
-                    <Card className="w-[340px] p-4 shrink-0 shadow-sm">
+                    <Card className="w-80 p-4 shrink-0 shadow-sm">
                         <div className="flex justify-between mb-2.5">
                             <div className="text-[13px] font-bold">{selectedOrder.candidate_name ?? selectedOrder.applicant_id}</div>
                             <button onClick={() => setSelectedOrder(null)} className="bg-transparent border-none cursor-pointer text-sm">✕</button>
@@ -174,7 +175,7 @@ export default function BackgroundCheckStatus() {
                             {selectedOrder.components.map(c => (
                                 <div key={c.component_type} className="flex justify-between px-2 py-1 bg-gray-50 rounded-md">
                                     <span className="text-[10px]">{c.component_type}</span>
-                                    <span className={`text-[10px] font-bold ${c.result ? (RESULT_CLR[c.result] ?? 'text-gray-500') : 'text-gray-400'}`}>{c.result ?? c.status}</span>
+                                    <span className={cn(`text-[10px] font-bold ${c.result ? (RESULT_CLR[c.result] ?? 'text-gray-500') : 'text-gray-400'}`)}>{c.result ?? c.status}</span>
                                 </div>
                             ))}
                         </div>

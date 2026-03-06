@@ -155,7 +155,7 @@ export default function InspectionFormRunner({ inspectionId, definition, onCompl
                                     placeholder="Enter value..."
                                     value={answers[q.id] || ""}
                                     onChange={(e) => handleAnswerChange(q.id, e.target.value)}
-                                    className="max-w-[150px]"
+                                    className="max-w-36"
                                 />
                             )}
 

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -222,7 +223,7 @@ export default function OpportunitiesDetail() {
               variant={viewMode === "kanban" ? "secondary" : "ghost"}
               size="sm"
               onClick={() => setViewMode("kanban")}
-              className={`h-8 px-4 rounded-full transition-all ${viewMode === 'kanban' ? 'shadow-sm bg-background' : ''}`}
+              className={cn(`h-8 px-4 rounded-full transition-all ${viewMode === 'kanban' ? 'shadow-sm bg-background' : ''}`)}
             >
               <LayoutGrid className="h-4 w-4 mr-2" /> Kanban
             </Button>
@@ -230,7 +231,7 @@ export default function OpportunitiesDetail() {
               variant={viewMode === "list" ? "secondary" : "ghost"}
               size="sm"
               onClick={() => setViewMode("list")}
-              className={`h-8 px-4 rounded-full transition-all ${viewMode === 'list' ? 'shadow-sm bg-background' : ''}`}
+              className={cn(`h-8 px-4 rounded-full transition-all ${viewMode === 'list' ? 'shadow-sm bg-background' : ''}`)}
             >
               <ListIcon className="h-4 w-4 mr-2" /> List
             </Button>
@@ -267,7 +268,7 @@ export default function OpportunitiesDetail() {
                   <p className="text-sm font-medium text-muted-foreground">{m.label}</p>
                   <p className="text-2xl font-bold">{m.value}</p>
                 </div>
-                <div className={`p-2 rounded-xl bg-muted/50 group-hover:scale-110 transition-transform ${m.color}`}>
+                <div className={cn(`p-2 rounded-xl bg-muted/50 group-hover:scale-110 transition-transform ${m.color}`)}>
                   <m.icon className="h-4 w-4" />
                 </div>
               </div>
@@ -373,21 +374,21 @@ export default function OpportunitiesDetail() {
               return (
                 <div
                   key={stage.id}
-                  className={`min-w-[340px] w-[340px] flex flex-col bg-muted/10 rounded-2xl border border-muted/50 p-3 transition-colors ${isDragTarget ? 'bg-primary/5 border-primary/20 border-dashed' : ''}`}
+                  className={cn(`min-w-80 w-80 flex flex-col bg-muted/10 rounded-2xl border border-muted/50 p-3 transition-colors ${isDragTarget ? 'bg-primary/5 border-primary/20 border-dashed' : ''}`)}
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, stage.id)}
                 >
-                  <div className={`p-4 mb-4 border-b rounded-xl shadow-sm ${stage.color} ${stage.borderColor} border`}>
+                  <div className={cn(`p-4 mb-4 border-b rounded-xl shadow-sm ${stage.color} ${stage.borderColor} border`)}>
                     <div className="flex justify-between items-center mb-1">
                       <h3 className="font-bold text-xs uppercase tracking-widest opacity-70">{stage.label}</h3>
-                      <Badge variant="secondary" className="text-xs h-5 px-1.5 min-w-[20px] justify-center bg-background/50 border-none shadow-none">
+                      <Badge variant="secondary" className="text-xs h-5 px-1.5 min-w-5 justify-center bg-background/50 border-none shadow-none">
                         {stageOpps.length}
                       </Badge>
                     </div>
                     <p className="text-xl font-black">{formatCurrency(stageTotal)}</p>
                   </div>
 
-                  <div className="space-y-3 overflow-y-auto flex-1 max-h-[800px] px-0.5 min-h-[100px]">
+                  <div className="space-y-3 overflow-y-auto flex-1 max-h-[800px] px-0.5 min-h-24">
                     {stageOpps.map(opp => (
                       <div
                         key={opp.id}
@@ -396,7 +397,7 @@ export default function OpportunitiesDetail() {
                         className="cursor-grab active:cursor-grabbing"
                       >
                         <Card
-                          className={`shadow-sm hover-elevate transition-all border-muted/50 group ${draggedOpp?.id === opp.id ? 'opacity-50 rotate-3 scale-95' : ''}`}
+                          className={cn(`shadow-sm hover-elevate transition-all border-muted/50 group ${draggedOpp?.id === opp.id ? 'opacity-50 rotate-3 scale-95' : ''}`)}
                           onClick={() => setSelectedOpp(opp)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                         >
                           <CardContent className="p-4">

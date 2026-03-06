@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { CreditCard, Plus, Trash2, Receipt, BadgeDollarSign, Wallet, Activity, ShoppingCart } from "lucide-react";
+import { CreditCard, Plus, Trash2, Receipt, BadgeDollarSign, Wallet, Activity, ShoppingCart, Loader2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { StandardDashboard, DashboardWidget } from "@/components/layout/StandardDashboard";
@@ -122,7 +122,7 @@ export default function POSTerminalCheckout() {
             </Select>
           </div>
           <Button onClick={() => createMutation.mutate(newSale)} disabled={createMutation.isPending || !newSale.productId} className="w-full" data-testid="button-process">
-            {createMutation.isPending ? <Activity className="h-4 w-4 animate-spin" /> : "Complete Transaction"}
+            {createMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Complete Transaction"}
           </Button>
         </div>
       </DashboardWidget>

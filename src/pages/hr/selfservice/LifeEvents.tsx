@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
@@ -96,8 +97,8 @@ export default function LifeEvents() {
                                     onClick={() => setSelectedEvent(event.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <CardContent className="p-6 text-center space-y-4">
-                                        <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center ${event.bg} group-hover:scale-110 transition-transform`}>
-                                            <event.icon className={`h-8 w-8 ${event.color}`} />
+                                        <div className={cn(`mx-auto w-16 h-16 rounded-full flex items-center justify-center ${event.bg} group-hover:scale-110 transition-transform`)}>
+                                            <event.icon className={cn(`h-8 w-8 ${event.color}`)} />
                                         </div>
                                         <h3 className="font-semibold">{event.title}</h3>
                                         <Button variant="link" className="text-teal-600 p-0 h-auto">Report Event &rarr;</Button>
@@ -164,7 +165,7 @@ export default function LifeEvents() {
                                             <FormItem>
                                                 <FormLabel className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Additional Details</FormLabel>
                                                 <FormControl>
-                                                    <Textarea placeholder="Provide any necessary context for HR..." className="min-h-[100px]" {...field} />
+                                                    <Textarea placeholder="Provide any necessary context for HR..." className="min-h-24" {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>

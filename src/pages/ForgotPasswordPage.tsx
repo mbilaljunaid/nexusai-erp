@@ -1,17 +1,17 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation } from "wouter";
-import { motion } from "framer-motion";
-import { ArrowRight, Mail, Lock, Eye, EyeOff, CheckCircle, KeyRound } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Header, Footer } from "@/components/Navigation";
-import { GlassmorphismCard } from "@/components/lovable";
-import { colors } from "@/lib/design-tokens";
-import { animations } from "@/lib/animations";
+import { useState, useEffect} from"react";
+import { Link, useLocation} from"wouter";
+import { motion} from"framer-motion";
+import { ArrowRight, Mail, Lock, Eye, EyeOff, CheckCircle, KeyRound} from"lucide-react";
+import { Button} from"@/components/ui/button";
+import { Input} from"@/components/ui/input";
+import { Header, Footer} from"@/components/Navigation";
+import { GlassmorphismCard} from"@/components/lovable";
+import { colors} from"@/lib/design-tokens";
+import { animations} from"@/lib/animations";
 
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { z} from"zod";
+import { useForm} from"react-hook-form";
+import { zodResolver} from"@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -19,42 +19,42 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from"@/components/ui/form";
 
 const emailSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
 });
 
 const resetSchema = z.object({
-  resetCode: z.string().min(6, "Code must be at least 6 characters"),
-  newPassword: z.string().min(8, "Password must be at least 8 characters"),
+  resetCode: z.string().min(6,"Code must be at least 6 characters"),
+  newPassword: z.string().min(8,"Password must be at least 8 characters"),
   confirmPassword: z.string(),
 }).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "Passwords don't match",
+  message:"Passwords don't match",
   path: ["confirmPassword"],
 });
 
 export default function ForgotPasswordPage() {
   const [, setLocation] = useLocation();
-  const [step, setStep] = useState<"email" | "reset" | "success">("email");
+  const [step, setStep] = useState<"email" |"reset" |"success">("email");
   const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    document.title = "Reset Password | NexusAI";
-  }, []);
+    document.title ="Reset Password | NexusAI";
+ }, []);
 
   const emailForm = useForm<z.infer<typeof emailSchema>>({
     resolver: zodResolver(emailSchema),
-    defaultValues: { email: "" },
-  });
+    defaultValues: { email:""},
+ });
 
   const resetForm = useForm<z.infer<typeof resetSchema>>({
     resolver: zodResolver(resetSchema),
-    defaultValues: { resetCode: "", newPassword: "", confirmPassword: "" },
-  });
+    defaultValues: { resetCode:"", newPassword:"", confirmPassword:""},
+ });
 
   const onEmailSubmit = async (values: z.infer<typeof emailSchema>) => {
     setLoading(true);
@@ -62,24 +62,24 @@ export default function ForgotPasswordPage() {
 
     try {
       const res = await fetch("/api/auth/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: values.email }),
-      });
+        method:"POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ email: values.email}),
+     });
 
       if (res.ok) {
         setStep("reset");
         setEmail(values.email);
-      } else {
+     } else {
         const data = await res.json();
-        setError(data.message || "Failed to send reset email");
-      }
-    } catch (e) {
+        setError(data.message ||"Failed to send reset email");
+     }
+   } catch (e) {
       setError("Failed to send reset email. Please try again.");
-    } finally {
+   } finally {
       setLoading(false);
-    }
-  };
+   }
+ };
 
   const onResetSubmit = async (values: z.infer<typeof resetSchema>) => {
     setError("");
@@ -87,37 +87,37 @@ export default function ForgotPasswordPage() {
 
     try {
       const res = await fetch("/api/auth/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, resetCode: values.resetCode, newPassword: values.newPassword }),
-      });
+        method:"POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ email, resetCode: values.resetCode, newPassword: values.newPassword}),
+     });
 
       if (res.ok) {
         setStep("success");
         setTimeout(() => {
           setLocation("/login");
-        }, 3000);
-      } else {
+       }, 3000);
+     } else {
         const data = await res.json();
-        setError(data.message || "Failed to reset password");
-      }
-    } catch (e) {
+        setError(data.message ||"Failed to reset password");
+     }
+   } catch (e) {
       setError("Failed to reset password. Please try again.");
-    } finally {
+   } finally {
       setLoading(false);
-    }
-  };
+   }
+ };
 
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-hidden relative">
       {/* Animated Background */}
-      <style>{`.fp-bg-gradient { background: radial-gradient(circle at 30% 70%, rgba(79, 70, 229, 0.15) 0%, transparent 100%); opacity: 0.6; }`}</style>
-      <div className="absolute inset-0 -z-10 fp-bg-gradient" />
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+      <style>{`.fp-bg-gradient { background: radial-gradient(circle at 30% 70%, rgba(79, 70, 229, 0.15) 0%, transparent 100%); opacity: 0.6;}`}</style>
+      <div className="absolute inset-0 fp-bg-gradient" />
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
         <motion.div
           className="absolute top-[20%] right-[30%] w-[400px] h-[400px] rounded-full bg-indigo-500/10 blur-[100px]"
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3]}}
+          transition={{ duration: 15, repeat: Infinity, ease:"easeInOut"}}
         />
       </div>
 
@@ -135,19 +135,19 @@ export default function ForgotPasswordPage() {
               </div>
               <h2 className="text-2xl font-bold mb-2">Password Reset</h2>
               <p className="text-muted-foreground">
-                {step === "email" && "Enter your email to receive a code"}
-                {step === "reset" && "Secure your account with a new password"}
-                {step === "success" && "You're all set!"}
+                {step ==="email" &&"Enter your email to receive a code"}
+                {step ==="reset" &&"Secure your account with a new password"}
+                {step ==="success" &&"You're all set!"}
               </p>
             </div>
 
-            {step === "email" && (
+            {step ==="email" && (
               <Form {...emailForm}>
                 <form onSubmit={emailForm.handleSubmit(onEmailSubmit)} className="space-y-6">
                   {error && (
                     <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
+                      initial={{ opacity: 0, y: -10}}
+                      animate={{ opacity: 1, y: 0}}
                       className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-sm text-center"
                     >
                       {error}
@@ -157,7 +157,7 @@ export default function ForgotPasswordPage() {
                   <FormField
                     control={emailForm.control}
                     name="email"
-                    render={({ field }) => (
+                    render={({ field}) => (
                       <FormItem>
                         <FormLabel className="ml-1">Email Address</FormLabel>
                         <FormControl>
@@ -182,14 +182,14 @@ export default function ForgotPasswordPage() {
                     disabled={loading}
                     size="lg"
                   >
-                    {loading ? "Sending..." : "Send Reset Code"}
+                    {loading ?"Sending..." :"Send Reset Code"}
                     {!loading && <ArrowRight className="ml-2 w-4 h-4" />}
                   </Button>
                 </form>
               </Form>
             )}
 
-            {step === "reset" && (
+            {step ==="reset" && (
               <Form {...resetForm}>
                 <form onSubmit={resetForm.handleSubmit(onResetSubmit)} className="space-y-5">
                   {error && (
@@ -201,7 +201,7 @@ export default function ForgotPasswordPage() {
                   <FormField
                     control={resetForm.control}
                     name="resetCode"
-                    render={({ field }) => (
+                    render={({ field}) => (
                       <FormItem>
                         <FormLabel className="ml-1">Reset Code</FormLabel>
                         <FormControl>
@@ -219,14 +219,14 @@ export default function ForgotPasswordPage() {
                   <FormField
                     control={resetForm.control}
                     name="newPassword"
-                    render={({ field }) => (
+                    render={({ field}) => (
                       <FormItem>
                         <FormLabel className="ml-1">New Password</FormLabel>
                         <FormControl>
                           <div className="relative group">
                             <Lock className="absolute left-3 top-3 w-5 h-5 text-muted-foreground group-focus-within:text-indigo-500 transition-colors" />
                             <Input
-                              type={showPassword ? "text" : "password"}
+                              type={showPassword ?"text" :"password"}
                               placeholder="New password"
                               className="pl-10 h-11 bg-white/5 border-white/10 focus:border-indigo-500/50 transition-all"
                               {...field}
@@ -241,13 +241,13 @@ export default function ForgotPasswordPage() {
                   <FormField
                     control={resetForm.control}
                     name="confirmPassword"
-                    render={({ field }) => (
+                    render={({ field}) => (
                       <FormItem>
                         <FormLabel className="ml-1">Confirm Password</FormLabel>
                         <FormControl>
                           <div className="relative group">
                             <Input
-                              type={showPassword ? "text" : "password"}
+                              type={showPassword ?"text" :"password"}
                               placeholder="Confirm new password"
                               className="pl-4 h-11 bg-white/5 border-white/10 focus:border-indigo-500/50 transition-all"
                               {...field}
@@ -272,18 +272,18 @@ export default function ForgotPasswordPage() {
                     disabled={loading}
                     size="lg"
                   >
-                    {loading ? "Resetting..." : "Set New Password"}
+                    {loading ?"Resetting..." :"Set New Password"}
                     {!loading && <ArrowRight className="ml-2 w-4 h-4" />}
                   </Button>
                 </form>
               </Form>
             )}
 
-            {step === "success" && (
+            {step ==="success" && (
               <div className="text-center py-8">
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
+                  initial={{ scale: 0}}
+                  animate={{ scale: 1}}
                   className="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4"
                 >
                   <CheckCircle className="w-8 h-8" />

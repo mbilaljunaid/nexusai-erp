@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -48,13 +49,13 @@ export default function NineBoxGrid() {
         {
             id: "box_label", header: "Box", width: "150px", cell: (row) => {
                 const cfg = BOX_CONFIG[row.box_label] ?? { bg: 'bg-gray-50', border: 'border-gray-200', label: row.box_label };
-                return <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold border ${cfg.bg} ${cfg.border}`}>{cfg.label}</span>
+                return <span className={cn(`px-1.5 py-0.5 rounded text-[9px] font-bold border ${cfg.bg} ${cfg.border}`)}>{cfg.label}</span>
             }
         },
         { id: "performance", header: "Performance", width: "100px", cell: (row) => ['', '🔴 Low', '🟡 Medium', '🟢 High'][row.performance] },
         { id: "potential", header: "Potential", width: "100px", cell: (row) => ['', '🔴 Low', '🟡 Medium', '🟢 High'][row.potential] },
         { id: "assessed_by", header: "Assessed By", width: "150px", cell: (row) => <span className="text-gray-500">{row.assessed_by || '—'}</span> },
-        { id: "notes", header: "Notes", width: "250px", cell: (row) => <span className="text-gray-500 block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap">{row.notes || '—'}</span> }
+        { id: "notes", header: "Notes", width: "250px", cell: (row) => <span className="text-gray-500 block max-w-48 overflow-hidden text-ellipsis whitespace-nowrap">{row.notes || '—'}</span> }
     ];
 
     return (
@@ -63,7 +64,7 @@ export default function NineBoxGrid() {
             description="Performance × Potential · Cascading goal alignment · GDPR-compliant"
             actions={
                 <div className="flex gap-2">
-                    <Input value={period} onChange={e => setPeriod(e.target.value)} placeholder="YYYY" className="h-[30px] rounded-[7px] text-xs w-20" aria-label="Year" />
+                    <Input value={period} onChange={e => setPeriod(e.target.value)} placeholder="YYYY" className="h-7 rounded-[7px] text-xs w-20" aria-label="Year" />
                     <button onClick={() => setShowAdd(true)} className="px-3 py-1.5 bg-violet-600 text-white border-none rounded-lg text-[11px] font-bold cursor-pointer hover:bg-violet-700">+ Add Assessment</button>
                     <button onClick={() => purgeMut.mutate()} className="px-3 py-1.5 bg-gray-100 text-gray-500 border-none rounded-lg text-[11px] cursor-pointer hover:bg-gray-200" title="GDPR purge expired records">🔒 GDPR Purge</button>
                 </div>
@@ -114,11 +115,11 @@ export default function NineBoxGrid() {
                             const entries = boxEntries(cell.perf, cell.pot);
                             const cfg = BOX_CONFIG[cell.key] ?? { bg: 'bg-gray-50', border: 'border-gray-200', label: cell.key };
                             return (
-                                <div key={i} className={`rounded-xl p-2.5 min-h-[100px] border-[2px] ${cfg.bg} ${cfg.border}`}>
+                                <div key={i} className={cn(`rounded-xl p-2.5 min-h-24 border-[2px] ${cfg.bg} ${cfg.border}`)}>
                                     <div className="text-[10px] font-extrabold text-gray-700 mb-1.5">{cfg.label}</div>
                                     <div className="flex flex-wrap gap-1">
                                         {entries.map((e, j) => (
-                                            <div key={j} className={`bg-white rounded-md px-1.5 py-[3px] text-[9px] border ${cfg.border}`}>
+                                            <div key={j} className={cn(`bg-white rounded-md px-1.5 py-0.5 text-[9px] border ${cfg.border}`)}>
                                                 <div className="font-bold">{e.employee_id}</div>
                                                 {e.assessed_by && <div className="text-gray-400">by {e.assessed_by}</div>}
                                             </div>

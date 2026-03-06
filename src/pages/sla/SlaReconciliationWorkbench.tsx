@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -81,7 +82,7 @@ export default function SlaReconciliationWorkbench() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className={`text-3xl font-bold ${report?.totalVariance === 0 ? 'text-green-600' : 'text-red-500'}`}>
+                            <div className={cn(`text-3xl font-bold ${report?.totalVariance === 0 ? 'text-green-600' : 'text-red-500'}`)}>
                                 ${report?.totalVariance.toFixed(2) ?? "--"}
                             </div>
                             <p className="text-xs text-muted-foreground mt-1">Variance across all subledgers for the period.</p>
@@ -133,7 +134,7 @@ export default function SlaReconciliationWorkbench() {
                                     <TableHead className="text-right font-bold">GL Balance</TableHead>
                                     <TableHead className="text-right font-bold">Variance</TableHead>
                                     <TableHead className="text-center font-bold">Status</TableHead>
-                                    <TableHead className="w-[100px]"></TableHead>
+                                    <TableHead className="w-24"></TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -142,7 +143,7 @@ export default function SlaReconciliationWorkbench() {
                                         <TableCell className="font-medium">{row.module}</TableCell>
                                         <TableCell className="text-right font-mono text-sm">${row.subledgerBalance.toLocaleString()}</TableCell>
                                         <TableCell className="text-right font-mono text-sm">${row.glBalance.toLocaleString()}</TableCell>
-                                        <TableCell className={`text-right font-mono text-sm font-bold ${row.variance !== 0 ? 'text-red-500' : 'text-green-600'}`}>
+                                        <TableCell className={cn(`text-right font-mono text-sm font-bold ${row.variance !== 0 ? 'text-red-500' : 'text-green-600'}`)}>
                                             ${row.variance.toLocaleString()}
                                         </TableCell>
                                         <TableCell className="text-center">

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -179,10 +180,10 @@ export default function AssessmentBuilder() {
                         assessments.map((assessment: Assessment) => (
                             <Card
                                 key={assessment.id}
-                                className={`cursor-pointer transition-all ${selectedAssessmentId === assessment.id
+                                className={cn(`cursor-pointer transition-all ${selectedAssessmentId === assessment.id
                                         ? "border-primary ring-2 ring-primary"
                                         : "hover:border-primary/50"
-                                    }`}
+                                    }`)}
                                 onClick={() => setSelectedAssessmentId(assessment.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <CardHeader>

@@ -39,8 +39,8 @@ export function ArAgingAnalysis({ customerId }: ArAgingAnalysisProps) {
     if (isLoading) {
         return (
             <div className="space-y-4">
-                <Skeleton className="h-[200px] w-full rounded-xl" />
-                <Skeleton className="h-[150px] w-full rounded-xl" />
+                <Skeleton className="h-48 w-full rounded-xl" />
+                <Skeleton className="h-36 w-full rounded-xl" />
             </div>
         );
     }
@@ -74,7 +74,7 @@ export function ArAgingAnalysis({ customerId }: ArAgingAnalysisProps) {
                 <CardHeader>
                     <CardTitle className="text-sm font-bold uppercase tracking-wider">Aging Distribution</CardTitle>
                 </CardHeader>
-                <CardContent className="h-[250px]">
+                <CardContent className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                             <Pie

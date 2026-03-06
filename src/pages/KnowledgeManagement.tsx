@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -130,7 +131,7 @@ export default function KnowledgeManagement() {
                       <div className="flex items-center justify-between border-t pt-3 mt-auto">
                         <div className="flex gap-0.5">
                           {Array(5).fill(0).map((_, i) => (
-                            <Star key={i} className={`h-3 w-3 ${i < comment.rating ? "fill-amber-400 text-amber-400" : "text-slate-300"}`} />
+                            <Star key={i} className={cn(`h-3 w-3 ${i < comment.rating ? "fill-amber-400 text-amber-400" : "text-slate-300"}`)} />
                           ))}
                         </div>
                         <span className="text-[10px] font-mono text-muted-foreground">#REF-{comment.id}</span>

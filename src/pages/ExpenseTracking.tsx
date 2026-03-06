@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -181,7 +182,7 @@ export default function ExpenseTracking() {
         if (!r.submittedAt) return "-";
         const days = Math.floor((Date.now() - new Date(r.submittedAt).getTime()) / (1000 * 60 * 60 * 24));
         const color = days > 3 ? 'text-red-500' : days > 1 ? 'text-yellow-500' : 'text-green-500';
-        return <span className={`font-bold ${color}`}>{days}d</span>;
+        return <span className={cn(`font-bold ${color}`)}>{days}d</span>;
       }
     }
   ];

@@ -164,7 +164,7 @@ export default function MyTimeCard() {
         {
             header: "Notes",
             id: "notes", width: "150px",
-            className: "text-muted-foreground truncate max-w-[200px]"
+            className: "text-muted-foreground truncate max-w-48"
         }
     ];
 
@@ -237,7 +237,7 @@ export default function MyTimeCard() {
                             </div>
                             <div className="flex items-center gap-2">
                                 <Select value={selectedPeriodId} onValueChange={setSelectedPeriodId}>
-                                    <SelectTrigger className="w-[180px]">
+                                    <SelectTrigger className="w-44">
                                         <CalendarIcon className="mr-2 h-4 w-4" />
                                         <SelectValue placeholder="Select Period" />
                                     </SelectTrigger>

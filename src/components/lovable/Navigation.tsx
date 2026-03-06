@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'wouter';
+import React, { useState} from'react';
+import { motion} from'framer-motion';
+import { Link} from'wouter';
 import {
     Menu,
     X,
@@ -8,11 +8,11 @@ import {
     ArrowRight,
     Github,
     ExternalLink
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { colors, glassmorphism } from '@/lib/design-tokens';
-import { animations } from '@/lib/animations';
+} from'lucide-react';
+import { Button} from'@/components/ui/button';
+import { cn} from'@/lib/utils';
+import { colors, glassmorphism} from'@/lib/design-tokens';
+import { animations} from'@/lib/animations';
 
 interface NavLinkProps {
     to: string;
@@ -20,7 +20,7 @@ interface NavLinkProps {
     external?: boolean;
 }
 
-function NavLink({ to, children, external }: NavLinkProps) {
+function NavLink({ to, children, external}: NavLinkProps) {
     if (external) {
         return (
             <a
@@ -33,7 +33,7 @@ function NavLink({ to, children, external }: NavLinkProps) {
                 <ExternalLink className="w-3 h-3" />
             </a>
         );
-    }
+   }
 
     return (
         <Link to={to}>
@@ -46,10 +46,10 @@ function NavLink({ to, children, external }: NavLinkProps) {
 
 interface MegaMenuProps {
     title: string;
-    items: Array<{ label: string; to: string; description?: string }>;
+    items: Array<{ label: string; to: string; description?: string}>;
 }
 
-function MegaMenu({ title, items }: MegaMenuProps) {
+function MegaMenu({ title, items}: MegaMenuProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -61,22 +61,22 @@ function MegaMenu({ title, items }: MegaMenuProps) {
             <button className="text-sm font-medium hover:text-primary transition-colors flex items-center gap-1">
                 {title}
                 <ChevronDown className={cn(
-                    "w-4 h-4 transition-transform",
-                    isOpen && "rotate-180"
+                   "w-4 h-4 transition-transform",
+                    isOpen &&"rotate-180"
                 )} />
             </button>
 
             {isOpen && (
                 <motion.div
-                    className="absolute top-full left-0 mt-2 w-64 rounded-xl border shadow-xl z-50"
+                    className="absolute top-full left-0 mt-2 w-64 rounded-xl border shadow-xl"
                     style={{
                         background: glassmorphism.background,
                         backdropFilter: glassmorphism.backdropFilter,
                         border: glassmorphism.border,
-                    }}
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
+                   }}
+                    initial={{ opacity: 0, y: -10}}
+                    animate={{ opacity: 1, y: 0}}
+                    exit={{ opacity: 0, y: -10}}
                 >
                     <div className="p-4 space-y-2">
                         {items.slice(0, 8).map((item, index) => (
@@ -112,41 +112,41 @@ export function PremiumNav() {
     React.useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 20);
-        };
+       };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+   }, []);
 
     const industries = [
-        { label: 'Healthcare', to: '/industries/healthcare' },
-        { label: 'Manufacturing', to: '/industries/manufacturing' },
-        { label: 'Retail', to: '/industries/retail' },
-        { label: 'SaaS', to: '/industries/saas' },
-        { label: 'Banking', to: '/industries/banking' },
-        { label: 'Energy', to: '/industries/energy' },
+        { label:'Healthcare', to:'/industries/healthcare'},
+        { label:'Manufacturing', to:'/industries/manufacturing'},
+        { label:'Retail', to:'/industries/retail'},
+        { label:'SaaS', to:'/industries/saas'},
+        { label:'Banking', to:'/industries/banking'},
+        { label:'Energy', to:'/industries/energy'},
         // More industries...
     ];
 
     const modules = [
-        { label: 'General Ledger', to: '/modules/general-ledger', description: 'Core accounting' },
-        { label: 'Accounts Payable', to: '/modules/accounts-payable', description: 'Invoice management' },
-        { label: 'Accounts Receivable', to: '/modules/accounts-receivable', description: 'Collections' },
-        { label: 'Cash Management', to: '/modules/cash-management', description: 'Treasury operations' },
-        { label: 'Core HR', to: '/modules/core-hr', description: 'Employee management' },
-        { label: 'CRM', to: '/modules/crm', description: 'Customer relationships' },
+        { label:'General Ledger', to:'/modules/general-ledger', description:'Core accounting'},
+        { label:'Accounts Payable', to:'/modules/accounts-payable', description:'Invoice management'},
+        { label:'Accounts Receivable', to:'/modules/accounts-receivable', description:'Collections'},
+        { label:'Cash Management', to:'/modules/cash-management', description:'Treasury operations'},
+        { label:'Core HR', to:'/modules/core-hr', description:'Employee management'},
+        { label:'CRM', to:'/modules/crm', description:'Customer relationships'},
         // More modules...
     ];
 
     return (
         <nav
             className={cn(
-                "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-                scrolled ? "py-4 shadow-lg" : "py-6"
+               "fixed top-0 left-0 right-0 transition-all duration-300",
+                scrolled ?"py-4 shadow-lg" :"py-6"
             )}
             style={{
-                background: scrolled ? glassmorphism.background : 'transparent',
-                backdropFilter: scrolled ? glassmorphism.backdropFilter : 'none',
-            }}
+                background: scrolled ? glassmorphism.background :'transparent',
+                backdropFilter: scrolled ? glassmorphism.backdropFilter :'none',
+           }}
         >
             <div className="max-w-7xl mx-auto px-4">
                 <div className="flex items-center justify-between">
@@ -199,7 +199,7 @@ export function PremiumNav() {
                         style={{
                             background: glassmorphism.background,
                             backdropFilter: glassmorphism.backdropFilter,
-                        }}
+                       }}
                         {...animations.fadeInDown}
                     >
                         <div className="space-y-4">

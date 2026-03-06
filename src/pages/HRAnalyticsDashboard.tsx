@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery } from "@tanstack/react-query";
@@ -115,7 +116,7 @@ export default function HRAnalyticsDashboard() {
           <h1 className="text-3xl font-bold">HR Analytics Dashboard</h1>
           <p className="text-muted-foreground mt-1">Real-time workforce insights (Tier-1)</p>
         </div>
-        <div className="w-[200px]">
+        <div className="w-48">
           <Select value={departmentId} onValueChange={setDepartmentId}>
             <SelectTrigger>
               <SelectValue placeholder="Filter by Department" />
@@ -140,7 +141,7 @@ export default function HRAnalyticsDashboard() {
           return (
             <Card
               key={code}
-              className={`transition-colors ${isClickable ? 'cursor-pointer hover:bg-zinc-800/50' : ''}`}
+              className={cn(`transition-colors ${isClickable ? 'cursor-pointer hover:bg-zinc-800/50' : ''}`)}
               onClick={() => isClickable && setSelectedKpi(code)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
             >
               <CardContent className="pt-6">

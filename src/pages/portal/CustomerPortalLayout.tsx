@@ -1,5 +1,6 @@
+import { cn } from "@/lib/utils";
 
-import { Link, useLocation } from "wouter";
+import { Link, useLocation} from"wouter";
 import {
     LayoutDashboard,
     FileText,
@@ -9,49 +10,49 @@ import {
     Download,
     AlertCircle,
     Bell
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ReactNode } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { Badge } from "@/components/ui/badge";
+} from"lucide-react";
+import { Button} from"@/components/ui/button";
+import { ReactNode} from"react";
+import { useQuery} from"@tanstack/react-query";
+import { apiRequest} from"@/lib/queryClient";
+import { Badge} from"@/components/ui/badge";
 
-export default function CustomerPortalLayout({ children }: { children: ReactNode }) {
+export default function CustomerPortalLayout({ children}: { children: ReactNode}) {
     const [location, setLocation] = useLocation();
-    const customer = JSON.parse(localStorage.getItem("portal_customer") || "null");
+    const customer = JSON.parse(localStorage.getItem("portal_customer") ||"null");
 
     // Fetch unread notification count
-    const { data: unreadData } = useQuery<any>({
+    const { data: unreadData} = useQuery<any>({
         queryKey: ["/api/portal/notifications/unread"],
         queryFn: async () => {
-            const res = await apiRequest("GET", "/api/portal/notifications/unread");
+            const res = await apiRequest("GET","/api/portal/notifications/unread");
             return res.json();
-        },
+       },
         refetchInterval: 30000, // Poll every 30 seconds
         enabled: !!customer,
-    });
+   });
 
     if (!customer) {
-        if (location !== "/portal/login") {
+        if (location !=="/portal/login") {
             setLocation("/portal/login");
             return null;
-        }
-    }
+       }
+   }
 
     const handleLogout = () => {
         localStorage.removeItem("portal_token");
         localStorage.removeItem("portal_customer");
         setLocation("/portal/login");
-    };
+   };
 
-    if (location === "/portal/login") {
+    if (location ==="/portal/login") {
         return <>{children}</>;
-    }
+   }
 
     return (
         <div className="min-h-screen bg-slate-50">
             {/* Top Navbar */}
-            <nav className="bg-white border-b px-6 py-3 flex justify-between items-center sticky top-0 z-50">
+            <nav className="bg-white border-b px-6 py-3 flex justify-between items-center sticky top-0">
                 <div className="flex items-center gap-2">
                     <div className="h-8 w-8 bg-emerald-600 rounded-lg flex items-center justify-center">
                         <span className="text-white font-bold text-lg">N</span>
@@ -83,12 +84,12 @@ export default function CustomerPortalLayout({ children }: { children: ReactNode
                 {/* Sidebar */}
                 <aside className="w-64 bg-white min-h-[calc(100vh-64px)] border-r px-4 py-6 hidden md:block fixed h-full">
                     <div className="space-y-1">
-                        <NavItem href="/portal/dashboard" icon={LayoutDashboard} label="Overview" active={location === "/portal/dashboard"} />
-                        <NavItem href="/portal/invoices" icon={FileText} label="Invoices" active={location === "/portal/invoices"} />
-                        <NavItem href="/portal/payments" icon={CreditCard} label="Payments" active={location === "/portal/payments"} />
-                        <NavItem href="/portal/statements" icon={Download} label="Statements" active={location === "/portal/statements"} />
-                        <NavItem href="/portal/disputes" icon={AlertCircle} label="Disputes" active={location === "/portal/disputes"} />
-                        <NavItem href="/portal/profile" icon={User} label="Profile" active={location === "/portal/profile"} />
+                        <NavItem href="/portal/dashboard" icon={LayoutDashboard} label="Overview" active={location ==="/portal/dashboard"} />
+                        <NavItem href="/portal/invoices" icon={FileText} label="Invoices" active={location ==="/portal/invoices"} />
+                        <NavItem href="/portal/payments" icon={CreditCard} label="Payments" active={location ==="/portal/payments"} />
+                        <NavItem href="/portal/statements" icon={Download} label="Statements" active={location ==="/portal/statements"} />
+                        <NavItem href="/portal/disputes" icon={AlertCircle} label="Disputes" active={location ==="/portal/disputes"} />
+                        <NavItem href="/portal/profile" icon={User} label="Profile" active={location ==="/portal/profile"} />
                     </div>
                 </aside>
 
@@ -103,14 +104,14 @@ export default function CustomerPortalLayout({ children }: { children: ReactNode
     );
 }
 
-function NavItem({ href, icon: Icon, label, active }: any) {
+function NavItem({ href, icon: Icon, label, active}: any) {
     return (
         <Link href={href}>
-            <div className={`flex items-center gap-3 px-3 py-2 rounded-md font-medium text-sm transition-colors cursor-pointer ${active
-                ? "bg-emerald-50 text-emerald-700"
-                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                }`}>
-                <Icon className={`h-4 w-4 ${active ? "text-emerald-600" : "text-slate-400"}`} />
+            <div className={cn(`flex items-center gap-3 px-3 py-2 rounded-md font-medium text-sm transition-colors cursor-pointer ${active
+                ?"bg-emerald-50 text-emerald-700"
+                :"text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+               }`)}>
+                <Icon className={cn(`h-4 w-4 ${active ?"text-emerald-600" :"text-slate-400"}`)} />
                 {label}
             </div>
         </Link>

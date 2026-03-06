@@ -476,7 +476,7 @@ export default function RequestsIssues() {
 
                                     <div className="flex items-center gap-2">
                                         <Select value={filters.priority} onValueChange={(v) => handleFilterChange('priority', v)}>
-                                            <SelectTrigger className="w-[160px]">
+                                            <SelectTrigger className="w-40">
                                                 <SelectValue placeholder="Priority" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -489,7 +489,7 @@ export default function RequestsIssues() {
                                         </Select>
 
                                         <Select value={filters.status} onValueChange={(v) => handleFilterChange('status', v)}>
-                                            <SelectTrigger className="w-[160px]">
+                                            <SelectTrigger className="w-40">
                                                 <SelectValue placeholder="Status" />
                                             </SelectTrigger>
                                             <SelectContent>

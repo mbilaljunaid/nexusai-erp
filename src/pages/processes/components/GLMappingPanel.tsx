@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -56,7 +57,7 @@ export function GLMappingPanel({ accounts, title = "GL Account Mappings" }: GLMa
               <TableCell className="font-mono font-medium">{account.account}</TableCell>
               <TableCell>{account.description}</TableCell>
               <TableCell>
-                <span className={`px-2 py-1 rounded text-xs font-medium ${typeColors[account.type as keyof typeof typeColors]}`}>
+                <span className={cn(`px-2 py-1 rounded text-xs font-medium ${typeColors[account.type as keyof typeof typeColors]}`)}>
                   {account.type}
                 </span>
               </TableCell>

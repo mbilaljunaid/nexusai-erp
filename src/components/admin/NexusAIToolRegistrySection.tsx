@@ -193,7 +193,7 @@ export default function NexusAIToolRegistrySection() {
                                                                                     {config.required && <span className="text-red-500 ml-1">*</span>}
                                                                                 </Badge>
                                                                             </div>
-                                                                            <span className="text-[10px] text-muted-foreground pl-1 mt-0.5 max-w-[200px] truncate italic">
+                                                                            <span className="text-[10px] text-muted-foreground pl-1 mt-0.5 max-w-48 truncate italic">
                                                                                 {config.description}
                                                                             </span>
                                                                         </div>

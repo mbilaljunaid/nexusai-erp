@@ -119,7 +119,7 @@ export default function EnterpriseMappings() {
                             <ArrowRightLeft className="h-5 w-5 mb-2 text-muted-foreground shrink-0" />
                             <div className="flex-1 space-y-2">
                                 <label className="text-sm font-medium">Business Unit</label>
-                                <div className="pb-1 min-h-[40px] flex flex-col justify-end">
+                                <div className="pb-1 min-h-10 flex flex-col justify-end">
                                     <EnterpriseContextSwitcher
                                         type="business-unit"
                                         value={selectedBuForLg || undefined}
@@ -173,7 +173,7 @@ export default function EnterpriseMappings() {
                         <div className="flex items-end gap-3 p-4 border rounded-lg bg-slate-50">
                             <div className="flex-1 space-y-2">
                                 <label className="text-sm font-medium">Business Unit</label>
-                                <div className="pb-1 min-h-[40px] flex flex-col justify-end">
+                                <div className="pb-1 min-h-10 flex flex-col justify-end">
                                     <EnterpriseContextSwitcher
                                         type="business-unit"
                                         value={selectedBuForLedger || undefined}
@@ -184,7 +184,7 @@ export default function EnterpriseMappings() {
                             <ArrowRightLeft className="h-5 w-5 mb-2 text-muted-foreground shrink-0" />
                             <div className="flex-1 space-y-2">
                                 <label className="text-sm font-medium">GL Ledger</label>
-                                <div className="pb-1 min-h-[40px] flex flex-col justify-end">
+                                <div className="pb-1 min-h-10 flex flex-col justify-end">
                                     <EnterpriseContextSwitcher
                                         type="ledger"
                                         value={selectedLedger || undefined}

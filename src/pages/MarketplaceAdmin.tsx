@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -127,7 +128,7 @@ function AppReviewDialog({ app, open, onOpenChange, onApprove, onReject, isPendi
                   placeholder="Explain why this app is being rejected..."
                   value={rejectionReason}
                   onChange={(e) => setRejectionReason(e.target.value)}
-                  className="min-h-[100px]"
+                  className="min-h-24"
                   data-testid="input-rejection-reason"
                 />
               </div>
@@ -478,7 +479,7 @@ export default function MarketplaceAdmin() {
                           </div>
                           <div>
                             <div className="font-medium">{app.name}</div>
-                            <div className="text-sm text-muted-foreground truncate max-w-[200px]">
+                            <div className="text-sm text-muted-foreground truncate max-w-48">
                               {app.shortDescription || "No description"}
                             </div>
                           </div>
@@ -580,7 +581,7 @@ export default function MarketplaceAdmin() {
                 disabled={generatePayoutsMutation.isPending}
                 data-testid="button-generate-payouts"
               >
-                <RefreshCw className={`w-4 h-4 mr-2 ${generatePayoutsMutation.isPending ? 'animate-spin' : ''}`} />
+                <RefreshCw className={cn(`w-4 h-4 mr-2 ${generatePayoutsMutation.isPending ? 'animate-spin' : ''}`)} />
                 Generate Payouts
               </Button>
             </div>
@@ -900,7 +901,7 @@ export default function MarketplaceAdmin() {
                 placeholder="e.g., Invalid bank details, Payment rejected..."
                 value={failReason}
                 onChange={(e) => setFailReason(e.target.value)}
-                className="min-h-[100px]"
+                className="min-h-24"
                 data-testid="input-fail-reason"
               />
             </div>

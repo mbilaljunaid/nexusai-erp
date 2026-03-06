@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
@@ -190,7 +191,7 @@ export default function MRPWorkbench() {
                                 <div role="button" tabIndex={0}
                                     key={plan.id}
                                     onClick={() => setSelectedPlanId(plan.id)}
-                                    className={`p-4 hover:bg-muted/50 transition-colors ${selectedPlanId === plan.id ? 'bg-primary/5 border-r-4 border-primary' : ''}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                    className={cn(`p-4 hover:bg-muted/50 transition-colors ${selectedPlanId === plan.id ? 'bg-primary/5 border-r-4 border-primary' : ''}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <div className="font-semibold">{plan.planName}</div>
                                     <div className="flex justify-between items-center mt-1">

@@ -196,11 +196,11 @@ export default function AdrBuilder() {
                                 <Table>
                                     <TableHeader className="bg-muted/30">
                                         <TableRow>
-                                            <TableHead className="w-[200px] font-bold">Rule Definition</TableHead>
+                                            <TableHead className="w-48 font-bold">Rule Definition</TableHead>
                                             <TableHead className="font-bold">Type/Segment</TableHead>
                                             <TableHead className="font-bold">Source Logic</TableHead>
                                             <TableHead className="font-bold">Value Mapping</TableHead>
-                                            <TableHead className="text-right font-bold w-[120px]">Action</TableHead>
+                                            <TableHead className="text-right font-bold w-28">Action</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>

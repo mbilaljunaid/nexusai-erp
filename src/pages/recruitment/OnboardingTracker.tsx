@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -137,7 +138,7 @@ export default function OnboardingTracker() {
             header: "Due Date",
             width: "150px",
             cell: (row) => (
-                <div className={`px-2 text-sm text-left ${isOverdue(row.dueDate, row.status) ? 'text-red-600 font-semibold' : ''}`}>
+                <div className={cn(`px-2 text-sm text-left ${isOverdue(row.dueDate, row.status) ? 'text-red-600 font-semibold' : ''}`)}>
                     {format(new Date(row.dueDate), "MMM d, yyyy")}
                     {isOverdue(row.dueDate, row.status) && ' (Overdue)'}
                 </div>
@@ -299,7 +300,7 @@ export default function OnboardingTracker() {
                                     <Progress value={progress} className="mt-2" />
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="border rounded-lg overflow-hidden h-[300px]">
+                                    <div className="border rounded-lg overflow-hidden h-72">
                                         <InteractiveSpreadsheet
                                             data={hire.tasks}
                                             columns={getTaskColumns()}
@@ -318,5 +319,5 @@ export default function OnboardingTracker() {
 }
 
 function Label({ htmlFor, children, className }: { htmlFor?: string; children: React.ReactNode; className?: string }) {
-    return <label htmlFor={htmlFor} className={`text-sm font-medium ${className}`}>{children}</label>;
+    return <label htmlFor={htmlFor} className={cn(`text-sm font-medium ${className}`)}>{children}</label>;
 }

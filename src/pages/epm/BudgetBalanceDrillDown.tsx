@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -215,7 +216,7 @@ export default function BudgetBalanceDrillDown() {
                                                     </span>
                                                 </TableCell>
                                                 <TableCell className="text-right font-mono">{formatCurrency(balance.remaining)}</TableCell>
-                                                <TableCell className={`text-right font-mono flex items-center justify-end gap-1 ${balance.variance < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                                <TableCell className={cn(`text-right font-mono flex items-center justify-end gap-1 ${balance.variance < 0 ? 'text-red-600' : 'text-green-600'}`)}>
                                                     {balance.variance < 0 ? <TrendingDown className="h-3 w-3" /> : <TrendingUp className="h-3 w-3" />}
                                                     {formatCurrency(Math.abs(balance.variance))}
                                                     <span className="text-xs">({balance.variancePct.toFixed(1)}%)</span>

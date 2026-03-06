@@ -76,7 +76,7 @@ export default function ElementConfiguration() {
                                     />
                                 </div>
                                 <Select defaultValue="all">
-                                    <SelectTrigger className="w-[140px] h-9">
+                                    <SelectTrigger className="w-36 h-9">
                                         <SelectValue placeholder="Classification" />
                                     </SelectTrigger>
                                     <SelectContent>

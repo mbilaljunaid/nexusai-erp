@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
@@ -105,7 +106,7 @@ export default function EInvoicingDashboard() {
                 const Icon = cfg.icon;
                 return (
                     // eslint-disable-next-line react/forbid-dom-props
-                    <span className={`status-pill einvoice-status-${d.id}`}>
+                    <span className={cn(`status-pill einvoice-status-${d.id}`)}>
                         <Icon size={12} /> {d.status}
                     </span>
                 );
@@ -161,11 +162,11 @@ export default function EInvoicingDashboard() {
                                     .std-color-${Math.round(pct)} { color: ${pct >= 90 ? '#059669' : pct >= 60 ? '#d97706' : '#dc2626'}; }
                                     .std-bg-${Math.round(pct)} { background: ${pct >= 90 ? '#059669' : pct >= 60 ? '#d97706' : '#dc2626'}; width: ${pct}%; }
                                 `}</style>
-                                <div className={`std-pct std-color-${Math.round(pct)}`}>
+                                <div className={cn(`std-pct std-color-${Math.round(pct)}`)}>
                                     {pct}%
                                 </div>
                                 <div className="std-bar-bg">
-                                    <div className={`std-bar-fill std-bg-${Math.round(pct)}`} />
+                                    <div className={cn(`std-bar-fill std-bg-${Math.round(pct)}`)} />
                                 </div>
                                 <div className="std-total">{total} docs</div>
                             </div>
@@ -181,7 +182,7 @@ export default function EInvoicingDashboard() {
                         {['', 'Pending', 'Submitted', 'Accepted', 'Rejected', 'Cancelled'].map(s => (
                             <button
                                 key={s}
-                                className={`filter-pill ${statusFilter === s ? 'active' : ''}`}
+                                className={cn(`filter-pill ${statusFilter === s ? 'active' : ''}`)}
                                 onClick={() => setStatusFilter(s)}
                                 data-active={statusFilter === s}
                             >
@@ -309,10 +310,10 @@ export default function EInvoicingDashboard() {
 
 function KPICard({ label, value, icon, colorCls, bgCls, borderCls, textCls }: { label: string; value: number; icon: React.ReactNode; colorCls?: string; bgCls?: string; borderCls?: string; textCls?: string; }) {
     return (
-        <div className={`rounded-xl px-5 py-4 flex items-center gap-3.5 min-w-[140px] ${bgCls} ${borderCls}`}>
+        <div className={cn(`rounded-xl px-5 py-4 flex items-center gap-3.5 min-w-36 ${bgCls} ${borderCls}`)}>
             <div className={colorCls}>{icon}</div>
             <div>
-                <div className={`text-[26px] font-extrabold ${textCls}`}>{value}</div>
+                <div className={cn(`text-[26px] font-extrabold ${textCls}`)}>{value}</div>
                 <div className="text-xs text-gray-500 mt-0.5">{label}</div>
             </div>
         </div>

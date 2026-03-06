@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -30,7 +31,7 @@ export default function ReferenceDataList() {
         {
             id: "customizationLevel", header: "Level", width: "150px", cell: (row: any) => (
                 <div className="p-2">
-                    <span className={`px-2 py-1 rounded text-xs ${row.customizationLevel === 'S' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
+                    <span className={cn(`px-2 py-1 rounded text-xs ${row.customizationLevel === 'S' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`)}>
                         {row.customizationLevel === 'S' ? 'System' : 'User'}
                     </span>
                 </div>

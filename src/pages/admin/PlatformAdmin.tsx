@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import AIConfigurationSection from "@/components/admin/AIConfigurationSection";
@@ -169,7 +170,7 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
             onValueChange={(v) => handleChangeTier(item, v as Partner["tier"])}
           >
             <SelectTrigger className="w-28 h-8" data-testid={`select-tier-approved-${item.id}`}>
-              <Badge variant="secondary" className={`${tier.bg} ${tier.text}`}>
+              <Badge variant="secondary" className={cn(`${tier.bg} ${tier.text}`)}>
                 {tier.label}
               </Badge>
             </SelectTrigger>
@@ -472,7 +473,7 @@ export default function PlatformAdmin() {
     {
       id: "status", header: "Status", width: 120, cell: (item) => {
         const statusCfg = statusConfig[item.status as keyof typeof statusConfig];
-        return <Badge variant="secondary" className={`${statusCfg?.bg} ${statusCfg?.text}`}>{statusCfg?.label}</Badge>;
+        return <Badge variant="secondary" className={cn(`${statusCfg?.bg} ${statusCfg?.text}`)}>{statusCfg?.label}</Badge>;
       }
     },
     { id: "plan", header: "Plan", width: 120, cell: (item) => <span className="text-xs capitalize">{item.plan}</span> },
@@ -695,7 +696,7 @@ export default function PlatformAdmin() {
                 <CardDescription>Users with full admin access to their tenant</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-[350px]">
+                <div className="h-80">
                   <InteractiveSpreadsheet
                     columns={adminUserColumns}
                     data={tenants.slice(0, 10).map((t: any, i) => ({
@@ -970,7 +971,7 @@ export default function PlatformAdmin() {
               <CardDescription>Active implementation and support contracts</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[300px]">
+              <div className="h-72">
                 <InteractiveSpreadsheet
                   columns={contractColumns}
                   data={[

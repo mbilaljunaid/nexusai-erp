@@ -31,7 +31,7 @@ export default function SalesForecasting() {
             title="Sales Forecasting"
             description="Pipeline analysis and quota attainment."
             actions={
-                <div className="w-[180px]">
+                <div className="w-44">
                     <Select value={period} onValueChange={setPeriod}>
                         <SelectTrigger>
                             <SelectValue placeholder="Select Period" />

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -112,7 +113,7 @@ export function ForecastSubmissionForm() {
               { value: "base", label: "Base Case", desc: "Normal growth trajectory with expected execution" },
               { value: "conservative", label: "Conservative", desc: "Market challenges, implementation delays" }
             ].map((option) => (
-              <div key={option.value} className={`flex items-start gap-3 p-3 border rounded-lg hover:bg-muted transition-colors ${scenarioType === option.value ? 'border-primary' : 'border-border'}`}>
+              <div key={option.value} className={cn(`flex items-start gap-3 p-3 border rounded-lg hover:bg-muted transition-colors ${scenarioType === option.value ? 'border-primary' : 'border-border'}`)}>
                 <RadioGroupItem value={option.value} id={`scenario-${option.value}`} className="mt-1" />
                 <label htmlFor={`scenario-${option.value}`} className="cursor-pointer flex-1">
                   <p className="font-medium text-sm">{option.label}</p>
@@ -154,10 +155,10 @@ export function ForecastSubmissionForm() {
                       onChange={(e) => setForecastData({ ...forecastData, [key]: e.target.value })}
                       className="font-mono text-sm"
                     />
-                    <div className={`px-3 py-2 rounded text-sm font-semibold min-w-fit ${showVarianceWarning
+                    <div className={cn(`px-3 py-2 rounded text-sm font-semibold min-w-fit ${showVarianceWarning
                       ? 'bg-orange-100 dark:bg-orange-950 text-orange-900 dark:text-orange-100'
                       : 'bg-green-100 dark:bg-green-950 text-green-900 dark:text-green-100'
-                      }`}>
+                      }`)}>
                       {variance > 0 ? '+' : ''}{variance}%
                     </div>
                   </div>
@@ -204,7 +205,7 @@ export function ForecastSubmissionForm() {
               { value: "medium", label: "Medium", desc: "Reasonable confidence with some uncertainty" },
               { value: "low", label: "Low", desc: "Significant uncertainties or market volatility" }
             ].map((option) => (
-              <div key={option.value} className={`flex items-center gap-3 p-3 border rounded hover:bg-muted ${confidenceLevel === option.value ? 'border-primary' : 'border-border'}`}>
+              <div key={option.value} className={cn(`flex items-center gap-3 p-3 border rounded hover:bg-muted ${confidenceLevel === option.value ? 'border-primary' : 'border-border'}`)}>
                 <RadioGroupItem value={option.value} id={`confidence-${option.value}`} />
                 <label htmlFor={`confidence-${option.value}`} className="cursor-pointer flex-1">
                   <p className="font-medium text-sm">{option.label}</p>

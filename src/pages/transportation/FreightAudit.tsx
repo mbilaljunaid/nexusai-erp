@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -90,10 +91,10 @@ export default function FreightAudit() {
                         {invoices?.map((invoice: any) => (
                             <div role="button" tabIndex={0}
                                 key={invoice.id}
-                                className={`p-3 rounded-lg cursor-pointer border ${selectedInvoice?.id === invoice.id
+                                className={cn(`p-3 rounded-lg cursor-pointer border ${selectedInvoice?.id === invoice.id
                                     ? "border-primary bg-primary/5"
                                     : "border-border hover:bg-accent"
-                                    }`}
+                                    }`)}
                                 onClick={() => setSelectedInvoice(invoice)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <div className="flex justify-between items-start">

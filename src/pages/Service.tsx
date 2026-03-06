@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,7 +42,7 @@ export default function Service() {
           return (
             <Link key={item.id} to={routePath}>
               <div className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-primary hover-elevate cursor-pointer transition-all">
-                <IconComponent className={`w-6 h-6 ${item.color}`} />
+                <IconComponent className={cn(`w-6 h-6 ${item.color}`)} />
                 <span className="text-sm font-medium text-center">{item.label}</span>
               </div>
             </Link>

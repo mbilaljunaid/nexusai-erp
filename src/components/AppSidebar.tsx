@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useLocation, Link } from "wouter";
 import { useCallback, useMemo } from "react";
 import {
@@ -120,7 +121,7 @@ export function AppSidebar() {
           </Avatar>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium truncate">{userId || "Guest"}</p>
-            <Badge className={`text-xs ${getRoleBadgeColor(userRole as UserRole)}`}>
+            <Badge className={cn(`text-xs ${getRoleBadgeColor(userRole as UserRole)}`)}>
               {getRoleLabel(userRole as UserRole)}
             </Badge>
           </div>

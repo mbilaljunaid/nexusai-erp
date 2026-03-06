@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -147,8 +148,8 @@ export default function CurrencyRevaluationView() {
                                                     </div>
                                                     <div>
                                                         <p className="text-muted-foreground">Total Gain/Loss</p>
-                                                        <p className={`font-semibold text-lg ${run.totalGainLoss >= 0 ? "text-green-600" : "text-red-600"
-                                                            }`}>
+                                                        <p className={cn(`font-semibold text-lg ${run.totalGainLoss >= 0 ? "text-green-600" : "text-red-600"
+                                                            }`)}>
                                                             {formatCurrency(run.totalGainLoss, run.currency)}
                                                         </p>
                                                     </div>

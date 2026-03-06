@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -74,7 +75,7 @@ export default function PublicProcessHub() {
                   <CardHeader className="pb-2">
                     <div className="flex items-center gap-3">
                       <div className="p-2 rounded-lg bg-muted">
-                        <process.icon className={`w-5 h-5 ${process.color}`} />
+                        <process.icon className={cn(`w-5 h-5 ${process.color}`)} />
                       </div>
                       <CardTitle className="text-lg">{process.title}</CardTitle>
                     </div>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -115,7 +116,7 @@ export default function PredictiveScheduler() {
 
             <div className="tab-bar">
                 {(['schedule', 'forecast', 'generate'] as const).map(t => (
-                    <button key={t} className={`tab-btn ${activeTab === t ? 'active' : ''}`}
+                    <button key={t} className={cn(`tab-btn ${activeTab === t ? 'active' : ''}`)}
                         onClick={() => setActiveTab(t)} aria-pressed={activeTab === t}>
                         {t === 'schedule' && <Calendar size={12} />}
                         {t === 'forecast' && <BarChart2 size={12} />}

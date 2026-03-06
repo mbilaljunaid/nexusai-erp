@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -119,7 +120,7 @@ export function ArCollectorWorklist() {
                             {tasks?.map((task) => (
                                 <TableRow key={task.id}>
                                     <TableCell>
-                                        <span className={`px-2 py-1 rounded text-xs text-white ${task.priority === 'High' ? 'bg-red-500' : task.priority === 'Medium' ? 'bg-yellow-500' : 'bg-blue-500'}`}>
+                                        <span className={cn(`px-2 py-1 rounded text-xs text-white ${task.priority === 'High' ? 'bg-red-500' : task.priority === 'Medium' ? 'bg-yellow-500' : 'bg-blue-500'}`)}>
                                             {task.priority}
                                         </span>
                                     </TableCell>
@@ -153,7 +154,7 @@ export function ArCollectorWorklist() {
                         <Textarea
                             value={emailDraft}
                             onChange={(e) => setEmailDraft(e.target.value)}
-                            className="min-h-[200px]"
+                            className="min-h-48"
                         />
                     </div>
                     <DialogFooter>

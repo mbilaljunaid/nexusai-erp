@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -75,15 +76,15 @@ export default function GuidedJourneyWorkerTransfer() {
                 {steps.map((step, idx) => (
                     <React.Fragment key={step.num}>
                         <div className="flex flex-col items-center">
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${currentStep >= step.num ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-white border-zinc-300 text-zinc-400'}`}>
+                            <div className={cn(`w-10 h-10 rounded-full flex items-center justify-center border-2 ${currentStep >= step.num ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-white border-zinc-300 text-zinc-400'}`)}>
                                 <step.icon className="h-4 w-4" />
                             </div>
-                            <span className={`text-xs font-medium mt-2 ${currentStep >= step.num ? 'text-indigo-900 dark:text-indigo-100' : 'text-muted-foreground'}`}>
+                            <span className={cn(`text-xs font-medium mt-2 ${currentStep >= step.num ? 'text-indigo-900 dark:text-indigo-100' : 'text-muted-foreground'}`)}>
                                 {step.label}
                             </span>
                         </div>
                         {idx < steps.length - 1 && (
-                            <div className={`w-16 md:w-32 h-1 mb-6 rounded-full mx-2 ${currentStep > step.num ? 'bg-indigo-600' : 'bg-zinc-200 dark:bg-zinc-800'}`} />
+                            <div className={cn(`w-16 md:w-32 h-1 mb-6 rounded-full mx-2 ${currentStep > step.num ? 'bg-indigo-600' : 'bg-zinc-200 dark:bg-zinc-800'}`)} />
                         )}
                     </React.Fragment>
                 ))}

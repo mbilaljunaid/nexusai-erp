@@ -214,7 +214,7 @@ export default function ComplianceGovernance() {
       cell: (v: any) => (
         <div className="flex flex-col p-2">
           <span className="font-medium text-slate-900">{v.ruleName}</span>
-          <span className="text-xs text-muted-foreground truncate max-w-[280px]">{v.description}</span>
+          <span className="text-xs text-muted-foreground truncate max-w-72">{v.description}</span>
         </div>
       )
     },
@@ -365,7 +365,7 @@ export default function ComplianceGovernance() {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Search rules..."
-                    className="pl-9 h-9 w-[260px] bg-white border-slate-200"
+                    className="pl-9 h-9 w-64 bg-white border-slate-200"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />

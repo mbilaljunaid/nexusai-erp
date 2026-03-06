@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -246,7 +247,7 @@ export function CashForecastWidget() {
                 </div>
             </CardHeader>
             <CardContent>
-                <div className="h-[300px] w-full mb-6">
+                <div className="h-72 w-full mb-6">
                     <ResponsiveContainer width="100%" height="100%">
                         <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
@@ -323,7 +324,7 @@ export function CashForecastWidget() {
                                         {day.outflow > 0 ? `-${day.outflow.toLocaleString()}` : "-"}
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <div className={`flex items-center justify-end gap-1 ${day.netChange >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                                        <div className={cn(`flex items-center justify-end gap-1 ${day.netChange >= 0 ? 'text-green-600' : 'text-red-500'}`)}>
                                             {day.netChange >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                                             {Math.abs(day.netChange).toLocaleString()}
                                         </div>

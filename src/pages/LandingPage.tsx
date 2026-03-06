@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
@@ -255,7 +256,7 @@ export default function LandingPage() {
                   transition={{ delay: idx * 0.1 }}
                 >
                   <GlassmorphismCard className="h-full hover:border-primary/50 transition-colors">
-                    <div className={`w-14 h-14 rounded-xl ${cat.color} flex items-center justify-center mb-6`}>
+                    <div className={cn(`w-14 h-14 rounded-xl ${cat.color} flex items-center justify-center mb-6`)}>
                       {cat.icon}
                     </div>
                     <h3 className="text-xl font-bold mb-3">{cat.title}</h3>

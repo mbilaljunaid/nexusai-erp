@@ -87,7 +87,7 @@ export default function ContractWorkbench() {
           />
         </div>
         <Select value={statusFilter || "ALL"} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-44">
             <Filter className="mr-2 h-4 w-4" />
             <SelectValue placeholder="Status" />
           </SelectTrigger>

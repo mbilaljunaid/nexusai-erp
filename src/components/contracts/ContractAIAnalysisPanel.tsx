@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -110,10 +111,10 @@ export function ContractAIAnalysisPanel({ isOpen, onClose, contractId }: Contrac
                                     </div>
                                     <div className="w-full bg-slate-200 rounded-full h-2">
                                         <div
-                                            className={`h-2 rounded-full transition-all ${analysis.complianceScore >= 80 ? 'bg-green-600' :
+                                            className={cn(`h-2 rounded-full transition-all ${analysis.complianceScore >= 80 ? 'bg-green-600' :
                                                 analysis.complianceScore >= 60 ? 'bg-yellow-600' :
                                                     'bg-red-600'
-                                                }`}
+                                                }`)}
                                             data-score={analysis.complianceScore}
                                             style={{ width: `${Math.min(100, Math.max(0, analysis.complianceScore))}%` }}
                                         />

@@ -131,7 +131,7 @@ export function CounterpartyManager() {
                 <div className="flex items-center gap-4">
                     <div className="relative">
                         <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input placeholder="Search institutions..." className="pl-8 w-[300px]" />
+                        <Input placeholder="Search institutions..." className="pl-8 w-72" />
                     </div>
                 </div>
                 <Button className="gap-2" onClick={() => setIsAddOpen(true)}>

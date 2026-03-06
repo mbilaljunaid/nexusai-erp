@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { X, ChevronLeft, ChevronRight, HelpCircle, Sparkles, GitCompare, Share2 } from "lucide-react";
-import { useLocalStorage } from "@/hooks/use-local-storage";
+import { cn } from "@/lib/utils";
+import { useState, useEffect, useCallback} from"react";
+import { motion, AnimatePresence} from"framer-motion";
+import { Button} from"@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle} from"@/components/ui/card";
+import { X, ChevronLeft, ChevronRight, HelpCircle, Sparkles, GitCompare, Share2} from"lucide-react";
+import { useLocalStorage} from"@/hooks/use-local-storage";
 
 interface TutorialStep {
   id: string;
@@ -11,7 +12,7 @@ interface TutorialStep {
   description: string;
   targetSelector?: string;
   icon?: React.ReactNode;
-  position?: "top" | "bottom" | "left" | "right";
+  position?:"top" |"bottom" |"left" |"right";
 }
 
 interface TutorialOverlayProps {
@@ -23,44 +24,44 @@ interface TutorialOverlayProps {
 
 const defaultSteps: TutorialStep[] = [
   {
-    id: "welcome",
-    title: "Welcome to the Marketplace",
-    description: "Let's take a quick tour of the new features available to help you discover and compare apps more effectively.",
+    id:"welcome",
+    title:"Welcome to the Marketplace",
+    description:"Let's take a quick tour of the new features available to help you discover and compare apps more effectively.",
     icon: <Sparkles className="w-6 h-6 text-primary" />,
-  },
+ },
   {
-    id: "ai-filter",
-    title: "AI-Powered Filter",
-    description: "Toggle this switch to filter apps that include AI, machine learning, or automation capabilities. Great for finding cutting-edge solutions!",
-    targetSelector: '[data-testid="switch-ai-filter"]',
+    id:"ai-filter",
+    title:"AI-Powered Filter",
+    description:"Toggle this switch to filter apps that include AI, machine learning, or automation capabilities. Great for finding cutting-edge solutions!",
+    targetSelector:'[data-testid="switch-ai-filter"]',
     icon: <Sparkles className="w-6 h-6 text-primary" />,
-    position: "bottom",
-  },
+    position:"bottom",
+ },
   {
-    id: "compare-mode",
-    title: "Compare Apps",
-    description: "Click this button to enter comparison mode. You can select up to 3 apps and view them side-by-side to make informed decisions.",
-    targetSelector: '[data-testid="button-compare-mode"]',
+    id:"compare-mode",
+    title:"Compare Apps",
+    description:"Click this button to enter comparison mode. You can select up to 3 apps and view them side-by-side to make informed decisions.",
+    targetSelector:'[data-testid="button-compare-mode"]',
     icon: <GitCompare className="w-6 h-6 text-primary" />,
-    position: "bottom",
-  },
+    position:"bottom",
+ },
   {
-    id: "share-apps",
-    title: "Share Apps",
-    description: "When viewing an app's details, you'll find share buttons to easily share apps on Twitter, LinkedIn, or copy the link.",
+    id:"share-apps",
+    title:"Share Apps",
+    description:"When viewing an app's details, you'll find share buttons to easily share apps on Twitter, LinkedIn, or copy the link.",
     icon: <Share2 className="w-6 h-6 text-primary" />,
-  },
+ },
   {
-    id: "complete",
-    title: "You're All Set!",
-    description: "You've completed the tour. These features are designed to help you find the perfect apps for your needs. Happy exploring!",
+    id:"complete",
+    title:"You're All Set!",
+    description:"You've completed the tour. These features are designed to help you find the perfect apps for your needs. Happy exploring!",
     icon: <Sparkles className="w-6 h-6 text-green-500" />,
-  },
+ },
 ];
 
 export function TutorialOverlay({
   steps = defaultSteps,
-  storageKey = "marketplace-tutorial-completed",
+  storageKey ="marketplace-tutorial-completed",
   onComplete,
   onSkip,
 }: TutorialOverlayProps) {
@@ -75,13 +76,13 @@ export function TutorialOverlay({
       const element = document.querySelector(step.targetSelector);
       if (element) {
         setTargetRect(element.getBoundingClientRect());
-      } else {
+     } else {
         setTargetRect(null);
-      }
-    } else {
+     }
+   } else {
       setTargetRect(null);
-    }
-  }, [currentStep, steps]);
+   }
+ }, [currentStep, steps]);
 
   useEffect(() => {
     updateTargetRect();
@@ -90,46 +91,46 @@ export function TutorialOverlay({
     return () => {
       window.removeEventListener("resize", updateTargetRect);
       window.removeEventListener("scroll", updateTargetRect);
-    };
-  }, [updateTargetRect]);
+   };
+ }, [updateTargetRect]);
 
   useEffect(() => {
     if (!hasCompleted) {
       const timer = setTimeout(() => setIsOpen(true), 1500);
       return () => clearTimeout(timer);
-    }
-  }, [hasCompleted]);
+   }
+ }, [hasCompleted]);
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
-    } else {
+   } else {
       handleComplete();
-    }
-  };
+   }
+ };
 
   const handlePrev = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
-    }
-  };
+   }
+ };
 
   const handleComplete = () => {
     setHasCompleted(true);
     setIsOpen(false);
     onComplete?.();
-  };
+ };
 
   const handleSkip = () => {
     setHasCompleted(true);
     setIsOpen(false);
     onSkip?.();
-  };
+ };
 
   const handleStartTour = () => {
     setCurrentStep(0);
     setIsOpen(true);
-  };
+ };
 
   const step = steps[currentStep];
   const isFirstStep = currentStep === 0;
@@ -138,44 +139,44 @@ export function TutorialOverlay({
   const getCardPosition = () => {
     if (!targetRect) {
       return {
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-      };
-    }
+        top:"50%",
+        left:"50%",
+        transform:"translate(-50%, -50%)",
+     };
+   }
 
     const padding = 16;
     const cardWidth = 340;
     const cardHeight = 220;
 
     switch (step?.position) {
-      case "bottom":
+      case"bottom":
         return {
-          top: `${targetRect.bottom + padding}px`,
-          left: `${Math.max(padding, Math.min(targetRect.left + targetRect.width / 2 - cardWidth / 2, window.innerWidth - cardWidth - padding))}px`,
-        };
-      case "top":
+          top:`${targetRect.bottom + padding}px`,
+          left:`${Math.max(padding, Math.min(targetRect.left + targetRect.width / 2 - cardWidth / 2, window.innerWidth - cardWidth - padding))}px`,
+       };
+      case"top":
         return {
-          top: `${targetRect.top - cardHeight - padding}px`,
-          left: `${Math.max(padding, Math.min(targetRect.left + targetRect.width / 2 - cardWidth / 2, window.innerWidth - cardWidth - padding))}px`,
-        };
-      case "left":
+          top:`${targetRect.top - cardHeight - padding}px`,
+          left:`${Math.max(padding, Math.min(targetRect.left + targetRect.width / 2 - cardWidth / 2, window.innerWidth - cardWidth - padding))}px`,
+       };
+      case"left":
         return {
-          top: `${targetRect.top + targetRect.height / 2 - cardHeight / 2}px`,
-          left: `${targetRect.left - cardWidth - padding}px`,
-        };
-      case "right":
+          top:`${targetRect.top + targetRect.height / 2 - cardHeight / 2}px`,
+          left:`${targetRect.left - cardWidth - padding}px`,
+       };
+      case"right":
         return {
-          top: `${targetRect.top + targetRect.height / 2 - cardHeight / 2}px`,
-          left: `${targetRect.right + padding}px`,
-        };
+          top:`${targetRect.top + targetRect.height / 2 - cardHeight / 2}px`,
+          left:`${targetRect.right + padding}px`,
+       };
       default:
         return {
-          top: `${targetRect.bottom + padding}px`,
-          left: `${Math.max(padding, Math.min(targetRect.left + targetRect.width / 2 - cardWidth / 2, window.innerWidth - cardWidth - padding))}px`,
-        };
-    }
-  };
+          top:`${targetRect.bottom + padding}px`,
+          left:`${Math.max(padding, Math.min(targetRect.left + targetRect.width / 2 - cardWidth / 2, window.innerWidth - cardWidth - padding))}px`,
+       };
+   }
+ };
 
   return (
     <>
@@ -183,7 +184,7 @@ export function TutorialOverlay({
         variant="outline"
         size="icon"
         onClick={handleStartTour}
-        className="fixed bottom-4 right-4 z-40 rounded-full shadow-lg"
+        className="fixed bottom-4 right-4 rounded-full shadow-lg"
         data-testid="button-start-tutorial"
       >
         <HelpCircle className="w-5 h-5" />
@@ -193,10 +194,10 @@ export function TutorialOverlay({
         {isOpen && (
           <>
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50"
+              initial={{ opacity: 0}}
+              animate={{ opacity: 1}}
+              exit={{ opacity: 0}}
+              className="fixed inset-0"
               data-testid="tutorial-overlay"
             >
               <svg className="absolute inset-0 w-full h-full">
@@ -227,15 +228,15 @@ export function TutorialOverlay({
 
               {targetRect && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0, scale: 0.9}}
+                  animate={{ opacity: 1, scale: 1}}
                   className="absolute pointer-events-none"
                   style={{
                     top: targetRect.top - 8,
                     left: targetRect.left - 8,
                     width: targetRect.width + 16,
                     height: targetRect.height + 16,
-                  }}
+                 }}
                 >
                   <div className="w-full h-full rounded-lg ring-2 ring-primary ring-offset-2 ring-offset-transparent animate-pulse" />
                 </motion.div>
@@ -243,13 +244,13 @@ export function TutorialOverlay({
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              className="fixed z-50"
+              initial={{ opacity: 0, y: 20}}
+              animate={{ opacity: 1, y: 0}}
+              exit={{ opacity: 0, y: 20}}
+              className="fixed"
               style={getCardPosition()}
             >
-              <Card className="w-[340px] shadow-xl" data-testid="tutorial-card">
+              <Card className="w-80 shadow-xl" data-testid="tutorial-card">
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -275,8 +276,8 @@ export function TutorialOverlay({
                     {steps.map((_, index) => (
                       <div
                         key={index}
-                        className={`w-2 h-2 rounded-full transition-colors ${index === currentStep ? "bg-primary" : "bg-muted"
-                          }`}
+                        className={cn(`w-2 h-2 rounded-full transition-colors ${index === currentStep ?"bg-primary" :"bg-muted"
+                         }`)}
                       />
                     ))}
                   </div>
@@ -297,7 +298,7 @@ export function TutorialOverlay({
                       onClick={handleNext}
                       data-testid="button-tutorial-next"
                     >
-                      {isLastStep ? "Finish" : "Next"}
+                      {isLastStep ?"Finish" :"Next"}
                       {!isLastStep && <ChevronRight className="w-4 h-4 ml-1" />}
                     </Button>
                   </div>
@@ -311,12 +312,12 @@ export function TutorialOverlay({
   );
 }
 
-export function useTutorial(storageKey = "marketplace-tutorial-completed") {
+export function useTutorial(storageKey ="marketplace-tutorial-completed") {
   const [hasSeenTutorial, setHasSeenTutorial] = useLocalStorage<boolean>(storageKey, false);
 
   const resetTutorial = () => {
     setHasSeenTutorial(false);
-  };
+ };
 
-  return { hasSeenTutorial, resetTutorial };
+  return { hasSeenTutorial, resetTutorial};
 }

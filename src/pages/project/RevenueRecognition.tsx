@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -64,7 +65,7 @@ export default function RevenueRecognition() {
 
             {/* Project picker */}
             <div className="flex gap-2 mb-3.5">
-                <Input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="py-1.5 px-3 border border-gray-300 rounded-lg text-xs min-w-[220px]" aria-label="Project ID" />
+                <Input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="py-1.5 px-3 border border-gray-300 rounded-lg text-xs min-w-56" aria-label="Project ID" />
                 <button disabled={!projectId} onClick={() => setActiveProject(projectId)} className="py-1.5 px-4 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50">Load Project</button>
                 {activeProject && <button onClick={() => setShowSetup(true)} className="py-1.5 px-3.5 bg-gray-100 border border-gray-200 rounded-lg text-xs cursor-pointer">⚙ Setup Method</button>}
                 {activeProject && summary && <button onClick={() => setShowRecognize(true)} className="py-1.5 px-3.5 bg-emerald-600 text-white border-none rounded-lg text-xs font-semibold cursor-pointer">+ Recognize Revenue</button>}
@@ -96,7 +97,7 @@ export default function RevenueRecognition() {
                             <style>{`
                                 .rev-progress { width: ${pctNum}%; }
                             `}</style>
-                            <div className={`h-full rounded-full transition-all duration-400 rev-progress ${pctNum >= 90 ? 'bg-emerald-600' : 'bg-blue-700'}`} />
+                            <div className={cn(`h-full rounded-full transition-all duration-400 rev-progress ${pctNum >= 90 ? 'bg-emerald-600' : 'bg-blue-700'}`)} />
                         </div>
                         <div className="text-[11px] text-gray-500 mt-1">{pctNum}% recognized of contract value</div>
                     </div>

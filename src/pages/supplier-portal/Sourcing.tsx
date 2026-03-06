@@ -218,7 +218,7 @@ export default function SupplierSourcing() {
                                     <Label className="text-[10px] font-bold uppercase tracking-widest">Supplier Remarks</Label>
                                     <Textarea
                                         placeholder="Any additional information regarding your bid..."
-                                        className="text-xs min-h-[100px]"
+                                        className="text-xs min-h-24"
                                         value={notes}
                                         onChange={e => setNotes(e.target.value)}
                                     />

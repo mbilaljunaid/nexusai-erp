@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -279,7 +280,7 @@ export default function RecruitmentAnalytics() {
                                             <style>{`
                                                 .funnel-bar-${idx} { width: ${percentage}%; background-color: ${COLORS[idx % COLORS.length]}; }
                                             `}</style>
-                                            <div className={`h-full flex items-center justify-end px-2 text-xs font-semibold text-white transition-all funnel-bar-${idx}`}>
+                                            <div className={cn(`h-full flex items-center justify-end px-2 text-xs font-semibold text-white transition-all funnel-bar-${idx}`)}>
                                                 {stage.count}
                                             </div>
                                         </div>
@@ -349,7 +350,7 @@ export default function RecruitmentAnalytics() {
                     <CardDescription>Interview activity and feedback metrics</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="border rounded-lg overflow-hidden h-[300px]">
+                    <div className="border rounded-lg overflow-hidden h-72">
                         <InteractiveSpreadsheet
                             data={analytics.interviewerPerformance}
                             columns={interviewerColumns}

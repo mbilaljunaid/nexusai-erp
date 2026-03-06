@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -46,9 +47,9 @@ export function LogisticsInsightsCard() {
             </CardHeader>
             <CardContent className="pt-4 space-y-4">
                 {insights.map((insight, i) => (
-                    <div key={i} className={`p-4 rounded-xl ${insight.bgColor} border border-transparent hover:border-indigo-200 transition-all cursor-pointer group`}>
+                    <div key={i} className={cn(`p-4 rounded-xl ${insight.bgColor} border border-transparent hover:border-indigo-200 transition-all cursor-pointer group`)}>
                         <div className="flex gap-4">
-                            <div className={`p-2 rounded-lg bg-white shadow-sm h-fit ${insight.color}`}>
+                            <div className={cn(`p-2 rounded-lg bg-white shadow-sm h-fit ${insight.color}`)}>
                                 <insight.icon className="h-5 w-5" />
                             </div>
                             <div className="flex-1 space-y-1">

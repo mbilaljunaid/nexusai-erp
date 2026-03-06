@@ -140,7 +140,7 @@ export function InspectionsSection({ workOrderId }: { workOrderId: string }) {
                 </h3>
                 <div className="flex gap-2">
                     <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
-                        <SelectTrigger className="w-[180px] h-8 text-xs"><SelectValue placeholder="Add Inspection..." /></SelectTrigger>
+                        <SelectTrigger className="w-44 h-8 text-xs"><SelectValue placeholder="Add Inspection..." /></SelectTrigger>
                         <SelectContent>
                             {templates?.map((t: any) => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
                         </SelectContent>

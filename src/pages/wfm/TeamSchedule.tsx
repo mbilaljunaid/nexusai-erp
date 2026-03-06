@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -110,13 +111,13 @@ export default function TeamSchedule() {
                     <div role="button" tabIndex={0} className="cursor-pointer h-full w-full flex items-center justify-center p-1" onClick={() => setSelectedCell({ personId: person.id, date: day })} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                         {assignment ? (
                             <div
-                                className={`text-xs font-medium px-2 py-1 rounded text-white truncate w-full text-center ts-bg-${assignment.shift.id}`}
+                                className={cn(`text-xs font-medium px-2 py-1 rounded text-white truncate w-full text-center ts-bg-${assignment.shift.id}`)}
                                 title={`${assignment.shift.name} (${assignment.shift.startTime}-${assignment.shift.endTime})`}
                             >
                                 {assignment.shift.code}
                             </div>
                         ) : (
-                            <div className="h-full w-full rounded hover:bg-slate-100 min-h-[24px]"></div>
+                            <div className="h-full w-full rounded hover:bg-slate-100 min-h-6"></div>
                         )}
                     </div>
                 );
@@ -178,7 +179,7 @@ export default function TeamSchedule() {
                                 <SelectContent>
                                     {shifts?.map((s: any) => (
                                         <SelectItem key={s.id} value={s.id}>
-                                            <span className={`inline-block w-3 h-3 rounded-full mr-2 ts-bg-${s.id}`}></span>
+                                            <span className={cn(`inline-block w-3 h-3 rounded-full mr-2 ts-bg-${s.id}`)}></span>
                                             {s.name} ({s.startTime}-{s.endTime})
                                         </SelectItem>
                                     ))}

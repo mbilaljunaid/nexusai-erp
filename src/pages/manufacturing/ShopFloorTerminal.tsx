@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -177,7 +178,7 @@ export default function ShopFloorTerminal() {
         >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {activeOrders.map(wo => (
-                    <Card key={wo.id} className={`border-l-4 ${wo.status === 'in_progress' ? 'border-l-blue-500' : 'border-l-gray-300'}`}>
+                    <Card key={wo.id} className={cn(`border-l-4 ${wo.status === 'in_progress' ? 'border-l-blue-500' : 'border-l-gray-300'}`)}>
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
                             <CardTitle className="text-xl font-bold">{wo.orderNumber}</CardTitle>
                             <Badge variant={wo.status === 'in_progress' ? 'default' : 'secondary'}>

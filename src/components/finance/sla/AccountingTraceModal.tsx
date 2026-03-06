@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import {
     Dialog,
@@ -68,7 +69,7 @@ export function AccountingTraceModal({ open, onOpenChange, trace, isLoading }: A
                     {!isLoading && trace && (
                         <div className="space-y-4 p-1">
                             {trace.steps.map((step, idx) => (
-                                <div key={idx} className={`border-l-4 p-3 rounded-r-md border border-t-0 border-b-0 border-r-0 ${getColor(step.outcome)} shadow-sm`}>
+                                <div key={idx} className={cn(`border-l-4 p-3 rounded-r-md border border-t-0 border-b-0 border-r-0 ${getColor(step.outcome)} shadow-sm`)}>
                                     <div className="flex items-center gap-2 mb-1">
                                         {getIcon(step.outcome)}
                                         <span className="font-semibold text-sm">{step.stepName}</span>

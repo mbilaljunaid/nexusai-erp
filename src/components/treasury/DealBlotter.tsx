@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -317,8 +318,8 @@ export function DealBlotter() {
 
                 return (
                     <div className="flex items-center gap-2">
-                        <Calendar className={`w-3 h-3 ${isNearMaturity ? 'text-amber-500' : 'text-muted-foreground'}`} />
-                        <span className={`text-sm ${isNearMaturity ? 'text-amber-600 font-medium' : ''}`}>
+                        <Calendar className={cn(`w-3 h-3 ${isNearMaturity ? 'text-amber-500' : 'text-muted-foreground'}`)} />
+                        <span className={cn(`text-sm ${isNearMaturity ? 'text-amber-600 font-medium' : ''}`)}>
                             {format(maturityDate, "MMM dd, yyyy")}
                         </span>
                     </div>
@@ -339,7 +340,7 @@ export function DealBlotter() {
                     MATURED: "bg-gray-100 text-gray-700 border-gray-200",
                 };
                 return (
-                    <Badge className={`${colors[status] || colors.DRAFT} border font-medium`}>
+                    <Badge className={cn(`${colors[status] || colors.DRAFT} border font-medium`)}>
                         {status}
                     </Badge>
                 );
@@ -507,7 +508,7 @@ export function DealBlotter() {
                         </div>
 
                         <Select value={dealTypeFilter} onValueChange={setDealTypeFilter}>
-                            <SelectTrigger className="w-[180px]">
+                            <SelectTrigger className="w-44">
                                 <SelectValue placeholder="Deal Type" />
                             </SelectTrigger>
                             <SelectContent>
@@ -518,7 +519,7 @@ export function DealBlotter() {
                         </Select>
 
                         <Select value={statusFilter} onValueChange={setStatusFilter}>
-                            <SelectTrigger className="w-[180px]">
+                            <SelectTrigger className="w-44">
                                 <SelectValue placeholder="Status" />
                             </SelectTrigger>
                             <SelectContent>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -128,7 +129,7 @@ export default function LeaseComplianceDashboard() {
                     <CardHeader>
                         <CardTitle>Lease Composition</CardTitle>
                     </CardHeader>
-                    <CardContent className="h-[250px] flex items-center justify-center">
+                    <CardContent className="h-64 flex items-center justify-center">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
                                 <Pie
@@ -151,9 +152,9 @@ export default function LeaseComplianceDashboard() {
                             {leaseTypeData.map((entry) => (
                                 <div key={entry.name} className="flex items-center gap-2">
                                     <div
-                                        className={`w-3 h-3 rounded-full ${entry.color === "#3b82f6" ? "bg-blue-500" :
+                                        className={cn(`w-3 h-3 rounded-full ${entry.color === "#3b82f6" ? "bg-blue-500" :
                                             entry.color === "#10b981" ? "bg-emerald-500" : ""
-                                            }`}
+                                            }`)}
                                         title={`${entry.name} color indicator`}
                                     />
                                     <span className="text-sm">{entry.name} ({entry.value}%)</span>
@@ -174,9 +175,9 @@ export default function LeaseComplianceDashboard() {
                         {upcomingRenewals.map((event) => (
                             <div key={event.name} className="flex items-center justify-between p-4 border rounded-lg bg-card hover:bg-muted/50 transition-colors">
                                 <div className="flex items-center gap-4">
-                                    <div className={`p-2 rounded ${event.risk === "High" ? "bg-red-100 text-red-600" :
+                                    <div className={cn(`p-2 rounded ${event.risk === "High" ? "bg-red-100 text-red-600" :
                                         event.risk === "Medium" ? "bg-amber-100 text-amber-600" : "bg-blue-100 text-blue-600"
-                                        }`}>
+                                        }`)}>
                                         <Calendar className="h-5 w-5" />
                                     </div>
                                     <div>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -273,7 +274,7 @@ export default function ProductCatalogManager() {
                                                         <TableCell className="text-right font-mono">${product.listPrice.toLocaleString()}</TableCell>
                                                         <TableCell className="text-right font-mono text-muted-foreground">${product.costPrice.toLocaleString()}</TableCell>
                                                         <TableCell className="text-right">
-                                                            <span className={`font-semibold ${Number(margin) >= 40 ? 'text-green-700' : 'text-amber-700'}`}>
+                                                            <span className={cn(`font-semibold ${Number(margin) >= 40 ? 'text-green-700' : 'text-amber-700'}`)}>
                                                                 {margin}%
                                                             </span>
                                                         </TableCell>

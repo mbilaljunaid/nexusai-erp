@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -49,7 +50,7 @@ export default function OpportunityDetail() {
               <CardContent>
                 <div className="space-y-2">
                   {["Prospecting", "Qualification", "Needs Analysis", "Proposal", "Negotiation", "Closed Won"].map((stage, idx) => (
-                    <div key={idx} className={`p-2 rounded ${stage === "Proposal" ? "bg-blue-100 border-2 border-blue-500 dark:bg-blue-950" : "border"}`}>
+                    <div key={idx} className={cn(`p-2 rounded ${stage === "Proposal" ? "bg-blue-100 border-2 border-blue-500 dark:bg-blue-950" : "border"}`)}>
                       {stage}
                     </div>
                   ))}

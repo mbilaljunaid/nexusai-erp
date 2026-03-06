@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -128,7 +129,7 @@ export default function BankReconciliation() {
                                     <div role="button" tabIndex={0}
                                         key={line.id}
                                         onClick={() => setSelectedStatementLine(line.id)}
-                                        className={`p-4 cursor-pointer transition-colors hover:bg-muted/50 ${selectedStatementLine === line.id ? 'bg-blue-50/50 border-l-4 border-blue-500' : ''}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                        className={cn(`p-4 cursor-pointer transition-colors hover:bg-muted/50 ${selectedStatementLine === line.id ? 'bg-blue-50/50 border-l-4 border-blue-500' : ''}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     >
                                         <div className="flex justify-between items-start mb-1">
                                             <span className="font-semibold">{line.description}</span>
@@ -179,7 +180,7 @@ export default function BankReconciliation() {
                                 {unreconciledTrx.map((trx: any) => (
                                     <div
                                         key={trx.id}
-                                        className={`p-4 flex items-center gap-4 hover:bg-muted/50 transition-colors ${selectedTransactions.includes(trx.id) ? 'bg-green-50/50' : ''}`}
+                                        className={cn(`p-4 flex items-center gap-4 hover:bg-muted/50 transition-colors ${selectedTransactions.includes(trx.id) ? 'bg-green-50/50' : ''}`)}
                                     >
                                         <Checkbox
                                             checked={selectedTransactions.includes(trx.id)}
@@ -247,5 +248,5 @@ export default function BankReconciliation() {
 }
 
 function CardFooter({ children, className }: { children: React.ReactNode, className?: string }) {
-    return <div className={`p-4 focus-visible:outline-none ${className}`}>{children}</div>;
+    return <div className={cn(`p-4 focus-visible:outline-none ${className}`)}>{children}</div>;
 }

@@ -98,7 +98,7 @@ export function ActivityTimeline({ entityType, entityId }: ActivityTimelineProps
                                 placeholder={`Describe the ${activeTab}...`}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                className="min-h-[100px]"
+                                className="min-h-24"
                             />
 
                             {(activeTab === "task" || activeTab === "meeting") && (
@@ -106,7 +106,7 @@ export function ActivityTimeline({ entityType, entityId }: ActivityTimelineProps
                                     <Clock className="h-4 w-4 text-muted-foreground" />
                                     <Input
                                         type="datetime-local"
-                                        className="max-w-[250px]"
+                                        className="max-w-64"
                                         value={dueDate}
                                         onChange={(e) => setDueDate(e.target.value)}
                                     />
@@ -139,7 +139,7 @@ export function ActivityTimeline({ entityType, entityId }: ActivityTimelineProps
                     <div className="relative space-y-0 pl-4 border-l-2 border-muted ml-2">
                         {interactions.map((interaction) => (
                             <div key={interaction.id} className="relative pb-8 pl-6 group">
-                                <div className="absolute -left-[31px] bg-background p-1 rounded-full border border-muted group-hover:border-primary transition-colors">
+                                <div className="absolute -left-8 bg-background p-1 rounded-full border border-muted group-hover:border-primary transition-colors">
                                     {getIcon(interaction.type)}
                                 </div>
 

@@ -275,7 +275,7 @@ export default function SubscriptionLifecycleManager() {
                     </div>
                     <div className="flex gap-2">
                         <Select value={statusFilter} onValueChange={setStatusFilter}>
-                            <SelectTrigger className="w-[180px]">
+                            <SelectTrigger className="w-44">
                                 <SelectValue placeholder="Filter by status" />
                             </SelectTrigger>
                             <SelectContent>

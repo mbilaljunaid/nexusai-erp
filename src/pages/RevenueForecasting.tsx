@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -73,7 +74,7 @@ export default function RevenueForecasting() {
           : data?.forecast?.[i - 1]?.amount ?? 0;
         const delta = row.amount - prev;
         const deltaFmt = `${delta >= 0 ? "+" : ""}${fmt(delta)}`;
-        return <div className={`text-right text-xs font-medium w-full ${delta >= 0 ? "text-emerald-600" : "text-red-500"}`}>{deltaFmt}</div>;
+        return <div className={cn(`text-right text-xs font-medium w-full ${delta >= 0 ? "text-emerald-600" : "text-red-500"}`)}>{deltaFmt}</div>;
       }
     }
   ];
@@ -106,7 +107,7 @@ export default function RevenueForecasting() {
       {/* Controls */}
       <DashboardWidget title="Forecast Configuration" colSpan={4} icon={GitBranch}>
         <div className="flex flex-wrap gap-4 items-end">
-          <div className="space-y-1 flex-1 min-w-[140px]">
+          <div className="space-y-1 flex-1 min-w-36">
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Projection Horizon</label>
             <Select value={months} onValueChange={(v) => { setMonths(v); }}>
               <SelectTrigger data-testid="select-months"><SelectValue /></SelectTrigger>
@@ -118,7 +119,7 @@ export default function RevenueForecasting() {
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-1 flex-1 min-w-[200px]">
+          <div className="space-y-1 flex-1 min-w-48">
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Contract Filter <span className="text-slate-400">(optional)</span>
             </label>
@@ -157,7 +158,7 @@ export default function RevenueForecasting() {
           </DashboardWidget>
 
           <DashboardWidget colSpan={1} title="Trend Slope" icon={Activity}>
-            <div className={`text-3xl font-bold tracking-tight ${trend >= 0 ? "text-emerald-600" : "text-red-600"}`}>
+            <div className={cn(`text-3xl font-bold tracking-tight ${trend >= 0 ? "text-emerald-600" : "text-red-600"}`)}>
               {trend >= 0 ? "+" : ""}{trend.toFixed(2)}
               <span className="text-sm font-normal text-muted-foreground ml-1">/period</span>
             </div>

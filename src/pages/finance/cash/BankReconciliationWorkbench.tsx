@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -404,8 +405,8 @@ export default function BankReconciliationWorkbench() {
                                                                     </p>
                                                                 </div>
                                                                 <div className="text-right">
-                                                                    <p className={`text-lg font-semibold ${txn.type === "credit" ? "text-green-600" : "text-red-600"
-                                                                        }`}>
+                                                                    <p className={cn(`text-lg font-semibold ${txn.type === "credit" ? "text-green-600" : "text-red-600"
+                                                                        }`)}>
                                                                         {txn.type === "credit" ? "+" : "-"}
                                                                         {formatCurrency(Math.abs(txn.amount))}
                                                                     </p>

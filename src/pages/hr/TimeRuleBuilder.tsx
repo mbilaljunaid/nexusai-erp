@@ -82,7 +82,7 @@ export default function TimeRuleBuilder() {
                 <div className="flex justify-between items-center mb-6">
                     <div className="flex items-center gap-3">
                         <Select defaultValue="ca-ot">
-                            <SelectTrigger className="w-[280px] font-semibold">
+                            <SelectTrigger className="w-72 font-semibold">
                                 <SelectValue placeholder="Select Rule to Edit" />
                             </SelectTrigger>
                             <SelectContent>
@@ -145,7 +145,7 @@ export default function TimeRuleBuilder() {
                                         )}
 
                                         <Select defaultValue={condition.field}>
-                                            <SelectTrigger className="w-[200px]">
+                                            <SelectTrigger className="w-48">
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -158,7 +158,7 @@ export default function TimeRuleBuilder() {
                                         </Select>
 
                                         <Select defaultValue={condition.operator}>
-                                            <SelectTrigger className="w-[120px]">
+                                            <SelectTrigger className="w-28">
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -173,7 +173,7 @@ export default function TimeRuleBuilder() {
 
                                         <Input
                                             value={condition.value}
-                                            className="w-[120px]"
+                                            className="w-28"
                                             onChange={(e) => {
                                                 const newConds = [...conditions];
                                                 newConds[index].value = e.target.value;

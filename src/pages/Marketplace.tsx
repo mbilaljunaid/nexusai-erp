@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -63,7 +64,7 @@ function AppCard({ app, onViewDetails, onInstall, isInstalling, isInstalled, com
 
 
   return (
-    <Card className={`group hover-elevate transition-all ${isSelectedForCompare ? 'ring-2 ring-primary' : ''}`}>
+    <Card className={cn(`group hover-elevate transition-all ${isSelectedForCompare ? 'ring-2 ring-primary' : ''}`)}>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-3">
           {compareMode && onToggleCompare && (
@@ -804,7 +805,7 @@ export default function Marketplace() {
             />
           </div>
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="w-full sm:w-[180px]" data-testid="select-category">
+            <SelectTrigger className="w-full sm:w-44" data-testid="select-category">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
@@ -815,7 +816,7 @@ export default function Marketplace() {
             </SelectContent>
           </Select>
           <Select value={pricingFilter} onValueChange={setPricingFilter}>
-            <SelectTrigger className="w-full sm:w-[150px]" data-testid="select-pricing">
+            <SelectTrigger className="w-full sm:w-36" data-testid="select-pricing">
               <SelectValue placeholder="Pricing" />
             </SelectTrigger>
             <SelectContent>
@@ -832,7 +833,7 @@ export default function Marketplace() {
                 variant="outline"
                 role="combobox"
                 aria-expanded={industryPopoverOpen}
-                className="w-full sm:w-[220px] justify-between"
+                className="w-full sm:w-56 justify-between"
                 data-testid="select-industry-filter"
               >
                 <div className="flex items-center gap-2 truncate">
@@ -846,7 +847,7 @@ export default function Marketplace() {
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[280px] p-0" align="start">
+            <PopoverContent className="w-72 p-0" align="start">
               <Command>
                 <CommandInput placeholder="Search industries..." data-testid="input-search-industry" />
                 <CommandList>
@@ -860,7 +861,7 @@ export default function Marketplace() {
                       }}
                       data-testid="option-industry-all"
                     >
-                      <Check className={`mr-2 h-4 w-4 ${industryFilter === "all" ? "opacity-100" : "opacity-0"}`} />
+                      <Check className={cn(`mr-2 h-4 w-4 ${industryFilter === "all" ? "opacity-100" : "opacity-0"}`)} />
                       All Industries
                     </CommandItem>
                     {industries.filter((i) => i.isActive).map((industry) => (
@@ -873,7 +874,7 @@ export default function Marketplace() {
                         }}
                         data-testid={`option-industry-${industry.id}`}
                       >
-                        <Check className={`mr-2 h-4 w-4 ${industryFilter === industry.id ? "opacity-100" : "opacity-0"}`} />
+                        <Check className={cn(`mr-2 h-4 w-4 ${industryFilter === industry.id ? "opacity-100" : "opacity-0"}`)} />
                         {industry.name}
                       </CommandItem>
                     ))}
@@ -963,7 +964,7 @@ export default function Marketplace() {
                 Clear
               </Button>
             </div>
-            <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
+            <div className={cn(`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`)}>
               {recentlyViewedApps.map((app) => (
                 <AppCard
                   key={app.id}
@@ -994,7 +995,7 @@ export default function Marketplace() {
                 </p>
               </div>
             </div>
-            <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
+            <div className={cn(`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`)}>
               {industryRecommendedApps.slice(0, 6).map((app) => (
                 <AppCard
                   key={app.id}
@@ -1027,7 +1028,7 @@ export default function Marketplace() {
 
           <TabsContent value="all" className="mt-6">
             {loadingApps ? (
-              <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
+              <div className={cn(`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`)}>
                 {[...Array(6)].map((_, i) => (
                   <Card key={i}>
                     <CardHeader>
@@ -1056,7 +1057,7 @@ export default function Marketplace() {
                 <p className="text-muted-foreground mt-1">Adjust your filters to explore our growing collection of powerful integrations</p>
               </div>
             ) : (
-              <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
+              <div className={cn(`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`)}>
                 {filteredApps.map((app) => (
                   <AppCard
                     key={app.id}
@@ -1082,7 +1083,7 @@ export default function Marketplace() {
                 <p className="text-muted-foreground mt-1">Our team is handpicking the best apps for you - stay tuned for curated recommendations!</p>
               </div>
             ) : (
-              <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
+              <div className={cn(`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`)}>
                 {featuredApps.map((app) => (
                   <AppCard
                     key={app.id}
@@ -1101,7 +1102,7 @@ export default function Marketplace() {
           </TabsContent>
 
           <TabsContent value="popular" className="mt-6">
-            <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
+            <div className={cn(`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`)}>
               {[...filteredApps].sort((a, b) => (b.installCount || 0) - (a.installCount || 0)).slice(0, 12).map((app) => (
                 <AppCard
                   key={app.id}
@@ -1119,7 +1120,7 @@ export default function Marketplace() {
           </TabsContent>
 
           <TabsContent value="new" className="mt-6">
-            <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
+            <div className={cn(`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`)}>
               {[...filteredApps].sort((a, b) =>
                 new Date(b.publishedAt || b.createdAt || 0).getTime() -
                 new Date(a.publishedAt || a.createdAt || 0).getTime()

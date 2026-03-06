@@ -94,7 +94,7 @@ export default function CourseCatalogAdmin() {
         { header: "Entity", id: "entityType", width: "150px" },
         { header: "Entity ID", id: "entityId", width: "150px", className: "font-mono text-xs" },
         { header: "Actor", id: "actorId", width: "150px" },
-        { header: "Details", id: "newValue", width: "150px", className: "truncate max-w-[200px]" },
+        { header: "Details", id: "newValue", width: "150px", className: "truncate max-w-48" },
     ];
 
     return (

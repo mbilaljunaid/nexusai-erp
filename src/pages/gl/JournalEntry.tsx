@@ -478,12 +478,12 @@ export default function JournalEntry() {
                     <Table>
                         <TableHeader>
                             <TableRow className="hover:bg-transparent">
-                                <TableHead className="w-[50px] text-center">#</TableHead>
-                                <TableHead className="w-[350px]">Account</TableHead>
-                                <TableHead className="min-w-[200px]">Description</TableHead>
-                                <TableHead className="w-[180px] text-right">Debit</TableHead>
-                                <TableHead className="w-[180px] text-right">Credit</TableHead>
-                                <TableHead className="w-[80px]"></TableHead>
+                                <TableHead className="w-12 text-center">#</TableHead>
+                                <TableHead className="w-80">Account</TableHead>
+                                <TableHead className="min-w-48">Description</TableHead>
+                                <TableHead className="w-44 text-right">Debit</TableHead>
+                                <TableHead className="w-44 text-right">Credit</TableHead>
+                                <TableHead className="w-20"></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>

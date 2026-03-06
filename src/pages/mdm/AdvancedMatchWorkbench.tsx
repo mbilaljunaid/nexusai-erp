@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -149,8 +150,8 @@ export default function AdvancedMatchWorkbench() {
                         {matchCandidates?.map((match: MatchCandidate) => (
                             <div role="button" tabIndex={0}
                                 key={match.id}
-                                className={`p-3 rounded-lg cursor-pointer border ${selectedMatch?.id === match.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
-                                    }`}
+                                className={cn(`p-3 rounded-lg cursor-pointer border ${selectedMatch?.id === match.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
+                                    }`)}
                                 onClick={() => setSelectedMatch(match)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <div className="flex justify-between items-start mb-2">
@@ -211,10 +212,10 @@ export default function AdvancedMatchWorkbench() {
                                                     <div className="font-medium mb-2">{conflict.field}</div>
                                                     <div className="grid grid-cols-2 gap-4">
                                                         <div role="button" tabIndex={0}
-                                                            className={`p-3 rounded border-2 cursor-pointer ${resolutions[conflict.field] === 'KEEP_MASTER'
+                                                            className={cn(`p-3 rounded border-2 cursor-pointer ${resolutions[conflict.field] === 'KEEP_MASTER'
                                                                 ? "border-primary bg-primary/5"
                                                                 : "border-border"
-                                                                }`}
+                                                                }`)}
                                                             onClick={() => resolveConflict(conflict.field, 'KEEP_MASTER')} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                                         >
                                                             <div className="text-xs text-muted-foreground mb-1">Master Value</div>
@@ -224,10 +225,10 @@ export default function AdvancedMatchWorkbench() {
                                                             )}
                                                         </div>
                                                         <div role="button" tabIndex={0}
-                                                            className={`p-3 rounded border-2 cursor-pointer ${resolutions[conflict.field] === 'USE_CANDIDATE'
+                                                            className={cn(`p-3 rounded border-2 cursor-pointer ${resolutions[conflict.field] === 'USE_CANDIDATE'
                                                                 ? "border-primary bg-primary/5"
                                                                 : "border-border"
-                                                                }`}
+                                                                }`)}
                                                             onClick={() => resolveConflict(conflict.field, 'USE_CANDIDATE')} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                                         >
                                                             <div className="text-xs text-muted-foreground mb-1">Candidate Value</div>

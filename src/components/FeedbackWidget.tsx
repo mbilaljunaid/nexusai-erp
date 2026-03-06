@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState} from"react";
+import { Button} from"@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,92 +7,92 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from"@/components/ui/dialog";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { MessageSquarePlus, Bug, Lightbulb, HelpCircle, Loader2 } from "lucide-react";
+} from"@/components/ui/select";
+import { Input} from"@/components/ui/input";
+import { Textarea} from"@/components/ui/textarea";
+import { Label} from"@/components/ui/label";
+import { useToast} from"@/hooks/use-toast";
+import { useMutation} from"@tanstack/react-query";
+import { apiRequest} from"@/lib/queryClient";
+import { MessageSquarePlus, Bug, Lightbulb, HelpCircle, Loader2} from"lucide-react";
 
 interface FeedbackFormData {
-  type: "suggestion" | "bug" | "feature" | "other";
+  type:"suggestion" |"bug" |"feature" |"other";
   category: string;
   title: string;
   description: string;
-  priority: "low" | "medium" | "high" | "critical";
+  priority:"low" |"medium" |"high" |"critical";
 }
 
 export function FeedbackWidget() {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState<FeedbackFormData>({
-    type: "suggestion",
-    category: "other",
-    title: "",
-    description: "",
-    priority: "medium",
-  });
-  const { toast } = useToast();
+    type:"suggestion",
+    category:"other",
+    title:"",
+    description:"",
+    priority:"medium",
+ });
+  const { toast} = useToast();
 
   const feedbackMutation = useMutation({
     mutationFn: (data: FeedbackFormData) => 
-      apiRequest("POST", "/api/feedback", data),
+      apiRequest("POST","/api/feedback", data),
     onSuccess: () => {
       toast({
-        title: "Feedback submitted",
-        description: "Thank you for your feedback! We'll review it shortly.",
-      });
+        title:"Feedback submitted",
+        description:"Thank you for your feedback! We'll review it shortly.",
+     });
       setOpen(false);
       setFormData({
-        type: "suggestion",
-        category: "other",
-        title: "",
-        description: "",
-        priority: "medium",
-      });
-    },
+        type:"suggestion",
+        category:"other",
+        title:"",
+        description:"",
+        priority:"medium",
+     });
+   },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to submit feedback. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
+        title:"Error",
+        description:"Failed to submit feedback. Please try again.",
+        variant:"destructive",
+     });
+   },
+ });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title.trim() || !formData.description.trim()) {
       toast({
-        title: "Validation error",
-        description: "Please fill in all required fields.",
-        variant: "destructive",
-      });
+        title:"Validation error",
+        description:"Please fill in all required fields.",
+        variant:"destructive",
+     });
       return;
-    }
+   }
     feedbackMutation.mutate(formData);
-  };
+ };
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case "bug":
+      case"bug":
         return <Bug className="h-4 w-4" />;
-      case "suggestion":
+      case"suggestion":
         return <Lightbulb className="h-4 w-4" />;
-      case "feature":
+      case"feature":
         return <MessageSquarePlus className="h-4 w-4" />;
       default:
         return <HelpCircle className="h-4 w-4" />;
-    }
-  };
+   }
+ };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -100,7 +100,7 @@ export function FeedbackWidget() {
         <Button
           variant="outline"
           size="sm"
-          className="fixed bottom-4 left-4 z-40 gap-2"
+          className="fixed bottom-4 left-4 gap-2"
           data-testid="button-open-feedback"
         >
           <MessageSquarePlus className="h-4 w-4" />
@@ -120,7 +120,7 @@ export function FeedbackWidget() {
               <Label htmlFor="type">Type</Label>
               <Select
                 value={formData.type}
-                onValueChange={(value: any) => setFormData({ ...formData, type: value })}
+                onValueChange={(value: any) => setFormData({ ...formData, type: value})}
               >
                 <SelectTrigger data-testid="select-feedback-type">
                   <SelectValue placeholder="Select type" />
@@ -153,7 +153,7 @@ export function FeedbackWidget() {
               <Label htmlFor="priority">Priority</Label>
               <Select
                 value={formData.priority}
-                onValueChange={(value: any) => setFormData({ ...formData, priority: value })}
+                onValueChange={(value: any) => setFormData({ ...formData, priority: value})}
               >
                 <SelectTrigger data-testid="select-feedback-priority">
                   <SelectValue placeholder="Select priority" />
@@ -172,7 +172,7 @@ export function FeedbackWidget() {
             <Label htmlFor="category">Category</Label>
             <Select
               value={formData.category}
-              onValueChange={(value) => setFormData({ ...formData, category: value })}
+              onValueChange={(value) => setFormData({ ...formData, category: value})}
             >
               <SelectTrigger data-testid="select-feedback-category">
                 <SelectValue placeholder="Select category" />
@@ -193,7 +193,7 @@ export function FeedbackWidget() {
               id="title"
               placeholder="Brief summary of your feedback"
               value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value})}
               data-testid="input-feedback-title"
             />
           </div>
@@ -204,7 +204,7 @@ export function FeedbackWidget() {
               id="description"
               placeholder="Please provide details about your feedback..."
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value})}
               rows={4}
               data-testid="input-feedback-description"
             />

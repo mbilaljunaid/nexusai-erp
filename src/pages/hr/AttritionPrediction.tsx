@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
@@ -30,13 +31,13 @@ function ScoreBar({ score }: { score: number }) {
     const id = React.useId().replace(/:/g, '');
     return (
         <div className="flex items-center gap-1.5 w-full">
-            <div className="flex-1 bg-gray-100 rounded-full h-1.5 min-w-[50px]">
+            <div className="flex-1 bg-gray-100 rounded-full h-1.5 min-w-12">
                 <style>{`
                     .score-bar-${id} { width: ${pct}%; }
                 `}</style>
-                <div className={`${bgCol} h-full rounded-full transition-all duration-300 score-bar-${id}`} />
+                <div className={cn(`${bgCol} h-full rounded-full transition-all duration-300 score-bar-${id}`)} />
             </div>
-            <span className={`text-[11px] font-bold ${textCol} w-8 text-right shrink-0`}>{pct}%</span>
+            <span className={cn(`text-[11px] font-bold ${textCol} w-8 text-right shrink-0`)}>{pct}%</span>
         </div>
     );
 }
@@ -68,12 +69,12 @@ export default function AttritionPrediction() {
         {
             id: "risk_band", header: "Band", width: "100px", cell: (row) => {
                 const cfg = BAND_CFG[row.risk_band] ?? BAND_CFG.LOW;
-                return <div className="w-full"><span className={`py-0.5 px-2 rounded font-bold text-[10px] ${cfg.bg} ${cfg.color}`}>{row.risk_band}</span></div>;
+                return <div className="w-full"><span className={cn(`py-0.5 px-2 rounded font-bold text-[10px] ${cfg.bg} ${cfg.color}`)}>{row.risk_band}</span></div>;
             }
         },
-        { id: "engagement_score", header: "Engagement", width: "100px", cell: (row) => <div className={`w-full text-center font-mono font-bold ${Number(row.engagement_score) < 2.5 ? 'text-red-600' : 'text-gray-700'}`}>{Number(row.engagement_score).toFixed(1)}</div> },
+        { id: "engagement_score", header: "Engagement", width: "100px", cell: (row) => <div className={cn(`w-full text-center font-mono font-bold ${Number(row.engagement_score) < 2.5 ? 'text-red-600' : 'text-gray-700'}`)}>{Number(row.engagement_score).toFixed(1)}</div> },
         { id: "tenure", header: "Tenure", width: "100px", cell: (row) => <span className="text-gray-500">{row.tenure_months}mo</span> },
-        { id: "compa", header: "Compa", width: "100px", cell: (row) => <div className={`w-full font-mono ${Number(row.compa_ratio) < 0.9 ? 'text-red-600' : 'text-gray-700'}`}>{Number(row.compa_ratio).toFixed(2)}</div> },
+        { id: "compa", header: "Compa", width: "100px", cell: (row) => <div className={cn(`w-full font-mono ${Number(row.compa_ratio) < 0.9 ? 'text-red-600' : 'text-gray-700'}`)}>{Number(row.compa_ratio).toFixed(2)}</div> },
         {
             id: "top_factor", header: "Top Factor", width: "200px", cell: (row) => {
                 const top = (row.top_factors as Factor[])?.[0];
@@ -82,7 +83,7 @@ export default function AttritionPrediction() {
         },
         {
             id: "actions", header: "Actions", width: "80px", cell: (row) => (
-                <button onClick={() => setSelected(selected?.id === row.id ? null : row)} className={`py-1 px-2 text-[11px] border-none rounded cursor-pointer ${selected?.id === row.id ? 'bg-blue-700 text-white' : 'bg-gray-200 text-gray-700'}`}>
+                <button onClick={() => setSelected(selected?.id === row.id ? null : row)} className={cn(`py-1 px-2 text-[11px] border-none rounded cursor-pointer ${selected?.id === row.id ? 'bg-blue-700 text-white' : 'bg-gray-200 text-gray-700'}`)}>
                     {selected?.id === row.id ? 'Hide' : 'Select'}
                 </button>
             )
@@ -104,9 +105,9 @@ export default function AttritionPrediction() {
                     const cfg = BAND_CFG[band];
                     const pct = totalHeadcount > 0 ? Math.round(Number(d?.count ?? 0) / totalHeadcount * 100) : 0;
                     return (
-                        <div key={band} onClick={() => setBandFilter(bandFilter === band ? '' : band)} className={`flex-1 rounded-xl py-2.5 px-3.5 cursor-pointer border border-l-[4px] ${cfg.bg} ${cfg.borderL} ${cfg.border} ${bandFilter && bandFilter !== band ? 'opacity-50' : 'opacity-100'}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                            <div className={`text-xl font-extrabold font-mono ${cfg.color}`}>{d?.count ?? 0}</div>
-                            <div className={`text-[10px] font-bold ${cfg.color}`}>{cfg.label}</div>
+                        <div key={band} onClick={() => setBandFilter(bandFilter === band ? '' : band)} className={cn(`flex-1 rounded-xl py-2.5 px-3.5 cursor-pointer border border-l-[4px] ${cfg.bg} ${cfg.borderL} ${cfg.border} ${bandFilter && bandFilter !== band ? 'opacity-50' : 'opacity-100'}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                            <div className={cn(`text-xl font-extrabold font-mono ${cfg.color}`)}>{d?.count ?? 0}</div>
+                            <div className={cn(`text-[10px] font-bold ${cfg.color}`)}>{cfg.label}</div>
                             <div className="text-[10px] text-gray-400">{pct}% of workforce</div>
                         </div>
                     );
@@ -152,7 +153,7 @@ export default function AttritionPrediction() {
 
                 {/* Detail panel */}
                 {selected && (
-                    <div className="w-[320px] shrink-0">
+                    <div className="w-80 shrink-0">
                         <Card className="p-3.5 mb-2.5 shadow-sm">
                             <div className="flex justify-between mb-2">
                                 <div className="font-bold text-[13px]">{selected.employee_id}</div>
@@ -180,7 +181,7 @@ export default function AttritionPrediction() {
                                     {history.slice(0, 6).map((h, i) => (
                                         <div key={i} className="flex justify-between text-[10px] items-center">
                                             <span className="text-gray-500">{formatDate(h.scored_at)}</span>
-                                            <div className="w-[100px] flex"><ScoreBar score={Number(h.risk_score)} /></div>
+                                            <div className="w-24 flex"><ScoreBar score={Number(h.risk_score)} /></div>
                                         </div>
                                     ))}
                                 </div>

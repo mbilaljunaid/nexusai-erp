@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -114,7 +115,7 @@ export default function DocumentOfRecords() {
                                     <Button
                                         key={cat}
                                         variant={selectedCategory === cat ? "secondary" : "ghost"}
-                                        className={`w-full justify-start ${selectedCategory === cat ? 'font-medium bg-muted text-foreground' : 'font-normal text-muted-foreground'}`}
+                                        className={cn(`w-full justify-start ${selectedCategory === cat ? 'font-medium bg-muted text-foreground' : 'font-normal text-muted-foreground'}`)}
                                         onClick={() => setSelectedCategory(cat)}
                                     >
                                         <div className="flex justify-between items-center w-full">
@@ -160,7 +161,7 @@ export default function DocumentOfRecords() {
                                         <div className="p-5 flex flex-col xl:flex-row gap-6 items-start xl:items-center">
 
                                             {/* Basic Info */}
-                                            <div className="flex-1 space-y-3 min-w-[300px]">
+                                            <div className="flex-1 space-y-3 min-w-72">
                                                 <div className="flex items-center justify-between">
                                                     <Badge variant="outline" className="bg-background text-[10px] tracking-wider font-semibold text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-900">{doc.category}</Badge>
                                                     <Button variant="ghost" size="icon" className="h-6 w-6 text-zinc-400 hover:text-red-600 xl:hidden" onClick={() => removeDocumentType(doc.id)}>
@@ -192,13 +193,13 @@ export default function DocumentOfRecords() {
                                             </div>
 
                                             {/* Expiry Tracking Config */}
-                                            <div className="w-full xl:w-[280px] border rounded-lg p-3 bg-zinc-50 dark:bg-zinc-900/50 shrink-0">
+                                            <div className="w-full xl:w-72 border rounded-lg p-3 bg-zinc-50 dark:bg-zinc-900/50 shrink-0">
                                                 <div className="flex items-center justify-between mb-3">
                                                     <Label className="text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5"><Clock className="h-3 w-3" /> Expiry Tracking</Label>
                                                     <Switch checked={doc.trackExpiry} onCheckedChange={(val) => updateDocType(doc.id, 'trackExpiry', val)} />
                                                 </div>
 
-                                                <div className={`space-y-3 transition-opacity ${doc.trackExpiry ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+                                                <div className={cn(`space-y-3 transition-opacity ${doc.trackExpiry ? 'opacity-100' : 'opacity-40 pointer-events-none'}`)}>
                                                     <div>
                                                         <Label className="text-xs text-muted-foreground">Notification Lead Time</Label>
                                                         <Select defaultValue="30">

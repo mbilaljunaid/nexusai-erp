@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -196,7 +197,7 @@ export default function APDashboard() {
                             >
                                 <CardHeader>
                                     <div className="flex items-center gap-3">
-                                        <card.icon className={`h-6 w-6 ${card.color}`} />
+                                        <card.icon className={cn(`h-6 w-6 ${card.color}`)} />
                                         <CardTitle className="text-base">{card.title}</CardTitle>
                                     </div>
                                     <CardDescription>{card.description}</CardDescription>

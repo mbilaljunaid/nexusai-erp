@@ -53,7 +53,7 @@ export default function HolidayCalendar() {
             <div className="flex justify-between items-center">
                 
                 <Select value={filterCountry} onValueChange={setFilterCountry}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-44">
                         <SelectValue placeholder="Select Country" />
                     </SelectTrigger>
                     <SelectContent>

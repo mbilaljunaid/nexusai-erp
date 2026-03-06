@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -94,7 +95,7 @@ export default function DataLineageViewer() {
                                         <h3 className="font-semibold mb-3">Upstream Sources</h3>
                                         {lineageData.upstream.map((node: any, i: number) => (
                                             <div key={i} className="flex items-center gap-4 mb-3">
-                                                <div className={`border-l-4 pl-${(i + 1) * 4} py-2`}>
+                                                <div className={cn(`border-l-4 pl-${(i + 1) * 4} py-2`)}>
                                                     <div className="flex items-center gap-2">
                                                         <Database className="h-4 w-4 text-blue-600" />
                                                         <div>
@@ -126,7 +127,7 @@ export default function DataLineageViewer() {
                                         <h3 className="font-semibold mb-3">Downstream Consumers</h3>
                                         {lineageData.downstream.map((node: any, i: number) => (
                                             <div key={i} className="flex items-center gap-4 mb-3">
-                                                <div className={`border-l-4 pl-${(i + 1) * 4} py-2`}>
+                                                <div className={cn(`border-l-4 pl-${(i + 1) * 4} py-2`)}>
                                                     <div className="flex items-center gap-2">
                                                         <Database className="h-4 w-4 text-green-600" />
                                                         <div>

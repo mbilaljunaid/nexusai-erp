@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDateTime } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -55,7 +56,7 @@ export default function PermitToWork() {
             {/* KPI row */}
             <div className="flex gap-2.5 mb-3.5">
                 {[{ lbl: 'Active', val: active, clr: '#059669' }, { lbl: 'Pending Approval', val: pending, clr: '#d97706' }, { lbl: 'Expiring 24h', val: expiring.length, clr: '#f59e0b' }, { lbl: 'CBM Alerts', val: cbmAlerts.length, clr: '#dc2626' }].map(k => (
-                    <Card key={k.lbl} className="px-4 py-2.5 min-w-[100px] shadow-sm">
+                    <Card key={k.lbl} className="px-4 py-2.5 min-w-24 shadow-sm">
                         <div className="text-xl font-extrabold" style={{ color: k.clr }}>{k.val}</div>
                         <div className="text-[10px] text-gray-400">{k.lbl}</div>
                     </Card>
@@ -113,7 +114,7 @@ export default function PermitToWork() {
 
             <div className="flex gap-1.5 mb-2.5">
                 {['', 'Pending_Approval', 'Approved', 'Active', 'Suspended', 'Closed', 'Cancelled'].map(s => (
-                    <button key={s} onClick={() => setStatusFilter(s)} className={`px-2.5 py-1 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`}>{s || 'All'}</button>
+                    <button key={s} onClick={() => setStatusFilter(s)} className={cn(`px-2.5 py-1 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</button>
                 ))}
             </div>
 
@@ -138,7 +139,7 @@ export default function PermitToWork() {
                                 <div className="text-[9px] text-gray-400">By: {p.requested_by} {p.contractor ? `· Contractor: ${p.contractor}` : ''} {hrs !== null && p.status === 'Active' ? `· ${hrs}h remaining` : ''}</div>
                                 {(ACTIONS[p.status] ?? []).length > 0 && (
                                     <div className="flex gap-1 mt-1.5">
-                                        {(ACTIONS[p.status] ?? []).map(a => <button key={a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: p.id, action: a }); }} className={`px-1.5 py-px border-none rounded text-[9px] cursor-pointer font-bold ${a === 'APPROVE' || a === 'RESUME' || a === 'ISSUE' ? 'bg-blue-50 text-blue-700' : 'bg-red-50 text-red-600'}`}>{a}</button>)}
+                                        {(ACTIONS[p.status] ?? []).map(a => <button key={a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: p.id, action: a }); }} className={cn(`px-1.5 py-px border-none rounded text-[9px] cursor-pointer font-bold ${a === 'APPROVE' || a === 'RESUME' || a === 'ISSUE' ? 'bg-blue-50 text-blue-700' : 'bg-red-50 text-red-600'}`)}>{a}</button>)}
                                     </div>
                                 )}
                             </Card>
@@ -148,7 +149,7 @@ export default function PermitToWork() {
                 </div>
 
                 {selected && (
-                    <Card className="w-[260px] shrink-0 p-3.5 shadow-sm">
+                    <Card className="w-64 shrink-0 p-3.5 shadow-sm">
                         <div className="font-bold text-[13px] mb-2">{selected.permit_number}</div>
                         <div className="text-[10px] leading-[1.8] text-gray-700">
                             <strong>Type:</strong> {selected.permit_type}<br />
@@ -159,7 +160,7 @@ export default function PermitToWork() {
                             <strong>End:</strong> {selected.end_datetime ? formatDateTime(selected.end_datetime) : '—'}
                         </div>
                         <div className="mt-2.5 text-[11px] font-bold mb-1.5">Event Log</div>
-                        <div className="max-h-[200px] overflow-y-auto flex flex-col gap-1">
+                        <div className="max-h-48 overflow-y-auto flex flex-col gap-1">
                             {(selected.events ?? []).map((ev, i) => (
                                 <div key={i} className="text-[9px] border-l-2 border-gray-200 pl-1.5">
                                     <div className="font-bold text-gray-500">{ev.action} · {ev.by}</div>

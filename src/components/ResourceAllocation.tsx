@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -104,7 +105,7 @@ export function ResourceAllocation({ members }: ResourceAllocationProps) {
               <div className="flex items-center gap-2">
                 <Progress 
                   value={Math.min(utilization, 100)} 
-                  className={`h-2 ${isOverallocated ? '[&>div]:bg-red-500' : isUnderutilized ? '[&>div]:bg-yellow-500' : ''}`}
+                  className={cn(`h-2 ${isOverallocated ? '[&>div]:bg-red-500' : isUnderutilized ? '[&>div]:bg-yellow-500' : ''}`)}
                 />
                 {isOverallocated && (
                   <AlertTriangle className="h-4 w-4 text-red-500 shrink-0" />

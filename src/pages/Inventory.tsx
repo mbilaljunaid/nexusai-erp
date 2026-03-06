@@ -99,7 +99,7 @@ export default function Inventory() {
               <CardHeader>
                 <div className="flex items-center justify-between gap-4">
                   <CardTitle className="text-base">Current Stock Levels</CardTitle>
-                  <div className="flex-1 min-w-[300px]">
+                  <div className="flex-1 min-w-72">
                     <ContextualSearch
                       placeholder="Search items..."
                       fields={[{ key: "query", label: "Search", type: "text" }]}

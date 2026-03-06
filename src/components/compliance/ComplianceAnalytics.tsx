@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import {
     BarChart,
     Bar,
@@ -51,7 +52,7 @@ export function ComplianceAnalytics({ data }: ComplianceAnalyticsProps) {
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="h-[250px] w-full">
+                    <div className="h-64 w-full">
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={data.violationTrends}>
                                 <defs>
@@ -96,7 +97,7 @@ export function ComplianceAnalytics({ data }: ComplianceAnalyticsProps) {
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="flex items-center justify-center">
-                    <div className="h-[250px] w-full flex flex-col md:flex-row items-center gap-4">
+                    <div className="h-64 w-full flex flex-col md:flex-row items-center gap-4">
                         <div className="flex-1 h-full">
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
@@ -117,10 +118,10 @@ export function ComplianceAnalytics({ data }: ComplianceAnalyticsProps) {
                                 </PieChart>
                             </ResponsiveContainer>
                         </div>
-                        <div className="flex flex-col gap-2 min-w-[120px]">
+                        <div className="flex flex-col gap-2 min-w-28">
                             {pieData.map((d, i) => (
                                 <div key={i} className="flex items-center gap-2">
-                                    <div className={`h-3 w-3 rounded-full ${d.bgClass}`} />
+                                    <div className={cn(`h-3 w-3 rounded-full ${d.bgClass}`)} />
                                     <span className="text-xs font-medium text-slate-700">{d.name}</span>
                                     <span className="text-xs text-muted-foreground ml-auto">{d.value}</span>
                                 </div>
@@ -137,7 +138,7 @@ export function ComplianceAnalytics({ data }: ComplianceAnalyticsProps) {
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="h-[300px] w-full">
+                    <div className="h-72 w-full">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={data.velocity}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />

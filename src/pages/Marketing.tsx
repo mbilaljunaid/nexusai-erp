@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
@@ -51,7 +52,7 @@ export default function Marketing() {
         {navItems.map((item) => (
           <Link key={item.id} to={item.id === "overview" ? "/marketing" : `/marketing/${item.id}`}>
             <div className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-primary hover-elevate cursor-pointer transition-all">
-              <item.icon className={`w-6 h-6 ${item.color}`} />
+              <item.icon className={cn(`w-6 h-6 ${item.color}`)} />
               <span className="text-sm font-medium text-center">{item.label}</span>
             </div>
           </Link>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -48,7 +49,7 @@ interface TaskCardProps {
 export function TaskCard({ task, onToggleComplete, draggable }: TaskCardProps) {
   return (
     <Card 
-      className={`hover-elevate ${draggable ? 'cursor-grab active:cursor-grabbing' : ''}`}
+      className={cn(`hover-elevate ${draggable ? 'cursor-grab active:cursor-grabbing' : ''}`)}
       data-testid={`card-task-${task.id}`}
     >
       <CardContent className="p-4">
@@ -61,7 +62,7 @@ export function TaskCard({ task, onToggleComplete, draggable }: TaskCardProps) {
           />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h4 className={`font-medium text-sm ${task.completed ? 'line-through text-muted-foreground' : ''}`}>
+              <h4 className={cn(`font-medium text-sm ${task.completed ? 'line-through text-muted-foreground' : ''}`)}>
                 {task.title}
               </h4>
               {task.aiGenerated && (
@@ -72,7 +73,7 @@ export function TaskCard({ task, onToggleComplete, draggable }: TaskCardProps) {
               <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{task.description}</p>
             )}
             <div className="flex items-center gap-2 mt-2 flex-wrap">
-              <Badge variant="secondary" className={`text-xs ${statusColors[task.status]}`}>
+              <Badge variant="secondary" className={cn(`text-xs ${statusColors[task.status]}`)}>
                 {task.status.replace('_', ' ')}
               </Badge>
               {task.project && (
@@ -111,7 +112,7 @@ export function TaskCard({ task, onToggleComplete, draggable }: TaskCardProps) {
               </div>
             )}
           </div>
-          <Flag className={`h-4 w-4 ${priorityColors[task.priority]}`} />
+          <Flag className={cn(`h-4 w-4 ${priorityColors[task.priority]}`)} />
         </div>
       </CardContent>
     </Card>

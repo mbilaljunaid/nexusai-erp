@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
@@ -34,10 +35,10 @@ export function KPIMetrics({ metrics, layout = 'grid' }: KPIMetricsProps) {
   return (
     <StandardPage title="Page Title">
       {metrics.map((metric, idx) => (
-        <Card key={idx} className={`p-4 border-2 ${statusStyles[metric.status]}`} data-testid={`kpi-card-${idx}`}>
+        <Card key={idx} className={cn(`p-4 border-2 ${statusStyles[metric.status]}`)} data-testid={`kpi-card-${idx}`}>
           <div className="flex justify-between items-start mb-2">
             <h4 className="text-sm font-medium text-muted-foreground">{metric.label}</h4>
-            <span className={`text-xs px-2 py-1 rounded-full font-medium ${statusBadge[metric.status]}`}>
+            <span className={cn(`text-xs px-2 py-1 rounded-full font-medium ${statusBadge[metric.status]}`)}>
               {metric.status === 'good' ? '✓' : metric.status === 'warning' ? '⚠' : '✕'}
             </span>
           </div>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import React, { useMemo } from 'react';
 import { Input } from "@/components/ui/input";
@@ -77,7 +78,7 @@ export const TimesheetGrid: React.FC<TimesheetGridProps> = ({ startDate, entries
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[150px]">Time Type</TableHead>
+                            <TableHead className="w-36">Time Type</TableHead>
                             {DAYS.map(d => (
                                 <TableHead key={d.label} className="text-center text-xs">
                                     <div>{d.label}</div>
@@ -86,7 +87,7 @@ export const TimesheetGrid: React.FC<TimesheetGridProps> = ({ startDate, entries
                                     </div>
                                 </TableHead>
                             ))}
-                            <TableHead className="text-right w-[100px]">Total</TableHead>
+                            <TableHead className="text-right w-24">Total</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -100,7 +101,7 @@ export const TimesheetGrid: React.FC<TimesheetGridProps> = ({ startDate, entries
                                         <Input
                                             type="number"
                                             step="0.25"
-                                            className={`h-9 text-center border-none focus-visible:ring-1 ${getMinutes(day.offset, type) > 0 ? "bg-accent/20" : ""}`}
+                                            className={cn(`h-9 text-center border-none focus-visible:ring-1 ${getMinutes(day.offset, type) > 0 ? "bg-accent/20" : ""}`)}
                                             placeholder="-"
                                             min={0}
                                             max={24}
@@ -119,7 +120,7 @@ export const TimesheetGrid: React.FC<TimesheetGridProps> = ({ startDate, entries
                         <TableRow className="bg-muted font-bold border-t-2">
                             <TableCell>Daily Total</TableCell>
                             {colTotals.map((total, i) => (
-                                <TableCell key={i} className={`text-center ${total > 480 ? "text-red-600" : ""}`}>
+                                <TableCell key={i} className={cn(`text-center ${total > 480 ? "text-red-600" : ""}`)}>
                                     {getHours(total)}
                                 </TableCell>
                             ))}
@@ -151,7 +152,7 @@ export const TimesheetGrid: React.FC<TimesheetGridProps> = ({ startDate, entries
                                         type="number"
                                         inputMode="decimal"
                                         step="0.25"
-                                        className={`h-12 text-right text-lg ${getMinutes(day.offset, type) > 0 ? "bg-accent/10 font-bold" : ""}`}
+                                        className={cn(`h-12 text-right text-lg ${getMinutes(day.offset, type) > 0 ? "bg-accent/10 font-bold" : ""}`)}
                                         placeholder="0"
                                         min={0}
                                         max={24}

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -155,8 +156,8 @@ export default function PlaybookBuilder() {
                             {playbooks.map((playbook) => (
                                 <div role="button" tabIndex={0}
                                     key={playbook.id}
-                                    className={`p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${selectedPlaybook?.id === playbook.id ? 'bg-blue-50 border-blue-500' : ''
-                                        }`}
+                                    className={cn(`p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${selectedPlaybook?.id === playbook.id ? 'bg-blue-50 border-blue-500' : ''
+                                        }`)}
                                     onClick={() => {
                                         setSelectedPlaybook(playbook);
                                         setIsCreating(false);

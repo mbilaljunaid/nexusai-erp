@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -116,7 +117,7 @@ export default function VarianceAnalysis() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className={`text-2xl font-bold ${totalVariance >= 0 ? 'text-green-900' : 'text-red-900'}`}>
+                            <div className={cn(`text-2xl font-bold ${totalVariance >= 0 ? 'text-green-900' : 'text-red-900'}`)}>
                                 {totalVariance >= 0 ? '+' : ''}${totalVariance.toLocaleString()}
                             </div>
                             <p className="text-xs text-muted-foreground mt-1">
@@ -200,10 +201,10 @@ export default function VarianceAnalysis() {
                                         <TableCell>{row.account}</TableCell>
                                         <TableCell className="text-right font-mono">${row.currentPeriod.toLocaleString()}</TableCell>
                                         <TableCell className="text-right font-mono">${row.priorPeriod.toLocaleString()}</TableCell>
-                                        <TableCell className={`text-right font-mono font-bold ${row.variance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                        <TableCell className={cn(`text-right font-mono font-bold ${row.variance >= 0 ? 'text-green-600' : 'text-red-600'}`)}>
                                             {row.variance >= 0 ? '+' : ''}${row.variance.toLocaleString()}
                                         </TableCell>
-                                        <TableCell className={`text-right font-mono ${row.variance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                        <TableCell className={cn(`text-right font-mono ${row.variance >= 0 ? 'text-green-600' : 'text-red-600'}`)}>
                                             {row.variancePct >= 0 ? '+' : ''}{row.variancePct.toFixed(2)}%
                                         </TableCell>
                                         <TableCell>

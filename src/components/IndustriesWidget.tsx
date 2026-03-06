@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -116,11 +117,11 @@ export function IndustriesWidget() {
             {Array.from({ length: Math.ceil(INDUSTRIES.length / itemsPerView) }).map((_, i) => (
               <div
                 key={i}
-                className={`h-1.5 rounded-full transition ${
+                className={cn(`h-1.5 rounded-full transition ${
                   i === Math.floor(scrollIndex / itemsPerView)
                     ? "bg-primary w-3"
                     : "bg-muted w-1.5"
-                }`}
+                }`)}
               />
             ))}
           </div>

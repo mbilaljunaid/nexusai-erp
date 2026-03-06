@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -211,10 +212,10 @@ export function CompetitorList({ opportunityId }: { opportunityId: string }) {
                                         {link.status === 'Active' && <ShieldAlert className="h-4 w-4 text-orange-500" />}
                                         {link.status === 'Winning' && <ShieldCheck className="h-4 w-4 text-green-500" />}
                                     </h4>
-                                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${link.status === 'Lost To' ? 'bg-red-100 text-red-700' :
+                                    <span className={cn(`text-xs px-2 py-0.5 rounded-full font-medium ${link.status === 'Lost To' ? 'bg-red-100 text-red-700' :
                                             link.status === 'Winning' ? 'bg-green-100 text-green-700' :
                                                 'bg-blue-100 text-blue-700'
-                                        }`}>
+                                        }`)}>
                                         {link.status}
                                     </span>
                                 </div>

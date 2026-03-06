@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -80,7 +81,7 @@ export function BudgetToVarianceReportForm({ budget, onClose }: { budget: Budget
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Variance</p>
-                <p className={`text-lg font-semibold ${variance > 0 ? "text-red-600" : "text-green-600"}`}>
+                <p className={cn(`text-lg font-semibold ${variance > 0 ? "text-red-600" : "text-green-600"}`)}>
                   {variance > 0 ? "+" : ""}{variance.toLocaleString()} ({variancePercent}%)
                 </p>
               </div>

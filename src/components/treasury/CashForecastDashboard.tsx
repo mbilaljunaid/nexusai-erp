@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -245,8 +246,8 @@ export function CashForecastDashboard() {
                     </CardHeader>
                     <CardContent>
                         <p
-                            className={`text-2xl font-black ${metrics.next30dNet >= 0 ? "text-emerald-600" : "text-red-600"
-                                }`}
+                            className={cn(`text-2xl font-black ${metrics.next30dNet >= 0 ? "text-emerald-600" : "text-red-600"
+                                }`)}
                         >
                             {metrics.next30dNet >= 0 ? "+" : ""}$
                             {metrics.next30dNet.toLocaleString(undefined, {
@@ -323,7 +324,7 @@ export function CashForecastDashboard() {
                                 Base, Optimistic (+15%), and Pessimistic (-15%) cash flow projections
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="h-[350px]">
+                        <CardContent className="h-80">
                             <ResponsiveContainer width="100%" height="100%">
                                 <AreaChart data={comparisonData}>
                                     <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
@@ -378,7 +379,7 @@ export function CashForecastDashboard() {
                                 </CardTitle>
                                 <CardDescription>Prediction confidence over 30-day horizon</CardDescription>
                             </CardHeader>
-                            <CardContent className="h-[250px]">
+                            <CardContent className="h-64">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <LineChart data={confidenceData}>
                                         <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
@@ -489,12 +490,12 @@ export function CashForecastDashboard() {
                                     {anomalies.slice(0, 5).map((anomaly) => (
                                         <div
                                             key={anomaly.id}
-                                            className={`p-4 rounded-lg border ${anomaly.severity === "HIGH"
+                                            className={cn(`p-4 rounded-lg border ${anomaly.severity === "HIGH"
                                                 ? "bg-red-50 border-red-200"
                                                 : anomaly.severity === "MEDIUM"
                                                     ? "bg-amber-50 border-amber-200"
                                                     : "bg-blue-50 border-blue-200"
-                                                }`}
+                                                }`)}
                                         >
                                             <div className="flex justify-between items-start mb-2">
                                                 <div>
@@ -508,12 +509,12 @@ export function CashForecastDashboard() {
                                                         ${Number(anomaly.amount).toLocaleString()}
                                                     </p>
                                                     <Badge
-                                                        className={`text-xs mt-1 ${anomaly.severity === "HIGH"
+                                                        className={cn(`text-xs mt-1 ${anomaly.severity === "HIGH"
                                                             ? "bg-red-100 text-red-700"
                                                             : anomaly.severity === "MEDIUM"
                                                                 ? "bg-amber-100 text-amber-700"
                                                                 : "bg-blue-100 text-blue-700"
-                                                            }`}
+                                                            }`)}
                                                     >
                                                         {anomaly.severity} • {(anomaly.confidence * 100).toFixed(0)}%
                                                     </Badge>

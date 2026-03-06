@@ -128,8 +128,8 @@ export default function BenefitsEnrollment() {
                     <div className="flex items-center gap-2 mb-2">
                         {wizardSteps.map((label, i) => (
                             <div key={i} className="flex flex-col items-center gap-2">
-                                <div className={`h-2.5 w-16 rounded-full transition-all duration-300 ${step >= i ? "bg-teal-500 shadow-sm shadow-teal-500/20" : "bg-zinc-200 dark:bg-zinc-800"}`} />
-                                <span className={`text-[10px] font-semibold uppercase tracking-wider ${step >= i ? "text-teal-600" : "text-zinc-400"}`}>{label}</span>
+                                <div className={cn(`h-2.5 w-16 rounded-full transition-all duration-300 ${step >= i ? "bg-teal-500 shadow-sm shadow-teal-500/20" : "bg-zinc-200 dark:bg-zinc-800"}`)} />
+                                <span className={cn(`text-[10px] font-semibold uppercase tracking-wider ${step >= i ? "text-teal-600" : "text-zinc-400"}`)}>{label}</span>
                             </div>
                         ))}
                     </div>
@@ -188,7 +188,7 @@ export default function BenefitsEnrollment() {
                                         <div role="button" tabIndex={0}
                                             key={opt.planOptionId}
                                             onClick={() => handleSelectOption(plan.planId, opt.planOptionId)}
-                                            className={`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                            className={cn(`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <div className="flex justify-between items-start mb-4">
                                                 <p className="font-semibold">{opt.optionName}</p>
@@ -233,7 +233,7 @@ export default function BenefitsEnrollment() {
                                         <div role="button" tabIndex={0}
                                             key={opt.planOptionId}
                                             onClick={() => handleSelectOption(plan.planId, opt.planOptionId)}
-                                            className={`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                            className={cn(`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <div className="flex justify-between items-start mb-4">
                                                 <p className="font-semibold">{opt.optionName}</p>
@@ -278,7 +278,7 @@ export default function BenefitsEnrollment() {
                                         <div role="button" tabIndex={0}
                                             key={opt.planOptionId}
                                             onClick={() => handleSelectOption(plan.planId, opt.planOptionId)}
-                                            className={`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                            className={cn(`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <div className="flex justify-between items-start mb-4">
                                                 <p className="font-semibold">{opt.optionName}</p>

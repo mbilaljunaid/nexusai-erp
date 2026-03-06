@@ -1,9 +1,9 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { colors } from '@/lib/design-tokens';
-import { animations } from '@/lib/animations';
+import React from'react';
+import { motion} from'framer-motion';
+import { Button} from'@/components/ui/button';
+import { cn} from'@/lib/utils';
+import { colors} from'@/lib/design-tokens';
+import { animations} from'@/lib/animations';
 
 interface PremiumHeroProps {
     title: string;
@@ -11,11 +11,11 @@ interface PremiumHeroProps {
     primaryCTA?: {
         label: string;
         onClick: () => void;
-    } | React.ReactNode;
+   } | React.ReactNode;
     secondaryCTA?: {
         label: string;
         onClick: () => void;
-    } | React.ReactNode;
+   } | React.ReactNode;
     gradient?: string;
     backgroundImage?: string;
     children?: React.ReactNode;
@@ -26,7 +26,7 @@ export function PremiumHero({
     subtitle,
     primaryCTA,
     secondaryCTA,
-    gradient = 'primary',
+    gradient ='primary',
     backgroundImage,
     children
 }: PremiumHeroProps) {
@@ -34,7 +34,7 @@ export function PremiumHero({
         primary: colors.gradients.primary,
         secondary: colors.gradients.secondary,
         accent: colors.gradients.accent,
-    };
+   };
 
     const isPreset = gradient in gradients;
 
@@ -43,45 +43,45 @@ export function PremiumHero({
             {/* Gradient Background */}
             <div
                 className={cn(
-                    "absolute inset-0 -z-10",
-                    !isPreset && `bg-gradient-to-r ${gradient}`
+                   "absolute inset-0",
+                    !isPreset &&`bg-gradient-to-r ${gradient}`
                 )}
-                style={isPreset ? { background: gradients[gradient] } : undefined}
+                style={isPreset ? { background: gradients[gradient]} : undefined}
             />
 
             {/* Optional Background Image */}
             {backgroundImage && (
                 <div
-                    className="absolute inset-0 opacity-20 -z-5"
-                    style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                    className="absolute inset-0 opacity-20"
+                    style={{ backgroundImage:`url(${backgroundImage})`, backgroundSize:'cover', backgroundPosition:'center'}}
                 />
             )}
 
             {/* Animated Particles */}
-            <div className="absolute inset-0 -z-5">
+            <div className="absolute inset-0">
                 {[...Array(20)].map((_, i) => (
                     <motion.div
                         key={i}
                         className="absolute w-2 h-2 bg-white/20 rounded-full"
                         style={{
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
-                        }}
+                            left:`${Math.random() * 100}%`,
+                            top:`${Math.random() * 100}%`,
+                       }}
                         animate={{
                             y: [0, -30, 0],
                             opacity: [0.2, 0.5, 0.2],
-                        }}
+                       }}
                         transition={{
                             duration: 3 + Math.random() * 2,
                             repeat: Infinity,
                             delay: Math.random() * 2,
-                        }}
+                       }}
                     />
                 ))}
             </div>
 
             {/* Content */}
-            <div className="relative z-10 max-w-5xl mx-auto px-4 text-center text-white">
+            <div className="relative max-w-5xl mx-auto px-4 text-center text-white">
                 <motion.h1
                     className="text-6xl md:text-7xl font-bold mb-6"
                     {...animations.fadeInUp}
@@ -92,7 +92,7 @@ export function PremiumHero({
                 <motion.p
                     className="text-xl md:text-2xl mb-8 text-white/90 max-w-3xl mx-auto"
                     {...animations.fadeInUp}
-                    transition={{ delay: 0.2 }}
+                    transition={{ delay: 0.2}}
                 >
                     {subtitle}
                 </motion.p>
@@ -101,7 +101,7 @@ export function PremiumHero({
                     <motion.div
                         className="flex gap-4 justify-center flex-wrap"
                         {...animations.fadeInUp}
-                        transition={{ delay: 0.4 }}
+                        transition={{ delay: 0.4}}
                     >
                         {primaryCTA && (
                             React.isValidElement(primaryCTA) ? primaryCTA : (
@@ -133,7 +133,7 @@ export function PremiumHero({
                     <motion.div
                         className="mt-12"
                         {...animations.fadeInUp}
-                        transition={{ delay: 0.6 }}
+                        transition={{ delay: 0.6}}
                     >
                         {children}
                     </motion.div>
@@ -152,7 +152,7 @@ interface SplitHeroProps {
     primaryCTA?: {
         label: string;
         onClick: () => void;
-    };
+   };
     reversed?: boolean;
 }
 
@@ -177,7 +177,7 @@ export function SplitHero({
             <motion.p
                 className="text-xl text-muted-foreground mb-8"
                 {...animations.fadeInUp}
-                transition={{ delay: 0.2 }}
+                transition={{ delay: 0.2}}
             >
                 {subtitle}
             </motion.p>
@@ -215,7 +215,7 @@ export function SplitHero({
                 alt={imageAlt}
                 className="w-full rounded-2xl shadow-2xl"
                 {...animations.zoomIn}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 0.3}}
             />
         </div>
     );
@@ -223,9 +223,9 @@ export function SplitHero({
     return (
         <section className="py-20 px-4">
             <div className={cn(
-                "max-w-7xl mx-auto flex flex-col gap-12",
-                "lg:flex-row lg:items-center",
-                reversed && "lg:flex-row-reverse"
+               "max-w-7xl mx-auto flex flex-col gap-12",
+               "lg:flex-row lg:items-center",
+                reversed &&"lg:flex-row-reverse"
             )}>
                 {content}
                 {visual}

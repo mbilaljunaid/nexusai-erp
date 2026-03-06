@@ -112,7 +112,7 @@ export default function ProcurementDashboard() {
                 </DashboardWidget>
 
                 <DashboardWidget colSpan={2} title="Spend by Supplier">
-                    <div className="h-[300px] w-full">
+                    <div className="h-72 w-full">
                         {spendBySupplier.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={spendBySupplier}>
@@ -131,7 +131,7 @@ export default function ProcurementDashboard() {
                 </DashboardWidget>
 
                 <DashboardWidget colSpan={2} title="Order Status Breakdown">
-                    <div className="h-[300px] w-full">
+                    <div className="h-72 w-full">
                         {poStatusData.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>

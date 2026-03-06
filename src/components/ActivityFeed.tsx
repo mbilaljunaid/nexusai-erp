@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -117,11 +118,11 @@ export function ActivityFeed({ activities, maxHeight = "400px" }: ActivityFeedPr
                 <div key={activity.id} className="flex gap-3" data-testid={`activity-${activity.id}`}>
                   <div className="relative">
                     <Avatar className="h-8 w-8">
-                      <AvatarFallback className={`text-xs ${activity.type === "ai" ? "bg-primary/10 text-primary" : "bg-muted"}`}>
+                      <AvatarFallback className={cn(`text-xs ${activity.type === "ai" ? "bg-primary/10 text-primary" : "bg-muted"}`)}>
                         {activity.type === "ai" ? <Sparkles className="h-3 w-3" /> : activity.user.initials}
                       </AvatarFallback>
                     </Avatar>
-                    <div className={`absolute -bottom-0.5 -right-0.5 p-1 rounded-full ${activityColors[activity.type]}`}>
+                    <div className={cn(`absolute -bottom-0.5 -right-0.5 p-1 rounded-full ${activityColors[activity.type]}`)}>
                       <Icon className="h-2.5 w-2.5" />
                     </div>
                   </div>

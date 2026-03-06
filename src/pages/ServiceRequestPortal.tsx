@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -172,9 +173,9 @@ export default function ServiceRequestPortal() {
                                 <div key={sr.id} className="border rounded-lg p-3 space-y-2">
                                     <div className="flex justify-between items-start">
                                         <span className="font-medium text-sm">{sr.requestNumber}</span>
-                                        <div className={`text-xs px-2 py-1 rounded-full ${sr.status === 'NEW' ? 'bg-blue-100 text-blue-800' :
+                                        <div className={cn(`text-xs px-2 py-1 rounded-full ${sr.status === 'NEW' ? 'bg-blue-100 text-blue-800' :
                                             sr.status === 'CONVERTED' ? 'bg-green-100 text-green-800' : 'bg-gray-100'
-                                            }`}>
+                                            }`)}>
                                             {sr.status}
                                         </div>
                                     </div>

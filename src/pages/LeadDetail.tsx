@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -58,9 +59,9 @@ export default function LeadDetail() {
         <Card><CardContent className="pt-6"><p className="text-sm text-muted-foreground">Status</p><p className="text-2xl font-bold mt-1">{lead?.status || "New"}</p></CardContent></Card>
         <Card><CardContent className="pt-6"><p className="text-sm text-muted-foreground">Lead Score</p>
           <div className="flex items-center gap-2 mt-1">
-            <span className={`text-2xl font-bold ${(lead?.score || 0) >= 70 ? "text-green-600" :
+            <span className={cn(`text-2xl font-bold ${(lead?.score || 0) >= 70 ? "text-green-600" :
               (lead?.score || 0) >= 40 ? "text-yellow-600" : "text-red-600"
-              }`}>
+              }`)}>
               {lead?.score || 0}
             </span>
             <Badge variant={(lead?.score || 0) >= 70 ? "default" : "outline"}>

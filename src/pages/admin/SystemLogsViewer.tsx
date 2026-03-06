@@ -1,8 +1,9 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FileText, Download, Search, Filter, X } from 'lucide-react';
+import { FileText, Download, Search, Filter, X, Loader2 } from "lucide-react";
 import LogEntry from '../../components/admin/LogEntry';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { ExportButton } from "@/components/ExportButton";
@@ -196,10 +197,10 @@ export default function SystemLogsViewer() {
                             <button
                                 key={value}
                                 onClick={() => setCount(value)}
-                                className={`px-3 py-1 text-sm rounded-md ${count === value
+                                className={cn(`px-3 py-1 text-sm rounded-md ${count === value
                                     ? 'bg-blue-100 text-blue-700 font-medium'
                                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    }`}
+                                    }`)}
                             >
                                 {value}
                             </button>
@@ -221,7 +222,7 @@ export default function SystemLogsViewer() {
                         {/* Level Legend */}
                         <div className="flex items-center gap-2 text-xs">
                             {['error', 'warn', 'info', 'debug'].map((level) => (
-                                <span key={level} className={`px-2 py-1 rounded ${getLevelColor(level)}`}>
+                                <span key={level} className={cn(`px-2 py-1 rounded ${getLevelColor(level)}`)}>
                                     {level}
                                 </span>
                             ))}
@@ -232,7 +233,7 @@ export default function SystemLogsViewer() {
                 <div className="divide-y">
                     {loading ? (
                         <div className="flex items-center justify-center py-12">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                            <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
                         </div>
                     ) : logs.length === 0 ? (
                         <div className="text-center py-12 text-gray-500">

@@ -58,7 +58,7 @@ export function RevenueContractTimeline({ contractId }: { contractId: string }) 
                     {history.map((entry, index) => (
                         <div key={index} className="ml-6 relative">
                             {/* Dot */}
-                            <span className="absolute -left-[30px] top-1 h-3 w-3 rounded-full bg-primary" />
+                            <span className="absolute -left-7 top-1 h-3 w-3 rounded-full bg-primary" />
 
                             <div className="flex flex-col gap-1">
                                 <div className="flex items-center gap-2">

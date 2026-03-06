@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -70,7 +71,7 @@ export default function PaymentTermsMaster() {
             header: "Status",
             id: "enabledFlag", width: "150px",
             cell: (row) => (
-                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${row.enabledFlag ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                <span className={cn(`px-2 py-1 rounded-full text-xs font-semibold ${row.enabledFlag ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`)}>
                     {row.enabledFlag ? "Active" : "Inactive"}
                 </span>
             ),

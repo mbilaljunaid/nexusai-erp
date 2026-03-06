@@ -225,7 +225,7 @@ export default function APQuickPayment() {
                             </CardHeader>
                             <CardContent>
                                 {!formData.supplierId ? (
-                                    <div className="flex flex-col items-center justify-center h-[300px] text-muted-foreground border-2 border-dashed rounded-lg">
+                                    <div className="flex flex-col items-center justify-center h-72 text-muted-foreground border-2 border-dashed rounded-lg">
                                         <Search className="h-8 w-8 mb-2 opacity-50" />
                                         <p>No supplier selected</p>
                                     </div>

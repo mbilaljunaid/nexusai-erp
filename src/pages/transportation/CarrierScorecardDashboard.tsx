@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -223,7 +224,7 @@ export default function CarrierScorecardDashboard() {
                                         onClick={() => refreshRatingMutation.mutate(selectedCarrier)}
                                         disabled={refreshRatingMutation.isPending}
                                     >
-                                        <RefreshCw className={`h-4 w-4 ${refreshRatingMutation.isPending ? "animate-spin" : ""}`} />
+                                        <RefreshCw className={cn(`h-4 w-4 ${refreshRatingMutation.isPending ? "animate-spin" : ""}`)} />
                                     </Button>
                                 )}
                             </div>

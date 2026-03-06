@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { useState} from"react";
+import { Button} from"@/components/ui/button";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger} from"@/components/ui/sheet";
 import {
     Menu,
     FileText,
@@ -11,8 +11,8 @@ import {
     Settings,
     LogOut,
     Home
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+} from"lucide-react";
+import { cn} from"@/lib/utils";
 
 interface MobileNavItem {
     icon: React.ElementType;
@@ -26,29 +26,29 @@ interface MobileNavigationProps {
     onNavigate?: (path: string) => void;
 }
 
-export function MobileNavigation({ currentPath, onNavigate }: MobileNavigationProps) {
+export function MobileNavigation({ currentPath, onNavigate}: MobileNavigationProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     const navItems: MobileNavItem[] = [
-        { icon: Home, label: "Dashboard", path: "/construction" },
-        { icon: FileText, label: "Daily Logs", path: "/construction/daily-logs" },
-        { icon: Truck, label: "Equipment", path: "/construction/equipment" },
-        { icon: AlertCircle, label: "Compliance", path: "/construction/compliance", badge: 3 },
-        { icon: DollarSign, label: "Pay Apps", path: "/construction/pay-apps" },
-        { icon: BarChart3, label: "Reports", path: "/construction/reports" },
+        { icon: Home, label:"Dashboard", path:"/construction"},
+        { icon: FileText, label:"Daily Logs", path:"/construction/daily-logs"},
+        { icon: Truck, label:"Equipment", path:"/construction/equipment"},
+        { icon: AlertCircle, label:"Compliance", path:"/construction/compliance", badge: 3},
+        { icon: DollarSign, label:"Pay Apps", path:"/construction/pay-apps"},
+        { icon: BarChart3, label:"Reports", path:"/construction/reports"},
     ];
 
     const handleNavigate = (path: string) => {
         if (onNavigate) {
             onNavigate(path);
-        }
+       }
         setIsOpen(false);
-    };
+   };
 
     return (
         <>
             {/* Mobile Bottom Navigation */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background border-t shadow-lg z-50">
+            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background border-t shadow-lg">
                 <div className="grid grid-cols-5 gap-1 p-2">
                     {navItems.slice(0, 4).map((item) => {
                         const Icon = item.icon;
@@ -58,10 +58,10 @@ export function MobileNavigation({ currentPath, onNavigate }: MobileNavigationPr
                                 key={item.path}
                                 onClick={() => handleNavigate(item.path)}
                                 className={cn(
-                                    "flex flex-col items-center justify-center py-2 px-1 rounded-lg transition-colors relative",
+                                   "flex flex-col items-center justify-center py-2 px-1 rounded-lg transition-colors relative",
                                     isActive
-                                        ? "bg-primary text-primary-foreground"
-                                        : "text-muted-foreground hover:bg-muted"
+                                        ?"bg-primary text-primary-foreground"
+                                        :"text-muted-foreground hover:bg-muted"
                                 )}
                             >
                                 <Icon className="h-5 w-5 mb-1" />
@@ -75,7 +75,7 @@ export function MobileNavigation({ currentPath, onNavigate }: MobileNavigationPr
                                 )}
                             </button>
                         );
-                    })}
+                   })}
 
                     {/* More Menu */}
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -98,10 +98,10 @@ export function MobileNavigation({ currentPath, onNavigate }: MobileNavigationPr
                                             key={item.path}
                                             onClick={() => handleNavigate(item.path)}
                                             className={cn(
-                                                "w-full flex items-center justify-between p-4 rounded-lg transition-colors",
+                                               "w-full flex items-center justify-between p-4 rounded-lg transition-colors",
                                                 isActive
-                                                    ? "bg-primary text-primary-foreground"
-                                                    : "hover:bg-muted"
+                                                    ?"bg-primary text-primary-foreground"
+                                                    :"hover:bg-muted"
                                             )}
                                         >
                                             <div className="flex items-center gap-3">
@@ -115,7 +115,7 @@ export function MobileNavigation({ currentPath, onNavigate }: MobileNavigationPr
                                             )}
                                         </button>
                                     );
-                                })}
+                               })}
                                 <div className="border-t pt-2 mt-4">
                                     <button
                                         onClick={() => handleNavigate("/settings")}
@@ -148,17 +148,17 @@ interface MobileFABProps {
     onComplianceIssue?: () => void;
 }
 
-export function MobileFAB({ onDailyLog, onEquipmentReport, onComplianceIssue }: MobileFABProps) {
+export function MobileFAB({ onDailyLog, onEquipmentReport, onComplianceIssue}: MobileFABProps) {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const actions = [
-        { icon: FileText, label: "Daily Log", onClick: onDailyLog, color: "bg-blue-600 hover:bg-blue-700" },
-        { icon: Truck, label: "Equipment", onClick: onEquipmentReport, color: "bg-green-600 hover:bg-green-700" },
-        { icon: AlertCircle, label: "Issue", onClick: onComplianceIssue, color: "bg-orange-600 hover:bg-orange-700" },
+        { icon: FileText, label:"Daily Log", onClick: onDailyLog, color:"bg-blue-600 hover:bg-blue-700"},
+        { icon: Truck, label:"Equipment", onClick: onEquipmentReport, color:"bg-green-600 hover:bg-green-700"},
+        { icon: AlertCircle, label:"Issue", onClick: onComplianceIssue, color:"bg-orange-600 hover:bg-orange-700"},
     ];
 
     return (
-        <div className="md:hidden fixed bottom-20 right-4 z-40">
+        <div className="md:hidden fixed bottom-20 right-4">
             {/* Expanded Actions */}
             {isExpanded && (
                 <div className="mb-4 space-y-3">
@@ -170,9 +170,9 @@ export function MobileFAB({ onDailyLog, onEquipmentReport, onComplianceIssue }: 
                                 onClick={() => {
                                     if (action.onClick) action.onClick();
                                     setIsExpanded(false);
-                                }}
+                               }}
                                 className={cn(
-                                    "flex items-center gap-3 px-4 py-3 rounded-full shadow-lg text-white transition-all",
+                                   "flex items-center gap-3 px-4 py-3 rounded-full shadow-lg text-white transition-all",
                                     action.color
                                 )}
                             >
@@ -180,7 +180,7 @@ export function MobileFAB({ onDailyLog, onEquipmentReport, onComplianceIssue }: 
                                 <span className="font-medium text-sm">{action.label}</span>
                             </button>
                         );
-                    })}
+                   })}
                 </div>
             )}
 
@@ -188,10 +188,10 @@ export function MobileFAB({ onDailyLog, onEquipmentReport, onComplianceIssue }: 
             <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 className={cn(
-                    "h-14 w-14 rounded-full shadow-lg flex items-center justify-center transition-all",
+                   "h-14 w-14 rounded-full shadow-lg flex items-center justify-center transition-all",
                     isExpanded
-                        ? "bg-red-600 hover:bg-red-700 rotate-45"
-                        : "bg-primary hover:bg-primary/90"
+                        ?"bg-red-600 hover:bg-red-700 rotate-45"
+                        :"bg-primary hover:bg-primary/90"
                 )}
             >
                 <svg

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -106,8 +107,8 @@ export default function AccountsReceivable() {
                             >
                                 <CardHeader>
                                     <div className="flex items-center gap-3">
-                                        <div className={`p-2 rounded-lg bg-opacity-10 group-hover:bg-opacity-20 transition-colors ${card.color.replace('text-', 'bg-')}`}>
-                                            <card.icon className={`h-6 w-6 ${card.color}`} />
+                                        <div className={cn(`p-2 rounded-lg bg-opacity-10 group-hover:bg-opacity-20 transition-colors ${card.color.replace('text-', 'bg-')}`)}>
+                                            <card.icon className={cn(`h-6 w-6 ${card.color}`)} />
                                         </div>
                                         <CardTitle className="text-base">{card.title}</CardTitle>
                                     </div>

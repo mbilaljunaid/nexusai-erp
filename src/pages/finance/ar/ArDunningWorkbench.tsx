@@ -13,6 +13,9 @@ import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
 import {
+    Dialog, DialogContent, DialogHeader, DialogTitle
+} from "@/components/ui/dialog";
+import {
     TrendingUp, AlertTriangle, Clock, Mail, Phone,
     Sparkles, Play, History, Filter, User
 } from "lucide-react";
@@ -355,40 +358,37 @@ export default function ArDunningWorkbench() {
                 </Tabs>
 
                 {/* AI Draft Preview Modal */}
-                {aiDraft && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-                        <Card className="w-full max-w-2xl bg-slate-900 border-slate-800 shadow-2xl">
-                            <CardHeader className="border-b border-slate-800">
-                                <div className="flex justify-between items-center">
-                                    <CardTitle className="text-white flex items-center gap-2">
-                                        <Sparkles className="h-5 w-5 text-indigo-400" />
-                                        AI-Generated Collection Email
-                                    </CardTitle>
-                                    <Button variant="ghost" size="sm" onClick={() => setAiDraft(null)} className="text-slate-400 hover:text-white">✕</Button>
-                                </div>
-                            </CardHeader>
-                            <CardContent className="p-6 space-y-4">
-                                <div className="bg-slate-950 p-4 rounded-lg border border-slate-800 text-slate-300 font-mono text-sm whitespace-pre-wrap max-h-[400px] overflow-y-auto">
-                                    {aiDraft}
-                                </div>
-                                <div className="flex justify-end gap-3">
-                                    <Button variant="outline" className="bg-slate-800 border-slate-700" onClick={() => setAiDraft(null)}>
-                                        Discard
-                                    </Button>
-                                    <Button className="bg-indigo-600 hover:bg-indigo-700" onClick={() => {
+                <Dialog open={!!aiDraft} onOpenChange={(open) => { if (!open) setAiDraft(null); }}>
+                    <DialogContent className="max-w-2xl bg-slate-900 border-slate-800 shadow-2xl">
+                        <DialogHeader className="border-b border-slate-800 pb-4">
+                            <DialogTitle className="text-white flex items-center gap-2">
+                                <Sparkles className="h-5 w-5 text-indigo-400" />
+                                AI-Generated Collection Email
+                            </DialogTitle>
+                        </DialogHeader>
+                        <div className="p-2 space-y-4">
+                            <div className="bg-slate-950 p-4 rounded-lg border border-slate-800 text-slate-300 font-mono text-sm whitespace-pre-wrap max-h-[400px] overflow-y-auto">
+                                {aiDraft}
+                            </div>
+                            <div className="flex justify-end gap-3 pt-2">
+                                <Button variant="outline" className="bg-slate-800 border-slate-700" onClick={() => setAiDraft(null)}>
+                                    Discard
+                                </Button>
+                                <Button className="bg-indigo-600 hover:bg-indigo-700" onClick={() => {
+                                    if (aiDraft) {
                                         navigator.clipboard.writeText(aiDraft);
                                         toast({ title: "Copied", description: "Draft copied to clipboard" });
-                                    }}>
-                                        Copy to Clipboard
-                                    </Button>
-                                    <Button className="bg-green-600 hover:bg-green-700">
-                                        Send Email
-                                    </Button>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
-                )}
+                                    }
+                                }}>
+                                    Copy to Clipboard
+                                </Button>
+                                <Button className="bg-green-600 hover:bg-green-700">
+                                    Send Email
+                                </Button>
+                            </div>
+                        </div>
+                    </DialogContent>
+                </Dialog>
             </div>
         </StandardPage>
     );

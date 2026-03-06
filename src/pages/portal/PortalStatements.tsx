@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -68,7 +69,7 @@ export default function PortalStatements() {
                                                 </div>
                                                 <div className="text-right">
                                                     <p className="text-xs text-muted-foreground">Balance</p>
-                                                    <p className={`font-semibold ${stmt.balance > 0 ? "text-red-600" : "text-slate-900"}`}>
+                                                    <p className={cn(`font-semibold ${stmt.balance > 0 ? "text-red-600" : "text-slate-900"}`)}>
                                                         {formatCurrency(Number(stmt.balance))}
                                                     </p>
                                                 </div>

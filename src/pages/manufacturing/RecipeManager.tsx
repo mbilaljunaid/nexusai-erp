@@ -122,7 +122,7 @@ export default function RecipeManager() {
             cell: (row: any) => (
                 <div className="p-2">
                     <div className="font-medium">{row.name}</div>
-                    <div className="text-xs text-slate-500 truncate max-w-[200px]">{row.description}</div>
+                    <div className="text-xs text-slate-500 truncate max-w-48">{row.description}</div>
                 </div>
             )
         },

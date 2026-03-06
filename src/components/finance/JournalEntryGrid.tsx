@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -219,7 +220,7 @@ export function JournalEntryGrid() {
                     <div className="flex gap-8 items-center text-sm font-medium">
                         <div>Total Debit: <span className="font-mono text-lg ml-2">{totalDebits.toFixed(2)}</span></div>
                         <div>Total Credit: <span className="font-mono text-lg ml-2">{totalCredits.toFixed(2)}</span></div>
-                        <div>Diff: <span className={`font-mono text-lg ml-2 ${isBalanced ? "text-green-600" : "text-destructive"}`}>
+                        <div>Diff: <span className={cn(`font-mono text-lg ml-2 ${isBalanced ? "text-green-600" : "text-destructive"}`)}>
                             {Math.abs(totalDebits - totalCredits).toFixed(2)}
                         </span></div>
                     </div>

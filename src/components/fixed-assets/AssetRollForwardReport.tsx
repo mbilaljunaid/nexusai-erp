@@ -37,7 +37,7 @@ export function AssetRollForwardReport() {
                 <div className="space-y-2">
                     <label className="text-sm font-medium">Asset Book</label>
                     <Select value={bookId} onValueChange={setBookId}>
-                        <SelectTrigger className="w-[200px]">
+                        <SelectTrigger className="w-48">
                             <SelectValue placeholder="Select Book" />
                         </SelectTrigger>
                         <SelectContent>
@@ -50,7 +50,7 @@ export function AssetRollForwardReport() {
                 <div className="space-y-2">
                     <label className="text-sm font-medium">Period</label>
                     <Select value={period} onValueChange={setPeriod}>
-                        <SelectTrigger className="w-[150px]">
+                        <SelectTrigger className="w-36">
                             <SelectValue placeholder="Select Period" />
                         </SelectTrigger>
                         <SelectContent>

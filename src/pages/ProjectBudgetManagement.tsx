@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -89,7 +90,7 @@ export default function ProjectBudgetManagement() {
           <Card className="p-3">
             <CardContent className="pt-0">
               <p className="text-xs text-muted-foreground">Remaining</p>
-              <p className={`text-2xl font-bold ${remaining >= 0 ? "text-green-600" : "text-red-600"}`}>${remaining.toLocaleString()}</p>
+              <p className={cn(`text-2xl font-bold ${remaining >= 0 ? "text-green-600" : "text-red-600"}`)}>${remaining.toLocaleString()}</p>
             </CardContent>
           </Card>
           <Card className="p-3">

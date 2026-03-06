@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -46,13 +47,13 @@ export default function CPQDashboard() {
         { id: "contract", header: "Contract", width: "150px", cell: (ren: any) => <span className="font-semibold">{ren.contract_number}</span> },
         { id: "customer", header: "Customer", width: "150px", cell: (ren: any) => <span>{ren.customer_id}</span> },
         { id: "renewal_date", header: "Renewal Date", width: "120px", cell: (ren: any) => <span>{ren.renewal_date}</span> },
-        { id: "days", header: "Days", width: "80px", cell: (ren: any) => <span className={`font-bold ${Number(ren.days_until_renewal) <= 7 ? 'text-red-600' : Number(ren.days_until_renewal) <= 14 ? 'text-amber-600' : 'text-emerald-600'}`}>{ren.days_until_renewal}d</span> },
+        { id: "days", header: "Days", width: "80px", cell: (ren: any) => <span className={cn(`font-bold ${Number(ren.days_until_renewal) <= 7 ? 'text-red-600' : Number(ren.days_until_renewal) <= 14 ? 'text-amber-600' : 'text-emerald-600'}`)}>{ren.days_until_renewal}d</span> },
         { id: "mrr", header: "MRR", width: "100px", cell: (ren: any) => <span className="font-mono">{formatCurrency(Number(ren.mrr ?? 0))}</span> },
-        { id: "auto_renew", header: "Auto-Renew", width: "100px", cell: (ren: any) => <span className={`text-[9px] px-1.5 py-0.5 rounded-sm ${ren.auto_renew ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400'}`}>{ren.auto_renew ? 'AUTO' : 'MANUAL'}</span> },
+        { id: "auto_renew", header: "Auto-Renew", width: "100px", cell: (ren: any) => <span className={cn(`text-[9px] px-1.5 py-0.5 rounded-sm ${ren.auto_renew ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400'}`)}>{ren.auto_renew ? 'AUTO' : 'MANUAL'}</span> },
         {
             id: "status", header: "Status", width: "120px", cell: (ren: any) => {
                 const clss = STATUS_CLR[ren.status] ?? 'bg-gray-100 text-gray-500';
-                return <span className={`text-[9px] px-1.5 py-0.5 rounded-sm ${clss}`}>{ren.status}</span>;
+                return <span className={cn(`text-[9px] px-1.5 py-0.5 rounded-sm ${clss}`)}>{ren.status}</span>;
             }
         },
         { id: "action", header: "", width: "100px", cell: (ren: any) => ren.status === 'Pending' ? <button onClick={() => renewMut.mutate(ren.id)} className="px-2 py-1 bg-emerald-600 text-white border-none rounded-[5px] text-[9px] cursor-pointer font-bold">Renew</button> : null }
@@ -64,10 +65,10 @@ export default function CPQDashboard() {
         { id: "pv", header: "PV", width: "100px", cell: (ca: any) => <span className="font-mono">{formatCurrency(Number(ca.pv ?? 0))}</span> },
         { id: "ev", header: "EV", width: "100px", cell: (ca: any) => <span className="font-mono">{formatCurrency(Number(ca.ev ?? 0))}</span> },
         { id: "ac", header: "AC", width: "100px", cell: (ca: any) => <span className="font-mono">{formatCurrency(Number(ca.ac ?? 0))}</span> },
-        { id: "sv", header: "SV", width: "100px", cell: (ca: any) => <span className={`font-mono font-bold ${Number(ca.sv ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{Number(ca.sv ?? 0) >= 0 ? '+' : ''}{formatCurrency(Number(ca.sv ?? 0)).replace('$', '')}</span> },
-        { id: "cv", header: "CV", width: "100px", cell: (ca: any) => <span className={`font-mono font-bold ${Number(ca.cv ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{Number(ca.cv ?? 0) >= 0 ? '+' : ''}{formatCurrency(Number(ca.cv ?? 0)).replace('$', '')}</span> },
-        { id: "cpi", header: "CPI", width: "80px", cell: (ca: any) => <span className={`font-bold ${kpiC(Number(ca.cpi ?? 1))}`}>{formatNumber(ca.cpi ?? 0, 2)}</span> },
-        { id: "spi", header: "SPI", width: "80px", cell: (ca: any) => <span className={`font-bold ${kpiC(Number(ca.spi ?? 1))}`}>{formatNumber(ca.spi ?? 0, 2)}</span> }
+        { id: "sv", header: "SV", width: "100px", cell: (ca: any) => <span className={cn(`font-mono font-bold ${Number(ca.sv ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-600'}`)}>{Number(ca.sv ?? 0) >= 0 ? '+' : ''}{formatCurrency(Number(ca.sv ?? 0)).replace('$', '')}</span> },
+        { id: "cv", header: "CV", width: "100px", cell: (ca: any) => <span className={cn(`font-mono font-bold ${Number(ca.cv ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-600'}`)}>{Number(ca.cv ?? 0) >= 0 ? '+' : ''}{formatCurrency(Number(ca.cv ?? 0)).replace('$', '')}</span> },
+        { id: "cpi", header: "CPI", width: "80px", cell: (ca: any) => <span className={cn(`font-bold ${kpiC(Number(ca.cpi ?? 1))}`)}>{formatNumber(ca.cpi ?? 0, 2)}</span> },
+        { id: "spi", header: "SPI", width: "80px", cell: (ca: any) => <span className={cn(`font-bold ${kpiC(Number(ca.spi ?? 1))}`)}>{formatNumber(ca.spi ?? 0, 2)}</span> }
     ];
 
     return (
@@ -79,7 +80,7 @@ export default function CPQDashboard() {
                 </div>
                 <div className="flex gap-1.5">
                     {[['cpq', 'Quotes'], ['renewal', 'Renewals'], ['evm', 'EVM']].map(([v, lbl]) => (
-                        <button key={v} onClick={() => setView(v as any)} className={`px-3.5 py-1.5 border-none rounded-lg font-bold text-[11px] cursor-pointer ${view === v ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500'}`}>{lbl}</button>
+                        <button key={v} onClick={() => setView(v as any)} className={cn(`px-3.5 py-1.5 border-none rounded-lg font-bold text-[11px] cursor-pointer ${view === v ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500'}`)}>{lbl}</button>
                     ))}
                 </div>
             </div>
@@ -88,15 +89,15 @@ export default function CPQDashboard() {
                 <>
                     <div className="flex gap-2.5 mb-3.5">
                         {[{ lbl: 'Pipeline', val: `$${formatNumber(pipeline / 1000, 0)}K`, clr: 'text-blue-700' }, { lbl: 'Won', val: won, clr: 'text-emerald-600' }, { lbl: 'Lost', val: lost, clr: 'text-red-600' }, { lbl: 'Open', val: pending, clr: 'text-amber-600' }].map(k => (
-                            <Card key={k.lbl} className="px-4 py-2.5 min-w-[100px] shadow-sm">
-                                <div className={`text-xl font-extrabold ${k.clr}`}>{k.val}</div>
+                            <Card key={k.lbl} className="px-4 py-2.5 min-w-24 shadow-sm">
+                                <div className={cn(`text-xl font-extrabold ${k.clr}`)}>{k.val}</div>
                                 <div className="text-[10px] text-gray-400">{k.lbl}</div>
                             </Card>
                         ))}
                     </div>
                     <div className="flex gap-1.5 mb-2.5">
                         {['', 'Draft', 'Pending_Approval', 'Approved', 'Presented', 'Won', 'Lost'].map(s => (
-                            <button key={s} onClick={() => setStatusFilter(s)} className={`px-2.5 py-1.5 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`}>{s || 'All'}</button>
+                            <button key={s} onClick={() => setStatusFilter(s)} className={cn(`px-2.5 py-1.5 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</button>
                         ))}
                     </div>
                     <div className="flex gap-3.5">
@@ -105,10 +106,10 @@ export default function CPQDashboard() {
                                 const statusClass = STATUS_CLR[q.status] ?? 'bg-gray-100 text-gray-400 border-l-gray-400';
                                 const acts = ACTIONS[q.status] ?? [];
                                 return (
-                                    <Card key={q.id} onClick={() => setSelected(selected?.id === q.id ? null : q)} className={`hover:shadow-md cursor-pointer border-l-[4px] px-3.5 py-2.5 mb-1.5 shadow-sm ${selected?.id === q.id ? 'border-y-blue-700 border-r-blue-700' : ''} ${statusClass.split(' ').find(c => c.startsWith('border-l-'))}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                                    <Card key={q.id} onClick={() => setSelected(selected?.id === q.id ? null : q)} className={cn(`hover:shadow-md cursor-pointer border-l-[4px] px-3.5 py-2.5 mb-1.5 shadow-sm ${selected?.id === q.id ? 'border-y-blue-700 border-r-blue-700' : ''} ${statusClass.split(' ').find(c => c.startsWith('border-l-'))}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                         <div className="flex justify-between mb-1">
                                             <div className="font-bold text-[13px]">{q.quote_number} — {q.customer_id}</div>
-                                            <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${statusClass.replace(/border-l-\S+/, '')}`}>{q.status}</span>
+                                            <span className={cn(`text-[9px] px-1.5 py-0.5 rounded font-bold ${statusClass.replace(/border-l-\S+/, '')}`)}>{q.status}</span>
                                         </div>
                                         <div className="flex gap-3 text-[10px] text-gray-500 mb-1">
                                             <span>List: <strong className="text-gray-700">{formatCurrency(Number(q.list_total))}</strong></span>
@@ -118,7 +119,7 @@ export default function CPQDashboard() {
                                         </div>
                                         {acts.length > 0 && (
                                             <div className="flex gap-1 mt-1">
-                                                {acts.map(a => <button key={a.a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: q.id, action: a.a }); }} className={`px-[7px] py-[2px] border-none rounded font-bold text-[9px] cursor-pointer ${a.textClass} ${a.bgClass}`}>{a.label}</button>)}
+                                                {acts.map(a => <button key={a.a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: q.id, action: a.a }); }} className={cn(`px-1.5 py-0.5 border-none rounded font-bold text-[9px] cursor-pointer ${a.textClass} ${a.bgClass}`)}>{a.label}</button>)}
                                             </div>
                                         )}
                                     </Card>
@@ -127,7 +128,7 @@ export default function CPQDashboard() {
                             {quotes.length === 0 && <Card className="text-center text-gray-400 p-8 shadow-sm">No quotes</Card>}
                         </div>
                         {selected && (
-                            <Card className="w-[280px] flex-shrink-0 p-3.5 h-fit sticky top-4 shadow-sm">
+                            <Card className="w-72 flex-shrink-0 p-3.5 h-fit sticky top-4 shadow-sm">
                                 <div className="font-bold text-[13px] mb-2">{selected.quote_number}</div>
                                 <div className="text-[11px] font-bold mb-1.5">Line Items</div>
                                 <Card className="p-2 border-none shadow-none bg-gray-50">
@@ -175,12 +176,12 @@ export default function CPQDashboard() {
             {view === 'evm' && (
                 <div>
                     <div className="flex gap-2 mb-3 items-center">
-                        <Input value={evmBaseline} onChange={e => setEvmBaseline(e.target.value)} placeholder="Paste Baseline ID..." className="text-xs w-[300px] h-8" aria-label="Baseline ID" />
+                        <Input value={evmBaseline} onChange={e => setEvmBaseline(e.target.value)} placeholder="Paste Baseline ID..." className="text-xs w-72 h-8" aria-label="Baseline ID" />
                         {evmMetrics && (
                             <div className="flex gap-2">
                                 {[{ lbl: 'SPI', val: formatNumber(evmMetrics.totals.ev / (evmMetrics.totals.pv || 1), 2), gd: 1 }, { lbl: 'CPI', val: formatNumber(evmMetrics.totals.ev / (evmMetrics.totals.ac || 1), 2), gd: 1 }, { lbl: 'EAC', val: `$${formatNumber(evmMetrics.eac / 1000, 0)}K`, clr: 'text-blue-700' }].map(k => (
                                     <div key={k.lbl} className="bg-white border border-gray-200 rounded-lg px-3 py-1.5">
-                                        <div className={`text-sm font-extrabold ${(k as any).clr ?? kpiC(Number(k.val))}`}>{k.val}</div>
+                                        <div className={cn(`text-sm font-extrabold ${(k as any).clr ?? kpiC(Number(k.val))}`)}>{k.val}</div>
                                         <div className="text-[9px] text-gray-400">{k.lbl}</div>
                                     </div>
                                 ))}

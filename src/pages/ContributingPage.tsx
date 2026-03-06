@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -160,8 +161,8 @@ export default function ContributingPage() {
               return (
                 <Card key={index} className="p-6" data-testid={`card-contributor-type-${index}`}>
                   <div className="flex items-start gap-4">
-                    <div className={`p-3 rounded-lg ${type.bgColor}`}>
-                      <IconComponent className={`w-6 h-6 ${type.color}`} />
+                    <div className={cn(`p-3 rounded-lg ${type.bgColor}`)}>
+                      <IconComponent className={cn(`w-6 h-6 ${type.color}`)} />
                     </div>
                     <div className="flex-1">
                       <h3 className="font-bold text-lg mb-2">{type.title}</h3>

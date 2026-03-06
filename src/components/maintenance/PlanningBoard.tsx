@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -110,13 +111,13 @@ export default function PlanningBoard() {
             <div className="grid grid-cols-7 gap-4">
                 {days.map((day, i) => (
                     <div key={i} className="flex flex-col gap-2">
-                        <div className={`text-center p-2 rounded-t-lg border-b-2 font-medium ${day.toDateString() === new Date().toDateString() ? 'bg-primary/10 border-primary text-primary' : 'bg-muted border-transparent'}`}>
+                        <div className={cn(`text-center p-2 rounded-t-lg border-b-2 font-medium ${day.toDateString() === new Date().toDateString() ? 'bg-primary/10 border-primary text-primary' : 'bg-muted border-transparent'}`)}>
                             {format(day, "EEE d")}
                         </div>
                         <div className="bg-muted/20 min-h-[400px] rounded-b-lg p-2 space-y-2 border border-t-0">
                             {/* Render Cards */}
                             {getOpsForDay(day).map((op: any) => (
-                                <Card key={op.id} className={`cursor-pointer hover:shadow-md transition-shadow border-l-4 ${op.type === 'PM' ? 'border-l-green-500 border-dashed bg-green-50/50' : 'border-l-blue-500'}`}>
+                                <Card key={op.id} className={cn(`cursor-pointer hover:shadow-md transition-shadow border-l-4 ${op.type === 'PM' ? 'border-l-green-500 border-dashed bg-green-50/50' : 'border-l-blue-500'}`)}>
                                     <CardContent className="p-3">
                                         <div className="text-xs font-bold text-muted-foreground mb-1 flex justify-between">
                                             <span>{op.workOrder?.workOrderNumber || "FORECAST"}</span>
@@ -147,7 +148,7 @@ export default function PlanningBoard() {
                 <CardContent>
                     <div className="flex gap-4 overflow-x-auto pb-4">
                         {schedule?.backlog.map((op: any) => (
-                            <div key={op.id} className="min-w-[200px] p-3 border rounded-md bg-card hover:bg-accent cursor-pointer group relative">
+                            <div key={op.id} className="min-w-48 p-3 border rounded-md bg-card hover:bg-accent cursor-pointer group relative">
                                 <div className="text-xs font-bold text-muted-foreground">{op.workOrder?.workOrderNumber}</div>
                                 <div className="text-sm font-medium">{op.description}</div>
 

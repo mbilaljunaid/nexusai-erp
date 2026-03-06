@@ -118,7 +118,7 @@ export function RiskIndicator({ analysis, isLoading, className }: RiskIndicatorP
                                     <Info className="h-3 w-3" />
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p className="text-[10px] max-w-[200px]">These factors contribute to the overall compliance risk score based on heuristic analysis.</p>
+                                    <p className="text-[10px] max-w-48">These factors contribute to the overall compliance risk score based on heuristic analysis.</p>
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,7 +24,7 @@ import {
     Line,
     ComposedChart
 } from "recharts";
-import { Download, Filter, RefreshCcw, TrendingUp, TrendingDown, DollarSign, LineChart as LineChartIcon, Settings, Calendar, Briefcase, ChevronRight, Activity } from "lucide-react";
+import { Download, Filter, RefreshCcw, TrendingUp, TrendingDown, DollarSign, LineChart as LineChartIcon, Settings, Calendar, Briefcase, ChevronRight, Activity, Loader2 } from "lucide-react";
 import { formatDate } from "@/lib/dateUtils";
 import { StandardPage } from '@/components/layout/StandardPage';
 
@@ -135,8 +136,8 @@ export default function CashForecastingView() {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="text-sm text-muted-foreground">Net Cash Flow</p>
-                                        <p className={`text-2xl font-bold ${summary.netCashFlow >= 0 ? "text-green-600" : "text-red-600"
-                                            }`}>
+                                        <p className={cn(`text-2xl font-bold ${summary.netCashFlow >= 0 ? "text-green-600" : "text-red-600"
+                                            }`)}>
                                             {formatCurrency(summary.netCashFlow)}
                                         </p>
                                     </div>
@@ -204,10 +205,10 @@ export default function CashForecastingView() {
                             <CardContent>
                                 {isLoading ? (
                                     <div className="h-[400px] flex items-center justify-center">
-                                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+                                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
                                     </div>
                                 ) : (
-                                    <div className="h-[250px]">
+                                    <div className="h-64">
                                         <ResponsiveContainer width="100%" height="100%">
                                             <BarChart data={currentScenario?.data || []} layout="vertical">
                                                 <CartesianGrid strokeDasharray="3 3" horizontal={false} />

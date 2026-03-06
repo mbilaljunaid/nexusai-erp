@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IconNavigation } from "@/components/IconNavigation";
@@ -265,7 +266,7 @@ export default function Ecommerce() {
                     </div>
                     <div className="text-right">
                       <p className="font-mono font-semibold">${order.total}</p>
-                      <Badge className={`text-xs capitalize ${statusConfig[order.status as "pending" | "processing" | "shipped" | "delivered" | "cancelled"]}`}>
+                      <Badge className={cn(`text-xs capitalize ${statusConfig[order.status as "pending" | "processing" | "shipped" | "delivered" | "cancelled"]}`)}>
                         {order.status}
                       </Badge>
                     </div>

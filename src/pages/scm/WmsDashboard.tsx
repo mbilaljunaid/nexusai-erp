@@ -99,7 +99,7 @@ export default function WmsDashboard() {
                             Throughput Velocity (24H)
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="h-[350px]">
+                    <CardContent className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={taskData}>
                                 <defs>
@@ -127,7 +127,7 @@ export default function WmsDashboard() {
                     <CardHeader>
                         <CardTitle className="text-white">Zone Capacity Utilization</CardTitle>
                     </CardHeader>
-                    <CardContent className="h-[350px] flex flex-col justify-center">
+                    <CardContent className="h-80 flex flex-col justify-center">
                         <div className="space-y-6">
                             {zoneUtilization.map((zone) => (
                                 <div key={zone.name} className="space-y-2">

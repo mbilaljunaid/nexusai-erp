@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -174,7 +175,7 @@ export default function PerformanceCalibrationBoard() {
                                     {/* 9-Box Container */}
                                     <div className="flex-1 grid grid-cols-3 grid-rows-3 gap-4">
                                         {gridDefinition.map((box) => (
-                                            <div key={box.id} className={`flex flex-col rounded-xl border-2 ${box.color} ${box.border} overflow-hidden shadow-sm h-[220px]`}>
+                                            <div key={box.id} className={cn(`flex flex-col rounded-xl border-2 ${box.color} ${box.border} overflow-hidden shadow-sm h-56`)}>
                                                 <div className="p-2 border-b bg-white/50 dark:bg-black/20 flex justify-between items-center backdrop-blur-sm">
                                                     <span className="font-semibold text-sm tracking-tight">{box.label}</span>
                                                     <Badge variant="outline" className="text-[10px] bg-white dark:bg-zinc-950 font-mono">
@@ -187,7 +188,7 @@ export default function PerformanceCalibrationBoard() {
                                                         <div
                                                             ref={provided.innerRef}
                                                             {...provided.droppableProps}
-                                                            className={`flex-1 p-2 overflow-y-auto space-y-2 transition-colors ${snapshot.isDraggingOver ? 'bg-black/5 dark:bg-white/5' : ''}`}
+                                                            className={cn(`flex-1 p-2 overflow-y-auto space-y-2 transition-colors ${snapshot.isDraggingOver ? 'bg-black/5 dark:bg-white/5' : ''}`)}
                                                         >
                                                             {getEmployeesForBox(box.x, box.y).map((emp, index) => (
                                                                 <Draggable key={emp.id} draggableId={emp.id} index={index}>
@@ -196,7 +197,7 @@ export default function PerformanceCalibrationBoard() {
                                                                             ref={provided.innerRef}
                                                                             {...provided.draggableProps}
                                                                             {...provided.dragHandleProps}
-                                                                            className={`bg-white dark:bg-zinc-950 border p-2 rounded-lg shadow-sm group hover:border-blue-400 dark:hover:border-blue-500 transition-all ${snapshot.isDragging ? 'shadow-lg ring-2 ring-blue-500 scale-105' : ''}`}
+                                                                            className={cn(`bg-white dark:bg-zinc-950 border p-2 rounded-lg shadow-sm group hover:border-blue-400 dark:hover:border-blue-500 transition-all ${snapshot.isDragging ? 'shadow-lg ring-2 ring-blue-500 scale-105' : ''}`)}
                                                                         >
                                                                             <div className="flex items-center gap-3">
                                                                                 <div className="relative">

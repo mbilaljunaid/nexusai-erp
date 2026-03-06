@@ -85,14 +85,14 @@ export function ArReceiptApplicationDialog({ receipt, open, onOpenChange }: ArRe
                     {loadingInvoices ? (
                         <div className="flex justify-center p-8"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>
                     ) : (
-                        <div className="border rounded-md max-h-[300px] overflow-auto">
+                        <div className="border rounded-md max-h-72 overflow-auto">
                             <Table>
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>Invoice #</TableHead>
                                         <TableHead>Total</TableHead>
                                         <TableHead>Status</TableHead>
-                                        <TableHead className="w-[150px]">Apply Amount</TableHead>
+                                        <TableHead className="w-36">Apply Amount</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>

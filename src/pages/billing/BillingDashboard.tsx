@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, DollarSign, Activity, AlertTriangle, TrendingUp, RefreshCw, FileText } from "lucide-react";
@@ -153,11 +154,11 @@ export default function BillingDashboard() {
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                         {navigationCards.map((card) => (
                             <Link key={card.href} href={card.href}>
-                                <Card className={`cursor-pointer hover:shadow-md transition-shadow group h-full border-${card.color.split('-')[1]}-500/20 bg-${card.color.split('-')[1]}-500/5`}>
+                                <Card className={cn(`cursor-pointer hover:shadow-md transition-shadow group h-full border-${card.color.split('-')[1]}-500/20 bg-${card.color.split('-')[1]}-500/5`)}>
                                     <CardHeader>
                                         <div className="flex items-center gap-3">
-                                            <div className={`p-2 rounded-lg bg-opacity-20 group-hover:bg-opacity-30 transition-colors ${card.color.replace('text-', 'bg-')}`}>
-                                                <card.icon className={`h-6 w-6 ${card.color}`} />
+                                            <div className={cn(`p-2 rounded-lg bg-opacity-20 group-hover:bg-opacity-30 transition-colors ${card.color.replace('text-', 'bg-')}`)}>
+                                                <card.icon className={cn(`h-6 w-6 ${card.color}`)} />
                                             </div>
                                             <CardTitle className="text-base">{card.title}</CardTitle>
                                         </div>

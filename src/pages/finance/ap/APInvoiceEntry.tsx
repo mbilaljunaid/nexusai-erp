@@ -258,7 +258,7 @@ export default function APInvoiceEntry() {
         {
             id: "description",
             header: "Description",
-            width: "min-w-[200px]",
+            width: "min-w-48",
             cell: (line, index, updateRow) => (
                 <Input className="h-9" value={line.description} onChange={e => updateRow("description", e.target.value)} placeholder="Description..." />
             )

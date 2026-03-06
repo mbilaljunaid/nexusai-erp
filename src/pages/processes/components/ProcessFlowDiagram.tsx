@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from 'react';
 import { Card } from '@/components/ui/card';
 
@@ -35,7 +36,7 @@ export function ProcessFlowDiagram({ steps, title = "Process Flow" }: ProcessFlo
       <div className="flex items-center gap-2 overflow-x-auto pb-4">
         {steps.map((step, index) => (
           <React.Fragment key={step.id}>
-            <div className={`p-4 rounded-lg border-2 min-w-max ${stepColors[step.type]}`}>
+            <div className={cn(`p-4 rounded-lg border-2 min-w-max ${stepColors[step.type]}`)}>
               <div className="text-2xl mb-2">{stepIcons[step.type]}</div>
               <div className="text-sm font-medium">{step.label}</div>
               <div className="text-xs mt-1">Step {step.id}</div>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
@@ -200,7 +201,7 @@ export function APInvoiceDistributions({ invoiceId, invoiceLineId, lineAmount, o
                     <div className="px-3 py-1 bg-slate-100 rounded text-slate-700">
                         Line Amount: ${lineAmount.toFixed(2)}
                     </div>
-                    <div className={`px-3 py-1 rounded ${isBalanced ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                    <div className={cn(`px-3 py-1 rounded ${isBalanced ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`)}>
                         Distributed: ${totalCalculated.toFixed(2)}
                     </div>
                 </div>

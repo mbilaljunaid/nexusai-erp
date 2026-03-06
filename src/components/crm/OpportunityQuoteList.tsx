@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 
 import { useState } from "react";
@@ -59,7 +60,7 @@ export function OpportunityQuoteList({ opportunityId }: OpportunityQuoteListProp
                         <Card key={quote.id} className="hover:bg-muted/40 transition-colors">
                             <CardContent className="p-4 flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className={`p-2 rounded-full ${quote.status === 'Accepted' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                                    <div className={cn(`p-2 rounded-full ${quote.status === 'Accepted' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`)}>
                                         <FileText className="h-4 w-4" />
                                     </div>
                                     <div>

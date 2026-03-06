@@ -114,7 +114,7 @@ export default function WIPDashboard() {
                         <CardTitle>WIP Value Progression</CardTitle>
                         <CardDescription>Daily breakdown of WIP by cost type.</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-72">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={trendData}>
                                 <CartesianGrid strokeDasharray="3 3" />

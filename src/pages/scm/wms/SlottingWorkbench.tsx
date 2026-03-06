@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -75,7 +76,7 @@ export default function SlottingWorkbench() {
                                 {Array.from({ length: 25 }).map((_, i) => (
                                     <div
                                         key={i}
-                                        className={`rounded-sm ${i === 2 || i === 7 || i === 12 ? 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]' : i % 3 === 0 ? 'bg-orange-500/50' : 'bg-blue-500/10'}`}
+                                        className={cn(`rounded-sm ${i === 2 || i === 7 || i === 12 ? 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]' : i % 3 === 0 ? 'bg-orange-500/50' : 'bg-blue-500/10'}`)}
                                         title={`Sector ${i + 1}: ${i === 2 ? 'Congested' : 'Clear'}`}
                                     />
                                 ))}

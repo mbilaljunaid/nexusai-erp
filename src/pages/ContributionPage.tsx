@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -220,15 +221,15 @@ export default function ContributionPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {contributionTypes.map((type, index) => (
               <Card key={index} className="p-6 hover-elevate transition-all" data-testid={`card-contribution-${type.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')}`}>
-                <div className={`w-12 h-12 rounded-lg ${type.bgColor} flex items-center justify-center mb-4`}>
-                  <type.icon className={`w-6 h-6 ${type.color}`} />
+                <div className={cn(`w-12 h-12 rounded-lg ${type.bgColor} flex items-center justify-center mb-4`)}>
+                  <type.icon className={cn(`w-6 h-6 ${type.color}`)} />
                 </div>
                 <h3 className="text-xl font-bold mb-2">{type.title}</h3>
                 <p className="text-muted-foreground mb-4">{type.description}</p>
                 <ul className="space-y-2">
                   {type.examples.map((example, i) => (
                     <li key={i} className="flex items-center gap-2 text-sm">
-                      <CheckCircle2 className={`w-4 h-4 ${type.color}`} />
+                      <CheckCircle2 className={cn(`w-4 h-4 ${type.color}`)} />
                       <span>{example}</span>
                     </li>
                   ))}
@@ -253,7 +254,7 @@ export default function ContributionPage() {
                 <Card key={index} className="p-8 bg-white/10 backdrop-blur border-white/20" data-testid={`card-benefit-${benefit.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')}`}>
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                      <benefit.icon className={`w-6 h-6 ${benefit.color}`} />
+                      <benefit.icon className={cn(`w-6 h-6 ${benefit.color}`)} />
                     </div>
                     <div>
                       <h3 className="text-xl font-bold mb-2 text-white">{benefit.title}</h3>
@@ -284,7 +285,7 @@ export default function ContributionPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {trustLevels.map((levelInfo, index) => (
               <Card key={index} className="p-6 hover-elevate" data-testid={`card-level-${levelInfo.level.toLowerCase().replace(/\s+/g, '-')}`}>
-                <div className={`w-12 h-12 rounded-full ${levelInfo.color} mx-auto mb-4 flex items-center justify-center`}>
+                <div className={cn(`w-12 h-12 rounded-full ${levelInfo.color} mx-auto mb-4 flex items-center justify-center`)}>
                   <span className="text-white font-bold text-lg">{levelInfo.trustLevel}</span>
                 </div>
                 <h3 className="text-lg font-bold mb-2 text-center">{levelInfo.level}</h3>
@@ -317,7 +318,7 @@ export default function ContributionPage() {
               </p>
             </div>
 
-            <div className="h-[350px]">
+            <div className="h-80">
               <InteractiveSpreadsheet
                 columns={badgeColumns}
                 data={badgeThresholds}

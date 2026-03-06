@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -199,7 +200,7 @@ export function MarkToMarketDashboard() {
                 const isGain = mtm >= 0;
                 return (
                     <div className="flex flex-col items-end">
-                        <span className={`font-bold ${isGain ? "text-emerald-600" : "text-red-600"}`}>
+                        <span className={cn(`font-bold ${isGain ? "text-emerald-600" : "text-red-600"}`)}>
                             {isGain ? "+" : ""}
                             {mtm.toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
@@ -295,8 +296,8 @@ export function MarkToMarketDashboard() {
                     </CardHeader>
                     <CardContent>
                         <p
-                            className={`text-2xl font-black ${plMetrics.totalUnrealizedPL >= 0 ? "text-emerald-600" : "text-red-600"
-                                }`}
+                            className={cn(`text-2xl font-black ${plMetrics.totalUnrealizedPL >= 0 ? "text-emerald-600" : "text-red-600"
+                                }`)}
                         >
                             {plMetrics.totalUnrealizedPL >= 0 ? "+" : ""}$
                             {plMetrics.totalUnrealizedPL.toLocaleString(undefined, {
@@ -371,7 +372,7 @@ export function MarkToMarketDashboard() {
                         </CardTitle>
                         <CardDescription>Historical unrealized P&L movement</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-72">
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={mtmTrendData}>
                                 <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
@@ -407,7 +408,7 @@ export function MarkToMarketDashboard() {
                         </CardTitle>
                         <CardDescription>P&L distribution across FX pairs</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-72">
                         {currencyBreakdown.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>

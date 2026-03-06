@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link, useLocation } from 'wouter';
+import React from'react';
+import { Link, useLocation} from'wouter';
 import {
     LayoutDashboard,
     Users,
@@ -14,9 +14,9 @@ import {
     ActivityIcon,
     ChevronLeft,
     Menu
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+} from'lucide-react';
+import { Button} from'@/components/ui/button';
+import { cn} from'@/lib/utils';
 
 interface AdminLayoutProps {
     children: React.ReactNode;
@@ -24,63 +24,63 @@ interface AdminLayoutProps {
 
 const navigation = [
     {
-        name: 'Dashboard',
-        href: '/admin',
+        name:'Dashboard',
+        href:'/admin',
         icon: LayoutDashboard,
-    },
+   },
     {
-        name: 'Tenant Management',
-        href: '/admin/tenants',
+        name:'Tenant Management',
+        href:'/admin/tenants',
         icon: Building2,
-    },
+   },
     {
-        name: 'Demo Management',
-        href: '/admin/demos',
+        name:'Demo Management',
+        href:'/admin/demos',
         icon: TestTube,
-    },
+   },
     {
-        name: 'Module Management',
-        href: '/admin/modules',
+        name:'Module Management',
+        href:'/admin/modules',
         icon: Package,
-    },
+   },
     {
-        name: 'Module-Industry Mapping',
-        href: '/admin/module-mapping',
+        name:'Module-Industry Mapping',
+        href:'/admin/module-mapping',
         icon: Map,
-    },
+   },
     {
-        name: 'Subscription & Billing',
-        href: '/admin/billing',
+        name:'Subscription & Billing',
+        href:'/admin/billing',
         icon: CreditCard,
-    },
+   },
     {
-        name: 'Users & Access',
-        href: '/admin/users',
+        name:'Users & Access',
+        href:'/admin/users',
         icon: Users,
-    },
+   },
     {
-        name: 'Content Management',
-        href: '/admin/content',
+        name:'Content Management',
+        href:'/admin/content',
         icon: FileText,
-    },
+   },
     {
-        name: 'Audit & Logs',
-        href: '/admin/audit',
+        name:'Audit & Logs',
+        href:'/admin/audit',
         icon: ActivityIcon,
-    },
+   },
     {
-        name: 'System Configuration',
-        href: '/admin/config',
+        name:'System Configuration',
+        href:'/admin/config',
         icon: Settings,
-    },
+   },
     {
-        name: 'Security Settings',
-        href: '/admin/security',
+        name:'Security Settings',
+        href:'/admin/security',
         icon: Shield,
-    },
+   },
 ];
 
-export default function AdminLayout({ children }: AdminLayoutProps) {
+export default function AdminLayout({ children}: AdminLayoutProps) {
     const [location] = useLocation();
     const [sidebarOpen, setSidebarOpen] = React.useState(true);
 
@@ -89,8 +89,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             {/* Sidebar */}
             <aside
                 className={cn(
-                    'fixed left-0 top-0 z-40 h-screen transition-all duration-300 bg-gray-900 text-white',
-                    sidebarOpen ? 'w-64' : 'w-16'
+                   'fixed left-0 top-0 h-screen transition-all duration-300 bg-gray-900 text-white',
+                    sidebarOpen ?'w-64' :'w-16'
                 )}
             >
                 {/* Header */}
@@ -126,15 +126,15 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 {/* Navigation */}
                 <nav className="p-2 space-y-1">
                     {navigation.map((item) => {
-                        const isActive = location === item.href || (item.href !== '/admin' && location.startsWith(item.href));
+                        const isActive = location === item.href || (item.href !=='/admin' && location.startsWith(item.href));
                         return (
                             <Link key={item.name} href={item.href}>
                                 <a
                                     className={cn(
-                                        'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors',
+                                       'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors',
                                         isActive
-                                            ? 'bg-blue-600 text-white'
-                                            : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                                            ?'bg-blue-600 text-white'
+                                            :'text-gray-300 hover:bg-gray-800 hover:text-white'
                                     )}
                                     title={!sidebarOpen ? item.name : undefined}
                                 >
@@ -143,15 +143,15 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                                 </a>
                             </Link>
                         );
-                    })}
+                   })}
                 </nav>
             </aside>
 
             {/* Main Content */}
             <main
                 className={cn(
-                    'transition-all duration-300',
-                    sidebarOpen ? 'ml-64' : 'ml-16'
+                   'transition-all duration-300',
+                    sidebarOpen ?'ml-64' :'ml-16'
                 )}
             >
                 <div className="min-h-screen">

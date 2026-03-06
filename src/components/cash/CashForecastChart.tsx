@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -40,10 +41,10 @@ export function CashForecastChart() {
         return (
             <Card className="col-span-4">
                 <CardHeader>
-                    <Skeleton className="h-6 w-[200px]" />
-                    <Skeleton className="h-4 w-[300px]" />
+                    <Skeleton className="h-6 w-48" />
+                    <Skeleton className="h-4 w-72" />
                 </CardHeader>
-                <CardContent className="h-[350px]">
+                <CardContent className="h-80">
                     <Skeleton className="h-full w-full" />
                 </CardContent>
             </Card>
@@ -72,7 +73,7 @@ export function CashForecastChart() {
                 </div>
             </CardHeader>
             <CardContent>
-                <div className="h-[350px] w-full pt-4">
+                <div className="h-80 w-full pt-4">
                     <ChartContainer config={chartConfig}>
                         <AreaChart
                             data={forecast?.dailyForecasts || []}
@@ -117,7 +118,7 @@ export function CashForecastChart() {
                         </div>
                         <div className="flex flex-col border-l pl-4">
                             <span className="text-[10px] text-muted-foreground uppercase">Net Change</span>
-                            <span className={`text-lg font-bold ${forecast?.summary?.netChange >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                            <span className={cn(`text-lg font-bold ${forecast?.summary?.netChange >= 0 ? 'text-emerald-500' : 'text-rose-500'}`)}>
                                 {forecast?.summary?.netChange >= 0 ? '+' : ''}{formatCurrency(forecast?.summary?.netChange || 0)}
                             </span>
                         </div>

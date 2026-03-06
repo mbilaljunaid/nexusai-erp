@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -166,10 +167,10 @@ export default function SlaAIExplainability() {
                                                         <div className="flex items-center gap-2">
                                                             <div className="flex-1 h-1.5 w-16 bg-muted rounded-full overflow-hidden">
                                                                 <div
-                                                                    className={`h-full bg-purple-500 transition-all duration-500 ${trace.confidence > 0.9 ? 'w-[95%]' :
+                                                                    className={cn(`h-full bg-purple-500 transition-all duration-500 ${trace.confidence > 0.9 ? 'w-[95%]' :
                                                                         trace.confidence > 0.8 ? 'w-[85%]' :
                                                                             trace.confidence > 0.6 ? 'w-[70%]' : 'w-[50%]'
-                                                                        }`}
+                                                                        }`)}
                                                                 ></div>
                                                             </div>
                                                             <span className="text-xs font-bold">{(trace.confidence * 100).toFixed(0)}%</span>

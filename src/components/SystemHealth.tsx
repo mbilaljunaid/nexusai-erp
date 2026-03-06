@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -122,10 +123,10 @@ export function SystemHealth({ metrics, insights, onRefresh }: SystemHealthProps
                     <Icon className="h-4 w-4 text-muted-foreground" />
                     <span className="text-xs font-medium">{metric.name}</span>
                   </div>
-                  <StatusIcon className={`h-3 w-3 ${
+                  <StatusIcon className={cn(`h-3 w-3 ${
                     metric.status === "healthy" ? "text-green-500" :
                     metric.status === "warning" ? "text-yellow-500" : "text-red-500"
-                  }`} />
+                  }`)} />
                 </div>
                 <Progress value={percentage} className="h-1.5" />
                 <p className="text-xs text-muted-foreground mt-1 font-mono">
@@ -144,11 +145,11 @@ export function SystemHealth({ metrics, insights, onRefresh }: SystemHealthProps
           {defaultInsights.map((insight) => (
             <div 
               key={insight.id}
-              className={`p-3 rounded-md text-xs ${
+              className={cn(`p-3 rounded-md text-xs ${
                 insight.type === "optimization" ? "bg-blue-500/10 text-blue-600 dark:text-blue-400" :
                 insight.type === "warning" ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400" :
                 "bg-muted"
-              }`}
+              }`)}
             >
               <p>{insight.message}</p>
               {insight.action && (

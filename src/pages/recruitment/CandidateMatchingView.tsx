@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -83,14 +84,14 @@ export default function CandidateMatchingView() {
                             <div role="button" tabIndex={0}
                                 key={c.id}
                                 onClick={() => setSelectedCandidate(c.id)}
-                                className={`p-4 border-b cursor-pointer transition-colors hover:bg-slate-50 ${selectedCandidate === c.id ? "bg-indigo-50 border-l-4 border-l-indigo-600" : ""}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                className={cn(`p-4 border-b cursor-pointer transition-colors hover:bg-slate-50 ${selectedCandidate === c.id ? "bg-indigo-50 border-l-4 border-l-indigo-600" : ""}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="space-y-0.5">
                                         <p className="font-bold text-sm">{c.name}</p>
                                         <p className="text-xs text-muted-foreground">{c.experience}</p>
                                     </div>
-                                    <div className={`p-1.5 rounded-lg text-xs font-bold ${c.score > 90 ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-700"}`}>
+                                    <div className={cn(`p-1.5 rounded-lg text-xs font-bold ${c.score > 90 ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-700"}`)}>
                                         {c.score}%
                                     </div>
                                 </div>

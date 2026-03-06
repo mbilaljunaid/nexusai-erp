@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { useQuery } from "@tanstack/react-query";
 import { PageSkeleton } from "@/components/shared/PageSkeleton";
@@ -89,7 +90,7 @@ export default function RecruitingAnalytics() {
                         <CardDescription>Visualizing candidate drop-off across stages.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="h-[300px]">
+                        <div className="h-72">
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={funnelData} layout="vertical" margin={{ left: 20 }}>
                                     <CartesianGrid strokeDasharray="3 3" horizontal={false} />
@@ -110,7 +111,7 @@ export default function RecruitingAnalytics() {
                         <CardDescription>Which channels yield the most high-quality candidates?</CardDescription>
                     </CardHeader>
                     <CardContent className="flex justify-center items-center">
-                        <div className="h-[300px] w-full">
+                        <div className="h-72 w-full">
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
                                     <Pie
@@ -140,7 +141,7 @@ export default function RecruitingAnalytics() {
                     <CardDescription>Month-over-month trend of successful placements.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="h-[250px]">
+                    <div className="h-64">
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={[
                                 { month: 'Jan', hires: 4 },
@@ -172,7 +173,7 @@ export default function RecruitingAnalytics() {
 
 function Badge({ children, variant, className }: any) {
     return (
-        <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${variant === 'outline' ? 'text-foreground' : 'bg-primary text-primary-foreground'} ${className}`}>
+        <span className={cn(`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${variant === 'outline' ? 'text-foreground' : 'bg-primary text-primary-foreground'} ${className}`)}>
             {children}
         </span>
     );

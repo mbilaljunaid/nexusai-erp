@@ -92,7 +92,7 @@ export function Wizard({ steps, onComplete, title, className }: WizardProps) {
                                 </div>
                                 {index < steps.length - 1 && (
                                     <div className={cn(
-                                        "h-[2px] w-full mx-4 transition-colors duration-300",
+                                        "h-0.5 w-full mx-4 transition-colors duration-300",
                                         index < currentStepIndex ? "bg-primary" : "bg-muted"
                                     )} />
                                 )}
@@ -119,7 +119,7 @@ export function Wizard({ steps, onComplete, title, className }: WizardProps) {
                 <Button
                     onClick={handleNext}
                     disabled={isLoading}
-                    className="min-w-[120px]"
+                    className="min-w-28"
                 >
                     {isLoading ? "Validating..." : isLastStep ? "Finish" : (
                         <>

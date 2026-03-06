@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { Textarea } from "@/components/ui/textarea";
@@ -49,17 +50,17 @@ export default function PhysicalInventory() {
         { id: "location", header: "Location", width: "120px", cell: (l) => <span className="text-muted-foreground">{l.location ?? '—'}</span> },
         { id: "lot", header: "Lot", width: "120px", cell: (l) => <span className="font-mono text-[10px] text-gray-400">{l.lot_number ?? '—'}</span> },
         { id: "bookQty", header: "Book Qty", width: "100px", cell: (l) => <span className="font-mono">{formatNumber(l.book_quantity, 2)}</span> },
-        { id: "countQty", header: "Count Qty", width: "100px", cell: (l) => <span className={`font-mono ${l.count_quantity == null ? 'text-gray-400' : 'text-gray-700'}`}>{l.count_quantity != null ? formatNumber(l.count_quantity, 2) : '—'}</span> },
+        { id: "countQty", header: "Count Qty", width: "100px", cell: (l) => <span className={cn(`font-mono ${l.count_quantity == null ? 'text-gray-400' : 'text-gray-700'}`)}>{l.count_quantity != null ? formatNumber(l.count_quantity, 2) : '—'}</span> },
         {
             id: "variance", header: "Variance", width: "100px", cell: (l) => {
                 const vqty = Number(l.variance_quantity ?? 0);
-                return <span className={`font-mono font-bold ${vqty < 0 ? 'text-red-600' : vqty > 0 ? 'text-green-600' : 'text-gray-400'}`}>{vqty !== 0 ? (vqty > 0 ? '+' : '') + formatNumber(vqty, 2) : '0'}</span>;
+                return <span className={cn(`font-mono font-bold ${vqty < 0 ? 'text-red-600' : vqty > 0 ? 'text-green-600' : 'text-gray-400'}`)}>{vqty !== 0 ? (vqty > 0 ? '+' : '') + formatNumber(vqty, 2) : '0'}</span>;
             }
         },
         {
             id: "valueDelta", header: "Value Δ", width: "100px", cell: (l) => {
                 const vval = Number(l.variance_value ?? 0);
-                return <span className={`font-mono text-[10px] ${vval < 0 ? 'text-red-600' : vval > 0 ? 'text-green-600' : 'text-gray-400'}`}>{vval !== 0 ? (vval > 0 ? '+' : '') + formatCurrency(Math.abs(vval)) : '—'}</span>;
+                return <span className={cn(`font-mono text-[10px] ${vval < 0 ? 'text-red-600' : vval > 0 ? 'text-green-600' : 'text-gray-400'}`)}>{vval !== 0 ? (vval > 0 ? '+' : '') + formatCurrency(Math.abs(vval)) : '—'}</span>;
             }
         },
         { id: "status", header: "Status", width: "100px", cell: (l) => <div className="px-1"><StatusBadge status={l.count_status} /></div> },
@@ -116,13 +117,13 @@ export default function PhysicalInventory() {
                 {/* Status filter */}
                 <div className="flex gap-1.5 mb-3">
                     {['', 'Planned', 'Counting', 'Under_Review', 'Approved', 'Posted', 'Cancelled'].map(s => (
-                        <button key={s} onClick={() => setStatusFilter(s)} className={`px-2.5 py-1 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`}>{s || 'All'}</button>
+                        <button key={s} onClick={() => setStatusFilter(s)} className={cn(`px-2.5 py-1 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</button>
                     ))}
                 </div>
 
                 <div className="flex gap-3.5">
                     {/* Cycles list */}
-                    <div className="w-[380px] shrink-0">
+                    <div className="w-96 shrink-0">
                         <div className="flex flex-col gap-1.5">
                             {cycles.map(c => {
                                 const clr = CYCLE_STATUS_CLR[c.status] ?? '#6b7280';
@@ -157,14 +158,14 @@ export default function PhysicalInventory() {
                                 <div className="flex gap-2">
                                     <div className="text-[11px] bg-red-100 text-red-600 font-bold px-2.5 py-1 rounded-md">Short: {negCount}</div>
                                     <div className="text-[11px] bg-green-100 text-green-700 font-bold px-2.5 py-1 rounded-md">Over: {posCount}</div>
-                                    <div className={`text-[11px] font-bold px-2.5 py-1 rounded-md ${Math.abs(totalVariance) > 0 ? 'bg-amber-100 text-amber-600' : 'bg-gray-100 text-gray-500'}`}>
+                                    <div className={cn(`text-[11px] font-bold px-2.5 py-1 rounded-md ${Math.abs(totalVariance) > 0 ? 'bg-amber-100 text-amber-600' : 'bg-gray-100 text-gray-500'}`)}>
                                         Net: {totalVariance < 0 ? '-' : '+'}{formatCurrency(Math.abs(totalVariance))}
                                     </div>
                                 </div>
                             </div>
                             <div className="mb-2.5 flex gap-2">
                                 <button onClick={() => setShowAddLines(!showAddLines)} className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-lg text-[11px] cursor-pointer">+ Add Lines (CSV)</button>
-                                <Input value={countBy} onChange={e => setCountBy(e.target.value)} placeholder="Counted by…" className="px-2 py-1 border border-gray-300 rounded-md text-[11px] w-[120px]" aria-label="Counted by" />
+                                <Input value={countBy} onChange={e => setCountBy(e.target.value)} placeholder="Counted by…" className="px-2 py-1 border border-gray-300 rounded-md text-[11px] w-28" aria-label="Counted by" />
                             </div>
                             {showAddLines && (
                                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-2.5 mb-2.5">

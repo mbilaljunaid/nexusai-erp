@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -209,7 +210,7 @@ export function UserProfile({ userId }: UserProfileProps) {
               {earnedBadges.map((badge) => (
                 <Card key={badge.id} className="hover-elevate" data-testid={`badge-${badge.badgeId}`}>
                   <CardContent className="pt-4 flex items-center gap-3">
-                    <div className={`p-2 rounded-full bg-muted ${getLevelColor(badge.badgeCategory)}`}>
+                    <div className={cn(`p-2 rounded-full bg-muted ${getLevelColor(badge.badgeCategory)}`)}>
                       {getBadgeIcon(badge.badgeIcon)}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -272,7 +273,7 @@ export function UserProfile({ userId }: UserProfileProps) {
               <p>No reputation history yet</p>
             </div>
           ) : (
-            <div className="space-y-2 max-h-[300px] overflow-y-auto">
+            <div className="space-y-2 max-h-72 overflow-y-auto">
               {reputationHistory.map((event) => (
                 <div
                   key={event.id}

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -60,7 +61,7 @@ export function PublicProcessPageTemplate({
               <div>
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-sm font-mono bg-white/20 px-3 py-1 rounded">{processCode}</span>
-                  <span className={`text-sm font-semibold ${criticality === 'CRITICAL' ? 'bg-red-500' : 'bg-orange-500'} px-3 py-1 rounded`}>
+                  <span className={cn(`text-sm font-semibold ${criticality === 'CRITICAL' ? 'bg-red-500' : 'bg-orange-500'} px-3 py-1 rounded`)}>
                     {criticality}
                   </span>
                 </div>

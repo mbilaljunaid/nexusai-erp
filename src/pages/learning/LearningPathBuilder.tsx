@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -146,10 +147,10 @@ export default function LearningPathBuilder() {
                         paths.map((path: LearningPath) => (
                             <Card
                                 key={path.id}
-                                className={`cursor-pointer transition-all ${selectedPathId === path.id
+                                className={cn(`cursor-pointer transition-all ${selectedPathId === path.id
                                         ? "border-primary ring-2 ring-primary"
                                         : "hover:border-primary/50"
-                                    }`}
+                                    }`)}
                                 onClick={() => setSelectedPathId(path.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <CardHeader>

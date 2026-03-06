@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -67,7 +68,7 @@ export default function ProjectFinancialDetail({ projectId }: Props) {
                         <Card key={i}>
                             <CardHeader className="flex flex-row items-center justify-between pb-2">
                                 <CardTitle className="text-xs font-medium text-muted-foreground">{m.label}</CardTitle>
-                                <m.icon className={`h-4 w-4 ${m.color}`} />
+                                <m.icon className={cn(`h-4 w-4 ${m.color}`)} />
                             </CardHeader>
                             <CardContent>
                                 <div className="text-xl font-bold">${parseFloat(m.value).toLocaleString()}</div>
@@ -97,7 +98,7 @@ export default function ProjectFinancialDetail({ projectId }: Props) {
                             <CardTitle className="text-sm font-medium">EVM Comparison</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="h-[250px] w-full mt-4">
+                            <div className="h-64 w-full mt-4">
                                 <AnalyticsChart
                                     title=""
                                     data={chartData}

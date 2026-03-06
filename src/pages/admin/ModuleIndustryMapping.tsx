@@ -1,53 +1,53 @@
-import React, { useState } from 'react';
-import { Map, Check, X } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import AdminLayout from '@/components/admin/AdminLayout';
-import { StandardPage } from '@/components/layout/StandardPage';
-import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import React, { useState} from'react';
+import { Map, Check, X} from'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle} from'@/components/ui/card';
+import { Button} from'@/components/ui/button';
+import { Checkbox} from'@/components/ui/checkbox';
+import AdminLayout from'@/components/admin/AdminLayout';
+import { StandardPage} from'@/components/layout/StandardPage';
+import { InteractiveSpreadsheet, SpreadsheetColumn} from"@/components/ui/InteractiveSpreadsheet";
 
 export default function ModuleIndustryMapping() {
     const modules = [
-        'Finance & Accounting',
-        'Human Resources',
-        'CRM & Sales',
-        'Supply Chain',
-        'Manufacturing',
-        'Projects & Services'
+       'Finance & Accounting',
+       'Human Resources',
+       'CRM & Sales',
+       'Supply Chain',
+       'Manufacturing',
+       'Projects & Services'
     ];
 
     const industries = [
-        'Manufacturing',
-        'SaaS',
-        'Retail',
-        'Healthcare',
-        'Financial Services',
-        'Professional Services',
-        'Technology',
-        'Hospitality'
+       'Manufacturing',
+       'SaaS',
+       'Retail',
+       'Healthcare',
+       'Financial Services',
+       'Professional Services',
+       'Technology',
+       'Hospitality'
     ];
 
     // Mock mapping state - in reality this would come from API
     const [mapping, setMapping] = useState<Record<string, Record<string, boolean>>>({
-        'Manufacturing': {
-            'Finance & Accounting': true,
-            'Human Resources': true,
-            'CRM & Sales': true,
-            'Supply Chain': true,
-            'Manufacturing': true,
-            'Projects & Services': false
-        },
-        'SaaS': {
-            'Finance & Accounting': true,
-            'Human Resources': true,
-            'CRM & Sales': true,
-            'Supply Chain': false,
-            'Manufacturing': false,
-            'Projects & Services': true
-        },
+       'Manufacturing': {
+           'Finance & Accounting': true,
+           'Human Resources': true,
+           'CRM & Sales': true,
+           'Supply Chain': true,
+           'Manufacturing': true,
+           'Projects & Services': false
+       },
+       'SaaS': {
+           'Finance & Accounting': true,
+           'Human Resources': true,
+           'CRM & Sales': true,
+           'Supply Chain': false,
+           'Manufacturing': false,
+           'Projects & Services': true
+       },
         // ... other industries
-    });
+   });
 
     const toggleMapping = (industry: string, module: string) => {
         setMapping(prev => ({
@@ -55,21 +55,21 @@ export default function ModuleIndustryMapping() {
             [industry]: {
                 ...prev[industry],
                 [module]: !prev[industry]?.[module]
-            }
-        }));
-    };
+           }
+       }));
+   };
 
     const mappingColumns: SpreadsheetColumn<any>[] = [
         {
-            id: "industry",
-            header: "Industry",
-            width: "200px",
-            cell: (row: any) => <div className="font-medium bg-white sticky left-0 z-10">{row.industry}</div>
-        },
+            id:"industry",
+            header:"Industry",
+            width:"200px",
+            cell: (row: any) => <div className="font-medium bg-white sticky left-0">{row.industry}</div>
+       },
         ...modules.map(module => ({
             id: module,
             header: <div className="text-xs text-center">{module}</div>,
-            width: "120px",
+            width:"120px",
             cell: (row: any) => (
                 <div className="flex items-center justify-center w-full">
                     <Checkbox
@@ -78,10 +78,10 @@ export default function ModuleIndustryMapping() {
                     />
                 </div>
             )
-        }))
+       }))
     ];
 
-    const mappingData = industries.map(industry => ({ industry }));
+    const mappingData = industries.map(industry => ({ industry}));
 
     return (
         <AdminLayout>
@@ -104,7 +104,7 @@ export default function ModuleIndustryMapping() {
                                 <InteractiveSpreadsheet
                                     columns={mappingColumns}
                                     data={mappingData}
-                                    onChange={() => { }}
+                                    onChange={() => {}}
                                     containerHeight="500px"
                                 />
                             </div>

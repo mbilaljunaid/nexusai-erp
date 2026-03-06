@@ -181,7 +181,7 @@ export default function ConstructionSiteManagement() {
 
                 <div className="flex items-center gap-2">
                     <Select value={selectedProjectId || ""} onValueChange={setSelectedProjectId}>
-                        <SelectTrigger className="w-[300px]">
+                        <SelectTrigger className="w-72">
                             <SelectValue placeholder="Select Project" />
                         </SelectTrigger>
                         <SelectContent>
@@ -325,7 +325,7 @@ export default function ConstructionSiteManagement() {
                 <TabsContent value="claims" className="space-y-4 pt-4">
                     <div className="flex items-center gap-4 mb-4">
                         <Select value={selectedContractId || ""} onValueChange={setSelectedContractId}>
-                            <SelectTrigger className="w-[300px]">
+                            <SelectTrigger className="w-72">
                                 <SelectValue placeholder="Select Contract for Claims" />
                             </SelectTrigger>
                             <SelectContent>

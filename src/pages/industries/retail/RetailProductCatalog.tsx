@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { useQuery } from "@tanstack/react-query";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
@@ -41,7 +42,7 @@ export default function RetailProductCatalog() {
       header: "Stock",
       width: "20%",
       cell: (item: any) => (
-        <div className={`p-2 font-medium ${item.quantity > 0 ? "text-green-600" : "text-red-500"}`}>
+        <div className={cn(`p-2 font-medium ${item.quantity > 0 ? "text-green-600" : "text-red-500"}`)}>
           {item.quantity}
         </div>
       )

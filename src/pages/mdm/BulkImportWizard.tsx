@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -113,10 +114,10 @@ export default function BulkImportWizard() {
                 {steps.map((step, idx) => (
                     <div key={step.id} className="flex items-center">
                         <div
-                            className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${idx <= currentStepIndex
+                            className={cn(`flex items-center justify-center w-10 h-10 rounded-full border-2 ${idx <= currentStepIndex
                                     ? "border-primary bg-primary text-primary-foreground"
                                     : "border-muted bg-background"
-                                }`}
+                                }`)}
                         >
                             {idx < currentStepIndex ? (
                                 <CheckCircle className="w-5 h-5" />

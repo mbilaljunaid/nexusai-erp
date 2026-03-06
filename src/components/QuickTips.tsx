@@ -1,8 +1,9 @@
-import { useState, useEffect, createContext, useContext } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { X, Lightbulb, ChevronRight, ChevronLeft } from "lucide-react";
-import { useLocalStorage } from "@/hooks/use-local-storage";
+import { cn } from "@/lib/utils";
+import { useState, useEffect, createContext, useContext} from"react";
+import { Card, CardContent} from"@/components/ui/card";
+import { Button} from"@/components/ui/button";
+import { X, Lightbulb, ChevronRight, ChevronLeft} from"lucide-react";
+import { useLocalStorage} from"@/hooks/use-local-storage";
 
 interface QuickTip {
   id: string;
@@ -13,62 +14,62 @@ interface QuickTip {
     label: string;
     href?: string;
     onClick?: () => void;
-  };
+ };
 }
 
 const quickTips: QuickTip[] = [
   {
-    id: "dashboard-widgets",
-    context: "dashboard",
-    title: "Customize Your View",
-    content: "Drag and drop widgets to arrange your dashboard exactly how you want it. Click the edit button to add or remove widgets.",
-  },
+    id:"dashboard-widgets",
+    context:"dashboard",
+    title:"Customize Your View",
+    content:"Drag and drop widgets to arrange your dashboard exactly how you want it. Click the edit button to add or remove widgets.",
+ },
   {
-    id: "keyboard-shortcuts",
-    context: "global",
-    title: "Keyboard Shortcuts",
-    content: "Press Ctrl+K (Cmd+K on Mac) to open the command palette for quick navigation and actions.",
-  },
+    id:"keyboard-shortcuts",
+    context:"global",
+    title:"Keyboard Shortcuts",
+    content:"Press Ctrl+K (Cmd+K on Mac) to open the command palette for quick navigation and actions.",
+ },
   {
-    id: "crm-leads",
-    context: "crm",
-    title: "Lead Scoring",
-    content: "Our AI automatically scores leads based on engagement and profile data. Higher scores indicate better conversion potential.",
-  },
+    id:"crm-leads",
+    context:"crm",
+    title:"Lead Scoring",
+    content:"Our AI automatically scores leads based on engagement and profile data. Higher scores indicate better conversion potential.",
+ },
   {
-    id: "erp-inventory",
-    context: "erp",
-    title: "Low Stock Alerts",
-    content: "Set up automatic alerts when inventory falls below threshold. Go to Settings to configure your notification preferences.",
-  },
+    id:"erp-inventory",
+    context:"erp",
+    title:"Low Stock Alerts",
+    content:"Set up automatic alerts when inventory falls below threshold. Go to Settings to configure your notification preferences.",
+ },
   {
-    id: "hr-onboarding",
-    context: "hr",
-    title: "Employee Onboarding",
-    content: "Use the onboarding workflow to automate new hire setup, including document collection, training assignments, and equipment requests.",
-  },
+    id:"hr-onboarding",
+    context:"hr",
+    title:"Employee Onboarding",
+    content:"Use the onboarding workflow to automate new hire setup, including document collection, training assignments, and equipment requests.",
+ },
   {
-    id: "analytics-export",
-    context: "analytics",
-    title: "Export Your Data",
-    content: "All reports can be exported to Excel, PDF, or CSV. Look for the download button in the top-right corner of any chart.",
-  },
+    id:"analytics-export",
+    context:"analytics",
+    title:"Export Your Data",
+    content:"All reports can be exported to Excel, PDF, or CSV. Look for the download button in the top-right corner of any chart.",
+ },
   {
-    id: "nexusai-assistant",
-    context: "global",
-    title: "NexusAI Agent",
-    content: "Our unified AI agent is always available in the right sidebar. It automatically detects your current page context and helps with multi-module queries.",
-  },
+    id:"nexusai-assistant",
+    context:"global",
+    title:"NexusAI Agent",
+    content:"Our unified AI agent is always available in the right sidebar. It automatically detects your current page context and helps with multi-module queries.",
+ },
   {
-    id: "workflow-automation",
-    context: "workflow",
-    title: "Automate Repetitive Tasks",
-    content: "Create workflows to automate approvals, notifications, and data updates. Save hours every week with smart automation.",
-  },
+    id:"workflow-automation",
+    context:"workflow",
+    title:"Automate Repetitive Tasks",
+    content:"Create workflows to automate approvals, notifications, and data updates. Save hours every week with smart automation.",
+ },
 ];
 
-const STORAGE_KEY = "nexusai-tips-dismissed";
-const TIPS_ENABLED_KEY = "nexusai-tips-enabled";
+const STORAGE_KEY ="nexusai-tips-dismissed";
+const TIPS_ENABLED_KEY ="nexusai-tips-enabled";
 
 interface QuickTipsContextType {
   showTip: (context: string) => void;
@@ -80,7 +81,7 @@ interface QuickTipsContextType {
 
 const QuickTipsContext = createContext<QuickTipsContextType | undefined>(undefined);
 
-export function QuickTipsProvider({ children }: { children: React.ReactNode }) {
+export function QuickTipsProvider({ children}: { children: React.ReactNode}) {
   const [currentTip, setCurrentTip] = useState<QuickTip | null>(null);
   const [dismissedTips, setDismissedTips] = useLocalStorage<string[]>(STORAGE_KEY, []);
   const [tipsEnabled, setTipsEnabled] = useLocalStorage<boolean>(TIPS_ENABLED_KEY, true);
@@ -90,34 +91,34 @@ export function QuickTipsProvider({ children }: { children: React.ReactNode }) {
     if (!tipsEnabled) return;
 
     const contextTips = quickTips.filter(
-      tip => (tip.context === context || tip.context === "global") &&
+      tip => (tip.context === context || tip.context ==="global") &&
         !dismissedTips.includes(tip.id)
     );
 
     if (contextTips.length > 0) {
       setCurrentTip(contextTips[0]);
       setTipIndex(0);
-    }
-  };
+   }
+ };
 
   const hideTip = () => {
     if (currentTip) {
       setDismissedTips([...dismissedTips, currentTip.id]);
-    }
+   }
     setCurrentTip(null);
-  };
+ };
 
   const enableTips = () => {
     setTipsEnabled(true);
-  };
+ };
 
   const disableTips = () => {
     setTipsEnabled(false);
     setCurrentTip(null);
-  };
+ };
 
   return (
-    <QuickTipsContext.Provider value={{ showTip, hideTip, enableTips, disableTips, tipsEnabled }}>
+    <QuickTipsContext.Provider value={{ showTip, hideTip, enableTips, disableTips, tipsEnabled}}>
       {children}
       {currentTip && tipsEnabled && (
         <QuickTipPopup tip={currentTip} onDismiss={hideTip} onDisableAll={disableTips} />
@@ -130,7 +131,7 @@ export function useQuickTips() {
   const context = useContext(QuickTipsContext);
   if (!context) {
     throw new Error("useQuickTips must be used within a QuickTipsProvider");
-  }
+ }
   return context;
 }
 
@@ -140,10 +141,10 @@ interface QuickTipPopupProps {
   onDisableAll: () => void;
 }
 
-function QuickTipPopup({ tip, onDismiss, onDisableAll }: QuickTipPopupProps) {
+function QuickTipPopup({ tip, onDismiss, onDisableAll}: QuickTipPopupProps) {
   return (
     <Card
-      className="fixed bottom-4 right-4 w-80 shadow-xl z-50 border-primary/20 animate-in slide-in-from-bottom-4"
+      className="fixed bottom-4 right-4 w-80 shadow-xl border-primary/20 animate-in slide-in-from-bottom-4"
       data-testid="quick-tip-popup"
     >
       <CardContent className="p-4">
@@ -191,17 +192,17 @@ function QuickTipPopup({ tip, onDismiss, onDisableAll }: QuickTipPopupProps) {
 }
 
 export function TipsToggle() {
-  const { tipsEnabled, enableTips, disableTips } = useQuickTips();
+  const { tipsEnabled, enableTips, disableTips} = useQuickTips();
 
   return (
     <Button
       variant="ghost"
       size="icon"
       onClick={tipsEnabled ? disableTips : enableTips}
-      title={tipsEnabled ? "Disable quick tips" : "Enable quick tips"}
+      title={tipsEnabled ?"Disable quick tips" :"Enable quick tips"}
       data-testid="button-toggle-tips"
     >
-      <Lightbulb className={`h-4 w-4 ${tipsEnabled ? "text-yellow-500" : "text-muted-foreground"}`} />
+      <Lightbulb className={cn(`h-4 w-4 ${tipsEnabled ?"text-yellow-500" :"text-muted-foreground"}`)} />
     </Button>
   );
 }

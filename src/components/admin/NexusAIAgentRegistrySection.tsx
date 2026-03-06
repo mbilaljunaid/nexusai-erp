@@ -208,7 +208,7 @@ export function NexusAIAgentRegistrySection() {
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium">System Prompt (Persona)</label>
                                     <Textarea
-                                        className="min-h-[150px] font-mono text-sm"
+                                        className="min-h-36 font-mono text-sm"
                                         placeholder="You are an expert financial analyst..."
                                         value={currentAgent?.systemPrompt || ""}
                                         onChange={e => setCurrentAgent({ ...currentAgent, systemPrompt: e.target.value })}
@@ -368,7 +368,7 @@ export function NexusAIAgentRegistrySection() {
                                                     <TableCell className="text-xs font-medium">
                                                         {agents.find(a => a.id === log.agentId)?.name || "General"}
                                                     </TableCell>
-                                                    <TableCell className="max-w-[200px] truncate text-xs">
+                                                    <TableCell className="max-w-48 truncate text-xs">
                                                         {log.prompt}
                                                     </TableCell>
                                                     <TableCell className="text-xs">
@@ -386,13 +386,13 @@ export function NexusAIAgentRegistrySection() {
                                                                 <div className="space-y-4">
                                                                     <div>
                                                                         <h4 className="text-xs font-bold uppercase text-muted-foreground">Prompt</h4>
-                                                                        <div className="p-3 bg-muted rounded-md text-sm mt-1 max-h-[150px] overflow-y-auto">
+                                                                        <div className="p-3 bg-muted rounded-md text-sm mt-1 max-h-36 overflow-y-auto">
                                                                             {log.prompt}
                                                                         </div>
                                                                     </div>
                                                                     <div>
                                                                         <h4 className="text-xs font-bold uppercase text-muted-foreground">Response</h4>
-                                                                        <div className="p-3 bg-primary/5 border border-primary/10 rounded-md text-sm mt-1 max-h-[200px] overflow-y-auto">
+                                                                        <div className="p-3 bg-primary/5 border border-primary/10 rounded-md text-sm mt-1 max-h-48 overflow-y-auto">
                                                                             {log.response || (log.status === "error" ? log.errorMessage : "No response content")}
                                                                         </div>
                                                                     </div>

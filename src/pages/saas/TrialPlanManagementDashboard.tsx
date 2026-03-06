@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { TrialManagementService, PlanManagementService } from '@/services/trialPlanService';
-import { Check, X } from 'lucide-react';
+import { Check, X, Loader2 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 
 
@@ -38,7 +38,7 @@ export default function TrialPlanManagementDashboard() {
 
     if (loading) {
         return <div className="flex items-center justify-center h-96">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
         </div>;
     }
 

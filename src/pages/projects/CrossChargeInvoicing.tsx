@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { PromptDialog } from "@/components/shared/PromptDialog";
@@ -289,8 +290,8 @@ export default function CrossChargeInvoicing() {
                         {invoices?.map((invoice: CrossChargeInvoice) => (
                             <div role="button" tabIndex={0}
                                 key={invoice.id}
-                                className={`p-3 rounded-lg cursor-pointer border ${selectedInvoice === invoice.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
-                                    }`}
+                                className={cn(`p-3 rounded-lg cursor-pointer border ${selectedInvoice === invoice.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
+                                    }`)}
                                 onClick={() => loadInvoice(invoice)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <div className="flex justify-between items-start mb-2">

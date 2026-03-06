@@ -129,7 +129,7 @@ export default function MatchRuleDetail() {
                                     min={0} max={100}
                                     value={formData.matchScoreThreshold}
                                     onChange={(e) => setFormData({ ...formData, matchScoreThreshold: Number(e.target.value) })}
-                                    className="max-w-[100px]"
+                                    className="max-w-24"
                                 />
                                 <span className="text-sm text-muted-foreground">
                                     Records with similarity score &ge; {formData.matchScoreThreshold} will be flagged as duplicates.

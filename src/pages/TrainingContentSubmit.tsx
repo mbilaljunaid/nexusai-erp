@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation, useRoute, Link } from "wouter";
@@ -258,7 +259,7 @@ export default function TrainingContentSubmit() {
                       <FormItem>
                         <FormLabel>Description</FormLabel>
                         <FormControl>
-                          <Textarea {...field} className="bg-slate-900 border-slate-600 min-h-[100px]" placeholder="Explain why this filter should be added..." data-testid="input-filter-description" />
+                          <Textarea {...field} className="bg-slate-900 border-slate-600 min-h-24" placeholder="Explain why this filter should be added..." data-testid="input-filter-description" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -316,7 +317,7 @@ export default function TrainingContentSubmit() {
                               return (
                                 <SelectItem key={key} value={key}>
                                   <span className="flex items-center gap-2">
-                                    <Icon className={`w-4 h-4 ${cfg.color}`} />
+                                    <Icon className={cn(`w-4 h-4 ${cfg.color}`)} />
                                     {cfg.title}
                                   </span>
                                 </SelectItem>
@@ -350,7 +351,7 @@ export default function TrainingContentSubmit() {
                       <FormItem>
                         <FormLabel>Description</FormLabel>
                         <FormControl>
-                          <Textarea {...field} className="bg-slate-900 border-slate-600 min-h-[100px]" placeholder="Describe what users will learn..." data-testid="input-description" />
+                          <Textarea {...field} className="bg-slate-900 border-slate-600 min-h-24" placeholder="Describe what users will learn..." data-testid="input-description" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -435,7 +436,7 @@ export default function TrainingContentSubmit() {
                         <Badge
                           key={m.slug}
                           variant={selectedModules.includes(m.slug) ? "default" : "outline"}
-                          className={`cursor-pointer ${selectedModules.includes(m.slug) ? "bg-blue-600" : "border-slate-500"}`}
+                          className={cn(`cursor-pointer ${selectedModules.includes(m.slug) ? "bg-blue-600" : "border-slate-500"}`)}
                           onClick={() => toggleModule(m.slug)}
                         >
                           {m.name}
@@ -451,7 +452,7 @@ export default function TrainingContentSubmit() {
                         <Badge
                           key={i.slug}
                           variant={selectedIndustries.includes(i.slug) ? "default" : "outline"}
-                          className={`cursor-pointer ${selectedIndustries.includes(i.slug) ? "bg-green-600" : "border-slate-500"}`}
+                          className={cn(`cursor-pointer ${selectedIndustries.includes(i.slug) ? "bg-green-600" : "border-slate-500"}`)}
                           onClick={() => toggleIndustry(i.slug)}
                         >
                           {i.name}

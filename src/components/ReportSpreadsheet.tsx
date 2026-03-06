@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -168,9 +169,9 @@ export function ReportSpreadsheet({ data = [], columns = [] }: ReportSpreadsheet
                             <td
                               key={colIdx}
                               onClick={(e) => handleCellClick(rowIdx, colIdx, e)}
-                              className={`border-r p-2 cursor-cell transition-colors ${
+                              className={cn(`border-r p-2 cursor-cell transition-colors ${
                                 isSelected ? "bg-blue-200 dark:bg-blue-900" : "hover:bg-accent"
-                              }`}
+                              }`)}
                               data-testid={`cell-${rowIdx}-${colIdx}`}
                             >
                               <input

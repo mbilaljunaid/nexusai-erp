@@ -56,7 +56,7 @@ export default function AnalyticsDetail() {
                         </CardTitle>
                         <CardDescription>Value of opportunities by stage</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-72">
                         {pipeline.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={pipeline} layout="vertical">
@@ -85,7 +85,7 @@ export default function AnalyticsDetail() {
                         </CardTitle>
                         <CardDescription>Distribution of leads by source</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-72">
                         {leadSources.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
@@ -122,7 +122,7 @@ export default function AnalyticsDetail() {
                         </CardTitle>
                         <CardDescription>Closed-won revenue over the last 6 months</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-72">
                         {revenue.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={revenue}>
@@ -148,7 +148,7 @@ export default function AnalyticsDetail() {
                         </CardTitle>
                         <CardDescription>Active vs Resolved issues</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-72">
                         {cases.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>

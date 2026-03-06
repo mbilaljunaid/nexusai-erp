@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -155,7 +156,7 @@ export default function ICDataAccessManager() {
                                         {users.map((user: any) => (
                                             <div role="button" tabIndex={0}
                                                 key={user.id}
-                                                className={`p-2 hover:bg-muted cursor-pointer ${selectedUserId === user.id ? "bg-muted" : ""}`}
+                                                className={cn(`p-2 hover:bg-muted cursor-pointer ${selectedUserId === user.id ? "bg-muted" : ""}`)}
                                                 onClick={() => {
                                                     setSelectedUserId(user.id);
                                                     setSearchTerm(user.name || user.email);

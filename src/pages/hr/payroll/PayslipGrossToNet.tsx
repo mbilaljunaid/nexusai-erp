@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -98,7 +99,7 @@ export default function PayslipGrossToNet() {
     const formatCurrency = (val: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
 
     const BreakdownRow = ({ item, isSubRow = false }: { item: any; isSubRow?: boolean }) => (
-        <div className={`grid grid-cols-12 gap-4 py-2 text-sm ${isSubRow ? 'text-muted-foreground pl-6' : 'font-medium'}`}>
+        <div className={cn(`grid grid-cols-12 gap-4 py-2 text-sm ${isSubRow ? 'text-muted-foreground pl-6' : 'font-medium'}`)}>
             <div className="col-span-4 lg:col-span-5">{item.name}</div>
             <div className="col-span-2 text-right hidden md:block">{item.hours ? item.hours.toFixed(2) : '-'}</div>
             <div className="col-span-2 text-right hidden md:block">{item.rate ? formatCurrency(item.rate) : '-'}</div>

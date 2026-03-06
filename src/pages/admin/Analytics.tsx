@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from 'react';
 import { BarChart3, TrendingUp, Users, DollarSign, Activity, PieChart } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -188,7 +189,7 @@ export default function Analytics() {
                                             <div className="h-2 bg-gray-200 rounded-full overflow-hidden w-full relative">
                                                 <style>{`.mod-u-${module.name.replace(/\\W/g, '')} { width: ${module.usage}%; }`}</style>
                                                 <div
-                                                    className={`h-full bg-blue-600 rounded-full mod-u-${module.name.replace(/\\W/g, '')}`}
+                                                    className={cn(`h-full bg-blue-600 rounded-full mod-u-${module.name.replace(/\\W/g, '')}`)}
                                                 />
                                             </div>
                                         </div>

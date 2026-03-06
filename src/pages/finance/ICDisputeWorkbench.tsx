@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate, formatDateTime } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -50,7 +51,7 @@ export default function ICDisputeWorkbench() {
         { id: "entities", header: "From → To", width: "150px", cell: (row) => <div className="ic-col-entities">{row.from_entity} → {row.to_entity}</div> },
         { id: "reason", header: "Reason", width: "120px", cell: (row) => <div className="ic-col-reason">{row.reason}</div> },
         { id: "amount", header: "Amount", width: "120px", cell: (row) => <div className="font-mono">{row.disputed_amount ? `$${Number(row.disputed_amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}` : '—'}</div> },
-        { id: "status", header: "Status", width: "100px", cell: (row) => { const clrClass = STATUS_CFG[row.status] ?? 'text-gray-500 bg-gray-50'; return <span className={`ic-stat-badge ${clrClass}`}>{row.status}</span>; } },
+        { id: "status", header: "Status", width: "100px", cell: (row) => { const clrClass = STATUS_CFG[row.status] ?? 'text-gray-500 bg-gray-50'; return <span className={cn(`ic-stat-badge ${clrClass}`)}>{row.status}</span>; } },
         { id: "opened_at", header: "Opened", width: "100px", cell: (row) => <div className="ic-col-date">{formatDate(row.opened_at)}</div> },
         { id: "actions", header: "Actions", width: "200px", cell: (row) => <div className="ic-act-btns"><button onClick={(ev) => { ev.stopPropagation(); setSelected(selected?.id === row.id ? null : row); }} className="ic-btn-view">{selected?.id === row.id ? 'Unselect' : 'View'}</button>{row.status !== 'Resolved' && row.status !== 'Closed' && <><button onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'REVIEW', note: 'Under review' }); }} className="ic-btn-review">Review</button><button onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'ESCALATE', note: 'Escalated for management review' }); }} className="ic-btn-escalate">Escalate</button></>}</div> }
     ];
@@ -68,7 +69,7 @@ export default function ICDisputeWorkbench() {
                 {[{ label: 'Active Disputes', val: totalOpen, clr: 'text-red-600' }, { label: 'Total Disputed', val: `$${totalAmt.toLocaleString(undefined, { minimumFractionDigits: 0 })}`, clr: 'text-amber-600' }, { label: 'Total Disputes', val: safeDisputes.length, clr: 'text-blue-700' }].map(k => (
                     <div key={k.label} className="ic-kpi-card">
                         <div className="ic-kpi-label">{k.label}</div>
-                        <div className={`ic-kpi-val ${k.clr}`}>{k.val}</div>
+                        <div className={cn(`ic-kpi-val ${k.clr}`)}>{k.val}</div>
                     </div>
                 ))}
                 {safeSummary.map(s => {
@@ -76,7 +77,7 @@ export default function ICDisputeWorkbench() {
                     return (
                         <div key={s.status + s.reason} className="ic-kpi-sum">
                             <div className="ic-kpi-sum-label">{s.reason}</div>
-                            <div className={`ic-kpi-sum-val ${clrClass}`}>{s.count} {s.status}</div>
+                            <div className={cn(`ic-kpi-sum-val ${clrClass}`)}>{s.count} {s.status}</div>
                         </div>
                     );
                 })}
@@ -133,7 +134,7 @@ export default function ICDisputeWorkbench() {
             <div className="ic-filters">
                 <div className="ic-filter-btns">
                     {['', 'Open', 'Under_Review', 'Escalated', 'Resolved', 'Closed'].map(s => (
-                        <button key={s} onClick={() => setStatusFilter(s)} className={`ic-btn-filter ${statusFilter === s ? 'active' : ''}`}>{s || 'All'}</button>
+                        <button key={s} onClick={() => setStatusFilter(s)} className={cn(`ic-btn-filter ${statusFilter === s ? 'active' : ''}`)}>{s || 'All'}</button>
                     ))}
                 </div>
                 <Input

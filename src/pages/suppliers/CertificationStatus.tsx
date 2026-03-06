@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -80,7 +81,7 @@ export default function CertificationStatus() {
             {/* Tabs */}
             <div className="flex gap-1 mb-3.5">
                 {(['certs', 'portfolio', 'expiring'] as const).map(t => (
-                    <button key={t} onClick={() => setTab(t)} className={`px-4 py-1.5 border border-gray-200 rounded-lg text-[12px] font-semibold cursor-pointer ${tab === t ? "bg-gray-900 text-white" : "bg-white text-gray-500"}`}>
+                    <button key={t} onClick={() => setTab(t)} className={cn(`px-4 py-1.5 border border-gray-200 rounded-lg text-[12px] font-semibold cursor-pointer ${tab === t ? "bg-gray-900 text-white" : "bg-white text-gray-500"}`)}>
                         {t === 'certs' ? 'All Certificates' : t === 'portfolio' ? 'Portfolio View' : `Expiring (${expiring.length})`}
                     </button>
                 ))}
@@ -91,7 +92,7 @@ export default function CertificationStatus() {
                 <Card className="p-3.5 mb-3 shadow-sm">
                     <div className="text-[13px] font-bold mb-2.5">Add Certificate</div>
                     <div className="grid grid-cols-3 gap-2">
-                        <div className="flex flex-col gap-[3px]">
+                        <div className="flex flex-col gap-0.5">
                             <label className="text-[10px] font-semibold">Cert Type</label>
                             <Select value={form.certType} onValueChange={v => setForm(p => ({ ...p, certType: v }))}>
                                 <SelectTrigger className="px-2 py-1.5 text-[11px]" aria-label="Certificate type"><SelectValue /></SelectTrigger>
@@ -99,7 +100,7 @@ export default function CertificationStatus() {
                             </Select>
                         </div>
                         {[['supplierId', 'Supplier ID', 'text'], ['certNumber', 'Cert Number', 'text'], ['issuingBody', 'Issuing Body', 'text'], ['issueDate', 'Issue Date', 'date'], ['expiryDate', 'Expiry Date', 'date']].map(([k, l, t]) => (
-                            <div key={k} className="flex flex-col gap-[3px]">
+                            <div key={k} className="flex flex-col gap-0.5">
                                 <label className="text-[10px] font-semibold">{l}</label>
                                 <Input type={t} value={(form as any)[k] ?? ''} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label={l} />
                             </div>
@@ -115,9 +116,9 @@ export default function CertificationStatus() {
             {tab === 'certs' && (
                 <>
                     <div className="flex gap-2 mb-2.5">
-                        <Input placeholder="Filter by supplier ID" value={supplierId} onChange={e => setSupplierId(e.target.value)} className="px-2.5 py-1.5 border border-gray-300 rounded-lg text-[12px] min-w-[200px]" aria-label="Supplier filter" />
+                        <Input placeholder="Filter by supplier ID" value={supplierId} onChange={e => setSupplierId(e.target.value)} className="px-2.5 py-1.5 border border-gray-300 rounded-lg text-[12px] min-w-48" aria-label="Supplier filter" />
                         {['', 'Active', 'Expired', 'Pending', 'Revoked'].map(s => (
-                            <button key={s} onClick={() => setStatusFilter(s)} className={`px-3 py-1.5 border border-gray-200 rounded-md text-[11px] font-semibold cursor-pointer ${statusFilter === s ? "bg-gray-900 text-white" : "bg-white text-gray-500"}`}>
+                            <button key={s} onClick={() => setStatusFilter(s)} className={cn(`px-3 py-1.5 border border-gray-200 rounded-md text-[11px] font-semibold cursor-pointer ${statusFilter === s ? "bg-gray-900 text-white" : "bg-white text-gray-500"}`)}>
                                 {s || 'All'}
                             </button>
                         ))}
@@ -128,16 +129,16 @@ export default function CertificationStatus() {
                             const Icon = cfg.icon;
                             const sel = selected?.id === c.id;
                             return (
-                                <Card key={c.id} onClick={() => setSelected(sel ? null : c)} className={`p-3.5 cursor-pointer shadow-sm border-2 ${sel ? 'border-blue-700' : 'border-gray-200'}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                                <Card key={c.id} onClick={() => setSelected(sel ? null : c)} className={cn(`p-3.5 cursor-pointer shadow-sm border-2 ${sel ? 'border-blue-700' : 'border-gray-200'}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                     <div className="flex justify-between mb-2">
                                         <div className="flex items-center gap-1.5">
                                             <Icon size={14} color={cfg.color} />
                                             <span className="text-[13px] font-extrabold font-mono">{c.cert_type}</span>
                                         </div>
-                                        <span className={`px-[7px] py-[2px] rounded-md text-[9px] font-bold ${cfg.className}`}>{c.status}</span>
+                                        <span className={cn(`px-1.5 py-0.5 rounded-md text-[9px] font-bold ${cfg.className}`)}>{c.status}</span>
                                     </div>
-                                    <div className="text-[11px] text-gray-700 mb-[3px]">Supplier: <strong>{c.supplier_id}</strong></div>
-                                    {c.issuing_body && <div className="text-[10px] text-gray-500 mb-[3px]">{c.issuing_body} #{c.cert_number}</div>}
+                                    <div className="text-[11px] text-gray-700 mb-0.5">Supplier: <strong>{c.supplier_id}</strong></div>
+                                    {c.issuing_body && <div className="text-[10px] text-gray-500 mb-0.5">{c.issuing_body} #{c.cert_number}</div>}
                                     <div className="text-[10px] text-gray-500">
                                         {c.issue_date && `Issued: ${fmtDate(c.issue_date)}  `}
                                         {c.expiry_date && <span className={c.status === 'Active' && new Date(c.expiry_date) < new Date(Date.now() + 60 * 86400000) ? "text-amber-600" : ""}>Expires: {fmtDate(c.expiry_date)}</span>}
@@ -179,12 +180,12 @@ export default function CertificationStatus() {
                         const days = c.days_remaining ?? Math.ceil((new Date(c.expiry_date).getTime() - Date.now()) / 86400000);
                         const isOk = days > 14;
                         return (
-                            <Card key={c.id} className={`py-2.5 px-3.5 flex justify-between items-center shadow-sm border-l-[4px] ${isOk ? 'border-l-amber-600' : 'border-l-red-600'}`}>
+                            <Card key={c.id} className={cn(`py-2.5 px-3.5 flex justify-between items-center shadow-sm border-l-[4px] ${isOk ? 'border-l-amber-600' : 'border-l-red-600'}`)}>
                                 <div>
                                     <span className="text-[13px] font-bold font-mono">{c.cert_type}</span>
                                     <span className="ml-2 text-[11px] text-gray-500">Supplier: {c.supplier_id} · #{c.cert_number}</span>
                                 </div>
-                                <div className={`text-[12px] font-bold ${isOk ? 'text-amber-600' : 'text-red-600'}`}>
+                                <div className={cn(`text-[12px] font-bold ${isOk ? 'text-amber-600' : 'text-red-600'}`)}>
                                     {days <= 0 ? 'EXPIRED' : `${days} days remaining`} — Expires {fmtDate(c.expiry_date)}
                                 </div>
                             </Card>

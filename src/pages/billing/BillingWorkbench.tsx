@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PlayCircle, CheckCircle, AlertCircle, ScanEye } from "lucide-react";
+import { PlayCircle, CheckCircle, AlertCircle, ScanEye, Loader2 } from "lucide-react";
 import { Link } from "wouter";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -161,7 +161,7 @@ export default function BillingWorkbench() {
                         disabled={autoInvoiceMutation.isPending || events.length === 0}
                         className="gap-2"
                     >
-                        {autoInvoiceMutation.isPending ? <div className="animate-spin text-xl">◌</div> : <PlayCircle className="w-4 h-4" />}
+                        {autoInvoiceMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <PlayCircle className="w-4 h-4" />}
                         Run Auto-Invoice
                     </Button>
                     <Button

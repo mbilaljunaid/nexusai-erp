@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { StandardPage } from "@/components/layout/StandardPage";
-import { StatusBadge } from "@/components/shared/StatusBadge";
-import { useToast } from "@/hooks/use-toast";
+import React, { useState} from"react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription} from"@/components/ui/card";
+import { Button} from"@/components/ui/button";
+import { Input} from"@/components/ui/input";
+import { Label} from"@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from"@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from"@/components/ui/table";
+import { Badge} from"@/components/ui/badge";
+import { StandardPage} from"@/components/layout/StandardPage";
+import { StatusBadge} from"@/components/shared/StatusBadge";
+import { useToast} from"@/hooks/use-toast";
 import {
     CalendarDays,
     Save,
@@ -19,23 +19,23 @@ import {
     Settings2,
     Clock,
     AlignLeft
-} from "lucide-react";
-import { format, addDays, addMonths, addWeeks, addYears, startOfWeek, endOfMonth } from "date-fns";
-import { DatePicker } from '@/components/ui/DatePicker';
+} from"lucide-react";
+import { format, addDays, addMonths, addWeeks, addYears, startOfWeek, endOfMonth} from"date-fns";
+import { DatePicker} from'@/components/ui/DatePicker';
 
-type PeriodType = "PAYROLL" | "ACCRUAL" | "TIME_CARD" | "PERFORMANCE";
-type Frequency = "DAILY" | "WEEKLY" | "BI_WEEKLY" | "SEMI_MONTHLY" | "MONTHLY" | "QUARTERLY" | "YEARLY" | "CUSTOM_DAYS";
+type PeriodType ="PAYROLL" |"ACCRUAL" |"TIME_CARD" |"PERFORMANCE";
+type Frequency ="DAILY" |"WEEKLY" |"BI_WEEKLY" |"SEMI_MONTHLY" |"MONTHLY" |"QUARTERLY" |"YEARLY" |"CUSTOM_DAYS";
 
 type GeneratedPeriod = {
     id: string;
     name: string;
     startDate: string;
     endDate: string;
-    status: "OPEN" | "CLOSED" | "FUTURE";
+    status:"OPEN" |"CLOSED" |"FUTURE";
 };
 
 export default function RepeatingTimePeriods() {
-    const { toast } = useToast();
+    const { toast} = useToast();
 
     const [name, setName] = useState("Bi-Weekly US Payroll");
     const [description, setDescription] = useState("Standard 14-day payroll cycle starting on Mondays");
@@ -60,29 +60,29 @@ export default function RepeatingTimePeriods() {
                 let nextStart;
 
                 switch (frequency) {
-                    case "WEEKLY":
+                    case"WEEKLY":
                         currentEnd = addDays(currentStart, 6);
                         nextStart = addDays(currentStart, 7);
                         break;
-                    case "BI_WEEKLY":
+                    case"BI_WEEKLY":
                         currentEnd = addDays(currentStart, 13);
                         nextStart = addDays(currentStart, 14);
                         break;
-                    case "SEMI_MONTHLY":
+                    case"SEMI_MONTHLY":
                         // Simple 1st-15th, 16th-End approximation for demo
                         if (currentStart.getDate() === 1) {
                             currentEnd = new Date(currentStart.getFullYear(), currentStart.getMonth(), 15);
                             nextStart = new Date(currentStart.getFullYear(), currentStart.getMonth(), 16);
-                        } else {
+                       } else {
                             currentEnd = endOfMonth(currentStart);
                             nextStart = addDays(currentEnd, 1);
-                        }
+                       }
                         break;
-                    case "MONTHLY":
+                    case"MONTHLY":
                         currentEnd = endOfMonth(currentStart);
                         nextStart = addDays(currentEnd, 1);
                         break;
-                    case "CUSTOM_DAYS":
+                    case"CUSTOM_DAYS":
                         const days = parseInt(lengthInDays) || 1;
                         currentEnd = addDays(currentStart, days - 1);
                         nextStart = addDays(currentStart, days);
@@ -90,44 +90,44 @@ export default function RepeatingTimePeriods() {
                     default:
                         currentEnd = addDays(currentStart, 30);
                         nextStart = addDays(currentStart, 31);
-                }
+               }
 
                 periods.push({
-                    id: `p_${i}`,
-                    name: `${i + 1} ${format(currentStart, 'MMM yyyy')}`,
-                    startDate: format(currentStart, "yyyy-MM-dd"),
-                    endDate: format(currentEnd, "yyyy-MM-dd"),
-                    status: i === 0 ? "OPEN" : "FUTURE"
-                });
+                    id:`p_${i}`,
+                    name:`${i + 1} ${format(currentStart,'MMM yyyy')}`,
+                    startDate: format(currentStart,"yyyy-MM-dd"),
+                    endDate: format(currentEnd,"yyyy-MM-dd"),
+                    status: i === 0 ?"OPEN" :"FUTURE"
+               });
 
                 currentStart = nextStart;
-            }
+           }
 
             setGeneratedPeriods(periods);
             setIsGenerating(false);
 
             toast({
-                title: "Preview Generated",
-                description: `Successfully simulated ${periods.length} time periods based on pattern.`,
-            });
-        }, 600);
-    };
+                title:"Preview Generated",
+                description:`Successfully simulated ${periods.length} time periods based on pattern.`,
+           });
+       }, 600);
+   };
 
     const handleSave = () => {
         toast({
-            title: "Time Period Matrix Saved",
-            description: "Future periods will be automatically generated by the scheduled process."
-        });
-    };
+            title:"Time Period Matrix Saved",
+            description:"Future periods will be automatically generated by the scheduled process."
+       });
+   };
 
     return (
         <StandardPage
             title="Repeating Time Periods"
             description="Define global, complex frequency matrices used by Payroll, Time & Labor, and Benefit Accruals."
             breadcrumbs={[
-                { label: 'HR Admin', href: '/hr/dashboard' },
-                { label: 'Global Rules Setup', href: '/hr/wfm/time-rules' },
-                { label: 'Time Periods' }
+                { label:'HR Admin', href:'/hr/dashboard'},
+                { label:'Global Rules Setup', href:'/hr/wfm/time-rules'},
+                { label:'Time Periods'}
             ]}
         >
             <div className="max-w-6xl mx-auto pb-12 space-y-6">
@@ -145,7 +145,7 @@ export default function RepeatingTimePeriods() {
                     </div>
                     <div className="flex items-center gap-3">
                         <Button variant="outline" onClick={generatePreview} disabled={isGenerating}>
-                            <Play className="h-4 w-4 mr-2" /> {isGenerating ? 'Computing...' : 'Generate Preview'}
+                            <Play className="h-4 w-4 mr-2" /> {isGenerating ?'Computing...' :'Generate Preview'}
                         </Button>
                         <Button onClick={handleSave} className="bg-indigo-600 hover:bg-indigo-700">
                             <Save className="h-4 w-4 mr-2" /> Save Pattern
@@ -207,7 +207,7 @@ export default function RepeatingTimePeriods() {
                                     </Select>
                                 </div>
 
-                                {frequency === "CUSTOM_DAYS" && (
+                                {frequency ==="CUSTOM_DAYS" && (
                                     <div className="space-y-2">
                                         <Label>Period Length (Days)</Label>
                                         <Input type="number" value={lengthInDays} onChange={(e) => setLengthInDays(e.target.value)} />
@@ -247,13 +247,13 @@ export default function RepeatingTimePeriods() {
                                     <div className="text-center py-20 text-muted-foreground">
                                         <CalendarDays className="h-12 w-12 mx-auto mb-4 opacity-20" />
                                         <p className="text-sm font-medium">No periods computed yet.</p>
-                                        <p className="text-xs mt-1">Click "Generate Preview" to visualize the repeating cycle.</p>
+                                        <p className="text-xs mt-1">Click"Generate Preview" to visualize the repeating cycle.</p>
                                     </div>
                                 ) : (
                                     <Table>
-                                        <TableHeader className="bg-zinc-50 dark:bg-zinc-900/50 sticky top-0 z-10 shadow-sm">
+                                        <TableHeader className="bg-zinc-50 dark:bg-zinc-900/50 sticky top-0 shadow-sm">
                                             <TableRow>
-                                                <TableHead className="w-[80px]">Seq #</TableHead>
+                                                <TableHead className="w-20">Seq #</TableHead>
                                                 <TableHead>Period Name</TableHead>
                                                 <TableHead>Start Date</TableHead>
                                                 <TableHead>End Date</TableHead>
@@ -265,8 +265,8 @@ export default function RepeatingTimePeriods() {
                                                 <TableRow key={period.id}>
                                                     <TableCell className="font-mono text-xs text-muted-foreground">{index + 1}</TableCell>
                                                     <TableCell className="font-medium">{period.name}</TableCell>
-                                                    <TableCell>{format(new Date(period.startDate), 'MMM dd, yyyy')}</TableCell>
-                                                    <TableCell>{format(new Date(period.endDate), 'MMM dd, yyyy')}</TableCell>
+                                                    <TableCell>{format(new Date(period.startDate),'MMM dd, yyyy')}</TableCell>
+                                                    <TableCell>{format(new Date(period.endDate),'MMM dd, yyyy')}</TableCell>
                                                     <TableCell className="text-right">
                                                         <StatusBadge status={period.status} />
                                                     </TableCell>

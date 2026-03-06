@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate, formatDateTime } from "@/lib/dateUtils";
 
 import React, { useState } from "react";
@@ -283,7 +284,7 @@ export default function SourcingWorkbench() {
                                 </div>
                                 <div className="col-span-2">
                                     <h4 className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest mb-4">Line Requirements</h4>
-                                    <ScrollArea className="h-[300px]">
+                                    <ScrollArea className="h-72">
                                         <Table>
                                             <TableHeader>
                                                 <TableRow>
@@ -320,7 +321,7 @@ export default function SourcingWorkbench() {
                                 <ScrollArea className="h-[450px]">
                                     <div className="space-y-4">
                                         {bidsComparison?.map((bid: any) => (
-                                            <Card key={bid.id} className={`border-2 transition-colors ${bid.bidStatus === 'AWARDED' ? 'border-primary bg-primary/5' : 'hover:border-primary/20'}`}>
+                                            <Card key={bid.id} className={cn(`border-2 transition-colors ${bid.bidStatus === 'AWARDED' ? 'border-primary bg-primary/5' : 'hover:border-primary/20'}`)}>
                                                 <CardContent className="p-4">
                                                     <div className="flex justify-between items-start mb-4">
                                                         <div>

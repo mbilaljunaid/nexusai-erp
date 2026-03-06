@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -237,7 +238,7 @@ export default function ConstructionBillingWorkbench() {
                 </div>
                 <div className="flex items-center gap-2">
                     <Select value={selectedProjectId || ""} onValueChange={setSelectedProjectId}>
-                        <SelectTrigger className="w-[250px]">
+                        <SelectTrigger className="w-64">
                             <SelectValue placeholder="Select Project" />
                         </SelectTrigger>
                         <SelectContent>
@@ -247,7 +248,7 @@ export default function ConstructionBillingWorkbench() {
                         </SelectContent>
                     </Select>
                     <Select value={selectedContractId || ""} onValueChange={setSelectedContractId}>
-                        <SelectTrigger className="w-[250px]">
+                        <SelectTrigger className="w-64">
                             <SelectValue placeholder="Select Contract" />
                         </SelectTrigger>
                         <SelectContent>
@@ -297,7 +298,7 @@ export default function ConstructionBillingWorkbench() {
                         {payApps.map(app => (
                             <div role="button" tabIndex={0}
                                 key={app.id}
-                                className={`p-4 border-b cursor-pointer hover:bg-muted/50 ${selectedPayAppId === app.id ? "bg-muted" : ""}`}
+                                className={cn(`p-4 border-b cursor-pointer hover:bg-muted/50 ${selectedPayAppId === app.id ? "bg-muted" : ""}`)}
                                 onClick={() => setSelectedPayAppId(app.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <div className="flex justify-between items-center mb-1">

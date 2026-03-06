@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -340,7 +341,7 @@ export function BulkTimeEntryModal({
                                             const total = getTotalForDay(dayIndex);
                                             const isOverLimit = total > 24;
                                             return (
-                                                <TableCell key={dayIndex} className={`text-center ${isOverLimit ? 'text-red-600' : ''}`}>
+                                                <TableCell key={dayIndex} className={cn(`text-center ${isOverLimit ? 'text-red-600' : ''}`)}>
                                                     {total.toFixed(1)}
                                                     {isOverLimit && <AlertCircle className="inline h-3 w-3 ml-1" />}
                                                 </TableCell>

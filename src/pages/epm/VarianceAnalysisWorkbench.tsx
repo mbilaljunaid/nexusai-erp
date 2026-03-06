@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -87,7 +88,7 @@ export default function VarianceAnalysisWorkbench() {
                             <CardTitle className="text-xs font-bold text-purple-800 uppercase">Total Variance</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className={`text-2xl font-bold flex items-center gap-2 ${totalVariance >= 0 ? 'text-green-900' : 'text-red-900'}`}>
+                            <div className={cn(`text-2xl font-bold flex items-center gap-2 ${totalVariance >= 0 ? 'text-green-900' : 'text-red-900'}`)}>
                                 {totalVariance >= 0 ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}
                                 ${(Math.abs(totalVariance) / 1000).toFixed(0)}K
                             </div>
@@ -215,10 +216,10 @@ export default function VarianceAnalysisWorkbench() {
                                                 <TableCell><Badge variant="outline">{item.category}</Badge></TableCell>
                                                 <TableCell className="text-right font-mono">${item.currentAmount.toLocaleString()}</TableCell>
                                                 <TableCell className="text-right font-mono">${item.priorAmount.toLocaleString()}</TableCell>
-                                                <TableCell className={`text-right font-mono ${item.variance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                                <TableCell className={cn(`text-right font-mono ${item.variance >= 0 ? 'text-green-600' : 'text-red-600'}`)}>
                                                     ${Math.abs(item.variance).toLocaleString()}
                                                 </TableCell>
-                                                <TableCell className={`text-right font-mono ${item.variance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                                <TableCell className={cn(`text-right font-mono ${item.variance >= 0 ? 'text-green-600' : 'text-red-600'}`)}>
                                                     {item.variancePct.toFixed(1)}%
                                                 </TableCell>
                                                 <TableCell>

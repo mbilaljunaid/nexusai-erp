@@ -1,9 +1,10 @@
+import { cn } from "@/lib/utils";
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp, TrendingDown, AlertCircle, CheckCircle, Calendar, User } from 'lucide-react';
+import { TrendingUp, TrendingDown, AlertCircle, CheckCircle, Calendar, User, Loader2 } from "lucide-react";
 import CustomerSuccessService, { CustomerHealthScore, RenewalForecast } from '@/services/customerSuccessService';
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -150,7 +151,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
             header: 'Days Inactive',
             width: "120px",
             cell: (row: any) => (
-                <div className={`p-2 text-sm ${row.days_since_last_activity > 30 ? 'text-red-600 font-semibold' : 'text-gray-600'}`}>
+                <div className={cn(`p-2 text-sm ${row.days_since_last_activity > 30 ? 'text-red-600 font-semibold' : 'text-gray-600'}`)}>
                     {row.days_since_last_activity || 0}
                 </div>
             )
@@ -198,9 +199,9 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
             cell: (row: any) => (
                 <div className="w-full bg-gray-200 rounded-full h-2.5 m-2 relative">
                     <div
-                        className={`absolute left-0 top-0 h-2.5 rounded-full ${row.renewal_probability > 70 ? 'bg-green-600' :
+                        className={cn(`absolute left-0 top-0 h-2.5 rounded-full ${row.renewal_probability > 70 ? 'bg-green-600' :
                             row.renewal_probability > 50 ? 'bg-yellow-600' : 'bg-red-600'
-                            } ${getWidthClass(row.renewal_probability)}`}
+                            } ${getWidthClass(row.renewal_probability)}`)}
                     />
                     <span className="text-xs absolute -right-8 -top-1">{row.renewal_probability}%</span>
                 </div>
@@ -244,7 +245,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
     if (loading) {
         return (
             <StandardPage title="Customer Health Dashboard">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                <Loader2 className="h-12 w-12 animate-spin text-primary" />
             </StandardPage>
         );
     }

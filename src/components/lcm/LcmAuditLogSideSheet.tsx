@@ -84,7 +84,7 @@ export default function LcmAuditLogSideSheet({ entityId, entityTable = 'lcm_trad
                         <div className="relative border-l ml-3 pl-6 space-y-6">
                             {logs.map((log: any) => (
                                 <div key={log.id} className="relative">
-                                    <div className="absolute -left-[31px] bg-background border rounded-full p-1">
+                                    <div className="absolute -left-8 bg-background border rounded-full p-1">
                                         {getIcon(log.action)}
                                     </div>
                                     <div className="flex flex-col space-y-1">

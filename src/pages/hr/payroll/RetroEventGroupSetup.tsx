@@ -177,12 +177,12 @@ export default function RetroEventGroupSetup() {
                                 <Table>
                                     <TableHeader className="bg-zinc-50 dark:bg-zinc-900/50">
                                         <TableRow>
-                                            <TableHead className="w-[180px]">Database Entity</TableHead>
-                                            <TableHead className="w-[180px]">Attribute (Column)</TableHead>
-                                            <TableHead className="w-[120px]">Event Type</TableHead>
-                                            <TableHead className="text-center w-[100px]">Retro?</TableHead>
-                                            <TableHead className="text-center w-[100px]">Prorate?</TableHead>
-                                            <TableHead className="w-[50px]"></TableHead>
+                                            <TableHead className="w-44">Database Entity</TableHead>
+                                            <TableHead className="w-44">Attribute (Column)</TableHead>
+                                            <TableHead className="w-28">Event Type</TableHead>
+                                            <TableHead className="text-center w-24">Retro?</TableHead>
+                                            <TableHead className="text-center w-24">Prorate?</TableHead>
+                                            <TableHead className="w-12"></TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Leaf, TrendingUp, AlertTriangle, CheckCircle2, BarChart3 } from 'lucide-react';
@@ -44,7 +45,7 @@ export default function ESGPlanning() {
         { id: "budget", header: "Budget", width: "120px", cell: (v: any) => <span className="font-mono">${Number(v.budget_amount).toLocaleString()}</span> },
         { id: "actual", header: "Actual", width: "120px", cell: (v: any) => <span className="font-mono">${Number(v.actual_amount).toLocaleString()}</span> },
         { id: "committed", header: "Committed", width: "120px", cell: (v: any) => <span className="font-mono text-amber-600">${Number(v.committed_amount).toLocaleString()}</span> },
-        { id: "available", header: "Available", width: "120px", cell: (v: any) => <span className={`font-mono font-bold ${Number(v.available) < 0 ? 'text-red-600' : 'text-emerald-600'}`}>${Number(v.available).toLocaleString()}</span> },
+        { id: "available", header: "Available", width: "120px", cell: (v: any) => <span className={cn(`font-mono font-bold ${Number(v.available) < 0 ? 'text-red-600' : 'text-emerald-600'}`)}>${Number(v.available).toLocaleString()}</span> },
         {
             id: "utilization", header: "Utilization", width: "150px", cell: (v: any) => {
                 const pct = Number(v.utilization_pct ?? 0);
@@ -52,16 +53,16 @@ export default function ESGPlanning() {
                 const p = Math.min(100, Math.floor(pct / 10) * 10);
                 const wcls = p >= 100 ? 'w-full' : p >= 90 ? 'w-[90%]' : p >= 80 ? 'w-[80%]' : p >= 70 ? 'w-[70%]' : p >= 60 ? 'w-[60%]' : p >= 50 ? 'w-[50%]' : p >= 40 ? 'w-[40%]' : p >= 30 ? 'w-[30%]' : p >= 20 ? 'w-[20%]' : p >= 10 ? 'w-[10%]' : 'w-0';
                 return (
-                    <div className="flex items-center gap-[5px]">
-                        <div className="w-[60px] bg-gray-100 h-[5px] rounded-full">
-                            <div className={`${wcls} ${barClr.split(' ')[0]} h-full rounded-full`} />
+                    <div className="flex items-center gap-1">
+                        <div className="w-14 bg-gray-100 h-1 rounded-full">
+                            <div className={cn(`${wcls} ${barClr.split(' ')[0]} h-full rounded-full`)} />
                         </div>
-                        <span className={`${barClr.split(' ')[1]} font-bold`}>{pct.toFixed(1)}%</span>
+                        <span className={cn(`${barClr.split(' ')[1]} font-bold`)}>{pct.toFixed(1)}%</span>
                     </div>
                 );
             }
         },
-        { id: "control", header: "Control", width: "120px", cell: (v: any) => <span className={`px-[5px] py-[2px] rounded-[3px] text-[9px] ${v.control_action === 'HARD_STOP' ? 'bg-red-100 text-red-600' : v.control_action === 'HOLD' ? 'bg-yellow-100 text-gray-500' : 'bg-gray-100 text-gray-500'}`}>{v.control_action}</span> },
+        { id: "control", header: "Control", width: "120px", cell: (v: any) => <span className={cn(`px-1 py-0.5 rounded-[3px] text-[9px] ${v.control_action === 'HARD_STOP' ? 'bg-red-100 text-red-600' : v.control_action === 'HOLD' ? 'bg-yellow-100 text-gray-500' : 'bg-gray-100 text-gray-500'}`)}>{v.control_action}</span> },
         {
             id: "status", header: "Status", width: "80px", cell: (v: any) => {
                 const pct = Number(v.utilization_pct ?? 0);
@@ -76,7 +77,7 @@ export default function ESGPlanning() {
             description="ESG goal tracking · Budgetary control · Variance analysis"
             actions={
                 <div className="flex gap-1.5">
-                    {['goals', 'budget'].map(t => <button key={t} onClick={() => setTab(t as any)} className={`px-3.5 py-[7px] border-none rounded-lg font-bold text-[11px] cursor-pointer ${tab === t ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500'}`}>{t === 'goals' ? 'ESG Goals' : 'Budget Control'}</button>)}
+                    {['goals', 'budget'].map(t => <button key={t} onClick={() => setTab(t as any)} className={cn(`px-3.5 py-1.5 border-none rounded-lg font-bold text-[11px] cursor-pointer ${tab === t ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500'}`)}>{t === 'goals' ? 'ESG Goals' : 'Budget Control'}</button>)}
                 </div>
             }
         >
@@ -86,9 +87,9 @@ export default function ESGPlanning() {
                     {/* KPIs */}
                     <div className="flex gap-2.5 mb-3.5">
                         {[{ lbl: 'Environmental', val: env, clr: 'text-emerald-600', icon: '🌱' }, { lbl: 'Social', val: social, clr: 'text-blue-500', icon: '👥' }, { lbl: 'Governance', val: gov, clr: 'text-purple-600', icon: '⚖️' }, { lbl: 'On Track', val: onTrack, clr: 'text-emerald-600', icon: '✓' }].map(k => (
-                            <Card key={k.lbl} className="px-4 py-2.5 min-w-[100px] shadow-sm">
+                            <Card key={k.lbl} className="px-4 py-2.5 min-w-24 shadow-sm">
                                 <div className="text-base">{k.icon}</div>
-                                <div className={`text-xl font-extrabold ${k.clr}`}>{k.val}</div>
+                                <div className={cn(`text-xl font-extrabold ${k.clr}`)}>{k.val}</div>
                                 <div className="text-[10px] text-gray-400">{k.lbl}</div>
                             </Card>
                         ))}
@@ -97,7 +98,7 @@ export default function ESGPlanning() {
                     {/* Category filter + New */}
                     <div className="flex gap-1.5 mb-2.5 justify-between">
                         <div className="flex gap-1.5">
-                            {['', 'ENVIRONMENTAL', 'SOCIAL', 'GOVERNANCE'].map(c => <button key={c} onClick={() => setCatFilter(c)} className={`px-2.5 py-1.5 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${catFilter === c ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`}>{c || 'All'}</button>)}
+                            {['', 'ENVIRONMENTAL', 'SOCIAL', 'GOVERNANCE'].map(c => <button key={c} onClick={() => setCatFilter(c)} className={cn(`px-2.5 py-1.5 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${catFilter === c ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{c || 'All'}</button>)}
                         </div>
                         <button onClick={() => setShowNew(true)} className="px-3 py-1.5 bg-emerald-600 text-white border-none rounded-md text-[11px] font-bold cursor-pointer">+ New Goal</button>
                     </div>
@@ -142,15 +143,15 @@ export default function ESGPlanning() {
                                     const wcls = p >= 100 ? 'w-full' : p >= 90 ? 'w-[90%]' : p >= 80 ? 'w-[80%]' : p >= 70 ? 'w-[70%]' : p >= 60 ? 'w-[60%]' : p >= 50 ? 'w-[50%]' : p >= 40 ? 'w-[40%]' : p >= 30 ? 'w-[30%]' : p >= 20 ? 'w-[20%]' : p >= 10 ? 'w-[10%]' : 'w-0';
 
                                     return (
-                                        <Card key={g.id} onClick={() => { setSelectedGoal(selectedGoal?.id === g.id ? null : g); setActualForm(a => ({ ...a, goalId: g.id })); }} className={`hover:shadow-md cursor-pointer border-l-[4px] px-3.5 py-2.5 shadow-sm ${selectedGoal?.id === g.id ? 'border-y-emerald-600 border-r-emerald-600' : ''} ${bdrClr}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                                        <Card key={g.id} onClick={() => { setSelectedGoal(selectedGoal?.id === g.id ? null : g); setActualForm(a => ({ ...a, goalId: g.id })); }} className={cn(`hover:shadow-md cursor-pointer border-l-[4px] px-3.5 py-2.5 shadow-sm ${selectedGoal?.id === g.id ? 'border-y-emerald-600 border-r-emerald-600' : ''} ${bdrClr}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                             <div className="flex justify-between mb-1">
                                                 <div className="font-bold text-[13px]">{g.goal_name}</div>
-                                                <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${clr}`}>{g.status}</span>
+                                                <span className={cn(`text-[9px] px-1.5 py-0.5 rounded font-bold ${clr}`)}>{g.status}</span>
                                             </div>
                                             <div className="text-[10px] text-gray-400 mb-1.5">{g.goal_code} · {g.category} · {g.unit} · Owner: {g.owner ?? '—'}</div>
                                             <div className="flex items-center gap-1.5">
                                                 <div className="flex-1 bg-gray-100 h-1.5 rounded-full overflow-hidden">
-                                                    <div className={`${wcls} ${catClr} h-full rounded-full`} />
+                                                    <div className={cn(`${wcls} ${catClr} h-full rounded-full`)} />
                                                 </div>
                                                 <div className="text-[9px] text-gray-400 whitespace-nowrap">Target: {g.target_value ?? '—'} {g.unit} by {g.target_year}</div>
                                             </div>
@@ -163,7 +164,7 @@ export default function ESGPlanning() {
 
                         {/* Detail + Record actual */}
                         {selectedGoal && (
-                            <div className="w-[280px] flex-shrink-0">
+                            <div className="w-72 flex-shrink-0">
                                 <Card className="p-3.5 mb-2.5 shadow-sm">
                                     <div className="font-bold text-[13px] mb-2">{selectedGoal.goal_name}</div>
                                     <div className="text-[11px] leading-relaxed text-gray-700">

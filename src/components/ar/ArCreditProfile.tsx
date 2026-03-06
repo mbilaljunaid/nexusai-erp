@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -74,7 +75,7 @@ export function ArCreditProfile({ account }: ArCreditProfileProps) {
             <CardContent>
                 <div className="flex items-end justify-between mb-2">
                     <div>
-                        <div className={`text-2xl font-bold ${getScoreColor(score)}`}>
+                        <div className={cn(`text-2xl font-bold ${getScoreColor(score)}`)}>
                             {score}
                         </div>
                         <div className="text-xs text-muted-foreground">Credit Score</div>

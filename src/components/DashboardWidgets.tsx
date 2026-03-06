@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -271,11 +272,11 @@ function BadgesWidget() {
           return (
             <div
               key={badge.id}
-              className={`w-12 h-12 rounded-full flex items-center justify-center border-2 ${colors.bg} ${colors.border}`}
+              className={cn(`w-12 h-12 rounded-full flex items-center justify-center border-2 ${colors.bg} ${colors.border}`)}
               title={badge.definition?.name || 'Badge'}
               data-testid={`badge-${badge.badgeId}`}
             >
-              <IconComponent className={`w-5 h-5 ${colors.text}`} />
+              <IconComponent className={cn(`w-5 h-5 ${colors.text}`)} />
             </div>
           );
         })}
@@ -535,9 +536,9 @@ function WidgetContent({ type }: { type: WidgetType }) {
               { task: "Update documentation", due: "Tomorrow", priority: "low" },
             ].map((t, i) => (
               <div key={i} className="flex items-center gap-2 text-sm">
-                <div className={`w-2 h-2 rounded-full ${t.priority === "high" ? "bg-red-500" :
+                <div className={cn(`w-2 h-2 rounded-full ${t.priority === "high" ? "bg-red-500" :
                   t.priority === "medium" ? "bg-yellow-500" : "bg-green-500"
-                  }`} />
+                  }`)} />
                 <span className="flex-1 truncate">{t.task}</span>
                 <span className="text-muted-foreground text-xs">{t.due}</span>
               </div>
@@ -895,8 +896,8 @@ export function DashboardWidgets() {
           return (
             <Card
               key={widget.id}
-              className={`${getSizeClass(widget.size)} transition-all ${draggedWidget === widget.id ? "opacity-50 scale-95" : ""
-                } ${draggedWidget && draggedWidget !== widget.id ? "hover:border-primary" : ""}`}
+              className={cn(`${getSizeClass(widget.size)} transition-all ${draggedWidget === widget.id ? "opacity-50 scale-95" : ""
+                } ${draggedWidget && draggedWidget !== widget.id ? "hover:border-primary" : ""}`)}
               draggable
               onDragStart={(e) => handleDragStart(e, widget.id)}
               onDragOver={handleDragOver}

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -84,7 +85,7 @@ const InventoryDashboard = () => {
   const transactionColumns: SpreadsheetColumn<any>[] = [
     { id: "type", header: "Type", width: "20%", cell: (item: any) => <div className="p-2"><Badge variant="secondary">{item.type}</Badge></div> },
     { id: "item", header: "Item", width: "35%", cell: (item: any) => <div className="p-2 font-medium">{item.item}</div> },
-    { id: "qty", header: "Qty", width: "15%", cell: (item: any) => <div className={`p-2 font-bold ${item.qty > 0 ? 'text-green-600' : 'text-red-600'}`}>{item.qty > 0 ? '+' : ''}{item.qty}</div> },
+    { id: "qty", header: "Qty", width: "15%", cell: (item: any) => <div className={cn(`p-2 font-bold ${item.qty > 0 ? 'text-green-600' : 'text-red-600'}`)}>{item.qty > 0 ? '+' : ''}{item.qty}</div> },
     { id: "date", header: "Date", width: "15%", cell: (item: any) => <div className="p-2">{item.date}</div> },
     { id: "status", header: "Status", width: "15%", cell: (item: any) => <div className="p-2"><Badge variant="outline">{item.status}</Badge></div> },
   ];
@@ -149,7 +150,7 @@ const InventoryDashboard = () => {
       </DashboardWidget>
 
       <DashboardWidget title="Valuation Trend" colSpan={2} className="min-h-[400px]">
-        <div className="h-[350px] w-full mt-2">
+        <div className="h-80 w-full mt-2">
           <AnalyticsChart
             title=""
             data={dataValuation}

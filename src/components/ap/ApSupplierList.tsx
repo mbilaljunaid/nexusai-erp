@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,7 +28,7 @@ export function ApSupplierList() {
             header: "Supplier Name",
             cell: (item) => (
                 <div className="flex items-center gap-2">
-                    <Building2 className={`h-4 w-4 ${item.creditHold ? "text-red-500" : "text-purple-500"}`} />
+                    <Building2 className={cn(`h-4 w-4 ${item.creditHold ? "text-red-500" : "text-purple-500"}`)} />
                     <span className="font-semibold">{item.name}</span>
                 </div>
             )

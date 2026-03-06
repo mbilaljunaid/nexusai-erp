@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -78,7 +79,7 @@ export default function ContractObligations() {
             {/* KPIs */}
             <div className="flex gap-2.5 mb-3.5">
                 {[['Total', summary?.total ?? 0, '#6b7280'], ['Pending', summary?.pending ?? 0, '#1d4ed8'], ['Overdue', summary?.overdue ?? 0, '#dc2626'], ['Met', summary?.met ?? 0, '#059669'], ['At Risk', `${summary?.currency_code ?? 'USD'} ${Number(summary?.total_at_risk ?? 0).toLocaleString()}`, '#d97706']].map(([l, v, c]) => (
-                    <Card key={l as string} className="px-[18px] py-2.5 flex-1 shadow-sm border-l-[4px]" style={{ borderLeftColor: c as string }}>
+                    <Card key={l as string} className="px-4 py-2.5 flex-1 shadow-sm border-l-[4px]" style={{ borderLeftColor: c as string }}>
                         <div className="text-xl font-extrabold font-mono">{v}</div>
                         <div className="text-[11px] text-gray-400 mt-0.5">{l}</div>
                     </Card>
@@ -132,7 +133,7 @@ export default function ContractObligations() {
             {/* Filters */}
             <div className="flex gap-1.5 mb-2.5">
                 {['', 'Pending', 'InReview', 'Overdue', 'Met', 'Waived'].map(s => (
-                    <button key={s} onClick={() => setFilter(s)} className={`px-3 py-1 border border-gray-200 rounded-lg text-[11px] font-semibold cursor-pointer ${filter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`}>
+                    <button key={s} onClick={() => setFilter(s)} className={cn(`px-3 py-1 border border-gray-200 rounded-lg text-[11px] font-semibold cursor-pointer ${filter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>
                         {s || 'All'}
                     </button>
                 ))}
@@ -144,7 +145,7 @@ export default function ContractObligations() {
                     const cfg = OB_STATUS[ob.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
                     const sel = selected?.id === ob.id;
                     return (
-                        <Card key={ob.id} onClick={() => setSelected(sel ? null : ob)} className={`px-3.5 py-2.5 cursor-pointer shadow-sm border-l-[4px] ${sel ? 'border-y-blue-700 border-r-blue-700' : ''}`} style={{ borderLeftColor: cfg.color }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                        <Card key={ob.id} onClick={() => setSelected(sel ? null : ob)} className={cn(`px-3.5 py-2.5 cursor-pointer shadow-sm border-l-[4px] ${sel ? 'border-y-blue-700 border-r-blue-700' : ''}`)} style={{ borderLeftColor: cfg.color }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                             <div className="flex justify-between items-start mb-0.5">
                                 <div>
                                     <span className="text-[13px] font-bold text-gray-900">{ob.title}</span>

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -308,7 +309,7 @@ export function ServiceMarketplace() {
                     placeholder="Describe what you offer..."
                     value={newPackage.description}
                     onChange={(e) => setNewPackage({ ...newPackage, description: e.target.value })}
-                    className="min-h-[100px]"
+                    className="min-h-24"
                     data-testid="input-package-description"
                   />
                   <div className="grid grid-cols-2 gap-4">
@@ -361,7 +362,7 @@ export function ServiceMarketplace() {
 
         <TabsContent value="browse" className="mt-6 space-y-4">
           <div className="flex gap-4 flex-wrap items-end">
-            <div className="relative flex-1 min-w-[200px]">
+            <div className="relative flex-1 min-w-48">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Search services..."
@@ -372,7 +373,7 @@ export function ServiceMarketplace() {
               />
             </div>
             <Select value={selectedCategory || "all"} onValueChange={handleCategoryChange}>
-              <SelectTrigger className="w-[180px]" data-testid="select-category-filter">
+              <SelectTrigger className="w-44" data-testid="select-category-filter">
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
               <SelectContent>
@@ -383,7 +384,7 @@ export function ServiceMarketplace() {
               </SelectContent>
             </Select>
             <Select value={sortBy} onValueChange={handleSortChange}>
-              <SelectTrigger className="w-[200px]" data-testid="select-sort">
+              <SelectTrigger className="w-48" data-testid="select-sort">
                 <ArrowUpDown className="w-4 h-4 mr-2" />
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
@@ -439,7 +440,7 @@ export function ServiceMarketplace() {
               />
             </div>
             <Select value={minRating} onValueChange={(v) => { setMinRating(v); resetFilters(); }}>
-              <SelectTrigger className="w-[140px]" data-testid="select-min-rating">
+              <SelectTrigger className="w-36" data-testid="select-min-rating">
                 <Star className="w-4 h-4 mr-2 text-yellow-500" />
                 <SelectValue placeholder="Min Rating" />
               </SelectTrigger>
@@ -451,7 +452,7 @@ export function ServiceMarketplace() {
               </SelectContent>
             </Select>
             <Select value={maxDeliveryDays} onValueChange={(v) => { setMaxDeliveryDays(v); resetFilters(); }}>
-              <SelectTrigger className="w-[160px]" data-testid="select-max-delivery">
+              <SelectTrigger className="w-40" data-testid="select-max-delivery">
                 <Clock className="w-4 h-4 mr-2" />
                 <SelectValue placeholder="Delivery Time" />
               </SelectTrigger>
@@ -591,7 +592,7 @@ export function ServiceMarketplace() {
                   <Button
                     variant="outline"
                     onClick={handleLoadMore}
-                    className="min-w-[200px]"
+                    className="min-w-48"
                     data-testid="button-load-more"
                   >
                     <Loader2 className="w-4 h-4 mr-2" />
@@ -840,7 +841,7 @@ export function ServiceMarketplace() {
                               {[1, 2, 3, 4, 5].map((star) => (
                                 <Star 
                                   key={star}
-                                  className={`w-4 h-4 ${star <= review.rating ? "text-yellow-500 fill-yellow-500" : "text-muted"}`}
+                                  className={cn(`w-4 h-4 ${star <= review.rating ? "text-yellow-500 fill-yellow-500" : "text-muted"}`)}
                                 />
                               ))}
                             </div>
@@ -873,7 +874,7 @@ export function ServiceMarketplace() {
               placeholder="Describe your specific requirements..."
               value={orderRequirements}
               onChange={(e) => setOrderRequirements(e.target.value)}
-              className="min-h-[120px]"
+              className="min-h-28"
               data-testid="input-order-requirements"
             />
           </div>
@@ -914,7 +915,7 @@ export function ServiceMarketplace() {
                     data-testid={`button-rating-${star}`}
                   >
                     <Star 
-                      className={`w-6 h-6 ${star <= reviewData.rating ? "text-yellow-500 fill-yellow-500" : "text-muted"}`}
+                      className={cn(`w-6 h-6 ${star <= reviewData.rating ? "text-yellow-500 fill-yellow-500" : "text-muted"}`)}
                     />
                   </Button>
                 ))}
@@ -926,7 +927,7 @@ export function ServiceMarketplace() {
                 placeholder="Share your experience..."
                 value={reviewData.comment}
                 onChange={(e) => setReviewData({ ...reviewData, comment: e.target.value })}
-                className="min-h-[100px]"
+                className="min-h-24"
                 data-testid="input-review-comment"
               />
             </div>

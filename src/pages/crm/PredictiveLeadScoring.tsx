@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -128,7 +129,7 @@ export default function PredictiveLeadScoring() {
                                         <div className="mt-3 space-y-2">
                                             <div className="flex justify-between text-sm">
                                                 <span>Lead Score</span>
-                                                <span className={`font-bold px-3 py-1 rounded ${getScoreColor(lead.score)}`}>
+                                                <span className={cn(`font-bold px-3 py-1 rounded ${getScoreColor(lead.score)}`)}>
                                                     {lead.score}/100
                                                 </span>
                                             </div>

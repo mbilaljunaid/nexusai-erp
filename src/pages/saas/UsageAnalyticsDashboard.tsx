@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import UsageAnalyticsService, { FeatureAdoptionMetric, StickinessStat } from '@/services/usageAnalyticsService';
-import { TrendingUp, Users, Activity, Target } from 'lucide-react';
+import { TrendingUp, Users, Activity, Target, Loader2 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 
 
@@ -60,7 +60,7 @@ export default function UsageAnalyticsDashboard() {
     if (loading) {
         return (
             <StandardPage title="Usage Analytics">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                <Loader2 className="h-12 w-12 animate-spin text-primary" />
             </StandardPage>
         );
     }

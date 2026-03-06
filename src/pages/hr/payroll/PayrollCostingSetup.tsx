@@ -148,7 +148,7 @@ export default function PayrollCostingSetup() {
                                             />
                                         </div>
                                         <Select defaultValue="all">
-                                            <SelectTrigger className="w-[180px] h-9">
+                                            <SelectTrigger className="w-44 h-9">
                                                 <SelectValue placeholder="Classification" />
                                             </SelectTrigger>
                                             <SelectContent>

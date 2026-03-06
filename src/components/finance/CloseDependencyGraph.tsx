@@ -1,14 +1,15 @@
+import { cn } from "@/lib/utils";
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ArrowRight, CheckCircle2, AlertCircle, Clock } from "lucide-react";
+import React from'react';
+import { motion} from'framer-motion';
+import { Card, CardContent, CardHeader, CardTitle} from"@/components/ui/card";
+import { Badge} from"@/components/ui/badge";
+import { ArrowRight, CheckCircle2, AlertCircle, Clock} from"lucide-react";
 
 interface ServiceStatus {
     id: string; // AP, AR, GL
     name: string;
-    status: 'Open' | 'Closed' | 'Pending' | 'Error';
+    status:'Open' |'Closed' |'Pending' |'Error';
     message?: string;
 }
 
@@ -17,50 +18,50 @@ interface CloseDependencyGraphProps {
     periodName: string;
 }
 
-const Node = ({ service, isCenter = false }: { service: ServiceStatus; isCenter?: boolean }) => {
+const Node = ({ service, isCenter = false}: { service: ServiceStatus; isCenter?: boolean}) => {
     const getColor = (s: string) => {
         switch (s) {
-            case 'Closed': return 'bg-green-100 border-green-500 text-green-700';
-            case 'Open': return 'bg-blue-50 border-blue-400 text-blue-700';
-            case 'Error': return 'bg-red-50 border-red-400 text-red-700';
-            default: return 'bg-gray-50 border-gray-300 text-gray-500';
-        }
-    };
+            case'Closed': return'bg-green-100 border-green-500 text-green-700';
+            case'Open': return'bg-blue-50 border-blue-400 text-blue-700';
+            case'Error': return'bg-red-50 border-red-400 text-red-700';
+            default: return'bg-gray-50 border-gray-300 text-gray-500';
+       }
+   };
 
     const getIcon = (s: string) => {
         switch (s) {
-            case 'Closed': return <CheckCircle2 className="w-5 h-5 text-green-600" />;
-            case 'Open': return <Clock className="w-5 h-5 text-blue-500" />;
-            case 'Error': return <AlertCircle className="w-5 h-5 text-red-500" />;
+            case'Closed': return <CheckCircle2 className="w-5 h-5 text-green-600" />;
+            case'Open': return <Clock className="w-5 h-5 text-blue-500" />;
+            case'Error': return <AlertCircle className="w-5 h-5 text-red-500" />;
             default: return <Clock className="w-5 h-5 text-gray-400" />;
-        }
-    };
+       }
+   };
 
     return (
         <motion.div
             layout
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className={`
+            initial={{ opacity: 0, scale: 0.8}}
+            animate={{ opacity: 1, scale: 1}}
+            className={cn(`
                 relative flex flex-col items-center justify-center p-4 rounded-xl border-2 shadow-sm
                 transition-all duration-300
                 ${getColor(service.status)}
-                ${isCenter ? 'w-48 h-32 ml-10 z-10' : 'w-36 h-24'}
-            `}
+                ${isCenter ?'w-48 h-32 ml-10' :'w-36 h-24'}
+           `)}
         >
             <div className="absolute top-2 right-2">
                 {getIcon(service.status)}
             </div>
-            <h3 className={`font-bold ${isCenter ? 'text-xl' : 'text-lg'}`}>{service.id}</h3>
+            <h3 className={cn(`font-bold ${isCenter ?'text-xl' :'text-lg'}`)}>{service.id}</h3>
             <p className="text-xs font-medium uppercase mt-1">{service.status}</p>
             {service.message && <p className="text-[10px] mt-1 text-center leading-tight opacity-80">{service.message}</p>}
         </motion.div>
     );
 };
 
-export const CloseDependencyGraph: React.FC<CloseDependencyGraphProps> = ({ statuses, periodName }) => {
-    const glStatus = statuses.find(s => s.id === 'GL') || { id: 'GL', name: 'General Ledger', status: 'Pending' };
-    const subledgers = statuses.filter(s => s.id !== 'GL');
+export const CloseDependencyGraph: React.FC<CloseDependencyGraphProps> = ({ statuses, periodName}) => {
+    const glStatus = statuses.find(s => s.id ==='GL') || { id:'GL', name:'General Ledger', status:'Pending'};
+    const subledgers = statuses.filter(s => s.id !=='GL');
 
     return (
         <Card className="h-full">
@@ -96,10 +97,10 @@ export const CloseDependencyGraph: React.FC<CloseDependencyGraphProps> = ({ stat
                             <div key={service.id} className="relative group flex items-center">
                                 <Node service={service} />
                                 {/* Quick Connector Logic: Line from Right of Node to Left of GL */}
-                                <div className={`
+                                <div className={cn(`
                                     hidden md:block absolute left-full top-1/2 w-16 h-0.5 bg-slate-300
                                     group-hover:bg-blue-400 transition-colors
-                                `} />
+                               `)} />
                                 <div className="hidden md:block absolute left-full ml-16 transform -translate-x-1 top-1/2 -mt-1">
                                     <ArrowRight className="w-4 h-4 text-slate-400" />
                                 </div>
@@ -113,9 +114,9 @@ export const CloseDependencyGraph: React.FC<CloseDependencyGraphProps> = ({ stat
                             <div className="absolute -left-6 top-1/2 w-6 h-0.5 bg-slate-300" />
                             <Node service={glStatus} isCenter={true} />
                             <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-sm text-muted-foreground w-48 text-center">
-                                {glStatus.status === 'Closed'
-                                    ? "Period Finalized"
-                                    : "Waiting for Subledgers"}
+                                {glStatus.status ==='Closed'
+                                    ?"Period Finalized"
+                                    :"Waiting for Subledgers"}
                             </div>
                         </div>
                     </div>

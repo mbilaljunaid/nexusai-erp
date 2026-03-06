@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -41,9 +42,9 @@ export default function ItemDirectory() {
         {
             id: "itemStatus", header: "Status", width: "150px", cell: (row: any) => (
                 <div className="p-2">
-                    <span className={`px-2 py-1 rounded text-xs ${row.itemStatus === 'ACTIVE' ? 'bg-green-100 text-green-800' :
+                    <span className={cn(`px-2 py-1 rounded text-xs ${row.itemStatus === 'ACTIVE' ? 'bg-green-100 text-green-800' :
                         row.itemStatus === 'OBSOLETE' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
-                        }`}>
+                        }`)}>
                         {row.itemStatus}
                     </span>
                 </div>

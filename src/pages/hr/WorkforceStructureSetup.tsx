@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 import { i18n } from "@/lib/i18n";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -103,7 +104,7 @@ export default function WorkforceStructureSetup() {
                             </CardHeader>
 
                             <CardContent className="p-6">
-                                <div className={`transition-opacity duration-300 ${!syncEnabled ? 'opacity-50 pointer-events-none' : ''}`}>
+                                <div className={cn(`transition-opacity duration-300 ${!syncEnabled ? 'opacity-50 pointer-events-none' : ''}`)}>
                                     <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">Attribute Inheritance Rules</h3>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
@@ -214,7 +215,7 @@ export default function WorkforceStructureSetup() {
                                         />
                                     </div>
                                     <Select defaultValue="active">
-                                        <SelectTrigger className="w-[180px]">
+                                        <SelectTrigger className="w-44">
                                             <SelectValue placeholder="Status" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -226,7 +227,7 @@ export default function WorkforceStructureSetup() {
                                 </div>
 
                                 {/* Mock Grade Ladder Table */}
-                                <div className="border rounded-lg overflow-hidden h-[300px]">
+                                <div className="border rounded-lg overflow-hidden h-72">
                                     <InteractiveSpreadsheet
                                         columns={ladderColumns}
                                         data={LADDERS}

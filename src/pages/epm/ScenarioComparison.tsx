@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -329,7 +330,7 @@ export default function ScenarioComparison() {
                                                     </TableCell>
                                                 ))}
                                                 {selectedScenarios.length === 2 && (
-                                                    <TableCell className={`text-right font-mono flex items-center justify-end gap-1 ${delta >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                                    <TableCell className={cn(`text-right font-mono flex items-center justify-end gap-1 ${delta >= 0 ? 'text-green-600' : 'text-red-600'}`)}>
                                                         {delta >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
                                                         ${Math.abs(delta).toLocaleString()}
                                                     </TableCell>

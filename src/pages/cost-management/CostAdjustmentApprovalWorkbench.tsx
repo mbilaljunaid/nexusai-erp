@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,16 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-    CheckCircle,
-    XCircle,
-    Clock,
-    AlertTriangle,
-    ClipboardList,
-    History,
-    PlusCircle,
-    ShieldCheck,
-} from "lucide-react";
+import { CheckCircle, XCircle, Clock, AlertTriangle, ClipboardList, History, PlusCircle, ShieldCheck, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -74,7 +66,7 @@ function StatusBadge({ status }: { status: string }) {
     };
     const cfg = map[status] ?? { label: status, className: "bg-gray-100 text-gray-700 border-gray-200", icon: null };
     return (
-        <Badge variant="outline" className={`flex items-center text-xs font-medium ${cfg.className}`}>
+        <Badge variant="outline" className={cn(`flex items-center text-xs font-medium ${cfg.className}`)}>
             {cfg.icon}
             {cfg.label}
         </Badge>
@@ -110,7 +102,7 @@ function ApprovalRow({
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-1 text-sm mt-2">
                             <div>
                                 <span className="text-muted-foreground">Amount: </span>
-                                <span className={`font-semibold ${Number(payload.adjustmentAmount) >= 0 ? "text-emerald-700" : "text-red-700"}`}>
+                                <span className={cn(`font-semibold ${Number(payload.adjustmentAmount) >= 0 ? "text-emerald-700" : "text-red-700"}`)}>
                                     {payload.adjustmentAmount !== undefined
                                         ? `${Number(payload.adjustmentAmount) >= 0 ? "+" : ""}${Number(payload.adjustmentAmount).toLocaleString()} ${payload.currencyCode ?? ""}`
                                         : "—"}
@@ -134,7 +126,7 @@ function ApprovalRow({
                     </div>
 
                     {req.status === "PENDING" && onApprove && onReject && (
-                        <div className="flex flex-col gap-2 min-w-[180px]">
+                        <div className="flex flex-col gap-2 min-w-44">
                             {!rejecting ? (
                                 <>
                                     <div className="flex flex-col gap-1">
@@ -169,7 +161,7 @@ function ApprovalRow({
                                         value={reason}
                                         onChange={(e) => setReason(e.target.value)}
                                         placeholder="Rejection reason (required)"
-                                        className="text-xs min-h-[60px]"
+                                        className="text-xs min-h-14"
                                     />
                                     <Button
                                         size="sm"
@@ -279,7 +271,7 @@ function CreateAdjustmentDialog({
                         <Textarea
                             value={form.justification}
                             onChange={(e) => update("justification", e.target.value)}
-                            className="mt-1 min-h-[60px] text-sm"
+                            className="mt-1 min-h-14 text-sm"
                             placeholder="Describe the reason for this adjustment..."
                         />
                     </div>
@@ -472,7 +464,7 @@ export default function CostAdjustmentApprovalWorkbench() {
                 <TabsContent value="pending">
                     {loadingPending ? (
                         <div className="flex items-center gap-2 text-muted-foreground text-sm py-8 justify-center">
-                            <Clock className="h-4 w-4 animate-spin" /> Loading pending requests...
+                            <Loader2 className="h-4 w-4 animate-spin" /> Loading pending requests...
                         </div>
                     ) : pending.length === 0 ? (
                         <EmptyState icon={CheckCircle} title="No pending adjustments" description="All cost adjustments have been processed." />
@@ -497,7 +489,7 @@ export default function CostAdjustmentApprovalWorkbench() {
                 <TabsContent value="history">
                     {loadingHistory ? (
                         <div className="flex items-center gap-2 text-muted-foreground text-sm py-8 justify-center">
-                            <Clock className="h-4 w-4 animate-spin" /> Loading history...
+                            <Loader2 className="h-4 w-4 animate-spin" /> Loading history...
                         </div>
                     ) : history.length === 0 ? (
                         <EmptyState icon={AlertTriangle} title="No history yet" description="Cost adjustment history will appear here once requests are processed." />

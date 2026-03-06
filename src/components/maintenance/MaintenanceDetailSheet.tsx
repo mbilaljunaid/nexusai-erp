@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
@@ -127,7 +128,7 @@ export default function MaintenanceDetailSheet({ workOrderId, open, onOpenChange
                                 <CardContent className="text-sm space-y-1">
                                     <div className="flex justify-between items-center pb-2 border-b">
                                         <div className="flex items-center gap-2">
-                                            <HeartPulse className={`h-4 w-4 ${health?.healthScore < 50 ? 'text-red-500' : health?.healthScore < 80 ? 'text-yellow-500' : 'text-green-500'}`} />
+                                            <HeartPulse className={cn(`h-4 w-4 ${health?.healthScore < 50 ? 'text-red-500' : health?.healthScore < 80 ? 'text-yellow-500' : 'text-green-500'}`)} />
                                             <span className="font-bold">Health Score:</span>
                                         </div>
                                         <Badge variant="outline" className={health?.healthScore < 50 ? 'bg-red-50 text-red-700' : health?.healthScore < 80 ? 'bg-yellow-50 text-yellow-700' : 'bg-green-50 text-green-700'}>

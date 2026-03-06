@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -200,7 +201,7 @@ export function ApPprSideSheet({ isOpen, onClose, batchId }: Props) {
                                 {isSelectionLoading ? (
                                     <div className="flex justify-center p-8"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
                                 ) : selectedInvoices?.length > 0 ? (
-                                    <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
+                                    <div className="space-y-2 max-h-72 overflow-y-auto pr-2">
                                         {selectedInvoices.map((inv: any) => (
                                             <div key={inv.id} className="flex items-center justify-between p-2 border rounded text-xs bg-background/50">
                                                 <div>
@@ -244,9 +245,9 @@ export function ApPprSideSheet({ isOpen, onClose, batchId }: Props) {
                                         <h4 className="text-sm font-semibold">Issued Payments</h4>
                                         <div className="space-y-2">
                                             {batchPayments?.map((payment) => (
-                                                <div key={payment.id} className={`p-3 border rounded-lg flex justify-between items-center group ${payment.status === "VOID" ? "opacity-50 grayscale bg-muted/20" : "bg-card shadow-sm"}`}>
+                                                <div key={payment.id} className={cn(`p-3 border rounded-lg flex justify-between items-center group ${payment.status === "VOID" ? "opacity-50 grayscale bg-muted/20" : "bg-card shadow-sm"}`)}>
                                                     <div className="flex gap-3 items-center">
-                                                        <div className={`p-1.5 rounded-full ${payment.status === "VOID" ? "bg-muted" : "bg-green-100"}`}>
+                                                        <div className={cn(`p-1.5 rounded-full ${payment.status === "VOID" ? "bg-muted" : "bg-green-100"}`)}>
                                                             {payment.status === "VOID" ? <RotateCcw className="h-3 w-3 text-muted-foreground" /> : <CreditCard className="h-3 w-3 text-green-600" />}
                                                         </div>
                                                         <div>

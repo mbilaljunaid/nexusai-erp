@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -212,7 +213,7 @@ export default function DealDesk() {
                                                         </div>
                                                     </TableCell>
                                                     <TableCell>
-                                                        <div className={`flex items-center gap-1 text-sm font-semibold ${getSLAColor(request.slaRemaining)}`}>
+                                                        <div className={cn(`flex items-center gap-1 text-sm font-semibold ${getSLAColor(request.slaRemaining)}`)}>
                                                             <Clock className="h-3 w-3" />
                                                             {request.slaRemaining}h
                                                         </div>
@@ -356,10 +357,10 @@ export default function DealDesk() {
                                             {selectedRequest.approvalChain.map((step, index) => (
                                                 <div key={index} className="flex items-center justify-between">
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step.status === "APPROVED" ? "bg-green-100" :
+                                                        <div className={cn(`w-8 h-8 rounded-full flex items-center justify-center ${step.status === "APPROVED" ? "bg-green-100" :
                                                             step.status === "REJECTED" ? "bg-red-100" :
                                                                 "bg-amber-100"
-                                                            }`}>
+                                                            }`)}>
                                                             {step.status === "APPROVED" ? <CheckCircle className="h-4 w-4 text-green-700" /> :
                                                                 step.status === "REJECTED" ? <XCircle className="h-4 w-4 text-red-700" /> :
                                                                     <Clock className="h-4 w-4 text-amber-700" />}

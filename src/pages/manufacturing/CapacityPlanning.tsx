@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -108,7 +109,7 @@ export default function CapacityPlanning() {
                         <Card>
                             <CardContent className="pt-6">
                                 <div className="text-sm text-muted-foreground">Utilization</div>
-                                <div className={`text-2xl font-bold mt-2 ${utilizationColor(capacityData.utilization)}`}>
+                                <div className={cn(`text-2xl font-bold mt-2 ${utilizationColor(capacityData.utilization)}`)}>
                                     {capacityData.utilization?.toFixed(1)}%
                                 </div>
                             </CardContent>
@@ -116,7 +117,7 @@ export default function CapacityPlanning() {
                         <Card>
                             <CardContent className="pt-6">
                                 <div className="text-sm text-muted-foreground">Over/Under Capacity</div>
-                                <div className={`text-2xl font-bold mt-2 ${capacityData.variance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                <div className={cn(`text-2xl font-bold mt-2 ${capacityData.variance >= 0 ? 'text-green-600' : 'text-red-600'}`)}>
                                     {capacityData.variance >= 0 ? '+' : ''}{capacityData.variance?.toLocaleString()} hrs
                                 </div>
                             </CardContent>

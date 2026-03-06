@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -189,7 +190,7 @@ export default function ConstructionExecutiveDashboard() {
                                                     <TableCell>
                                                         <div className="flex items-center gap-2">
                                                             <span className="text-sm font-mono mr-2">{risk.riskScore}</span>
-                                                            <Progress value={risk.riskScore} className={`h-1.5 w-16 ${risk.riskScore > 70 ? "[&>div]:bg-red-500" : ""}`} />
+                                                            <Progress value={risk.riskScore} className={cn(`h-1.5 w-16 ${risk.riskScore > 70 ? "[&>div]:bg-red-500" : ""}`)} />
                                                         </div>
                                                     </TableCell>
                                                     <TableCell className="text-right font-mono font-bold">

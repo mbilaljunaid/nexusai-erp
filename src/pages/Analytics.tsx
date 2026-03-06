@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -102,11 +103,11 @@ export default function Analytics() {
             <Card key={idx} data-testid={`kpi-${kpi.name.replace(/\s/g, "-").toLowerCase()}`}>
               <CardContent className="pt-6">
                 <div className="flex items-start gap-3">
-                  <KPIIcon className={`h-5 w-5 ${kpiIcons[idx].color}`} />
+                  <KPIIcon className={cn(`h-5 w-5 ${kpiIcons[idx].color}`)} />
                   <div>
                     <p className="text-sm text-muted-foreground">{kpi.name}</p>
                     <p className="text-2xl font-bold mt-1">{kpi.value}</p>
-                    <p className={`text-xs mt-1 ${kpi.trend.startsWith("+") ? "text-green-600" : "text-red-600"}`}>
+                    <p className={cn(`text-xs mt-1 ${kpi.trend.startsWith("+") ? "text-green-600" : "text-red-600"}`)}>
                       {kpi.trend}
                     </p>
                   </div>
@@ -267,7 +268,7 @@ export default function Analytics() {
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
-                <div className="min-h-[300px] h-full border border-gray-200 rounded-xl">
+                <div className="min-h-72 h-full border border-gray-200 rounded-xl">
                   <InteractiveSpreadsheet
                     columns={analyticsColumns}
                     data={dashboardData}

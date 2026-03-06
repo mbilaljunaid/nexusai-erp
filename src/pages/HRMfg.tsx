@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Users, UserCheck, Award, TrendingUp, Activity, Briefcase } from "lucide-react";
@@ -93,7 +94,7 @@ export default function HRMfg() {
                                     <Badge variant={e.status === "active" ? "default" : "secondary"} className="text-[10px] uppercase font-mono">
                                         {e.status}
                                     </Badge>
-                                    <Badge variant={e.skilled ? "default" : "outline"} className={`text-[10px] uppercase font-mono ${e.skilled ? "bg-blue-100 text-blue-700 border-transparent" : ""}`}>
+                                    <Badge variant={e.skilled ? "default" : "outline"} className={cn(`text-[10px] uppercase font-mono ${e.skilled ? "bg-blue-100 text-blue-700 border-transparent" : ""}`)}>
                                         {e.skilled ? "Skilled" : "Trainee"}
                                     </Badge>
                                 </div>

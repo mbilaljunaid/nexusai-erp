@@ -245,7 +245,7 @@ export default function SupplierOrders() {
 
             {/* Filters */}
             <div className="flex gap-4 items-end flex-wrap">
-                <div className="flex-1 min-w-[200px]">
+                <div className="flex-1 min-w-48">
                     <label className="text-sm font-medium mb-2 block">Search</label>
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

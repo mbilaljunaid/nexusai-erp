@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 /**
  * Universal Metadata-Driven Form Renderer - Phase 2
  * Renders any form from metadata configuration
@@ -173,9 +174,9 @@ export function MetadataFormRenderer({
                 {section.description && <p className="text-gray-600 mb-4">{section.description}</p>}
 
                 <div
-                  className={`grid gap-4 ${
+                  className={cn(`grid gap-4 ${
                     metadata.theme?.layout === "two-column" ? "md:grid-cols-2" : "grid-cols-1"
-                  }`}
+                  }`)}
                 >
                   {section.fields.map((fieldName: string) => {
                     const field = metadata.fields.find((f: FormFieldConfig) => f.name === fieldName);
@@ -199,9 +200,9 @@ export function MetadataFormRenderer({
           ) : (
             // Non-sectioned layout
             <div
-              className={`grid gap-4 ${
+              className={cn(`grid gap-4 ${
                 metadata.theme?.layout === "two-column" ? "md:grid-cols-2" : "grid-cols-1"
-              }`}
+              }`)}
             >
               {visibleFields.map((field: FormFieldConfig) => (
                 <MetadataFieldRenderer

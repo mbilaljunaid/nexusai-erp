@@ -1,8 +1,9 @@
-import { Link, useLocation } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, Compass, BookOpen, Code2, Zap, Users, ShoppingBag, Briefcase, Heart, Video, FileCode2, FileText, FolderOpen, CreditCard, PieChart, Factory, Package, HardHat, Building2, Receipt, Truck, Wrench, Clock, Activity, Calendar, DollarSign, GitMerge, FileSignature, TrendingUp, BookMarked, FolderKanban, ClipboardList, Sigma, Coins, Anchor, Store, UserCheck, LineChart, LockKeyhole as Lock, GraduationCap, Calculator, Database } from "lucide-react";
-import { useState } from "react";
-import { ThemeToggle } from "./ThemeToggle";
+import { cn } from "@/lib/utils";
+import { Link, useLocation} from"wouter";
+import { Button} from"@/components/ui/button";
+import { Menu, X, ChevronDown, Compass, BookOpen, Code2, Zap, Users, ShoppingBag, Briefcase, Heart, Video, FileCode2, FileText, FolderOpen, CreditCard, PieChart, Factory, Package, HardHat, Building2, Receipt, Truck, Wrench, Clock, Activity, Calendar, DollarSign, GitMerge, FileSignature, TrendingUp, BookMarked, FolderKanban, ClipboardList, Sigma, Coins, Anchor, Store, UserCheck, LineChart, LockKeyhole as Lock, GraduationCap, Calculator, Database} from"lucide-react";
+import { useState} from"react";
+import { ThemeToggle} from"./ThemeToggle";
 
 export function Header() {
   const [location] = useLocation();
@@ -14,16 +15,16 @@ export function Header() {
   const isActive = (path: string) => location === path;
 
   const navItems = [
-    { label: "Home", path: "/" },
-    { label: "Cash Management", path: "/finance/cash-management" },
-    { label: "Intercompany", path: "/intercompany/netting" },
-    { label: "Industries", path: "/industries" },
-    { label: "About", path: "/about" },
-    { label: "Blog", path: "/blog" },
+    { label:"Home", path:"/"},
+    { label:"Cash Management", path:"/finance/cash-management"},
+    { label:"Intercompany", path:"/intercompany/netting"},
+    { label:"Industries", path:"/industries"},
+    { label:"About", path:"/about"},
+    { label:"Blog", path:"/blog"},
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-700">
+    <header className="sticky top-0 bg-slate-900/95 backdrop-blur border-b border-slate-700">
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
@@ -41,11 +42,11 @@ export function Header() {
                 to={item.path}
               >
                 <span
-                  className={`text-sm font-medium transition-colors cursor-pointer ${isActive(item.path)
-                    ? "text-blue-400"
-                    : "text-slate-300 hover:text-white"
-                    }`}
-                  data-testid={`link-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                  className={cn(`text-sm font-medium transition-colors cursor-pointer ${isActive(item.path)
+                    ?"text-blue-400"
+                    :"text-slate-300 hover:text-white"
+                   }`)}
+                  data-testid={`link-nav-${item.label.toLowerCase().replace(/\s+/g,'-')}`}
                 >
                   {item.label}
                 </span>
@@ -66,7 +67,7 @@ export function Header() {
                 data-testid="button-modules-menu"
               >
                 Modules
-                <ChevronDown className={`w-4 h-4 transition-transform ${modulesOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={cn(`w-4 h-4 transition-transform ${modulesOpen ?'rotate-180' :''}`)} />
               </button>
 
               {modulesOpen && (
@@ -284,7 +285,7 @@ export function Header() {
                 data-testid="button-marketplace-menu"
               >
                 Marketplace
-                <ChevronDown className={`w-4 h-4 transition-transform ${marketplaceOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={cn(`w-4 h-4 transition-transform ${marketplaceOpen ?'rotate-180' :''}`)} />
               </button>
 
               {marketplaceOpen && (
@@ -325,10 +326,10 @@ export function Header() {
             {/* Community Link */}
             <Link to="/community">
               <span
-                className={`text-sm font-medium transition-colors cursor-pointer ${isActive("/community")
-                  ? "text-blue-400"
-                  : "text-slate-300 hover:text-white"
-                  }`}
+                className={cn(`text-sm font-medium transition-colors cursor-pointer ${isActive("/community")
+                  ?"text-blue-400"
+                  :"text-slate-300 hover:text-white"
+                 }`)}
                 data-testid="link-nav-community"
               >
                 Community
@@ -358,7 +359,7 @@ export function Header() {
                 data-testid="button-documentation-menu"
               >
                 Documentation
-                <ChevronDown className={`w-4 h-4 transition-transform ${docsOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={cn(`w-4 h-4 transition-transform ${docsOpen ?'rotate-180' :''}`)} />
               </button>
 
               {docsOpen && (
@@ -498,11 +499,11 @@ export function Header() {
               >
                 <button
                   onClick={() => setMenuOpen(false)}
-                  className={`block w-full text-left px-4 py-2 rounded text-sm ${isActive(item.path)
-                    ? "bg-blue-600 text-white"
-                    : "text-slate-300 hover:bg-slate-800"
-                    }`}
-                  data-testid={`link-mobile-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                  className={cn(`block w-full text-left px-4 py-2 rounded text-sm ${isActive(item.path)
+                    ?"bg-blue-600 text-white"
+                    :"text-slate-300 hover:bg-slate-800"
+                   }`)}
+                  data-testid={`link-mobile-nav-${item.label.toLowerCase().replace(/\s+/g,'-')}`}
                 >
                   {item.label}
                 </button>
@@ -558,10 +559,10 @@ export function Header() {
             <Link to="/community">
               <button
                 onClick={() => setMenuOpen(false)}
-                className={`block w-full text-left px-4 py-2 rounded text-sm ${isActive("/community")
-                  ? "bg-blue-600 text-white"
-                  : "text-slate-300 hover:bg-slate-800"
-                  }`}
+                className={cn(`block w-full text-left px-4 py-2 rounded text-sm ${isActive("/community")
+                  ?"bg-blue-600 text-white"
+                  :"text-slate-300 hover:bg-slate-800"
+                 }`)}
                 data-testid="link-mobile-community"
               >
                 Community

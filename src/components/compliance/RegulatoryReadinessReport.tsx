@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useMemo } from "react";
 import {
     Card,
@@ -71,7 +72,7 @@ export function RegulatoryReadinessReport({ data }: RegulatoryReadinessReportPro
                         <CardTitle className="text-sm font-bold text-slate-500">Readiness Score</CardTitle>
                     </CardHeader>
                     <CardContent className="flex flex-col items-center justify-center pt-2">
-                        <div className={`w-28 h-28 rounded-full border-8 flex items-center justify-center ${scoreColor}`}>
+                        <div className={cn(`w-28 h-28 rounded-full border-8 flex items-center justify-center ${scoreColor}`)}>
                             <span className="text-4xl font-extrabold">{readiness.score}%</span>
                         </div>
                         <p className="mt-4 text-xs font-medium text-slate-500 flex items-center gap-1">
@@ -139,7 +140,7 @@ export function RegulatoryReadinessReport({ data }: RegulatoryReadinessReportPro
                         Full Disclosure Report
                     </Button>
                 </CardHeader>
-                <CardContent className="h-[300px] pt-8">
+                <CardContent className="h-72 pt-8">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={chartData}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />

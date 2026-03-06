@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -89,7 +90,7 @@ export function ReconciliationReportDialog({
                             <div className="space-y-1">
                                 <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Unreconciled Variance</span>
                                 <div className="flex items-center gap-2">
-                                    <div className={`text-2xl font-bold ${report?.summary.variance === 0 ? 'text-green-600' : 'text-destructive'}`}>
+                                    <div className={cn(`text-2xl font-bold ${report?.summary.variance === 0 ? 'text-green-600' : 'text-destructive'}`)}>
                                         {report?.account.currency} {report?.summary.variance.toLocaleString()}
                                     </div>
                                     {report?.summary.variance === 0 ? <CheckCircle2 className="h-5 w-5 text-green-600" /> : <AlertCircle className="h-5 w-5 text-destructive" />}
@@ -119,7 +120,7 @@ export function ReconciliationReportDialog({
                                             report?.details.unreconciledLines.map((l, i) => (
                                                 <TableRow key={i}>
                                                     <TableCell className="text-xs">{format(new Date(l.date), 'MMM dd')}</TableCell>
-                                                    <TableCell className="text-xs max-w-[150px] truncate">{l.description}</TableCell>
+                                                    <TableCell className="text-xs max-w-36 truncate">{l.description}</TableCell>
                                                     <TableCell className="text-xs text-right font-medium">{l.amount.toLocaleString()}</TableCell>
                                                 </TableRow>
                                             ))
@@ -148,7 +149,7 @@ export function ReconciliationReportDialog({
                                             report?.details.unclearedTransactions.map((t, i) => (
                                                 <TableRow key={i}>
                                                     <TableCell className="text-xs">{format(new Date(t.date), 'MMM dd')}</TableCell>
-                                                    <TableCell className="text-xs max-w-[150px] truncate">{t.description}</TableCell>
+                                                    <TableCell className="text-xs max-w-36 truncate">{t.description}</TableCell>
                                                     <TableCell className="text-xs text-right font-medium">{t.amount.toLocaleString()}</TableCell>
                                                 </TableRow>
                                             ))

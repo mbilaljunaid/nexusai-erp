@@ -146,7 +146,7 @@ export default function ConstructionResourceWorkbench() {
 
                 <div className="flex items-center gap-2">
                     <Select value={selectedProjectId || ""} onValueChange={setSelectedProjectId}>
-                        <SelectTrigger className="w-[250px]">
+                        <SelectTrigger className="w-64">
                             <SelectValue placeholder="Filter by Project" />
                         </SelectTrigger>
                         <SelectContent>

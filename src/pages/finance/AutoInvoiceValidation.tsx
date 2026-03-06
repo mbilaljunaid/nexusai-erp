@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDateTime } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { Textarea } from "@/components/ui/textarea";
@@ -113,7 +114,7 @@ export default function AutoInvoiceValidation() {
                             <Play size={13} /> {validateMutation.isPending ? 'Validating…' : 'Run Validation'}
                         </button>
                         {validateMutation.isSuccess && (
-                            <div className={`val-banner ${validateMutation.data?.canImport ? 'pass' : 'fail'}`}>
+                            <div className={cn(`val-banner ${validateMutation.data?.canImport ? 'pass' : 'fail'}`)}>
                                 {validateMutation.data?.canImport
                                     ? <><CheckCircle2 size={14} /> {validateMutation.data.validCount} lines valid — ready to import</>
                                     : <><AlertTriangle size={14} /> {validateMutation.data?.errorCount} errors — fix before import</>}
@@ -126,10 +127,10 @@ export default function AutoInvoiceValidation() {
                         {runs.map(r => {
                             const cfgClass = STATUS_CFG[r.status] ?? 'bg-gray-100 text-gray-500';
                             return (
-                                <div key={r.id} className={`run-card ${activeRun?.id === r.id ? 'selected' : ''}`} role="button" tabIndex={0} onClick={() => setActiveRun(r)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                                <div key={r.id} className={cn(`run-card ${activeRun?.id === r.id ? 'selected' : ''}`)} role="button" tabIndex={0} onClick={() => setActiveRun(r)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                     <div className="rc-top">
                                         <span className="rc-ref mono">{r.source_ref || r.source_type}</span>
-                                        <span className={`rc-status ${cfgClass}`}>{r.status}</span>
+                                        <span className={cn(`rc-status ${cfgClass}`)}>{r.status}</span>
                                     </div>
                                     <div className="rc-meta">{r.total_lines} lines · {r.valid_lines} valid · {r.error_lines} err</div>
                                     <div className="rc-date small">{formatDateTime(r.run_at)}</div>
@@ -172,7 +173,7 @@ export default function AutoInvoiceValidation() {
                             </div>
 
                             {activeRun.validation_errors?.length > 0 ? (
-                                <div className="h-[300px] border border-gray-200 rounded-lg overflow-hidden">
+                                <div className="h-72 border border-gray-200 rounded-lg overflow-hidden">
                                     <InteractiveSpreadsheet
                                         columns={errColumns}
                                         data={activeRun.validation_errors}

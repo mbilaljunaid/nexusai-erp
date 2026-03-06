@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -33,8 +34,8 @@ export default function SupplierPerformance() {
 
     if (isLoading) {
         return <div className="p-8 space-y-4">
-            <Skeleton className="h-12 w-[300px]" />
-            <Skeleton className="h-[200px] w-full" />
+            <Skeleton className="h-12 w-72" />
+            <Skeleton className="h-48 w-full" />
         </div>;
     }
 
@@ -62,7 +63,7 @@ export default function SupplierPerformance() {
                     </Button>
                     <div className="text-right">
                         <p className="text-sm font-medium text-muted-foreground">Overall Score</p>
-                        <div className={`text-4xl font-bold ${getScoreColor(scorecard?.overallScore)}`}>
+                        <div className={cn(`text-4xl font-bold ${getScoreColor(scorecard?.overallScore)}`)}>
                             {scorecard?.overallScore ?? 0}
                         </div>
                     </div>
@@ -76,7 +77,7 @@ export default function SupplierPerformance() {
                         <CardDescription>Based on On-Time ASNs and Receipts</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className={`text-3xl font-bold ${getScoreColor(scorecard?.deliveryScore)}`}>
+                        <div className={cn(`text-3xl font-bold ${getScoreColor(scorecard?.deliveryScore)}`)}>
                             {scorecard?.deliveryScore ?? 0}%
                         </div>
                     </CardContent>
@@ -88,7 +89,7 @@ export default function SupplierPerformance() {
                         <CardDescription>Based on Inspection Rejections</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className={`text-3xl font-bold ${getScoreColor(scorecard?.qualityScore)}`}>
+                        <div className={cn(`text-3xl font-bold ${getScoreColor(scorecard?.qualityScore)}`)}>
                             {scorecard?.qualityScore ?? 0}/100
                         </div>
                     </CardContent>
@@ -100,7 +101,7 @@ export default function SupplierPerformance() {
                         <CardDescription>PO Acknowledgment Time</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className={`text-3xl font-bold ${getScoreColor(scorecard?.responsivenessScore)}`}>
+                        <div className={cn(`text-3xl font-bold ${getScoreColor(scorecard?.responsivenessScore)}`)}>
                             {scorecard?.responsivenessScore ?? 0}%
                         </div>
                     </CardContent>

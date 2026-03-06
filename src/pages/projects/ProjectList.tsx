@@ -87,7 +87,7 @@ export default function ProjectList() {
             cell: (proj: Project) => {
                 const progress = parseFloat(proj.percentComplete || "0");
                 return (
-                    <div className="px-2 h-full flex flex-col justify-center w-[150px] space-y-1">
+                    <div className="px-2 h-full flex flex-col justify-center w-36 space-y-1">
                         <div className="flex justify-between text-[10px]">
                             <span>{progress}%</span>
                         </div>

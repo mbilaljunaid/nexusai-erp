@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useParams, useLocation } from 'wouter';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
+import React, { useState} from'react';
+import { useQuery, useMutation, useQueryClient} from'@tanstack/react-query';
+import { useParams, useLocation} from'wouter';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription} from'@/components/ui/card';
+import { Button} from'@/components/ui/button';
+import { Input} from'@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from'@/components/ui/table';
 import {
     Ship,
     Calendar,
@@ -23,73 +25,73 @@ import {
     Truck,
     LineChart,
     TrendingUp
-} from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { StatusBadge } from '@/components/shared/StatusBadge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useToast } from "@/hooks/use-toast";
-import { format } from 'date-fns';
-import { Progress } from "@/components/ui/progress";
-import { StandardPage } from '@/components/layout/StandardPage';
+} from'lucide-react';
+import { Badge} from'@/components/ui/badge';
+import { StatusBadge} from'@/components/shared/StatusBadge';
+import { Tabs, TabsContent, TabsList, TabsTrigger} from'@/components/ui/tabs';
+import { useToast} from"@/hooks/use-toast";
+import { format} from'date-fns';
+import { Progress} from"@/components/ui/progress";
+import { StandardPage} from'@/components/layout/StandardPage';
 
 export default function TradeOperationDetails() {
-    const { id } = useParams<{ id: string }>();
+    const { id} = useParams<{ id: string}>();
     const [, setLocation] = useLocation();
-    const { toast } = useToast();
+    const { toast} = useToast();
     const queryClient = useQueryClient();
     const [activeTab, setActiveTab] = useState("header");
 
     // Fetch Details
-    const { data: op, isLoading, isError } = useQuery<any>({
+    const { data: op, isLoading, isError} = useQuery<any>({
         queryKey: [`/api/lcm/trade-operations/${id}`],
         queryFn: async () => {
             const res = await fetch(`/api/lcm/trade-operations/${id}`);
             if (!res.ok) throw new Error("Failed to fetch operation details");
             return res.json();
-        }
-    });
+       }
+   });
 
     // Mutations
     const allocateMutation = useMutation({
         mutationFn: async () => {
-            const res = await fetch(`/api/lcm/trade-operations/${id}/allocate`, { method: "POST" });
+            const res = await fetch(`/api/lcm/trade-operations/${id}/allocate`, { method:"POST"});
             if (!res.ok) throw new Error("Allocation failed");
             return res.json();
-        },
+       },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [`/api/lcm/trade-operations/${id}`] });
-            toast({ title: "Allocation Complete", description: "Costs have been distributed across shipment lines." });
-        }
-    });
+            queryClient.invalidateQueries({ queryKey: [`/api/lcm/trade-operations/${id}`]});
+            toast({ title:"Allocation Complete", description:"Costs have been distributed across shipment lines."});
+       }
+   });
 
     const predictMutation = useMutation({
         mutationFn: async () => {
-            const res = await fetch(`/api/lcm/trade-operations/${id}/predict`, { method: "POST" });
+            const res = await fetch(`/api/lcm/trade-operations/${id}/predict`, { method:"POST"});
             if (!res.ok) throw new Error("Prediction failed");
             return res.json();
-        },
+       },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [`/api/lcm/trade-operations/${id}`] });
-            toast({ title: "AI Prediction Ready", description: "Predictive cost analysis has been updated." });
-        }
-    });
+            queryClient.invalidateQueries({ queryKey: [`/api/lcm/trade-operations/${id}`]});
+            toast({ title:"AI Prediction Ready", description:"Predictive cost analysis has been updated."});
+       }
+   });
 
     const accountingMutation = useMutation({
         mutationFn: async () => {
-            const res = await fetch(`/api/lcm/trade-operations/${id}/accounting`, { method: "POST" });
+            const res = await fetch(`/api/lcm/trade-operations/${id}/accounting`, { method:"POST"});
             if (!res.ok) throw new Error("Accounting generation failed");
             return res.json();
-        },
+       },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [`/api/lcm/trade-operations/${id}`] });
-            toast({ title: "Accounting Generated", description: "GL journals have been created for this operation." });
-        }
-    });
+            queryClient.invalidateQueries({ queryKey: [`/api/lcm/trade-operations/${id}`]});
+            toast({ title:"Accounting Generated", description:"GL journals have been created for this operation."});
+       }
+   });
 
     if (isLoading) return (
         <div className="flex h-[400px] items-center justify-center">
             <div className="flex flex-col items-center gap-4">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                <Loader2 className="h-12 w-12 animate-spin text-primary" />
                 <p className="text-muted-foreground animate-pulse">Loading voyage telemetry...</p>
             </div>
         </div>
@@ -121,17 +123,17 @@ export default function TradeOperationDetails() {
                         <div>
                             <div className="flex items-center gap-2">
                                 <h1 className="text-3xl font-bold tracking-tight">{op.operationNumber}</h1>
-                                <Badge variant={op.status === 'OPEN' ? 'default' : 'secondary'} className="uppercase">
+                                <Badge variant={op.status ==='OPEN' ?'default' :'secondary'} className="uppercase">
                                     {op.status}
                                 </Badge>
                             </div>
-                            <p className="text-muted-foreground">{op.name} • {op.carrier || "Carrier Generic"} • {op.vessel || "Surface Vessel"}</p>
+                            <p className="text-muted-foreground">{op.name} • {op.carrier ||"Carrier Generic"} • {op.vessel ||"Surface Vessel"}</p>
                         </div>
                     </div>
                     <div className="flex gap-2">
                         <Button variant="outline" onClick={() => predictMutation.mutate()} disabled={predictMutation.isPending}>
-                            <Brain className={`mr-2 h-4 w-4 ${predictMutation.isPending ? 'animate-pulse' : ''}`} />
-                            {predictMutation.isPending ? "Analyzing..." : "AI Insight"}
+                            <Brain className={cn(`mr-2 h-4 w-4 ${predictMutation.isPending ?'animate-pulse' :''}`)} />
+                            {predictMutation.isPending ?"Analyzing..." :"AI Insight"}
                         </Button>
                         <Button variant="outline" onClick={() => allocateMutation.mutate()} disabled={allocateMutation.isPending}>
                             <Calculator className="mr-2 h-4 w-4" /> Allocate
@@ -147,21 +149,21 @@ export default function TradeOperationDetails() {
                     <CardContent className="py-4">
                         <div className="flex justify-between items-center px-4">
                             {[
-                                { label: 'Created', icon: CheckCircle2, status: 'complete' },
-                                { label: 'Shipped', icon: Anchor, status: op.departureDate ? 'complete' : 'pending' },
-                                { label: 'Arrived', icon: Box, status: op.arrivalDate ? 'complete' : 'pending' },
-                                { label: 'Allocated', icon: Calculator, status: op.status === 'CLOSED' ? 'complete' : 'current' },
-                                { label: 'Closed', icon: Clock, status: op.status === 'CLOSED' ? 'complete' : 'pending' }
+                                { label:'Created', icon: CheckCircle2, status:'complete'},
+                                { label:'Shipped', icon: Anchor, status: op.departureDate ?'complete' :'pending'},
+                                { label:'Arrived', icon: Box, status: op.arrivalDate ?'complete' :'pending'},
+                                { label:'Allocated', icon: Calculator, status: op.status ==='CLOSED' ?'complete' :'current'},
+                                { label:'Closed', icon: Clock, status: op.status ==='CLOSED' ?'complete' :'pending'}
                             ].map((step, i, arr) => (
                                 <React.Fragment key={step.label}>
                                     <div className="flex flex-col items-center gap-1">
-                                        <div className={`p-2 rounded-full ${step.status === 'complete' ? 'bg-primary text-primary-foreground' : step.status === 'current' ? 'bg-primary/20 text-primary border border-primary' : 'bg-muted text-muted-foreground'}`}>
+                                        <div className={cn(`p-2 rounded-full ${step.status ==='complete' ?'bg-primary text-primary-foreground' : step.status ==='current' ?'bg-primary/20 text-primary border border-primary' :'bg-muted text-muted-foreground'}`)}>
                                             <step.icon className="h-4 w-4" />
                                         </div>
-                                        <span className={`text-[10px] font-medium uppercase ${step.status === 'pending' ? 'text-muted-foreground' : 'text-primary'}`}>{step.label}</span>
+                                        <span className={cn(`text-[10px] font-medium uppercase ${step.status ==='pending' ?'text-muted-foreground' :'text-primary'}`)}>{step.label}</span>
                                     </div>
                                     {i < arr.length - 1 && (
-                                        <div className={`flex-1 h-[2px] mx-2 ${step.status === 'complete' ? 'bg-primary' : 'bg-muted'}`} />
+                                        <div className={cn(`flex-1 h-0.5 mx-2 ${step.status ==='complete' ?'bg-primary' :'bg-muted'}`)} />
                                     )}
                                 </React.Fragment>
                             ))}
@@ -189,15 +191,15 @@ export default function TradeOperationDetails() {
                                 <CardContent className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1">
                                         <p className="text-xs text-muted-foreground uppercase font-semibold">Carrier</p>
-                                        <p className="font-medium">{op.carrier || "Not assigned"}</p>
+                                        <p className="font-medium">{op.carrier ||"Not assigned"}</p>
                                     </div>
                                     <div className="space-y-1">
                                         <p className="text-xs text-muted-foreground uppercase font-semibold">Vessel / Voyage</p>
-                                        <p className="font-medium">{op.vessel || "N/A"}</p>
+                                        <p className="font-medium">{op.vessel ||"N/A"}</p>
                                     </div>
                                     <div className="space-y-1">
                                         <p className="text-xs text-muted-foreground uppercase font-semibold">Bill of Lading</p>
-                                        <p className="font-medium">{op.billOfLading || "-"}</p>
+                                        <p className="font-medium">{op.billOfLading ||"-"}</p>
                                     </div>
                                     <div className="space-y-1">
                                         <p className="text-xs text-muted-foreground uppercase font-semibold">Port of Delivery</p>
@@ -207,13 +209,13 @@ export default function TradeOperationDetails() {
                                         <p className="text-xs text-muted-foreground uppercase font-semibold flex items-center gap-1">
                                             <Calendar className="h-3 w-3" /> Departure Date
                                         </p>
-                                        <p className="font-medium">{op.departureDate ? format(new Date(op.departureDate), 'PPP') : 'Not Shipped'}</p>
+                                        <p className="font-medium">{op.departureDate ? format(new Date(op.departureDate),'PPP') :'Not Shipped'}</p>
                                     </div>
                                     <div className="space-y-1">
                                         <p className="text-xs text-muted-foreground uppercase font-semibold flex items-center gap-1">
                                             <Calendar className="h-3 w-3" /> Arrival Date
                                         </p>
-                                        <p className="font-medium">{op.arrivalDate ? format(new Date(op.arrivalDate), 'PPP') : 'ETA Pending'}</p>
+                                        <p className="font-medium">{op.arrivalDate ? format(new Date(op.arrivalDate),'PPP') :'ETA Pending'}</p>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -237,7 +239,7 @@ export default function TradeOperationDetails() {
                                     <div className="pt-2">
                                         <p className="text-[10px] text-muted-foreground uppercase mb-1">Approval Workflow</p>
                                         <div className="flex items-center gap-2">
-                                            <StatusBadge status={op.approvalStatus || 'DRAFT'} />
+                                            <StatusBadge status={op.approvalStatus ||'DRAFT'} />
                                             <span className="text-xs text-muted-foreground font-mono">ID: {id?.slice(0, 8)}</span>
                                         </div>
                                     </div>
@@ -278,7 +280,7 @@ export default function TradeOperationDetails() {
                                                     <TableCell>Item Prefix - Generic Material</TableCell>
                                                     <TableCell className="text-right font-medium">{line.quantity}</TableCell>
                                                     <TableCell className="text-right font-mono">$125.00</TableCell>
-                                                    <TableCell className="text-right">{line.netWeight || '-'}</TableCell>
+                                                    <TableCell className="text-right">{line.netWeight ||'-'}</TableCell>
                                                     <TableCell className="text-right font-mono font-semibold text-primary">
                                                         ${Number(line.allocatedAmount || 0).toFixed(2)}
                                                     </TableCell>
@@ -327,7 +329,7 @@ export default function TradeOperationDetails() {
                                                 <TableRow key={charge.id}>
                                                     <TableCell className="font-medium">Ocean Freight</TableCell>
                                                     <TableCell>Blue Anchor Logistics</TableCell>
-                                                    <TableCell className="text-xs font-mono">{charge.referenceNumber || 'N/A'}</TableCell>
+                                                    <TableCell className="text-xs font-mono">{charge.referenceNumber ||'N/A'}</TableCell>
                                                     <TableCell>
                                                         <Badge variant="outline" className="text-[10px]">WEIGHT</Badge>
                                                     </TableCell>
@@ -446,7 +448,7 @@ export default function TradeOperationDetails() {
                                 <div className="p-4 border border-dashed rounded-lg">
                                     <h4 className="text-sm font-semibold mb-2">AI Recommendation</h4>
                                     <p className="text-sm text-muted-foreground italic">
-                                        "Based on current fuel surcharges and carrier performance, we recommend increasing the provisional Duty allocation by 0.5% for this route to avoid period-end variance."
+                                       "Based on current fuel surcharges and carrier performance, we recommend increasing the provisional Duty allocation by 0.5% for this route to avoid period-end variance."
                                     </p>
                                     <Button size="sm" variant="outline" className="mt-4">Apply AI Rec</Button>
                                 </div>
@@ -462,21 +464,21 @@ export default function TradeOperationDetails() {
                                 <CardDescription>Immutable record of all changes, approvals, and allocations.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="space-y-8 relative before:absolute before:left-[17px] before:top-2 before:bottom-2 before:w-[2px] before:bg-muted">
+                                <div className="space-y-8 relative before:absolute before:left-4 before:top-2 before:bottom-2 before:w-0.5 before:bg-muted">
                                     {[
-                                        { action: 'POSTED_ACCOUNTING', user: 'SYSTEM', time: '2 hours ago', details: 'GL Journal J-LCM-1002 Created' },
-                                        { action: 'ALLOCATION_RUN', user: 'mbjunaid', time: '1 day ago', details: 'Total $12k allocated to 45 lines' },
-                                        { action: 'OPERATION_APPROVED', user: 'admin_finance', time: '2 days ago', details: 'Manual approval granted' },
-                                        { action: 'CHARGES_ADDED', user: 'mbjunaid', time: '3 days ago', details: 'Insurance charge $450 added' },
-                                        { action: 'OPERATION_CREATED', user: 'mbjunaid', time: '3 days ago', details: 'Initial draft initialized' },
+                                        { action:'POSTED_ACCOUNTING', user:'SYSTEM', time:'2 hours ago', details:'GL Journal J-LCM-1002 Created'},
+                                        { action:'ALLOCATION_RUN', user:'mbjunaid', time:'1 day ago', details:'Total $12k allocated to 45 lines'},
+                                        { action:'OPERATION_APPROVED', user:'admin_finance', time:'2 days ago', details:'Manual approval granted'},
+                                        { action:'CHARGES_ADDED', user:'mbjunaid', time:'3 days ago', details:'Insurance charge $450 added'},
+                                        { action:'OPERATION_CREATED', user:'mbjunaid', time:'3 days ago', details:'Initial draft initialized'},
                                     ].map((log, i) => (
                                         <div key={i} className="flex gap-4 relative">
-                                            <div className={`mt-1 h-9 w-9 rounded-full border bg-background flex items-center justify-center shrink-0 z-10 ${i === 0 ? 'border-primary ring-4 ring-primary/10' : ''}`}>
-                                                <History className={`h-4 w-4 ${i === 0 ? 'text-primary' : 'text-muted-foreground'}`} />
+                                            <div className={cn(`mt-1 h-9 w-9 rounded-full border bg-background flex items-center justify-center shrink-0 ${i === 0 ?'border-primary ring-4 ring-primary/10' :''}`)}>
+                                                <History className={cn(`h-4 w-4 ${i === 0 ?'text-primary' :'text-muted-foreground'}`)} />
                                             </div>
                                             <div className="flex flex-col gap-0.5">
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-sm font-bold uppercase tracking-tight">{log.action.replace('_', ' ')}</span>
+                                                    <span className="text-sm font-bold uppercase tracking-tight">{log.action.replace('_','')}</span>
                                                     <span className="text-[10px] text-muted-foreground font-mono">{log.time}</span>
                                                 </div>
                                                 <p className="text-xs text-muted-foreground leading-snug">{log.details}</p>

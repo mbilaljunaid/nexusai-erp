@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
@@ -382,7 +383,7 @@ export default function PartnersPage() {
                               )}
                             </div>
                             <div className="flex gap-1">
-                              <Badge variant="secondary" className={`${tier.bg} ${tier.text} text-xs`}>
+                              <Badge variant="secondary" className={cn(`${tier.bg} ${tier.text} text-xs`)}>
                                 <Award className="h-3 w-3 mr-1" />
                                 {tier.label}
                               </Badge>

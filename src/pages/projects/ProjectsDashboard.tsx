@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { StandardDashboard, DashboardWidget } from '@/components/layout/StandardDashboard';
 import { FolderKanban, DollarSign, BarChart3, TrendingUp } from 'lucide-react';
@@ -53,7 +54,7 @@ export default function ProjectsDashboard() {
             {metrics.map((metric, i) => (
                 <DashboardWidget key={i} title={metric.label} colSpan={1}>
                     <div className="flex items-center gap-4">
-                        <div className={`p-3 rounded-full ${metric.color}`}>
+                        <div className={cn(`p-3 rounded-full ${metric.color}`)}>
                             <metric.icon className="h-6 w-6" />
                         </div>
                         <div>
@@ -67,7 +68,7 @@ export default function ProjectsDashboard() {
             ))}
 
             {/* Performance Indices */}
-            <DashboardWidget title="EVM Performance Indices" colSpan={2} className="min-h-[250px]">
+            <DashboardWidget title="EVM Performance Indices" colSpan={2} className="min-h-64">
                 <div className="grid grid-cols-2 gap-4 p-4">
                     <div className="flex flex-col items-center justify-center p-6 border rounded-lg bg-blue-50/30">
                         <span className="text-sm text-muted-foreground mb-1">Portfolio CPI</span>
@@ -83,8 +84,8 @@ export default function ProjectsDashboard() {
             </DashboardWidget>
 
             {/* Charts */}
-            <DashboardWidget title="EVM Comparison" colSpan={2} className="min-h-[350px]">
-                <div className="h-[300px] w-full mt-4">
+            <DashboardWidget title="EVM Comparison" colSpan={2} className="min-h-80">
+                <div className="h-72 w-full mt-4">
                     <AnalyticsChart
                         title=""
                         data={burndownData}

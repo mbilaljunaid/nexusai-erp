@@ -77,10 +77,10 @@ export default function ApPrepayApplication({ invoiceId, open, onOpenChange }: A
                             <Table>
                                 <TableHeader className="bg-muted/50">
                                     <TableRow>
-                                        <TableHead className="w-[100px]">Number</TableHead>
+                                        <TableHead className="w-24">Number</TableHead>
                                         <TableHead>Date</TableHead>
                                         <TableHead className="text-right">Available</TableHead>
-                                        <TableHead className="w-[80px]"></TableHead>
+                                        <TableHead className="w-20"></TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>

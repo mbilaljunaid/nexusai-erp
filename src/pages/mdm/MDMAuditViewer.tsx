@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { formatDateTime } from "@/lib/dateUtils";
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -123,10 +124,10 @@ export default function MDMAuditViewer() {
                         auditLogs.map((log: AuditLog) => (
                             <Card
                                 key={log.id}
-                                className={`cursor-pointer transition-all ${selectedLog?.id === log.id
+                                className={cn(`cursor-pointer transition-all ${selectedLog?.id === log.id
                                         ? "border-primary ring-2 ring-primary"
                                         : "hover:border-primary/50"
-                                    }`}
+                                    }`)}
                                 onClick={() => setSelectedLog(log)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <CardHeader className="pb-3">

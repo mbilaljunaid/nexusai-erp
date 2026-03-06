@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import {
     Sheet,
     SheetContent,
@@ -143,7 +144,7 @@ export function ApSideSheet({
                 )}
 
                 <Tabs defaultValue="details" value={activeTab} onValueChange={setActiveTab} className="w-full mt-6">
-                    <TabsList className={`grid w-full mb-4 ${type === "invoice" ? "grid-cols-6" : "grid-cols-3"}`}>
+                    <TabsList className={cn(`grid w-full mb-4 ${type === "invoice" ? "grid-cols-6" : "grid-cols-3"}`)}>
                         <TabsTrigger value="details">Details</TabsTrigger>
                         {type === "invoice" ? (
                             <>
@@ -170,7 +171,7 @@ export function ApSideSheet({
                                     </CardHeader>
                                     <CardContent>
                                         <div className="flex items-center justify-between">
-                                            <span className={`text-lg font-bold ${getRiskColor(supplier.riskCategory || "Low")}`}>
+                                            <span className={cn(`text-lg font-bold ${getRiskColor(supplier.riskCategory || "Low")}`)}>
                                                 {supplier.riskCategory || "Low"} Risk
                                             </span>
                                             {supplier.riskCategory === "High" && <AlertTriangle className="h-5 w-5 text-red-500" />}
@@ -262,7 +263,7 @@ export function ApSideSheet({
                     {type === "invoice" && (
                         <>
                             <TabsContent value="lines">
-                                <ScrollArea className="h-[300px] rounded-md border p-0">
+                                <ScrollArea className="h-72 rounded-md border p-0">
                                     <div className="p-4 space-y-4">
                                         <div className="flex items-center justify-center h-full text-muted-foreground flex-col gap-2 py-8">
                                             <Receipt className="h-8 w-8 opacity-20" />
@@ -276,7 +277,7 @@ export function ApSideSheet({
                                 {invoice && <InvoiceHoldsView invoiceId={Number(invoice.id)} />}
                             </TabsContent>
                             <TabsContent value="distributions">
-                                <ScrollArea className="h-[300px] rounded-md border p-0">
+                                <ScrollArea className="h-72 rounded-md border p-0">
                                     <div className="p-4 space-y-4">
                                         <div className="flex items-center justify-center h-full text-muted-foreground flex-col gap-2 py-8">
                                             <Layers className="h-8 w-8 opacity-20" />
@@ -298,7 +299,7 @@ export function ApSideSheet({
                     {type === "supplier" && (
                         <>
                             <TabsContent value="sites">
-                                <ScrollArea className="h-[300px] rounded-md border p-4">
+                                <ScrollArea className="h-72 rounded-md border p-4">
                                     <div className="space-y-3">
                                         {Array.isArray(sites) && sites.length > 0 ? (
                                             sites.map((site: any) => (
@@ -474,11 +475,11 @@ function InvoiceHoldsView({ invoiceId }: { invoiceId: number }) {
         <div className="space-y-3">
             {Array.isArray(holds) && holds.length > 0 ? (
                 holds.map((hold: any) => (
-                    <div key={hold.id} className={`p-3 border rounded-lg ${hold.release_lookup_code ? 'bg-muted/50 border-muted-foreground/20' : 'bg-destructive/5 border-destructive/20'}`}>
+                    <div key={hold.id} className={cn(`p-3 border rounded-lg ${hold.release_lookup_code ? 'bg-muted/50 border-muted-foreground/20' : 'bg-destructive/5 border-destructive/20'}`)}>
                         <div className="flex items-center justify-between mb-1">
                             <div className="flex items-center gap-2">
-                                <AlertTriangle className={`h-4 w-4 ${hold.release_lookup_code ? 'text-muted-foreground' : 'text-destructive'}`} />
-                                <span className={`font-semibold text-sm ${hold.release_lookup_code ? 'text-muted-foreground line-through' : ''}`}>
+                                <AlertTriangle className={cn(`h-4 w-4 ${hold.release_lookup_code ? 'text-muted-foreground' : 'text-destructive'}`)} />
+                                <span className={cn(`font-semibold text-sm ${hold.release_lookup_code ? 'text-muted-foreground line-through' : ''}`)}>
                                     {hold.hold_lookup_code}
                                 </span>
                             </div>

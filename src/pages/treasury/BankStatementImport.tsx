@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState, useRef } from 'react';
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -80,8 +81,8 @@ export default function BankStatementImport() {
 
     const txColumns: SpreadsheetColumn<any>[] = [
         { id: "date", header: "Date", width: "120px", cell: (row) => <span className="mono">{row.transaction_date}</span> },
-        { id: "direction", header: "Direction", width: "100px", cell: (row) => <span className={`dir-badge ${row.direction === 'Credit' ? 'cr' : 'dr'}`}>{row.direction}</span> },
-        { id: "amount", header: "Amount", width: "120px", cell: (row) => <span className={`mono ${row.direction === 'Credit' ? 'green' : 'red'}`}>{fmt(row.amount, row.currency_code)}</span> },
+        { id: "direction", header: "Direction", width: "100px", cell: (row) => <span className={cn(`dir-badge ${row.direction === 'Credit' ? 'cr' : 'dr'}`)}>{row.direction}</span> },
+        { id: "amount", header: "Amount", width: "120px", cell: (row) => <span className={cn(`mono ${row.direction === 'Credit' ? 'green' : 'red'}`)}>{fmt(row.amount, row.currency_code)}</span> },
         { id: "description", header: "Description", width: "250px", cell: (row) => <span className="desc">{row.description ?? '—'}</span> },
         { id: "ref", header: "Ref", width: "120px", cell: (row) => <span className="mono small">{row.bank_ref ?? '—'}</span> },
         {
@@ -107,7 +108,7 @@ export default function BankStatementImport() {
                 <div className="bsi-import-panel">
                     <div className="fmt-row">
                         {(['BAI2', 'MT940', 'CAMT053'] as const).map(f => (
-                            <button key={f} className={`fmt-btn ${format === f ? 'active' : ''}`} onClick={() => setFormat(f)}>{f}</button>
+                            <button key={f} className={cn(`fmt-btn ${format === f ? 'active' : ''}`)} onClick={() => setFormat(f)}>{f}</button>
                         ))}
                     </div>
                     <input ref={fileRef} type="file" accept=".txt,.xml,.camt,.mt940,.bai2" onChange={handleFile} hidden />
@@ -138,10 +139,10 @@ export default function BankStatementImport() {
                             {imports.map(imp => {
                                 const cfg = STATUS_CFG[imp.import_status] ?? 'bg-gray-100 text-gray-500';
                                 return (
-                                    <div key={imp.id} className={`hist-item ${activeImport?.id === imp.id ? 'selected' : ''}`} onClick={() => setActiveImport(imp)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                                    <div key={imp.id} className={cn(`hist-item ${activeImport?.id === imp.id ? 'selected' : ''}`)} onClick={() => setActiveImport(imp)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                         <div className="hist-top">
                                             <span className="hist-fmt">{imp.format}</span>
-                                            <span className={`hist-status ${cfg}`}>{imp.import_status}</span>
+                                            <span className={cn(`hist-status ${cfg}`)}>{imp.import_status}</span>
                                         </div>
                                         <div className="hist-date">{imp.statement_date}</div>
                                         <div className="hist-amounts">
@@ -173,7 +174,7 @@ export default function BankStatementImport() {
                             </div>
                             <div className="filter-row">
                                 {['', 'Matched', 'Unmatched', 'Exception'].map(s => (
-                                    <button key={s} className={`filter-pill ${matchFilter === s ? 'active' : ''}`} onClick={() => setMatchFilter(s)}>{s || 'All'}</button>
+                                    <button key={s} className={cn(`filter-pill ${matchFilter === s ? 'active' : ''}`)} onClick={() => setMatchFilter(s)}>{s || 'All'}</button>
                                 ))}
                             </div>
                             <div className="h-[400px]">
