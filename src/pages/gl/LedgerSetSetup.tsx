@@ -96,7 +96,7 @@ export default function LedgerSetSetup() {
             title="Ledger Sets"
             description="Group multiple ledgers for consolidated reporting and simultaneous period open/close."
             actions={
-                <Button onClick={() => setIsCreateOpen(true)} className="bg-[#0f172a]">
+                <Button onClick={() => setIsCreateOpen(true)}>
                     <Plus className="mr-2 h-4 w-4" /> Create Ledger Set
                 </Button>
             }

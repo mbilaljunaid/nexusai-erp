@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/tabs";
 import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 interface FaAssetWithFinancials extends Omit<FaAsset, 'originalCost' | 'datePlacedInService'> {
     datePlacedInService: string | Date;
@@ -146,11 +147,25 @@ export default function AssetWorkbench() {
                                     virtualized={true}
                                     containerHeight="500px"
                                 />
-                                <div className="p-4 bg-muted/20 border-t flex justify-end gap-2 items-center">
-                                    <span className="text-xs text-muted-foreground mr-4">Page {page}</span>
-                                    <button disabled={page === 1} onClick={() => setPage(page - 1)} className="text-xs border px-2 py-1 rounded disabled:opacity-50">Prev</button>
-                                    <button disabled={assets.length < pageSize} onClick={() => setPage(page + 1)} className="text-xs border px-2 py-1 rounded disabled:opacity-50">Next</button>
-                                </div>
+                                <Pagination className="mt-4 pb-4">
+                                    <PaginationContent>
+                                        <PaginationItem>
+                                            <PaginationPrevious
+                                                onClick={() => setPage(p => Math.max(1, p - 1))}
+                                                className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                                            />
+                                        </PaginationItem>
+                                        <PaginationItem>
+                                            <span className="text-sm font-medium mx-4">Page {page}</span>
+                                        </PaginationItem>
+                                        <PaginationItem>
+                                            <PaginationNext
+                                                onClick={() => setPage(p => p + 1)}
+                                                className={assets.length < pageSize ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                                            />
+                                        </PaginationItem>
+                                    </PaginationContent>
+                                </Pagination>
                             </CardContent>
                         </Card>
                     </TabsContent>

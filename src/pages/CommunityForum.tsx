@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Header, Footer } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
@@ -97,25 +98,18 @@ export default function CommunityForum() {
   const [showMarketplace, setShowMarketplace] = useState(false);
   const [sortBy, setSortBy] = useState<"hot" | "new" | "top" | "rising">("hot");
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
-  const [subscribedSpaces, setSubscribedSpaces] = useState<Set<string>>(new Set());
-  const [recentSpaces, setRecentSpaces] = useState<string[]>([]);
+  const [subscribedSpacesArr, setSubscribedSpaces] = useLocalStorage<string[]>("subscribedSpaces", []);
+  const [recentSpaces, setRecentSpaces] = useLocalStorage<string[]>("recentSpaces", []);
+  const subscribedSpaces = useMemo(() => new Set(subscribedSpacesArr), [subscribedSpacesArr]);
   const [filterBySubscribed, setFilterBySubscribed] = useState(false);
   const [filterByPostType, setFilterByPostType] = useState<string>("all");
   const [showMobileFilters, setShowMobileFilters] = useState(false);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("subscribedSpaces");
-    if (saved) setSubscribedSpaces(new Set(JSON.parse(saved)));
-    const recent = localStorage.getItem("recentSpaces");
-    if (recent) setRecentSpaces(JSON.parse(recent));
-  }, []);
 
   const saveSubscription = (spaceId: string, subscribe: boolean) => {
     const newSubs = new Set(subscribedSpaces);
     if (subscribe) newSubs.add(spaceId);
     else newSubs.delete(spaceId);
-    setSubscribedSpaces(newSubs);
-    localStorage.setItem("subscribedSpaces", JSON.stringify(Array.from(newSubs)));
+    setSubscribedSpaces(Array.from(newSubs));
     toast({
       title: subscribe ? "Subscribed!" : "Unsubscribed",
       description: subscribe ? "You'll see posts from this space in your feed" : "Removed from your subscriptions"
@@ -125,7 +119,6 @@ export default function CommunityForum() {
   const addToRecent = (spaceId: string) => {
     const updated = [spaceId, ...recentSpaces.filter(s => s !== spaceId)].slice(0, 5);
     setRecentSpaces(updated);
-    localStorage.setItem("recentSpaces", JSON.stringify(updated));
   };
 
   const { data: spaces, isLoading: spacesLoading } = useQuery<CommunitySpace[]>({

@@ -161,25 +161,25 @@ export default function AuditLogs() {
 
                         {/* Pagination */}
                         {!isLoading && meta.totalPages > 1 && (
-                            
+
                             <Pagination className="mt-4">
-                              <PaginationContent>
-                                <PaginationItem>
-                                  <PaginationPrevious 
-                                    onClick={() => setPage(p => Math.max(1, p - 1))} 
-                                    className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
-                                  />
-                                </PaginationItem>
-                                <PaginationItem>
-                                  <span className="text-sm font-medium mx-4">Page {page} of {totalPages}</span>
-                                </PaginationItem>
-                                <PaginationItem>
-                                  <PaginationNext 
-                                    onClick={() => setPage(p => p + 1)} 
-                                    className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                                  />
-                                </PaginationItem>
-                              </PaginationContent>
+                                <PaginationContent>
+                                    <PaginationItem>
+                                        <PaginationPrevious
+                                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                                            className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                                        />
+                                    </PaginationItem>
+                                    <PaginationItem>
+                                        <span className="text-sm font-medium mx-4">Page {page} of {meta.totalPages}</span>
+                                    </PaginationItem>
+                                    <PaginationItem>
+                                        <PaginationNext
+                                            onClick={() => setPage(p => p + 1)}
+                                            className={page === meta.totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                                        />
+                                    </PaginationItem>
+                                </PaginationContent>
                             </Pagination>
                         )}
                     </CardContent>

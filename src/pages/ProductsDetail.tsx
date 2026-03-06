@@ -175,26 +175,26 @@ export default function ProductsDetail() {
                             ))}
                         </div>
                         {/* Pagination Controls */}
-                        
-                                <Pagination className="mt-4">
-                                  <PaginationContent>
-                                    <PaginationItem>
-                                      <PaginationPrevious 
-                                        onClick={() => setPage(p => Math.max(1, p - 1))} 
-                                        className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
-                                      />
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                      <span className="text-sm font-medium mx-4">Page {page} of {totalPages}</span>
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                      <PaginationNext 
-                                        onClick={() => setPage(p => p + 1)} 
-                                        className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                                      />
-                                    </PaginationItem>
-                                  </PaginationContent>
-                                </Pagination>
+
+                        <Pagination className="mt-4">
+                            <PaginationContent>
+                                <PaginationItem>
+                                    <PaginationPrevious
+                                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                                        className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                                    />
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <span className="text-sm font-medium mx-4">Page {page} of {pagination.totalPages}</span>
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationNext
+                                        onClick={() => setPage(p => p + 1)}
+                                        className={page === pagination.totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                                    />
+                                </PaginationItem>
+                            </PaginationContent>
+                        </Pagination>
                     </>
                 )}
             </div>

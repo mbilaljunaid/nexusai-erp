@@ -2,6 +2,7 @@ import { useState, useEffect, createContext, useContext } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { X, Lightbulb, ChevronRight, ChevronLeft } from "lucide-react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 interface QuickTip {
   id: string;
@@ -81,20 +82,9 @@ const QuickTipsContext = createContext<QuickTipsContextType | undefined>(undefin
 
 export function QuickTipsProvider({ children }: { children: React.ReactNode }) {
   const [currentTip, setCurrentTip] = useState<QuickTip | null>(null);
-  const [dismissedTips, setDismissedTips] = useState<string[]>([]);
-  const [tipsEnabled, setTipsEnabled] = useState(true);
+  const [dismissedTips, setDismissedTips] = useLocalStorage<string[]>(STORAGE_KEY, []);
+  const [tipsEnabled, setTipsEnabled] = useLocalStorage<boolean>(TIPS_ENABLED_KEY, true);
   const [tipIndex, setTipIndex] = useState(0);
-
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      setDismissedTips(JSON.parse(stored));
-    }
-    const enabled = localStorage.getItem(TIPS_ENABLED_KEY);
-    if (enabled === "false") {
-      setTipsEnabled(false);
-    }
-  }, []);
 
   const showTip = (context: string) => {
     if (!tipsEnabled) return;
@@ -112,21 +102,17 @@ export function QuickTipsProvider({ children }: { children: React.ReactNode }) {
 
   const hideTip = () => {
     if (currentTip) {
-      const newDismissed = [...dismissedTips, currentTip.id];
-      setDismissedTips(newDismissed);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newDismissed));
+      setDismissedTips([...dismissedTips, currentTip.id]);
     }
     setCurrentTip(null);
   };
 
   const enableTips = () => {
     setTipsEnabled(true);
-    localStorage.setItem(TIPS_ENABLED_KEY, "true");
   };
 
   const disableTips = () => {
     setTipsEnabled(false);
-    localStorage.setItem(TIPS_ENABLED_KEY, "false");
     setCurrentTip(null);
   };
 

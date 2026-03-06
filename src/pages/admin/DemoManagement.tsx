@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import { useDemoEnvironments, useDeleteDemoEnvironment, useUpdateDemoStatus } from '@/hooks/admin/useAdminData';
 import { exportToCSV } from '@/utils/exportUtils';
 import { useToast } from '@/hooks/use-toast';
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import CreateDemoDialog from '@/components/admin/dialogs/CreateDemoDialog';
 import EditDemoDialog from '@/components/admin/dialogs/EditDemoDialog';
 
@@ -63,20 +64,7 @@ export default function DemoManagement() {
     }>({ key: '', direction: 'asc' });
 
     // View Mode State
-    const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
-
-    // Load view mode preference
-    useEffect(() => {
-        const saved = localStorage.getItem('admin-demo-view-mode');
-        if (saved === 'grid' || saved === 'table') {
-            setViewMode(saved);
-        }
-    }, []);
-
-    // Save view mode preference
-    useEffect(() => {
-        localStorage.setItem('admin-demo-view-mode', viewMode);
-    }, [viewMode]);
+    const [viewMode, setViewMode] = useLocalStorage<'grid' | 'table'>('admin-demo-view-mode', 'grid');
 
     // Debounce search
     useEffect(() => {

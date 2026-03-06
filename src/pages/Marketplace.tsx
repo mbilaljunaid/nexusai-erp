@@ -29,6 +29,7 @@ import type { MarketplaceApp, MarketplaceCategory } from "@/types/erp-types";
 import { TutorialOverlay } from "@/components/TutorialOverlay";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 
 interface Industry {
@@ -604,24 +605,7 @@ export default function Marketplace() {
   const [industryPopoverOpen, setIndustryPopoverOpen] = useState(false);
 
   const RECENTLY_VIEWED_KEY = "nexusai-recently-viewed-apps";
-  const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>(() => {
-    if (typeof window === 'undefined') return [];
-    try {
-      const stored = localStorage.getItem(RECENTLY_VIEWED_KEY);
-      return stored ? JSON.parse(stored) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    try {
-      localStorage.setItem(RECENTLY_VIEWED_KEY, JSON.stringify(recentlyViewedIds));
-    } catch {
-      // Ignore localStorage errors
-    }
-  }, [recentlyViewedIds]);
+  const [recentlyViewedIds, setRecentlyViewedIds] = useLocalStorage<string[]>(RECENTLY_VIEWED_KEY, []);
 
   const addToRecentlyViewed = (appId: string) => {
     setRecentlyViewedIds(prev => {

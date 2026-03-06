@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { 
+import {
   CheckCircle2, Circle, ChevronDown, ChevronUp, X, Rocket,
   User, Settings, Users, Bell, BarChart3, FileText, Sparkles
 } from "lucide-react";
 import { Link } from "wouter";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 interface ChecklistItem {
   id: string;
@@ -74,49 +75,42 @@ const STORAGE_KEY = "nexusai-onboarding-progress";
 const DISMISSED_KEY = "nexusai-onboarding-dismissed";
 
 export function OnboardingChecklist() {
-  const [completedItems, setCompletedItems] = useState<string[]>([]);
+  const [completedItems, setCompletedItems] = useLocalStorage<string[]>(STORAGE_KEY, []);
   const [isOpen, setIsOpen] = useState(true);
-  const [isDismissed, setIsDismissed] = useState(false);
+  const [isDismissed, setIsDismissed] = useLocalStorage<boolean>(DISMISSED_KEY, false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      setCompletedItems(JSON.parse(stored));
-    }
-    const dismissed = localStorage.getItem(DISMISSED_KEY);
-    if (dismissed === "true") {
-      setIsDismissed(true);
-    }
+    setIsHydrated(true);
   }, []);
 
   const toggleComplete = (itemId: string) => {
     setCompletedItems(prev => {
-      const newItems = prev.includes(itemId) 
+      const newItems = prev.includes(itemId)
         ? prev.filter(id => id !== itemId)
         : [...prev, itemId];
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newItems));
       return newItems;
     });
   };
 
   const handleDismiss = () => {
     setIsDismissed(true);
-    localStorage.setItem(DISMISSED_KEY, "true");
   };
 
   const handleReopen = () => {
     setIsDismissed(false);
-    localStorage.removeItem(DISMISSED_KEY);
   };
 
   const progress = (completedItems.length / checklistItems.length) * 100;
   const isComplete = completedItems.length === checklistItems.length;
 
+  if (!isHydrated) return null;
+
   if (isDismissed && !isComplete) {
     return (
-      <Button 
-        variant="outline" 
-        size="sm" 
+      <Button
+        variant="outline"
+        size="sm"
         onClick={handleReopen}
         className="fixed bottom-4 right-4 z-50 shadow-lg"
         data-testid="button-reopen-onboarding"
@@ -153,9 +147,9 @@ export function OnboardingChecklist() {
                   {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                 </Button>
               </CollapsibleTrigger>
-              <Button 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={handleDismiss}
                 data-testid="button-dismiss-onboarding"
               >
@@ -173,11 +167,10 @@ export function OnboardingChecklist() {
               return (
                 <div
                   key={item.id}
-                  className={`flex items-start gap-3 p-3 rounded-lg border transition-all ${
-                    isCompleted 
-                      ? "bg-green-500/5 border-green-200 dark:border-green-800" 
+                  className={`flex items-start gap-3 p-3 rounded-lg border transition-all ${isCompleted
+                      ? "bg-green-500/5 border-green-200 dark:border-green-800"
                       : "bg-card hover-elevate"
-                  }`}
+                    }`}
                   data-testid={`onboarding-item-${item.id}`}
                 >
                   <Button
@@ -204,8 +197,8 @@ export function OnboardingChecklist() {
                   </div>
                   {!isCompleted && item.href && (
                     <Link href={item.href}>
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         size="sm"
                         onClick={() => toggleComplete(item.id)}
                         data-testid={`button-action-${item.id}`}
@@ -225,14 +218,14 @@ export function OnboardingChecklist() {
 }
 
 export function OnboardingProgress() {
-  const [completedItems, setCompletedItems] = useState<string[]>([]);
+  const [completedItems] = useLocalStorage<string[]>(STORAGE_KEY, []);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      setCompletedItems(JSON.parse(stored));
-    }
+    setIsHydrated(true);
   }, []);
+
+  if (!isHydrated) return null;
 
   const progress = (completedItems.length / checklistItems.length) * 100;
   const isComplete = completedItems.length === checklistItems.length;

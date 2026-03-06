@@ -1,19 +1,5 @@
 [
-  "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/MarketplaceJobs.tsx",
   "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/PartnersPage.tsx",
-  "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/ProductsDetail.tsx",
-  "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/RecruitmentManagement.tsx",
-  "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/RevenueContractWorkbench.tsx",
-  "/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/inventory/WmsSlottingWorkbench.tsx",
-  "/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/inventory/WmsTaskWorkbench.tsx",
-  "/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/lcm/LcmWorkbench.tsx",
-  "/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/maintenance/DispatchConsole.tsx",
   "/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/DataTable.tsx",
-  "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/admin/AuditLogs.tsx",
-  "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/contracts/ContractList.tsx",
-  "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/crm/LeadList.tsx",
-  "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/fixed-assets/AssetWorkbench.tsx",
-  "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/lcm/LcmWorkbench.tsx",
-  "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/leases/LeasePortfolioWorkbench.tsx",
-  "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/manufacturing/ShopFloorTerminal.tsx"
+  "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/fixed-assets/AssetWorkbench.tsx"
 ]

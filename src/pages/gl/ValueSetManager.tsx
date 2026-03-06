@@ -173,7 +173,7 @@ export default function ValueSetManager() {
             actions={
                 <Sheet open={isAddOpen} onOpenChange={setIsAddOpen}>
                     <SheetTrigger asChild>
-                        <Button className="bg-[#0f172a] hover:bg-[#1e293b]">
+                        <Button>
                             <Plus className="mr-2 h-4 w-4" /> Create Value Set
                         </Button>
                     </SheetTrigger>

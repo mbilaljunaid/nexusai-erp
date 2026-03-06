@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { WidgetErrorBoundary } from "@/components/shared/ErrorBoundaries";
 import { cn } from "@/lib/utils";
 
 export interface BreadcrumbNavItem {
@@ -45,7 +46,9 @@ export function StandardPage({
 
             {/* Main Content */}
             <div className={cn("flex-1 space-y-4 pb-4")}>
-                {children}
+                <WidgetErrorBoundary>
+                    {children}
+                </WidgetErrorBoundary>
             </div>
         </div>
     );

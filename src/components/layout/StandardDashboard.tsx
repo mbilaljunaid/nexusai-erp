@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
+import { WidgetErrorBoundary } from "@/components/shared/ErrorBoundaries";
 
 export interface DashboardWidgetProps {
     children: ReactNode;
@@ -31,7 +32,11 @@ export function DashboardWidget({ children, className, colSpan = 1, title, icon:
                     {action && <div>{action}</div>}
                 </div>
             )}
-            <div className="p-6 pt-0 mt-4">{children}</div>
+            <div className="p-6 pt-0 mt-4">
+                <WidgetErrorBoundary>
+                    {children}
+                </WidgetErrorBoundary>
+            </div>
         </div>
     );
 }

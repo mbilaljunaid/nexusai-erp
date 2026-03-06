@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sparkles, Gift, Zap, Shield, BarChart3, Workflow, Bell, CheckCircle } from "lucide-react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 interface FeatureUpdate {
   id: string;
@@ -80,19 +81,19 @@ const STORAGE_KEY = "nexusai-whats-new-seen";
 export function WhatsNew() {
   const [open, setOpen] = useState(false);
   const [hasUnseenUpdates, setHasUnseenUpdates] = useState(false);
+  const [seenVersion, setSeenVersion] = useLocalStorage<string>(STORAGE_KEY, "");
 
   useEffect(() => {
-    const seenVersion = localStorage.getItem(STORAGE_KEY);
     const latestVersion = recentUpdates[0]?.version;
     if (seenVersion !== latestVersion) {
       setHasUnseenUpdates(true);
     }
-  }, []);
+  }, [seenVersion]);
 
   const handleOpen = () => {
     setOpen(true);
     const latestVersion = recentUpdates[0]?.version;
-    localStorage.setItem(STORAGE_KEY, latestVersion);
+    setSeenVersion(latestVersion);
     setHasUnseenUpdates(false);
   };
 
@@ -111,9 +112,9 @@ export function WhatsNew() {
 
   return (
     <>
-      <Button 
-        variant="ghost" 
-        size="icon" 
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={handleOpen}
         className="relative"
         data-testid="button-whats-new"
@@ -135,22 +136,21 @@ export function WhatsNew() {
               Discover the latest features, improvements, and updates
             </DialogDescription>
           </DialogHeader>
-          
+
           <ScrollArea className="flex-1 -mx-6 px-6">
             <div className="space-y-6 py-4">
               {recentUpdates.map((update) => (
-                <div 
+                <div
                   key={update.id}
                   className="flex gap-4 p-4 rounded-lg border bg-card hover-elevate transition-all"
                   data-testid={`whats-new-item-${update.id}`}
                 >
                   <div className="shrink-0">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                      update.type === "feature" ? "bg-blue-500/10 text-blue-600" :
-                      update.type === "improvement" ? "bg-green-500/10 text-green-600" :
-                      update.type === "security" ? "bg-purple-500/10 text-purple-600" :
-                      "bg-orange-500/10 text-orange-600"
-                    }`}>
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${update.type === "feature" ? "bg-blue-500/10 text-blue-600" :
+                        update.type === "improvement" ? "bg-green-500/10 text-green-600" :
+                          update.type === "security" ? "bg-purple-500/10 text-purple-600" :
+                            "bg-orange-500/10 text-orange-600"
+                      }`}>
                       <update.icon className="w-5 h-5" />
                     </div>
                   </div>

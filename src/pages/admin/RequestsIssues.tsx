@@ -20,6 +20,7 @@ import CreateSupportRequestDialog from '@/components/admin/dialogs/CreateSupport
 import EditSupportRequestDialog from '@/components/admin/dialogs/EditSupportRequestDialog';
 import { exportToCSV } from '@/utils/exportUtils';
 import { useToast } from '@/hooks/use-toast';
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 interface Request {
     id: string;
@@ -68,21 +69,8 @@ export default function RequestsIssues() {
     }>({ key: '', direction: 'asc' });
 
     // View Mode State
-    const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+    const [viewMode, setViewMode] = useLocalStorage<'grid' | 'table'>('admin-requests-view-mode', 'grid');
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-
-    // Load view mode preference
-    useEffect(() => {
-        const saved = localStorage.getItem('admin-requests-view-mode');
-        if (saved === 'grid' || saved === 'table') {
-            setViewMode(saved);
-        }
-    }, []);
-
-    // Save view mode preference
-    useEffect(() => {
-        localStorage.setItem('admin-requests-view-mode', viewMode);
-    }, [viewMode]);
 
     // Clear selection when filters change
     useEffect(() => {

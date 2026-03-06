@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Filter, X, Save, ChevronDown, ChevronUp } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 interface APAdvancedFiltersProps {
     onFilterChange: (filters: any) => void;
@@ -54,7 +55,7 @@ export function APAdvancedFilters({ onFilterChange, suppliers = [] }: APAdvanced
         searchQuery: ""
     });
 
-    const [savedFilters, setSavedFilters] = useState<any[]>([]);
+    const [savedFilters, setSavedFilters] = useLocalStorage<any[]>('ap-saved-filters', []);
     const [filterName, setFilterName] = useState("");
 
     const handleFilterChange = (key: string, value: any) => {
@@ -87,7 +88,6 @@ export function APAdvancedFilters({ onFilterChange, suppliers = [] }: APAdvanced
         if (!filterName) return;
         const newSaved = [...savedFilters, { name: filterName, filters: { ...filters } }];
         setSavedFilters(newSaved);
-        localStorage.setItem('ap-saved-filters', JSON.stringify(newSaved));
         setFilterName("");
     };
 

@@ -57,8 +57,8 @@ export default function CareersPage() {
   return (
     <StandardPage title="Join Our Team">
       {/* Header */}
-      <div className="bg-[#0F172A] text-white py-20 px-4 text-center">
-        
+      <div className="bg-slate-900 text-white py-20 px-4 text-center">
+
         <p className="text-lg text-slate-300 max-w-2xl mx-auto">
           We are looking for talented individuals to help us build the future of enterprise software.
         </p>

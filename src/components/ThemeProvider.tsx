@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 type Theme = "dark" | "light" | "system";
 
@@ -43,21 +44,8 @@ export function ThemeProvider({
   storageKey?: string;
   accentStorageKey?: string;
 }) {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  );
-
-  const [accentColor, setAccentColorState] = useState<AccentColor>(() => {
-    const stored = localStorage.getItem(accentStorageKey);
-    if (stored) {
-      try {
-        return JSON.parse(stored);
-      } catch {
-        return ACCENT_COLORS[0];
-      }
-    }
-    return ACCENT_COLORS[0];
-  });
+  const [theme, setThemeState] = useLocalStorage<Theme>(storageKey, defaultTheme);
+  const [accentColor, setAccentColorState] = useLocalStorage<AccentColor>(accentStorageKey, ACCENT_COLORS[0]);
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -85,12 +73,10 @@ export function ThemeProvider({
   const value = {
     theme,
     setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme);
-      setTheme(theme);
+      setThemeState(theme);
     },
     accentColor,
     setAccentColor: (color: AccentColor) => {
-      localStorage.setItem(accentStorageKey, JSON.stringify(color));
       setAccentColorState(color);
     },
   };

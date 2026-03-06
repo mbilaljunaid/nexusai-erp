@@ -17,6 +17,7 @@ import { LedgerProvider } from "@/context/LedgerContext";
 import { NexusAIProvider } from "@/contexts/NexusAIContext";
 import { EnterpriseProvider } from "@/contexts/EnterpriseContext";
 import { NexusAIPanel } from "@/components/NexusAIPanel";
+import { RootErrorBoundary } from "@/components/shared/ErrorBoundaries";
 import NotFound from "@/pages/not-found";
 import CrmRoutes from "@/routes/CrmRoutes";
 import FinanceRoutes from "@/routes/FinanceRoutes";
@@ -296,7 +297,9 @@ function AuthenticatedLayout() {
   return (
     <GlobalLayout>
       <Suspense fallback={<div className="p-4">Loading...</div>}>
-        <Router />
+        <RootErrorBoundary>
+          <Router />
+        </RootErrorBoundary>
       </Suspense>
       <GuidedTourOverlay />
       <NexusAIPanel />
@@ -309,7 +312,9 @@ function PublicLayout() {
     <div className="flex h-screen w-full">
       <div className="flex flex-col flex-1 w-full">
         <Suspense fallback={<div className="p-4">Loading...</div>}>
-          <Router />
+          <RootErrorBoundary>
+            <Router />
+          </RootErrorBoundary>
         </Suspense>
       </div>
       <Toaster />

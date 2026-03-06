@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { X, ChevronLeft, ChevronRight, HelpCircle, Sparkles, GitCompare, Share2 } from "lucide-react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 interface TutorialStep {
   id: string;
@@ -63,6 +64,7 @@ export function TutorialOverlay({
   onComplete,
   onSkip,
 }: TutorialOverlayProps) {
+  const [hasCompleted, setHasCompleted] = useLocalStorage<boolean>(storageKey, false);
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
@@ -92,12 +94,11 @@ export function TutorialOverlay({
   }, [updateTargetRect]);
 
   useEffect(() => {
-    const completed = localStorage.getItem(storageKey);
-    if (!completed) {
+    if (!hasCompleted) {
       const timer = setTimeout(() => setIsOpen(true), 1500);
       return () => clearTimeout(timer);
     }
-  }, [storageKey]);
+  }, [hasCompleted]);
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
@@ -114,13 +115,13 @@ export function TutorialOverlay({
   };
 
   const handleComplete = () => {
-    localStorage.setItem(storageKey, "true");
+    setHasCompleted(true);
     setIsOpen(false);
     onComplete?.();
   };
 
   const handleSkip = () => {
-    localStorage.setItem(storageKey, "true");
+    setHasCompleted(true);
     setIsOpen(false);
     onSkip?.();
   };
@@ -274,9 +275,8 @@ export function TutorialOverlay({
                     {steps.map((_, index) => (
                       <div
                         key={index}
-                        className={`w-2 h-2 rounded-full transition-colors ${
-                          index === currentStep ? "bg-primary" : "bg-muted"
-                        }`}
+                        className={`w-2 h-2 rounded-full transition-colors ${index === currentStep ? "bg-primary" : "bg-muted"
+                          }`}
                       />
                     ))}
                   </div>
@@ -312,15 +312,9 @@ export function TutorialOverlay({
 }
 
 export function useTutorial(storageKey = "marketplace-tutorial-completed") {
-  const [hasSeenTutorial, setHasSeenTutorial] = useState(true);
-
-  useEffect(() => {
-    const completed = localStorage.getItem(storageKey);
-    setHasSeenTutorial(!!completed);
-  }, [storageKey]);
+  const [hasSeenTutorial, setHasSeenTutorial] = useLocalStorage<boolean>(storageKey, false);
 
   const resetTutorial = () => {
-    localStorage.removeItem(storageKey);
     setHasSeenTutorial(false);
   };
 

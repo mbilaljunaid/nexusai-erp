@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDate } from "@/lib/dateUtils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { apiRequest } from "@/lib/queryClient";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 interface Notification {
   id: string | number;
@@ -112,7 +113,7 @@ export function NotificationCenter() {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
-  const [dismissedIds, setDismissedIds] = useState<(string | number)[]>([]);
+  const [dismissedIds, setDismissedIds] = useLocalStorage<(string | number)[]>(STORAGE_KEY_DISMISSED, []);
   const [isHydrated, setIsHydrated] = useState(false);
 
   const { data: apiNotifications, isLoading } = useQuery<APINotification[]>({
@@ -148,12 +149,6 @@ export function NotificationCenter() {
 
   useEffect(() => {
     setIsHydrated(true);
-    if (typeof window !== "undefined") {
-      const storedDismissed = localStorage.getItem(STORAGE_KEY_DISMISSED);
-      if (storedDismissed) {
-        setDismissedIds(JSON.parse(storedDismissed));
-      }
-    }
   }, []);
 
   const notifications: Notification[] = apiNotifications
@@ -166,11 +161,7 @@ export function NotificationCenter() {
   const recommendationNotifications = notifications.filter(n => n.type === "recommendation" || n.type === "info");
 
   const saveDismissedState = (dismissedId: string | number) => {
-    if (typeof window !== "undefined") {
-      const newDismissedIds = [...dismissedIds, dismissedId];
-      setDismissedIds(newDismissedIds);
-      localStorage.setItem(STORAGE_KEY_DISMISSED, JSON.stringify(newDismissedIds));
-    }
+    setDismissedIds((prev) => [...prev, dismissedId]);
   };
 
   const markAsRead = (id: string | number) => {
@@ -186,12 +177,8 @@ export function NotificationCenter() {
   };
 
   const clearAll = () => {
-    if (typeof window !== "undefined") {
-      const currentIds = notifications.map(n => n.id);
-      const mergedDismissedIds = [...new Set([...dismissedIds, ...currentIds])];
-      setDismissedIds(mergedDismissedIds);
-      localStorage.setItem(STORAGE_KEY_DISMISSED, JSON.stringify(mergedDismissedIds));
-    }
+    const currentIds = notifications.map(n => n.id);
+    setDismissedIds((prev) => [...new Set([...prev, ...currentIds])]);
   };
 
   const getTypeIcon = (type: Notification["type"]) => {

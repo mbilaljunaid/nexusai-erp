@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -675,31 +676,13 @@ function WidgetContent({ type }: { type: WidgetType }) {
 }
 
 export function DashboardWidgets() {
-  const [widgets, setWidgets] = useState<Widget[]>(defaultWidgets);
+  const [widgets, saveWidgets] = useLocalStorage<Widget[]>(STORAGE_KEY, defaultWidgets);
   const [draggedWidget, setDraggedWidget] = useState<string | null>(null);
   const [isCustomizing, setIsCustomizing] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          setWidgets(parsed);
-        } catch {
-          setWidgets(defaultWidgets);
-        }
-      }
-      setIsHydrated(true);
-    }
-  }, []);
-
-  const saveWidgets = useCallback((newWidgets: Widget[]) => {
-    setWidgets(newWidgets);
-    if (typeof window !== "undefined") {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newWidgets));
-    }
+    setIsHydrated(true);
   }, []);
 
   const handleDragStart = (e: React.DragEvent, widgetId: string) => {

@@ -185,7 +185,7 @@ export default function LegalEntitySetup() {
             title="Legal Entities"
             description="Enterprise Structure: Organizational Units & Tax Registrations"
             actions={
-                <Button onClick={() => setIsCreating(true)} className="gap-2 bg-[#0f172a]">
+                <Button onClick={() => setIsCreating(true)} className="gap-2">
                     <Plus className="h-4 w-4" /> Register Entity
                 </Button>
             }
